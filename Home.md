@@ -8,6 +8,7 @@ This workspace is the Obsidian vault.
 - [[IDENTITY]]
 - [[USER]]
 - [[MEMORY]]
+- [[Continuity Protocol]]
 - [[AGENTS]]
 - [[TOOLS]]
 - [[HEARTBEAT]]

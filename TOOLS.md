@@ -7,7 +7,9 @@ Skills define _how_ tools work. This file is for _your_ specifics — the stuff 
 ### Obsidian
 
 - Obsidian vault: workspace root (`C:\Users\Veritas2.0\.openclaw\workspace`)
+- Never register `.obsidian/` itself as a vault
 - Home note: `Home.md`
+- Continuity protocol: `Continuity Protocol.md`
 - Daily notes folder: `memory/`
 - Long-term memory note: `MEMORY.md`
 - Templates folder: `templates/`
