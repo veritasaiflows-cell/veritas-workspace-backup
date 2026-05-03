@@ -100,10 +100,10 @@ Workflow 16 closes honestly only if all are true:
 - [x] Helper-lane contract challenge integrated.
 - [x] Queue / registry / continuity alignment updated.
 - [x] Named residue and reopen triggers kept visible.
-- [ ] Checkpoint posture finalized.
+- [x] Checkpoint posture finalized.
 
 ## Checkpoint Decision
-- **pending final checkpoint action during same-session closeout**
+- **checkpoint taken** via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`)
 
 ## Next Pass
 - Open `Workflow 19 - Playbooks Retrieval and Governance Cleanup` as the next approved major lane.

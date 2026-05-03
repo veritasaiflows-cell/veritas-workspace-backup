@@ -93,10 +93,10 @@ Workflow 16A closes honestly only if all are true:
 - [x] Owner boundaries kept fail-closed.
 - [x] Canonical mutation remained out of scope.
 - [x] Handoff to Workflow 16B made explicit.
-- [ ] Checkpoint posture finalized.
+- [x] Checkpoint posture finalized.
 
 ## Checkpoint Decision
-- **pending final checkpoint action during same-session closeout**
+- **checkpoint taken** via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`)
 
 ## Next Pass
 - Workflow 16B consumes the approved packet/routing contracts and closes the freshness-patch contract plus bounded pilot.

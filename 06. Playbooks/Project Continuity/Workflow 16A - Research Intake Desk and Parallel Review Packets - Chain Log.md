@@ -7,8 +7,8 @@
   - `06. Playbooks/Research Automation Intake Packet Contract.md`
   - `06. Playbooks/Research Automation Routing and Promotion Contract.md`
   - `tmp/research-automation/intake-packet-samples.json`
-- Validation: pending final heading/json/closeout validation run and family QA audit in the same session
-- Checkpoint posture: pending final checkpoint action in the same session
+- Validation: bounded validation run passed (workflow headings, contract files, json parse, route/no-route/stop-line coverage) and the family QA audit recorded the closeout verdict
+- Checkpoint posture: checkpoint taken via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`)
 - Residue:
   - no recurring research cron enabled
   - packet routing remains review-only, not truth mutation

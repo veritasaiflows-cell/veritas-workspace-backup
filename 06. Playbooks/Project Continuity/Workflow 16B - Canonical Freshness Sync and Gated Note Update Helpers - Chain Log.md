@@ -6,8 +6,8 @@
   - `06. Playbooks/Research Automation Canonical Freshness Patch Contract.md`
   - `tmp/research-automation/freshness-pilot-2026-05-03.json`
   - manual low-risk freshness updates in `01. Dashboards/This Week.md`
-- Validation: pending final heading/json/closeout validation run and family QA audit in the same session
-- Checkpoint posture: pending final checkpoint action in the same session
+- Validation: bounded validation run passed (workflow headings, pilot json parse, fail-closed guard check, manual patch proof, and ledger refresh proof) and the family QA audit recorded the closeout verdict
+- Checkpoint posture: checkpoint taken via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`)
 - Residue:
   - automation remains patch-proposal only
   - no auto-apply behavior exists

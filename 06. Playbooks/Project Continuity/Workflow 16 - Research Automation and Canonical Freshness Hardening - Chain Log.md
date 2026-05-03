@@ -9,8 +9,8 @@
   - wrote bounded pilot proof at `tmp/research-automation/freshness-pilot-2026-05-03.json`
   - applied low-risk mirror-surface freshness fixes in `01. Dashboards/This Week.md`
   - refreshed stale proof timestamps in `06. Playbooks/Cron Run Ledger.md`
-- Validation: pending final heading/json/closeout validation run and QA audit write-up in the same session
-- Checkpoint posture: pending final checkpoint action in the same session
+- Validation: bounded validation run passed (workflow headings, contract + chain-log files, json artifacts, route/no-route/stop-line coverage, pilot fail-closed guard, `This Week` manual freshness patches, and `Cron Run Ledger` refresh proof all ok) and `08. Audits/Workflow 16 Family Research Automation QA Audit - 2026-05-03.md` recorded the closeout verdict
+- Checkpoint posture: checkpoint taken via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`)
 - Residue:
   - no recurring research cron was enabled yet
   - no auto-apply helper exists
@@ -20,4 +20,4 @@
   - intentional request for recurring research cron
   - request to widen freshness helpers beyond proposal-only behavior
   - any future attempt to let automation mutate canonical notes directly
-- Next pass: activate Workflow 19 after final QA/closeout surfaces align
+- Next pass: Workflow 19 is now the next approved active governance lane

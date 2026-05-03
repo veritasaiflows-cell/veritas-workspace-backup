@@ -72,4 +72,4 @@ Reopen the WF16 family only if one of these happens:
 ## Verdict
 **Pass.**
 
-WF16 can close **with follow-up** and WF16A / WF16B can close **complete**, provided the queue, registry, and checkpoint posture are finalized to match.
+WF16 closes **with follow-up** and WF16A / WF16B close **complete**. Queue and registry were aligned, and the checkpoint was taken via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`).

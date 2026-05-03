@@ -96,10 +96,10 @@ Workflow 16B closes honestly only if all are true:
 - [x] Bounded pilot completed.
 - [x] Manual review/apply path proved on low-risk mirror-surface changes only.
 - [x] No-auto-apply guard preserved.
-- [ ] Checkpoint posture finalized.
+- [x] Checkpoint posture finalized.
 
 ## Checkpoint Decision
-- **pending final checkpoint action during same-session closeout**
+- **checkpoint taken** via local git commit `7ac685b` (`Workflow 16 family: close research automation contracts and pilot`)
 
 ## Next Pass
 - None inside Workflow 16B scope.
