@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:30.233043+00:00",
+  "generated_at_utc": "2026-05-03T16:57:31.394714+00:00",
   "window": "sunday",
   "source_run_summary": "run-summary-sunday.json",
   "system": {
@@ -15,9 +15,9 @@
     },
     "warning_codes": [],
     "stale_earnings_blocks": [],
-    "timestamp_gap_hours": 0.0,
+    "timestamp_gap_hours": 0.1,
     "timestamp_gap_warning": null,
-    "run_summary_generated_at_utc": "2026-05-03T15:31:30Z",
+    "run_summary_generated_at_utc": "2026-05-03T15:37:27Z",
     "trigger_generated_at_utc": "2026-05-03T15:31:28.263175+00:00"
   },
   "summary": {

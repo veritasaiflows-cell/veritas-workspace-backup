@@ -17,22 +17,20 @@ It is the bounded next set of pilots that should prove whether parallel executio
 - `openai-codex/gpt-5.4`
 - use for bounded implementation, patch prep, and detached worker passes by default
 
-### Lower-complexity Codex helpers now available
-- `openai-codex/gpt-5.3-codex`
+### Lower-complexity helper posture
+- No lower-complexity Veritas-routed Codex helper is currently on the approved live model list.
+- For bounded cheap helper work, prefer scope reduction, lighter task contracts, or manual external evidence review instead of routing through a stale removed model.
 
-Use it only for:
-- bounded read-heavy inspection
-- mechanical comparisons
-- draft patch preparation
-- cheap implementation scaffolding
-
-Do not use it for:
+Do not use reduced-trust helper posture for:
 - final trust adjudication
 - canonical-state judgment
 - ambiguous architecture decisions
 - final portfolio or OS calls
 
-`openai-codex/gpt-5.3-codex-spark` is removed from Veritas-routed workflow use. If Randall uses Spark manually, treat that output as external evidence for review rather than a pilot lane.
+Removed-model rule:
+- `openai-codex/gpt-5.3-codex` is no longer on the approved live model list
+- `openai-codex/gpt-5.3-codex-spark` is removed from Veritas-routed workflow use
+- If Randall uses a lighter external model manually, treat that output as external evidence for review rather than a pilot lane
 
 ## Pilot success standard
 
@@ -791,6 +789,16 @@ Run in this order:
 20. Workflow 13 - script and tmp hygiene hardening [completed]
 21. Workflow 14 - operator script boundary and lifecycle cleanup [completed]
 22. Workflow 15 - script performance and payload modularity backlog [deferred]
+23. Workflow 17 - sequential workflow contract and skills hardening [active - higher-priority trust blocker inserted before Workflow 16 execution]
+24. Workflow 18 - spawn, closeout, and skills governance hardening [queued behind Workflow 17]
+25. Workflow 16 - research automation and canonical freshness hardening [active but held behind Workflow 17 / Workflow 18 protocol hardening; parallel lanes are contract-building and QA only in v1]
+26. Workflow 16A - research intake desk and parallel review packets [queued under Workflow 16 after Workflow 17 / Workflow 18; source bundle -> intake packet -> routing/promotion contract]
+27. Workflow 16B - canonical freshness sync and gated note update helpers [queued behind Workflow 16A; canonical freshness patch contract -> bounded pilot]
+
+Capital Deployment Readiness note:
+- closed with follow-up on 2026-05-03
+- normal use is now defined by the Trigger Sheet plus the deployment-readiness operating cadence
+- reopen only if NVDA / BRK.B timing residue, or a deliberate visibility / autonomy widening request, justifies it
 
 Entry-log rule:
 - keep new workflow entries in this exact order unless a higher-priority trust blocker overtakes them

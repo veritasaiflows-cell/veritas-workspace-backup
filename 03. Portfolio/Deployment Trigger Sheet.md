@@ -18,6 +18,7 @@ Version 1 operating model:
 - scripts generate hard data and machine-readable action buckets in `tmp/trigger-sheet.json`
 - this note remains the human decision layer that interprets those inputs and states the actual recommendation
 - when the machine output and the note disagree, explain why rather than pretending the difference does not exist
+- operator cadence reference: `06. Playbooks/Deployment Readiness Morning Operating Cadence.md`
 
 ## Deployment gates
 
@@ -112,7 +113,7 @@ A spot on the watchlist is not enough.
 
 ## Freshness and update policy
 
-- Last updated: 2026-05-02
+- Last updated: 2026-05-03
 - Data as of: 2026-05-01 close with current trigger-sheet state, XOM post-earnings sync, and the band-update follow-through that moved **JPM** and **NVDA** into live in-band status. Broader note-layer reconciliation remains selective rather than full-rewrite.
 - Refresh cadence: after weekly technical refreshes, after tracked earnings, after material macro regime change, or when a name clearly changes action state
 - Next refresh due: after BRK.B is interpreted and its stale machine-layer May 2 next-date is cleared or manually held, after ETN May 5 earnings print (near-earnings caution active), or when MSFT / GOOG / VRT / GS follow-on note sync changes a real action state

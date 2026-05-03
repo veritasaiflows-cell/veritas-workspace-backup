@@ -8,7 +8,7 @@
 - The workspace has a growing machine pipeline for technicals, trigger sheets, deployment checks, regime scores, positioning ranks, dashboard validation, and run-summary trust.
 - Phase 3 is now implemented in the machine layer: the stack carries the Phase 2 review fields, emits a dedicated deployment-readiness surface, and applies bounded trust downgrades instead of letting raw ranking or in-band status speak last.
 - The current system can now distinguish raw machine posture from reviewed surface posture more honestly: ETN is explicitly near-earnings caution, NVDA is capped at ALMOST while timing confirmation remains unresolved inside the active catalyst window, and recent reviewed post-print names no longer fall back into stale limbo.
-- **Automation phase (post-Workflow 10/11/12 reality):** this lane is now between **stable scheduled review surfaces** and **gated apply helpers**. Scheduled evidence, validator output, trigger artifacts, and contradiction warnings are strong enough to support disciplined review, but canonical readiness judgment is still note-owned and human-gated.
+- **Automation phase (post-closeout reality):** this lane is now a **bounded, usable deployment-readiness operating layer**. Scheduled evidence, validator output, trigger artifacts, contradiction routing, and explicit morning review cadence are defined and usable, but canonical readiness judgment remains note-owned and human-gated.
 
 ## Why this project exists
 - Randall wants to start deploying capital while markets are moving.
@@ -20,31 +20,33 @@
   - blocked because the system still has trust/freshness flaws
 
 ## Last Meaningful Progress
-- The parallel-IC operating layer was formalized with:
-  - `06. Playbooks/Independent Contractor Workflow.md`
-  - `06. Playbooks/Parallel IC Project Workflow.md`
-- `E17 Universe Synchronization` progressed through Phase 3 Sub-Pass 3, including the workflow/action integrity repair that removed the GS false-positive leakage path.
-- The remaining gap is no longer the worst machine-state leakage; it is note/date reconciliation plus post-earnings judgment on the most consequential names.
+- The machine layer already had the bounded deployment-readiness surface from Phase 3.
+- Phase 4 through Phase 7 finished the operating contract around that surface:
+  - `06. Playbooks/Deployment Readiness Morning Operating Cadence.md`
+  - `06. Playbooks/Deployment Readiness Helper Packet Contract.md`
+  - `06. Playbooks/Deployment Readiness Surface Integration Contract.md`
+- The project is now closed honestly as usable, review-gated infrastructure instead of an unfinished optional idea.
 
 ## Outstanding
-- Operationalize Phase 4 morning use cadence if this surface is going to be used daily.
-- Decide whether the deployment-readiness surface should remain an operator JSON artifact only or later get a human-facing dashboard panel.
-- Continue cleaning narrow timing/date trust residue when it becomes decision-critical, led by NVDA.
-- Keep canonical readiness judgment human-owned in `03. Portfolio/Deployment Trigger Sheet.md`.
+- Narrow timing/date trust residue remains open:
+  - NVDA timing confirmation inside the active catalyst window
+  - BRK.B next-quarter timing cleanup / confirmation
+- Macro/policy trust remains caution-bearing even with clean validator state.
+- Canonical readiness judgment remains human-owned in `03. Portfolio/Deployment Trigger Sheet.md`.
 
 ## Blockers / Trust Gaps
 - Macro/policy trust remains degraded and can undermine confidence even when individual names look technically attractive.
 - The highest-value earnings-date trust noise is now narrow: NVDA still shows May 20 in machine outputs versus an older May 27 vault date, and BRK.B next-quarter timing still needs IR-grade confirmation before anyone should lean on the provider date.
-- The run summary still reports raw runtime `execution.chain_status = running` in some scheduled windows; Workflow 10 already made that advisory rather than canonical, but it remains real runtime debt rather than a solved runtime truth source.
-- A formal automation-ready deployment desk is still blocked by owner-boundary gaps that Workflow 10 did not solve by itself: admission governance still belongs to Workflow 11 procedure, macro/policy caution still belongs to Workflow 12 trust handling, and queue/workflow advancement plus final truth arbitration remain human-only.
+- No autonomous Trigger Sheet apply path is approved in v1.
+- Any future attempt to surface the JSON artifact as a decision-grade dashboard or workbook board would risk creating a second truth layer unless the owner boundary is intentionally reopened and revalidated.
 
 ## Automation readiness assessment — 2026-05-03
 
 **Workflow under review:** Capital Deployment Readiness
 
-**Current phase:** stable scheduled evidence + review surfaces, approaching gated apply helpers
+**Current phase:** bounded, usable deployment-readiness operating layer with read-only helper contracts and no approved autonomous apply path
 
-**Recommended next phase:** gated morning deployment surface with explicit human approval on all canonical readiness calls
+**Recommended next phase:** closed with follow-up triggers only; widen autonomy only if the named reopen conditions are met
 
 **Safe automation boundary now:**
 - scheduled evidence collection and staging artifacts for macro, technical, earnings, trigger, and dashboard layers
@@ -59,17 +61,17 @@
 - final macro regime judgment, policy-caveat wording, and any cross-surface truth arbitration
 - any packaging/publishing step that could be mistaken for presentation-grade truth while upstream residue remains active
 
-**Missing trust gates before wider rollout:**
-- a clean admission/procedure ownership tie-in to Workflow 11
-- a hardened source bundle / stop-line contract for recurring news and thesis-drift monitoring
+**Still unresolved / intentionally not widened:**
 - continued fail-closed handling for timing-sensitive date noise, led by NVDA when decision-critical
-- explicit rule that runtime/session state remains advisory beneath artifact-level proof
+- BRK.B next-quarter machine-date cleanup / confirmation
+- macro/policy caution remains a real confidence ceiling even when the mechanical checks are clean
+- no autonomous apply helper is approved for the Trigger Sheet in v1
 
-**Recommended rollout sequence after this edit:**
-1. use `tmp/deployment-readiness-surface.json` as the bounded operator review artifact beneath the Trigger Sheet owner surface
-2. keep the first recurring helper lanes read-only: admission prep, thesis-drift intake, and contradiction QA
+**Final rollout posture after this edit:**
+1. use `tmp/deployment-readiness-surface.json` only as the bounded operator review artifact beneath the Trigger Sheet owner surface
+2. keep helper lanes read-only: admission prep, thesis-drift intake, and contradiction QA
 3. stop every helper lane at packet/review output; do not let them mutate canonical readiness notes or portfolio posture
-4. if daily usage sticks, open Phase 4 and define the exact morning operator cadence instead of letting it emerge informally
+4. keep any wider visibility or helper-gating request behind an explicit reopen decision instead of letting it creep in informally
 
 ## Phase 3 — Completed 2026-05-03
 - Implemented the bounded machine-side review surface without crossing into autonomous readiness judgment.
@@ -141,9 +143,9 @@
   - 4 DO NOT TOUCH: LMT, RTX, BRK.B, and GS cross-reference
   - 3 WATCH: GS (machine said DEPLOYABLE NOW), VRT, AMD
 
-## Current Posture — as of 2026-05-03
+## Current Posture — closed 2026-05-03
 
-**Phase status:** Phase 3 complete. Phase 0–2 remain the contract layer; Phase 3 is now the live implementation layer.
+**Phase status:** Phase 4 through Phase 7 are now complete. The project is closed as a bounded, review-gated operating layer rather than an open-ended automation experiment.
 
 **Current owner posture:** Veritas owns the machine-side implementation and QA state here. Canonical readiness judgment still belongs to the Trigger Sheet / note layer, not the helper surface.
 
@@ -155,16 +157,108 @@
 **What a second-opinion lane would review now if needed:**
 - whether Rule 6B is the right fail-closed ceiling for active-window timing uncertainty
 - whether a later human-facing panel should expose the same surface directly or keep it as JSON/operator-only infrastructure
-- whether Phase 4 cadence should formalize the morning review sequence around this artifact
+- whether a future proposal-only freshness helper is justified without weakening the owner boundary
 
 ## Next Action
-- **Immediate next action:** if you want this used as a daily discipline tool, open **Phase 4 — Operating cadence** and define the exact morning operator pattern around `tmp/deployment-readiness-surface.json` plus the Trigger Sheet.
-- **If Phase 4 is deferred:** keep using the Trigger Sheet as canonical and treat the new surface as a bounded machine-side review packet.
-- **First helper lanes after Phase 3 should stay read-only:**
-  1. `LLY`-style coverage intake prep packet
-  2. thesis-drift / news-monitoring intake packet
-  3. adversarial contradiction / QA packet
-- **Second-opinion re-engagement trigger:** if another judgment lane is useful, have it review the live Phase 3 output against the Phase 2 contract rather than re-litigating whether Phase 3 exists.
+- **Current state:** closed with follow-up triggers.
+- **Immediate next action outside this workflow:** continue using the Trigger Sheet as canonical, use the operating cadence when deployment review matters, and reopen only if the named triggers fire.
+
+## Sequential finish plan — proposed 2026-05-03
+
+### Phase 4 — Operating cadence contract
+Goal:
+- define the exact daily morning operator pattern around `tmp/deployment-readiness-surface.json`, `tmp/trigger-sheet.json`, `tmp/run-summary-morning.json`, and the canonical Trigger Sheet.
+
+Deliverables:
+- explicit morning checklist
+- escalation/override rules
+- exact human decision points
+- proof rule for when the machine surface may be consulted versus ignored
+
+Acceptance:
+- one unambiguous morning cadence
+- owner boundary preserved: JSON supports, Trigger Sheet decides
+- no implicit canonical mutation path
+
+### Phase 5 — Read-only helper lanes and packet layer
+Goal:
+- add the first recurring read-only helper packets that make the morning desk more useful without crossing into canonical ownership.
+
+Deliverables:
+- admission prep packet contract
+- thesis-drift / news-monitoring intake packet contract
+- adversarial contradiction / QA packet contract
+- clear stop-line rules for helper output quality
+
+Acceptance:
+- helper lanes stop at packet output
+- no queue movement, no note mutation, no portfolio conclusion changes
+- at least one bounded packet format per helper class is specified
+
+### Phase 6 — Surface integration and low-risk gating
+Goal:
+- decide how the deployment-readiness artifact should surface operationally and whether any low-risk gated helper is justified.
+
+Deliverables:
+- decision on JSON-only vs additional dashboard/workbook visibility
+- explicit low-risk gating rules for mechanical freshness or parity helpers, if any
+- validation rule proving the surfaced view cannot outrank the owner notes
+
+Acceptance:
+- no second conflicting truth layer created
+- surfaced deployment state remains visibly derived and bounded
+- any helper remains gated and reviewable
+
+### Phase 7 — Closeout and automation posture lock
+Goal:
+- close the project honestly with the final automation posture, unresolved residue list, and reopen triggers named.
+
+Deliverables:
+- closeout note update
+- chain-log closure entry
+- registry state update
+- named reopen triggers for:
+  - NVDA timing trust
+  - BRK.B next-quarter timing confirmation
+  - any future request for higher-autonomy readiness maintenance
+
+Acceptance:
+- project can sit closed without hidden ambiguity
+- the allowed automation boundary is explicit and durable
+- future expansion path is named but not pretended into existence
+
+## Phase execution rule
+- Run Phases 4 -> 5 -> 6 -> 7 in order.
+- Do not skip from Phase 3 directly to autonomous note-control ideas.
+- Keep helper lanes read-only until Phase 6 proves a bounded gated-helper use case.
+- Keep canonical readiness judgment in `03. Portfolio/Deployment Trigger Sheet.md` through the full sequence.
+
+## Phase 4 — Completed 2026-05-03
+- Landed `06. Playbooks/Deployment Readiness Morning Operating Cadence.md`.
+- Defined the exact morning review order, trust preflight, freshness preflight, Trigger Sheet cross-check rule, and escalation behavior.
+- Explicitly encoded that the machine surface may support review only and must be ignored when trust/freshness degrades materially.
+
+## Phase 5 — Completed 2026-05-03
+- Landed `06. Playbooks/Deployment Readiness Helper Packet Contract.md`.
+- Defined the minimum read-only helper packet set:
+  - admission prep
+  - thesis-drift / news-monitoring intake
+  - contradiction / QA
+- Kept all helper outputs packet-only with no canonical note mutation, no queue movement, and no portfolio conclusion authority.
+
+## Phase 6 — Completed 2026-05-03
+- Landed `06. Playbooks/Deployment Readiness Surface Integration Contract.md`.
+- Chose the safer v1 decision: keep the deployment-readiness surface as JSON/operator infrastructure rather than promoting it into a new dashboard/workbook truth surface.
+- Explicitly declined any autonomous apply helper for the Trigger Sheet in this phase.
+
+## Phase 7 — Completed 2026-05-03
+- Closed the project as a bounded, usable operating layer with explicit automation limits.
+- Locked the owner-of-truth statement: `03. Portfolio/Deployment Trigger Sheet.md` decides; helper artifacts support.
+- Wrote the closeout QA artifact: `08. Audits/Capital Deployment Readiness Closeout QA Audit - 2026-05-03.md`.
+- Named the reopen triggers:
+  - NVDA timing confirmation remains unresolved inside the active catalyst window
+  - BRK.B next-quarter timing cleanup / confirmation remains unresolved
+  - any explicit request to widen visibility or autonomy beyond read-only helper packets
 
 ## Key Files
 - `03. Portfolio/Deployment Trigger Sheet.md`

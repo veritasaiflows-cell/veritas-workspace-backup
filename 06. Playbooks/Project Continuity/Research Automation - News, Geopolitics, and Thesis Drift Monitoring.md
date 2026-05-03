@@ -3,39 +3,58 @@
 ## Objective
 - Build a review-first research automation lane that keeps Veritas fresh on company news, geopolitical conflict, macro/policy shocks, and management responses that could affect active theses or portfolio posture.
 - Keep it evidence-first and non-canonical by default: generate review surfaces before any thesis-note mutation.
+- Use parallel agents as a **contract-building and QA layer**, not as a freeform research swarm.
 
 ## Current State
-- The project is defined but not active yet.
-- The current higher-priority chain is still Workflow 4B -> Workflow 4C because the control plane and finance note layer need honest synchronization first.
-- No trusted recurring source bundle, review window, or dashboard/workbook handoff contract is pinned down yet.
+- The project is activated through Workflow 16 rather than left as a vague future idea.
+- The old Workflow 4B -> 4C blocker is stale; those trust-hardening prerequisites are closed.
+- Cron already supports internal finance refresh windows, but no approved recurring research source bundle, intake packet contract, routing contract, or canonical freshness helper contract is live yet.
+- The approved posture is now clear: contracts first, then bounded pilot, then only later any schedule expansion.
 
 ## Last Meaningful Progress
 - Randall explicitly requested a dedicated research automation project on 2026-05-02.
-- The intended scope is clear: news freshness, geopolitical conflict monitoring, company-response tracking, and event detection that matters to existing theses or posture.
+- Workflow 16, 16A, and 16B were opened to carry the lane.
+- Workflow 17 and Workflow 18 were inserted ahead of execution so the automation layer starts from a tighter protocol and skills contract.
+- Randall set the new automation posture on 2026-05-03: use parallel agents to build and QA the contracts first, then run bounded research through those contracts.
 
 ## Outstanding
-- Define the first approved source bundle and ownership boundary.
-- Decide what belongs in cron, what remains a review surface, and what stays manual.
-- Define how findings should surface into dashboards, workbooks, weekly intelligence, and thesis-review queues without creating canonical-note drift.
-- Define stop lines for rumor-heavy, low-confidence, or duplicate event noise.
+- Define the **Source Bundle Contract**.
+- Define the **Intake Packet Contract**.
+- Define the **Routing / Promotion Contract**.
+- Define the **Canonical Freshness Patch Contract**.
+- Prove the system on a bounded pilot before broader rollout.
 
 ## Blockers / Trust Gaps
-- The finance note layer is not fully truth-synced yet.
 - Memory/index reliability is still degraded, so continuity must stay file-grounded.
 - No explicit source-quality contract exists yet for geopolitical/news monitoring.
-- This should not outrun the current trust-hardening and note-sync queue.
+- No approved routing / dashboard/workbook handoff contract exists yet.
+- No canonical freshness classifier or apply-helper contract exists yet for daily note updates.
+- This should not outrun note-owner boundaries just because the cron layer is already working.
 
 ## Next Action
-- After Workflow 4C stabilizes the top finance notes, open a bounded design pass for source bundle, review windows, stop lines, and dashboard/workbook handoff.
+- Hold execution until Workflow 17 and Workflow 18 close or are intentionally superseded.
+- Then run Workflow 16A in order:
+  1. Source Bundle Contract
+  2. Intake Packet Contract
+  3. Routing / Promotion Contract
+- Then run Workflow 16B:
+  4. Canonical Freshness Patch Contract
+  5. bounded pilot
+- Do not schedule autonomous canonical note mutation in the first pass.
 
 ## Key Files
 - `06. Playbooks/Automation Orchestration Protocol.md` - queue ownership and sequential auto-start rules
 - `06. Playbooks/Cron Job Protocol.md` - cron boundaries and proof requirements
+- `06. Playbooks/Research Unit Concept.md` - owner/truth-layer boundaries
 - `05. Intelligence/Weekly Intelligence Brief.md` - likely human-readable review surface
 - `01. Dashboards/Executive Brief.md` - likely dashboard-facing summary surface
-- `06. Playbooks/Project Continuity/Workflow 4C - Finance Chain Truth Sync Hardening.md` - current prerequisite chain
+- `03. Portfolio/Deployment Trigger Sheet.md` - canonical deployment owner surface
+- `06. Playbooks/Project Continuity/Workflow 16 - Research Automation and Canonical Freshness Hardening.md` - umbrella workflow contract
 
 ## Automation / Refresh Path
-- likely phase 1: scheduled evidence collection or intake packets only
-- likely phase 2: scheduled review surfaces for thesis drift / geopolitical risk / company response
-- out of bounds initially: autonomous thesis rewrites, autonomous portfolio judgment, or noisy alert spam
+- phase 1: source bundle contract
+- phase 2: intake packet contract
+- phase 3: routing / promotion contract
+- phase 4: canonical freshness patch contract
+- phase 5: bounded pilot
+- out of bounds initially: autonomous thesis rewrites, autonomous portfolio judgment, freeform multi-agent swarm debate, direct canonical-note mutation, or noisy alert spam

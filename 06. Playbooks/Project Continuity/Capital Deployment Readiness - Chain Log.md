@@ -8,10 +8,10 @@ Use this to support short operator handoffs and reliable `continue next pass` pr
 
 ## Current State
 - Project: `Capital Deployment Readiness`
-- Current phase: `Phase 3 complete — live bounded review surface implemented; next optional step is Phase 4 operating cadence`
-- Last completed pass: `Phase 3 — implementation / integration`
-- Next recommended pass: `Phase 4 — define the daily morning operator cadence around the new surface and the Trigger Sheet owner boundary`
-- Open operator decisions: whether to formalize Phase 4 now or keep the surface as an operator-only JSON artifact beneath the canonical Trigger Sheet; helper lanes still stay read-only for intake prep, thesis-drift packets, and contradiction QA
+- Current phase: `Closed — Phase 4 through Phase 7 completed; deployment-readiness lane is now bounded operating infrastructure with named reopen triggers`
+- Last completed pass: `Phase 7 — closeout and automation posture lock`
+- Next recommended pass: `None unless a named reopen trigger fires`
+- Open operator decisions: none required for normal use; revisit only if autonomy or visibility widening is intentionally requested
 
 ---
 
@@ -110,3 +110,86 @@ Use this to support short operator handoffs and reliable `continue next pass` pr
   - scheduled-window note mutation remains fail-closed; the new surface supports review but does not seize note ownership
 - Next pass:
   - `Phase 4 — operating cadence, if daily-use formalization is wanted`
+
+### 2026-05-03 — Sequential finish plan
+- Completed by: Veritas
+- Status: proposed
+- Objective: turn the post-Phase-3 optionality into an explicit bounded closeout sequence
+- Files changed:
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness - Chain Log.md`
+  - `06. Playbooks/IC Project Registry.md`
+- Validation:
+  - design / continuity pass only; no machine changes yet
+- Outcome:
+  - defined Phase 4 -> Phase 7 as the sequential completion path
+  - preserved the owner boundary that keeps canonical readiness judgment in the Trigger Sheet
+  - kept helper lanes read-only until a later low-risk gating phase proves otherwise
+- Next pass:
+  - `Phase 4 — operating cadence contract`
+
+### 2026-05-03 — Phase 4
+- Completed by: Veritas
+- Status: complete
+- Objective: define the exact daily morning operator cadence around the deployment-readiness surface and Trigger Sheet owner boundary
+- Files changed:
+  - `06. Playbooks/Deployment Readiness Morning Operating Cadence.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+- Validation:
+  - contract / continuity pass grounded against the live Trigger Sheet, run summaries, and deployment-readiness surface
+- Outcome:
+  - defined trust preflight, freshness preflight, state review order, Trigger Sheet cross-check, and escalation rules
+  - encoded that the machine surface is advisory beneath the Trigger Sheet and should be ignored when trust/freshness degrades materially
+- Next pass:
+  - `Phase 5 — read-only helper packet layer`
+
+### 2026-05-03 — Phase 5
+- Completed by: Veritas
+- Status: complete
+- Objective: define the smallest safe helper packet layer that improves review quality without creating canonical drift
+- Files changed:
+  - `06. Playbooks/Deployment Readiness Helper Packet Contract.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+- Validation:
+  - read-only helper boundary reviewed against the active owner surfaces and operator rules
+- Outcome:
+  - defined admission prep, thesis-drift / news-monitoring intake, and contradiction / QA packet contracts
+  - preserved packet-only outputs with no canonical mutation, no queue movement, and no portfolio conclusion authority
+- Next pass:
+  - `Phase 6 — surface integration and low-risk gating`
+
+### 2026-05-03 — Phase 6
+- Completed by: Veritas
+- Status: complete
+- Objective: decide how the deployment-readiness surface should integrate operationally without creating a second truth layer
+- Files changed:
+  - `06. Playbooks/Deployment Readiness Surface Integration Contract.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+- Validation:
+  - second-truth-layer risk reviewed against live NVDA divergence and the existing Trigger Sheet owner boundary
+- Outcome:
+  - kept the surface as JSON/operator infrastructure in v1
+  - declined dashboard/workbook promotion and declined any autonomous apply helper for the Trigger Sheet
+- Next pass:
+  - `Phase 7 — closeout and automation posture lock`
+
+### 2026-05-03 — Phase 7
+- Completed by: Veritas
+- Status: complete
+- Objective: close the project honestly with final automation posture, residue, and reopen triggers named
+- Files changed:
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness - Chain Log.md`
+  - `06. Playbooks/IC Project Registry.md`
+  - `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
+  - `08. Audits/Capital Deployment Readiness Closeout QA Audit - 2026-05-03.md`
+- Validation:
+  - hardening / QA pass run after closeout updates
+  - live validator outputs and deployment-readiness surface rechecked
+  - duplicate daily-memory residue removed with `daily_note_dedupe.py`
+- Outcome:
+  - closed the lane as bounded, review-gated operating infrastructure
+  - named unresolved residue and explicit reopen triggers
+  - kept the Trigger Sheet as owner-of-truth while preserving the deployment-readiness surface as advisory support
+- Next pass:
+  - `None unless a named reopen trigger fires`
