@@ -20,3 +20,21 @@
   - if skill governance requirements prove incomplete in live use
 - Next pass:
   - Workflow 18
+
+## 2026-05-03 - Post-closeout hardening pass
+- Outcome: Closed with hardening follow-up complete
+- Delivered:
+  - `06. Playbooks/Skill Quality Standard.md`
+  - explicit commit-checkpoint obligation in `06. Playbooks/Major Workflow Contract Standard.md`
+  - `08. Audits/Post-WF17-18 Hardening Pass Before Workflow 16 - 2026-05-03.md`
+- Validation:
+  - `openclaw skills check` passed
+  - WF16A / WF16B stale prerequisite wording was corrected before Workflow 16A opens
+- Checkpoint posture:
+  - final pre-WF16 hardening checkpoint taken in commit `c11904e` (`Workflow 17-18 hardening: governance audit and closure fixes`)
+- Residue:
+  - none inside Workflow 17 scope
+- Reopen triggers:
+  - if future major workflows stop honoring the unified contract or skill quality standard
+- Next pass:
+  - Workflow 16 readiness gate

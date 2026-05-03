@@ -6,8 +6,7 @@
 - Define the canonical freshness patch contract and prove it on a bounded pilot only after Workflow 16A finishes its contracts.
 
 ## Current Phase
-- Held behind Workflow 17 / Workflow 18 protocol hardening
-- Held behind Workflow 16A contract completion
+- Queued behind Workflow 16A contract completion
 - Design / trust-gate definition only
 
 ## Core rule
@@ -142,6 +141,6 @@ The pilot should prove:
 - the bounded pilot proves value before any scale-out
 
 ## Next Action
-- Wait for Workflow 17 / Workflow 18 closure and Workflow 16A contract completion.
+- Wait for Workflow 16A contract completion.
 - Then execute Phase 1 -> Phase 2 -> Phase 3 -> Phase 4 in order.
 - Stop immediately if the pilot starts behaving like a second truth layer.

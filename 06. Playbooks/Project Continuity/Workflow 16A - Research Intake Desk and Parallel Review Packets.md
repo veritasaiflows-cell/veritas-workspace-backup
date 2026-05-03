@@ -6,7 +6,7 @@
 - Define the first three research-control-plane contracts before any recurring research cron is activated.
 
 ## Current Phase
-- Held behind Workflow 17 / Workflow 18 protocol hardening
+- Queued behind Workflow 16 readiness gate as the next active implementation lane
 - Design / contract-definition only
 
 ## What this workflow owns
@@ -133,6 +133,6 @@ The routing contract must define:
 - no live recurring research cron before these contracts are approved
 
 ## Next Action
-- Wait for Workflow 17 / Workflow 18 closure.
+- Wait for Workflow 16 readiness gate to log the inherited standards cleanly.
 - Then execute Phase 1 -> Phase 2 -> Phase 3 in order.
 - Hand the approved routing / packet contracts to Workflow 16B.

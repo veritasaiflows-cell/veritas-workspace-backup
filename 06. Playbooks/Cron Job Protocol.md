@@ -101,7 +101,7 @@ If one of those is missing, the job is not fully proved yet.
 - **Control-plane drift**: queue, registry, and continuity note can disagree.
 - **False completion**: a workflow can look done before acceptance evidence exists.
 - **Unsafe overlap**: multiple jobs can compete for the same outputs.
-- **Runtime/session reliability debt**: Workflow 10 is still open, so control-surface state is not fully trustworthy.
+- **Runtime/session reliability debt**: Workflow 10 is closed, but runtime/session state is still advisory beneath artifact-level proof, especially when memory index health remains degraded.
 - **Memory-index breakage**: continuity search is degraded, so cron must rely on file truth over assumed memory recall.
 - **Automation theater**: jobs can keep moving without real readiness or clear trust boundaries.
 
@@ -109,7 +109,7 @@ If one of those is missing, the job is not fully proved yet.
 1. **Keep validating the day-job orchestrator live** before calling Workflow 4 complete.
 2. **Add a compact run-history surface** so cron results are easy to audit without reading raw chat.
 3. **Add failed-run follow-up logic** for blocked or error states.
-4. **Keep Workflow 10 active** until session/subagent lifecycle behavior is proven more reliable.
+4. **Keep runtime/session state subordinate to artifact-level proof** until lifecycle behavior remains boringly consistent over time.
 5. **Review overlap risk whenever a new cron is proposed** so one window still owns each output.
 6. **Promote only repeated stable patterns** into stronger automation; do not widen autonomy from a single clean run.
 

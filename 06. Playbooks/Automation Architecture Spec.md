@@ -194,7 +194,7 @@ Time zone for all live and planned schedules:
   - `06. Playbooks/Project Continuity/*.md`
   - `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
   - `06. Playbooks/IC Project Registry.md`
-  - `09. Archive/06. Project Continuity - Archived/`
+- `09. Archive/Project Continuity/`
 
 ### Earnings follow-up
 Default posture:

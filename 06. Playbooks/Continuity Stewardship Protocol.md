@@ -215,7 +215,7 @@ Never auto-archive these without explicit approval:
 
 ## Preferred archive destinations
 
-- completed continuity notes: `09. Archive\06. Project Continuity - Archived\`
+- completed continuity notes: `09. Archive/Project Continuity/`
 - completed control-plane protocol snapshots if ever needed: `09. Archive\05. Plans - Archived\`
 
 ## Noise-cleanup rule
