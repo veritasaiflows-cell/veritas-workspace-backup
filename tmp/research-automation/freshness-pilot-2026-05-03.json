@@ -1,0 +1,93 @@
+{
+  "as_of": "2026-05-03",
+  "workflow": "WF16B",
+  "pilot_scope": [
+    "NVDA timing path",
+    "JPM / GS live-board alignment",
+    "ETN near-earnings caution",
+    "GOOG / MSFT post-earnings freshness",
+    "oil / Hormuz sleeve"
+  ],
+  "results": [
+    {
+      "candidate_id": "wf16b-this-week-brkb-stale-2026-05-03",
+      "target_note": "01. Dashboards/This Week.md",
+      "stale_claim": "BRK.B today.",
+      "why_stale": "BRK.B reported on May 2, so 'today' is stale on May 3.",
+      "new_evidence": [
+        "05. Intelligence/Event Calendar.md",
+        "03. Portfolio/Deployment Trigger Sheet.md"
+      ],
+      "source_quality": "high",
+      "freshness_class": "mechanical date / elapsed-event wording",
+      "patch_scope": "single bullet refresh in weekly catalyst section",
+      "proposed_replacement": "BRK.B already reported May 2; post-print bench state is explicit, but the scorecard / next-date cleanup still needs completion.",
+      "judgment_impact": "none",
+      "affected_surfaces": [
+        "01. Dashboards/This Week.md"
+      ],
+      "required_downstream_sync": "none beyond direct note refresh",
+      "rollback_note": "restore original BRK.B wording if the patch proved inconsistent with owner surfaces",
+      "verifier_signoff": "manual main-session review required",
+      "main_approval_required": true,
+      "approval_status": "approved",
+      "apply_status": "applied_manually"
+    },
+    {
+      "candidate_id": "wf16b-this-week-gs-alignment-2026-05-03",
+      "target_note": "01. Dashboards/This Week.md",
+      "stale_claim": "JPM and NVDA are the only live in-band names.",
+      "why_stale": "Deployment Trigger Sheet, Executive Brief, Next Actions, and Portfolio Snapshot now carry GS as a deployable-now tactical secondary.",
+      "new_evidence": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "01. Dashboards/Executive Brief.md",
+        "01. Dashboards/Next Actions.md",
+        "03. Portfolio/Portfolio Snapshot.md"
+      ],
+      "source_quality": "high",
+      "freshness_class": "cross-surface contradiction against an already-approved owner surface",
+      "patch_scope": "mirror-surface alignment in weekly priority wording only",
+      "proposed_replacement": "JPM and NVDA remain the primary live in-band names, and GS is now a deployable-now tactical secondary at Tier 2 sizing rather than a watch-only mismatch.",
+      "judgment_impact": "possible",
+      "affected_surfaces": [
+        "01. Dashboards/This Week.md"
+      ],
+      "required_downstream_sync": "none if owner surfaces already agree",
+      "rollback_note": "restore original two-name wording if owner-surface review reverses GS tactical-secondary status",
+      "verifier_signoff": "manual main-session review required",
+      "main_approval_required": true,
+      "approval_status": "approved",
+      "apply_status": "applied_manually"
+    },
+    {
+      "candidate_id": "wf16b-nvda-no-apply-2026-05-03",
+      "target_note": "05. Intelligence/Event Calendar.md",
+      "stale_claim": "Likely May 20 print still lacks clean primary confirmation.",
+      "why_stale": "No stale claim detected; caution remains current and should stay explicit.",
+      "new_evidence": [
+        "05. Intelligence/Event Calendar.md",
+        "03. Portfolio/Deployment Trigger Sheet.md"
+      ],
+      "source_quality": "medium",
+      "freshness_class": "manual-only timing contradiction",
+      "patch_scope": "no patch",
+      "proposed_replacement": null,
+      "judgment_impact": "possible",
+      "affected_surfaces": [
+        "05. Intelligence/Event Calendar.md",
+        "03. Portfolio/Deployment Trigger Sheet.md"
+      ],
+      "required_downstream_sync": "none",
+      "rollback_note": "not applicable",
+      "verifier_signoff": "manual hold retained",
+      "main_approval_required": true,
+      "approval_status": "held_no_patch",
+      "apply_status": "not_applied"
+    }
+  ],
+  "guard_result": {
+    "auto_apply_allowed": false,
+    "canonical_mutation_allowed_by_automation": false,
+    "notes": "All applies in this pilot required manual main-session approval and were limited to low-risk freshness alignment in a mirror surface."
+  }
+}

@@ -19,7 +19,7 @@ The biggest late-week truth is simple: the Apr 29 FOMC / megacap cluster already
 ## Primary outcome
 
 Finish the week with a truthful visible board:
-- **JPM** and **NVDA** recognized as the live in-band names
+- **JPM** and **NVDA** recognized as the primary live in-band names, with **GS** now explicit as a deployable-now tactical secondary
 - **ETN** kept conditional only
 - **GOOG** and **MSFT** kept almost deployable only — post-earnings revalidation is explicit, but entry discipline still matters
 - **XOM** kept benched even after the May 1 report is interpreted
@@ -28,8 +28,9 @@ Finish the week with a truthful visible board:
 ## This week's priorities
 
 1. **Keep the active setup list narrow**
-   - **JPM** and **NVDA** are the only live in-band names.
-   - **ETN** remains pullback-only.
+   - **JPM** and **NVDA** are the primary live in-band names.
+   - **GS** is now a deployable-now tactical secondary at Tier 2 sizing, still subordinate to JPM.
+   - **ETN** remains conditional into the May 5 print.
    - No chase above bands.
 
 2. **Finish the post-event note sync**
@@ -42,7 +43,7 @@ Finish the week with a truthful visible board:
    - Interpreted does not equal requalified.
 
 4. **Process the immediate next catalysts without widening scope**
-   - **BRK.B** today.
+   - **BRK.B** already reported on May 2; post-print bench state is explicit, but the scorecard / next-date cleanup still needs completion.
    - **ETN / AMD / SMCI** and the rest of the May 4–8 cluster next week.
 
 5. **Respect the trust warnings**
@@ -54,7 +55,7 @@ Finish the week with a truthful visible board:
 
 By the end of this week, we should have:
 - the highest-risk visible notes speaking from current evidence, not from Apr 29 future tense
-- **JPM / NVDA / ETN** clearly framed as the real live action list
+- **JPM / NVDA / GS / ETN** clearly framed as the real live action list, with GS kept subordinate to JPM and ETN kept conditional into earnings
 - **GOOG / MSFT** clearly framed as almost deployable post-earnings names, while **XOM** stays honestly benched
 - the next catalyst week reduced to a manageable short list instead of another stale-note pileup
 

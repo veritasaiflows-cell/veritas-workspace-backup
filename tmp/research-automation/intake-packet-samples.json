@@ -1,0 +1,103 @@
+{
+  "as_of": "2026-05-03",
+  "workflow": "WF16A",
+  "packets": [
+    {
+      "packet_id": "wf16a-etn-earnings-caution-2026-05-03",
+      "event_title": "ETN earnings approaching May 5 print",
+      "event_time": "2026-05-03T11:00:00-07:00",
+      "window": "sunday",
+      "affected_scope": ["ETN", "industrials", "AI power sleeve"],
+      "source_tier": "Tier 1 + Tier 2 corroboration",
+      "primary_evidence": [
+        "05. Intelligence/Event Calendar.md",
+        "03. Portfolio/Deployment Trigger Sheet.md"
+      ],
+      "secondary_evidence": [
+        "01. Dashboards/Next Actions.md"
+      ],
+      "confidence": "high",
+      "materiality": "high",
+      "thesis_impact": "No thesis break; near-term decision is dominated by pre-print event risk rather than routine pullback math.",
+      "portfolio_posture_impact": "Maintain stand-aside posture into the print unless an explicit event-risk exception is chosen.",
+      "contradictions_or_uncertainty": "No direct contradiction. The question is routing and caution, not evidence quality.",
+      "recommended_routing": "thesis_review_queue",
+      "canonical_mutation_allowed": false,
+      "stop_line_triggered": false,
+      "next_required_review": "Human review before any pre-print posture exception."
+    },
+    {
+      "packet_id": "wf16a-goog-synced-no-route-2026-05-03",
+      "event_title": "GOOG post-earnings review already synced",
+      "event_time": "2026-05-03T11:00:00-07:00",
+      "window": "sunday",
+      "affected_scope": ["GOOG", "large-cap quality", "AI platform sleeve"],
+      "source_tier": "Tier 1 + owner-note confirmation",
+      "primary_evidence": [
+        "05. Intelligence/Event Calendar.md",
+        "03. Portfolio/Deployment Trigger Sheet.md"
+      ],
+      "secondary_evidence": [
+        "01. Dashboards/Executive Brief.md"
+      ],
+      "confidence": "high",
+      "materiality": "low",
+      "thesis_impact": "No new thesis delta. The report is already reflected in live notes.",
+      "portfolio_posture_impact": "No immediate route needed beyond existing almost-deployable / extended framing.",
+      "contradictions_or_uncertainty": "None material.",
+      "recommended_routing": "no_route",
+      "canonical_mutation_allowed": false,
+      "stop_line_triggered": false,
+      "next_required_review": "No new action; keep normal review cadence."
+    },
+    {
+      "packet_id": "wf16a-nvda-date-conflict-2026-05-03",
+      "event_title": "NVDA likely May 20 print still lacks clean primary confirmation",
+      "event_time": "2026-05-03T11:00:00-07:00",
+      "window": "sunday",
+      "affected_scope": ["NVDA", "AI infrastructure", "earnings calendar trust"],
+      "source_tier": "Tier 3 timing signal with owner-note caution",
+      "primary_evidence": [
+        "05. Intelligence/Event Calendar.md"
+      ],
+      "secondary_evidence": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "01. Dashboards/Next Actions.md"
+      ],
+      "confidence": "medium",
+      "materiality": "high",
+      "thesis_impact": "No thesis change. Timing trust remains capped until cleaner confirmation lands.",
+      "portfolio_posture_impact": "Keep deployment trust at caution when the next-earnings path becomes decision-critical.",
+      "contradictions_or_uncertainty": "Primary confirmation path is still missing; provider-only timing cannot carry canonical certainty.",
+      "recommended_routing": "no_route",
+      "canonical_mutation_allowed": false,
+      "stop_line_triggered": true,
+      "next_required_review": "Manual timing reconfirmation by the first post-close chain on 2026-05-13."
+    },
+    {
+      "packet_id": "wf16a-oil-hormuz-weekly-2026-05-03",
+      "event_title": "Oil / Hormuz sleeve remains follow-through-sensitive after XOM print",
+      "event_time": "2026-05-03T11:00:00-07:00",
+      "window": "sunday",
+      "affected_scope": ["XOM", "energy sleeve", "oil / LNG / shipping risk"],
+      "source_tier": "Tier 1 + current owner-note synthesis",
+      "primary_evidence": [
+        "05. Intelligence/Event Calendar.md",
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Technical Entry and Invalidation Sheet.md"
+      ],
+      "secondary_evidence": [
+        "01. Dashboards/Executive Brief.md"
+      ],
+      "confidence": "high",
+      "materiality": "medium",
+      "thesis_impact": "Energy thesis remains intact long term, but near-term follow-through is still noisy.",
+      "portfolio_posture_impact": "Keep XOM benched until post-print follow-through and energy context improve.",
+      "contradictions_or_uncertainty": "No contradiction; this is a weekly-review item, not a live action item.",
+      "recommended_routing": "weekly_intelligence",
+      "canonical_mutation_allowed": false,
+      "stop_line_triggered": false,
+      "next_required_review": "Sunday synthesis and next EIA read."
+    }
+  ]
+}

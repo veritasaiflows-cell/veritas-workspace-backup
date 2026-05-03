@@ -1,138 +1,113 @@
 # Workflow 16A - Research Intake Desk and Parallel Review Packets
 
 ## Objective
-- Stand up the review-first research intake desk for company news, geopolitics, macro/policy shocks, management response tracking, and thesis-drift detection.
-- Use parallel agents as a **contract-building and QA layer**, not as a freeform research swarm.
-- Define the first three research-control-plane contracts before any recurring research cron is activated.
+- Stand up the review-first intake layer for company news, macro/policy shifts, geopolitical/energy developments, and thesis-drift detection.
+- Define the three contracts that make research automation useful without turning it into a noisy second truth layer.
+- Hand approved packet/routing contracts to Workflow 16B without opening recurring research cron early.
 
-## Current Phase
-- Queued behind Workflow 16 readiness gate as the next active implementation lane
-- Design / contract-definition only
+## Current State
+- **Complete** on 2026-05-03.
+- Source bundle, intake packet, and routing / promotion contracts are approved.
+- Sample route / no-route packets exist.
+- Canonical mutation remains out of scope and was not opened here.
 
-## What this workflow owns
-1. **Source Bundle Contract**
-2. **Intake Packet Contract**
-3. **Routing / Promotion Contract**
+## Last Meaningful Progress
+- Added the full preflight and major-workflow contract skeleton to this note before implementation.
+- Approved the source bundle, intake packet, and routing/promotion artifacts.
+- Wrote sample packets that show route, no-route, and stop-line outcomes.
+- Passed the approved handoff packet to Workflow 16B.
 
-This workflow does **not** own canonical note mutation.
-That belongs to Workflow 16B and remains gated even there.
+## Scope
+- Source Bundle Contract
+- Intake Packet Contract
+- Routing / Promotion Contract
+- sample packet proof for route / no-route / stop-line behavior
+- explicit owner boundaries and stop lines for the intake lane
 
-## Operating posture
-- Main Veritas session remains the manager, integrator, and trust owner.
-- Worker lanes are role-bound and isolated.
-- Workers can propose, challenge, and QA contracts or packet outputs.
-- Workers do not mutate canonical notes.
-- Workers do not move queue state.
-- Workers do not publish final verdicts.
-- Workers do not become a standing freeform research department.
+## Out of Scope
+- canonical note mutation
+- recurring research cron enablement
+- autonomous thesis maintenance
+- portfolio-posture changes from packet output alone
+- freeform helper-lane research swarming
 
-## Phase 1 - Source Bundle Contract
-### Parallel roles
-| Agent | Job |
-| --- | --- |
-| Source-quality agent | Propose approved source tiers across filings, IR, earnings calls/transcripts, trusted financial media, macro data, and geopolitical sources |
-| Coverage-gap agent | Check whether the bundle misses important sources by ticker, sector, macro sleeve, or geopolitical risk |
-| Noise/risk agent | Define excluded sources, rumor rules, duplicate-event handling, and stop lines |
-| Workflow integration agent | Decide what belongs in cron, what stays manual, and what can surface into dashboard / workbook / weekly brief review artifacts |
+## Preflight / Entry Checklist
+- [x] Workflow 16 readiness gate was logged complete.
+- [x] Governance baseline remained committed and stable enough to proceed.
+- [x] `Major Workflow Contract Standard.md` and `Spawn and Closeout Governance Matrix.md` were treated as controlling references.
+- [x] The lane remained contract-building and QA only.
+- [x] No recurring research cron was enabled.
+- [x] Canonical mutation remained default-no.
+- [x] Owner boundaries remained explicit for dashboard, workbook, weekly brief, thesis-review queue, and canonical notes.
+- [x] Helper output remained bounded and could not publish final truth.
 
-### Contract output
-The source bundle contract must answer:
-- approved source tiers
-- approved sources by category
-- blocked / low-confidence sources
-- refresh cadence by source type
-- ticker / macro sleeve coverage map
-- what belongs in cron
-- what requires manual review
-- what is only allowed into review packets
-- stop lines for rumor-heavy, low-confidence, duplicate, or unsourced events
+## Execution Posture
+- **main-session controlled**
+- helper lanes allowed only as **spawn read-only** or **spawn distinct-output** for bounded contract challenge / QA
+- no helper lane authority over queue movement, canonical mutation, or final verdicts
 
-### Best first version
-Start narrow:
-- company filings / IR
-- earnings transcripts
-- major financial news
-- macro calendar / Fed / rates / inflation
-- oil and geopolitical risk sources
-- sector-specific sources for active names only
+## Owner Layer
+- source policy and routing doctrine -> playbook contracts under `06. Playbooks/`
+- sample packet artifacts -> `tmp/research-automation/`
+- routing surfaces -> dashboard watch, weekly intelligence, thesis-review queue, freshness-patch candidate only
+- canonical notes -> not owned here
 
-Do not try to build the full research universe at once.
+## Review Window
+- same-session contract build and QA for this pass
+- intended downstream packet windows after approval: premarket, post-close, Sunday, and later explicit event-driven manual review
+- no recurring packet schedule enabled here
 
-## Phase 2 - Intake Packet Contract
-### Parallel roles
-| Agent | Job |
-| --- | --- |
-| Event detector | Identify what happened |
-| Materiality scorer | Decide whether it matters to active theses, watchlist names, or portfolio posture |
-| Thesis-drift agent | Compare the event against existing thesis assumptions |
-| Evidence QA agent | Check source quality, conflicts, duplicates, and missing context |
-| Routing agent | Decide where the packet should go: ignore, weekly brief, dashboard, thesis-review queue, or patch candidate |
+## Stop Lines
+Stop instead of routing when:
+- evidence is rumor-heavy or unattributed
+- primary support is missing on a timing-critical claim
+- duplicate/circular reporting is being mistaken for confirmation
+- the packet would smuggle in a thesis or deployment judgment
+- owner-surface contradiction cannot be resolved safely
+- degraded macro/policy context makes the interpretation unsafe
 
-### Required intake packet fields
-Every packet must include:
-- event title
-- date / time
-- affected ticker(s), sleeve, or macro theme
-- source tier
-- primary evidence
-- secondary evidence
-- confidence level
-- materiality level
-- thesis impact
-- portfolio posture impact
-- contradictions / uncertainty
-- recommended routing
-- canonical mutation allowed? **default: no**
-- stop line triggered? yes / no
-- next required human or agent review
+## Surface / Handoff Posture
+- dashboard / workbook / weekly brief -> review surfaces only
+- thesis-review queue -> decision-intake surface only
+- freshness patch candidate -> proposal-only handoff to WF16B
+- canonical notes -> out of bounds here
 
-## Phase 3 - Routing / Promotion Contract
-### Routing logic
-Use this baseline:
-- low materiality + high confidence -> archive / weekly digest only
-- medium materiality -> weekly intelligence or dashboard watch item
-- high materiality -> thesis-review queue
-- high materiality + stale canonical note -> canonical freshness patch candidate
-- low confidence / rumor-heavy -> stop line, no promotion
+## Canonical Mutation Posture
+- **disallowed** in this workflow
+- packet output may recommend `freshness_patch_candidate`
+- packet output may not apply changes or imply approval
 
-### Required handoff decisions
-The routing contract must define:
-- what can appear in the dashboard as a watch/review item
-- what can flow into workbook staging
-- what belongs only in weekly intelligence
-- what escalates to thesis-review queue
-- what can become a canonical freshness patch candidate
-- what must stop instead of routing anywhere
+## Acceptance Gates
+Workflow 16A closes honestly only if all are true:
+1. `06. Playbooks/Research Automation Source Bundle Contract.md` exists and is explicit about tiers, blocked sources, cadence, cron boundaries, and stop lines.
+2. `06. Playbooks/Research Automation Intake Packet Contract.md` exists and defines the packet schema, confidence/materiality scales, and stop lines.
+3. `06. Playbooks/Research Automation Routing and Promotion Contract.md` exists and keeps routing distinct from truth mutation.
+4. `tmp/research-automation/intake-packet-samples.json` exists and contains route, no-route, and stop-line examples.
+5. Workflow 16B can consume the outputs without needing a second contract-definition pass just to understand what a packet means.
+6. A bounded QA audit names remaining residue honestly.
 
-## Safe automation boundary
-- scheduled source pulls or fetched packet assembly
-- isolated review runs that write packet artifacts only
-- contradiction scans and escalation tags
-- synthesis prep for the main session
+## Exit / Closeout Checklist
+- [x] All three contract artifacts created.
+- [x] Sample packets created.
+- [x] Route / no-route / stop-line behavior shown explicitly.
+- [x] Owner boundaries kept fail-closed.
+- [x] Canonical mutation remained out of scope.
+- [x] Handoff to Workflow 16B made explicit.
+- [ ] Checkpoint posture finalized.
 
-## Still human-gated
-- final thesis impact judgment
-- note promotion into watchlist / coverage / portfolio layers
-- source disputes that require manual adjudication
-- any recommendation that materially changes capital posture
-- any decision to mutate canonical notes
+## Checkpoint Decision
+- **pending final checkpoint action during same-session closeout**
 
-## Review windows to define
-- premarket
-- post-close
-- Sunday weekly synthesis
-- event-driven ad hoc windows only if explicitly approved later
+## Next Pass
+- Workflow 16B consumes the approved packet/routing contracts and closes the freshness-patch contract plus bounded pilot.
 
-## Acceptance condition
-- one approved source bundle
-- one packet schema
-- one routing / promotion contract
-- one escalation taxonomy with stop lines
-- one orchestrator-owned synthesis path
-- no canonical note mutation in the first live version
-- no live recurring research cron before these contracts are approved
+## Next 1-2 Adjacent Candidate Workflows
+1. `Workflow 16B - Canonical Freshness Sync and Gated Note Update Helpers`
+2. Future reopen only if new source categories or routing surfaces are intentionally added
 
-## Next Action
-- Wait for Workflow 16 readiness gate to log the inherited standards cleanly.
-- Then execute Phase 1 -> Phase 2 -> Phase 3 in order.
-- Hand the approved routing / packet contracts to Workflow 16B.
+## Key Files
+- `06. Playbooks/Research Automation Source Bundle Contract.md`
+- `06. Playbooks/Research Automation Intake Packet Contract.md`
+- `06. Playbooks/Research Automation Routing and Promotion Contract.md`
+- `tmp/research-automation/intake-packet-samples.json`
+- `08. Audits/Workflow 16 Family Research Automation QA Audit - 2026-05-03.md`
