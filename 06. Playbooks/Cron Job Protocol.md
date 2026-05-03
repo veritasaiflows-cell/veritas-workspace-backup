@@ -4,6 +4,7 @@
 Keep scheduled OpenClaw jobs useful, bounded, and honest.
 
 Pair this protocol with `06. Playbooks/Spawn and Closeout Governance Matrix.md` when a job might spawn helper lanes or produce closeout claims.
+Use that file as the canonical spawn decision source rather than treating this document as an independent spawn standard.
 
 ## Job Card Format
 Every cron job should define:

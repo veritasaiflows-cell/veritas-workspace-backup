@@ -4,6 +4,9 @@
 
 Make spawn decisions, helper-lane authority, executive-summary timing, and workflow closeout rules explicit enough that major workflows do not depend on habit or guesswork.
 
+This is the canonical spawn / closeout governing source.
+Other protocol docs may keep short local summaries, but they should point here rather than compete with it.
+
 ## Core rule
 
 Helper lanes support.
@@ -28,6 +31,19 @@ They are **not** a freeform research swarm and do not own final truth.
 | Blocked / operator-gated | human judgment, trust ambiguity, auth/network/destructive action, unresolved owner boundary | note updates that record the blocker | fake progress theater |
 
 If a workflow cannot be classified cleanly, stop and default to blocked or main-session serial work until clarified.
+
+## Single spawn decision tree
+
+1. Is the blocker human judgment, unresolved trust, auth/network/destructive action, or owner ambiguity?
+   - yes -> **Blocked / operator-gated**
+2. Is final canonical judgment or shared semantic interpretation central?
+   - yes -> **Main-session only**
+3. Is the helper output evidence, audit, contradiction, inventory, or contract challenge only?
+   - yes -> **Spawn read-only**
+4. Can a helper produce a distinct artifact without touching the same owner surface as another lane?
+   - yes -> **Spawn distinct-output**
+5. If none of the above are clearly true:
+   - stop and treat the workflow as blocked or serial until clarified
 
 ## Main-session exception rule
 
@@ -91,6 +107,8 @@ Before closing a major workflow:
 7. name the next pass
 8. name up to two adjacent candidates when useful
 
+Use `06. Playbooks/Workflow Closeout Artifact Standard.md` as the closing artifact contract.
+
 ## Checkpoint rule
 
 Meaningful workflow closeout should not leave checkpoint posture implicit.
@@ -113,6 +131,10 @@ At closeout, always name:
 - and, when useful, 1-2 bounded adjacent workflow candidates
 
 Do not open them automatically unless the queue already approves the chain.
+
+## Skills governance companion rule
+
+Use `06. Playbooks/Skills Governance Index.md` and `06. Playbooks/Skill Quality Standard.md` as the active governance surfaces for the workspace skill layer.
 
 ## Default posture for current research automation lane
 

@@ -7,6 +7,7 @@ This protocol promotes the live operating posture into a first-class control doc
 
 For major workflow structure, pair this document with `06. Playbooks/Major Workflow Contract Standard.md`.
 For spawn / closeout governance, pair it with `06. Playbooks/Spawn and Closeout Governance Matrix.md`.
+For closeout artifacts, pair it with `06. Playbooks/Workflow Closeout Artifact Standard.md`.
 
 ## Core role posture
 Veritas remains the:
@@ -31,6 +32,9 @@ Child lanes should do the bounded implementation, inspection, or draft-prep work
 The main lane should do the handoff packet, scope control, live control-plane updates, QC judgment, and queue movement.
 
 For early automation lanes, default helper scope is contract-building, audit / QA, contradiction review, or distinct-output prep unless a workflow contract explicitly widens authority.
+
+The canonical spawn decision source is `06. Playbooks/Spawn and Closeout Governance Matrix.md`.
+This document keeps the orchestration posture, not a competing spawn standard.
 
 Main-session exceptions are allowed only when one of these is true:
 - the edit is trivial and bounded

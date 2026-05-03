@@ -99,6 +99,24 @@ Every meaningful workflow closeout must make an explicit checkpoint decision:
 
 If deferred, say why and what event should trigger it.
 
+## Commit checkpoint obligation
+
+When a major workflow changes:
+- protocol
+- skills
+- automation governance
+- control-plane architecture
+- or a meaningful multi-file execution contract
+
+the workflow should not open the next major lane on an unstable uncommitted baseline.
+
+Before the chain advances, one of these must be explicit:
+- `commit checkpoint taken`
+- `commit checkpoint deferred` with reason
+- `commit checkpoint not needed` with reason
+
+Default expectation for high-trust sequential chains: **commit checkpoint taken**.
+
 ## Next Pass
 
 Each major workflow must end with one concrete next action.
@@ -169,6 +187,10 @@ If canonical mutation is allowed at all, the workflow must name:
 - reusable procedure -> playbook or skill
 - durable cross-workflow standard -> this document and linked protocol docs
 - daily state change -> `memory/YYYY-MM-DD.md`
+
+Related standards:
+- `06. Playbooks/Skill Quality Standard.md`
+- `06. Playbooks/Workflow Closeout Artifact Standard.md`
 
 ## Status minimum for live control surfaces
 

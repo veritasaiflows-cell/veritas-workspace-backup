@@ -25,6 +25,8 @@
 ## Phase 2 Deliverable - Governance Matrix
 Landed:
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md`
+- `06. Playbooks/Workflow Closeout Artifact Standard.md`
+- `06. Playbooks/Skills Governance Index.md`
 
 The matrix now standardizes:
 - main-session only
@@ -36,6 +38,7 @@ The matrix now standardizes:
 - closeout checklist
 - checkpoint rule
 - next-work recommendation rule
+- canonical spawn decision source / decision tree
 
 It also makes the current automation rule explicit:
 - early research automation helper lanes are for **contract-building, QA, contradiction review, and bounded packet prep**, not freeform research swarm behavior
@@ -46,6 +49,7 @@ Reinforced in the workflow-driving skills:
 - closeout requires explicit integration and checkpoint posture
 - major workflow closeout should name the next pass and bounded adjacent candidates when useful
 - early automation lanes default to contract-building / QA unless the workflow contract explicitly widens authority
+- the workspace skill layer now has a live governance index and no-skill-sprawl trigger
 
 ## Phase 4 Deliverable - Control-Surface Integration and QA
 Updated live protocol / control documents:
@@ -62,6 +66,7 @@ Updated live protocol / control documents:
 - `openclaw skills check` passed after the skill/governance updates.
 - The live governance layer now explicitly blocks executive-summary theater when acceptance, integration, checkpoint posture, or residual-risk naming is missing.
 - Workflow 16 is now unblocked to a readiness-gate posture only; no research cron or canonical-note helper execution was opened prematurely.
+- A standalone closeout artifact standard and skills governance index now exist instead of relying on convention.
 
 ## Checkpoint Decision
 - **Checkpoint taken after Workflow 17 and Workflow 18 together** as one governance/skills hardening baseline.
@@ -77,7 +82,10 @@ Updated live protocol / control documents:
 ## Key Files
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md`
 - `06. Playbooks/Major Workflow Contract Standard.md`
+- `06. Playbooks/Workflow Closeout Artifact Standard.md`
+- `06. Playbooks/Skills Governance Index.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`
 - `06. Playbooks/OpenClaw Parallel Work Plan.md`
 - `06. Playbooks/Cron Job Protocol.md`
 - `06. Playbooks/Project Continuity/Workflow 16 - Research Automation and Canonical Freshness Hardening.md`
+- `06. Playbooks/Project Continuity/Workflow 18 - Spawn, Closeout, and Skills Governance Hardening - Chain Log.md`

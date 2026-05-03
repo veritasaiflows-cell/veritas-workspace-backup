@@ -27,6 +27,7 @@
 ## Phase 2 Deliverable - Standard Contract
 Landed:
 - `06. Playbooks/Major Workflow Contract Standard.md`
+- `06. Playbooks/Skill Quality Standard.md`
 
 The standard now requires major workflows to make explicit:
 - preflight / entry checklist
@@ -34,6 +35,7 @@ The standard now requires major workflows to make explicit:
 - acceptance gates
 - exit / closeout checklist
 - checkpoint decision
+- commit checkpoint obligation
 - next pass
 - next 1-2 adjacent candidate workflows when useful
 
@@ -56,6 +58,7 @@ Updated:
 Skill hardening added or reinforced:
 - explicit owner/review-window/stop-line posture for major automation work
 - checkpoint visibility
+- commit-checkpoint visibility for major governance work
 - next-pass expectations
 - closeout honesty
 - helper-lane limits for early automation work
@@ -73,6 +76,7 @@ Updated live protocol / control documents:
 - `openclaw skills check` passed after the skill updates.
 - Live protocol docs now reference the major-workflow contract standard instead of relying only on distributed implied rules.
 - Removed-model routing residue was tightened in the live protocol layer so workflow guidance no longer depends on `gpt-5.3-codex` being available.
+- A standalone skill quality standard now exists instead of leaving skill trust requirements implied.
 
 ## Checkpoint Decision
 - Workflow-level checkpoint was deferred until Workflow 18 closed, because both passes touched the same governance surface and a combined checkpoint is cleaner than splitting one protocol-hardening change into two commits.
@@ -86,8 +90,10 @@ Updated live protocol / control documents:
 
 ## Key Files
 - `06. Playbooks/Major Workflow Contract Standard.md`
+- `06. Playbooks/Skill Quality Standard.md`
 - `06. Playbooks/Continuity Stewardship Protocol.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`
 - `06. Playbooks/OpenClaw Parallel Work Plan.md`
 - `06. Playbooks/Cron Job Protocol.md`
+- `06. Playbooks/Project Continuity/Workflow 17 - Sequential Workflow Contract and Skills Hardening - Chain Log.md`
 - skill files listed above

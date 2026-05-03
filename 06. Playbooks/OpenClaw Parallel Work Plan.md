@@ -44,6 +44,7 @@ Queue governance is part of orchestration, not admin overhead.
 The workflow queue must be kept in sync with real findings, real blockers, and real prerequisites as chains advance.
 Use `06. Playbooks/Automation Orchestration Protocol.md` as the control note for queue freshness, category labels, and parallel-posture decisions.
 Use `06. Playbooks/Spawn and Closeout Governance Matrix.md` when deciding whether helper lanes are read-only, distinct-output, or blocked.
+Use `06. Playbooks/Skills Governance Index.md` to keep the skill layer auditable instead of letting lane guidance drift inside skills alone.
 
 ## Queue freshness and category model
 

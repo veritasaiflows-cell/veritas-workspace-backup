@@ -15,8 +15,9 @@ Never let helper lanes publish final queue state alone.
 For early automation lanes, default helper scope to contract-building, audit, contradiction, or QA unless the workflow contract explicitly widens authority.
 
 ## Role routing
-- Use **Gemini Pro** as preferred IC for implementation, scripts, and broad research.
-- Use **Claude** for harder judgment-heavy review and high-stakes challenge passes.
+These external lane references are operator-maintained posture, not permanent truth. Validate live availability before use.
+- Use **Gemini Pro** as preferred IC for implementation, scripts, and broad research when that lane is actually available.
+- Use **Claude** for harder judgment-heavy review and high-stakes challenge passes when that lane is actually available.
 - Use spawned OpenClaw subagents for bounded file-grounded implementation.
 
 ## Effort posture

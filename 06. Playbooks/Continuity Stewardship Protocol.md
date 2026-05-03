@@ -8,6 +8,7 @@ This protocol is for scheduled stewardship.
 It is not permission for broad autonomous rewriting.
 
 For any major workflow, pair this protocol with `06. Playbooks/Major Workflow Contract Standard.md`.
+For canonical spawn / closeout decisions, defer to `06. Playbooks/Spawn and Closeout Governance Matrix.md`.
 
 ## Stewardship objective
 
