@@ -37,10 +37,10 @@ Boundary:
    - **ETN, AMD, SMCI, EOG, LDOS, ET, MPLX, WMB, PLTR, KTOS, LNG** hit next week.
    - Keep the update path evidence-first and selective.
 
-6. **Respect the trust warnings instead of ignoring them**
-- 17 entry bands still need review.
-   - Timing-sensitive earnings dates still need direct confirmation when they matter to a decision.
-   - Policy expectations still carry manual dependencies.
+6. **Respect the remaining trust limits instead of inventing new ones**
+   - Dashboard validation is clean again, but execution freshness still stays usable-with-caution.
+   - Keep direct timing confirmation focused on names where it still matters, led by NVDA.
+   - Treat policy expectations as primary-sourced but still approximate, not as a manually maintained truth layer.
 
 ## If there are only 15 minutes
 
@@ -68,3 +68,4 @@ If a task does not improve market understanding, watchlist quality, portfolio di
 ## Last updated
 
 - 2026-05-02 — refreshed against 2026-05-01 close. Updated the live list to JPM and NVDA in band, ETN still conditional, XOM interpreted but still benched, and GOOG/MSFT now revalidated but still not deployable.
+- 2026-05-03 — Workflow 12 trust repair narrowed the live caution set: removed stale manual-policy wording and broad date-mismatch phrasing in favor of specific remaining trust limits.

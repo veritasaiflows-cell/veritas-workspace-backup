@@ -32,7 +32,7 @@ Script-backed prep path:
 ### 1) Weekly posture
 
 - **Posture:** Selective risk-on, but with reduced confidence.
-- **Confidence level:** Reduced. The machine layer is fresh through the 2026-05-01 close, but dashboard validation still carries 11 warnings, 17 entry bands need review, and timing-sensitive earnings/date mismatches remain unresolved.
+- **Confidence level:** Usable with caution. The machine layer is fresh through the 2026-05-01 close and the dashboard validation surface is clean again, but policy interpretation still uses a simplified futures approximation and a narrow earnings-timing residue remains.
 - **Operating stance:** Keep the active list narrow. **JPM** and **NVDA** are now in band. **ETN** remains pullback-only. **GOOG** and **MSFT** are now explicitly revalidated, but still not deployable because GOOG is extended above band and MSFT still needs cleaner repair. **XOM** is interpreted now, but still not requalified.
 - **What changed from earlier in the week:** The Apr 29 FOMC event is behind us, the Fed target remains 3.50%–3.75%, oil is higher again (Brent 108.17 / WTI 101.94 as of May 1), **JPM** and **NVDA** have moved into band, and **XOM** has shifted from post-report review to interpreted-but-benched.
 
@@ -42,9 +42,9 @@ Script-backed prep path:
 
 - **Rates / curve:** 2Y 3.88% as of 2026-04-30, 10Y 4.378% as of 2026-05-01, 2s10s +49.8 bps, 3m-10y +80.3 bps. The curve remains positively sloped, but policy is still restrictive.
 - **Inflation / energy posture:** Brent 108.17 and WTI 101.94 keep energy pressure alive. No fresh CPI/PCE interpretation was added in this pass, so treat the inflation view as still late-cycle and cautionary rather than cleanly improving.
-- **Growth / liquidity posture:** The live machine layer still supports a resilient-growth baseline, not a full risk-off regime. Credit is benign and breadth is recovering, but this is not a clean all-clear because the policy layer still has manual dependencies.
+- **Growth / liquidity posture:** The live machine layer still supports a resilient-growth baseline, not a full risk-off regime. Credit is benign and breadth is recovering, but this is not a clean all-clear because the policy layer is still approximate even though it is no longer manually maintained by default.
 - **Volatility / sentiment:** SPX 7,230.12 and VIX 16.99 keep the regime in selective risk-on territory, not fear. That supports discipline, not chasing.
-- **Confidence limits:** policy expectations remain partly manual, direct IR confirmation is still needed for timing-sensitive earnings-date changes, and true pre-market pricing was unavailable from the current yfinance responses.
+- **Confidence limits:** policy expectations remain model-simplified, direct confirmation is still most important for the unresolved NVDA timing path, and true pre-market pricing was unavailable from the current yfinance responses.
 
 ---
 
@@ -96,7 +96,7 @@ Script-backed prep path:
 ### 6) Risk focus for the week
 
 - **Top process risk:** 17 entry-band review warnings are still live. Do not act as if every written band is equally clean.
-- **Top catalyst risk:** timing-sensitive earnings/date mismatches still need direct confirmation if they matter to a decision.
+- **Top catalyst risk:** the unresolved NVDA timing path still needs cleaner confirmation if it becomes decision-critical.
 - **Top market risk:** energy/inflation pressure remains elevated while policy expectations still require manual caution.
 - **Top position risk:** treating **JPM** and **NVDA** being in band as permission to ignore size, crowding, or concentration discipline.
 
@@ -130,7 +130,7 @@ Script-backed prep path:
 
 ## Freshness and refresh policy
 
-- **Last updated:** 2026-05-02
+- **Last updated:** 2026-05-03
 - **Data as of:** 2026-05-01 close
 - **Next mandatory refresh:** after the BRK.B result is assessed and again after the ETN / AMD / SMCI cluster next week
 - **Refresh policy:** update posture, catalyst map, and deployment map when a result or price move materially changes the decision surface. Do not rewrite for noise.

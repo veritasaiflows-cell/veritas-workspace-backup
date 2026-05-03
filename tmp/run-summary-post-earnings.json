@@ -1,8 +1,8 @@
 {
   "window": "post-earnings",
-  "run_id": "20260502T150347Z_post-earnings",
-  "generated_at_utc": "2026-05-02T15:03:47Z",
-  "status": "warning",
+  "run_id": "20260503T140445Z_post-earnings",
+  "generated_at_utc": "2026-05-03T14:04:45Z",
+  "status": "ok",
   "stop_line": false,
   "owner": {
     "entrypoint": "python scripts/run_finance_refresh_chain.py post-earnings",
@@ -14,8 +14,11 @@
     "duration_seconds": 5
   },
   "execution": {
-    "chain_status": "running",
-    "chain_exit_code": null,
+    "chain_status": "ok",
+    "chain_status_raw": "ok",
+    "chain_status_normalized": false,
+    "chain_status_reason": "runtime status already terminal",
+    "chain_exit_code": 0,
     "recovery_triggered": false,
     "recovery_reason": "",
     "failed_step": null,
@@ -24,9 +27,9 @@
   },
   "validation": {
     "acceptance_passed": true,
-    "dashboard_validation_status": "warning",
+    "dashboard_validation_status": "clean",
     "critical": 0,
-    "warning": 11,
+    "warning": 0,
     "info": 0,
     "exec_freshness": "usable_with_caution"
   },
@@ -34,57 +37,45 @@
     "command_center": {
       "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-02T15:03:46Z"
+      "generated_at_utc": "2026-05-03T04:42:37Z"
     },
     "dashboard_validation": {
-      "status": "partial",
+      "status": "ok",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-02T15:03:46Z"
+      "generated_at_utc": "2026-05-03T13:55:21Z"
     },
     "dashboard_acceptance": {
       "status": "ok",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-02T15:03:46Z"
+      "generated_at_utc": "2026-05-03T13:55:22Z"
     },
     "workbook_exports": {
-      "status": "partial",
+      "status": "ok",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-02T15:03:47.000183+00:00"
+      "generated_at_utc": "2026-05-02T23:14:54.532266+00:00"
     },
     "post_earnings_prep": {
       "status": "partial",
       "path": "tmp/post-earnings-prep.json",
-      "generated_at_utc": "2026-05-02T15:03:45.774367+00:00"
+      "generated_at_utc": "2026-05-02T23:14:53.327830+00:00"
     },
     "post_earnings_note_targets": {
       "status": "partial",
       "path": "tmp/post-earnings-note-targets.json",
-      "generated_at_utc": "2026-05-02T15:03:45.821304+00:00"
+      "generated_at_utc": "2026-05-02T23:14:53.376839+00:00"
     }
   },
-  "warnings": [
-    "17 entry band(s) need review: JPM, GOOG, LMT, BRK.B, XOM, AMZN, VRT, RTX, CAT, CVX, PLTR, KTOS, SLV, AMD, LNG, TLT, SMCI. Run apply_band_update.py to review and apply proposed levels.",
-    "AMD appears in deployment flow despite non-daily coverage tier None",
-    "CVX appears in deployment flow despite non-daily coverage tier event",
-    "LNG appears in deployment flow despite non-daily coverage tier None",
-    "PLTR appears in deployment flow despite non-daily coverage tier event",
-    "CVX is in band but deployment state remains WATCH",
-    "GS is in band but deployment state remains WATCH",
-    "PLTR is in band but deployment state remains WATCH",
-    "One or more timing-critical earnings dates changed and still need direct confirmation",
-    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
-    "Policy expectations still rely on manual target-range constants and require explicit review."
-  ],
+  "warnings": [],
   "blockers": [],
   "fallback_state": {
-    "used": true,
-    "reason": "One or more timing-critical earnings dates changed and still need direct confirmation; Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.; Policy expectations still rely on manual target-range constants and require explicit review."
+    "used": false,
+    "reason": ""
   },
   "downstream": {
-    "command_center_badge": "warn",
-    "workbook_trust_grade": "warning",
+    "command_center_badge": "ok",
+    "workbook_trust_grade": "clean",
     "presentation_allowed": false,
     "canonical_note_mutation_allowed": false,
-    "canonical_note_mutation_reason": "dashboard validation has 11 warning(s)"
+    "canonical_note_mutation_reason": "scheduled windows remain fail-closed for canonical note mutation in v1"
   }
 }

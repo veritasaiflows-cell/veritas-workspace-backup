@@ -191,6 +191,21 @@ Minimum handshake:
 
 Do not leave completed lane output waiting unintegrated.
 
+## Runtime proof rule
+Runtime/session state is advisory until it earns boring consistency.
+
+Do not treat any of these alone as completion proof:
+- a child/session looking finished in the control surface
+- an async exec event with only exit code or terminal fragments
+- a run summary whose raw chain state is still mid-finalizer
+- a helper command that crossed an interactive auth boundary without explicit reconciliation
+
+Completion proof should prefer:
+1. required artifact existence
+2. explicit owner-surface state
+3. normalized run-summary state when the normalization rule is documented
+4. runtime/session state as supporting evidence only
+
 ## Queue movement rule
 Keep momentum without theater.
 

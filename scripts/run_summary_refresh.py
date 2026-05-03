@@ -163,6 +163,34 @@ def skipped_steps(chain_execution: dict[str, Any] | None) -> list[dict[str, Any]
     return [step for step in steps if step.get("status") == "skipped_after_failure"]
 
 
+def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str, str, bool]:
+    raw_status = str((chain_execution or {}).get("status") or "unknown")
+    steps = (chain_execution or {}).get("steps") or []
+    recovery = (chain_execution or {}).get("recovery") or {}
+    if raw_status in {"ok", "failed", "completed_with_recovery", "unknown"}:
+        return raw_status, "runtime status already terminal", False
+
+    running_steps = [step for step in steps if step.get("status") == "running"]
+    pending_steps = [step for step in steps if step.get("status") == "pending"]
+    blocking_unfinished = [
+        step
+        for step in steps
+        if step.get("status") not in {"ok", "failed", "skipped_after_failure", "running"}
+    ]
+
+    if (
+        len(running_steps) == 1
+        and not pending_steps
+        and not blocking_unfinished
+        and str(running_steps[0].get("script") or "") == "run_summary_refresh.py"
+    ):
+        if bool(recovery.get("triggered")):
+            return "completed_with_recovery", "normalized from finalizer self-observation during run_summary_refresh.py", True
+        return "ok", "normalized from finalizer self-observation during run_summary_refresh.py", True
+
+    return raw_status, "runtime state not safe to normalize", False
+
+
 def determine_status(
     outputs: dict[str, dict[str, Any]],
     acceptance: dict[str, Any] | None,
@@ -204,17 +232,7 @@ def determine_status(
 def canonical_note_mutation_allowed(status: str, stop_line: bool, validation: dict[str, Any] | None) -> tuple[bool, str]:
     if stop_line or status in {"blocked", "error"}:
         return False, f"run summary status={status}"
-    validation_summary = (validation or {}).get("summary") or {}
-    critical = int(validation_summary.get("critical", 0) or 0)
-    warning = int(validation_summary.get("warning", 0) or 0)
-    overall = str((validation or {}).get("overall") or "").strip().lower()
-    if critical > 0:
-        return False, f"dashboard validation has {critical} critical issue(s)"
-    if warning > 0:
-        return False, f"dashboard validation has {warning} warning(s)"
-    if overall and overall not in {"ok", "clean"}:
-        return False, f"dashboard validation overall={overall}"
-    return status == "ok", "dashboard validation clean"
+    return False, "scheduled windows remain fail-closed for canonical note mutation in v1"
 
 
 def build_run_summary(window: str) -> dict[str, Any]:
@@ -270,8 +288,11 @@ def build_run_summary(window: str) -> dict[str, Any]:
     downstream_badge = "bad" if status in {"blocked", "error"} else ("warn" if status == "warning" else "ok")
     recovery = (chain_execution or {}).get("recovery") or {}
     failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
+    chain_status, chain_status_reason, chain_status_normalized = normalized_chain_status(chain_execution)
 
     note_mutation_allowed, note_mutation_reason = canonical_note_mutation_allowed(status, stop_line, validation)
+
+    presentation_allowed = False
 
     return {
         "window": window,
@@ -289,7 +310,10 @@ def build_run_summary(window: str) -> dict[str, Any]:
             "duration_seconds": duration_seconds,
         },
         "execution": {
-            "chain_status": str((chain_execution or {}).get("status") or "unknown"),
+            "chain_status": chain_status,
+            "chain_status_raw": str((chain_execution or {}).get("status") or "unknown"),
+            "chain_status_normalized": chain_status_normalized,
+            "chain_status_reason": chain_status_reason,
             "chain_exit_code": (chain_execution or {}).get("exit_code"),
             "recovery_triggered": bool(recovery.get("triggered")),
             "recovery_reason": str(recovery.get("reason") or ""),
@@ -315,7 +339,7 @@ def build_run_summary(window: str) -> dict[str, Any]:
         "downstream": {
             "command_center_badge": downstream_badge,
             "workbook_trust_grade": workbook_status,
-            "presentation_allowed": status == "ok" and not stop_line,
+            "presentation_allowed": presentation_allowed,
             "canonical_note_mutation_allowed": note_mutation_allowed,
             "canonical_note_mutation_reason": note_mutation_reason,
         },

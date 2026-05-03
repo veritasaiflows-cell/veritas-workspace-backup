@@ -86,7 +86,7 @@ Risk Rules maximum: 25%–35% per sector. Flag if any sector is within 5% of its
 - XOM is now interpreted, but that still does not equal requalification.
 - ETN remains timing-sensitive into May 5 earnings.
 - BRK.B, LMT, and XOM are still off the active deployment board.
-- Timing-sensitive earnings dates still need direct confirmation when they matter to a decision.
+- Direct timing confirmation is now a narrower caution set, led by NVDA when the next-earnings path becomes decision-critical.
 - If total model drawdown exceeds 6% to 8%, force a full review.
 
 ## Freshness and refresh policy

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from dashboard_core import (
@@ -15,6 +16,81 @@ from dashboard_core import (
 import universe
 
 BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
+WORKSPACE = TMP.parent
+WATCHLIST_PATH = WORKSPACE / "02. Markets" / "Watchlist.md"
+COVERAGE_UNIVERSE_PATH = WORKSPACE / "04. Research" / "Coverage Universe.md"
+POLICY_MANUAL_NOTE_PATHS = [
+    WORKSPACE / "01. Dashboards" / "Executive Brief.md",
+    WORKSPACE / "01. Dashboards" / "Next Actions.md",
+    WORKSPACE / "02. Markets" / "Macro Regime Dashboard.md",
+    WORKSPACE / "03. Portfolio" / "Technical Entry and Invalidation Sheet.md",
+    WORKSPACE / "05. Intelligence" / "Weekly Positioning Review.md",
+]
+POLICY_MANUAL_STALE_PHRASES = [
+    "manual target-range maintenance",
+    "manual dependencies",
+    "still-manual policy layer",
+]
+
+
+def _read_note_text(path: Path) -> str:
+    for encoding in ("utf-8", "cp1252"):
+        try:
+            return path.read_text(encoding=encoding)
+        except UnicodeDecodeError:
+            continue
+    return path.read_text(encoding="utf-8", errors="ignore")
+
+
+def _extract_table_rows(text: str, header: str) -> list[list[str]]:
+    lines = text.splitlines()
+    for idx, line in enumerate(lines):
+        if line.strip() != header:
+            continue
+        rows: list[list[str]] = []
+        for row_line in lines[idx + 2:]:
+            stripped = row_line.strip()
+            if not stripped.startswith("|"):
+                break
+            cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+            rows.append(cells)
+        return rows
+    return []
+
+
+def _parse_watchlist_rows() -> dict[str, dict[str, str]]:
+    rows = _extract_table_rows(
+        _read_note_text(WATCHLIST_PATH),
+        "| Ticker | Sector | Coverage Tier | Current Deployment State | Canonical Source |",
+    )
+    out: dict[str, dict[str, str]] = {}
+    for cells in rows:
+        if len(cells) < 5:
+            continue
+        out[cells[0]] = {
+            "sector": cells[1],
+            "coverage_tier": cells[2],
+            "current_state": cells[3],
+            "canonical_source": cells[4],
+        }
+    return out
+
+
+def _parse_coverage_quick_reference() -> dict[str, dict[str, str]]:
+    rows = _extract_table_rows(
+        _read_note_text(COVERAGE_UNIVERSE_PATH),
+        "| Ticker | Sector | Tier | Status |",
+    )
+    out: dict[str, dict[str, str]] = {}
+    for cells in rows:
+        if len(cells) < 4:
+            continue
+        out[cells[0]] = {
+            "sector": cells[1],
+            "tier": cells[2],
+            "status": cells[3],
+        }
+    return out
 
 
 def build_validation(
@@ -73,12 +149,15 @@ def build_validation(
     deploy_by_ticker = {r.get("ticker"): r for r in normalize_records(deploy_raw.get("records"))}
     trigger_raw = load_json(TMP / "trigger-sheet.json") or {}
     trigger_tickers = {r.get("ticker") for r in normalize_records(trigger_raw.get("records")) if r.get("ticker")}
+    trigger_by_ticker = {r.get("ticker"): r for r in normalize_records(trigger_raw.get("records")) if r.get("ticker")}
     summary = deploy_raw.get("summary", {}) if isinstance(deploy_raw.get("summary"), dict) else {}
     entry_bands = (pf_raw or {}).get("entry_bands", {})
     tracked_universe = (pf_raw or {}).get("tracked_universe", {})
     risk_thresholds = (pf_raw or {}).get("risk_thresholds", {})
     portfolio = (pf_raw or {}).get("portfolio", {})
     posture_labels = (pf_raw or {}).get("posture_labels", {})
+    watchlist_rows = _parse_watchlist_rows()
+    coverage_rows = _parse_coverage_quick_reference()
 
     # Priority 2.5: Move posture expectations to config
     posture_expectations = (pf_raw or {}).get("posture_expectations")
@@ -468,6 +547,73 @@ def build_validation(
             "bands",
             "tmp/band-proposals.json not found. Run band_refresh.py to generate band staleness proposals.",
         )
+
+    for ticker, meta in tracked_universe.items():
+        if not isinstance(meta, dict):
+            continue
+        lane = universe.resolve_lane(ticker, meta)
+        action_state = str((trigger_by_ticker.get(ticker) or {}).get("action_state") or "").upper()
+        entry_policy = meta.get("entry_policy")
+
+        watch_row = watchlist_rows.get(ticker)
+        if lane == "execution" and not watch_row:
+            add_warning(
+                "watchlist_execution_missing",
+                "warning",
+                "notes",
+                f"{ticker} is execution-lane in config but missing from the Watchlist mirror table.",
+                ticker,
+            )
+        elif watch_row and action_state == "DEPLOYABLE NOW":
+            state_text = watch_row.get("current_state", "").lower()
+            if "not intentionally promoted yet" in state_text:
+                add_warning(
+                    "watchlist_stale_intent_phrase",
+                    "warning",
+                    "notes",
+                    f"{ticker} still reads as an unpromoted watch name in Watchlist despite deployable-now trigger state.",
+                    ticker,
+                )
+
+        coverage_row = coverage_rows.get(ticker)
+        if coverage_row and action_state in {"DEPLOYABLE NOW", "ALMOST", "ALMOST DEPLOYABLE"} and entry_policy == "band_defined":
+            status_text = coverage_row.get("status", "").lower()
+            if "no levels yet" in status_text:
+                add_warning(
+                    "coverage_quickref_stale_levels_phrase",
+                    "warning",
+                    "notes",
+                    f"{ticker} quick-reference status still says no levels yet even though a band-defined setup exists.",
+                    ticker,
+                )
+            if "earnings apr 29" in status_text or "requalification" in status_text:
+                add_warning(
+                    "coverage_quickref_stale_event_phrase",
+                    "warning",
+                    "notes",
+                    f"{ticker} quick-reference status still carries stale event wording that no longer matches the current owner surfaces.",
+                    ticker,
+                )
+
+    policy_manual_dependencies = get_path(policy_raw, "data.manual_dependencies") or []
+    policy_is_non_manual = (
+        policy_status.get("raw_status") not in {"manual", "partial"}
+        and "policy_manual_dependency" not in policy_status.get("tags", [])
+        and isinstance(policy_manual_dependencies, list)
+        and not policy_manual_dependencies
+    )
+    if policy_is_non_manual:
+        for note_path in POLICY_MANUAL_NOTE_PATHS:
+            note_text = _read_note_text(note_path).lower()
+            for phrase in POLICY_MANUAL_STALE_PHRASES:
+                if phrase in note_text:
+                    add_warning(
+                        "policy_manual_phrase_stale_in_note",
+                        "warning",
+                        "notes",
+                        f"{note_path.relative_to(WORKSPACE)} still carries stale manual-policy wording ('{phrase}') even though the live policy artifact is no longer in manual mode.",
+                    )
+                    break
 
     consistency_raw = load_json(TMP / "universe-consistency.json") or {}
     if consistency_raw.get("status") == "error":

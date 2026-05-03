@@ -32,8 +32,8 @@ Canonical owners:
 1. **The live action list is narrow.** **JPM** and **NVDA** are the only names currently in band. **ETN** remains pullback-only.
 2. **GOOG and MSFT are no longer unresolved post-earnings cases.** The scorecards are now written, but both names still stay off the live board because GOOG is extended above band and MSFT still needs cleaner repair below the 200-day.
 3. **XOM reported on May 1 and the scorecard is done, but the name is still benched.** Oil is strong, but follow-through still is not clean enough to put energy back on the active board.
-4. **BRK.B reports today and the ETN / AMD / SMCI cluster lands next week.** That is the next real catalyst window.
-5. **Trust is reduced, not broken.** The dashboard layer is fresh through the 2026-05-01 close, but it still carries 11 warnings and 17 entry-band review flags.
+4. **BRK.B reported May 2 and the ETN / AMD / SMCI cluster lands this week.** That is the next real catalyst window.
+5. **Trust is improved, not perfect.** The dashboard layer is fresh through the 2026-05-01 close and validation is clean again, but execution freshness still stays usable-with-caution because the policy model is simplified and true pre-market tape remains limited.
 
 ## Current next move
 
@@ -52,11 +52,10 @@ Canonical owners:
 
 ## Active dashboard warnings
 
-- **overall trust grade:** reduced / usable with caution (11 warnings)
-- **band review backlog:** 17 entry bands still need review
-- **date integrity:** one or more timing-sensitive earnings dates changed and still need direct confirmation
-- **state mismatch:** GS is in band while deployment state still reads WATCH
-- **macro dependency:** policy expectations still rely on manual target-range maintenance
+- **overall trust grade:** usable with caution
+- **validation surface:** clean (0 critical / 0 warning in the live dashboard validation artifact)
+- **date integrity:** narrow remaining caution led by the unresolved NVDA timing path
+- **macro dependency:** policy expectations are primary-sourced but still use a simplified futures-approximation model
 - **data constraint:** true pre-market pricing was unavailable from the current yfinance responses
 
 ## Navigation
@@ -86,3 +85,5 @@ Read in this order:
 ## Last updated
 
 - 2026-05-02 — refreshed against 2026-05-01 close. Updated for: JPM and NVDA now in band; ETN still conditional; GOOG/MSFT post-earnings revalidation now explicit but still not deployable; XOM interpreted but still benched; dashboard trust remains reduced with a real band-review backlog.
+- 2026-05-03 — heartbeat freshness cleanup only: rolled the BRK.B catalyst wording forward after the date change and removed the obsolete GS WATCH-mismatch warning from this orientation surface.
+- 2026-05-03 — Workflow 12 trust repair removed stale manual-policy and broad date-integrity wording so this orientation surface now matches the live policy artifact and narrower timing residue.

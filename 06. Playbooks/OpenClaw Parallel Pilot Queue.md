@@ -565,33 +565,35 @@ Acceptance check:
 
 ### Workflow 9B - Surface alignment and drift-guard hardening
 Status:
-- now the active next priority after honest Workflow 9A closure
-- inherits the named surface-contract residue from 9A rather than reopening workspace-structure cleanup: `GS` state drift, note-mirror / validator parity, non-execution-lane presentation gaps, and the dry-run-first write-back contract for technical levels / entry bands
-- still opened from the combined scale-readiness and architecture audits to force dashboards, validators, and note-owned mirrors onto one coherent lane / ownership contract
+- **completed honestly on 2026-05-03** after mirror-sync execution, bounded archive cleanup, contract hardening, validation reruns, and a closing QA audit
+- closed with explicit bounded defer, not fake-green closure: consolidation/shedding execution stays deferred behind `06. Playbooks/Playbooks Redundancy Cleanup Plan.md`
+- residue was routed, not buried: runtime/session trust debt -> Workflow 10, intake/thesis-parity residue -> Workflow 11, macro/policy manual-dependency debt -> Workflow 12
 
 Why now:
 - the backend lane model and note-sync hardening moved faster than the human-facing surfaces and validator contracts
-- further scaling will compound note rot and contractor collisions unless truth-sync rules, owner boundaries, and surface contracts are explicit first
+- further scaling will compound note rot, archive sprawl, and contractor collisions unless truth-sync rules, owner boundaries, validator coverage, and approved structural routing are explicit first
 
 Lane:
-- Veritas main session with bounded implementation or review support as needed
+- Veritas main session
+- bounded read-only helper support allowed for planning ahead, audits, and proposal prep only
 
 Deliverable:
-- expand consistency checks to cross-verify `Watchlist.md`, `Coverage Universe.md`, and other human-facing mirrors against the machine config
-- define a mandatory post-catalyst **Truth Sync** protocol and explicit artifact-owner / IC boundary rules before more automation or external lanes are added
-- close the known surface-drift items (`GS` state mismatch, non-execution lane presentation gaps) and continue replacing ambiguous entitlement booleans with explicit enums where residue remains
-- define the dry-run-first gated write-back path for syncing technical levels / entry bands from machine truth into note-owned surfaces without enabling silent canonical rewrites
+- completed Phase 1/2 evidence and packet decisions remain explicit in the continuity note
+- bounded hardening set is now live: Post-Catalyst Truth Sync protocol, validator expansion, write-back helper spec, and `migration-backups/` retention policy
+- consolidation/shedding now has an explicit cleanup plan instead of unnamed residue
 
 Acceptance check:
 - validators, dashboards, and note mirrors speak one coherent contract
 - owner/write boundaries are explicit before additional scaling or delegation
-- any write-back helper remains fail-closed, dry-run-first, and audit-friendly
+- the approved archive/routing cleanup that belongs in 9B is complete without silent content rewrites
+- the write-back helper posture remains fail-closed, dry-run-first, and audit-friendly
+- consolidation/shedding is deferred cleanly behind an explicit cleanup plan instead of hidden residue
 
 ### Workflow 10 - Subagent/session lifecycle reliability review
 Status:
-- queued directly behind active Workflow 9B as the next runtime / control-surface hardening pass now that Workflow 9A is closed
-- scope now explicitly includes stale completion-state signals such as `execution.chain_status = "running"` after success and other state-independent run-ledger gaps
-- now also owns the root-worktree metadata / `git worktree prune` permission-denied residue left outside the approved 9A structural scope
+- **completed honestly on 2026-05-03** after bounded runtime-proof hardening, run-summary execution-state repair, scheduled-window fail-closed trust-field repair, and stale root worktree metadata cleanup
+- closed with named residue instead of fake-green claims: memory embedding credential/index health remains broken, and runtime/session state still stays advisory beneath artifact-level proof
+- async exec-event ambiguity and interactive-auth no-go assumptions are now explicit protocol, not hidden operator folklore
 
 Why now:
 - workflow control cannot be trusted fully while subagent run state, session activity, and run-summary completion fields can disagree
@@ -611,8 +613,8 @@ Acceptance check:
 
 ### Workflow 11 - Coverage admission model
 Status:
-- queued behind Workflow 10 as the first post-runtime intake / governance build; this operationalizes ticker intake and execution-lane promotion without reopening Workflow 6's settled tier framework
-- formal procedure drafting should stay behind one real bounded intake case: complete the missing `LLY` thesis block first, then formalize the Workflow 11 procedure
+- **completed honestly on 2026-05-03** after landing the admission/promotion procedure, using `LLY` as the live pilot, and clearing the explicit written-thesis residue for `CAT`, `CVX`, `LLY`, and `SMCI`
+- closed without reopening Workflow 6 lane definitions; this was procedure hardening, not tier-framework churn
 
 Why now:
 - Workflow 6 settled the lane/tier framework, but not the full per-ticker intake checklist, canonical note obligations, or operator promotion procedure
@@ -633,7 +635,7 @@ Acceptance check:
 
 ### Workflow 12 - Macro / Policy trust repair
 Status:
-- queued behind Workflow 11 as explicit carried-forward residue from Workflows 1 through 9 plus the new scale-readiness audits rather than a vague later candidate
+- **completed honestly on 2026-05-03** after separating live approximation/caution from stale inherited caveats, updating the active note layer, and adding a bounded stale-manual-policy validator guard
 
 Why now:
 - macro/policy manual-dependency residue and timing-sensitive earnings-date friction both keep reappearing in trust surfaces and should be resolved or intentionally bounded under a dedicated pass
@@ -648,7 +650,7 @@ Deliverable:
 - prevent old macro/policy / timing caveats from drifting forward as background residue without an owner
 
 Acceptance check:
-- remaining macro/policy and timing manual dependencies are intentional, current, and explicitly owned rather than inherited residue
+- remaining macro/policy and timing dependencies are intentional, current, explicitly owned, and no longer overstated by stale downstream wording
 
 ## Queue hardening rule
 

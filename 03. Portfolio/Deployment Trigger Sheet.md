@@ -123,9 +123,9 @@ A spot on the watchlist is not enough.
 - Inputs are now expected to flow through `tmp/trigger-sheet.json`, which reads from the cached technical, deployment, macro, and earnings artifacts.
 - The trigger-sheet script is intentionally read-only. It prepares action buckets, blockers, and invalidation context, but it does not replace human interpretation.
 - Inputs are fresh and same-day only when the underlying `tmp/` artifacts are fresh. If freshness flags turn stale, downgrade confidence explicitly.
-- The macro file still carries two warnings: the Fed target range is hardcoded as of 2026-04-19, and FedWatch cut probability is not wired.
-- Dashboard validation remains **warning-level**, with timing-sensitive earnings-date changes still requiring direct confirmation.
-- Treat rate and policy context as directional, not precision timing input, until those warnings are cleared.
+- The macro/policy layer is cleaner now: the live policy artifact is primary-sourced, but policy probabilities still come from a simplified futures approximation rather than a full FedWatch tree.
+- Dashboard validation is now clean again, but direct timing confirmation still matters for the narrower unresolved set led by NVDA.
+- Treat rate and policy context as directional, not precision timing input, even after the stale manual-policy warnings are retired.
 - `AMD`, `AMZN`, `CAT`, `CVX`, `LNG`, `PLTR`, and `RTX` remain machine-tracked watch-lane names, but they are **not** part of the execution board in this note. Their current validation warnings are ownership residue, not a hidden promotion into deployable status.
 - Treat **NVDA** as the main still-unresolved timing-sensitive next-earnings mismatch affecting deployment trust today, with a forced re-check due by the first post-close chain on **2026-05-13** if cleaner confirmation still has not landed. **BRK.B** timing is now homepage-level confirmed for May 2, but the machine layer still needs a post-report next-date cleanup so Workflow 9 does not inherit stale catalyst framing. XOM is no longer a "write the first interpretation" case; it is now a post-print follow-through case. GOOG and MSFT are no longer pending earnings review; they are now post-print entry-discipline cases.
-- **Deployable now** means the gates line up on paper; it does **not** cancel warning-level trust, date-confirmation caution, crowding risk, or normal size discipline.
+- **Deployable now** means the gates line up on paper; it does **not** cancel residual date-confirmation caution, crowding risk, or normal size discipline.

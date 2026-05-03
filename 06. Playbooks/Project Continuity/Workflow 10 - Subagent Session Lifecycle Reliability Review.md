@@ -5,15 +5,18 @@
 - Prevent orchestration policy from assuming runtime truth that the control surface has not yet earned.
 
 ## Current State
-- Not started as an implementation workflow.
-- This now sits directly behind active Workflow 9B in the reprioritized queue because Workflow 9A is honestly closed.
-- Scope is widened slightly: this is no longer just about session-state disagreement, but also about stale completion-state signals and state-independent run-ledger trust.
-- Real failures and ambiguities have already been observed in subagent/session behavior and memory/runtime reporting.
+- Workflow 10 is now **honestly closed** after protocol hardening, run-summary execution-state repair, stale root worktree metadata cleanup, and a closing QA audit.
+- Scope stayed intentionally bounded: this was not a broad runtime redesign. It was the trust-hardening pass for when session/runtime signals disagree with artifact-level completion or cleanup reality.
+- Real failures and ambiguities were captured explicitly across subagent/session behavior, async exec events, worktree cleanup, run summaries, and memory/runtime reporting.
+- The remaining runtime residue is named rather than hidden: memory embedding credentials/index health remain broken, and runtime/session state still does not outrank artifact-level proof.
 
 ## Last Meaningful Progress
 - The queue explicitly added Workflow 10 after real control-surface reliability concerns were observed.
 - The day-job orchestrator protocol now treats runtime/session state as advisory when artifact-level proof is stronger.
-- Memory-index/runtime issues remain open and reinforce the need for this review.
+- `openclaw status` and `openclaw memory status --deep --json` were rechecked live on 2026-05-03: gateway/session runtime is up, but memory embeddings still fail credential probe and the memory index remains non-boring (`0 files / 0 chunks`, dirty, no usable credential-backed probe success).
+- `scripts/run_summary_refresh.py` now normalizes the finalizer self-observation race instead of leaving consumer-facing `execution.chain_status="running"` after otherwise successful runs, while preserving the raw runtime field for audit.
+- The helper audit then caught a second real Workflow 10 gap: scheduled-window run summaries were still flipping `presentation_allowed` and `canonical_note_mutation_allowed` true on clean runs even though the written v1 contract stayed fail-closed. That mismatch is now fixed in the script layer and regenerated summaries again show both fields as `false`.
+- `git worktree prune --dry-run -v` surfaced four stale root metadata directories (`goofy-burnell-4fe3eb`, `happy-tu-045966`, `modest-bell-f26bd5`, `silly-roentgen-69acb1`) that were not active worktrees but failed deletion because the directories were read-only; those stale directories were then cleared and prune no longer reports them.
 
 ## Named incidents already on record
 
@@ -47,22 +50,24 @@
 - Observable consequence: git/runtime cleanup can report a structurally successful removal while still leaving behind undeleted metadata that an organization workflow should not guess at or silently erase when the residue sits in root runtime/tooling surfaces.
 - Resulting hardening implication: Workflow 10 should define what counts as a trustworthy worktree/session cleanup signal, how to separate safe local residue from active runtime state, and when manual filesystem cleanup is acceptable versus when the runtime/control surface needs a deeper fix.
 
+### Incident 6 - 2026-05-03 stale root worktree metadata was removable only after manual attribute clearing
+- Context: Workflow 10 rechecked root `.git/worktrees/` cleanup live with `git worktree prune --dry-run -v`.
+- What happened: git identified four stale metadata directories whose `gitdir` targets no longer existed, but the actual prune operation still failed because the stale directories were read-only on disk. After confirming the names were not in `git worktree list`, those four stale directories were cleared manually and prune stopped flagging them.
+- Observable consequence: successful cleanup sometimes depends on a two-step proof standard: verify the worktree is no longer active in git, then clear the filesystem residue explicitly if the runtime tool cannot remove it.
+- Resulting hardening implication: a prune failure is not automatically a live-worktree risk, but it also is not safe to ignore. Workflow 10 should codify the verify-then-clear rule instead of leaving it as operator folklore.
+
 ## Outstanding
-- Expand the named incidents into a fuller pattern inventory instead of leaving them as one-off anecdotes.
-- Include stale completion-state problems like `execution.chain_status = "running"` after successful finance-window runs in that pattern inventory.
-- Include root-worktree metadata cleanup failures and `git worktree prune` permission-denied cases in that pattern inventory instead of treating them as one-off filesystem annoyances.
-- Define safe operator workarounds and no-go assumptions.
-- Decide whether a dedicated bug/hardening note or external issue should remain active.
-- Define what orchestration can trust versus what must be verified through files or outputs.
+- Commit the Workflow 10 change set after queue/registry/continuity sync is included.
+- Decide later whether the memory indexing / embedding-credential problem deserves its own follow-on runtime workflow.
 
 ## Blockers / Trust Gaps
 - Runtime/session state is still not fully boring or proven.
-- Run-summary and run-ledger completion signals are not fully boring or proven either.
 - Memory indexing remains broken, which weakens auxiliary continuity surfaces.
-- Higher-priority organization / drift-hardening items now remain ahead of this standing review in the ordered queue unless a fresh runtime failure overtakes them.
+- Async interactive-auth boundaries and delayed exec-event completions still require explicit reconciliation rather than trust by exit code alone.
+- Root worktree residue is cleaner than before, but Windows/runtime cleanup trust still depends on verifying what is active versus what is merely leftover metadata.
 
 ## Next Action
-- Revisit this workflow when the queue reaches it naturally after Workflows 9A and 9B, or sooner if a fresh runtime/session failure proves it must be pulled forward.
+- Workflow 11 is the active next pass.
 
 ## Key Files
 - `06. Playbooks/OpenClaw Parallel Pilot Queue.md`

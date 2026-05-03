@@ -17,10 +17,10 @@ Color coding (text labels):
 
 ## Freshness and refresh policy
 
-- Last updated: 2026-05-02
+- Last updated: 2026-05-03
 - Data as of: targeted 2026-05-02 XOM post-earnings sync plus current machine evidence through the 2026-05-01 close
 - Refresh cadence: weekly, after major portfolio-company earnings, and whenever a dated catalyst elapses or a new confirmed event is added
-- Next refresh due: after BRK.B is interpreted and its stale May 2 machine-layer next-date is cleared or manually held, and again during the ETN / AMD / SMCI cluster next week. Re-check NVDA timing no later than the first post-close chain on **2026-05-13** if a cleaner primary confirmation path still has not landed.
+- Next refresh due: after BRK.B interpretation/next-date cleanup is synced, and again during the ETN / AMD / SMCI cluster next week. Re-check NVDA timing no later than the first post-close chain on **2026-05-13** if a cleaner primary confirmation path still has not landed.
 - Refresh policy: remove elapsed one-time events from live month sections once they have reported, keep recurring events intact, promote newly confirmed items from the standing watch list, and preserve only the next relevant rolling window of dated catalysts. For material earnings, pair calendar maintenance with the post-earnings closure workflow: move the name from upcoming to **Reported, evidence pending**, **Interpreted**, **Synced**, or **Closed with follow-up** instead of leaving a stale upcoming line behind. Treat script-surfaced date changes as usable evidence, but cross-check critical portfolio-company dates before relying on them blindly.
 
 ## Timing-critical governance
@@ -29,7 +29,7 @@ Color coding (text labels):
 - Current unresolved manual timing dependencies are now narrower. **NVDA** still lacks a clean direct confirmation path for the likely **May 20** date, and any provider-only next-quarter dates for recently reported names should stay labeled as estimates rather than silently normalized into primary-confirmed canon.
 - Close rule for **NVDA**: if a clean primary confirmation still does not exist by the first post-close chain on **2026-05-13** (7 calendar days ahead of the likely print), keep the note-layer date explicitly tagged **unconfirmed**, keep deployment trust capped at the current caution posture, and do not let downstream notes speak as if the date were primary-confirmed.
 - The operating-window chains now end with `python scripts/validate_dashboard_state.py --write`; keep that validator as the final trust gate after material calendar updates so the dashboard trust panel and contradiction warnings stay aligned with the note layer.
-- Manual macro dependencies matter too: Fed target changes and unwired FedWatch probabilities must stay visibly manual in downstream surfaces until the machine layer is upgraded.
+- Macro/policy caveats matter too, but they should stay specific: the live policy artifact is now primary-sourced, while the remaining caution is the simplified probability model and any future source degradation.
 
 ## Post-earnings closure visibility rule
 
@@ -69,7 +69,7 @@ Minimum rule:
 | Apr 29 | Wed | **AMZN Q1 2026 Earnings — After close** | **[HIGH]** | Watchlist name (secondary bench). AWS growth and operating leverage are the key variables. Strong beat could justify upgrading to portfolio candidate. |
 | Apr 29 | Wed | **EQIX Earnings** | **[MONITOR]** | Data-center and digital infrastructure read-through relevant to AI-capex and power-demand framing. |
 | Apr 30 | Thu | **Q1 2026 GDP Advance Estimate** | **[CRITICAL]** | 8:30 AM ET. First read on Q1 growth. If materially below expectations, regime reassessment required. The Hormuz shock hit in March — this number will partially reflect it. |
-| Apr 30 | Thu | **ETN Q1 2026 Earnings — possible earlier window** | **[CRITICAL]** | Older cross-check work pointed to Apr 30, but the latest refreshed `tmp/earnings-calendar.json` still shows May 5. Treat Apr 30 to May 5 as a live date-mismatch window and verify against company materials before acting on timing-sensitive deployment decisions. Most important signal: grid, electrification, and AI power demand commentary. |
+| Apr 30 | Thu | **ETN Q1 2026 Earnings — earlier cross-check no longer primary** | **[MONITOR]** | Earlier cross-check work had pointed to Apr 30, but that window has now passed and the live script layer still shows **May 5**. Do not keep treating Apr 30 to May 5 as an active mismatch window; carry forward May 5 as the current working date unless cleaner primary confirmation appears. |
 | Apr 30 | Thu | **COP Earnings** | **[MONITOR]** | Energy read-through ahead of XOM. Helpful for commodity and upstream tone. |
 | Apr 30 | Thu | **AAPL Q2 FY2026 Earnings — After close** | **[HIGH]** | Not in portfolio. Consumer demand proxy, services growth, and any AI monetization commentary. |
 

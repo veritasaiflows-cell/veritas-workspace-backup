@@ -13,7 +13,7 @@ This file is the permanent foundation. The Watchlist tells you what is actionabl
 - This note owns thesis coverage and promotion logic. It does **not** own the live machine-tracked universe or deployment entitlement.
 - The machine-tracked universe currently lives in `tmp/portfolio-config.json` and is surfaced operationally through [[02. Markets/Watchlist]], [[03. Portfolio/Deployment Trigger Sheet]], and [[03. Portfolio/Technical Entry and Invalidation Sheet]].
 - Current machine lanes: **10 execution**, **8 watch** (`AMD`, `AMZN`, `CAT`, `CVX`, `LLY`, `LNG`, `PLTR`, `RTX`), **2 macro** (`TLT`, `SLV`), **2 speculative** (`SMCI`, `KTOS`).
-- Known written-thesis residue: `CAT`, `CVX`, `LLY`, and `SMCI` are tracked operationally but still do not have full thesis blocks here. `GLD` remains research-only and is not in the current machine-tracked universe.
+- Workflow 11 closed the written-thesis residue on 2026-05-03 for `CAT`, `CVX`, `LLY`, and `SMCI`; they are now represented here explicitly instead of living only as machine-tracked operational entries. `GLD` remains research-only and is not in the current machine-tracked universe.
 
 ---
 
@@ -57,6 +57,24 @@ Each entry uses four fields:
 - **Thesis:** Dominant US LNG export infrastructure operator with long-term take-or-pay contracts. Structural geopolitical beneficiary — Hormuz closure and Qatar LNG force majeure demonstrated the irreplaceable role of US LNG in global supply security.
 - **Key risk:** Sustained LNG oversupply as new export capacity comes online globally; project execution delays.
 - **Act when:** LNG complex stabilizes post-ceasefire. Confirm Cheniere had no contract disruptions during the Hormuz period. Entry requires a clean technical setup with defined levels. May 7 earnings window active.
+
+### CVX — Chevron
+- **Tier:** Tactical
+- **Status:** Active watch
+- **Thesis:** Integrated energy major with high-quality upstream assets, downstream balance, and strong capital-return posture. Useful secondary energy expression if the oil thesis strengthens beyond XOM or if portfolio construction later supports a second large-cap energy name.
+- **Key risk:** Crude downcycle or weaker downstream margins could turn a secondary energy candidate into dead capital behind the stronger XOM setup.
+- **Act when:** Only promote after XOM is requalified or deployed and sector allocation still has room for a second energy position. Define explicit entry band and stop before treating it as a real deployment candidate.
+
+---
+
+## Industrials and Infrastructure
+
+### CAT — Caterpillar
+- **Tier:** Tactical
+- **Status:** Active watch
+- **Thesis:** Global heavy-equipment leader with direct leverage to infrastructure, mining, energy, and industrial-capex cycles. Useful industrial cyclicals read-through when the regime supports real-economy capex rather than narrow AI-only concentration.
+- **Key risk:** Cyclical demand can roll over quickly if global growth or commodity-linked capex weakens; without defined levels this remains a secondary industrial idea rather than a ready deployment candidate.
+- **Act when:** Keep it watch-lane only until a fresh entry band and stop are defined and the post-print structure proves it deserves capital competition versus ETN and other stronger current setups.
 
 ---
 
@@ -129,12 +147,30 @@ Each entry uses four fields:
 - **Key risk:** Crowded theme with elevated valuation; execution and supply chain risk; higher volatility than ETN; post-earnings extension risk if price outruns support.
 - **Act when:** Define entry band and stop before considering deployment. Use the beat-and-raise as thesis confirmation — not as permission to chase. ETN first; VRT second. Entry only on a controlled, non-chasing setup with explicit levels.
 
+### SMCI — Super Micro Computer
+- **Tier:** Speculative
+- **Status:** Active watch — speculative monitor only
+- **Thesis:** High-beta AI infrastructure name with direct leverage to GPU-server demand and data-center buildout. It can work as a faster-moving speculative expression of AI hardware deployment if both governance overhang and price structure repair cleanly.
+- **Key risk:** Accounting/governance overhang, extreme volatility, and crowding can overwhelm the thematic upside quickly. This is not a substitute for core AI-infrastructure exposure.
+- **Act when:** Promote only if governance/restatement residue is resolved cleanly and a defined technical base forms with explicit entry and stop. Treat as Tier 3 max even if the thesis improves.
+
 ### PLTR — Palantir Technologies
 - **Tier:** Tactical / Speculative
 - **Status:** Active watch
 - **Thesis:** AI and data analytics software with deep US government and defense roots. AIP (AI Platform) commercial expansion is the growth catalyst. Defense-AI convergence via government contracts is structurally durable.
 - **Key risk:** Valuation is extreme relative to current revenue; commercial pivot must accelerate to justify the price; sentiment-driven volatility.
 - **Act when:** Significant pullback or confirmed AIP commercial acceleration in earnings results.
+
+---
+
+## Healthcare
+
+### LLY — Eli Lilly
+- **Tier:** Sector monitor
+- **Status:** Active watch — Workflow 7 pilot add, watch-lane only
+- **Thesis:** Healthcare quality leader with durable diabetes cash flows, a powerful obesity / incretin franchise, and a pipeline that can justify keeping one healthcare name on the board as a defensive-growth diversifier versus the current tech-cyclical tilt.
+- **Key risk:** Valuation can stay too rich for disciplined capital deployment, and reimbursement, supply, or competitive pressure could compress the risk/reward even if the business remains high quality.
+- **Act when:** Keep it watch-lane only until valuation/setup justify real capital competition and explicit entry/stop levels are defined. If the healthcare sleeve remains one-name only, Lilly is the preferred first monitor unless evidence later makes JNJ or another defensive alternative cleaner.
 
 ---
 
@@ -205,10 +241,7 @@ Each entry uses four fields:
 
 | Ticker | Sector | Elevation Condition |
 |---|---|---|
-| CVX | Energy | Promote to tactical only after XOM is deployed and sector allocation has room for a second energy name |
-| LLY | Healthcare | Workflow 7 watch-lane pilot only — keep as the first healthcare sleeve monitor unless valuation/catalyst risk or maintenance burden makes JNJ the cleaner defensive replacement |
 | NOC | Defense | Promote to tactical after LMT repair completes and a second defense core position is warranted |
-| SMCI | Tech / AI Infrastructure | Promote to speculative if accounting restatement history resolves cleanly and a defined base forms; high volatility warrants Tier 3 max |
 | COP | Energy | Promote to tactical only if a purer E&P exposure is desired over an integrated major and oil thesis strengthens |
 | EOG | Energy | Promote to tactical on confirmed oil structure improvement and desire for pure-play shale exposure |
 | ET | Energy | Promote when income sleeve construction begins and midstream fundamentals support the yield |
@@ -235,20 +268,24 @@ Each entry uses four fields:
 
 | Ticker | Sector | Tier | Status |
 |---|---|---|---|
-| XOM | Energy | Core candidate | Portfolio draft — benched, May 1 requalification |
+| XOM | Energy | Core candidate | Do not touch — interpreted; follow-through still required |
 | LNG | Energy | Tactical | Active watch — May 7 earnings |
+| CVX | Energy | Tactical | Active watch |
+| CAT | Industrials | Tactical | Active watch |
 | LMT | Defense | Core candidate | Do not touch — repair mode post Apr 23 |
 | RTX | Defense | Tactical | Active watch — beat Apr 21, no levels yet |
 | KTOS | Defense | Speculative | Draft speculative sleeve |
-| MSFT | Technology | Core candidate | Portfolio draft — earnings Apr 29 |
-| GOOG | Technology | Core candidate | Portfolio draft — earnings Apr 29 |
-| NVDA | Technology | Core candidate | Active watch — pullback only |
-| ETN | Technology | Core candidate | Portfolio draft — best setup |
+| MSFT | Technology | Core candidate | Almost deployable — post-earnings scorecard complete; still needs cleaner repair |
+| GOOG | Technology | Core candidate | Almost deployable — post-earnings scorecard complete; still needs pullback into band |
+| NVDA | Technology | Tactical | Deployable now — in band with crowding risk; disciplined tactical sizing only |
+| ETN | Technology | Core candidate | Almost deployable — best current setup |
 | AMD | Technology | Tactical | Active watch — earnings May 5 |
-| VRT | Technology | Tactical | Active watch — beat Apr 22, no levels yet |
+| VRT | Technology | Tactical | Watch / research needed — levels exist, conviction still secondary |
+| SMCI | Technology | Speculative | Active watch — speculative monitor only |
 | PLTR | Technology / Defense | Tactical / Speculative | Active watch |
-| JPM | Financials | Core candidate | Portfolio draft — already reported |
-| GS | Financials | Tactical | Active watch — no levels yet |
+| LLY | Healthcare | Sector monitor | Active watch — watch-lane only pilot |
+| JPM | Financials | Core candidate | Deployable now |
+| GS | Financials | Tactical | Deployable now — tactical secondary to JPM |
 | BRK.B | Large-cap Quality | Core candidate | Portfolio draft — benched on chart |
 | AMZN | Large-cap Quality | Tactical | Active watch — earnings Apr 29 |
 | GLD | Macro | Tactical | Active watch |
@@ -263,6 +300,8 @@ Each entry uses four fields:
 - 2026-04-22 — VRT risk framing upgraded after Apr 22 beat-and-raise
 - 2026-04-24 — cleaned stale act-when language for LMT and timing-sensitive framing for ETN/NVDA
 - 2026-04-26 — **Major revision:** pruned from 37 names to 19-name Active Universe + 20-name Watch Pool per vault efficiency audit. LMT status updated to repair mode / do not touch post-Apr-23 print. VRT status upgraded to reflect Apr-22 beat-and-raise conviction. NVDA promoted from Tactical to Core candidate tier. Act-when conditions refreshed across Energy and Defense sectors.
-- 2026-05-02 — clarified ownership boundary between this thesis note and the 21-name machine-tracked universe; kept unresolved CAT/CVX/SMCI thesis-writeup drift explicit instead of pretending the layers are already identical; later same-day entitlement review demoted AMZN/RTX/CAT from execution to watch lane without changing thesis ownership here
-- 2026-05-02 — Workflow 7 operator-approved a single Healthcare watch-lane pilot add: `LLY` entered the machine-tracked universe as a sector monitor without widening into a full thesis rewrite or execution-lane promotion
+- 2026-05-02 — clarified ownership boundary between this thesis note and the 21-name machine-tracked universe; later same-day entitlement review demoted AMZN/RTX/CAT from execution to watch lane without changing thesis ownership here
+- 2026-05-02 — Workflow 7 operator-approved a single Healthcare watch-lane pilot add: `LLY` entered the machine-tracked universe as a sector monitor without execution-lane promotion
+- 2026-05-03 — Workflow 9B mirror-sync pass updated quick-reference deployment wording for GS/NVDA/JPM plus post-earnings wording for GOOG/MSFT/XOM/VRT so this table no longer contradicts the current trigger/technical surfaces
+- 2026-05-03 — Workflow 11 closed the explicit written-thesis residue for `CAT`, `CVX`, `LLY`, and `SMCI` and used `LLY` as the bounded live intake pilot for the admission procedure
 - Next review: after direct earnings-date confirmation and GOOG/MSFT post-earnings revalidation close the current E17 residue, or when durable thesis/key-risk/act-when conditions change materially

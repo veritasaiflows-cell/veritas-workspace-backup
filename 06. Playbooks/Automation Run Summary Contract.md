@@ -58,6 +58,18 @@ Per-window ownership is cleaner.
     "completed_at_utc": "2026-05-01T12:52:14Z",
     "duration_seconds": 434
   },
+  "execution": {
+    "chain_status": "ok",
+    "chain_status_raw": "running",
+    "chain_status_normalized": true,
+    "chain_status_reason": "normalized from finalizer self-observation during run_summary_refresh.py",
+    "chain_exit_code": 0,
+    "recovery_triggered": false,
+    "recovery_reason": "",
+    "failed_step": null,
+    "skipped_steps": [],
+    "finalized_after_failure": false
+  },
   "validation": {
     "acceptance_passed": true,
     "dashboard_validation_status": "warning",
@@ -100,6 +112,7 @@ Per-window ownership is cleaner.
 - `stop_line`
 - `owner`
 - `timing`
+- `execution`
 - `validation`
 - `outputs`
 - `warnings`
@@ -151,6 +164,30 @@ Use them narrowly:
 
 A warning does not automatically imply stop line.
 A blocked or error state does.
+
+## Execution block
+
+The run summary may be written by `run_summary_refresh.py` while that same finalizer step is still marked `running` in the chain-state artifact.
+That creates a false stale-read if consumers treat raw runtime status as the final workflow status.
+
+Required fields:
+- `chain_status`
+- `chain_status_raw`
+- `chain_status_normalized`
+- `chain_status_reason`
+- `chain_exit_code`
+- `recovery_triggered`
+- `recovery_reason`
+- `failed_step`
+- `skipped_steps`
+- `finalized_after_failure`
+
+Rules:
+- `chain_status_raw` preserves the underlying chain-state value exactly
+- `chain_status` is the consumer-facing field and may normalize a finalizer self-observation race into the projected final state
+- normalize only when the only running step is `run_summary_refresh.py` itself and all prior steps are already terminal
+- if that condition is not met, do not invent a greener state; keep `chain_status == chain_status_raw`
+- use `chain_status_reason` to explain whether normalization happened
 
 ## Validation block
 

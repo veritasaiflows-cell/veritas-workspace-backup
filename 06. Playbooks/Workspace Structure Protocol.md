@@ -135,6 +135,33 @@ Before making a folder-level reorganization, require at least one of:
 - more than a few files of the same durable type piling up
 - proven merge value that exceeds link-churn cost
 
+## `migration-backups/` retention policy
+
+Purpose:
+- preserve reversible safety checkpoints for meaningful structural, config, workflow, and note-layer changes
+- avoid treating `migration-backups/` as a permanent junk drawer
+
+Create a new backup set when:
+- a workflow will move, archive, or delete files
+- a config or control-plane change could widen blast radius
+- a broad note-sync or path migration is about to run
+- a rollback point would materially reduce risk
+
+Baseline retention windows:
+- high-risk structural / workflow backups: keep at least **30 days**
+- normal bounded migration backups: keep at least **14 days**
+- superseded scratch backups with no unique recovery value: eligible for review after **7 days**
+
+Pruning rule:
+- do not prune during the same workflow that created the backup unless the backup was obviously mistaken or duplicated
+- prune only after verifying the newer canonical state is stable and no active workflow still references the backup set
+- document meaningful prune decisions in the active continuity note or daily note if the cleanup materially changes rollback posture
+
+Approval boundary:
+- Veritas may create backups without asking
+- meaningful pruning of backup sets should remain operator-approved or workflow-approved
+- never present pruning as completion proof for a hardening pass
+
 ## Current enforcement direction
 - keep root strict
 - keep `Home.md` as the navigator

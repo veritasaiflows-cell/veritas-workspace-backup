@@ -15,7 +15,7 @@ Script-backed prep path:
 
 - **Status:** refreshed 2026-05-02, data as of 2026-05-01 close
 - **Operating regime:** restrictive pause, resilient growth baseline, selective risk-on
-- **Confidence:** reduced but usable; the machine layer is fresh, but policy expectations still carry manual dependencies and several dashboard warnings remain live
+- **Confidence:** usable with caution. The machine layer is fresh and the policy artifact is now primary-sourced, but the policy model is still a simplified futures approximation and true pre-market tape is still weak.
 - **Inflation posture:** still above target risk, with energy pressure elevated again. Brent 108.17 and WTI 101.94 keep the inflation tail from disappearing.
 - **Growth posture:** still treated as resilient rather than recessionary. Credit is benign and breadth is recovering, but this is not a full-clearance regime.
 - **Rates posture:** still restrictive. The Fed target remained 3.50%–3.75% on 2026-04-29. Next FOMC is 2026-06-17, and the current machine layer shows 0% cut probability.
@@ -26,7 +26,7 @@ Script-backed prep path:
 
 ## Working data points (live, as of 2026-05-01 close unless noted)
 
-- **Fed policy range:** 3.50% to 3.75% (confirmed 2026-04-29; machine layer still flags manual maintenance)
+- **Fed policy range:** 3.50% to 3.75% (confirmed in the live policy artifact; no current manual-dependency flag)
 - **Next FOMC:** 2026-06-17
 - **Cut probability next meeting:** 0%
 - **2-year Treasury:** 3.88% as of 2026-04-30
@@ -77,7 +77,7 @@ Script-backed prep path:
 
 ## Key signals to monitor
 
-- Fed target updates and the still-manual policy layer
+- Fed target updates and any future degradation in the policy artifact or approximation path
 - 2Y, 10Y, and 30Y Treasury yields
 - 2s10s and 3m10y curve shape
 - CPI, PPI, PCE, GDP, payrolls, and jobless claims
@@ -108,12 +108,12 @@ Script-backed prep path:
 
 - Does XOM stay benched after the May 1 report, or does the post-earnings interpretation justify a real requalification review?
 - Does the ETN / AMD / SMCI cluster next week support the AI power / infrastructure sleeve enough to tighten conviction, or only enough to maintain it?
-- Do the still-live date mismatches change any timing-sensitive decisions once they are directly confirmed?
+- Does the still-unconfirmed NVDA May 20 timing path change any near-term deployment judgment once a cleaner primary confirmation path lands?
 - Does the warning stack shrink after band review work, or is the current reduced-confidence posture still the right one?
 
 ## Freshness and refresh policy
 
-- **Last updated:** 2026-05-02
+- **Last updated:** 2026-05-03
 - **Data as of:** 2026-05-01 close
 - **Refresh cadence:** after CPI, PPI, PCE, payrolls, FOMC, or any material regime-breaking move in yields, oil, dollar, credit, or volatility
 - **Next refresh due:** after the next meaningful catalyst window or sooner if macro conditions materially change

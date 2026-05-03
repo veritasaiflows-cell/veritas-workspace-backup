@@ -4,31 +4,28 @@
 - Turn new-ticker intake and promotion decisions into an explicit operator procedure without reopening Workflow 6's already-set operational tier framework.
 
 ## Current State
-- This workflow is queued behind Workflow 10 in the reprioritized sequence.
-- Workflow 6 already settled the operating tier model (`Daily Execution`, `Event-Driven Watch`, `Macro Context`, `Speculative Monitor`).
-- What is still missing is the **procedure** layer: how a new name gets admitted, what minimum thesis/data/date/note obligations it must satisfy, and how promotion/demotion decisions are made consistently.
-- The formal Workflow 11 procedure draft should not outrun a real case. `LLY` is the first bounded live pilot and should be used before the procedure is treated as final.
+- Workflow 11 is now **honestly closed** after landing the admission/promotion procedure and using `LLY` as the bounded live intake pilot.
+- Workflow 6's operating tier model (`Daily Execution`, `Event-Driven Watch`, `Macro Context`, `Speculative Monitor`) stayed inherited rather than reopened.
+- The missing procedure layer is now explicit: admission gates, thesis obligations, promotion/demotion rules, and owner-note mutations are defined in `06. Playbooks/Coverage Admission and Promotion Protocol.md`.
+- The former written-thesis residue (`CAT`, `CVX`, `LLY`, `SMCI`) was resolved directly in `04. Research/Coverage Universe.md` instead of being left as indefinite machine-only drift.
 
 ## Last Meaningful Progress
 - Workflow 7 added `LLY` as a single-name Healthcare watch-lane pilot.
-- Current written-thesis residue remains explicit in `04. Research/Coverage Universe.md`: `CAT`, `CVX`, `LLY`, and `SMCI` are tracked operationally but still do not have full thesis blocks there.
+- Workflow 11 used that live pilot to define the admission/promotion procedure instead of writing a hypothetical policy note first.
+- `04. Research/Coverage Universe.md` now contains full thesis blocks for `CAT`, `CVX`, `LLY`, and `SMCI`, and the watch-pool table no longer carries those machine-tracked names as orphan pseudo-entries.
+- Validation and acceptance reruns still passed after the note/procedure changes, while the remaining policy/manual-dependency warnings stayed explicit for Workflow 12 rather than being hidden.
 
 ## Outstanding
-- Complete the missing `LLY` thesis block in `04. Research/Coverage Universe.md` as the first real intake-case pilot.
-- Define the exact minimum machine + note data requirements before a name can enter the tracked universe or Execution lane.
-- Define the per-ticker intake checklist.
-- Define minimum thesis-block requirements before a new tracked name is considered honestly covered.
-- Define the date/catalyst policy for newly admitted names.
-- Define which canonical notes must update on admission, promotion, demotion, and removal, and who owns each mutation.
-- Keep this workflow from relitigating Workflow 6's already-closed tier framework.
+- Commit the Workflow 11 change set after queue/registry/continuity sync is included.
+- Use the next real ticker add/promotion as the first post-closure proof case for the new protocol.
 
 ## Blockers / Trust Gaps
-- Main risk is scope drift back into Workflow 6 territory.
-- This workflow should inherit Workflow 6's lane/tier contract and build the **operator procedure** on top of it, not reopen the framework itself.
-- Formalizing the procedure before running `LLY` once as a real bounded intake case would risk writing to a hypothetical instead of the live workflow.
+- Main residual risk is procedure drift in future use, not missing procedure text.
+- The next proof point is operational discipline: future ticker adds must actually use the protocol instead of bypassing it in chat.
+- Macro/manual-dependency warnings remain visible in the validator layer, but they belong to Workflow 12 rather than reopening Workflow 11.
 
 ## Next Action
-- Complete the `LLY` thesis block first as the bounded live intake test case, then open the formal Workflow 11 draft so the procedure is grounded in one real pass instead of a hypothetical and includes explicit execution-lane admission gates.
+- Workflow 12 is the active next pass.
 
 ## Key Files
 - `06. Playbooks/Project Continuity/Workflow 6 - Coverage Tier Framework.md` - settled tier framework this workflow must inherit rather than reopen.

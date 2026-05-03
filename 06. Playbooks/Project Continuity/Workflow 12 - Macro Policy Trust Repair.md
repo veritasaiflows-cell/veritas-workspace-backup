@@ -4,27 +4,28 @@
 - Close or explicitly own the long-carried macro/policy trust residue and the remaining timing-sensitive dependency gaps that keep degrading trust surfaces.
 
 ## Current State
-- This workflow is queued behind Workflow 11 in the reprioritized sequence.
-- Macro/policy caveats were reduced materially by earlier hardening, but manual-dependency residue still recurs in the trust surface and should not live forever as unnamed background debt.
-- The new architecture audit also called out timing-sensitive earnings-date friction as another repairable trust dependency that should be handled intentionally instead of living as recurring validator noise.
+- Workflow 12 is now **honestly closed** after splitting active macro/timing caution from stale inherited caveats, updating the active note surfaces, and rerunning the trust checks.
+- Macro/policy caveats were reduced materially by earlier hardening, but the remaining debt was mostly stale downstream wording rather than live machine-state failure.
+- Timing-sensitive earnings-date friction is now narrowed explicitly instead of being repeated as a broad warning blanket across the active note layer.
 
 ## Last Meaningful Progress
 - Earlier policy hardening automated the current Fed target range from FRED and removed the old manual-target blocker path.
-- Even after those fixes, macro/policy residue has continued to appear as accepted warning-grade/manual-trust debt rather than a fully closed contract.
+- Workflow 12 then landed `06. Playbooks/Macro Policy and Timing Trust Protocol.md` to distinguish what is still intentionally approximate from what is merely stale inherited warning language.
+- Active downstream surfaces (`Executive Brief`, `Next Actions`, `Macro Regime Dashboard`, `Weekly Positioning Review`, `Deployment Trigger Sheet`, `Technical Entry and Invalidation Sheet`, `Portfolio Snapshot`, and `Event Calendar`) were updated so they no longer claim default manual-policy debt or broad unresolved date-mismatch residue that the live artifacts do not support.
+- `scripts/dashboard_validation.py` now has a bounded note-surface guard for stale manual-policy wording when the live policy artifact is no longer in manual mode.
+- Validation and acceptance reruns still passed after the trust-repair edits.
 
 ## Outstanding
-- Define which macro/policy caveats are intentionally manual and long-lived.
-- Define which remaining macro/policy and timing caveats are still repairable and should not remain permanent residue.
-- Decide whether policy-expectations sourcing and targeted earnings-date verification can be automated enough to retire the recurring friction honestly.
-- Assign explicit ownership and disclosure rules for any manual dependencies that remain.
+- Commit the Workflow 12 change set after queue/registry/continuity sync is included.
+- Use the next real policy/timing drift event as the first proof case that the new protocol and validator guard actually catch stale wording early.
 
 ## Blockers / Trust Gaps
-- The main risk is letting old caveats persist simply because they are familiar.
-- This workflow should separate **intentional manual dependency** from **unfinished trust repair**.
-- It also must avoid fake precision: some dependencies may stay manual by design if the source quality or trust boundary is still weak.
+- The main residual risk is regression: old blanket warning language can creep back in if downstream notes are updated loosely.
+- This workflow now separates **intentional approximation/caution** from **stale inherited caveat**; future edits need to preserve that distinction.
+- It also must avoid fake precision: provider-derived timing and simplified policy probabilities still are not a license for overconfidence.
 
 ## Next Action
-- Draft the residue inventory and split it into: intentional/manual, repairable soon, and no-longer-valid legacy caveats, with timing-sensitive earnings-date trust gaps included in the same inventory.
+- The required Workflow 9B -> 10 -> 11 -> 12 chain is complete; final summary and checkpointing are next.
 
 ## Key Files
 - `tmp/market-state.json` - live macro trust surface.

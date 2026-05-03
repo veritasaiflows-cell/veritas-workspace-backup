@@ -33,7 +33,7 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 | CVX | Energy | Tactical | Active watch | Coverage Universe |
 | LMT | Defense | Core candidate | Do not touch — repair mode | Trigger Sheet |
 | AMD | Tech / AI Infrastructure | Tactical | Active watch — May 5 earnings | Coverage Universe |
-| GS | Financials | Tactical | Watch — in band, but not intentionally promoted yet | Trigger Sheet |
+| GS | Financials | Tactical | Deployable now — tactical secondary to JPM | Trigger Sheet |
 | CAT | Industrials | Tactical | Active watch — post-print setup still secondary | Technical Sheet |
 | LNG | Energy | Tactical | Active watch | Coverage Universe |
 | PLTR | Tech / Defense | Tactical / Speculative | Active watch | Coverage Universe |
@@ -50,7 +50,7 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 See [[02. Markets/Regime Scoring Matrix]] for the current scored ranking.
 
 Current live action orientation:
-- **Deployable now:** JPM, NVDA
+- **Deployable now:** JPM, NVDA, GS (tactical secondary)
 - **Almost deployable:** ETN
 - **Almost deployable / benched:** GOOG, MSFT, XOM
 
@@ -60,6 +60,6 @@ This file should mirror those high-level states, not invent its own ranking syst
 
 ## Freshness
 
-- Last updated: 2026-05-02 — reconciled with the current trigger-sheet/dashboard state so JPM and NVDA show as deployable now, GOOG and MSFT no longer pretend their post-earnings review is missing, XOM no longer pretends it is merely awaiting interpretation, the active-tracking mirror now includes CVX and the Workflow 7 healthcare pilot add `LLY`, and the late-April wording drift is removed
+- Last updated: 2026-05-03 — Workflow 9B mirror-sync follow-through promoted GS from stale watch wording to deployable-now tactical-secondary status so this mirror no longer contradicts Trigger Sheet / Technical Entry ownership surfaces
 - Refresh this index when names are added to or removed from the active tracking universe, or when deployment state changes materially
 - Do not add thesis content, tier rankings, or setup detail to this file — those belong in Coverage Universe, Trigger Sheet, and Regime Scoring Matrix respectively

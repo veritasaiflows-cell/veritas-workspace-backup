@@ -335,9 +335,9 @@ Watch-lane technical carryovers with maintained bands:
 - This sheet is based on the latest available closing data in the refresh chain. It is precise at the daily level, not intraday.
 - Support and resistance were left unchanged unless prior levels appeared materially breached or clearly superseded by new structure.
 - Bands updated 2026-04-28 are MA20-anchored mechanical proposals. They confirm the existing structural framing rather than chase price — the largest single-band shift was 4 dollars.
-- **Confidence is downgraded to usable-with-caution, not clean-deployable.** Dashboard validation is still warning-level, but the old `GS` state-vs-band conflict is now expected to clear. Remaining caution should center on band backlog, timing-sensitive earnings-date residue led by NVDA, and macro/policy manual dependencies.
-- **Market-state context is fresh, but it carries manual and mixed-date caveats:** Fed target range is hardcoded as of 2026-04-19, FedWatch cut probability is not wired, and rates series are not fully aligned to the same trading day.
-- **Deployable now** in this sheet means the gates line up on paper. It does **not** cancel the warning stack, timing-confirmation work, crowding risk, or normal size discipline.
+- **Confidence remains usable-with-caution, not clean-deployable.** The old `GS` state-vs-band conflict is gone and dashboard validation is clean again, but remaining caution should center on the unresolved NVDA timing path, directional-only macro interpretation, crowding, and normal size discipline.
+- **Market-state context is fresh, but it still carries approximation and mixed-date caveats:** policy probabilities are simplified rather than full FedWatch, pre-market tape is weak, and some rates series are not perfectly aligned to the same trading day.
+- **Deployable now** in this sheet means the gates line up on paper. It does **not** cancel residual timing-confirmation work, crowding risk, or normal size discipline.
 - **BRK.B** has symbol-format caveats on some public sites. Cross-site screenshots may still show symbol formatting inconsistently.
 
 ## Bottom line
