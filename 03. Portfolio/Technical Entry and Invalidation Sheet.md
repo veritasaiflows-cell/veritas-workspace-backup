@@ -37,8 +37,8 @@ Script-backed prep path:
 - Invalidation logic: loses the 20-day cluster and breaks back below 383.23.
 - Stance: **Almost deployable**. Best chart in the universe, but still above the preferred zone.
 - Entry-distance context: **+$5.24 / +1.25% above the top of the preferred band**.
-- **Recent history:** the band update improved the entry asymmetry materially, but price is still extended into a May 5 earnings window. This remains a disciplined pullback case, not a chase.
-- ⚠️ **EARNINGS — May 5.** Even if price dips into band before the print, keep pre-event sizing smaller than normal.
+- **Recent history:** the band update improved the entry asymmetry materially, but price is still extended into a May 5 earnings window. This is no longer mainly a pullback-optimization question; it is now an event-risk decision.
+- ⚠️ **EARNINGS — May 5.** Default posture should be stand aside into the print unless an explicit event-risk exception is chosen. If price dips into band before the report, that alone is still not enough to justify normal pre-event sizing.
 
 ---
 
@@ -183,8 +183,8 @@ Script-backed prep path:
 - Invalidation logic: loses 464 and confirms continued relative weakness.
 - Stance: **Bench / do not touch**, even though price is right at the top of band the MA structure overrides band location.
 - Entry-distance context: **inside the preferred band**, but the weak MA structure still means this is band-location-without-MA-support.
-- **Recent history:** BRK.B is back inside the refreshed band, but all three MAs still sit above price — entering here is still entering into MA resistance, not into clean trend support.
-- ⚠️ **EARNINGS — Reported May 2** *(same-day timing now aligns across yfinance and Berkshire's homepage, but the next-quarter date is not yet rolled cleanly in the machine layer; keep the catalyst in post-earnings cleanup state rather than treating May 2 as a fresh upcoming date).*
+- **Recent history:** BRK.B is back inside the refreshed band, but all three MAs still sit above price — entering here is still entering into MA resistance, not into clean trend support. The May 2 report does not change that technical judgment; it just removes the stale pre-print holding pattern.
+- ⚠️ **EARNINGS — Reported May 2** *(post-print bench state confirmed. Timing is no longer the blocker for this quarter's print; structure repair is. The next-quarter date is not yet rolled cleanly in the machine layer, so keep this in post-earnings cleanup rather than fresh-catalyst mode.)*
 
 ---
 
@@ -305,10 +305,10 @@ Script-backed prep path:
 
 ## Freshness and refresh policy
 
-- Last updated: **2026-05-02** — targeted trust-hardening sync for ETN, JPM, NVDA, XOM, GOOG, and MSFT; approved band-sync refreshes for BRK.B, AMZN, VRT, CAT, LMT, and RTX after the May 1 close; and manual watch-lane parity sections added for CVX, PLTR, AMD, and LNG from the same artifact layer. Unless otherwise stated, the rest of the sheet still reflects the 2026-04-27 precision pass recorded on 2026-04-28.
+- Last updated: **2026-05-03** — post-chain audit follow-up explicitly moved BRK.B into post-print bench language and tightened ETN pre-print event-risk wording; prior targeted trust-hardening sync for ETN, JPM, NVDA, XOM, GOOG, and MSFT plus approved band-sync refreshes for BRK.B, AMZN, VRT, CAT, LMT, and RTX after the May 1 close still stand. Unless otherwise stated, the rest of the sheet still reflects the 2026-04-27 precision pass recorded on 2026-04-28.
 - Data as of: **2026-05-01 close for ETN, JPM, NVDA, XOM, GOOG, MSFT, BRK.B, AMZN, VRT, CAT, LMT, RTX, CVX, PLTR, AMD, and LNG**; unchanged sections still reflect the earlier **2026-04-27 close** precision pass.
 - Refresh cadence: each weekday for tracked names, plus extra refreshes before key earnings, after material breaks of support or resistance, or after moves large enough to change entry quality
-- Next refresh due: after the BRK.B result is assessed and again through the PLTR / ETN / AMD / LNG / SMCI cluster next week, or earlier if another band/state transition changes the live board materially
+- Next refresh due: before the May 5 ETN print if the pre-event stance changes, otherwise immediately after the ETN / AMD / LNG / SMCI cluster begins, or earlier if another band/state transition changes the live board materially
 - Refresh policy: refresh tracked-name close, moving averages, posture, and entry-distance context each weekday. Only rewrite support, resistance, stance, or invalidation language when evidence materially changed, so the sheet stays current without turning noisy.
 
 ## Current ranking after precision pass

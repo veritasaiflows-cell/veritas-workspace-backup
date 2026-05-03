@@ -652,6 +652,85 @@ Deliverable:
 Acceptance check:
 - remaining macro/policy and timing dependencies are intentional, current, explicitly owned, and no longer overstated by stale downstream wording
 
+### Workflow 13 - Script and tmp hygiene hardening
+Status:
+- **completed** on 2026-05-03
+- intentionally stayed narrowed to Tier 1 plus Tier 2.3 items only: silent path breakage, misleading run-summary diagnostics, tmp lifecycle guardrails, and fail-soft `portfolio-config` validation
+
+Why now:
+- these are low-risk, high-signal fixes that improve script health without restructuring the proven chain
+- the Sunday `call_log_sync.py` failure reinforced the value of narrow script hygiene before broader cleanup theater
+
+Lane:
+- Veritas main session
+- optional bounded helper review allowed for the `run_summary_refresh.py` normalization edge case if needed
+
+Deliverable:
+- replace the broken `Veritas2.0` hardcoded workspace paths in the three equity report scripts
+- tighten `normalized_chain_status(...)` in `scripts/run_summary_refresh.py` so successful completed runs stop surfacing misleading `running` state in the known edge case
+- add gated `scripts/tmp_cleanup.py` plus explicit tmp retention policy in `06. Playbooks/Workspace Structure Protocol.md`
+- add fail-soft `scripts/validate_portfolio_config.py` and wire it early in the chain as a warning surface, not a blocker
+
+Acceptance check:
+- the three off-chain report scripts no longer point at the wrong workspace root
+- post-close and sunday run summaries stop misreporting successful completion under the targeted edge case
+- tmp cleanup remains optional / gated and does not silently delete active artifacts
+- `portfolio-config` drift becomes visible in a machine artifact before it contaminates downstream surfaces
+
+Completion evidence:
+- `equity_visual_report.py`, `equity_pdf_report.py`, and `equity_ppt_report.py` now resolve the live workspace root dynamically
+- `validate_portfolio_config.py` landed and wrote clean machine proof to `tmp/portfolio-config-validation.json`
+- `tmp_cleanup.py` landed, is dry-run by default, and completed cleanly through the Sunday `--cleanup` tail with `eligible_count: 0`
+- `run_finance_refresh_chain.py post-close` and `run_finance_refresh_chain.py sunday --cleanup` both passed after the bounded hardening
+- `tmp/run-summary-post-close.json` and `tmp/run-summary-sunday.json` now show terminal `execution.chain_status = "ok"`
+
+### Workflow 14 - Operator script boundary and lifecycle cleanup
+Status:
+- **completed** on 2026-05-03
+- closed with a compatibility-first structural pass: operator-only implementations moved behind `scripts/operators/`, root CLI paths were preserved as wrappers, and archive candidates that still showed active documented use were intentionally kept
+
+Why now:
+- `scripts/` readability is weaker than it should be, but moving files before caller tracing would be fake cleanup
+
+Lane:
+- Veritas main session
+- bounded helper support allowed for caller tracing and last-30-day usage audit only
+
+Deliverable:
+- verify chain and non-chain callers before moving anything
+- separate operator-only tools only where the caller map is explicit
+- archive `equity_pdf_report.py` / `equity_ppt_report.py` only if the usage audit proves they are inactive
+- document the `entry_band_viewer.jsx` embed path in `scripts/entry_band_fetch.py`
+
+Acceptance check:
+- no chain callsite breaks
+- archive decisions are evidence-based, not guessed
+- operator-only surfaces become clearer without widening chain scope
+
+Completion evidence:
+- caller tracing confirmed `call_log_sync.py` stays in root because the Sunday chain calls it directly
+- caller tracing confirmed `workbook_template.py` stays in root because the manual `--build-workbook` tail can call it
+- `scripts/operators/` now owns the implementations for `apply_band_update.py`, `band_note_sync.py`, `daily_note_dedupe.py`, `post_earnings_scorecard.py`, and `test_universe.py`
+- root wrapper entrypoints preserved the documented CLI surface and validated cleanly
+- `entry_band_fetch.py` now documents that `entry_band_viewer.jsx` is an inline governed render asset, not a standalone frontend project
+- the equity PDF/PPT wrappers were kept because playbooks, skills, and `scripts/README.md` still document them as active entrypoints
+
+### Workflow 15 - Script performance and payload modularity backlog
+Status:
+- deferred backlog, not active
+
+Why now:
+- the ideas are real, but they are not present blockers and should not be forced ahead of hygiene and lifecycle work
+
+Lane:
+- defer until there is either measurable chain-latency pain or a natural payload seam
+
+Deliverable:
+- keep the `entry_band_fetch.py` freshness-gate idea and `dashboard_payload.py` modularization candidate named and scoped without prematurely rewriting them
+
+Acceptance check:
+- when opened later, the work is driven by evidence rather than aesthetics
+
 ## Queue hardening rule
 
 This queue is part of the orchestration protocol, not a scratchpad.
@@ -705,10 +784,13 @@ Run in this order:
 13. Workflow 8 - command center chain readiness review [completed - historical pass-3 no-go preserved; bounded reopen QC-closed; downstream-only ownership rule preserved]
 14. Workflow 9 - research department operating model [completed - closed with follow-up; functional desk model normalized, Risk Rules doctrine additions operator-approved, and Command Center kept downstream/non-authoritative]
 15. Workflow 9A - workspace structure and drift cleanup [completed - root generated-documents exception retired; stale nested worktree and predecessor-note/archive cleanup closed; residue handed to Workflow 9B / Workflow 10]
-16. Workflow 9B - surface alignment and drift-guard hardening [active top priority; lock truth-sync/validator/owner contracts before scaling further]
-17. Workflow 10 - subagent/session lifecycle reliability review [queued next runtime/control-surface pass; includes stale completion-state, run-ledger hardening, and root-worktree metadata residue]
-18. Workflow 11 - coverage admission model [do not relitigate Workflow 6; operationalize per-ticker intake / promotion procedure and execution-lane admission gates instead]
-19. Workflow 12 - macro / policy trust repair [close or explicitly own the remaining macro/policy and timing-trust manual-dependency debt]
+16. Workflow 9B - surface alignment and drift-guard hardening [completed]
+17. Workflow 10 - subagent/session lifecycle reliability review [completed]
+18. Workflow 11 - coverage admission model [completed]
+19. Workflow 12 - macro / policy trust repair [completed]
+20. Workflow 13 - script and tmp hygiene hardening [completed]
+21. Workflow 14 - operator script boundary and lifecycle cleanup [completed]
+22. Workflow 15 - script performance and payload modularity backlog [deferred]
 
 Entry-log rule:
 - keep new workflow entries in this exact order unless a higher-priority trust blocker overtakes them

@@ -1,7 +1,7 @@
 {
   "window": "sunday",
-  "run_id": "20260503T140445Z_sunday",
-  "generated_at_utc": "2026-05-03T14:04:45Z",
+  "run_id": "20260503T153727Z_sunday",
+  "generated_at_utc": "2026-05-03T15:37:27Z",
   "status": "ok",
   "stop_line": false,
   "owner": {
@@ -9,9 +9,9 @@
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-05-02T09:05:51Z",
-    "completed_at_utc": "2026-05-02T09:06:20Z",
-    "duration_seconds": 29
+    "started_at_utc": "2026-05-03T15:30:58Z",
+    "completed_at_utc": "2026-05-03T15:31:30Z",
+    "duration_seconds": 32
   },
   "execution": {
     "chain_status": "ok",
@@ -37,42 +37,42 @@
     "command_center": {
       "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-03T04:42:37Z"
+      "generated_at_utc": "2026-05-03T15:31:30Z"
     },
     "dashboard_validation": {
       "status": "ok",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-03T13:55:21Z"
+      "generated_at_utc": "2026-05-03T15:31:29Z"
     },
     "dashboard_acceptance": {
       "status": "ok",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-03T13:55:22Z"
+      "generated_at_utc": "2026-05-03T15:31:29Z"
     },
     "workbook_exports": {
       "status": "ok",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-02T23:14:54.532266+00:00"
+      "generated_at_utc": "2026-05-03T15:31:29.599832+00:00"
     },
     "weekly_macro_snapshot": {
       "status": "ok",
       "path": "tmp/weekly-macro-snapshot.json",
-      "generated_at_utc": "2026-05-02T09:06:20.064080+00:00"
+      "generated_at_utc": "2026-05-03T15:31:29.683468+00:00"
     },
     "weekly_intelligence_brief": {
       "status": "ok",
       "path": "tmp/weekly-intelligence-brief.json",
-      "generated_at_utc": "2026-05-02T09:06:20.146390+00:00"
+      "generated_at_utc": "2026-05-03T15:31:29.765363+00:00"
     },
     "postmarket_snapshot": {
       "status": "ok",
       "path": "tmp/postmarket-snapshot.json",
-      "generated_at_utc": "2026-05-02T23:14:54.781300+00:00"
+      "generated_at_utc": "2026-05-03T15:31:29.847509+00:00"
     },
     "daily_executive_brief": {
       "status": "ok",
       "path": "tmp/daily-executive-brief.json",
-      "generated_at_utc": "2026-05-02T23:14:54.880638+00:00"
+      "generated_at_utc": "2026-05-03T15:31:29.932245+00:00"
     }
   },
   "warnings": [],

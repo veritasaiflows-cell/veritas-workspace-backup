@@ -8,10 +8,10 @@ Use this to support short operator handoffs and reliable `continue next pass` pr
 
 ## Current State
 - Project: `Capital Deployment Readiness`
-- Current phase: `Held after Phase 2 — waiting for Gemini Phase 3 implementation pass`
-- Last completed pass: `Phase 2 — morning decision surface design`
-- Next recommended pass: `Claude post-Phase-3 review against the surface-design contract`
-- Open operator decisions: re-engage Claude after Gemini Phase 3, then review GS override path plus post-earnings review posture for MSFT/AMZN/GOOG/CAT/XOM in the updated machine output
+- Current phase: `Phase 3 complete — live bounded review surface implemented; next optional step is Phase 4 operating cadence`
+- Last completed pass: `Phase 3 — implementation / integration`
+- Next recommended pass: `Phase 4 — define the daily morning operator cadence around the new surface and the Trigger Sheet owner boundary`
+- Open operator decisions: whether to formalize Phase 4 now or keep the surface as an operator-only JSON artifact beneath the canonical Trigger Sheet; helper lanes still stay read-only for intake prep, thesis-drift packets, and contradiction QA
 
 ---
 
@@ -66,3 +66,47 @@ Use this to support short operator handoffs and reliable `continue next pass` pr
   - put Claude on hold as the review/interpretation owner after Gemini completes Phase 3
 - Next pass:
   - `Claude post-Phase-3 review after Gemini implementation`
+
+### 2026-05-03 — Automation-readiness clarification
+- Completed by: Veritas
+- Status: complete
+- Objective: align Capital Deployment Readiness with the post-Workflow-10/11/12 automation posture instead of leaving it frozen in stale Phase-3-handoff language
+- Files changed:
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness - Chain Log.md`
+  - `06. Playbooks/IC Project Registry.md`
+- Validation:
+  - note-layer clarification only; no machine/code changes
+- Outcome:
+  - recorded that this lane now sits between stable scheduled review surfaces and gated apply helpers
+  - made the safe boundary explicit: read-only packets, validators, contradiction scans, and scheduled evidence are allowed; canonical readiness judgment remains human-gated
+  - clarified the first post-revival helper-lane sequence: intake prep, thesis-drift intake, contradiction QA
+- Next pass:
+- `Explicit operator decision: revive Phase 3, supersede the project, or close it cleanly`
+
+### 2026-05-03 — Phase 3
+- Completed by: Veritas
+- Status: complete
+- Objective: implement the bounded deployment-readiness review surface from the Phase 2 contract without crossing into autonomous note ownership
+- Files changed:
+  - `scripts/trigger_sheet_refresh.py`
+  - `scripts/deployment_readiness_surface.py`
+  - `scripts/run_finance_refresh_chain.py`
+  - `tmp/portfolio-config.json`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
+  - `06. Playbooks/Project Continuity/Capital Deployment Readiness - Chain Log.md`
+  - `06. Playbooks/IC Project Registry.md`
+- Validation:
+  - `python scripts/run_finance_refresh_chain.py post-close`
+  - post-close chain exited `0`
+  - `tmp/deployment-readiness-surface.json` written successfully
+  - `tmp/dashboard-validation.json` stayed clean
+  - `tmp/dashboard-acceptance-report.json` stayed passing
+- Outcome:
+  - Phase 2 review fields are now emitted into the trigger-sheet layer
+  - a dedicated review artifact now exists at `tmp/deployment-readiness-surface.json`
+  - ETN now renders as explicit near-earnings caution
+  - NVDA now fail-closes to ALMOST while earnings timing remains unconfirmed inside the active catalyst window
+  - scheduled-window note mutation remains fail-closed; the new surface supports review but does not seize note ownership
+- Next pass:
+  - `Phase 4 — operating cadence, if daily-use formalization is wanted`

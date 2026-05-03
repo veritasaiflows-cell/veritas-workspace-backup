@@ -6,8 +6,9 @@
 
 ## Current State
 - The workspace has a growing machine pipeline for technicals, trigger sheets, deployment checks, regime scores, positioning ranks, dashboard validation, and run-summary trust.
-- The OS is getting stronger, and the worst workflow/action leakage has been repaired, but deployment certainty is still limited by stale note ownership, post-earnings note/date reconciliation, degraded macro/policy trust, and imperfect morning operator clarity.
-- The current system can produce rankings and statuses, but it still needs a clearer contract for what "deployable now" actually means under live trust conditions.
+- Phase 3 is now implemented in the machine layer: the stack carries the Phase 2 review fields, emits a dedicated deployment-readiness surface, and applies bounded trust downgrades instead of letting raw ranking or in-band status speak last.
+- The current system can now distinguish raw machine posture from reviewed surface posture more honestly: ETN is explicitly near-earnings caution, NVDA is capped at ALMOST while timing confirmation remains unresolved inside the active catalyst window, and recent reviewed post-print names no longer fall back into stale limbo.
+- **Automation phase (post-Workflow 10/11/12 reality):** this lane is now between **stable scheduled review surfaces** and **gated apply helpers**. Scheduled evidence, validator output, trigger artifacts, and contradiction warnings are strong enough to support disciplined review, but canonical readiness judgment is still note-owned and human-gated.
 
 ## Why this project exists
 - Randall wants to start deploying capital while markets are moving.
@@ -26,23 +27,77 @@
 - The remaining gap is no longer the worst machine-state leakage; it is note/date reconciliation plus post-earnings judgment on the most consequential names.
 
 ## Outstanding
-- Define the deployment-readiness contract.
-- Clarify which existing artifacts are authoritative for:
-  - readiness
-  - blocked state
-  - near-ready state
-  - trust override / do-not-deploy state
-- Identify where current rankings or trigger outputs can produce false positives.
-- Define the minimum morning operator surface needed for disciplined capital deployment.
-- Decide what belongs in machine artifacts versus canonical notes versus morning brief output.
-- Determine what must be repaired in the OS before broader capital deployment should scale.
+- Operationalize Phase 4 morning use cadence if this surface is going to be used daily.
+- Decide whether the deployment-readiness surface should remain an operator JSON artifact only or later get a human-facing dashboard panel.
+- Continue cleaning narrow timing/date trust residue when it becomes decision-critical, led by NVDA.
+- Keep canonical readiness judgment human-owned in `03. Portfolio/Deployment Trigger Sheet.md`.
 
 ## Blockers / Trust Gaps
-- Note-layer reconciliation is now narrowly centered on post-earnings judgment quality rather than obvious state mismatch; MSFT and GOOG remain intentionally conservative until explicit review is complete.
 - Macro/policy trust remains degraded and can undermine confidence even when individual names look technically attractive.
-- Trigger-sheet canonical note ownership is improving, but post-earnings adjudication still needs explicit human review before any upgrade.
-- The highest-value earnings-date trust noise is now narrow: NVDA still shows May 20 in machine outputs versus an older May 27 vault date, BRK.B shows May 2 versus an older May 4 vault date, and CAT is no longer primarily a date problem — it is a post-earnings rewrite problem.
-- The current stack still needs a clean rule for when degraded trust should override otherwise-constructive deployability.
+- The highest-value earnings-date trust noise is now narrow: NVDA still shows May 20 in machine outputs versus an older May 27 vault date, and BRK.B next-quarter timing still needs IR-grade confirmation before anyone should lean on the provider date.
+- The run summary still reports raw runtime `execution.chain_status = running` in some scheduled windows; Workflow 10 already made that advisory rather than canonical, but it remains real runtime debt rather than a solved runtime truth source.
+- A formal automation-ready deployment desk is still blocked by owner-boundary gaps that Workflow 10 did not solve by itself: admission governance still belongs to Workflow 11 procedure, macro/policy caution still belongs to Workflow 12 trust handling, and queue/workflow advancement plus final truth arbitration remain human-only.
+
+## Automation readiness assessment — 2026-05-03
+
+**Workflow under review:** Capital Deployment Readiness
+
+**Current phase:** stable scheduled evidence + review surfaces, approaching gated apply helpers
+
+**Recommended next phase:** gated morning deployment surface with explicit human approval on all canonical readiness calls
+
+**Safe automation boundary now:**
+- scheduled evidence collection and staging artifacts for macro, technical, earnings, trigger, and dashboard layers
+- validator runs, acceptance checks, contradiction scans, and mirror-parity warnings
+- read-only prep packets for admission review, thesis drift, and deployment-risk review
+- distinct-output helper lanes that do not compete for the same canonical note surface
+
+**Still human-gated:**
+- queue movement, workflow advancement, and final QC closeout
+- admission / promotion / demotion into tracked universe or execution lane
+- canonical thesis rewrites, trigger-sheet final judgment, and portfolio conclusion changes
+- final macro regime judgment, policy-caveat wording, and any cross-surface truth arbitration
+- any packaging/publishing step that could be mistaken for presentation-grade truth while upstream residue remains active
+
+**Missing trust gates before wider rollout:**
+- a clean admission/procedure ownership tie-in to Workflow 11
+- a hardened source bundle / stop-line contract for recurring news and thesis-drift monitoring
+- continued fail-closed handling for timing-sensitive date noise, led by NVDA when decision-critical
+- explicit rule that runtime/session state remains advisory beneath artifact-level proof
+
+**Recommended rollout sequence after this edit:**
+1. use `tmp/deployment-readiness-surface.json` as the bounded operator review artifact beneath the Trigger Sheet owner surface
+2. keep the first recurring helper lanes read-only: admission prep, thesis-drift intake, and contradiction QA
+3. stop every helper lane at packet/review output; do not let them mutate canonical readiness notes or portfolio posture
+4. if daily usage sticks, open Phase 4 and define the exact morning operator cadence instead of letting it emerge informally
+
+## Phase 3 — Completed 2026-05-03
+- Implemented the bounded machine-side review surface without crossing into autonomous readiness judgment.
+- **Code / artifact deliverables:**
+  - `scripts/trigger_sheet_refresh.py` now emits the Phase 2 review fields:
+    - `post_earnings_review_confirmed`
+    - `post_earnings_review_date`
+    - `last_earnings_date`
+    - `earnings_date_ir_confirmed`
+    - `earnings_date_ir_confirmed_date`
+  - `scripts/deployment_readiness_surface.py` now builds `tmp/deployment-readiness-surface.json`
+  - `scripts/run_finance_refresh_chain.py` now runs the new surface generator in all scheduled windows after run-summary consumption
+  - `tmp/portfolio-config.json` now carries the bounded post-earnings/date-confirmation fields needed for reviewed names
+- **Behavioral outcomes:**
+  - ETN now renders as `ALMOST / NEAR-EARNINGS CAUTION` instead of blending into generic almost-ready output
+  - NVDA is now fail-closed to `ALMOST DEPLOYABLE` under Rule 6B while its active-window earnings timing remains unconfirmed
+  - BRK.B, XOM, GOOG, MSFT, LMT, and other reviewed names now carry explicit post-earnings/date fields instead of relying on silent inference
+  - canonical note mutation remains fail-closed from scheduled windows; this surface is review support, not autonomous note control
+- **Live verification:**
+  - `python scripts/run_finance_refresh_chain.py post-close` completed successfully on 2026-05-03
+  - `tmp/deployment-readiness-surface.json` now shows:
+    - `DEPLOYABLE NOW`: `GS`, `JPM`
+    - `ALMOST DEPLOYABLE`: `GOOG`, `MSFT`, `NVDA`
+    - `ALMOST / NEAR-EARNINGS CAUTION`: `ETN`
+    - `DO NOT TOUCH`: `BRK.B`, `LMT`, `XOM`
+    - `WATCH / RESEARCH NEEDED`: `VRT`
+  - `tmp/dashboard-validation.json` stayed `0 critical / 0 warning`
+  - `tmp/dashboard-acceptance-report.json` stayed passing via the post-close chain
 
 ## Phase History
 
@@ -86,29 +141,30 @@
   - 4 DO NOT TOUCH: LMT, RTX, BRK.B, and GS cross-reference
   - 3 WATCH: GS (machine said DEPLOYABLE NOW), VRT, AMD
 
-## Current Hold State — as of 2026-05-01
+## Current Posture — as of 2026-05-03
 
-**Claude status:** Held but re-engageable. Phases 0–2 complete and still valid as the contract layer.
+**Phase status:** Phase 3 complete. Phase 0–2 remain the contract layer; Phase 3 is now the live implementation layer.
 
-**Phase 3 owner:** Gemini / Veritas machine-side work already moved the stack materially forward. The current bottleneck is no longer a pure implementation lane.
+**Current owner posture:** Veritas owns the machine-side implementation and QA state here. Canonical readiness judgment still belongs to the Trigger Sheet / note layer, not the helper surface.
 
-**Claude standing instructions (held):**
-- Remain owner of the deployment-readiness contract (Phase 0) and morning-surface logic (Phase 2)
-- Stand by for cross-project review after note-layer reconciliation and the next judgment-sensitive state pass
-- MSFT remains top post-earnings review priority — in band post-Apr-29 print, stale block, needs human read on earnings before any re-classification
-- GS remains overridden to WATCH — machine false positive (DEPLOYABLE NOW) is not cleared until: (1) thesis review completed, (2) human-validated entry and stop written into Deployment Trigger Sheet, (3) workflow_state changed from WATCH to ALMOST by operator
-- Do not begin Phase 3 implementation
+**What is now true:**
+- GS is no longer the old false positive from Phase 0/1; the current note-layer and machine-layer posture both treat it as a tactical but secondary deployable setup.
+- MSFT and GOOG are no longer blocked by stale post-print logic; they remain ALMOST because price posture is still extended versus band, not because the stack lost the plot.
+- NVDA is the main active fail-closed timing case: technically in band, but not allowed to present as full deployable-now truth in the review surface until timing confirmation is cleaned up.
 
-**What Claude will do when re-engaged:**
-- Review the post-Phase-3 stack against the Phase 2 surface design contract
-- Verify that workflow_state gating and stale-block cleanup are behaving honestly enough in the note layer
-- Run the adjudication rules against the post-Phase-3 machine output to confirm the surface now produces correct states
-- Write the post-Phase-3 review note
+**What a second-opinion lane would review now if needed:**
+- whether Rule 6B is the right fail-closed ceiling for active-window timing uncertainty
+- whether a later human-facing panel should expose the same surface directly or keep it as JSON/operator-only infrastructure
+- whether Phase 4 cadence should formalize the morning review sequence around this artifact
 
 ## Next Action
-- **Immediate next action:** re-run the deployment-readiness interpretation pass against the cleaned note layer, with MSFT and GOOG still held conservatively until explicit post-earnings review is complete
-- **Then:** decide whether a second-opinion review is still useful on MSFT/GOOG adjudication or whether the conservative hold is sufficient for now
-- **Claude re-engagement trigger:** after the note-layer reconciliation lands, if a second-opinion review is still useful on MSFT/GOOG adjudication or morning-surface trust
+- **Immediate next action:** if you want this used as a daily discipline tool, open **Phase 4 — Operating cadence** and define the exact morning operator pattern around `tmp/deployment-readiness-surface.json` plus the Trigger Sheet.
+- **If Phase 4 is deferred:** keep using the Trigger Sheet as canonical and treat the new surface as a bounded machine-side review packet.
+- **First helper lanes after Phase 3 should stay read-only:**
+  1. `LLY`-style coverage intake prep packet
+  2. thesis-drift / news-monitoring intake packet
+  3. adversarial contradiction / QA packet
+- **Second-opinion re-engagement trigger:** if another judgment lane is useful, have it review the live Phase 3 output against the Phase 2 contract rather than re-litigating whether Phase 3 exists.
 
 ## Key Files
 - `03. Portfolio/Deployment Trigger Sheet.md`
@@ -122,6 +178,7 @@
 - `tmp/positioning-ranking.json`
 - `tmp/dashboard-validation.json`
 - `tmp/run-summary-post-close.json`
+- `tmp/deployment-readiness-surface.json`
 - `tmp/workbook-control-panel.csv`
 - `06. Playbooks/Project Continuity/E17 Universe Synchronization.md`
 

@@ -29,7 +29,7 @@ Canonical owners:
 
 ## What matters now
 
-1. **The live action list is narrow.** **JPM** and **NVDA** are the only names currently in band. **ETN** remains pullback-only.
+1. **The live action list is narrow.** **JPM**, **NVDA**, and **GS** are the names currently in band. GS is now a confirmed tactical secondary to JPM at Tier 2 sizing. **ETN** remains an event-risk decision into May 5 earnings.
 2. **GOOG and MSFT are no longer unresolved post-earnings cases.** The scorecards are now written, but both names still stay off the live board because GOOG is extended above band and MSFT still needs cleaner repair below the 200-day.
 3. **XOM reported on May 1 and the scorecard is done, but the name is still benched.** Oil is strong, but follow-through still is not clean enough to put energy back on the active board.
 4. **BRK.B reported May 2 and the ETN / AMD / SMCI cluster lands this week.** That is the next real catalyst window.
@@ -37,8 +37,8 @@ Canonical owners:
 
 ## Current next move
 
-- treat **JPM** and **NVDA** as the only live in-band candidates, with normal size discipline
-- keep **ETN** conditional only
+- treat **JPM**, **NVDA**, and **GS** as the live in-band candidates — GS at Tier 2 sizing, subordinate to JPM
+- treat **ETN** as an event-risk decision: stand aside into the May 5 print or define a post-print entry-on-weakness plan explicitly
 - use the **XOM** scorecard as the canonical read, but keep energy benched until follow-through improves
 - use the new **GOOG** and **MSFT** scorecards as canon, but keep both names out of the live deployment list until entry quality improves
 
@@ -87,3 +87,4 @@ Read in this order:
 - 2026-05-02 — refreshed against 2026-05-01 close. Updated for: JPM and NVDA now in band; ETN still conditional; GOOG/MSFT post-earnings revalidation now explicit but still not deployable; XOM interpreted but still benched; dashboard trust remains reduced with a real band-review backlog.
 - 2026-05-03 — heartbeat freshness cleanup only: rolled the BRK.B catalyst wording forward after the date change and removed the obsolete GS WATCH-mismatch warning from this orientation surface.
 - 2026-05-03 — Workflow 12 trust repair removed stale manual-policy and broad date-integrity wording so this orientation surface now matches the live policy artifact and narrower timing residue.
+- 2026-05-03 — GS promoted from WATCH to deployable-now tactical secondary at Tier 2 sizing. Live board now reads JPM / NVDA / GS in band; ETN reframed as event-risk decision into May 5 rather than routine pullback.

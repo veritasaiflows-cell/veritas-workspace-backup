@@ -62,6 +62,12 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def describe_transition(delta: dict[str, Any]) -> str:
+    previous = delta.get("intended_state") or delta.get("log_status") or "unknown"
+    current = delta.get("current_state") or "unknown"
+    return f"{previous} → {current}"
+
+
 # ---------------------------------------------------------------------------
 # Parse open calls from Call Log.md
 # ---------------------------------------------------------------------------
@@ -287,7 +293,7 @@ def main() -> None:
         print(f"\n  ⚠  CRITICAL — Update Call Log now:")
         for d in critical:
             dte = f"  earnings in {d['days_to_earnings']}d" if d.get("days_to_earnings") is not None and d["days_to_earnings"] >= 0 else ""
-            print(f"     #{d['call_num']} {d['ticker']}: {d['intended_state']} → {d['current_state']}{dte}")
+            print(f"     #{d['call_num']} {d['ticker']}: {describe_transition(d)}{dte}")
             if d.get("current_why"):
                 print(f"          Reason: {d['current_why']}")
 
@@ -296,14 +302,14 @@ def main() -> None:
         for d in material:
             dte = f"  earnings in {d['days_to_earnings']}d" if d.get("days_to_earnings") is not None and d["days_to_earnings"] >= 0 else ""
             in_band_note = "  IN BAND" if d.get("in_band") else ""
-            print(f"     #{d['call_num']} {d['ticker']}: {d['intended_state']} → {d['current_state']}{dte}{in_band_note}")
+            print(f"     #{d['call_num']} {d['ticker']}: {describe_transition(d)}{dte}{in_band_note}")
             if d.get("current_why"):
                 print(f"          Reason: {d['current_why']}")
 
     if minor:
         print(f"\n  ○ Minor changes (log awareness, not urgent):")
         for d in minor:
-            print(f"     #{d['call_num']} {d['ticker']}: {d['intended_state']} → {d['current_state']}")
+            print(f"     #{d['call_num']} {d['ticker']}: {describe_transition(d)}")
 
     if new_names:
         print(f"\n  + Names in trigger sheet not yet in call log:")

@@ -18,7 +18,22 @@
       "Bash(python scripts/validate_dashboard_state.py --write)",
       "Bash(python scripts/premarket_snapshot.py)",
       "Bash(python scripts/postmarket_snapshot.py)",
-      "Bash(python scripts/daily_executive_brief.py)"
+      "Bash(python scripts/daily_executive_brief.py)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Veritas.RQs_Business\\\\.openclaw\\\\workspace\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(python -m py_compile scripts/generate_dashboard.py)",
+      "Bash(python -m py_compile scripts/run_finance_refresh_chain.py scripts/dashboard_validation.py scripts/run_summary_refresh.py)",
+      "Bash(python -c \"import json; d=json.load\\(open\\('tmp/deployment-check.json'\\)\\); [print\\(r['ticker'], r.get\\('action_state',''\\), r.get\\('in_entry_band',''\\)\\) for r in d.get\\('ranked_names', d.get\\('results', []\\)\\)]\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('tmp/deployment-check.json'\\)\\); print\\(list\\(d.keys\\(\\)\\)[:5]\\)\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('tmp/run-summary-post-close.json'\\)\\); exec=d.get\\('execution',{}\\); print\\('chain_status:', exec.get\\('chain_status'\\)\\); print\\('pres_allowed:', d.get\\('downstream',{}\\).get\\('presentation_allowed'\\)\\); print\\('canonical_mutation:', d.get\\('downstream',{}\\).get\\('canonical_note_mutation_allowed'\\)\\); print\\('status:', d.get\\('status'\\)\\); print\\('exit_code:', d.get\\('exit_code','n/a'\\)\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(python scripts/test_dashboard_acceptance.py)",
+      "Bash(python scripts/daily_note_dedupe.py --all --dry-run)",
+      "Bash(python scripts/daily_note_dedupe.py --all)",
+      "Bash(python scripts/validate_portfolio_config.py)",
+      "Bash(ls scripts/operators/)",
+      "Bash(python -c \"import json; d=json.load\\(open\\('tmp/run-summary-post-close.json'\\)\\); print\\('chain_status:', d['execution']['chain_status']\\)\")"
     ]
   }
 }

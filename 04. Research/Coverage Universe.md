@@ -46,10 +46,10 @@ Each entry uses four fields:
 
 ### XOM — ExxonMobil
 - **Tier:** Core candidate
-- **Status:** In portfolio draft — benched pending May 1 earnings requalification
+- **Status:** In portfolio draft — benched post-interpretation; Q1 was stronger than the GAAP headline, but follow-through still requires 2–3 EIA reads plus Hormuz/production confirmation before requalification.
 - **Thesis:** Largest US integrated energy company with world-class cash generation, fortress balance sheet, and structural leverage to oil prices and geopolitical supply dynamics.
 - **Key risk:** Sustained crude decline below $75/bbl erodes cash flow and buyback capacity; or demand destruction from accelerated energy transition.
-- **Act when:** May 1 earnings requalification. Oil has recovered to Brent ~$99 / WTI ~$94 as of Apr 24 — the energy setup is improving. Entry band $142.50–$147.50 requires post-print evidence that the oil recovery is durable and XOM's guidance confirms it. Stop $139.50.
+- **Act when:** Post-earnings requalification path: oil structure (Brent >$100 sustained), EIA reads confirming demand, and 50-day reclaim. Entry band and stop require a fresh post-print technical pass — the Apr 24 levels ($142.50–$147.50 / stop $139.50) predate the May 1 print and should not be used without revalidation.
 
 ### LNG — Cheniere Energy
 - **Tier:** Tactical

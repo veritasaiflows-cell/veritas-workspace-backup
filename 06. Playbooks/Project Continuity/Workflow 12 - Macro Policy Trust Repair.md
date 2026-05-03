@@ -16,7 +16,6 @@
 - Validation and acceptance reruns still passed after the trust-repair edits.
 
 ## Outstanding
-- Commit the Workflow 12 change set after queue/registry/continuity sync is included.
 - Use the next real policy/timing drift event as the first proof case that the new protocol and validator guard actually catch stale wording early.
 
 ## Blockers / Trust Gaps
@@ -25,7 +24,7 @@
 - It also must avoid fake precision: provider-derived timing and simplified policy probabilities still are not a license for overconfidence.
 
 ## Next Action
-- The required Workflow 9B -> 10 -> 11 -> 12 chain is complete; final summary and checkpointing are next.
+- Keep Workflow 12 closed unless a real policy/timing regression appears; the post-chain hardening pass and checkpoint commit closed the prior repo-state residue.
 
 ## Key Files
 - `tmp/market-state.json` - live macro trust surface.

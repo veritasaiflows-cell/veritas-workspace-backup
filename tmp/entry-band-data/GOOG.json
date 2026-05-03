@@ -1,7 +1,7 @@
 {
   "ticker": "GOOG",
   "name": "Alphabet Inc.",
-  "asof": "2026-05-02",
+  "asof": "2026-05-03",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1038,5 +1038,5 @@
     "ma200": 281.03,
     "data_date": "2026-05-01"
   },
-  "generated_at": "2026-05-03T04:42:22+00:00"
+  "generated_at": "2026-05-03T15:31:22+00:00"
 }

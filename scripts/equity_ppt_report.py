@@ -7,7 +7,7 @@ from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
 from pptx.dml.color import RGBColor
 from pptx.util import Inches, Pt
 
-WORKSPACE = Path(r"C:\Users\Veritas2.0\.openclaw\workspace")
+WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 PLAYBOOKS = WORKSPACE / "06. Playbooks"
 TMP.mkdir(parents=True, exist_ok=True)

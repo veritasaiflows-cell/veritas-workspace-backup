@@ -10,7 +10,7 @@ Boundary:
 - point to the right source notes instead of restating them
 - keep it to the next few concrete moves, not full weekly analysis or doctrine
 
-## Current best next actions (as of 2026-05-02)
+## Current best next actions (as of 2026-05-03)
 
 1. **Treat JPM and NVDA as the only live in-band candidates — but not as auto-buys**
    - **JPM** closed at 312.47 inside the refreshed 306.82–318.12 band.
@@ -18,8 +18,9 @@ Boundary:
    - Size discipline still matters because the dashboard layer is warning-grade and NVDA crowding risk is still real.
    - Use [[03. Portfolio/Deployment Trigger Sheet]] and [[03. Portfolio/Technical Entry and Invalidation Sheet]] before treating either as a real add.
 
-2. **Keep ETN pullback-only**
-   - **ETN** at 425.55 vs. band 395.59–420.31 — still above band and only days from May 5 earnings.
+2. **Make the ETN pre-print decision explicit before May 5**
+   - **ETN** at 425.55 vs. band 395.59–420.31 is only ~1.2% above the band ceiling, but the real issue now is earnings-event risk, not minor entry-distance math.
+   - Default posture should be stand aside into the print unless an explicit event-risk exception is chosen.
    - No chase above written bands.
 
 3. **Use the XOM scorecard before changing any energy posture**
@@ -33,7 +34,7 @@ Boundary:
    - **MSFT** still needs either a cleaner pullback or better 200-day repair.
 
 5. **Process the next catalyst cluster without widening scope**
-   - **BRK.B** reports today.
+   - **BRK.B** reported May 2; post-print posture confirmed benched — scorecard still pending.
    - **ETN, AMD, SMCI, EOG, LDOS, ET, MPLX, WMB, PLTR, KTOS, LNG** hit next week.
    - Keep the update path evidence-first and selective.
 
@@ -41,6 +42,13 @@ Boundary:
    - Dashboard validation is clean again, but execution freshness still stays usable-with-caution.
    - Keep direct timing confirmation focused on names where it still matters, led by NVDA.
    - Treat policy expectations as primary-sourced but still approximate, not as a manually maintained truth layer.
+
+7. **Do not expand the Tech / AI sleeve while it is still over cap**
+   - Draft Tech / AI exposure still reads **37% vs a 35% cap**.
+   - NVDA being in band does not override the concentration rule.
+
+8. **Force an explicit decision on Capital Deployment Readiness instead of leaving it in Phase 3 limbo**
+   - Either revive it, close it as superseded, or state plainly that the current Trigger Sheet is now sufficient.
 
 ## If there are only 15 minutes
 
@@ -69,3 +77,4 @@ If a task does not improve market understanding, watchlist quality, portfolio di
 
 - 2026-05-02 — refreshed against 2026-05-01 close. Updated the live list to JPM and NVDA in band, ETN still conditional, XOM interpreted but still benched, and GOOG/MSFT now revalidated but still not deployable.
 - 2026-05-03 — Workflow 12 trust repair narrowed the live caution set: removed stale manual-policy wording and broad date-mismatch phrasing in favor of specific remaining trust limits.
+- 2026-05-03 — post-chain audit follow-up: promoted ETN from vague pullback framing to explicit pre-print decision status, kept the Tech / AI over-cap rule visible, and surfaced the Capital Deployment Readiness limbo as a real decision rather than background drift.

@@ -162,6 +162,32 @@ Approval boundary:
 - meaningful pruning of backup sets should remain operator-approved or workflow-approved
 - never present pruning as completion proof for a hardening pass
 
+## `tmp/` retention policy
+
+Purpose:
+- keep `tmp/` as the governed machine-output surface, not a silent graveyard for old one-off analysis artifacts
+- protect active finance artifacts, run summaries, validation outputs, workbook exports, and entry-band surfaces from cleanup theater
+
+Keep by default:
+- active machine outputs that feed dashboards, deployment surfaces, workbooks, weekly briefs, or validation
+- run-chain and run-summary artifacts for the supported windows
+- governed subdirectories such as `tmp/entry-band-data/` and `tmp/entry-band-reports/`
+- validator outputs such as `tmp/portfolio-config-validation.json` and `tmp/tmp-cleanup-report.json`
+
+Archive-eligible by policy:
+- non-governed one-off tmp artifacts that are no longer part of the active machine-output contract
+- only after they are older than **7 days** and not protected by the current keep list
+
+Execution rule:
+- use `scripts/tmp_cleanup.py` as the cleanup surface
+- default posture is report-only / dry-run
+- apply mode is explicit and currently intended only as an operator-gated Sunday tail via `python scripts/run_finance_refresh_chain.py sunday --cleanup`
+- cleanup should archive, not silently delete
+
+Guardrail:
+- if a tmp artifact is still referenced by an active script, validator, dashboard, workbook, or continuity contract, it is not cleanup fodder
+- if cleanup scope is ambiguous, defer to Workflow 14 or a fresh decision packet instead of guessing
+
 ## Current enforcement direction
 - keep root strict
 - keep `Home.md` as the navigator

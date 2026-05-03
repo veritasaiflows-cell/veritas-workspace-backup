@@ -175,18 +175,21 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
     blocking_unfinished = [
         step
         for step in steps
-        if step.get("status") not in {"ok", "failed", "skipped_after_failure", "running"}
+        if step.get("status") not in {"ok", "failed", "skipped_after_failure", "running", "pending"}
     ]
 
     if (
         len(running_steps) == 1
-        and not pending_steps
         and not blocking_unfinished
         and str(running_steps[0].get("script") or "") == "run_summary_refresh.py"
     ):
+        pending_scripts = {str(step.get("script") or "") for step in pending_steps}
+        allowed_pending_tail = {"dashboard_run_summary_consumer.py", "deployment_readiness_surface.py", "tmp_cleanup.py"}
+        if pending_scripts and not pending_scripts.issubset(allowed_pending_tail):
+            return raw_status, "runtime state not safe to normalize", False
         if bool(recovery.get("triggered")):
-            return "completed_with_recovery", "normalized from finalizer self-observation during run_summary_refresh.py", True
-        return "ok", "normalized from finalizer self-observation during run_summary_refresh.py", True
+            return "completed_with_recovery", "normalized from finalizer self-observation during run_summary_refresh.py before post-summary tail steps", True
+        return "ok", "normalized from finalizer self-observation during run_summary_refresh.py before post-summary tail steps", True
 
     return raw_status, "runtime state not safe to normalize", False
 

@@ -18,6 +18,7 @@ DASHBOARD_BACKUP_FAILURE_SCRIPTS = {"test_dashboard_acceptance.py", "generate_da
 
 WINDOW_CHAINS: dict[str, list[list[str]]] = {
     "morning": [
+        ["validate_portfolio_config.py"],
         # Macro inputs first so market_state_refresh ingests fresh policy/credit/breadth
         ["policy_expectations_refresh.py"],
         ["credit_spread_refresh.py"],
@@ -43,9 +44,11 @@ WINDOW_CHAINS: dict[str, list[list[str]]] = {
         ["premarket_snapshot.py"],
         ["run_summary_refresh.py", "--window", "morning"],
         ["dashboard_run_summary_consumer.py", "--window", "morning"],
+        ["deployment_readiness_surface.py", "--window", "morning"],
     ],
     "post-close": [
         ["earnings_calendar_enrichment.py"],
+        ["validate_portfolio_config.py"],
         ["policy_expectations_refresh.py"],
         ["credit_spread_refresh.py"],
         ["breadth_refresh.py"],
@@ -71,9 +74,11 @@ WINDOW_CHAINS: dict[str, list[list[str]]] = {
         ["daily_executive_brief.py"],
         ["run_summary_refresh.py", "--window", "post-close"],
         ["dashboard_run_summary_consumer.py", "--window", "post-close"],
+        ["deployment_readiness_surface.py", "--window", "post-close"],
     ],
     "post-earnings": [
         ["earnings_calendar_enrichment.py"],
+        ["validate_portfolio_config.py"],
         ["post_earnings_prep.py"],
         ["post_earnings_note_targets.py"],
         ["positioning_ranking_refresh.py"],
@@ -84,12 +89,14 @@ WINDOW_CHAINS: dict[str, list[list[str]]] = {
         ["workbook_export.py"],
         ["run_summary_refresh.py", "--window", "post-earnings"],
         ["dashboard_run_summary_consumer.py", "--window", "post-earnings"],
+        ["deployment_readiness_surface.py", "--window", "post-earnings"],
     ],
     # Sunday: full weekly intelligence rebuild — runs all data layers, scores the
     # universe, generates the Weekly Positioning Review scaffold, and revalidates.
     # Run once on Sunday before the weekly review session.
     "sunday": [
         ["earnings_calendar_enrichment.py"],
+        ["validate_portfolio_config.py"],
         ["policy_expectations_refresh.py"],
         ["credit_spread_refresh.py"],
         ["breadth_refresh.py"],
@@ -120,6 +127,7 @@ WINDOW_CHAINS: dict[str, list[list[str]]] = {
         ["daily_executive_brief.py"],
         ["run_summary_refresh.py", "--window", "sunday"],
         ["dashboard_run_summary_consumer.py", "--window", "sunday"],
+        ["deployment_readiness_surface.py", "--window", "sunday"],
     ],
 }
 WINDOW_CHAINS["full"] = WINDOW_CHAINS["post-close"]
@@ -164,6 +172,11 @@ def parse_args() -> argparse.Namespace:
         "--build-workbook",
         action="store_true",
         help="Opt in to manual workbook packaging by running workbook_template.py immediately after workbook_export.py. This stays off by default so scheduled packaging remains fail-closed.",
+    )
+    parser.add_argument(
+        "--cleanup",
+        action="store_true",
+        help="Opt in to the gated Sunday tmp cleanup utility after the normal chain completes. This is off by default and only applies to the sunday window.",
     )
     return parser.parse_args()
 
@@ -245,32 +258,38 @@ def print_window_list() -> None:
         print("")
 
 
-def resolved_steps(window: str, build_workbook: bool) -> list[list[str]]:
+def resolved_steps(window: str, build_workbook: bool, cleanup: bool) -> list[list[str]]:
     steps = [list(step) for step in WINDOW_CHAINS[window]]
     if not build_workbook:
-        return steps
-    resolved: list[list[str]] = []
-    inserted = False
-    for step in steps:
-        resolved.append(step)
-        if step and step[0] == "workbook_export.py":
+        resolved = steps
+    else:
+        resolved = []
+        inserted = False
+        for step in steps:
+            resolved.append(step)
+            if step and step[0] == "workbook_export.py":
+                resolved.append(["workbook_template.py"])
+                inserted = True
+        if build_workbook and not inserted:
             resolved.append(["workbook_template.py"])
-            inserted = True
-    if build_workbook and not inserted:
-        resolved.append(["workbook_template.py"])
+
+    if cleanup and window == "sunday":
+        resolved.append(["tmp_cleanup.py", "--apply"])
     return resolved
 
 
-def run_chain(window: str, dry_run: bool = False, strict: bool = False, build_workbook: bool = False) -> int:
+def run_chain(window: str, dry_run: bool = False, strict: bool = False, build_workbook: bool = False, cleanup: bool = False) -> int:
     if window not in WINDOW_CHAINS:
         print(f"ERROR: unknown window '{window}'")
         return 1
 
-    steps = resolved_steps(window, build_workbook)
+    steps = resolved_steps(window, build_workbook, cleanup)
     print(f"\nFinance refresh window: {window}")
     print(WINDOW_DESCRIPTIONS[window])
     if build_workbook:
         print("Workbook packaging tail: enabled (manual opt-in)")
+    if cleanup and window == "sunday":
+        print("Tmp cleanup tail: enabled (manual opt-in)")
     for index, step in enumerate(steps, start=1):
         print(f"  {index}. {' '.join(step)}")
 
@@ -362,7 +381,7 @@ def main() -> int:
     if args.list:
         print_window_list()
         return 0
-    return run_chain(args.window, dry_run=args.dry_run, strict=args.strict, build_workbook=args.build_workbook)
+    return run_chain(args.window, dry_run=args.dry_run, strict=args.strict, build_workbook=args.build_workbook, cleanup=args.cleanup)
 
 
 if __name__ == "__main__":

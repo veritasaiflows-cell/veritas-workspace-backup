@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-02T23:14:53.141857+00:00",
+  "generated_at_utc": "2026-05-03T15:31:28.212554+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Run after technical and market refresh, before trigger-sheet generation, dashboard generation, or any decision-grade execution review.",
@@ -11,7 +11,7 @@
   "freshness": {
     "technical_file": {
       "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\technical-refresh.json",
-      "generated_at_utc": "2026-05-02T23:14:42.677871+00:00",
+      "generated_at_utc": "2026-05-03T15:31:17.693431+00:00",
       "age_hours": 0.0,
       "stale_after_hours": 36,
       "is_stale": false,
@@ -20,7 +20,7 @@
     },
     "market_state_file": {
       "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\market-state.json",
-      "generated_at_utc": "2026-05-02T23:14:39.549747+00:00",
+      "generated_at_utc": "2026-05-03T15:31:14.481133+00:00",
       "age_hours": 0.0,
       "stale_after_hours": 24,
       "is_stale": false,

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-02T23:14:53.327830+00:00",
+  "generated_at_utc": "2026-05-03T15:31:28.382191+00:00",
   "status": "partial",
   "stale_after_hours": 24,
   "expected_update_window": "Run after trigger_sheet_refresh.py and before post-earnings note targeting or post-earnings vault edits.",
@@ -14,14 +14,14 @@
   "freshness": {
     "trigger_file": {
       "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\trigger-sheet.json",
-      "generated_at_utc": "2026-05-02T23:14:53.197782+00:00",
+      "generated_at_utc": "2026-05-03T15:31:28.263175+00:00",
       "age_hours": 0.0,
       "age_label": "0m old",
       "is_stale": false
     },
     "earnings_file": {
       "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\earnings-calendar.json",
-      "generated_at_utc": "2026-05-02T23:14:26.578490+00:00",
+      "generated_at_utc": "2026-05-03T15:31:01.704015+00:00",
       "age_hours": 0.01,
       "age_label": "0m old",
       "is_stale": false
@@ -48,9 +48,9 @@
     {
       "ticker": "ETN",
       "priority": "critical",
-      "stage": "upcoming",
+      "stage": "imminent",
       "phase": "pre_earnings",
-      "days_to_or_from_earnings": 3,
+      "days_to_or_from_earnings": 2,
       "next_earnings_date": "2026-05-05",
       "watch_items": [
         "grid and electrification demand",
@@ -80,7 +80,7 @@
       "trigger_context": {
         "action_state": "ALMOST DEPLOYABLE",
         "technical_trigger": "Pullback into 388 to 396 with support holding, or disciplined continuation that does not become a chase",
-        "catalyst_blocker": "Next earnings 2026-05-05 in 3d -- treat as timing-sensitive",
+        "catalyst_blocker": "Next earnings 2026-05-05 in 2d -- treat as timing-sensitive",
         "why": "Best chart in the sheet, but current price is extended versus the preferred zone",
         "invalidation": 383.23,
         "size_tier": "Tier 2"

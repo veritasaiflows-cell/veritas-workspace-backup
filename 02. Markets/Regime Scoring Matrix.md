@@ -23,32 +23,32 @@ Score every tracked name against the current macro regime on four dimensions. Pr
 
 ---
 
-## Current scoring — as of 2026-05-02 (data: 2026-05-01 close)
+## Current scoring — as of 2026-05-03 (data: 2026-05-01 close)
 
 | Ticker | Regime Fit | Technical Posture | Catalyst Risk | Fund. Conviction | **Total** | Current Stance | Notes |
 |---|---|---|---|---|---|---|---|
-| **JPM** | 4 | 5 | 5 | 5 | **19** | DEPLOYABLE NOW | in band. Earnings in 73d |
-| **GOOG** | 5 | 3 | 5 | 5 | **18** | Almost deployable | 9.7% above band. Earnings in 82d |
-| **MSFT** | 5 | 3 | 5 | 5 | **18** | Almost deployable | 0.5% above band. Earnings in 88d |
-| **GS** | 4 | 5 | 5 | 4 | **18** | DEPLOYABLE NOW | in band. Earnings in 73d. Intact but secondary to jpm for primary bank exposure |
-| **NVDA** | 5 | 5 | 4 | 4 | **18** | DEPLOYABLE NOW | in band. Earnings in 18d. Intact but crowded |
-| **VRT** | 5 | 4 | 5 | 3 | **17** | WATCH / RESEARCH NEEDED | 0.5% above band. Earnings in 88d. Confirmed and upgraded — q1 2026 beat-and-raise apr 22 |
-| **AMZN** | 5 | 3 | 5 | 3 | **16** | Watch | Earnings in 89d. Intact but technically underdefined |
+| **JPM** | 4 | 5 | 5 | 5 | **19** | DEPLOYABLE NOW | in band. Earnings in 72d |
+| **GOOG** | 5 | 3 | 5 | 5 | **18** | Almost deployable | 9.7% above band. Earnings in 81d |
+| **MSFT** | 5 | 3 | 5 | 5 | **18** | Almost deployable | 0.5% above band. Earnings in 87d |
+| **GS** | 4 | 5 | 5 | 4 | **18** | DEPLOYABLE NOW | in band. Earnings in 72d. Intact but secondary to jpm for primary bank exposure |
+| **NVDA** | 5 | 5 | 4 | 4 | **18** | DEPLOYABLE NOW | in band. Earnings in 17d. Intact but crowded |
+| **VRT** | 5 | 4 | 5 | 3 | **17** | WATCH / RESEARCH NEEDED | 0.5% above band. Earnings in 87d. Confirmed and upgraded — q1 2026 beat-and-raise apr 22 |
+| **AMZN** | 5 | 3 | 5 | 3 | **16** | Watch | Earnings in 88d. Intact but technically underdefined |
 | **CAT** | 5 | 3 | 5 | 3 | **16** | Watch | Under active review |
-| **ETN** | 5 | 4 | 1 | 4 | **14** | Almost deployable | 1.2% above band. Earnings in 3d |
-| **RTX** | 5 | 1 | 5 | 3 | **14** | Watch | Earnings in 80d. Under active review |
-| **CVX** | 4 | 2 | 5 | 3 | **14** | Watch | Earnings in 90d. Secondary energy read-through |
+| **ETN** | 5 | 4 | 1 | 4 | **14** | Almost deployable | 1.2% above band. Earnings in 2d |
+| **RTX** | 5 | 1 | 5 | 3 | **14** | Watch | Earnings in 79d. Under active review |
+| **CVX** | 4 | 2 | 5 | 3 | **14** | Watch | Earnings in 89d. Secondary energy read-through |
 | **LLY** | 3 | 3 | 5 | 3 | **14** | Watch | Workflow 7 healthcare watch-lane pilot — preferred sector leader over jnj for first sleeve monitor |
 | **TLT** | 3 | 2 | 5 | 3 | **13** | Watch | Macro duration hedge |
 | **SLV** | 2 | 2 | 5 | 3 | **12** | Watch | Macro hedge |
-| **KTOS** | 5 | 2 | 2 | 3 | **12** | Watch | Earnings in 4d. Speculative asymmetry |
-| **LNG** | 4 | 3 | 2 | 3 | **12** | Watch | Earnings in 5d. Event-driven lng export watch |
-| **AMD** | 5 | 3 | 1 | 3 | **12** | Watch | Earnings in 3d. Event-driven ai watch |
-| **LMT** | 4 | 1 | 5 | 2 | **12** | Do not touch | 9.5% below band low. Earnings in 80d. Repair mode. Intact but event-sensitive |
-| **XOM** | 3 | 2 | 5 | 2 | **12** | Do not touch | in band. Earnings in 90d. Repair mode. Intact long-term, weaker near-term |
-| **PLTR** | 5 | 2 | 1 | 3 | **11** | Watch | Earnings in 2d. Higher-risk tactical narrative |
-| **SMCI** | 5 | 2 | 1 | 3 | **11** | Watch | Earnings in 3d. Speculative ai infrastructure monitor |
-| **BRK.B** | 3 | 2 | 1 | 2 | **8** | Do not touch | in band. Earnings in 0d. Repair mode |
+| **LNG** | 4 | 3 | 2 | 3 | **12** | Watch | Earnings in 4d. Event-driven lng export watch |
+| **AMD** | 5 | 3 | 1 | 3 | **12** | Watch | Earnings in 2d. Event-driven ai watch |
+| **LMT** | 4 | 1 | 5 | 2 | **12** | Do not touch | 9.5% below band low. Earnings in 79d. Repair mode. Intact but event-sensitive |
+| **BRK.B** | 3 | 2 | 5 | 2 | **12** | Do not touch | in band. Earnings in 90d. Repair mode |
+| **XOM** | 3 | 2 | 5 | 2 | **12** | Do not touch | in band. Earnings in 89d. Repair mode. Intact long-term, weaker near-term |
+| **PLTR** | 5 | 2 | 1 | 3 | **11** | Watch | Earnings in 1d. Higher-risk tactical narrative |
+| **KTOS** | 5 | 2 | 1 | 3 | **11** | Watch | Earnings in 3d. Speculative asymmetry |
+| **SMCI** | 5 | 2 | 1 | 3 | **11** | Watch | Earnings in 2d. Speculative ai infrastructure monitor |
 ---
 
 ## Priority ranking (current)
@@ -61,22 +61,22 @@ Score every tracked name against the current macro regime on four dimensions. Pr
 6. **VRT** — 17 — 0.5% above band; confirmed and upgraded — Q1 2026 beat-and-raise Apr 22
 7. **AMZN** — 16 — intact but technically underdefined
 8. **CAT** — 16 — under active review
-9. **ETN** — 14 — 1.2% above band; earnings in 3d
+9. **ETN** — 14 — 1.2% above band; earnings in 2d
 10. **RTX** — 14 — under active review
 11. **CVX** — 14 — secondary energy read-through
 12. **LLY** — 14 — Workflow 7 Healthcare watch-lane pilot — preferred sector leader over JNJ for first sleeve monitor
 13. **TLT** — 13 — macro duration hedge
 14. **SLV** — 12 — macro hedge
-15. **KTOS** — 12 — earnings in 4d; speculative asymmetry
-16. **LNG** — 12 — earnings in 5d; event-driven LNG export watch
-17. **AMD** — 12 — earnings in 3d; event-driven AI watch
-18. **LMT** — 12 — 9.5% below band low; setup broken; intact but event-sensitive
+15. **LNG** — 12 — earnings in 4d; event-driven LNG export watch
+16. **AMD** — 12 — earnings in 2d; event-driven AI watch
+17. **LMT** — 12 — 9.5% below band low; setup broken; intact but event-sensitive
+18. **BRK.B** — 12 — in band; setup broken
 19. **XOM** — 12 — in band; setup broken; intact long-term, weaker near-term
-20. **PLTR** — 11 — earnings in 2d; higher-risk tactical narrative
-21. **SMCI** — 11 — earnings in 3d; speculative AI infrastructure monitor
-22. **BRK.B** — 8 — in band; earnings in 0d; setup broken
+20. **PLTR** — 11 — earnings in 1d; higher-risk tactical narrative
+21. **KTOS** — 11 — earnings in 3d; speculative asymmetry
+22. **SMCI** — 11 — earnings in 2d; speculative AI infrastructure monitor
 
-Last auto-scored: 2026-05-02
+Last auto-scored: 2026-05-03
 ---
 
 ## Score change triggers
@@ -103,7 +103,7 @@ Re-score a name when any of the following occur:
 
 ## Freshness and refresh policy
 
-- Last updated: 2026-05-02 — auto-scored by regime_scoring_refresh.py
+- Last updated: 2026-05-03 — auto-scored by regime_scoring_refresh.py
 - Data as of: 2026-04-24 close
 - Refresh cadence: after weekly technical refresh, after tracked earnings, after material regime change
 - Next refresh due: after Apr 29 FOMC + MSFT/GOOG/AMZN prints — Catalyst Risk scores will change materially for at least 3 names

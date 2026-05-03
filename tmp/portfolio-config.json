@@ -223,7 +223,11 @@
       "thesis_status": "intact",
       "macro_fit": "Good fit for quality large-cap exposure",
       "trigger_condition": "Pullback into 330.01 to 349.37 with the post-print structure holding; no chase after the ~10% earnings gap",
-      "coverage_lane": "execution"
+      "coverage_lane": "execution",
+      "last_earnings_date": "2026-04-29",
+      "post_earnings_review_date": "2026-05-02",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "MSFT": {
       "yfinance": "MSFT",
@@ -239,7 +243,11 @@
       "thesis_status": "intact",
       "macro_fit": "Good fit for quality AI platform exposure",
       "trigger_condition": "Pullback into 389.64 to 412.56 with support holding, or stronger repair that can reclaim the 200-day cleanly",
-      "coverage_lane": "execution"
+      "coverage_lane": "execution",
+      "last_earnings_date": "2026-04-29",
+      "post_earnings_review_date": "2026-05-02",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "LMT": {
       "yfinance": "LMT",
@@ -257,7 +265,11 @@
       "trigger_condition": "No trigger until after earnings and a fresh post-event base",
       "force_do_not_touch_if_below_stop": true,
       "catalyst_blocker_override": "Repair mode remains active until a fresh support base forms after earnings",
-      "coverage_lane": "execution"
+      "coverage_lane": "execution",
+      "last_earnings_date": "2026-04-23",
+      "post_earnings_review_date": "2026-05-02",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "BRK.B": {
       "yfinance": "BRK-B",
@@ -273,7 +285,11 @@
       "thesis_status": "intact",
       "macro_fit": "Good fit for ballast in mixed regime",
       "trigger_condition": "Only actionable on clear repair through 481 plus improving posture",
-      "coverage_lane": "execution"
+      "coverage_lane": "execution",
+      "last_earnings_date": "2026-05-02",
+      "post_earnings_review_date": "2026-05-03",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "XOM": {
       "yfinance": "XOM",
@@ -290,7 +306,11 @@
       "macro_fit": "Mixed with oil structure and energy tape still unstable",
       "trigger_condition": "Only if price stabilizes above 141.97 and starts reclaiming the 50-day with supportive energy context",
       "catalyst_blocker_override": "Keep benched until the next one to two EIA reads plus Hormuz and Qatar LNG follow-through clarify whether the setup can reclaim the 50-day cleanly",
-      "coverage_lane": "execution"
+      "coverage_lane": "execution",
+      "last_earnings_date": "2026-05-01",
+      "post_earnings_review_date": "2026-05-02",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "NVDA": {
       "yfinance": "NVDA",
@@ -306,7 +326,11 @@
       "thesis_status": "intact but crowded",
       "macro_fit": "AI regime fit remains strong",
       "trigger_condition": "Pullback into 186 to 191 only, not a chase above current levels",
-      "coverage_lane": "execution"
+      "coverage_lane": "execution",
+      "last_earnings_date": "2026-02-26",
+      "post_earnings_review_date": "2026-02-27",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "AMZN": {
       "yfinance": "AMZN",
@@ -322,7 +346,11 @@
       "thesis_status": "intact but technically underdefined",
       "macro_fit": "Broad quality fit is acceptable",
       "trigger_condition": "Needs explicit entry and stop or post-earnings revalidation",
-      "coverage_lane": "watch"
+      "coverage_lane": "watch",
+      "last_earnings_date": "2026-04-29",
+      "post_earnings_review_date": "2026-05-02",
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "VRT": {
       "yfinance": "VRT",
@@ -370,7 +398,11 @@
       "thesis_status": "under active review",
       "macro_fit": "Useful industrial capex and infrastructure proxy if regime holds",
       "trigger_condition": "Needs explicit entry band and stop before becoming deployable",
-      "coverage_lane": "watch"
+      "coverage_lane": "watch",
+      "last_earnings_date": "2026-04-30",
+      "post_earnings_review_date": null,
+      "earnings_date_ir_confirmed": false,
+      "earnings_date_ir_confirmed_date": null
     },
     "GS": {
       "yfinance": "GS",

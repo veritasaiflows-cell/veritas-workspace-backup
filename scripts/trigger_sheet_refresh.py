@@ -148,6 +148,23 @@ def days_until(date_str: str | None, *, today: datetime | None = None) -> int | 
     return (dt.date() - base).days
 
 
+def parse_iso_date(date_str: str | None) -> datetime | None:
+    if not date_str:
+        return None
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d")
+    except (ValueError, TypeError):
+        return None
+
+
+def post_earnings_review_confirmed(last_earnings_date: str | None, review_date: str | None) -> bool:
+    last_dt = parse_iso_date(last_earnings_date)
+    review_dt = parse_iso_date(review_date)
+    if not last_dt or not review_dt:
+        return False
+    return review_dt.date() > last_dt.date()
+
+
 def derive_catalyst_blocker(*, ticker: str, earnings_blocked: bool, next_earnings_date: str | None,
                             days_to_earnings: int | None, watchlist_alert: str | None) -> tuple[str, str]:
     """Derive catalyst_blocker text mechanically. Returns (text, source)."""
@@ -334,6 +351,10 @@ def main() -> None:
         workflow_state = (meta.get("workflow_state") or "").upper()
         entry_policy = (meta.get("entry_policy") or "").lower()
         coverage_lane = (meta.get("coverage_lane") or "").lower()
+        last_earnings_date = meta.get("last_earnings_date")
+        post_earnings_review_date = meta.get("post_earnings_review_date")
+        earnings_date_ir_confirmed = meta.get("earnings_date_ir_confirmed")
+        earnings_date_ir_confirmed_date = meta.get("earnings_date_ir_confirmed_date")
         if current_tech_ts and deploy_tech_ts and current_tech_ts != deploy_tech_ts:
             why = "Deployment reasoning is stale relative to current technical refresh; rerun deployment_check.py before trusting this state"
         if meta.get("repair_mode"):
@@ -383,6 +404,11 @@ def main() -> None:
             "deployment_state": deploy_rec.get("action_state"),
             "deployment_reason": deploy_rec.get("reason"),
             "next_earnings_date": next_date,
+            "last_earnings_date": last_earnings_date,
+            "post_earnings_review_date": post_earnings_review_date,
+            "post_earnings_review_confirmed": post_earnings_review_confirmed(last_earnings_date, post_earnings_review_date),
+            "earnings_date_ir_confirmed": earnings_date_ir_confirmed,
+            "earnings_date_ir_confirmed_date": earnings_date_ir_confirmed_date,
             "earnings_source_status": earnings_rec.get("source_status") or earnings_rec.get("status"),
         }
         trigger_records.append(record)

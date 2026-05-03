@@ -8,7 +8,7 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt
 
-WORKSPACE = Path(r"C:\Users\Veritas2.0\.openclaw\workspace")
+WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 PLAYBOOKS = WORKSPACE / "06. Playbooks"
 TMP.mkdir(parents=True, exist_ok=True)

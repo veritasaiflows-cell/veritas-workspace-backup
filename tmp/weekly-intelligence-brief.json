@@ -1,23 +1,23 @@
 {
-  "generated_at_utc": "2026-05-02T09:06:20.146390+00:00",
+  "generated_at_utc": "2026-05-03T15:31:29.765363+00:00",
   "week_heading": "## Week of April 27–May 3, 2026",
   "week_start": "2026-04-27",
   "week_end": "2026-05-01",
   "market_data_as_of": "2026-05-01",
   "action": "delta_only",
-  "canonical_mutation_allowed": false,
-  "trust_reason": "dashboard validation has 9 warning(s)",
-  "trust_gate_blocked": true,
-  "wrote_to": "05. Intelligence/Weekly Intelligence Brief - machine.md",
+  "canonical_mutation_allowed": true,
+  "trust_reason": "dashboard validation clean",
+  "trust_gate_blocked": false,
+  "wrote_to": "05. Intelligence/Weekly Intelligence Brief.md",
   "deployable_now": [
+    "GS",
+    "JPM",
     "NVDA"
   ],
   "almost_deployable": [
     "ETN",
-    "JPM"
-  ],
-  "blocked": [
     "GOOG",
     "MSFT"
-  ]
+  ],
+  "blocked": []
 }

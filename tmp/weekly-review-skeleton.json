@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-02T09:06:09.267203+00:00",
+  "generated_at_utc": "2026-05-03T15:31:17.922096+00:00",
   "week_start": "2026-04-27",
   "week_end": "2026-05-01",
   "week_label": "2026-04-27 to 2026-05-01",
@@ -18,26 +18,22 @@
   },
   "deployment_summary": {
     "deployable_now": [
+      "GS",
+      "JPM",
       "NVDA"
     ],
     "almost_deployable": [
       "ETN",
-      "JPM"
-    ],
-    "blocked": [
       "GOOG",
       "MSFT"
     ],
+    "blocked": [],
     "do_not_touch": [
       "BRK.B",
       "LMT",
       "XOM"
     ],
     "watch": [
-      "AMZN",
-      "CAT",
-      "GS",
-      "RTX",
       "VRT"
     ],
     "error": []
@@ -45,45 +41,33 @@
   "top_scores": [
     {
       "ticker": "JPM",
+      "total": 19,
+      "stance": "DEPLOYABLE NOW"
+    },
+    {
+      "ticker": "GOOG",
       "total": 18,
       "stance": "Almost deployable"
     },
     {
       "ticker": "MSFT",
       "total": 18,
-      "stance": "Blocked"
+      "stance": "Almost deployable"
+    },
+    {
+      "ticker": "GS",
+      "total": 18,
+      "stance": "DEPLOYABLE NOW"
     },
     {
       "ticker": "NVDA",
       "total": 18,
       "stance": "DEPLOYABLE NOW"
-    },
-    {
-      "ticker": "GOOG",
-      "total": 17,
-      "stance": "Blocked"
-    },
-    {
-      "ticker": "VRT",
-      "total": 17,
-      "stance": "WATCH / RESEARCH NEEDED"
     }
   ],
   "this_week_earnings": [
     {
-      "ticker": "XOM",
-      "date": "2026-05-01"
-    },
-    {
-      "ticker": "CVX",
-      "date": "2026-05-01"
-    },
-    {
       "ticker": "COP",
-      "date": "2026-04-30"
-    },
-    {
-      "ticker": "CAT",
       "date": "2026-04-30"
     }
   ]

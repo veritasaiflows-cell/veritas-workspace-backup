@@ -8,7 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 
-WORKSPACE = Path(r"C:\Users\Veritas2.0\.openclaw\workspace")
+WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 PLAYBOOKS = WORKSPACE / "06. Playbooks"
 TMP.mkdir(parents=True, exist_ok=True)

@@ -134,3 +134,109 @@ Script-backed prep path:
 - **Data as of:** 2026-05-01 close
 - **Next mandatory refresh:** after the BRK.B result is assessed and again after the ETN / AMD / SMCI cluster next week
 - **Refresh policy:** update posture, catalyst map, and deployment map when a result or price move materially changes the decision surface. Do not rewrite for noise.
+---
+
+## Week of 2026-04-27 to 2026-05-01
+
+### 1) Weekly posture
+
+- **Posture (judgment):** _[Fill: Offensive / Defensive-neutral / Defensive]_
+- **Confidence level (judgment):** _[Fill: High / Moderate / Low — state the basis]_
+- **Operating stance (judgment):** _[Fill: what is the 1-sentence directive for this week?]_
+- **What changed from last week (judgment):** _[Fill: key developments since last review]_
+
+---
+
+### 2) Macro regime and confidence
+
+*Machine-populated from market-state.json as of 2026-05-01. Sections marked (judgment) require human/AI interpretation.*
+
+- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-05-03). Next FOMC 2026-06-17 — 0% cut probability. 2Y 3.880%, 10Y 4.378%, 3M 3.575%.
+- **Yield curve:** 2s10s +50 bps, 3m-10y +80 bps. Curve constructive but front-end still restrictive.
+- **Volatility / equities:** VIX 16.99, SPX 7,230.12.
+- **Dollar / energy:** DXY 98.21, Brent 108.17 $/bbl, WTI 101.94 $/bbl.
+- **Regime assessment (judgment):** _[Fill: is this week's data consistent with late-cycle restrictive baseline? Any threshold approaching?]_
+
+---
+
+### 3) Deployment map
+
+*Data: trigger-sheet.json as of 2026-05-01*
+
+
+**Almost deployable — pullback required (6):**
+  - **GS** — close 923.71, band 878.71–926.76 | stop 854.68 | score 18/20
+  - **JPM** — close 312.47, band 306.82–318.12 | stop 301.17 | score 19/20
+  - **NVDA** — close 198.45, band 188.03–199.28 | stop 182.40 | score 18/20 | earnings in 17d
+  - **ETN** — close 425.55, band 395.59–420.31 | stop 383.23 | score 14/20 | earnings in 2d
+  - **GOOG** — close 383.22, band 330.01–349.37 | stop 320.33 | score 18/20
+  - **MSFT** — close 414.44, band 389.64–412.56 | stop 378.18 | score 18/20
+
+**Do not touch — repair or review (3):**
+  - **BRK.B** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+  - **LMT** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+  - **XOM** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+
+**Active watch — no entry band yet (1):**
+  - **VRT** — levels are defined, but this execution setup remains watch-only until it is intentionally promoted
+
+- **Priority this week (judgment):** _[Fill: which 1–3 names are closest to actionable? What specific trigger would move them to deployed?]_
+
+---
+
+### 4) Catalyst calendar
+
+**This week (Apr 27–May 1):** No tracked earnings this week.
+
+**Coming up (next 2 weeks):**
+  - **WMB** — earnings 2026-05-04 (in 1d)
+  - **PLTR** — earnings 2026-05-04 (in 1d)
+  - **EOG** — earnings 2026-05-05 (in 2d)
+  - **ET** — earnings 2026-05-05 (in 2d)
+  - **MPLX** — earnings 2026-05-05 (in 2d)
+  - **LDOS** — earnings 2026-05-05 (in 2d)
+  - **ETN** — earnings 2026-05-05 (in 2d)
+  - **AMD** — earnings 2026-05-05 (in 2d)
+  - **SMCI** — earnings 2026-05-05 (in 2d)
+  - **KTOS** — earnings 2026-05-06 (in 3d)
+  - **LNG** — earnings 2026-05-07 (in 4d)
+  - **AMAT** — earnings 2026-05-14 (in 11d)
+
+- **FOMC / macro events (judgment):** _[Fill: list any FOMC dates, macro data releases, or geopolitical events that could change the regime this week]_
+- **Read-throughs to watch (judgment):** _[Fill: any peer earnings or sector data that would shift conviction on names in the universe?]_
+
+---
+
+### 5) Sector allocation and risk flags
+
+*Draft sector groupings from trigger sheet. Weights are model targets, not live deployed positions.*
+
+| Sector | Names | Risk Cap | Note |
+|---|---|---|---|
+| Defense | LMT | 35% max | — |
+| Energy | XOM | 35% max | — |
+| Financials | GS, JPM, BRK.B | 35% max | — |
+| Industrials | ETN | 35% max | — |
+| Tech | NVDA, GOOG, MSFT | 35% max | — |
+
+- **Concentration check (judgment):** _[Fill: is any sector approaching the 35% cap at current draft weights? What sequencing constraint does that impose?]_
+- **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_
+- **Risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
+
+---
+
+### 6) Risk rules check
+
+- _[Fill: are all sizing tiers being respected? Any escalation triggers from Risk Rules approaching? Drawdown vs. model high?]_
+
+---
+
+### 7) Key questions to answer this week
+
+- _[Fill: what are the 3–5 questions whose answers would most change deployment decisions this week?]_
+
+---
+
+### 8) Friday close / week lookback
+
+- _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_

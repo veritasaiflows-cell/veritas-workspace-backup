@@ -1,7 +1,7 @@
 # Workflow 12 Macro Policy Trust Repair QA Audit - 2026-05-03
 
 ## Verdict
-**Pass.** Workflow 12 can close honestly once queue/registry/continuity surfaces reflect that the trust-repair pass is complete and the summary checkpoint is taken.
+**Pass.** Workflow 12 closed honestly. Queue/registry/continuity surfaces were synchronized earlier, and the later post-chain hardening pass confirmed the remaining repo-state checkpoint residue was real and then closed.
 
 ## What this workflow actually closed
 - `06. Playbooks/Macro Policy and Timing Trust Protocol.md` now separates active approximation/caution from stale inherited caveats.
@@ -27,7 +27,7 @@
 - do not let downstream orientation notes outrun the owner artifacts when timing or policy posture changes again
 
 ## Close condition
-Close Workflow 12 when:
-1. queue says Workflow 12 closed
-2. registry and continuity surfaces say the same thing
-3. the final checkpoint is committed after those surfaces are synchronized
+Closed with:
+1. queue showing Workflow 12 closed
+2. registry and continuity surfaces saying the same thing
+3. a later checkpoint commit taken after the post-chain hardening pass verified the closure state remained honest

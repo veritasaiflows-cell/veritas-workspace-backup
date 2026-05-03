@@ -9,6 +9,14 @@ Pair:
     scripts/entry_band_fetch.py    -- this file (data + HTML generation)
     scripts/entry_band_viewer.jsx  -- generalized React viewer component
 
+Embed pattern note:
+    `entry_band_viewer.jsx` is not a standalone build-tooled React app.
+    This script reads that JSX source as a checked-in inline viewer bundle and
+    injects it directly into the generated per-ticker HTML files under
+    `tmp/entry-band-reports/`. Treat it as a governed render asset for this
+    exporter, not as a separate frontend project that needs its own npm/build
+    pipeline.
+
 Usage:
     python scripts/entry_band_fetch.py NVDA                       # JSON only, monthly, 10y
     python scripts/entry_band_fetch.py NVDA --html                # + self-contained HTML

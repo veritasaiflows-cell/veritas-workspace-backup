@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-02T20:34:43.476195+00:00",
+  "generated_at_utc": "2026-05-03T15:57:22.698642+00:00",
   "canonical_note": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
   "summary": {
     "reviewed": 17,
@@ -132,7 +132,7 @@
     },
     {
       "ticker": "GS",
-      "current_band_line": "- Preferred entry band: **878.71 to 926.76** (within tolerance — not flagged for revision)",
+      "current_band_line": "- Preferred entry band: **878.71 to 926.76**",
       "expected_band_line": "- Preferred entry band: **878.71 to 926.76** (band updated 2026-04-28)",
       "current_stop_line": "- Explicit stop: **854.68**",
       "expected_stop_line": "- Explicit stop: **854.68**",

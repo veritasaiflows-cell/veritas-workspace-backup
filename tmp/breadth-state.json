@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-02T23:14:31.900336+00:00",
+  "generated_at_utc": "2026-05-03T15:31:06.571397+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh after the close for overnight regime context and before weekly macro outputs. Refresh again on any session with significant intraday breadth divergence.",
