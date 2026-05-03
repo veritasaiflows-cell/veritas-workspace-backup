@@ -1,0 +1,100 @@
+{
+  "validated_at_utc": "2026-05-02T23:14:54.642853+00:00",
+  "manifest_path": "tmp/workbook-export-manifest.json",
+  "manifest_generated_at_utc": "2026-05-02T23:14:54.532266+00:00",
+  "manifest_age_hours": 0.0,
+  "package_freshness_status": "fresh",
+  "upstream_export_status": "clean",
+  "exports": {
+    "workbook-control-panel.csv": {
+      "tab": "Control Panel",
+      "path": "tmp/workbook-control-panel.csv",
+      "exists": true,
+      "actual_row_count": 24,
+      "actual_sha256": "183722e8b57375b51a497bef8d02bd4b82d36c12b7371033e6bc9d4ca0f09fee",
+      "manifest_row_count": 24,
+      "manifest_sha256": "183722e8b57375b51a497bef8d02bd4b82d36c12b7371033e6bc9d4ca0f09fee",
+      "status": "ok"
+    },
+    "workbook-watchlist-board.csv": {
+      "tab": "Watchlist Operating Board",
+      "path": "tmp/workbook-watchlist-board.csv",
+      "exists": true,
+      "actual_row_count": 22,
+      "actual_sha256": "9d87f6f9ce8ba673198b0be1bd16ea9922c365fcd86dc04f461efc8d5a5d78e5",
+      "manifest_row_count": 22,
+      "manifest_sha256": "9d87f6f9ce8ba673198b0be1bd16ea9922c365fcd86dc04f461efc8d5a5d78e5",
+      "status": "ok"
+    },
+    "workbook-deployment-ranking.csv": {
+      "tab": "Deployment Ranking",
+      "path": "tmp/workbook-deployment-ranking.csv",
+      "exists": true,
+      "actual_row_count": 10,
+      "actual_sha256": "bd59832b5ca374a1750aec074ccbc139c8de07e4811f3881b19248b79b314d10",
+      "manifest_row_count": 10,
+      "manifest_sha256": "bd59832b5ca374a1750aec074ccbc139c8de07e4811f3881b19248b79b314d10",
+      "status": "ok"
+    },
+    "workbook-earnings-tracker.csv": {
+      "tab": "Earnings Workflow Tracker",
+      "path": "tmp/workbook-earnings-tracker.csv",
+      "exists": true,
+      "actual_row_count": 1,
+      "actual_sha256": "0944df996b3e60151741a6c40ec0e1d6484c622fc8f2ab5d72f33e31a224db7f",
+      "manifest_row_count": 1,
+      "manifest_sha256": "0944df996b3e60151741a6c40ec0e1d6484c622fc8f2ab5d72f33e31a224db7f",
+      "status": "ok"
+    },
+    "workbook-technical-drift.csv": {
+      "tab": "Entry Bands and Technical Drift",
+      "path": "tmp/workbook-technical-drift.csv",
+      "exists": true,
+      "actual_row_count": 18,
+      "actual_sha256": "610550df7116e3f66f81b1ab2b9486b7c699a9c80a394937a48c82bc008921ec",
+      "manifest_row_count": 18,
+      "manifest_sha256": "610550df7116e3f66f81b1ab2b9486b7c699a9c80a394937a48c82bc008921ec",
+      "status": "ok"
+    }
+  },
+  "source_files": {
+    "trigger-sheet.json": {
+      "timestamp_utc": "2026-05-02T23:14:53.197782+00:00",
+      "age_hours_at_build": 0.0,
+      "freshness_status": "fresh"
+    },
+    "dashboard-validation.json": {
+      "timestamp_utc": "2026-05-02T23:14:54.419397+00:00",
+      "age_hours_at_build": 0.0,
+      "freshness_status": "fresh"
+    },
+    "technical-refresh.json": {
+      "timestamp_utc": "2026-05-02T23:14:42.677871+00:00",
+      "age_hours_at_build": 0.0,
+      "freshness_status": "fresh"
+    },
+    "earnings-calendar.json": {
+      "timestamp_utc": "2026-05-02T23:14:26.578490+00:00",
+      "age_hours_at_build": 0.01,
+      "freshness_status": "fresh"
+    },
+    "post-earnings-prep.json": {
+      "timestamp_utc": "2026-05-02T23:14:53.327830+00:00",
+      "age_hours_at_build": 0.0,
+      "freshness_status": "fresh"
+    },
+    "post-earnings-note-targets.json": {
+      "timestamp_utc": "2026-05-02T23:14:53.376839+00:00",
+      "age_hours_at_build": 0.0,
+      "freshness_status": "fresh"
+    },
+    "band-note-sync.json": {
+      "timestamp_utc": "2026-05-02T20:34:43.476195+00:00",
+      "age_hours_at_build": 2.67,
+      "freshness_status": "fresh"
+    }
+  },
+  "warnings": [],
+  "errors": [],
+  "overall_status": "ok"
+}

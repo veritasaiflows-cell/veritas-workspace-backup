@@ -1,0 +1,45 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:29.671312+00:00",
+  "status": "ok",
+  "stale_after_hours": 36,
+  "expected_update_window": "Refresh after the close for next-session regime work and before weekly macro outputs.",
+  "last_trading_day": "2026-04-30",
+  "source_last_trading_day": {
+    "ig_oas": "2026-04-30",
+    "hy_oas": "2026-04-30"
+  },
+  "freshness_notes": [
+    "fred_ice_bofa_series_can_lag_one_trading_day",
+    "direction_labels_use_latest_vs_5d_and_20d_observation_comparison"
+  ],
+  "warnings": [],
+  "data": {
+    "source_label": "FRED ICE BofA OAS",
+    "source_mode": "primary",
+    "investment_grade_oas": {
+      "value": 0.81,
+      "unit": "percent",
+      "series": "BAMLC0A0CM",
+      "as_of": "2026-04-30"
+    },
+    "high_yield_oas": {
+      "value": 2.83,
+      "unit": "percent",
+      "series": "BAMLH0A0HYM2",
+      "as_of": "2026-04-30"
+    },
+    "hy_minus_ig_spread": 2.02,
+    "direction": {
+      "ig_5d": "flat",
+      "ig_20d": "tightening",
+      "hy_5d": "flat",
+      "hy_20d": "tightening"
+    },
+    "stress_regime": "benign",
+    "fallback_proxies": [],
+    "notes": [
+      "Stress regime is a heuristic credit-state classification, not a licensed credit model.",
+      "Direction labels use latest versus 5-trading-day and 20-trading-day prior observations with a 3bp flat threshold for direct OAS series."
+    ]
+  }
+}

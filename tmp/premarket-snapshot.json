@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-05-02T09:03:41.794956+00:00",
+  "snapshot_date": "2026-05-02",
+  "market_data_as_of": "2026-05-01",
+  "trust_label": "degraded",
+  "deployable_now": [
+    "NVDA"
+  ],
+  "almost_deployable": [
+    "ETN",
+    "JPM"
+  ],
+  "blocked": [
+    "GOOG",
+    "MSFT"
+  ],
+  "wrote_to": "01. Dashboards\\Pre-Market Snapshot\\2026-05-02.md"
+}

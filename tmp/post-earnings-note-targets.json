@@ -1,0 +1,88 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:53.376839+00:00",
+  "status": "partial",
+  "stale_after_hours": 24,
+  "expected_update_window": "Run after post_earnings_prep.py and before any post-earnings note edits.",
+  "last_trading_day": "2026-05-01",
+  "source_last_trading_day": {
+    "trigger": "2026-05-01",
+    "technical": "2026-05-01",
+    "deployment": "2026-05-01",
+    "market_state": "2026-05-01",
+    "earnings": null
+  },
+  "source": {
+    "prep_file": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\post-earnings-prep.json",
+    "generated_at_utc": "2026-05-02T23:14:53.327830+00:00",
+    "age_hours": 0.0,
+    "is_stale": false,
+    "status": "partial"
+  },
+  "warnings": [
+    "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+    "Non-blocking watchlist/date mismatches remain outside the active timing window."
+  ],
+  "impacted_notes": {
+    "05. Intelligence/Event Calendar.md": [
+      "ETN"
+    ],
+    "05. Intelligence/Weekly Intelligence Brief.md": [
+      "ETN"
+    ],
+    "03. Portfolio/Technical Entry and Invalidation Sheet.md": [
+      "ETN"
+    ],
+    "03. Portfolio/Deployment Trigger Sheet.md": [
+      "ETN"
+    ],
+    "03. Portfolio/Portfolio Snapshot.md": [
+      "ETN"
+    ]
+  },
+  "workflows": [
+    {
+      "ticker": "ETN",
+      "priority": "critical",
+      "stage": "upcoming",
+      "next_earnings_date": "2026-05-05",
+      "action_state": "ALMOST DEPLOYABLE",
+      "candidate_updates": [
+        {
+          "path": "05. Intelligence/Event Calendar.md",
+          "urgency": "high",
+          "when_rule": "always for material tracked earnings",
+          "intent": "mark reported status, preserve concise what happened / what it means / what we do now line, and clear or roll the catalyst forward",
+          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        },
+        {
+          "path": "05. Intelligence/Weekly Intelligence Brief.md",
+          "urgency": "high",
+          "when_rule": "when the report changes company thesis, sector read-through, or near-term positioning",
+          "intent": "update earnings radar and recommended-actions sections with decision-grade interpretation",
+          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        },
+        {
+          "path": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+          "urgency": "high",
+          "when_rule": "when price structure, blocker status, or invalidation logic changed materially after the report",
+          "intent": "rebuild entry zone, stop, and stance only if the earnings reaction materially changed the setup",
+          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        },
+        {
+          "path": "03. Portfolio/Deployment Trigger Sheet.md",
+          "urgency": "high",
+          "when_rule": "when action state, blocker status, or trigger logic changed",
+          "intent": "promote, demote, unblock, or keep blocked with explicit why",
+          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        },
+        {
+          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "urgency": "high",
+          "when_rule": "when the report changes whether a draft holding remains justified, suspended, or under review",
+          "intent": "update posture, status line, and review action rather than churning the whole snapshot",
+          "rationale": "ETN: update only if the report changes whether the draft slot remains justified, suspended, or under review"
+        }
+      ]
+    }
+  ]
+}

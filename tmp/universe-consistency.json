@@ -1,0 +1,10 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:53.428202+00:00",
+  "status": "ok",
+  "warnings": [],
+  "counts": {
+    "tracked": 22,
+    "expected_tech": 18,
+    "expected_trig": 10
+  }
+}

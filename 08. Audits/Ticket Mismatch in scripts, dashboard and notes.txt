@@ -1,0 +1,81 @@
+I walked the chain end-to-end (run_finance_refresh_chain.py → 25 steps → tmp/*.json → dashboard_payload.py → veritas-command-center.html + workbook CSVs) and inspected every artifact under tmp/. Here's what's actually happening and the gaps you're seeing.
+
+Root cause of the watchlist ↔ trigger-sheet ↔ dashboard mismatch
+There are three different definitions of "the universe" baked into the chain, all reading the same tmp/portfolio-config.json but with different filters:
+
+Stage	Filter	Output count
+entry_bands (band_refresh, validator)	all keys in entry_bands	17 (incl. CVX, PLTR, KTOS, SLV)
+technical_refresh.py	include_in_technical_refresh == True	13
+trigger_sheet_refresh.py	include_in_trigger_sheet == True AND ticker in deployment_check	13
+dashboard_payload.technical[]	iterates technical-refresh.json records	13
+workbook-watchlist-board.csv	iterates trigger-sheet	13
+So CVX, PLTR, KTOS, SLV carry full entry bands, get drift proposals (band-update-log.txt), and trip the validator ("10 entry band(s) need review … CVX, PLTR, KTOS, SLV") — but they are silently filtered out before they reach the trigger sheet or dashboard action cards. The operator sees a warning to review them, with no UI surface to act on.
+
+This is a schema problem, not a data problem. portfolio-config.json has at least three opt-in flags (include_in_technical_refresh, include_in_trigger_sheet, presence-in-entry_bands) and they have drifted.
+
+Other gaps in the orchestration
+Note-layer drift: band-note-sync.md shows 6 names (ETN, GOOG, AMZN, VRT, RTX, CAT) with sync needed — the JSON entry bands have been advanced by apply_band_update.py but 03. Portfolio/Technical Entry and Invalidation Sheet.md has not. This is a one-way pipeline; there's no gated writer-back, so the canonical note silently rots after every band refresh.
+earnings_policy: block_pre_earnings is window-blind: AMZN (91d), GOOG (84d), MSFT (90d) are all flagged "BLOCKED" with earnings months away. Validator catches it as a warning but the trigger sheet and dashboard still mark them blocked, masking otherwise-actionable setups.
+Macro/policy soft failure: policy_expectations_refresh.py CME endpoint returns 404 → falls back to manual Fed-target constant; fallback_state.used: true on every run, presentation_allowed: false, canonical_note_mutation_allowed: false. The whole chain is locked into "warning" mode by an upstream data source.
+No consistency-gate step in the chain: nothing verifies that tracked_universe.keys() == entry_bands.keys() == trigger-sheet ticker set == technical-refresh ticker set before the dashboard is generated. Today's mismatch slipped through silently.
+--strict only routes to validate_dashboard_state.py — not to test_dashboard_acceptance.py or workbook_export.py, so a strict run still publishes degraded artifacts.
+Workbook earnings tracker has 2 rows despite 3 blocked names with confirmed dates — workbook_export.py filtering is narrower than the dashboard's blocked set.
+Speculative/macro tier (CVX, PLTR, KTOS, SLV) has no home on the dashboard — they're tracked, banded, drift-monitored, but invisible. No "Watch lane" or "Macro lane" surface.
+Phased plan
+Phase 0 — Define semantics (no code). Decide whether CVX/PLTR/KTOS/SLV should: (a) appear on the dashboard in a separate "Watch" lane, or (b) be removed from entry_bands and validator scope entirely. Today they straddle both, which is the actual bug. Ship a one-page decision in 03. Portfolio/.
+
+Phase 1 — Universe unification. In portfolio-config.json, collapse the three flags into one coverage_lane enum (actionable, watch, macro, speculative) plus a derived entitled_for_trigger_sheet rule. Update technical_refresh.py, deployment_check.py, trigger_sheet_refresh.py, dashboard_payload.py, workbook_export.py to read the same lane. Action cards stay actionable-only; add a "Watch lane" panel on the dashboard for the rest.
+
+Phase 2 — Consistency gate. New scripts/watchlist_consistency.py that fails the chain if any of tracked_universe / entry_bands / technical-refresh / trigger-sheet / workbook disagree on ticker set per lane. Insert in run_finance_refresh_chain.py after band_refresh.py and before generate_dashboard.py. Propagate --strict to acceptance and workbook export.
+
+Phase 3 — Earnings-window fix. Replace boolean block_pre_earnings with earnings_block_days: 7|14. Update deployment_check.py and the validator's earnings_block_window_unexpected rule. AMZN/GOOG/MSFT should clear immediately.
+
+Phase 4 — Note write-back loop. Add scripts/band_note_apply.py (gated, dry-run-default, with --apply flag) that consumes band-note-sync.md and patches 03. Portfolio/Technical Entry and Invalidation Sheet.md with a backup. Wire as an explicit manual step (not in the auto chain) so prose lines stay reviewed.
+
+Phase 5 — Macro/policy resilience. Either replace the CME FedWatch fetch with a stable source, or formalize the manual confirmation with a TTL stamp in tmp/policy-expectations.json and stop counting it as a warning while inside TTL. Remove the hardcoded Fed target.
+
+Phase 6 — Dashboard surfacing. Add a "Universe Coverage" header chip on veritas-command-center.html showing N tracked / N in trigger sheet / N actionable / N drifting and a "Note Sync Drift" chip driven by band-note-sync.md. Both already have JSON inputs; this is a payload + template change.
+
+Phase 7 — Workbook reconciliation. After Phase 1, regenerate workbook CSVs to cover all lanes (separate sheets) and reconcile workbook-earnings-tracker.csv row count against the dashboard's blocked set with an assertion.
+
+
+The other review largely agrees with mine on the symptom (universe split-brain) but is partly factually off on the source of truth, and adds two genuinely useful ideas I missed. Here's where I'd adjust.
+
+Where the other review is wrong
+PLTR, KTOS, SLV are already in tracked_universe — I just verified. They're present with include_in_trigger_sheet: false. So the issue is flag gating, not "missing from config." The review's "manual promotion" step for those three would be a no-op.
+AMD, LNG, SMCI — these would need verification against 02. Markets/Watchlist.md (I haven't read it). Those might be the truly missing names. That's a real gap if confirmed.
+"Watchlist.md is the source of truth, config is downstream" — that's a design choice, not a fact. Today the JSON is canonical and the markdown is human-edited prose. Promoting markdown → JSON is one valid direction; the inverse (JSON canonical, markdown rendered) is equally defensible and arguably cleaner.
+Where it's right and I should fold in
+Bidirectional overrides file (Manual Overrides.md) — good idea, especially given today's catalyst_blocker_override is buried in JSON. Worth a phase.
+Manifest-gate before "release" — stronger than my Phase 2 consistency gate. Combine them: chain produces artifacts to a staging path; only a clean validator + acceptance pass promotes them to tmp/veritas-command-center.html. Dovetails with the existing last-good.html backup pattern.
+Action card deep-links to the workbook — small UX win, cheap.
+Drift Monitor surface — overlaps with my Phase 6 "Note Sync Drift" chip; broaden it to include band-vs-price drift since band_last_set.
+Where it overlaps but my framing is sharper
+"Centralized ground_truth_provider" — yes, but the concrete first step is collapsing the three universe flags into one coverage_lane enum (my Phase 1). Without that, a shared provider just centralizes the same ambiguity.
+"Discover tickers from Watchlist.md" — only worth building after Phase 0 decides which file is canonical. Otherwise you build a sync script before agreeing on direction.
+Updated phased plan
+Phase 0 — Decision (no code). Pick canonical direction: portfolio-config.json is source-of-truth and Watchlist.md is rendered from it, OR the inverse. Decide the fate of CVX/PLTR/KTOS/SLV (separate "Watch lane" vs. drop). Verify whether AMD/LNG/SMCI are actually in Watchlist.md and missing from config — that's the only real "promotion gap" claim worth acting on.
+
+Phase 1 — Universe unification. Single coverage_lane enum in portfolio-config.json (actionable | watch | macro | speculative). All five scripts (technical_refresh, deployment_check, trigger_sheet_refresh, dashboard_payload, workbook_export) read the same lane. Watch-lane names render as a separate dashboard panel, not as fake-blocked action cards. (Subsumes the other review's Phase 1.)
+
+Phase 2 — Consistency gate + manifest release. New watchlist_consistency.py step in the chain that asserts ticker-set parity across artifacts per lane. Promote artifacts to canonical paths only when validator + acceptance both pass; otherwise leave last-good.html in place. Propagate --strict to acceptance and workbook export. (Folds in the other review's "Manifest-Gate.")
+
+Phase 3 — Audit + sync script. audit_ticker_flow.py compares Watchlist.md ↔ portfolio-config.json and reports drift. Direction (one-way generator vs. bidirectional sync) is settled by Phase 0. (Other review's "discover_tickers" idea, but gated on Phase 0.)
+
+Phase 4 — Earnings-window fix + macro/policy resilience. Replace boolean block_pre_earnings with earnings_block_days. Stabilize CME source or formalize manual TTL so policy fallback stops permanently flagging "warning." (Mine, unchanged — the other review missed both.)
+
+Phase 5 — Note write-back + manual overrides. band_note_apply.py (gated, dry-run-default) writes proposals into Technical Entry and Invalidation Sheet.md. Add 03. Portfolio/Manual Overrides.md as a structured input the chain reads before generating dashboards (catalyst overrides, earnings-date overrides, lane overrides). (Combines my band note loop with the other review's overrides idea.)
+
+Phase 6 — Surface polish. Universe Coverage chip, Note Sync Drift chip, Band-vs-Price Drift Monitor, action-card deep-links to workbook rows. (Combines mine with the other review's UX polish.)
+
+Net change vs. my original plan
+Status
+Universe unification	unchanged (sharper than other review)
+Consistency gate	upgraded to manifest-gate release pattern
+Earnings-window fix	unchanged — must keep, other review missed it
+Macro/policy resilience	unchanged — must keep, other review missed it
+Note write-back	merged with manual-overrides input
+Surface polish	added drift monitor + workbook deep-links
+Watchlist.md → JSON sync	added as Phase 3, gated on Phase 0 decision
+Recommendation
+Don't follow the other review's "next steps" verbatim — manually adding PLTR/KTOS/SLV won't change anything because they're already in the config; the chain will still drop them at the include_in_trigger_sheet: false gate. Phase 0 first: confirm the actual missing names by reading 02. Markets/Watchlist.md, then decide canonical direction. That's a 10-minute task and it determines whether Phase 3 is worth building at all.

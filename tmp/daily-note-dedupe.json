@@ -1,0 +1,168 @@
+{
+  "mode": "dry-run",
+  "files_scanned": 20,
+  "files_changed": 0,
+  "total_removed": 0,
+  "results": [
+    {
+      "path": "memory/2026-04-07.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-08.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-09.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-10.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-11.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-12.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-18.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-19.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-20.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-21.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-22.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-23.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-24.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-25.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-27.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-28.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-29.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-04-30.md",
+      "encoding": "cp1252",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-05-01.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    },
+    {
+      "path": "memory/2026-05-02.md",
+      "encoding": "utf-8",
+      "changed": false,
+      "removed": 0,
+      "unique_duplicate_bullets": 0,
+      "max_occurrence_count": 1
+    }
+  ]
+}

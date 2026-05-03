@@ -1,0 +1,97 @@
+{
+  "ticker": "ETN",
+  "latest": {
+    "date": "2026-04-24",
+    "close": 423.9200134277344,
+    "open": 430.04998779296875,
+    "high": 432.3399963378906,
+    "low": 422.0299987792969,
+    "volume": 2489700,
+    "ma20": 389.29000091552734,
+    "ma50": 375.63640075683594,
+    "ma200": 361.2150505065918,
+    "high_52w": 432.3399963378906,
+    "low_52w": 275.9800109863281,
+    "recent_support": 343.5299987792969,
+    "recent_resistance": 424.5,
+    "one_year_return_pct": 47.69703492934823,
+    "ytd_return_pct": 29.516365705219826
+  },
+  "snapshot": {
+    "last_close": "$423.92",
+    "consensus_target": "$412.95",
+    "market_cap": "$164.5B",
+    "range_52w": "$276-$432",
+    "dividend_yield": "1.0%",
+    "forward_pe": "~27x",
+    "target_upside": "-2.6%",
+    "off_peak": "-1.9%",
+    "inst_owned": "85.7%"
+  },
+  "fundamentals": {
+    "company": "Eaton Corporation plc",
+    "exchange": "NYSE",
+    "sector": "Industrials",
+    "industry": "Specialty Industrial Machinery",
+    "employees": 97303,
+    "market_cap": 164474748928,
+    "enterprise_value": 174363574272,
+    "trailing_pe": 40.489017,
+    "forward_pe": 27.356562,
+    "price_to_sales": 5.9922304,
+    "price_to_book": 8.4653635,
+    "dividend_yield": 1.04,
+    "profit_margin": 0.1489,
+    "operating_margin": 0.19972,
+    "gross_margin": 0.37772998,
+    "roe": 0.21525998,
+    "roa": 0.08326,
+    "revenue_growth": 0.131,
+    "earnings_growth": 0.189,
+    "free_cash_flow": 2598000128,
+    "operating_cash_flow": 4472000000,
+    "total_revenue": 27448000512,
+    "total_debt": 10684000256,
+    "total_cash": 803000000,
+    "current_ratio": 1.319,
+    "quick_ratio": 0.742,
+    "debt_to_equity": 54.877,
+    "analyst_rating": "1.7 - Buy",
+    "recommendation_key": "buy",
+    "analyst_count": 28,
+    "target_mean_price": 412.95178,
+    "target_median_price": 419.0,
+    "target_low_price": 321.0,
+    "target_high_price": 514.0,
+    "beta": 1.164,
+    "held_percent_institutions": 0.85723996
+  },
+  "hist_fin": {
+    "eps_labels": [
+      "2023",
+      "2024",
+      "2025",
+      "2026E"
+    ],
+    "eps_values": [
+      8.02,
+      9.5,
+      10.45,
+      13.31
+    ],
+    "rev_labels": [
+      "2023",
+      "2024",
+      "2025",
+      "2026E"
+    ],
+    "rev_values": [
+      23.2,
+      24.9,
+      27.4,
+      28.6
+    ]
+  },
+  "verdict": "PULLBACK ONLY",
+  "verdict_reason": "Trend quality is strong, but price is pressing highs and current entry quality is poor. Wait for a disciplined pullback or a better-defined reset."
+}

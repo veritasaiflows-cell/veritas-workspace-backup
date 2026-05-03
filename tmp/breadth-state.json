@@ -1,0 +1,143 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:31.900336+00:00",
+  "status": "ok",
+  "stale_after_hours": 24,
+  "expected_update_window": "Refresh after the close for overnight regime context and before weekly macro outputs. Refresh again on any session with significant intraday breadth divergence.",
+  "last_trading_day": "2026-05-01",
+  "source_last_trading_day": {
+    "rsp_spy_ratio": "2026-05-01",
+    "sector_participation": "2026-05-01"
+  },
+  "freshness_notes": [
+    "breadth_signals_based_on_daily_closes_not_intraday",
+    "sector_50dma_computed_from_rolling_50_trading_day_close_average"
+  ],
+  "warnings": [],
+  "data": {
+    "source_label": "yfinance",
+    "source_mode": "primary",
+    "equal_weight_vs_cap_weight": {
+      "rsp_spy_ratio": 0.28144,
+      "rsp_spy_ratio_5d_change_pct": -0.5439,
+      "rsp_spy_ratio_20d_change_pct": -4.409,
+      "rsp_close": 202.82,
+      "spy_close": 720.65,
+      "rsp_as_of": "2026-05-01",
+      "spy_as_of": "2026-05-01",
+      "direction": "deteriorating"
+    },
+    "sector_participation": {
+      "sectors_above_50dma": 10,
+      "sectors_total": 11,
+      "participation_pct": 90.9,
+      "participation_regime": "broad",
+      "sectors": [
+        {
+          "ticker": "XLC",
+          "label": "Communication Services",
+          "close": 116.72,
+          "sma_50": 114.9141,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLY",
+          "label": "Consumer Discretionary",
+          "close": 118.63,
+          "sma_50": 113.8363,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLP",
+          "label": "Consumer Staples",
+          "close": 84.17,
+          "sma_50": 83.6858,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLE",
+          "label": "Energy",
+          "close": 58.85,
+          "sma_50": 57.5227,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLF",
+          "label": "Financials",
+          "close": 51.92,
+          "sma_50": 50.5722,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLV",
+          "label": "Health Care",
+          "close": 145.16,
+          "sma_50": 149.0935,
+          "above_50dma": false,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLI",
+          "label": "Industrials",
+          "close": 172.96,
+          "sma_50": 169.4342,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLB",
+          "label": "Materials",
+          "close": 51.35,
+          "sma_50": 50.7455,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLRE",
+          "label": "Real Estate",
+          "close": 44.32,
+          "sma_50": 42.6012,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLK",
+          "label": "Technology",
+          "close": 161.87,
+          "sma_50": 143.09,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        },
+        {
+          "ticker": "XLU",
+          "label": "Utilities",
+          "close": 46.55,
+          "sma_50": 46.2147,
+          "above_50dma": true,
+          "as_of": "2026-05-01"
+        }
+      ]
+    },
+    "major_index_breadth": {
+      "breadth_regime": "recovering",
+      "composite_score": 0.7456,
+      "notes": [
+        "Regime derived from sector participation count and RSP/SPY 5-day direction.",
+        "Broad: >= 7/11 sectors above 50DMA and RSP/SPY not deteriorating.",
+        "Narrow: < 5/11 sectors above 50DMA.",
+        "Recovering: >= 6/11 sectors with improving RSP/SPY, or >= 7 sectors despite deteriorating RSP/SPY.",
+        "Deteriorating: 5-6 sectors above 50DMA and RSP/SPY deteriorating."
+      ]
+    },
+    "notes": [
+      "RSP/SPY ratio measures equal-weight vs. cap-weight S&P 500 performance; a rising ratio signals broadening participation.",
+      "Sector participation counts SPDR sector ETFs with daily close above rolling 50-day SMA.",
+      "Breadth regime is a heuristic classification; it is not a licensed breadth index.",
+      "Composite score: 70% sector participation rate + 30% RSP/SPY 5-day momentum (capped \u00b12%), normalised to 0\u20131."
+    ]
+  }
+}

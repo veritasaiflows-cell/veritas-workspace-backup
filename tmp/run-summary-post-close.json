@@ -1,0 +1,88 @@
+{
+  "window": "post-close",
+  "run_id": "20260502T231454Z_post-close",
+  "generated_at_utc": "2026-05-02T23:14:54Z",
+  "status": "ok",
+  "stop_line": false,
+  "owner": {
+    "entrypoint": "python scripts/run_finance_refresh_chain.py post-close",
+    "window_owner": "scripts/run_finance_refresh_chain.py"
+  },
+  "timing": {
+    "started_at_utc": "2026-05-02T23:14:23Z",
+    "completed_at_utc": "2026-05-02T23:14:54Z",
+    "duration_seconds": 31
+  },
+  "execution": {
+    "chain_status": "running",
+    "chain_exit_code": null,
+    "recovery_triggered": false,
+    "recovery_reason": "",
+    "failed_step": null,
+    "skipped_steps": [],
+    "finalized_after_failure": false
+  },
+  "validation": {
+    "acceptance_passed": true,
+    "dashboard_validation_status": "clean",
+    "critical": 0,
+    "warning": 0,
+    "info": 0,
+    "exec_freshness": "usable_with_caution"
+  },
+  "outputs": {
+    "command_center": {
+      "status": "ok",
+      "path": "tmp/veritas-command-center.html",
+      "generated_at_utc": "2026-05-02T23:14:54Z"
+    },
+    "dashboard_validation": {
+      "status": "ok",
+      "path": "tmp/dashboard-validation.json",
+      "generated_at_utc": "2026-05-02T23:14:54Z"
+    },
+    "dashboard_acceptance": {
+      "status": "ok",
+      "path": "tmp/dashboard-acceptance-report.json",
+      "generated_at_utc": "2026-05-02T23:14:54Z"
+    },
+    "workbook_exports": {
+      "status": "ok",
+      "path": "tmp/workbook-export-manifest.json",
+      "generated_at_utc": "2026-05-02T23:14:54.532266+00:00"
+    },
+    "post_earnings_prep": {
+      "status": "partial",
+      "path": "tmp/post-earnings-prep.json",
+      "generated_at_utc": "2026-05-02T23:14:53.327830+00:00"
+    },
+    "post_earnings_note_targets": {
+      "status": "partial",
+      "path": "tmp/post-earnings-note-targets.json",
+      "generated_at_utc": "2026-05-02T23:14:53.376839+00:00"
+    },
+    "postmarket_snapshot": {
+      "status": "ok",
+      "path": "tmp/postmarket-snapshot.json",
+      "generated_at_utc": "2026-05-02T23:14:54.781300+00:00"
+    },
+    "daily_executive_brief": {
+      "status": "ok",
+      "path": "tmp/daily-executive-brief.json",
+      "generated_at_utc": "2026-05-02T23:14:54.880638+00:00"
+    }
+  },
+  "warnings": [],
+  "blockers": [],
+  "fallback_state": {
+    "used": false,
+    "reason": ""
+  },
+  "downstream": {
+    "command_center_badge": "ok",
+    "workbook_trust_grade": "clean",
+    "presentation_allowed": true,
+    "canonical_note_mutation_allowed": true,
+    "canonical_note_mutation_reason": "dashboard validation clean"
+  }
+}

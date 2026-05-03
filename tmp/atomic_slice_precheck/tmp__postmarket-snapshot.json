@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-05-01T03:58:46.609716+00:00",
+  "snapshot_date": "2026-04-30",
+  "market_data_as_of": "2026-04-30",
+  "trust_label": "degraded",
+  "deployable_now": [
+    "GS"
+  ],
+  "almost_deployable": [
+    "CAT",
+    "ETN",
+    "JPM",
+    "NVDA",
+    "VRT"
+  ],
+  "blocked": [
+    "AMZN",
+    "GOOG",
+    "MSFT"
+  ],
+  "delta_summary": "No material changes",
+  "wrote_to": "01. Dashboards\\Post-Market Snapshot\\2026-04-30.md"
+}

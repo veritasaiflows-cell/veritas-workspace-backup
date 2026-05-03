@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "ai-image-gen": {
+      "version": "1.1.0",
+      "installedAt": 1776015858384
+    },
+    "agent-evaluation": {
+      "version": "1.0.0",
+      "installedAt": 1777084078007
+    },
+    "memory-tiering": {
+      "version": "1.0.0",
+      "installedAt": 1777084078033
+    },
+    "self-improving-with-reflection": {
+      "version": "1.2.11",
+      "installedAt": 1777084078947
+    },
+    "fundamental-stock-analysis": {
+      "version": "1.0.5",
+      "installedAt": 1777084716549
+    },
+    "macro-analyst": {
+      "version": "1.0.0",
+      "installedAt": 1777084716550
+    },
+    "technical-analyst": {
+      "version": "0.1.0",
+      "installedAt": 1777084716680
+    },
+    "macro-regime-detector": {
+      "version": "1.0.0",
+      "installedAt": 1777085626983
+    },
+    "market-news-analyst": {
+      "version": "0.1.0",
+      "installedAt": 1777085627426
+    },
+    "portfolio-risk-manager": {
+      "version": "1.0.1",
+      "installedAt": 1777085787795
+    },
+    "asset-allocation": {
+      "version": "1.0.1",
+      "installedAt": 1777085787974
+    },
+    "portfolio-manager": {
+      "version": "0.1.0",
+      "installedAt": 1777085788486
+    }
+  }
+}

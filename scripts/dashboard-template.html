@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veritas Command Center</title>
+%%STYLES%%
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div>
+      <div class="title">Veritas Command Center</div>
+      <div class="subtitle">Derived operating surface — never canonical truth</div>
+    </div>
+    <div class="header-right">
+      <div id="headerBadges"></div>
+      <div id="sessionPill"></div>
+      <span id="ageCounter" class="age-counter fresh" title="Time since data was generated">—</span>
+      <span class="small" id="headerMeta"></span>
+    </div>
+  </div>
+</div>
+
+<div class="exec-banner" id="execBanner"></div>
+<div class="earnings-bar" id="earningsBar"></div>
+<div class="nav" id="nav"><span class="nav-hint">Press <span class="kbd">1–9</span> to switch tabs &nbsp;·&nbsp; <span class="kbd">?</span> for shortcuts</span></div>
+
+<div class="main">
+
+  <!-- TAB: Overview -->
+  <section class="tab active" id="tab-overview">
+    <div id="deploymentStrip"></div>
+    <div class="card" style="margin-bottom:14px;border-color:rgba(56,189,248,.2)">
+      <h3>Today's Action Card</h3>
+      <div id="todayAction"></div>
+    </div>
+    <div id="alerts"></div>
+    <div class="grid cols-4" id="overviewCards" style="margin-bottom:14px"></div>
+    <div class="grid cols-3" style="margin-bottom:14px">
+      <div class="card">
+        <h3>Trust Panel</h3>
+        <div class="small" id="trustSummary" style="margin-bottom:12px"></div>
+        <div class="list" id="trustSources"></div>
+      </div>
+      <div class="card">
+        <h3>Integrity and Contradictions</h3>
+        <div class="small" id="validationSummary" style="margin-bottom:12px"></div>
+        <div class="list" id="validationWarnings"></div>
+      </div>
+      <div class="card">
+        <h3>Vault Freshness</h3>
+        <div class="small" style="margin-bottom:12px">Canonical note synchronization</div>
+        <div class="list" id="vaultFreshness"></div>
+      </div>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>Deployment Readiness</h3>
+        <div id="deploymentOverview"></div>
+      </div>
+      <div class="card">
+        <h3>Manual and Unconfirmed Dependencies</h3>
+        <div id="manualDependencies"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: Deployment Board -->
+  <section class="tab" id="tab-deployment">
+    <div class="filter-bar" id="deployFilterBar"></div>
+    <div class="card table-wrap">
+      <table class="table table-deployment">
+        <thead><tr>
+          <th onclick="sortTable('deploymentTable',0)">Ticker</th>
+          <th onclick="sortTable('deploymentTable',1)">State</th>
+          <th onclick="sortTable('deploymentTable',2)">Close</th>
+          <th>Entry band</th>
+          <th>Position in band</th>
+          <th onclick="sortTable('deploymentTable',5)">Stop</th>
+          <th>Stop dist</th>
+          <th>Earnings</th>
+          <th>Reason</th>
+          <th onclick="sortTable('deploymentTable',9)">Priority</th>
+        </tr></thead>
+        <tbody id="deploymentTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: Technical Analysis -->
+  <section class="tab" id="tab-technicals">
+    <div class="filter-bar" id="technicalFilterBar"></div>
+    <div class="card table-wrap">
+      <table class="table table-technical">
+        <thead><tr>
+          <th onclick="sortTable('technicalTable',0)">Ticker</th>
+          <th>Lane</th>
+          <th onclick="sortTable('technicalTable',2)">Close</th>
+          <th onclick="sortTable('technicalTable',3)">20d</th>
+          <th onclick="sortTable('technicalTable',4)">50d</th>
+          <th onclick="sortTable('technicalTable',5)">200d</th>
+          <th onclick="sortTable('technicalTable',6)">Posture</th>
+          <th onclick="sortTable('technicalTable',7)">Band low</th>
+          <th onclick="sortTable('technicalTable',8)">Band high</th>
+          <th>Position in band</th>
+          <th onclick="sortTable('technicalTable',10)">Stop</th>
+          <th onclick="sortTable('technicalTable',11)">Stop dist</th>
+          <th onclick="sortTable('technicalTable',12)">Earnings</th>
+          <th onclick="sortTable('technicalTable',13)">Trigger</th>
+          <th onclick="sortTable('technicalTable',14)">State</th>
+        </tr></thead>
+        <tbody id="technicalTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: Portfolio -->
+  <section class="tab" id="tab-portfolio">
+    <div class="grid cols-3" id="portfolioCards"></div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div class="card"><h3>Sector Concentration</h3><div id="sectorWeights"></div></div>
+      <div class="card"><h3>Allocation Mix</h3><div id="allocationMix"></div></div>
+    </div>
+    <div class="card table-wrap" style="margin-top:14px">
+      <table class="table">
+        <thead><tr><th>Ticker</th><th>Weight</th><th>Sleeve</th><th>Thesis / note</th><th>Entry</th><th>Stop / risk</th></tr></thead>
+        <tbody id="portfolioTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: Earnings -->
+  <section class="tab" id="tab-earnings">
+    <div class="grid cols-2">
+      <div class="card"><h3>Upcoming earnings</h3><div id="earningsList"></div></div>
+      <div class="card"><h3>Earnings alerts</h3><div id="earningsAlerts"></div></div>
+    </div>
+  </section>
+
+  <!-- TAB: Macro -->
+  <section class="tab" id="tab-macro">
+    <div id="regimeBanner"></div>
+    <div class="section-title" style="margin:18px 0 10px">Rates and dollar</div>
+    <div class="grid cols-3" id="ratesStrip"></div>
+    <div class="section-title" style="margin:18px 0 10px">Risk and energy</div>
+    <div class="grid cols-3" id="riskStrip"></div>
+    <div class="grid cols-2" style="margin-top:18px">
+      <div class="card">
+        <h3>FOMC and policy expectations</h3>
+        <div id="fomcCard"></div>
+      </div>
+      <div class="card">
+        <h3>Credit conditions</h3>
+        <div id="creditCard"></div>
+      </div>
+    </div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div class="card">
+        <h3>Breadth and participation</h3>
+        <div id="breadthCard"></div>
+      </div>
+      <div class="card">
+        <h3>Sector relative strength vs SPY</h3>
+        <div id="sectorRelative"></div>
+      </div>
+    </div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div class="card"><h3>Regime indicators (qualitative)</h3><div id="regimeIndicators"></div></div>
+      <div class="card"><h3>Macro warnings</h3><div id="macroWarnings"></div></div>
+    </div>
+  </section>
+
+  <!-- TAB: Risk & Rules -->
+  <section class="tab" id="tab-risk">
+    <div class="grid cols-3" id="riskCards"></div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div class="card"><h3>Compliance checks</h3><div id="complianceChecks"></div></div>
+      <div class="card"><h3>Rules and escalation</h3><div id="rulesAndEscalation"></div></div>
+    </div>
+  </section>
+
+  <!-- TAB: Trigger Sheet -->
+  <section class="tab" id="tab-triggers">
+    <div id="triggerHeader" style="margin-bottom:14px"></div>
+    <div class="trigger-grid" id="triggerGrid"></div>
+  </section>
+
+  <!-- TAB: Post-Earnings -->
+  <section class="tab" id="tab-postearnings">
+    <div id="postEarningsHeader" style="margin-bottom:14px"></div>
+    <div id="postEarningsGrid"></div>
+  </section>
+
+  <!-- TAB: Entry Bands -->
+  <section class="tab" id="tab-entrybands">
+    <div class="entry-bands-pane">
+      <div class="entry-bands-list" id="entryBandsList"></div>
+      <div class="entry-bands-viewer">
+        <iframe id="entryBandFrame" src="about:blank"></iframe>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="footer" id="footer"></div>
+
+<!-- Keyboard shortcut overlay -->
+<div class="shortcut-overlay" id="shortcutOverlay">
+  <div class="shortcut-panel">
+    <h3>Keyboard Shortcuts</h3>
+    <div id="shortcutList"></div>
+    <div style="margin-top:16px;font-size:11px;color:var(--muted)">Press <span class="kbd">Esc</span> or <span class="kbd">?</span> to close</div>
+  </div>
+</div>
+
+<script>
+const DATA = %%DASHBOARD_DATA%%;
+const DELTA = %%DASHBOARD_DELTA%%;
+</script>
+%%SCRIPTS%%
+</body>
+</html>

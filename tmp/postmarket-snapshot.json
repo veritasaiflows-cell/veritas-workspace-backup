@@ -1,0 +1,22 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:54.781300+00:00",
+  "snapshot_date": "2026-05-02",
+  "market_data_as_of": "2026-05-01",
+  "trust_label": "clean",
+  "canonical_mutation_allowed": true,
+  "trust_reason": "dashboard validation clean",
+  "trust_gate_blocked": false,
+  "deployable_now": [
+    "GS",
+    "JPM",
+    "NVDA"
+  ],
+  "almost_deployable": [
+    "ETN",
+    "GOOG",
+    "MSFT"
+  ],
+  "blocked": [],
+  "delta_summary": "No material changes",
+  "wrote_to": "01. Dashboards\\Post-Market Snapshot\\2026-05-02.md"
+}

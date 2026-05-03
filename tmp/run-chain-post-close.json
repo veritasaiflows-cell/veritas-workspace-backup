@@ -1,0 +1,288 @@
+{
+  "window": "post-close",
+  "owner": "scripts/run_finance_refresh_chain.py",
+  "started_at_utc": "2026-05-02T23:14:23Z",
+  "completed_at_utc": "2026-05-02T23:14:55Z",
+  "status": "ok",
+  "exit_code": 0,
+  "strict": false,
+  "recovery": {
+    "triggered": false,
+    "active": false,
+    "reason": "",
+    "failed_step": null
+  },
+  "steps": [
+    {
+      "index": 1,
+      "script": "earnings_calendar_enrichment.py",
+      "args": [],
+      "command": "earnings_calendar_enrichment.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:23Z",
+      "completed_at_utc": "2026-05-02T23:14:26Z",
+      "exit_code": 0
+    },
+    {
+      "index": 2,
+      "script": "policy_expectations_refresh.py",
+      "args": [],
+      "command": "policy_expectations_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:26Z",
+      "completed_at_utc": "2026-05-02T23:14:28Z",
+      "exit_code": 0
+    },
+    {
+      "index": 3,
+      "script": "credit_spread_refresh.py",
+      "args": [],
+      "command": "credit_spread_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:28Z",
+      "completed_at_utc": "2026-05-02T23:14:29Z",
+      "exit_code": 0
+    },
+    {
+      "index": 4,
+      "script": "breadth_refresh.py",
+      "args": [],
+      "command": "breadth_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:29Z",
+      "completed_at_utc": "2026-05-02T23:14:32Z",
+      "exit_code": 0
+    },
+    {
+      "index": 5,
+      "script": "market_state_refresh.py",
+      "args": [],
+      "command": "market_state_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:32Z",
+      "completed_at_utc": "2026-05-02T23:14:39Z",
+      "exit_code": 0
+    },
+    {
+      "index": 6,
+      "script": "macro_regime_refresh.py",
+      "args": [],
+      "command": "macro_regime_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:39Z",
+      "completed_at_utc": "2026-05-02T23:14:39Z",
+      "exit_code": 0
+    },
+    {
+      "index": 7,
+      "script": "technical_refresh.py",
+      "args": [],
+      "command": "technical_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:39Z",
+      "completed_at_utc": "2026-05-02T23:14:42Z",
+      "exit_code": 0
+    },
+    {
+      "index": 8,
+      "script": "regime_scoring_refresh.py",
+      "args": [],
+      "command": "regime_scoring_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:42Z",
+      "completed_at_utc": "2026-05-02T23:14:42Z",
+      "exit_code": 0
+    },
+    {
+      "index": 9,
+      "script": "band_refresh.py",
+      "args": [],
+      "command": "band_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:42Z",
+      "completed_at_utc": "2026-05-02T23:14:45Z",
+      "exit_code": 0
+    },
+    {
+      "index": 10,
+      "script": "entry_band_fetch.py",
+      "args": [
+        "--all-tracked",
+        "--html"
+      ],
+      "command": "entry_band_fetch.py --all-tracked --html",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:45Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 11,
+      "script": "generate_entry_band_status.py",
+      "args": [],
+      "command": "generate_entry_band_status.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 12,
+      "script": "deployment_check.py",
+      "args": [],
+      "command": "deployment_check.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 13,
+      "script": "trigger_sheet_refresh.py",
+      "args": [],
+      "command": "trigger_sheet_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 14,
+      "script": "positioning_ranking_refresh.py",
+      "args": [],
+      "command": "positioning_ranking_refresh.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 15,
+      "script": "post_earnings_prep.py",
+      "args": [],
+      "command": "post_earnings_prep.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 16,
+      "script": "post_earnings_note_targets.py",
+      "args": [],
+      "command": "post_earnings_note_targets.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 17,
+      "script": "universe_consistency_check.py",
+      "args": [],
+      "command": "universe_consistency_check.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:53Z",
+      "exit_code": 0
+    },
+    {
+      "index": 18,
+      "script": "test_dashboard_acceptance.py",
+      "args": [],
+      "command": "test_dashboard_acceptance.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:53Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 19,
+      "script": "generate_dashboard.py",
+      "args": [],
+      "command": "generate_dashboard.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 20,
+      "script": "validate_dashboard_state.py",
+      "args": [
+        "--write"
+      ],
+      "command": "validate_dashboard_state.py --write",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 21,
+      "script": "workbook_export.py",
+      "args": [],
+      "command": "workbook_export.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 22,
+      "script": "workbook_template.py",
+      "args": [],
+      "command": "workbook_template.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 23,
+      "script": "postmarket_snapshot.py",
+      "args": [],
+      "command": "postmarket_snapshot.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 24,
+      "script": "daily_executive_brief.py",
+      "args": [],
+      "command": "daily_executive_brief.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:54Z",
+      "exit_code": 0
+    },
+    {
+      "index": 25,
+      "script": "run_summary_refresh.py",
+      "args": [
+        "--window",
+        "post-close"
+      ],
+      "command": "run_summary_refresh.py --window post-close",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:54Z",
+      "completed_at_utc": "2026-05-02T23:14:55Z",
+      "exit_code": 0
+    },
+    {
+      "index": 26,
+      "script": "dashboard_run_summary_consumer.py",
+      "args": [
+        "--window",
+        "post-close"
+      ],
+      "command": "dashboard_run_summary_consumer.py --window post-close",
+      "status": "ok",
+      "started_at_utc": "2026-05-02T23:14:55Z",
+      "completed_at_utc": "2026-05-02T23:14:55Z",
+      "exit_code": 0
+    }
+  ]
+}

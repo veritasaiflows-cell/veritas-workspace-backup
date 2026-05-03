@@ -1,0 +1,107 @@
+{
+  "manifest_version": 2,
+  "generated_at_utc": "2026-05-02T23:14:54.532266+00:00",
+  "overall_status": "clean",
+  "source_files": {
+    "trigger-sheet.json": {
+      "path": "tmp/trigger-sheet.json",
+      "timestamp_utc": "2026-05-02T23:14:53.197782+00:00",
+      "exists": true,
+      "age_hours_at_export": 0.0,
+      "freshness_status": "fresh"
+    },
+    "dashboard-validation.json": {
+      "path": "tmp/dashboard-validation.json",
+      "timestamp_utc": "2026-05-02T23:14:54.419397+00:00",
+      "exists": true,
+      "age_hours_at_export": 0.0,
+      "freshness_status": "fresh"
+    },
+    "technical-refresh.json": {
+      "path": "tmp/technical-refresh.json",
+      "timestamp_utc": "2026-05-02T23:14:42.677871+00:00",
+      "exists": true,
+      "age_hours_at_export": 0.0,
+      "freshness_status": "fresh"
+    },
+    "earnings-calendar.json": {
+      "path": "tmp/earnings-calendar.json",
+      "timestamp_utc": "2026-05-02T23:14:26.578490+00:00",
+      "exists": true,
+      "age_hours_at_export": 0.01,
+      "freshness_status": "fresh"
+    },
+    "post-earnings-prep.json": {
+      "path": "tmp/post-earnings-prep.json",
+      "timestamp_utc": "2026-05-02T23:14:53.327830+00:00",
+      "exists": true,
+      "age_hours_at_export": 0.0,
+      "freshness_status": "fresh"
+    },
+    "post-earnings-note-targets.json": {
+      "path": "tmp/post-earnings-note-targets.json",
+      "timestamp_utc": "2026-05-02T23:14:53.376839+00:00",
+      "exists": true,
+      "age_hours_at_export": 0.0,
+      "freshness_status": "fresh"
+    },
+    "band-note-sync.json": {
+      "path": "tmp/band-note-sync.json",
+      "timestamp_utc": "2026-05-02T20:34:43.476195+00:00",
+      "exists": true,
+      "age_hours_at_export": 2.67,
+      "freshness_status": "fresh"
+    }
+  },
+  "freshness": {
+    "overall_status": "fresh",
+    "oldest_source_age_hours": 2.67,
+    "newest_source_age_hours": 0.0,
+    "warning_source_files": [],
+    "stale_source_files": [],
+    "missing_timestamp_files": []
+  },
+  "exports": {
+    "workbook-control-panel.csv": {
+      "path": "tmp/workbook-control-panel.csv",
+      "row_count": 24,
+      "status": "ok",
+      "sha256": "183722e8b57375b51a497bef8d02bd4b82d36c12b7371033e6bc9d4ca0f09fee",
+      "file_bytes": 2784,
+      "modified_at_utc": "2026-05-02T23:14:54.514050+00:00"
+    },
+    "workbook-watchlist-board.csv": {
+      "path": "tmp/workbook-watchlist-board.csv",
+      "row_count": 22,
+      "status": "ok",
+      "sha256": "9d87f6f9ce8ba673198b0be1bd16ea9922c365fcd86dc04f461efc8d5a5d78e5",
+      "file_bytes": 10085,
+      "modified_at_utc": "2026-05-02T23:14:54.514050+00:00"
+    },
+    "workbook-deployment-ranking.csv": {
+      "path": "tmp/workbook-deployment-ranking.csv",
+      "row_count": 10,
+      "status": "ok",
+      "sha256": "bd59832b5ca374a1750aec074ccbc139c8de07e4811f3881b19248b79b314d10",
+      "file_bytes": 3865,
+      "modified_at_utc": "2026-05-02T23:14:54.514050+00:00"
+    },
+    "workbook-earnings-tracker.csv": {
+      "path": "tmp/workbook-earnings-tracker.csv",
+      "row_count": 1,
+      "status": "ok",
+      "sha256": "0944df996b3e60151741a6c40ec0e1d6484c622fc8f2ab5d72f33e31a224db7f",
+      "file_bytes": 579,
+      "modified_at_utc": "2026-05-02T23:14:54.528021+00:00"
+    },
+    "workbook-technical-drift.csv": {
+      "path": "tmp/workbook-technical-drift.csv",
+      "row_count": 18,
+      "status": "ok",
+      "sha256": "610550df7116e3f66f81b1ab2b9486b7c699a9c80a394937a48c82bc008921ec",
+      "file_bytes": 5104,
+      "modified_at_utc": "2026-05-02T23:14:54.530124+00:00"
+    }
+  },
+  "warnings": []
+}

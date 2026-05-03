@@ -1,0 +1,139 @@
+{
+  "latest": {
+    "date": "2026-04-24",
+    "close": 174.25999450683594,
+    "open": 177.77999877929688,
+    "high": 177.77999877929688,
+    "low": 171.6300048828125,
+    "volume": 10494800,
+    "ma20": 193.87799987792968,
+    "ma50": 199.09380004882811,
+    "ma200": 178.08340003967285,
+    "high_52w": 214.5,
+    "low_52w": 119.51000213623047,
+    "recent_support": 174.25999450683594,
+    "recent_resistance": 203.47999572753906,
+    "one_year_return_pct": 42.871191901945416,
+    "ytd_return_pct": -6.937252599820598
+  },
+  "snapshot": {
+    "last_close": "$174.26",
+    "consensus_target": "$215.06",
+    "market_cap": "$234.7B",
+    "range_52w": "$120-$214",
+    "dividend_yield": "1.6%",
+    "forward_pe": "~23x",
+    "target_upside": "23.4%",
+    "off_peak": "-18.8%",
+    "inst_owned": "81.4%"
+  },
+  "q1": {
+    "revenue": "$22.1B",
+    "revenue_note": "+8.7% YoY \u00b7 beat by 2.7%",
+    "adj_eps": "$1.78",
+    "adj_eps_note": "+21% YoY \u00b7 beat by 16.9%",
+    "adj_ebitda": "$4.09B",
+    "adj_ebitda_note": "18.5% margin \u00b7 beat by 17.7%",
+    "backlog": "$271B",
+    "backlog_note": "$109B defense \u00b7 $162B commercial",
+    "free_cash_flow": "$1.3B",
+    "fcf_note": "FY guide: $8.25-8.75B",
+    "op_margin": "11.6%",
+    "op_margin_note": "Up from 10% in Q1 2025"
+  },
+  "guidance": {
+    "sales": "$92.5-93.5B",
+    "sales_note": "Raised +$500M",
+    "adj_eps": "$6.70-6.90",
+    "adj_eps_note": "Prior: $6.60-6.80",
+    "free_cash_flow": "$8.25-8.75B",
+    "fcf_note": "Reaffirmed"
+  },
+  "segments": [
+    {
+      "name": "Raytheon (defense)",
+      "headline": "+10% YoY \u00b7 $6.95B \u00b7 margin 12.2% (+150bps)",
+      "detail": "Air-defense, naval munitions, Tomahawk, AMRAAM, Standard Missile. Framework agreements with Dept. of War pending.",
+      "value": 100,
+      "color": "#205e9e"
+    },
+    {
+      "name": "Pratt & Whitney",
+      "headline": "+11% YoY \u00b7 commercial aftermarket +19%",
+      "detail": "GTF and V2500 engine demand strong. GTF Advantage entry into service expected later in 2026.",
+      "value": 82,
+      "color": "#0d8a53"
+    },
+    {
+      "name": "Collins Aerospace",
+      "headline": "+5% YoY \u00b7 margins flat",
+      "detail": "Steady growth, but the lowest performer of the three this quarter.",
+      "value": 55,
+      "color": "#8f8f8f"
+    }
+  ],
+  "hist_fin": {
+    "eps_labels": [
+      "2023",
+      "2024",
+      "2025",
+      "2026E"
+    ],
+    "eps_values": [
+      2.2,
+      3.6,
+      5.0,
+      6.8
+    ],
+    "rev_labels": [
+      "2023",
+      "2024",
+      "2025",
+      "2026E"
+    ],
+    "rev_values": [
+      68.9,
+      74.2,
+      90.4,
+      93.0
+    ]
+  },
+  "fundamentals": {
+    "company": "RTX Corporation",
+    "exchange": "NYSE",
+    "sector": "Industrials",
+    "industry": "Aerospace & Defense",
+    "employees": 180000,
+    "market_cap": 234673045504,
+    "enterprise_value": 268544049152,
+    "trailing_pe": 32.694183,
+    "forward_pe": 23.133066,
+    "price_to_sales": 2.5967164,
+    "price_to_book": 3.5850804,
+    "dividend_yield": 1.56,
+    "profit_margin": 0.080290005,
+    "operating_margin": 0.13182001,
+    "gross_margin": 0.20212999,
+    "roe": 0.11571,
+    "roa": 0.040510003,
+    "revenue_growth": 0.087,
+    "earnings_growth": 0.325,
+    "free_cash_flow": 7233375232,
+    "operating_cash_flow": 11116999680,
+    "total_revenue": 90372997120,
+    "total_debt": 38934999040,
+    "total_cash": 6817999872,
+    "current_ratio": 1.024,
+    "quick_ratio": 0.646,
+    "debt_to_equity": 57.229,
+    "analyst_rating": "2.1 - Buy",
+    "recommendation_key": "buy",
+    "analyst_count": 22,
+    "target_mean_price": 215.06409,
+    "target_median_price": 222.5,
+    "target_low_price": 179.0,
+    "target_high_price": 242.0,
+    "beta": 0.428,
+    "held_percent_institutions": 0.81406
+  }
+}

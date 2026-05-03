@@ -1,0 +1,174 @@
+{
+  "summary": {
+    "passed": 17,
+    "failed": 0,
+    "total": 17,
+    "all_passed": true
+  },
+  "results": [
+    {
+      "name": "missing_market_field",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "partial",
+      "validation": {
+        "critical": 0,
+        "warning": 0,
+        "info": 0
+      },
+      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+    },
+    {
+      "name": "partial_macro_feed",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "partial",
+      "validation": {
+        "critical": 0,
+        "warning": 0,
+        "info": 0
+      },
+      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+    },
+    {
+      "name": "market_sectors_invalid_shape",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "partial",
+      "validation": {
+        "critical": 0,
+        "warning": 2,
+        "info": 0
+      },
+      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+    },
+    {
+      "name": "stale_market_source",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "stale",
+      "validation": {
+        "critical": 0,
+        "warning": 0,
+        "info": 0
+      },
+      "trust_summary": "Execution context is stale. Refresh before relying on execution signals."
+    },
+    {
+      "name": "contradiction_entry_band",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "usable_with_caution",
+      "validation": {
+        "critical": 1,
+        "warning": 0,
+        "info": 0
+      },
+      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+    },
+    {
+      "name": "earnings_date_change_visibility",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "usable_with_caution",
+      "validation": {
+        "critical": 0,
+        "warning": 1,
+        "info": 0
+      },
+      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+    },
+    {
+      "name": "state_transition_in_band_ready",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": "usable_with_caution",
+      "validation": {
+        "critical": 0,
+        "warning": 0,
+        "info": 0
+      },
+      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+    },
+    {
+      "name": "market_state_missing_policy_artifact",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "policy_fail_closed_expired_target",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "dashboard_policy_manual_remediation_path",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "macro_regime_policy_distribution_shape_guard",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "macro_regime_credit_shape_guard",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "macro_regime_breadth_shape_guard",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "delta_summary_honesty",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "earnings_new_alert_visibility",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "payload_shape_contract",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "workflow8_command_center_alignment",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    }
+  ]
+}

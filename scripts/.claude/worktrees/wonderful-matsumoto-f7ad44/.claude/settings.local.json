@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:\\\\\\\\Users\\\\\\\\Veritas2.0\\\\\\\\.openclaw\\\\\\\\workspace\\\\\\\\tmp\\\\\\\\\")",
+      "PowerShell(cd \"C:\\\\Users\\\\Veritas2.0\\\\.openclaw\\\\workspace\"; git log --oneline -- tmp/portfolio-config.json 2>&1 | Select-Object -First 10)",
+      "PowerShell(python -c \"import json; json.load\\(open\\(r'C:\\\\Users\\\\Veritas2.0\\\\.openclaw\\\\workspace\\\\tmp\\\\portfolio-config.json', encoding='utf-8'\\)\\); print\\('JSON valid'\\)\")",
+      "Bash(wc -l C:\\\\\\\\Users\\\\\\\\Veritas2.0\\\\\\\\.openclaw\\\\\\\\workspace\\\\\\\\scripts\\\\\\\\*.py C:\\\\\\\\Users\\\\\\\\Veritas2.0\\\\\\\\.openclaw\\\\\\\\workspace\\\\\\\\scripts\\\\\\\\*.jsx)",
+      "Read(//c/Users/Veritas2.0/.openclaw/workspace/**)",
+      "Bash(python scripts/generate_dashboard.py)"
+    ]
+  }
+}

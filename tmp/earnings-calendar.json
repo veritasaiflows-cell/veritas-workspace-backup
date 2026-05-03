@@ -1,0 +1,255 @@
+{
+  "generated_at_utc": "2026-05-02T23:46:11.418660+00:00",
+  "as_of_date": "2026-05-02",
+  "status": "ok",
+  "stale_after_days": 7,
+  "expected_update_window": "Refresh weekly, before event-calendar maintenance, and when major earnings windows approach or resolve.",
+  "last_trading_day": null,
+  "warnings": [],
+  "upcoming_window_days": 30,
+  "records": [
+    {
+      "ticker": "XOM",
+      "next_earnings_date": "2026-07-31",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:08.619484+00:00",
+      "error": null
+    },
+    {
+      "ticker": "LNG",
+      "next_earnings_date": "2026-05-07",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:08.891336+00:00",
+      "error": null
+    },
+    {
+      "ticker": "CVX",
+      "next_earnings_date": "2026-07-31",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:08.954298+00:00",
+      "error": null
+    },
+    {
+      "ticker": "COP",
+      "next_earnings_date": "2026-04-30",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.017855+00:00",
+      "error": null
+    },
+    {
+      "ticker": "EOG",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.082672+00:00",
+      "error": null
+    },
+    {
+      "ticker": "ET",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.216089+00:00",
+      "error": null
+    },
+    {
+      "ticker": "WMB",
+      "next_earnings_date": "2026-05-04",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.279326+00:00",
+      "error": null
+    },
+    {
+      "ticker": "MPLX",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.341946+00:00",
+      "error": null
+    },
+    {
+      "ticker": "LMT",
+      "next_earnings_date": "2026-07-21",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.467454+00:00",
+      "error": null
+    },
+    {
+      "ticker": "RTX",
+      "next_earnings_date": "2026-07-21",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.529249+00:00",
+      "error": null
+    },
+    {
+      "ticker": "NOC",
+      "next_earnings_date": "2026-07-21",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.590742+00:00",
+      "error": null
+    },
+    {
+      "ticker": "GD",
+      "next_earnings_date": "2026-07-22",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.653823+00:00",
+      "error": null
+    },
+    {
+      "ticker": "KTOS",
+      "next_earnings_date": "2026-05-06",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.716427+00:00",
+      "error": null
+    },
+    {
+      "ticker": "LDOS",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.778463+00:00",
+      "error": null
+    },
+    {
+      "ticker": "BAH",
+      "next_earnings_date": "2026-05-22",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.841891+00:00",
+      "error": null
+    },
+    {
+      "ticker": "SAIC",
+      "next_earnings_date": "2026-06-01",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:09.908089+00:00",
+      "error": null
+    },
+    {
+      "ticker": "MSFT",
+      "next_earnings_date": "2026-07-29",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.036214+00:00",
+      "error": null
+    },
+    {
+      "ticker": "GOOG",
+      "next_earnings_date": "2026-07-23",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.102514+00:00",
+      "error": null
+    },
+    {
+      "ticker": "NVDA",
+      "next_earnings_date": "2026-05-20",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.242099+00:00",
+      "error": null
+    },
+    {
+      "ticker": "ETN",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.307679+00:00",
+      "error": null
+    },
+    {
+      "ticker": "AMD",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.369648+00:00",
+      "error": null
+    },
+    {
+      "ticker": "VRT",
+      "next_earnings_date": "2026-07-29",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.432017+00:00",
+      "error": null
+    },
+    {
+      "ticker": "PLTR",
+      "next_earnings_date": "2026-05-04",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.500700+00:00",
+      "error": null
+    },
+    {
+      "ticker": "SMCI",
+      "next_earnings_date": "2026-05-05",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.570975+00:00",
+      "error": null
+    },
+    {
+      "ticker": "EQIX",
+      "next_earnings_date": "2026-07-29",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.699035+00:00",
+      "error": null
+    },
+    {
+      "ticker": "ASML",
+      "next_earnings_date": "2026-07-15",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.763784+00:00",
+      "error": null
+    },
+    {
+      "ticker": "AMAT",
+      "next_earnings_date": "2026-05-14",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.827095+00:00",
+      "error": null
+    },
+    {
+      "ticker": "LRCX",
+      "next_earnings_date": "2026-07-29",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:10.897315+00:00",
+      "error": null
+    },
+    {
+      "ticker": "JPM",
+      "next_earnings_date": "2026-07-14",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:11.028103+00:00",
+      "error": null
+    },
+    {
+      "ticker": "GS",
+      "next_earnings_date": "2026-07-14",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:11.091472+00:00",
+      "error": null
+    },
+    {
+      "ticker": "BRK.B",
+      "next_earnings_date": null,
+      "source": "manual_post_earnings_hold",
+      "fetched_at_utc": "2026-05-02T23:46:11.155799+00:00",
+      "error": null,
+      "manual_hold": {
+        "held_prior_date": "2026-05-02",
+        "reason": "reported 2026-05-02; next-quarter date not yet primary-confirmed"
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "next_earnings_date": "2026-07-30",
+      "source": "yfinance",
+      "fetched_at_utc": "2026-05-02T23:46:11.227026+00:00",
+      "error": null
+    },
+    {
+      "ticker": "CAT",
+      "next_earnings_date": null,
+      "source": "manual_post_earnings_hold",
+      "fetched_at_utc": "2026-05-02T23:46:11.354339+00:00",
+      "error": null,
+      "manual_hold": {
+        "held_prior_date": "2026-04-30",
+        "reason": "reported 2026-04-30; next-quarter date not yet primary-confirmed"
+      }
+    }
+  ],
+  "watchlist_alerts": [],
+  "timing_sensitive_alerts": [],
+  "timing_sensitive_alert_window_days": 14,
+  "fetch_errors": []
+}

@@ -1,0 +1,138 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace",
+      "models": {
+        "openai-codex/gpt-5.4": {}
+      },
+      "model": {
+        "primary": "openai-codex/gpt-5.4"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "codex": {
+        "baseUrl": "https://chatgpt.com/backend-api/v1",
+        "apiKey": "codex-app-server",
+        "auth": "token",
+        "api": "openai-codex-responses",
+        "models": [
+          {
+            "id": "gpt-5.4",
+            "name": "gpt-5.4",
+            "api": "openai-codex-responses",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 544000,
+            "maxTokens": 256000,
+            "compat": {
+              "supportsReasoningEffort": true,
+              "supportsUsageInStreaming": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "df011ad6e8a52342c8274aa58aa15a4d631ec0523d66c595"
+    },
+    "port": 18789,
+    "bind": "loopback",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "controlUi": {
+      "allowInsecureAuth": false
+    }
+  },
+  "web": {
+    "heartbeatSeconds": 21600
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "auth": {
+    "profiles": {
+      "openai-codex:randallquezada@gmail.com": {
+        "provider": "openai-codex",
+        "mode": "oauth",
+        "email": "randallquezada@gmail.com"
+      }
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "skills": {
+    "allowBundled": [
+      "github",
+      "healthcheck",
+      "node-connect",
+      "skill-creator",
+      "taskflow",
+      "taskflow-inbox-triage",
+      "weather"
+    ],
+    "load": {
+      "watch": true,
+      "watchDebounceMs": 250
+    },
+    "install": {
+      "nodeManager": "npm"
+    },
+    "entries": {
+      "apple-reminders": {
+        "enabled": false
+      },
+      "slack": {
+        "enabled": false
+      },
+      "spotify-player": {
+        "enabled": false
+      }
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-29T06:45:57.724Z",
+    "lastRunVersion": "2026.4.22",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.22",
+    "lastTouchedAt": "2026-04-29T20:52:28.903Z"
+  },
+  "plugins": {
+    "entries": {
+      "openai": {
+        "enabled": true
+      }
+    }
+  }
+}

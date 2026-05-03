@@ -1,0 +1,7452 @@
+[
+  {
+    "generated_at": "2026-05-02 22:47 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:47 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:47 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:47 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 22:50 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:14 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:30 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:30 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:46 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-02 23:46 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-03 00:06 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-03 00:06 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-03 00:33 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  },
+  {
+    "generated_at": "2026-05-03 00:33 UTC",
+    "technical": [
+      {
+        "ticker": "ETN",
+        "actionState": "ALMOST",
+        "close": 425.55,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "JPM",
+        "actionState": "DEPLOYABLE",
+        "close": 312.47,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GOOG",
+        "actionState": "ALMOST",
+        "close": 383.22,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "MSFT",
+        "actionState": "ALMOST",
+        "close": 414.44,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LMT",
+        "actionState": "BELOW STOP",
+        "close": 512.77,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "BRK.B",
+        "actionState": "BENCH",
+        "close": 473.01,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "XOM",
+        "actionState": "BENCH",
+        "close": 152.75,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "NVDA",
+        "actionState": "DEPLOYABLE",
+        "close": 198.45,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMZN",
+        "actionState": "WATCH",
+        "close": 268.26,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "VRT",
+        "actionState": "WATCH",
+        "close": 328.31,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "RTX",
+        "actionState": "BELOW STOP",
+        "close": 173.99,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": true
+      },
+      {
+        "ticker": "CAT",
+        "actionState": "WATCH",
+        "close": 889.67,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "GS",
+        "actionState": "DEPLOYABLE",
+        "close": 923.71,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "CVX",
+        "actionState": "WATCH",
+        "close": 190.63,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "PLTR",
+        "actionState": "WATCH",
+        "close": 144.07,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "AMD",
+        "actionState": "WATCH",
+        "close": 360.54,
+        "inBand": false,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LNG",
+        "actionState": "WATCH",
+        "close": 270.06,
+        "inBand": true,
+        "blocked": false,
+        "belowStop": false
+      },
+      {
+        "ticker": "LLY",
+        "actionState": "WATCH",
+        "close": 963.33,
+        "inBand": null,
+        "blocked": false,
+        "belowStop": null
+      }
+    ]
+  }
+]

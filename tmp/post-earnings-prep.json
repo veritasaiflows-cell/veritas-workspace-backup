@@ -1,0 +1,96 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:53.327830+00:00",
+  "status": "partial",
+  "stale_after_hours": 24,
+  "expected_update_window": "Run after trigger_sheet_refresh.py and before post-earnings note targeting or post-earnings vault edits.",
+  "last_trading_day": "2026-05-01",
+  "source_last_trading_day": {
+    "trigger": "2026-05-01",
+    "technical": "2026-05-01",
+    "deployment": "2026-05-01",
+    "market_state": "2026-05-01",
+    "earnings": null
+  },
+  "freshness": {
+    "trigger_file": {
+      "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\trigger-sheet.json",
+      "generated_at_utc": "2026-05-02T23:14:53.197782+00:00",
+      "age_hours": 0.0,
+      "age_label": "0m old",
+      "is_stale": false
+    },
+    "earnings_file": {
+      "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\earnings-calendar.json",
+      "generated_at_utc": "2026-05-02T23:14:26.578490+00:00",
+      "age_hours": 0.01,
+      "age_label": "0m old",
+      "is_stale": false
+    }
+  },
+  "macro_context": {
+    "status": "ok",
+    "spx": 7230.1201,
+    "vix": 16.99,
+    "brent": 108.17,
+    "wti": 101.94,
+    "summary": "S&P 500 7230.1201, VIX 16.99, Brent 108.17, WTI 101.94"
+  },
+  "window": {
+    "back_days": 11,
+    "back_trading_days": 7,
+    "forward_days": 14
+  },
+  "warnings": [
+    "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+    "Non-blocking watchlist/date mismatches remain outside the active timing window."
+  ],
+  "packets": [
+    {
+      "ticker": "ETN",
+      "priority": "critical",
+      "stage": "upcoming",
+      "phase": "pre_earnings",
+      "days_to_or_from_earnings": 3,
+      "next_earnings_date": "2026-05-05",
+      "watch_items": [
+        "grid and electrification demand",
+        "AI power infrastructure commentary",
+        "guidance quality",
+        "timing/date-confirmation confidence"
+      ],
+      "sector_read_through": "Core read-through for the power-enabler sleeve.",
+      "note_targets": [
+        "05. Intelligence/Event Calendar.md",
+        "05. Intelligence/Weekly Intelligence Brief.md",
+        "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md"
+      ],
+      "technical_context": {
+        "close": 425.55,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band": false,
+        "below_stop": false,
+        "data_date": "2026-05-01"
+      },
+      "deployment_context": {
+        "action_state": "ALMOST",
+        "reason": "close 425.55 -- posture constructive but not yet in band"
+      },
+      "trigger_context": {
+        "action_state": "ALMOST DEPLOYABLE",
+        "technical_trigger": "Pullback into 388 to 396 with support holding, or disciplined continuation that does not become a chase",
+        "catalyst_blocker": "Next earnings 2026-05-05 in 3d -- treat as timing-sensitive",
+        "why": "Best chart in the sheet, but current price is extended versus the preferred zone",
+        "invalidation": 383.23,
+        "size_tier": "Tier 2"
+      },
+      "interpretation_slots": {
+        "what_happened": null,
+        "what_it_means": null,
+        "what_we_do_now": null,
+        "evidence_status": "pending post-earnings evidence"
+      }
+    }
+  ]
+}

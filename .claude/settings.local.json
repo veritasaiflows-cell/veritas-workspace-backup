@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python scripts/band_refresh.py)",
+      "Bash(python scripts/apply_band_update.py --dry-run)",
+      "Bash(python scripts/apply_band_update.py --all)",
+      "WebSearch",
+      "Bash(python scripts/run_finance_refresh_chain.py sunday)",
+      "Bash(python scripts/weekly_review_skeleton.py)",
+      "Bash(python scripts/entry_band_fetch.py --all-tracked --html)",
+      "Bash(python scripts/generate_entry_band_status.py)",
+      "Bash(python scripts/deployment_check.py)",
+      "Bash(python scripts/trigger_sheet_refresh.py)",
+      "Bash(python scripts/post_earnings_prep.py)",
+      "Bash(python scripts/post_earnings_note_targets.py)",
+      "Bash(python scripts/call_log_sync.py)",
+      "Bash(python scripts/generate_dashboard.py)",
+      "Bash(python scripts/validate_dashboard_state.py --write)",
+      "Bash(python scripts/premarket_snapshot.py)",
+      "Bash(python scripts/postmarket_snapshot.py)",
+      "Bash(python scripts/daily_executive_brief.py)"
+    ]
+  }
+}

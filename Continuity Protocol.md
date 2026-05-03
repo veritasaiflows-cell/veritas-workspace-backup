@@ -2,41 +2,42 @@
 
 ## Purpose
 
-Keep Veritas continuous across sessions without turning the vault into noise.
+Keep Veritas continuous across sessions without turning the workspace into noise.
 
 ## Memory layers
 
-### 1. Daily raw memory
+### Daily memory
 File: `memory/YYYY-MM-DD.md`
 
 Use for:
 - what happened today
 - setup changes
-- discoveries
-- temporary context
-- follow-ups
-- rough notes worth reviewing later
+- discoveries and follow-ups
+- rough context that may or may not deserve later promotion
+- session-level market or portfolio context
 
 Rule:
-- write here often
-- optimize for capture, not perfection
+- capture only meaningful deltas
+- one bullet per material change
+- if the same topic already exists today, update or merge it instead of appending another bullet
+- let queue, registry, continuity notes, and audits own pass-by-pass detail
+- optimize for usefulness, not perfection
 
-### 2. Curated long-term memory
+### Durable memory
 File: `MEMORY.md`
 
 Use for:
 - durable facts
-- Randall's preferences
-- Veritas identity and mission
-- long-term goals
+- Randall's durable preferences
+- lasting operating decisions
+- major finance rules, posture, or policy
 - lessons that should change future behavior
-- important recurring patterns
 
 Rule:
-- only promote what will still matter later
-- keep it curated, not bloated
+- promote only what will still matter later
+- keep it curated
 
-### 3. Operating rules
+### Operating files
 Files:
 - `SOUL.md`
 - `AGENTS.md`
@@ -47,87 +48,59 @@ Files:
 Use for:
 - identity
 - behavior rules
-- environment and tooling setup
-- local conventions
+- environment facts
+- stable conventions
 
 Rule:
-- these files define how Veritas should operate, not a daily event log
+- these files define how Veritas operates
+- they are not daily logs or procedural dump zones
 
-## Write rules
+## Routing rules
 
-### Write to the daily note when
+Write to the daily note when:
+- a materially new fact or decision appeared
 - meaningful work happened
 - a tool or config changed
 - a bug or constraint was discovered
-- Randall gave a short-term instruction or preference
-- there is a follow-up worth tracking
+- Randall gave a short-term instruction
+- a follow-up is worth tracking
 
-### Promote to MEMORY.md when
+Do not write to the daily note when:
+- the same state is already captured there
+- the detail already lives cleanly in a continuity note, queue, registry, ledger, or audit
+- the update is only "still active", "reran", "no change", or another status replay
+- the note would become a chain log instead of a daily delta log
+
+Promote to `MEMORY.md` when:
 - the fact should persist across many sessions
-- it changes how Veritas should make decisions
-- it reflects Randall's durable preferences
-- it defines mission, posture, or priorities
-- it is a lesson that should not be relearned the hard way
+- it changes future decision quality
+- it reflects a durable preference or policy
+- losing it would likely recreate the same mistake
 
-### Update operating files when
-- behavior rules change
-- workflow standards change
-- local setup changes
-- a rule becomes important enough to formalize
-
-## Session workflow
-
-### At session start
-1. Read `SOUL.md`
-2. Read `USER.md`
-3. Read today's and yesterday's daily notes
-4. In main session, read `MEMORY.md`
-
-### During the session
-- do the work
-- write notable developments to the current daily note
-
-### At the end of meaningful work
-- decide what belongs only in today's note
-- promote durable items into `MEMORY.md` or an operating file
-
-### Every few days
-- review recent daily notes
-- promote durable truths
-- prune stale or duplicated long-term memory
+Update an operating file or skill when:
+- behavior rules changed
+- environment posture changed
+- a procedure became repeatable enough to deserve a skill
 
 ## Hygiene rules
 
-- No mental notes. If it matters, write it.
-- Prefer short accurate notes over long vague notes.
-- Avoid duplicating the same fact across too many files.
-- `MEMORY.md` must stay curated.
-- If a lesson changes future behavior, put it in `AGENTS.md`, `TOOLS.md`, or a skill, not only in a daily note.
+- No mental notes
+- Prefer short accurate notes over long vague notes
+- Avoid duplicating the same rule across too many files
+- Keep `MEMORY.md` curated
+- If a lesson changes future behavior, update the right operating file or skill instead of burying it in a daily note
 
-## Recommended structures
+## Daily note compression rule
 
-### Daily notes
-- What happened
-- Decisions
-- Follow-ups
-- Worth promoting to MEMORY.md
+- Start daily bullets with a clear topic lead so duplicate detection is easy.
+- Before appending, scan today's note for the same topic or opening phrase.
+- If the topic is already present, update or collapse the existing bullet instead of adding another one.
+- If automation or session-memory writes touched the note and duplicate bullets are suspected, run `python scripts/daily_note_dedupe.py memory/YYYY-MM-DD.md --apply` as the bounded cleanup step.
+- If a workflow had many small actions, write one summary bullet and point to the owning continuity note or audit instead of replaying the full sequence.
+- Daily notes are not queue copies, chain logs, or proof-run ledgers.
 
-### MEMORY.md
-- Core identities
-- Current priorities
-- Working principles
-- Preferences
-- Tooling posture
-- Important decisions
-- Lessons learned
+## Startup and heartbeat note
 
-## Automation policy
-
-Automation should support the protocol, not replace judgment.
-
-Use later for:
-- heartbeat-based memory maintenance
-- periodic promotion reviews
-- reminders for unfinished follow-ups
-
-But keep the memory rules simple and human-readable first.
+Session startup behavior lives in `AGENTS.md`.
+Heartbeat behavior lives in `HEARTBEAT.md`.
+Procedural continuity work belongs in `memory-continuity-manager`.

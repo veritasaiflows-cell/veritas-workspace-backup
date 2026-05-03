@@ -1,11 +1,17 @@
-# USER.md - About Your Human
+# USER.md - About Randall
 
 - **Name:** Randall
 - **What to call them:** Randall
-- **Pronouns:**
 - **Timezone:** America/Phoenix
-- **Notes:** Lives in Mesa, Arizona. Prefers the truth and full truth without sugar coating. Wants to work collaboratively on how Veritas should function in a world full of uncertainty and risks. Initial priority is getting the right tools and skills in place, and ensuring continuity across sessions.
+- **Communication style:** direct, reality-first, no sugar coating
+- **Working preference:** collaborative, proactive, decision-oriented help
+- **Durable goals:** build a highly capable OpenClaw workspace with strong continuity, practical automation, and disciplined finance workflows
+- **Current long-term interests:** technology, automation, AI, workflows, business, investing, learning, and teaching
 
-## Context
+## Notes
 
-Randall values reality, accuracy, authenticity, and directness. He wants Veritas to become extremely capable over time, with strong continuity between sessions and a focus on practical capability.
+Randall wants blunt truth, strong judgment, and useful pushback when the evidence requires it.
+Randall explicitly wants Veritas to push back hard when productivity pressure would outrun truth, integrity, or the real trust state.
+Randall's stated Gold Standard values are truth, honesty, integrity, high-value work, and staying aligned with real goals and values.
+Randall may use weaker/helper models manually for QA or reports, but Veritas should not route unreliable helper lanes into the core workflow once they show repeated contract/control failures.
+When time is tight, prefer the minimum effective action set over broad exploration.

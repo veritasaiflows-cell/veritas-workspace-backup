@@ -1,0 +1,73 @@
+{
+  "generated_at_utc": "2026-05-02T23:14:28.206544+00:00",
+  "status": "ok",
+  "stale_after_hours": 24,
+  "expected_update_window": "Refresh daily during active market sessions and before macro-sensitive weekly outputs. Refresh again on scheduled FOMC decision days after the announcement.",
+  "last_trading_day": "2026-05-02",
+  "source_last_trading_day": {
+    "policy_expectations": "2026-05-02",
+    "current_target_range": "2026-05-02"
+  },
+  "freshness_notes": [
+    "fred_target_range",
+    "official_next_fomc_date",
+    "auto_derived_next_fomc_contract"
+  ],
+  "warnings": [],
+  "data": {
+    "source_label": "30-day Fed Funds futures via Yahoo Finance (ZQM26.CBT)",
+    "source_mode": "primary",
+    "implied_rate_source_mode": "primary",
+    "current_target_range": {
+      "low": 3.5,
+      "high": 3.75,
+      "as_of": "2026-05-02",
+      "confirmed": true,
+      "source": "FRED DFEDTARL/DFEDTARU",
+      "invalid_reason": null
+    },
+    "next_fomc": {
+      "meeting_date": "2026-06-17",
+      "days_until": 46,
+      "zq_ticker": "ZQM26",
+      "contract_source": "derived from resolved next FOMC date",
+      "date_source": "official Fed calendar",
+      "distribution": [
+        {
+          "outcome": "hold",
+          "probability": 96.0
+        },
+        {
+          "outcome": "cut_25bp",
+          "probability": 0.0
+        },
+        {
+          "outcome": "hike_25bp",
+          "probability": 4.0
+        }
+      ],
+      "most_likely_outcome": "hold",
+      "implied_rate": 3.635,
+      "delta_bps_vs_target_mid": -1.0,
+      "method_note": "Single-step 25bp approximation from one 30-day Fed Funds futures contract; not a full multi-outcome meeting-distribution model.",
+      "implied_rate_source_mode": "primary",
+      "fetch_note": null
+    },
+    "next_two_meetings": [
+      {
+        "meeting_date": "2026-06-17",
+        "date_source": "official Fed calendar",
+        "most_likely_outcome": "hold",
+        "cut_probability": 0.0,
+        "hold_probability": 96.0,
+        "hike_probability": 4.0
+      }
+    ],
+    "manual_dependencies": [],
+    "notes": [
+      "This artifact is the first dedicated policy layer and is intentionally explicit about manual dependencies.",
+      "Probability distribution is a single-step 25bp approximation from one 30-day Fed Funds futures contract, not a full FedWatch meeting tree.",
+      "The automated machine source is now the contract-specific CBOT ZQ quote available through Yahoo Finance; generic ZQ=F is only a disclosed proxy fallback."
+    ]
+  }
+}

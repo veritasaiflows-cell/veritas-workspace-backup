@@ -1,0 +1,23 @@
+{
+  "generated_at_utc": "2026-05-01T03:58:46.664363+00:00",
+  "brief_date": "2026-04-30",
+  "market_data_as_of": "2026-04-30",
+  "confidence_grade": "reduced",
+  "deployable_now": [
+    "GS"
+  ],
+  "almost_deployable": [
+    "CAT",
+    "ETN",
+    "JPM",
+    "NVDA",
+    "VRT"
+  ],
+  "blocked": [
+    "AMZN",
+    "GOOG",
+    "MSFT"
+  ],
+  "deferred_to_machine": false,
+  "wrote_to": "01. Dashboards\\Daily Executive Summary\\2026-04-30.md"
+}

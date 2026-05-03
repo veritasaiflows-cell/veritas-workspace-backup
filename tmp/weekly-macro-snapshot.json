@@ -1,0 +1,12 @@
+{
+  "generated_at_utc": "2026-05-02T09:06:20.064080+00:00",
+  "iso_week": "2026-W18",
+  "week_start": "2026-04-27",
+  "week_end": "2026-05-01",
+  "market_data_as_of": "2026-05-01",
+  "canonical_mutation_allowed": false,
+  "trust_reason": "dashboard validation has 9 warning(s)",
+  "trust_gate_blocked": true,
+  "deferred_to_machine": false,
+  "wrote_to": "02. Markets\\Weekly Macro Snapshot\\2026-W18-machine.md"
+}

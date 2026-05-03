@@ -1,0 +1,90 @@
+{
+  "generated_at_utc": "2026-05-02T09:06:09.267203+00:00",
+  "week_start": "2026-04-27",
+  "week_end": "2026-05-01",
+  "week_label": "2026-04-27 to 2026-05-01",
+  "week_exists_in_md": true,
+  "macro_snapshot": {
+    "last_trading_day": "2026-05-01",
+    "vix": 16.99,
+    "spx": 7230.1201,
+    "y2": 3.88,
+    "y10": 4.378,
+    "2s10s": 49.8,
+    "dxy": 98.21,
+    "brent": 108.17,
+    "wti": 101.94,
+    "cut_prob": 0.0
+  },
+  "deployment_summary": {
+    "deployable_now": [
+      "NVDA"
+    ],
+    "almost_deployable": [
+      "ETN",
+      "JPM"
+    ],
+    "blocked": [
+      "GOOG",
+      "MSFT"
+    ],
+    "do_not_touch": [
+      "BRK.B",
+      "LMT",
+      "XOM"
+    ],
+    "watch": [
+      "AMZN",
+      "CAT",
+      "GS",
+      "RTX",
+      "VRT"
+    ],
+    "error": []
+  },
+  "top_scores": [
+    {
+      "ticker": "JPM",
+      "total": 18,
+      "stance": "Almost deployable"
+    },
+    {
+      "ticker": "MSFT",
+      "total": 18,
+      "stance": "Blocked"
+    },
+    {
+      "ticker": "NVDA",
+      "total": 18,
+      "stance": "DEPLOYABLE NOW"
+    },
+    {
+      "ticker": "GOOG",
+      "total": 17,
+      "stance": "Blocked"
+    },
+    {
+      "ticker": "VRT",
+      "total": 17,
+      "stance": "WATCH / RESEARCH NEEDED"
+    }
+  ],
+  "this_week_earnings": [
+    {
+      "ticker": "XOM",
+      "date": "2026-05-01"
+    },
+    {
+      "ticker": "CVX",
+      "date": "2026-05-01"
+    },
+    {
+      "ticker": "COP",
+      "date": "2026-04-30"
+    },
+    {
+      "ticker": "CAT",
+      "date": "2026-04-30"
+    }
+  ]
+}

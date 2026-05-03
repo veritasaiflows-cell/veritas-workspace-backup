@@ -1,0 +1,194 @@
+---
+name: veritas-positioning-pass
+description: Produce a Veritas portfolio-positioning pass that turns macro, fundamentals, technicals, and risk rules into disciplined portfolio decisions. Use when reviewing the current portfolio, deciding whether to add, trim, hold, defer, or bench a name, ranking candidates for limited capital, setting conditional next actions, or translating the current regime into sleeve-level positioning and cash-deployment guidance.
+---
+
+# Veritas Positioning Pass
+
+Use this skill to turn analysis into disciplined portfolio positioning.
+
+This is not a broker-connected portfolio manager and not a generic advisory questionnaire.
+Use it when the question is: what should the portfolio do next, under current macro, fundamental, technical, and risk conditions?
+
+## Before starting
+
+Read the current workspace stack first:
+- `03. Portfolio/Portfolio Snapshot.md`
+- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `02. Markets/Watchlist.md`
+- `05. Intelligence/Weekly Positioning Review.md`
+- `02. Markets/Macro Regime Dashboard.md`
+- `07. Risk/Risk Rules.md`
+- `tmp/portfolio-config.json` if machine-readable portfolio semantics matter
+
+If a short tactical note exists for the current window, read that too.
+
+Use current workspace posture first.
+Do not invent a clean-sheet portfolio process when the vault already contains live allocations, sleeves, and risk standards.
+
+## Core mission
+
+For each pass:
+1. identify the current portfolio posture
+2. identify the relevant macro backdrop
+3. identify which names are fundamentally worthy
+4. identify which names are technically ready versus merely interesting
+5. apply risk rules and capital constraints
+6. produce conditional portfolio actions
+
+## Output decisions
+
+Default to these action buckets:
+- **Add now**
+- **Prepare / conditional add**
+- **Hold / maintain**
+- **Trim / reduce risk**
+- **Bench / no action**
+- **Avoid / do not deploy**
+
+Keep actions conditional when confidence or timing is not clean.
+Do not issue absolute trade commands.
+
+## Required workflow
+
+### 1. Establish the portfolio context
+
+State:
+- current posture
+- current cash or dry-powder context if known
+- whether the regime supports offense, patience, defense, or selective deployment
+- whether the task is about core positions, tactical positions, speculative sleeve, or hedges
+
+### 2. Pull the three analytical layers together
+
+Use the Veritas stack explicitly:
+- macro backdrop from `veritas-macro-pass` logic
+- business quality from `veritas-fundamental-pass` logic
+- setup quality from `veritas-technical-pass` logic
+
+If one layer is missing or weak, say so.
+Do not pretend the decision is complete when one of the three pillars is underdefined.
+
+### 3. Apply risk discipline
+
+At minimum, check:
+- single-name concentration limits
+- sleeve role, core vs tactical vs speculative
+- whether cash should be preserved
+- whether catalyst risk is too close
+- whether stop/invalidation exists
+- whether the setup is extended, blocked, broken, or underdefined
+
+If the name does not fit the written risk rules, the portfolio action should reflect that.
+
+### 4. Rank by capital efficiency
+
+When capital is limited, rank candidates by:
+1. quality of the business
+2. fit with the current macro regime
+3. timing quality of the setup
+4. clarity of invalidation
+5. opportunity cost versus existing holdings or better candidates
+
+Good business quality does not automatically outrank a cleaner lower-risk setup.
+If the board contains many names that are "almost" but not actually clean, say so and let cash rank ahead of forced deployment.
+
+### 5. Produce portfolio guidance
+
+Translate analysis into:
+- sleeve-level positioning
+- name-level action state
+- what to add first if capital is limited
+- what to avoid even if the story is attractive
+- what conditions would justify upgrading or downgrading a name
+
+## Output format
+
+Use this structure unless the user asks for something else.
+
+## Portfolio positioning verdict
+- Posture: [neutral / selective offense / defensive / mixed / etc.]
+- Confidence: [High / Medium / Low]
+- Deployment stance: [deploy selectively / stay patient / protect capital / etc.]
+
+**Macro implication**
+- [2-4 bullets]
+
+**Best positioned names now**
+- [ticker] — [why]
+- [ticker] — [why]
+- [ticker] — [why]
+
+**Hold / maintain**
+- [ticker] — [why]
+
+**Bench / wait**
+- [ticker] — [why]
+
+**Avoid / do not deploy**
+- [ticker] — [why]
+
+**Capital priority order**
+1. [ticker] — [why first]
+2. [ticker] — [why second]
+3. [ticker] — [why third]
+
+**Risk notes**
+- [3-6 bullets tied to portfolio concentration, catalyst risk, or invalidation clarity]
+
+**Next actions**
+- [conditional action 1]
+- [conditional action 2]
+- [conditional action 3]
+
+## Name-level decision template
+
+When analyzing specific names, use this compact structure:
+
+### TICKER
+- Role: [core / tactical / speculative / hedge]
+- Fundamental fit: [strong / acceptable / weak]
+- Technical state: [Deployable / Blocked / Repair mode / Watch-only]
+- Portfolio action: [Add now / Prepare / Hold / Trim / Bench / Avoid]
+- Why: [concise judgment]
+- Upgrade trigger: [what would improve the case]
+- Downgrade trigger: [what would weaken or invalidate the case]
+
+## Judgment rules
+
+- Protect capital first, then pursue upside.
+- Do not let a strong thesis override weak timing and bad risk placement.
+- Do not let a pretty chart override weak business quality unless the task is explicitly tactical.
+- When macro is mixed, size the language and action accordingly.
+- Prefer conditional deployment over impulsive full deployment.
+- If a better candidate exists, say so directly.
+- If a name belongs on the watchlist but not in the portfolio today, say that clearly.
+- Make the priority order explicit. The user should be able to see what gets first call on scarce capital and why.
+- Underdefined names should remain benched instead of being smoothed into active consideration.
+
+## What not to do
+
+Do not:
+- act like a broker or order-entry system
+- recommend leverage or margin by default
+- hide opportunity-cost tradeoffs
+- blur the difference between watchlist admiration and actual capital allocation
+- ignore the written risk rules just because conviction feels high
+
+## Good triggers
+
+Use this skill for prompts like:
+- "what should the portfolio do now"
+- "rank these names for limited capital"
+- "what gets added first"
+- "what should stay on the bench"
+- "how should the current macro backdrop affect deployment"
+- "turn this research into actual portfolio actions"
+
+## Relationship to other skills
+
+- `veritas-macro-pass` sets the backdrop.
+- `veritas-fundamental-pass` decides whether the business belongs in the serious board.
+- `veritas-technical-pass` decides whether timing is disciplined enough.
+- This skill converts those three layers into actual portfolio positioning logic.

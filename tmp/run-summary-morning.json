@@ -1,0 +1,83 @@
+{
+  "window": "morning",
+  "run_id": "20260502T090341Z_morning",
+  "generated_at_utc": "2026-05-02T09:03:41Z",
+  "status": "warning",
+  "stop_line": false,
+  "owner": {
+    "entrypoint": "python scripts/run_finance_refresh_chain.py morning",
+    "window_owner": "scripts/run_finance_refresh_chain.py"
+  },
+  "timing": {
+    "started_at_utc": "2026-05-02T09:03:15Z",
+    "completed_at_utc": "2026-05-02T09:03:41Z",
+    "duration_seconds": 26
+  },
+  "execution": {
+    "chain_status": "running",
+    "chain_exit_code": null,
+    "recovery_triggered": false,
+    "recovery_reason": "",
+    "failed_step": null,
+    "skipped_steps": [],
+    "finalized_after_failure": false
+  },
+  "validation": {
+    "acceptance_passed": true,
+    "dashboard_validation_status": "warning",
+    "critical": 0,
+    "warning": 9,
+    "info": 0,
+    "exec_freshness": "usable_with_caution"
+  },
+  "outputs": {
+    "command_center": {
+      "status": "ok",
+      "path": "tmp/veritas-command-center.html",
+      "generated_at_utc": "2026-05-02T09:03:41Z"
+    },
+    "dashboard_validation": {
+      "status": "partial",
+      "path": "tmp/dashboard-validation.json",
+      "generated_at_utc": "2026-05-02T09:03:41Z"
+    },
+    "dashboard_acceptance": {
+      "status": "ok",
+      "path": "tmp/dashboard-acceptance-report.json",
+      "generated_at_utc": "2026-05-02T09:03:41Z"
+    },
+    "workbook_exports": {
+      "status": "partial",
+      "path": "tmp/workbook-export-manifest.json",
+      "generated_at_utc": "2026-05-02T09:03:41.712846+00:00"
+    },
+    "premarket_snapshot": {
+      "status": "ok",
+      "path": "tmp/premarket-snapshot.json",
+      "generated_at_utc": "2026-05-02T09:03:41.794956+00:00"
+    }
+  },
+  "warnings": [
+    "17 entry band(s) need review: JPM, GOOG, LMT, BRK.B, XOM, AMZN, VRT, RTX, CAT, CVX, PLTR, KTOS, SLV, AMD, LNG, TLT, SMCI. Run apply_band_update.py to review and apply proposed levels.",
+    "AMD appears in deployment flow despite non-daily coverage tier None",
+    "CVX appears in deployment flow despite non-daily coverage tier event",
+    "LNG appears in deployment flow despite non-daily coverage tier None",
+    "PLTR appears in deployment flow despite non-daily coverage tier event",
+    "GS is in band but deployment state remains WATCH",
+    "One or more timing-critical earnings dates changed and still need direct confirmation",
+    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+    "Policy expectations still rely on manual target-range constants and require explicit review."
+  ],
+  "blockers": [],
+  "fallback_state": {
+    "used": true,
+    "reason": "One or more timing-critical earnings dates changed and still need direct confirmation; Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.; Policy expectations still rely on manual target-range constants and require explicit review."
+  },
+  "downstream": {
+    "command_center_badge": "warn",
+    "workbook_trust_grade": "warning",
+    "presentation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "canonical_note_mutation_reason": "dashboard validation has 9 warning(s)"
+  }
+}

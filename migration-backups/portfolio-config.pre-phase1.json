@@ -1,0 +1,711 @@
+{
+  "generated_at_utc": "2026-04-24T04:21:00+00:00",
+  "status": "ok",
+  "stale_after_hours": 168,
+  "expected_update_window": "Update after any portfolio model change, rebalance, risk rule revision, entry-band refresh, or tracked-universe policy change.",
+  "last_updated_by": "Veritas - architecture tightening pass",
+  "manual_review_policy": "This file is the machine-readable portfolio and execution config spine. Review it whenever the note-layer portfolio, risk rules, tracked universe, entry-band semantics, or workflow-state semantics change.",
+  "manual_review_fields": [
+    {
+      "field": "portfolio.posture",
+      "review_cadence": "After any material macro or portfolio-posture change",
+      "source_of_truth": [
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ]
+    },
+    {
+      "field": "portfolio.cash",
+      "review_cadence": "After any model-weight change, blocked-name status change, or rebalance decision",
+      "source_of_truth": [
+        "03. Portfolio/Portfolio Snapshot.md"
+      ]
+    },
+    {
+      "field": "portfolio.core[*].weight, portfolio.tactical[*].weight, portfolio.speculative[*].weight",
+      "review_cadence": "After any sizing decision or conviction-tier change",
+      "source_of_truth": [
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ]
+    },
+    {
+      "field": "tracked_universe",
+      "review_cadence": "After any promotion, demotion, removal, coverage-tier change, or workflow-policy change for a name",
+      "source_of_truth": [
+        "02. Markets/Watchlist.md",
+        "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "04. Research/Coverage Universe.md"
+      ]
+    },
+    {
+      "field": "entry_bands",
+      "review_cadence": "After trigger-sheet refreshes, earnings, or any action-state change that invalidates the current band semantics",
+      "source_of_truth": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Technical Entry and Invalidation Sheet.md"
+      ]
+    },
+    {
+      "field": "risk_thresholds, sizing_rules, escalation_triggers",
+      "review_cadence": "After any written risk-rule revision",
+      "source_of_truth": [
+        "07. Risk/Risk Rules.md"
+      ]
+    },
+    {
+      "field": "regime_indicators",
+      "review_cadence": "After any material macro-regime rewrite in the live portfolio note layer",
+      "source_of_truth": [
+        "03. Portfolio/Portfolio Snapshot.md"
+      ]
+    },
+    {
+      "field": "sector_map",
+      "review_cadence": "After any model constituent or tracked-universe change",
+      "source_of_truth": [
+        "03. Portfolio/Portfolio Snapshot.md",
+        "02. Markets/Watchlist.md"
+      ]
+    }
+  ],
+  "portfolio": {
+    "posture": "Neutral to Moderately Offensive",
+    "regime": "Late-cycle, restrictive, resilient, selective risk-on",
+    "cash": 20,
+    "capital": "$5k-$10k",
+    "core": [
+      {
+        "ticker": "MSFT",
+        "weight": 12,
+        "thesis": "Highest-quality AI-enabled platform with real earnings power",
+        "entry": "Accumulate only on disciplined pullbacks or post-earnings revalidation",
+        "stop": "Reassess on major earnings deterioration or AI monetization disappointment",
+        "sector": "Tech"
+      },
+      {
+        "ticker": "JPM",
+        "weight": 12,
+        "thesis": "High-quality financial aligned with macro, valuation, and large-cap strength",
+        "entry": "Add on constructive chart support and stable credit backdrop",
+        "stop": "Reassess if credit, curve, or macro stress worsens materially",
+        "sector": "Financials"
+      },
+      {
+        "ticker": "GOOG",
+        "weight": 12,
+        "thesis": "Large-cap quality with AI optionality and better valuation support than some peers",
+        "entry": "Only on technical stability and post-earnings revalidation",
+        "stop": "Reassess if core business weakens or AI execution lags",
+        "sector": "Tech"
+      },
+      {
+        "ticker": "XOM",
+        "weight": 8,
+        "thesis": "Cash-generative macro and geopolitical energy exposure",
+        "entry": "Only after oil structure and post-earnings evidence requalify the setup",
+        "stop": "Reassess if oil structure and demand thesis break",
+        "sector": "Energy"
+      },
+      {
+        "ticker": "LMT",
+        "weight": 8,
+        "thesis": "Durable defense demand and geopolitical relevance",
+        "entry": "Pullback or support-based accumulation only after a fresh post-earnings base exists",
+        "stop": "Reassess if defense thesis weakens or execution slips materially",
+        "sector": "Defense"
+      },
+      {
+        "ticker": "BRK.B",
+        "weight": 10,
+        "thesis": "Diversified quality ballast and capital-allocation vehicle",
+        "entry": "Market pullback or fair accumulation zone only after structure repair",
+        "stop": "Reassess if superior capital deployment opportunities dominate elsewhere",
+        "sector": "Financials"
+      }
+    ],
+    "tactical": [
+      {
+        "ticker": "ETN",
+        "weight": 7,
+        "thesis": "Electrification, power demand, and AI infrastructure buildout",
+        "entry": "Only on pullback into 388 to 396 or a validated non-chasing continuation setup",
+        "stop": "Reassess on cyclical slowdown, failed trend, or catalyst-window compression",
+        "sector": "Industrials"
+      },
+      {
+        "ticker": "NVDA",
+        "weight": 6,
+        "thesis": "AI leader with unmatched earnings power, but requires crowding discipline",
+        "entry": "Only on controlled pullback entry, never on vertical chasing",
+        "stop": "Reassess on failed momentum or excessive valuation stretch",
+        "sector": "Tech"
+      }
+    ],
+    "speculative": [
+      {
+        "ticker": "KTOS",
+        "weight": 2,
+        "thesis": "Defense-tech asymmetry tied to unmanned and next-gen defense themes",
+        "risk": "High volatility and execution risk",
+        "sector": "Defense"
+      },
+      {
+        "ticker": "SLV",
+        "weight": 3,
+        "thesis": "Macro hedge and metals upside if inflation, stress, or hard-asset rotation strengthens",
+        "risk": "False breakouts and commodity volatility",
+        "sector": "Commodities"
+      }
+    ]
+  },
+  "workflow_semantics": {
+    "coverage_tiers": {
+      "daily": "Tracked in weekday technical and deployment workflow",
+      "event": "Tracked primarily around catalysts, earnings, and targeted refreshes",
+      "macro": "Tracked as macro sleeve or hedge expression, not as a core equity deployment board name",
+      "watch": "Watchlist presence only, not active machine-tracked execution coverage"
+    },
+    "state_types": {
+      "DEPLOYABLE": "Structured and in-band with no blocking event",
+      "ALMOST": "Constructive but not yet at disciplined entry",
+      "BLOCKED": "Hard event blocker or timing blocker active",
+      "REPAIR": "Prior setup failed or chart is broken and needs repair before new deployment work",
+      "WATCH": "Not decision-grade yet, missing levels or active execution policy",
+      "MACRO": "Macro sleeve or hedge, evaluated separately from core equity deployment workflow"
+    }
+  },
+  "tracked_universe": {
+    "ETN": {
+      "yfinance": "ETN",
+      "coverage_tier": "daily",
+      "portfolio_role": "tactical",
+      "sector": "Industrials",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "ALMOST",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "band_defined",
+      "earnings_policy": "timing_sensitive",
+      "repair_mode": false,
+      "thesis_status": "intact",
+      "macro_fit": "Strong fit with AI power, electrification, and industrial capex",
+      "trigger_condition": "Pullback into 388 to 396 with support holding, or disciplined continuation that does not become a chase"
+    },
+    "JPM": {
+      "yfinance": "JPM",
+      "coverage_tier": "daily",
+      "portfolio_role": "core",
+      "sector": "Financials",
+      "sizing_tier": "Tier 1",
+      "workflow_state": "ALMOST",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": false,
+      "entry_policy": "band_defined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "intact",
+      "macro_fit": "Good fit in selective risk-on with stable credit and curve backdrop",
+      "trigger_condition": "Pullback into 300 to 306 while holding the 200-day and higher-low structure"
+    },
+    "GOOG": {
+      "yfinance": "GOOG",
+      "coverage_tier": "daily",
+      "portfolio_role": "core",
+      "sector": "Tech",
+      "sizing_tier": "Tier 1",
+      "workflow_state": "BLOCKED",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "band_defined",
+      "earnings_policy": "block_pre_earnings",
+      "repair_mode": false,
+      "thesis_status": "intact",
+      "macro_fit": "Good fit for quality large-cap exposure",
+      "trigger_condition": "Only on pullback into 314 to 321 or post-earnings revalidation"
+    },
+    "MSFT": {
+      "yfinance": "MSFT",
+      "coverage_tier": "daily",
+      "portfolio_role": "core",
+      "sector": "Tech",
+      "sizing_tier": "Tier 1",
+      "workflow_state": "BLOCKED",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "band_defined",
+      "earnings_policy": "block_pre_earnings",
+      "repair_mode": false,
+      "thesis_status": "intact",
+      "macro_fit": "Good fit for quality AI platform exposure",
+      "trigger_condition": "Only on pullback into 393 to 401 or post-earnings revalidation"
+    },
+    "LMT": {
+      "yfinance": "LMT",
+      "coverage_tier": "daily",
+      "portfolio_role": "core",
+      "sector": "Defense",
+      "sizing_tier": "Tier 1 only after repair",
+      "workflow_state": "REPAIR",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "repair_mode",
+      "earnings_policy": "post_earnings_rebuild",
+      "repair_mode": true,
+      "thesis_status": "intact but event-sensitive",
+      "macro_fit": "Defense fit remains valid",
+      "trigger_condition": "No trigger until after earnings and a fresh post-event base",
+      "force_do_not_touch_if_below_stop": true,
+      "catalyst_blocker_override": "Repair mode remains active until a fresh support base forms after earnings"
+    },
+    "BRK.B": {
+      "yfinance": "BRK-B",
+      "coverage_tier": "daily",
+      "portfolio_role": "core",
+      "sector": "Financials",
+      "sizing_tier": "Tier 1",
+      "workflow_state": "REPAIR",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": false,
+      "entry_policy": "band_defined",
+      "earnings_policy": "normal",
+      "repair_mode": true,
+      "thesis_status": "intact",
+      "macro_fit": "Good fit for ballast in mixed regime",
+      "trigger_condition": "Only actionable on clear repair through 481 plus improving posture"
+    },
+    "XOM": {
+      "yfinance": "XOM",
+      "coverage_tier": "daily",
+      "portfolio_role": "core",
+      "sector": "Energy",
+      "sizing_tier": "Tier 1",
+      "workflow_state": "REPAIR",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "conditional_requalify",
+      "earnings_policy": "event_sensitive",
+      "repair_mode": true,
+      "thesis_status": "intact long-term, weaker near-term",
+      "macro_fit": "Mixed with oil structure and energy tape still unstable",
+      "trigger_condition": "Only if price stabilizes above 141.97 and starts reclaiming the 50-day with supportive energy context",
+      "catalyst_blocker_override": "Under review until May 1 earnings plus follow-through from the next EIA reads"
+    },
+    "NVDA": {
+      "yfinance": "NVDA",
+      "coverage_tier": "daily",
+      "portfolio_role": "tactical",
+      "sector": "Tech",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "ALMOST",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": false,
+      "entry_policy": "band_defined",
+      "earnings_policy": "timing_sensitive",
+      "repair_mode": false,
+      "thesis_status": "intact but crowded",
+      "macro_fit": "AI regime fit remains strong",
+      "trigger_condition": "Pullback into 186 to 191 only, not a chase above current levels"
+    },
+    "AMZN": {
+      "yfinance": "AMZN",
+      "coverage_tier": "daily",
+      "portfolio_role": "watch_only",
+      "sector": "Tech",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "BLOCKED",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "underdefined",
+      "earnings_policy": "block_pre_earnings",
+      "repair_mode": false,
+      "thesis_status": "intact but technically underdefined",
+      "macro_fit": "Broad quality fit is acceptable",
+      "trigger_condition": "Needs explicit entry and stop or post-earnings revalidation"
+    },
+    "VRT": {
+      "yfinance": "VRT",
+      "coverage_tier": "daily",
+      "portfolio_role": "watch_only",
+      "sector": "Industrials",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "confirmed and upgraded \u2014 Q1 2026 beat-and-raise Apr 22",
+      "macro_fit": "Good thematic fit with AI power and thermal demand",
+      "trigger_condition": "No deployment trigger until explicit entry band and stop exist"
+    },
+    "RTX": {
+      "yfinance": "RTX",
+      "coverage_tier": "daily",
+      "portfolio_role": "tactical",
+      "sector": "Defense",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": true,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "under active review",
+      "macro_fit": "Useful aerospace and defense mix, plus LMT read-through context",
+      "trigger_condition": "Needs explicit entry band and stop before becoming deployable"
+    },
+    "CAT": {
+      "yfinance": "CAT",
+      "coverage_tier": "daily",
+      "portfolio_role": "tactical",
+      "sector": "Industrials",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": false,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "under active review",
+      "macro_fit": "Useful industrial capex and infrastructure proxy if regime holds",
+      "trigger_condition": "Needs explicit entry band and stop before becoming deployable"
+    },
+    "GS": {
+      "yfinance": "GS",
+      "coverage_tier": "daily",
+      "portfolio_role": "tactical",
+      "sector": "Financials",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": true,
+      "include_in_technical_refresh": true,
+      "include_in_trigger_sheet": true,
+      "include_in_post_earnings": false,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "under active review",
+      "macro_fit": "Useful capital-markets-sensitive financial for tactical board coverage",
+      "trigger_condition": "Needs explicit entry band and stop before becoming deployable"
+    },
+    "CVX": {
+      "yfinance": "CVX",
+      "coverage_tier": "event",
+      "portfolio_role": "watch_only",
+      "sector": "Energy",
+      "sizing_tier": "Tier 2",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": false,
+      "include_in_technical_refresh": false,
+      "include_in_trigger_sheet": false,
+      "include_in_post_earnings": false,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "secondary energy read-through",
+      "macro_fit": "Useful secondary energy quality check versus XOM"
+    },
+    "PLTR": {
+      "yfinance": "PLTR",
+      "coverage_tier": "event",
+      "portfolio_role": "watch_only",
+      "sector": "Tech",
+      "sizing_tier": "Tier 3",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": false,
+      "include_in_technical_refresh": false,
+      "include_in_trigger_sheet": false,
+      "include_in_post_earnings": false,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "higher-risk tactical narrative",
+      "macro_fit": "Interesting AI and government software narrative, but valuation-sensitive"
+    },
+    "KTOS": {
+      "yfinance": "KTOS",
+      "coverage_tier": "event",
+      "portfolio_role": "speculative",
+      "sector": "Defense",
+      "sizing_tier": "Tier 3",
+      "workflow_state": "WATCH",
+      "daily_technical_priority": false,
+      "include_in_technical_refresh": false,
+      "include_in_trigger_sheet": false,
+      "include_in_post_earnings": false,
+      "entry_policy": "underdefined",
+      "earnings_policy": "normal",
+      "repair_mode": false,
+      "thesis_status": "speculative asymmetry",
+      "macro_fit": "Defense-tech and unmanned systems asymmetry"
+    },
+    "SLV": {
+      "yfinance": "SLV",
+      "coverage_tier": "macro",
+      "portfolio_role": "speculative",
+      "sector": "Commodities",
+      "sizing_tier": "Tier 3",
+      "workflow_state": "MACRO",
+      "daily_technical_priority": false,
+      "include_in_technical_refresh": false,
+      "include_in_trigger_sheet": false,
+      "include_in_post_earnings": false,
+      "entry_policy": "macro_expression",
+      "earnings_policy": "none",
+      "repair_mode": false,
+      "thesis_status": "macro hedge",
+      "macro_fit": "Hard-asset and stress hedge sleeve"
+    }
+  },
+  "entry_bands": {
+    "ETN": {
+      "low": 395.59,
+      "high": 420.31,
+      "stop": 383.23,
+      "label": "395.59\u2013420.31",
+      "stop_label": "383.23",
+      "band_last_set": "2026-04-30"
+    },
+    "JPM": {
+      "low": 300.0,
+      "high": 306.0,
+      "stop": 295.5,
+      "label": "300-306",
+      "stop_label": "295.50",
+      "band_last_set": "2026-04-21"
+    },
+    "GOOG": {
+      "low": 325.66,
+      "high": 344.66,
+      "stop": 316.16,
+      "label": "325.66\u2013344.66",
+      "stop_label": "316.16",
+      "band_last_set": "2026-04-30"
+    },
+    "MSFT": {
+      "low": 389.64,
+      "high": 412.56,
+      "stop": 378.18,
+      "label": "389.64\u2013412.56",
+      "stop_label": "378.18",
+      "band_last_set": "2026-04-28"
+    },
+    "LMT": {
+      "low": null,
+      "high": null,
+      "stop": 581.5,
+      "label": "Post-earnings rebuild only",
+      "stop_label": "581.50",
+      "band_last_set": "2026-04-21"
+    },
+    "BRK.B": {
+      "low": 465.0,
+      "high": 472.0,
+      "stop": 459.5,
+      "label": "465-472, actionable only on repair through 481+",
+      "stop_label": "459.50",
+      "band_last_set": "2026-04-21"
+    },
+    "XOM": {
+      "low": null,
+      "high": null,
+      "stop": 139.5,
+      "label": "Requalify above 141.97 and reclaim 50d",
+      "stop_label": "139.50",
+      "band_last_set": "2026-04-21"
+    },
+    "NVDA": {
+      "low": 188.03,
+      "high": 199.28,
+      "stop": 182.4,
+      "label": "188.03\u2013199.28",
+      "stop_label": "182.4",
+      "band_last_set": "2026-04-28"
+    },
+    "AMZN": {
+      "low": 240.89,
+      "high": 255.09,
+      "stop": 233.79,
+      "label": "240.89\u2013255.09",
+      "stop_label": "233.79",
+      "band_last_set": "2026-04-30"
+    },
+    "VRT": {
+      "low": 292.22,
+      "high": 323.07,
+      "stop": 276.79,
+      "label": "292.22\u2013323.07",
+      "stop_label": "276.79",
+      "band_last_set": "2026-04-30"
+    },
+    "RTX": {
+      "low": 187.9,
+      "high": 198.5,
+      "stop": 182.6,
+      "label": "187.9\u2013198.5",
+      "stop_label": "182.6",
+      "band_last_set": "2026-04-30"
+    },
+    "CAT": {
+      "low": 779.15,
+      "high": 830.59,
+      "stop": 753.43,
+      "label": "779.15\u2013830.59",
+      "stop_label": "753.43",
+      "band_last_set": "2026-04-30"
+    },
+    "GS": {
+      "low": 878.71,
+      "high": 926.76,
+      "stop": 854.68,
+      "label": "878.71\u2013926.76",
+      "stop_label": "854.68",
+      "band_last_set": "2026-04-28"
+    },
+    "CVX": {
+      "low": null,
+      "high": null,
+      "stop": null,
+      "label": "Event-driven watch only",
+      "stop_label": "TBD",
+      "band_last_set": "2026-04-27",
+      "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
+    },
+    "PLTR": {
+      "low": null,
+      "high": null,
+      "stop": null,
+      "label": "Event-driven watch only",
+      "stop_label": "TBD",
+      "band_last_set": "2026-04-27",
+      "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
+    },
+    "KTOS": {
+      "low": null,
+      "high": null,
+      "stop": null,
+      "label": "Speculative watch only",
+      "stop_label": "TBD",
+      "band_last_set": "2026-04-27",
+      "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
+    },
+    "SLV": {
+      "low": null,
+      "high": null,
+      "stop": null,
+      "label": "Macro sleeve only",
+      "stop_label": "TBD",
+      "band_last_set": "2026-04-27",
+      "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
+    }
+  },
+  "posture_labels": {
+    "above all MAs -- bullish 20>50>200 stack": "Bullish 20>50>200 stack",
+    "above all MAs": "Above all MAs",
+    "above 20d and 50d, below 200d": "Above 20d/50d, below 200d",
+    "above 200d, below 20d and 50d": "Above 200d, below 20d/50d",
+    "below all MAs": "Below all MAs"
+  },
+  "sizing_rules": [
+    {
+      "tier": "Tier 1 (High Conviction)",
+      "range": "8-12%",
+      "max": "15% normal, 20-25% stretch"
+    },
+    {
+      "tier": "Tier 2 (Moderate Conviction)",
+      "range": "4-7%",
+      "max": "10%"
+    },
+    {
+      "tier": "Tier 3 (Speculative)",
+      "range": "1-3%",
+      "max": "5%"
+    }
+  ],
+  "risk_thresholds": {
+    "max_single_position_normal": 15,
+    "max_single_position_stretch": 25,
+    "max_sector_pct": 35,
+    "min_cash_pct": 5,
+    "drawdown_review_trigger_pct": 6,
+    "tier1_normal_range": [
+      8,
+      12
+    ],
+    "tier2_normal_range": [
+      4,
+      7
+    ],
+    "tier3_normal_range": [
+      1,
+      3
+    ]
+  },
+  "escalation_triggers": [
+    "Portfolio drawdown >6-8% from recent high",
+    "Thesis impairment with 15%+ move against and no improving fundamentals",
+    "Major macro regime change",
+    "Circuit breaker / trading halt / abnormal volatility",
+    "Any recommendation with leverage or options",
+    "Any proposal to exceed the normal 15% single-position limit"
+  ],
+  "regime_indicators": [
+    {
+      "label": "Monetary Policy",
+      "value": "Moderately Restrictive",
+      "detail": "Fed holding pattern in a still restrictive regime",
+      "color_key": "amber"
+    },
+    {
+      "label": "Risk Appetite",
+      "value": "Selective Risk-On",
+      "detail": "Quality bid remains, but entries must stay disciplined",
+      "color_key": "blue"
+    },
+    {
+      "label": "Inflation",
+      "value": "Sticky",
+      "detail": "Services and macro persistence still argue against complacency",
+      "color_key": "amber"
+    },
+    {
+      "label": "Cycle Phase",
+      "value": "Late-Cycle Resilient",
+      "detail": "Growth is holding, but leadership remains selective",
+      "color_key": "amber"
+    },
+    {
+      "label": "Geopolitical",
+      "value": "Elevated",
+      "detail": "Defense and energy exposure still need geopolitical risk discipline",
+      "color_key": "red"
+    }
+  ]
+}

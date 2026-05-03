@@ -1,0 +1,184 @@
+{
+  "generated_at_utc": "2026-05-02T20:34:43.476195+00:00",
+  "canonical_note": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+  "summary": {
+    "reviewed": 17,
+    "needs_sync": 0,
+    "missing_sections": 0,
+    "metadata_only": 6
+  },
+  "missing_section_tickers": [],
+  "needs_sync_tickers": [],
+  "mismatches": [
+    {
+      "ticker": "ETN",
+      "current_band_line": "- Preferred entry band: **395.59 to 420.31** (refreshed band)",
+      "expected_band_line": "- Preferred entry band: **395.59 to 420.31** (band updated 2026-04-30)",
+      "current_stop_line": "- Explicit stop: **383.23**",
+      "expected_stop_line": "- Explicit stop: **383.23**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": "band/stop levels align; suffix wording or update annotation differs"
+    },
+    {
+      "ticker": "JPM",
+      "current_band_line": "- Preferred entry band: **306.82 to 318.12** (refreshed band)",
+      "expected_band_line": "- Preferred entry band: **306.82 to 318.12** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **301.17**",
+      "expected_stop_line": "- Explicit stop: **301.17**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": "band/stop levels align; suffix wording or update annotation differs"
+    },
+    {
+      "ticker": "GOOG",
+      "current_band_line": "- Preferred entry band: **330.01 to 349.37** (post-print working band from the live trigger layer)",
+      "expected_band_line": "- Preferred entry band: **330.01 to 349.37** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **320.33**",
+      "expected_stop_line": "- Explicit stop: **320.33**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": "band/stop levels align; suffix wording or update annotation differs"
+    },
+    {
+      "ticker": "MSFT",
+      "current_band_line": "- Preferred entry band: **389.64 to 412.56** (still the working post-print band)",
+      "expected_band_line": "- Preferred entry band: **389.64 to 412.56** (band updated 2026-04-28)",
+      "current_stop_line": "- Explicit stop: **378.18**",
+      "expected_stop_line": "- Explicit stop: **378.18**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": "band/stop levels align; suffix wording or update annotation differs"
+    },
+    {
+      "ticker": "LMT",
+      "current_band_line": "- Preferred entry band: **566.46 to 598.98** (band updated 2026-05-01; mechanical reference only, not a live setup)",
+      "expected_band_line": "- Preferred entry band: **566.46 to 598.98** (band updated 2026-05-01; mechanical reference only, not a live setup)",
+      "current_stop_line": "- Explicit stop: **550.20** (the prior band's stop, kept as a reference for the level price must reclaim)",
+      "expected_stop_line": "- Explicit stop: **550.20** (the prior band's stop, kept as a reference for the level price must reclaim)",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "BRK.B",
+      "current_band_line": "- Preferred entry band: **471.93 to 484.15** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **471.93 to 484.15** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **465.81**",
+      "expected_stop_line": "- Explicit stop: **465.81**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "XOM",
+      "current_band_line": "- Preferred entry band: **150.24 to 158.44** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **150.24 to 158.44** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **146.14**",
+      "expected_stop_line": "- Explicit stop: **146.14**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "NVDA",
+      "current_band_line": "- Preferred entry band: **188.03 to 199.28**",
+      "expected_band_line": "- Preferred entry band: **188.03 to 199.28** (band updated 2026-04-28)",
+      "current_stop_line": "- Explicit stop: **182.40**",
+      "expected_stop_line": "- Explicit stop: **182.40**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": "band/stop levels align; suffix wording or update annotation differs"
+    },
+    {
+      "ticker": "AMZN",
+      "current_band_line": "- Preferred entry band: **243.59 to 258.71** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **243.59 to 258.71** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **236.03**",
+      "expected_stop_line": "- Explicit stop: **236.03**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "VRT",
+      "current_band_line": "- Preferred entry band: **295.49 to 326.63** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **295.49 to 326.63** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **279.92**",
+      "expected_stop_line": "- Explicit stop: **279.92**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "RTX",
+      "current_band_line": "- Preferred entry band: **186.76 to 197.48** (band updated 2026-05-01, mechanically)",
+      "expected_band_line": "- Preferred entry band: **186.76 to 197.48** (band updated 2026-05-01, mechanically)",
+      "current_stop_line": "- Explicit stop: **181.40**",
+      "expected_stop_line": "- Explicit stop: **181.40**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "CAT",
+      "current_band_line": "- Preferred entry band: **787.41 to 840.59** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **787.41 to 840.59** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **760.82**",
+      "expected_stop_line": "- Explicit stop: **760.82**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "GS",
+      "current_band_line": "- Preferred entry band: **878.71 to 926.76** (within tolerance — not flagged for revision)",
+      "expected_band_line": "- Preferred entry band: **878.71 to 926.76** (band updated 2026-04-28)",
+      "current_stop_line": "- Explicit stop: **854.68**",
+      "expected_stop_line": "- Explicit stop: **854.68**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": "band/stop levels align; suffix wording or update annotation differs"
+    },
+    {
+      "ticker": "CVX",
+      "current_band_line": "- Preferred entry band: **186.91 to 196.41** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **186.91 to 196.41** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **182.16**",
+      "expected_stop_line": "- Explicit stop: **182.16**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "PLTR",
+      "current_band_line": "- Preferred entry band: **138.60 to 150.44** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **138.60 to 150.44** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **132.68**",
+      "expected_stop_line": "- Explicit stop: **132.68**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "AMD",
+      "current_band_line": "- Preferred entry band: **275.92 to 311.80** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **275.92 to 311.80** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **257.98**",
+      "expected_stop_line": "- Explicit stop: **257.98**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    },
+    {
+      "ticker": "LNG",
+      "current_band_line": "- Preferred entry band: **260.82 to 275.56** (band updated 2026-05-01)",
+      "expected_band_line": "- Preferred entry band: **260.82 to 275.56** (band updated 2026-05-01)",
+      "current_stop_line": "- Explicit stop: **253.45**",
+      "expected_stop_line": "- Explicit stop: **253.45**",
+      "changed": false,
+      "note_status": "already aligned",
+      "metadata_notice": null
+    }
+  ]
+}

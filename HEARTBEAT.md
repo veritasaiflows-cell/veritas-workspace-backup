@@ -1,20 +1,29 @@
 # Heartbeat Tasks
 
-## Light continuity maintenance
+Use heartbeat for lightweight useful maintenance, not noise.
 
-Run this only on heartbeat polls.
+## Core rule
 
-1. Check whether today already has a daily note in `memory/YYYY-MM-DD.md`.
-2. If meaningful work happened since the last write, append short factual bullets to today's daily note.
-3. If recent daily notes contain durable truths, preferences, decisions, or lessons, promote only the important ones into `MEMORY.md` or the correct operating file.
-4. Do not spam. If there is nothing meaningful to record or promote, reply `HEARTBEAT_OK`.
-5. Prefer silence at night unless something is genuinely important.
-6. Keep `MEMORY.md` curated. Do not bloat it with raw logs.
-7. If a lesson changes future behavior, update `AGENTS.md`, `TOOLS.md`, or another core file instead of only logging it in a daily note.
+On a heartbeat poll:
+1. check whether a materially new fact should be logged to today's daily note
+2. promote only durable truths that clearly deserve promotion
+3. keep `MEMORY.md` curated
+4. stay quiet if nothing important needs attention
 
-## Constraints
+If nothing meaningful needs attention, reply exactly `HEARTBEAT_OK`.
 
-- No mental notes. If it matters, write it.
-- Prefer short accurate updates over long summaries.
-- Do not repeat old tasks just because they existed in prior chats.
-- Use heartbeat for light maintenance, not major new projects.
+## Guardrails
+
+- prefer silence at night unless something genuinely matters
+- do not repeat old tasks just because they existed in prior chats
+- do not turn heartbeat into a major project
+- do not nag about commits during heartbeats
+- do not append daily-note entries for unchanged state or routine rechecks
+- if today's note already has the same topic, update/merge it instead of appending another bullet
+- heartbeat is not a chain log or replay surface
+
+## Light finance freshness check
+
+When useful, lightly check whether a live finance note is obviously stale relative to its own refresh policy.
+If a major catalyst window or elapsed event makes a live note misleading, flag it or make a minimal cleanup.
+Do not redo the full research stack from a heartbeat alone.
