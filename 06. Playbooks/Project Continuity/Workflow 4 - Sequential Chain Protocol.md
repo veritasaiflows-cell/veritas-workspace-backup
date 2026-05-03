@@ -61,7 +61,7 @@ If that packet is vague, the spawn contract is not ready.
 
 ### Effort routing
 - low effort -> main session direct
-- medium effort -> detached subagent only if it keeps the control plane cleaner; prefer `openai-codex/gpt-5.3-codex`
+- medium effort -> detached subagent only if it keeps the control plane cleaner; use an approved live default model with tighter scope rather than a removed cheap helper model
 - high effort -> detached subagent only after preflight clears the contract; prefer `openai-codex/gpt-5.4`
 
 ### Secure detached-worker rule

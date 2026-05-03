@@ -12,6 +12,7 @@ Run bounded multi-lane passes with explicit roles:
 3) Veritas final synthesis
 
 Never let helper lanes publish final queue state alone.
+For early automation lanes, default helper scope to contract-building, audit, contradiction, or QA unless the workflow contract explicitly widens authority.
 
 ## Role routing
 - Use **Gemini Pro** as preferred IC for implementation, scripts, and broad research.
@@ -36,6 +37,8 @@ Before synthesis, define expected lanes and require all to resolve.
 - If one finishes first, hold final closeout.
 - If one fails, retry once then fallback.
 - Publish one merged decision only after all expected lanes complete or are explicitly abandoned.
+
+Do not issue an executive-summary-style closeout until acceptance evidence and checkpoint posture are explicit.
 
 ## Quality gates
 1. Scope gate: one bounded question and acceptance criteria.

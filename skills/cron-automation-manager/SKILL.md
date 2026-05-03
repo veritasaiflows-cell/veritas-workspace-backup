@@ -39,6 +39,13 @@ Inspect before scheduling:
 6. Validate coherence after scheduling.
 7. Record durable automation rules in the right file.
 
+For research or freshness automation, do not schedule until these are explicit:
+- approved source bundle
+- owner layer
+- review window
+- stop lines
+- canonical mutation posture
+
 ## Scheduling Rules
 
 - Use cron for exact timing, delayed reminders, or isolated background work.

@@ -5,131 +5,79 @@
 - Turn the current good-but-scattered spawn and closeout rules into one explicit governance contract.
 - Extend that contract into the skills most likely to shape spawn behavior, completion claims, and next-work routing.
 
-## Why this workflow exists
-- The workspace already knows that helper lanes cannot own final truth.
-- It also already knows that major work should preflight first and that final QC must happen before queue advancement.
-- What is still weak is the explicit decision matrix for:
-  - spawn vs main-session exception
-  - read-only vs distinct-output vs blocked/gated work
-  - when executive summary is allowed
-  - when a checkpoint / commit decision must be made
-  - when the workflow owner must surface additional next-work ideas
-- Without that hardening, the OS can still drift into inconsistent closeout behavior even with otherwise strong queue discipline.
-
 ## Current State
-- `06. Playbooks/Automation Orchestration Protocol.md` already defines main-lane reserve, spawn-first advancement, completion handshake, and runtime-proof posture.
-- `06. Playbooks/OpenClaw Parallel Work Plan.md` already defines lane ownership and safe/unsafe parallel splits.
-- `06. Playbooks/Cron Job Protocol.md` already defines effort routing and secure spawn defaults.
-- Workflow 16 now sets a sharper requirement for this pass: parallel agents should act as a contract-building and QA layer, not as a freeform research swarm.
-- What is still missing is one explicit governance contract that merges those rules into operational yes/no decisions and carries them into the relevant skills.
+- **Closed on 2026-05-03.**
+- The spawn / closeout governance matrix now exists as a live reusable standard in `06. Playbooks/Spawn and Closeout Governance Matrix.md`.
+- Helper-lane authority, executive-summary timing, checkpoint posture, and next-work routing are now explicit instead of implied.
+- Workflow 16 is no longer blocked on missing spawn / closeout governance rules.
 
-## Scope
-### In scope
-- spawn decision matrix
-- main-session exception rule hardening
-- read-only vs distinct-output vs blocked/gated matrix
-- contract-building / QA lane rule versus substantive research-judgment lane rule
-- executive-closeout gate
-- checkpoint / commit-decision gate
-- required recommendation of 1 immediate next pass plus 1-2 bounded adjacent workflow candidates when a major workflow closes
-- skill hardening for spawn / closeout / QA governance
+## Phase 1 Findings - Spawn and Closeout Decision Audit
 
-### Out of scope
-- provider-specific ACP harness implementation work
-- broad research automation design details from Workflow 16
-- finance-thesis or portfolio-note semantics
+| Decision type | Live sources found | Gap judgment |
+|---|---|---|
+| Main-session reserve | `06. Playbooks/Automation Orchestration Protocol.md` | Strong, but exception rules needed tighter closeout/governance framing |
+| Spawn read-only / distinct-output posture | `06. Playbooks/Automation Orchestration Protocol.md`, `06. Playbooks/OpenClaw Parallel Work Plan.md` | Real, but not presented as one operational matrix |
+| Blocked / operator-gated posture | multiple protocol docs | Real, but not standardized into explicit go / no-go rules |
+| Executive-summary gate | partial in QA / completion / status rules | Missing as a named explicit gate |
+| Checkpoint decision | ad hoc | Missing as a consistent governance requirement |
+| Helper-lane authority for early automation | implied only | Missing explicit contract-building / QA posture |
 
-## Skills hardening surface
-Prioritize these because they influence execution posture directly:
-- `skills/ic-swarm-orchestrator/SKILL.md`
-- `skills/automation-hardening-manager/SKILL.md`
-- `skills/cron-automation-manager/SKILL.md`
-- `skills/project-continuity-manager/SKILL.md`
-- `skills/workspace-qa-pass/SKILL.md`
-- `skills/openclaw-operator/SKILL.md`
+## Phase 2 Deliverable - Governance Matrix
+Landed:
+- `06. Playbooks/Spawn and Closeout Governance Matrix.md`
 
-## Proposed phases
-
-### Phase 1 - Spawn and closeout decision audit
-Goal:
-- inventory the existing rules across playbooks and identify where decisions are still implied rather than explicit
-
-Deliverables:
-- spawn decision inventory
-- closeout / executive-summary gate inventory
-- checkpoint-rule inventory
-- skill-gap table for execution-governance skills
-
-Acceptance:
-- each major decision type has a source rule or is named missing
-
-### Phase 2 - Governance contract
-Goal:
-- define the explicit operational matrix for spawned work and workflow closeout
-
-Deliverables:
-- decision matrix for:
-  - main-session only
-  - spawn read-only
-  - spawn distinct-output
-  - blocked / operator-gated
-- explicit rule that early automation parallel lanes are for contract-building, bounded packet prep, audit, contradiction, and QA unless a workflow contract explicitly widens authority
-- executive summary gate
+The matrix now standardizes:
+- main-session only
+- spawn read-only
+- spawn distinct-output
+- blocked / operator-gated
+- helper-lane authority boundaries
+- executive-summary gate
 - closeout checklist
-- checkpoint / commit-decision rule
-- required next-work recommendation rule
+- checkpoint rule
+- next-work recommendation rule
 
-Acceptance:
-- for a new workflow, the spawn and closeout decision path can be determined without interpretive guesswork
+It also makes the current automation rule explicit:
+- early research automation helper lanes are for **contract-building, QA, contradiction review, and bounded packet prep**, not freeform research swarm behavior
 
-### Phase 3 - Skills hardening
-Goal:
-- align the key governance-driving skills to the new matrix and closeout gate
+## Phase 3 Deliverable - Skills Integration
+Reinforced in the workflow-driving skills:
+- helper lanes do not own final truth
+- closeout requires explicit integration and checkpoint posture
+- major workflow closeout should name the next pass and bounded adjacent candidates when useful
+- early automation lanes default to contract-building / QA unless the workflow contract explicitly widens authority
 
-Deliverables:
-- skill updates that reinforce:
-  - no final-truth ownership by helper lanes
-  - explicit completion handshake
-  - checkpoint decision before executive closure when the workflow is meaningful
-  - recommendation of immediate next pass plus bounded adjacent ideas when useful
-
-Acceptance:
-- helper-lane and closeout behavior becomes more consistent across skills and workflows
-
-### Phase 4 - Control-surface and doctrine integration
-Goal:
-- integrate the new governance contract into live control-plane references without widening into unrelated doctrine churn
-
-Deliverables:
-- protocol updates where needed
-- queue / registry language updates if the contract changes what must be shown live
-- bounded QA note
-- handoff back to Workflow 16 readiness
-
-Acceptance:
-- Workflow 16 can start from a cleaner execution-governance layer instead of relying on implied habits
-
-## Success Standard
-- spawn choices become easier to justify and audit
-- executive summaries become harder to issue before real closeout
-- checkpoint behavior becomes explicit instead of half-assumed
-- skills stop drifting on completion claims and next-work routing
-- the research automation lane cannot quietly slide into freeform swarm behavior without an explicit contract change
-
-## Blockers / Trust Gaps
-- commit/checkpoint behavior is still partly doctrine-level and partly per-workflow
-- the current system supports next-pass visibility but does not yet formally require 1-2 adjacent workflow ideas at closeout
-- helper-lane safety is strong in spirit but still too distributed across documents
-
-## Next Action
-- Start after Workflow 17 defines the base workflow contract.
-- Use Workflow 17 output as input rather than re-litigating the same entry/exit structure.
-
-## Key Files
+## Phase 4 Deliverable - Control-Surface Integration and QA
+Updated live protocol / control documents:
 - `06. Playbooks/Automation Orchestration Protocol.md`
 - `06. Playbooks/OpenClaw Parallel Work Plan.md`
 - `06. Playbooks/Cron Job Protocol.md`
 - `06. Playbooks/Continuity Stewardship Protocol.md`
 - `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
 - `06. Playbooks/IC Project Registry.md`
-- priority skills listed above
+- `06. Playbooks/Project Continuity/Workflow 16 - Research Automation and Canonical Freshness Hardening.md`
+- `06. Playbooks/Project Continuity/Research Automation - News, Geopolitics, and Thesis Drift Monitoring.md`
+
+## Acceptance Evidence
+- `openclaw skills check` passed after the skill/governance updates.
+- The live governance layer now explicitly blocks executive-summary theater when acceptance, integration, checkpoint posture, or residual-risk naming is missing.
+- Workflow 16 is now unblocked to a readiness-gate posture only; no research cron or canonical-note helper execution was opened prematurely.
+
+## Checkpoint Decision
+- **Checkpoint taken after Workflow 17 and Workflow 18 together** as one governance/skills hardening baseline.
+
+## Residual / Deferred
+- Workflow 16 remains an umbrella readiness gate, not the substantive implementation pass.
+- Workflow 16A and 16B still need contract execution and pilot proof.
+- No new research cron or canonical note helper should be scheduled until those downstream contracts are approved.
+
+## Next Action
+- Promote Workflow 16 to the active lane and run the readiness gate that converts Workflow 17 / Workflow 18 outputs into the research automation skeleton.
+
+## Key Files
+- `06. Playbooks/Spawn and Closeout Governance Matrix.md`
+- `06. Playbooks/Major Workflow Contract Standard.md`
+- `06. Playbooks/Automation Orchestration Protocol.md`
+- `06. Playbooks/OpenClaw Parallel Work Plan.md`
+- `06. Playbooks/Cron Job Protocol.md`
+- `06. Playbooks/Project Continuity/Workflow 16 - Research Automation and Canonical Freshness Hardening.md`

@@ -5,6 +5,9 @@ Keep the project queue moving, fresh, and honestly categorized while using paral
 
 This protocol promotes the live operating posture into a first-class control document.
 
+For major workflow structure, pair this document with `06. Playbooks/Major Workflow Contract Standard.md`.
+For spawn / closeout governance, pair it with `06. Playbooks/Spawn and Closeout Governance Matrix.md`.
+
 ## Core role posture
 Veritas remains the:
 - orchestrator
@@ -26,6 +29,8 @@ The main session should remain available as the:
 
 Child lanes should do the bounded implementation, inspection, or draft-prep work.
 The main lane should do the handoff packet, scope control, live control-plane updates, QC judgment, and queue movement.
+
+For early automation lanes, default helper scope is contract-building, audit / QA, contradiction review, or distinct-output prep unless a workflow contract explicitly widens authority.
 
 Main-session exceptions are allowed only when one of these is true:
 - the edit is trivial and bounded
@@ -288,6 +293,16 @@ After a meaningful automation-protocol or queue-governance change:
 - run a bounded QA or audit pass
 - do not claim the new posture is ready merely because the wording sounds good
 - verify the startup/governing files still point at the real posture
+
+## Executive-summary gate
+For any meaningful workflow, do not issue an executive summary until all are true:
+- acceptance evidence exists
+- expected helper lanes are integrated or explicitly abandoned
+- queue / registry / continuity note agree on state
+- checkpoint decision is explicit
+- real residual debt is named
+
+If one of those is missing, give status instead of closure theater.
 
 ## Current operating decision
 - Veritas remains the orchestrator, auditor, and PoM.

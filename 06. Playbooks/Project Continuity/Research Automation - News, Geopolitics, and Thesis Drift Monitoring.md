@@ -8,6 +8,7 @@
 ## Current State
 - The project is activated through Workflow 16 rather than left as a vague future idea.
 - The old Workflow 4B -> 4C blocker is stale; those trust-hardening prerequisites are closed.
+- Workflow 17 and Workflow 18 are now closed, so the workflow-contract and spawn/closeout governance prerequisites are in place.
 - Cron already supports internal finance refresh windows, but no approved recurring research source bundle, intake packet contract, routing contract, or canonical freshness helper contract is live yet.
 - The approved posture is now clear: contracts first, then bounded pilot, then only later any schedule expansion.
 
@@ -32,7 +33,7 @@
 - This should not outrun note-owner boundaries just because the cron layer is already working.
 
 ## Next Action
-- Hold execution until Workflow 17 and Workflow 18 close or are intentionally superseded.
+- Run Workflow 16 readiness gate first.
 - Then run Workflow 16A in order:
   1. Source Bundle Contract
   2. Intake Packet Contract

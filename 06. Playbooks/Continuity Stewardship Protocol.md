@@ -7,6 +7,8 @@ Define the safe automation boundary for project-queue, registry, continuity-note
 This protocol is for scheduled stewardship.
 It is not permission for broad autonomous rewriting.
 
+For any major workflow, pair this protocol with `06. Playbooks/Major Workflow Contract Standard.md`.
+
 ## Stewardship objective
 
 The stewardship layer should:
@@ -119,6 +121,7 @@ Treat the next item as major when it touches any of:
 
 When major:
 - do review/QA/preflight first
+- ensure the continuity note follows `06. Playbooks/Major Workflow Contract Standard.md`
 - do not jump straight into implementation
 - only spawn a detached worker after the preflight says the contract is clear enough
 
@@ -145,7 +148,7 @@ Examples:
 
 Posture:
 - spawn only when it keeps the main session cleaner than doing it directly
-- preferred model: `openai-codex/gpt-5.3-codex`
+- preferred model: use an approved live default model with a tighter bounded task rather than assuming a removed cheap helper model
 - use one bounded detached run, not an open-ended swarm
 
 ### High effort

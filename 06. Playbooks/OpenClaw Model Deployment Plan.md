@@ -30,8 +30,8 @@ Verified / updated on 2026-05-01:
 - target main OpenClaw model: `openai-codex/gpt-5.4`
 - default spawned sub-session model: `openai-codex/gpt-5.4`
 - current session has a large context budget and fresh weekly capacity
-- `openai-codex/gpt-5.3-codex` remains an allowed bounded helper lane
-- `openai-codex/gpt-5.3-codex-spark` is removed from Veritas-routed workflow use after repeated contract/control-surface failures; Randall may still use it manually and report findings back into the workspace
+- lower-complexity 5.3 Codex lanes are no longer on the approved live model list for Veritas-routed workflow use
+- Randall may still use lighter external/manual outputs as evidence for review, but Veritas should not route live workflow work through removed 5.3 Codex lanes
 
 ## Codex lane policy
 
@@ -49,20 +49,14 @@ Why:
 Potential Codex models of interest:
 - `openai-codex/gpt-5.4`
 - `openai-codex/gpt-5.4-mini`
-- `openai-codex/gpt-5.3-codex`
 
 Rule:
 - do not route meaningful work to a candidate model until it is actually verified as exposed in this environment
 - treat catalog rumors and entitlement notes as hints, not truth
 
-Additional 2026-05-01 verification:
-- `openai-codex/gpt-5.3-codex`
-- `openai-codex/gpt-5.3-codex-spark` (verified available, but removed from Veritas-routed workflow use)
-
 Current posture:
-- `openai-codex/gpt-5.3-codex` may be used for bounded read-heavy inspection, patch preparation, and cheap helper work
-- `openai-codex/gpt-5.3-codex-spark` is no longer used by Veritas as a workflow lane because it failed repeated structured-audit / session-control expectations
-- neither is suitable for final trust adjudication or ambiguous architecture decisions
+- use approved live defaults rather than removed 5.3 Codex lanes for Veritas-routed workflow work
+- if a smaller helper posture is needed, reduce scope or use manual external evidence review instead of routing through a removed model
 
 ## Recommended Codex usage by lane
 
@@ -90,10 +84,6 @@ Recommended spawn posture by task type:
 
 If `openai-codex/gpt-5.4-mini` becomes verified:
 - use it for smaller coding sub-sessions and cheap bounded helper passes
-
-If `openai-codex/gpt-5.3-codex` is verified:
-- use it for bounded read-heavy inspection, modest multi-file helper work, and patch-prep lanes
-- keep final integration and harder judgment in `gpt-5.4` or the default `gpt-5.4` subagent lane depending on who owns the pass
 
 ## CLI lane posture
 

@@ -40,6 +40,11 @@ Each project checkpoint should answer only:
 7. key files or artifacts
 8. automation or refresh path when workflow cadence matters
 
+For major workflows, also keep explicit if they are live issues:
+9. acceptance gate
+10. checkpoint decision
+11. next 1-2 adjacent workflow candidates when useful
+
 If a checkpoint grows into a long memo, it is drifting.
 
 ## Canonical Homes
@@ -92,6 +97,7 @@ Use this structure when a dedicated project continuity note is warranted:
 Keep bullets short.
 Prefer one next action, not a vague backlog.
 Only include the automation section when it materially improves resumability.
+If the project is a major workflow, keep its contract compatible with `06. Playbooks/Major Workflow Contract Standard.md`.
 
 ## Workflow
 

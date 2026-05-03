@@ -8,9 +8,10 @@
 ## Current State
 - Cron already handles internal finance refresh windows plus control-plane hygiene and health checks.
 - The current finance cron posture is intentionally fail-closed: scheduled windows refresh machine artifacts and derived staging surfaces, but canonical notes remain protected when trust fields say internal-only.
-- Research automation is still defined but not active. No recurring source bundle, intake packet contract, routing/promotion contract, or canonical freshness patch contract is pinned down yet.
+- Workflow 17 and Workflow 18 are now closed, so the missing workflow-contract and spawn/closeout governance layer is no longer the blocker.
+- Research automation remains **unstarted implementation-wise**: no recurring source bundle, intake packet contract, routing/promotion contract, or canonical freshness patch contract is approved yet.
 - Capital Deployment Readiness already proved one important boundary: scheduled review surfaces can be useful daily without giving away canonical judgment ownership.
-- **New gate:** Workflow 16 execution is intentionally held behind `Workflow 17 - Sequential Workflow Contract and Skills Hardening` and `Workflow 18 - Spawn, Closeout, and Skills Governance Hardening` so this lane starts from a tighter orchestrated-work contract.
+- **Current gate:** Workflow 16 is now the active readiness gate that should convert Workflow 17 / Workflow 18 outputs into the live research automation skeleton without opening research cron or note-helper execution yet.
 
 ## Why this workflow exists
 - Randall wants the OS to keep research and canonical notes fresh daily.
@@ -122,8 +123,9 @@ Use:
 - Oil / Hormuz / Middle East production-risk sleeve
 
 ## Next Action
-- Hold execution here until Workflow 17 and Workflow 18 finish their protocol / skills hardening passes.
-- After that, execute Workflow 16A in order:
+- Run the Workflow 16 readiness gate now that Workflow 17 and Workflow 18 are closed.
+- Confirm that the three-contract research control plane inherits the new workflow/governance standards cleanly.
+- Then execute Workflow 16A in order:
   1. Source Bundle Contract
   2. Intake Packet Contract
   3. Routing / Promotion Contract
@@ -133,6 +135,8 @@ Use:
 - Do not schedule autonomous canonical note mutation in v1.
 
 ## Key Files
+- `06. Playbooks/Major Workflow Contract Standard.md`
+- `06. Playbooks/Spawn and Closeout Governance Matrix.md`
 - `06. Playbooks/Project Continuity/Research Automation - News, Geopolitics, and Thesis Drift Monitoring.md`
 - `06. Playbooks/Research Unit Concept.md`
 - `06. Playbooks/Project Continuity/Capital Deployment Readiness.md`
@@ -144,6 +148,7 @@ Use:
 - `05. Intelligence/Event Calendar.md`
 
 ## Automation / Refresh Path
+- Phase 0: readiness gate using Workflow 17 / Workflow 18 outputs
 - Phase 1: source bundle contract
 - Phase 2: intake packet contract
 - Phase 3: routing / promotion contract

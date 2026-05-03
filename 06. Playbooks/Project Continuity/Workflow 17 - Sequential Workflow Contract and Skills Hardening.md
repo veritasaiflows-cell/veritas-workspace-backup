@@ -2,140 +2,92 @@
 
 ## Objective
 - Standardize how major sequential and orchestrated workflows are opened, preflighted, executed, QAed, and closed.
-- Remove the current scatter where preflight, acceptance, exit, checkpoint, and next-pass expectations exist in pieces across multiple protocols but not as one explicit contract.
+- Remove the current scatter where preflight, acceptance, exit, checkpoint, and next-pass expectations existed in pieces across multiple protocols but not as one explicit contract.
 - Harden the relevant skills so workflow-driving skills follow the same contract instead of drifting into inconsistent assumptions.
 
-## Why this workflow exists
-- The workspace already has strong pieces: preflight rules, spawn rules, acceptance checks, queue freshness rules, and QA ownership.
-- What is still weak is consistency.
-- Right now the operating truth is distributed across doctrine, playbooks, queue entries, and skills. That works, but it leaves avoidable ambiguity around:
-  - entry checklist vs implicit setup
-  - exit / closeout checklist vs implied completion
-  - checkpoint / commit decision timing
-  - when next-work recommendations are required
-  - what a workflow-driving skill must explicitly say before labor starts
-
 ## Current State
-- `AGENTS.md` enforces sequential completion and real blocker handling.
-- `06. Playbooks/Continuity Stewardship Protocol.md` requires preflight review for major work and defines completion confirmation.
-- `06. Playbooks/Automation Orchestration Protocol.md` defines main-lane reserve, spawn-first advancement, completion handshake, and queue freshness.
-- `06. Playbooks/OpenClaw Parallel Work Plan.md` defines lane ownership and required handoff packets.
-- Workflow 16 is now the first immediate consumer of this hardening pass: the automation lane needs explicit contract expectations for approved source bundle, ownership boundary, review window, dashboard/workbook handoff, stop lines, and canonical-drift protection before research cron expands.
-- The missing layer is one explicit workflow contract standard that ties those together and pushes the same expectations into the skills that steer orchestrated work.
+- **Closed on 2026-05-03.**
+- The major-workflow contract skeleton now exists as a reusable live standard in `06. Playbooks/Major Workflow Contract Standard.md`.
+- Relevant protocol docs and workflow-driving skills were aligned to that contract.
+- Workflow 18 inherited a cleaner baseline instead of re-litigating workflow structure from scratch.
 
-## Scope
-### In scope
-- major sequential workflow contract structure
-- preflight / entry checklist standard
-- acceptance / verification gate standard
-- exit / closeout checklist standard
-- checkpoint / commit-decision rule
-- required next-pass and next-1-to-2-candidate recommendation rule
-- skill hardening for workflow-driving skills
+## Phase 1 Findings - Contract Inventory and Gap Map
 
-### Out of scope
-- broad automation execution design for Workflow 16 itself
-- canonical finance-note mutation policy beyond already-approved boundaries
-- large skill rewrites unrelated to workflow orchestration or hardening
+| Contract element | Live sources found | Gap judgment |
+|---|---|---|
+| Entry / preflight | `06. Playbooks/Continuity Stewardship Protocol.md`, `06. Playbooks/Automation Orchestration Protocol.md` | Real but scattered; no one universal workflow skeleton |
+| Spawn posture | `06. Playbooks/Automation Orchestration Protocol.md`, `06. Playbooks/OpenClaw Parallel Work Plan.md`, `06. Playbooks/Cron Job Protocol.md` | Real but not tied into a standard continuity-note structure |
+| Acceptance / verification | completion-confirmation rules, QA rule, `skills/workspace-qa-pass/SKILL.md` | Missing explicit universal acceptance-gate section |
+| Exit / closeout | completion confirmation, queue movement, auto-promotion logic | Missing one explicit closeout checklist |
+| Checkpoint decision | ad hoc workflow handling, operator skill guidance | No universal rule requiring explicit checkpoint posture |
+| Next pass visibility | queue freshness, project continuity, status contract | Real but not standardized across major workflows |
+| Adjacent workflow recommendation | partial / ad hoc only | Missing as a standard requirement |
+| Automation-facing sections (owner layer, review window, stop lines, handoff, canonical mutation posture) | partial in scattered automation notes | Missing from the base workflow contract |
 
-## Skills hardening surface
-Prioritize these skills because they directly shape orchestrated work:
+## Phase 2 Deliverable - Standard Contract
+Landed:
+- `06. Playbooks/Major Workflow Contract Standard.md`
+
+The standard now requires major workflows to make explicit:
+- preflight / entry checklist
+- execution posture
+- acceptance gates
+- exit / closeout checklist
+- checkpoint decision
+- next pass
+- next 1-2 adjacent candidate workflows when useful
+
+Automation-facing workflows must also name:
+- owner layer
+- review window
+- stop lines
+- surface / handoff posture
+- canonical mutation posture
+
+## Phase 3 Deliverable - Skills Hardening
+Updated:
 - `skills/automation-hardening-manager/SKILL.md`
 - `skills/cron-automation-manager/SKILL.md`
 - `skills/project-continuity-manager/SKILL.md`
 - `skills/ic-swarm-orchestrator/SKILL.md`
 - `skills/workspace-qa-pass/SKILL.md`
-- `skills/openclaw-operator/SKILL.md` where protocol / checkpoint expectations touch operator work
+- `skills/openclaw-operator/SKILL.md`
 
-## Proposed phases
+Skill hardening added or reinforced:
+- explicit owner/review-window/stop-line posture for major automation work
+- checkpoint visibility
+- next-pass expectations
+- closeout honesty
+- helper-lane limits for early automation work
 
-### Phase 1 - Contract inventory and gap map
-Goal:
-- trace where the current protocol already defines entry, spawn, acceptance, closeout, checkpoint, and next-pass expectations
-
-Deliverables:
-- source-of-truth table
-- gap map for missing or inconsistent workflow-contract expectations
-- short skill-gap table for the priority skills above
-
-Acceptance:
-- we can point to exactly where each contract element lives today or name it as missing
-
-### Phase 2 - Workflow contract standard
-Goal:
-- create one explicit standard for major sequential/orchestrated workflows
-
-Deliverables:
-- standard sections for:
-  - objective
-  - current truth
-  - preflight / entry checklist
-  - spawn posture
-  - acceptance gates
-  - exit / closeout checklist
-  - checkpoint / commit decision
-  - next pass
-  - next 1-2 bounded candidate workflows
-- explicit rule for automation-facing workflows to state:
-  - owner layer
-  - review window
-  - stop lines
-  - dashboard/workbook/weekly-brief handoff posture
-  - canonical mutation posture
-- clear rule for when the contract belongs in a continuity note vs a playbook vs a skill
-
-Acceptance:
-- a new workflow can be opened from the standard without reconstructing protocol from scattered files
-
-### Phase 3 - Skills hardening
-Goal:
-- align the key workflow-driving skills with the new contract
-
-Deliverables:
-- skill updates so they explicitly reinforce:
-  - preflight-first behavior for major work
-  - bounded spawn posture
-  - acceptance and QA gates
-  - exit / closeout expectations
-  - next-pass and adjacent-work recommendation expectations where relevant
-
-Acceptance:
-- the priority skills no longer leave the workflow contract implicit or inconsistent
-
-### Phase 4 - Control-surface integration and closeout
-Goal:
-- update the live queue / registry / protocol references so the new contract is not trapped in one note
-
-Deliverables:
-- control-surface updates
-- bounded QA note
-- explicit handoff to Workflow 18
-
-Acceptance:
-- Workflow 18 can start from a clear standardized contract baseline
-
-## Success Standard
-- major workflow starts become more boring and explicit
-- major workflow closures become harder to fake
-- skills that steer orchestration stop drifting from the live protocol
-- next-step routing becomes clearer without needing chat reconstruction
-
-## Blockers / Trust Gaps
-- current protocol truth is real but distributed
-- checkpoint expectations are still partly doctrine-level and partly workflow-specific
-- next-1-to-2-candidate recommendation behavior is useful but not yet formalized as a standard requirement
-
-## Next Action
-- Run Phase 1 inventory first.
-- Make the first pass concrete enough that Workflow 16A / 16B can inherit one consistent contract skeleton instead of improvising automation-specific sections later.
-- Treat Workflow 18 as the follow-on governance hardening pass, not a parallel rewrite of the same contract.
-
-## Key Files
-- `AGENTS.md`
+## Phase 4 Deliverable - Integration and QA
+Updated live protocol / control documents:
 - `06. Playbooks/Continuity Stewardship Protocol.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`
 - `06. Playbooks/OpenClaw Parallel Work Plan.md`
 - `06. Playbooks/Cron Job Protocol.md`
-- `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
-- `06. Playbooks/IC Project Registry.md`
-- priority skills listed above
+- `06. Playbooks/OpenClaw Model Deployment Plan.md`
+- `06. Playbooks/Project Continuity/Workflow 4 - Sequential Chain Protocol.md`
+
+## Acceptance Evidence
+- `openclaw skills check` passed after the skill updates.
+- Live protocol docs now reference the major-workflow contract standard instead of relying only on distributed implied rules.
+- Removed-model routing residue was tightened in the live protocol layer so workflow guidance no longer depends on `gpt-5.3-codex` being available.
+
+## Checkpoint Decision
+- Workflow-level checkpoint was deferred until Workflow 18 closed, because both passes touched the same governance surface and a combined checkpoint is cleaner than splitting one protocol-hardening change into two commits.
+
+## Residual / Deferred
+- Historical notes and backups may still mention removed 5.3 Codex helper posture as records of past state; the live governance layer is the source of truth.
+- Workflow 16 still required Workflow 18 before it could be honestly unblocked.
+
+## Next Action
+- Execute Workflow 18 sequentially from this standardized baseline.
+
+## Key Files
+- `06. Playbooks/Major Workflow Contract Standard.md`
+- `06. Playbooks/Continuity Stewardship Protocol.md`
+- `06. Playbooks/Automation Orchestration Protocol.md`
+- `06. Playbooks/OpenClaw Parallel Work Plan.md`
+- `06. Playbooks/Cron Job Protocol.md`
+- skill files listed above

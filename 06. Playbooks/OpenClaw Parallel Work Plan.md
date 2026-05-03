@@ -20,12 +20,11 @@ without creating ownership drift, fake green states, or reconciliation debt.
 - OpenClaw spawned subagent default on `openai-codex/gpt-5.4`
 - OpenClaw app/runtime pinned at `2026.4.22` for now because Randall judges it more stable on this machine
 
-### Lower-complexity Codex helpers now available
-- `openai-codex/gpt-5.3-codex`
+### Lower-complexity helper posture
+- No lower-complexity Veritas-routed Codex helper is currently on the approved live model list.
+- For bounded cheap helper work, prefer tighter scope, smaller contracts, or manual external evidence review rather than routing through a removed model.
 
-Use it as a helper lane for bounded implementation or inspection work, not as the final lane for trust-heavy judgment.
-
-`openai-codex/gpt-5.3-codex-spark` is removed from Veritas-routed workflow use after repeated contract/control-surface failures. Randall may still use it manually and report findings back.
+`openai-codex/gpt-5.3-codex` and `openai-codex/gpt-5.3-codex-spark` are removed from Veritas-routed workflow use. Randall may still use lighter external tools manually and report findings back as evidence for review.
 
 ### Available local lanes
 - **Main OpenClaw session** -> orchestration, integration, final judgment, file-grounded execution
@@ -44,6 +43,7 @@ Veritas remains the only integrator across lanes.
 Queue governance is part of orchestration, not admin overhead.
 The workflow queue must be kept in sync with real findings, real blockers, and real prerequisites as chains advance.
 Use `06. Playbooks/Automation Orchestration Protocol.md` as the control note for queue freshness, category labels, and parallel-posture decisions.
+Use `06. Playbooks/Spawn and Closeout Governance Matrix.md` when deciding whether helper lanes are read-only, distinct-output, or blocked.
 
 ## Queue freshness and category model
 
@@ -257,6 +257,8 @@ Three-agent swarms are allowed only when all are true:
 
 If those conditions are not true, stay with one serious worker plus one reviewer/helper at most.
 
+For the current research automation lane, parallel help should default to contract-building, contradiction review, and QA rather than freeform research synthesis.
+
 ## Current recommended rollout
 
 ### Phase 1 — prove clean delegation
@@ -343,7 +345,7 @@ This keeps the queue stable enough to trust while still allowing evidence-driven
 
 For the daily queue/orchestration control plane:
 - low-effort control-plane fixes stay in the main session
-- medium-effort detached work may use `openai-codex/gpt-5.3-codex` for bounded inspection or mechanical prep
+- medium-effort detached work should use an approved live default model with a tighter scope rather than a removed cheap helper model
 - high-effort detached work uses `openai-codex/gpt-5.4` after preflight review clears the contract
 - default detached posture is one worker at a time, bounded task, no silent canonical finance note mutation, and no auth/config/network escalation without approval
 - if the blocker is judgment rather than labor, stop and record the blocker instead of spawning theater

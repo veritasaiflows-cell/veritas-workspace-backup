@@ -789,11 +789,11 @@ Run in this order:
 20. Workflow 13 - script and tmp hygiene hardening [completed]
 21. Workflow 14 - operator script boundary and lifecycle cleanup [completed]
 22. Workflow 15 - script performance and payload modularity backlog [deferred]
-23. Workflow 17 - sequential workflow contract and skills hardening [active - higher-priority trust blocker inserted before Workflow 16 execution]
-24. Workflow 18 - spawn, closeout, and skills governance hardening [queued behind Workflow 17]
-25. Workflow 16 - research automation and canonical freshness hardening [active but held behind Workflow 17 / Workflow 18 protocol hardening; parallel lanes are contract-building and QA only in v1]
-26. Workflow 16A - research intake desk and parallel review packets [queued under Workflow 16 after Workflow 17 / Workflow 18; source bundle -> intake packet -> routing/promotion contract]
-27. Workflow 16B - canonical freshness sync and gated note update helpers [queued behind Workflow 16A; canonical freshness patch contract -> bounded pilot]
+23. Workflow 17 - sequential workflow contract and skills hardening [completed - major workflow contract standard landed; skills/protocol layer aligned]
+24. Workflow 18 - spawn, closeout, and skills governance hardening [completed - governance matrix landed; helper-lane and executive-summary rules hardened]
+25. Workflow 16 - research automation and canonical freshness hardening [active - readiness gate open; no research cron or note-helper execution yet]
+26. Workflow 16A - research intake desk and parallel review packets [queued under Workflow 16; source bundle -> intake packet -> routing/promotion contract]
+27. Workflow 16B - canonical freshness sync and gated note update helpers [queued behind Workflow 16A; canonical freshness patch contract -> owner/gating rules -> bounded pilot]
 
 Capital Deployment Readiness note:
 - closed with follow-up on 2026-05-03

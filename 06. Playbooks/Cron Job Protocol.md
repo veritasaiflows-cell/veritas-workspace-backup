@@ -3,6 +3,8 @@
 ## Purpose
 Keep scheduled OpenClaw jobs useful, bounded, and honest.
 
+Pair this protocol with `06. Playbooks/Spawn and Closeout Governance Matrix.md` when a job might spawn helper lanes or produce closeout claims.
+
 ## Job Card Format
 Every cron job should define:
 - **Name**
@@ -29,7 +31,7 @@ Every cron job should define:
 
 ## Effort Routing
 - **Low effort** -> handle in the main cron run
-- **Medium effort** -> spawn one bounded detached worker with `openai-codex/gpt-5.3-codex`
+- **Medium effort** -> spawn one bounded detached worker only with an approved live model and a tighter scope; do not assume a removed cheap helper model exists
 - **High effort** -> require preflight review first, then spawn one bounded detached worker with `openai-codex/gpt-5.4` only if the contract is clear enough
 
 ## Secure Spawn Default

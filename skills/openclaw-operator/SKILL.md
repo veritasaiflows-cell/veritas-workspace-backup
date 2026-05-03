@@ -50,6 +50,8 @@ Check live state before claiming anything about runtime:
 7. Validate config and skill state after changes.
 8. Record major architecture changes in the current daily note.
 
+For major protocol or skill-governance changes, also make the checkpoint decision explicit before calling the pass closed.
+
 ## Classification Rule
 
 Use this routing test:

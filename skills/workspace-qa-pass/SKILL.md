@@ -64,7 +64,12 @@ Default outputs are an audit note, a bounded fix list, or a skill/workspace reco
    - Name the smallest next pass that materially improves trust.
    - Avoid giant omnibus cleanup plans.
 
-6. Validate the QA artifact or skill you create.
+6. Check closeout honesty.
+   - Was checkpoint posture made explicit?
+   - Do queue / registry / continuity note agree?
+   - Is the next pass or adjacent candidate routing explicit instead of implied?
+
+7. Validate the QA artifact or skill you create.
    - Use the smallest meaningful check available: direct inspection, targeted grep/search, `openclaw skills check`, or another local validator.
    - If no validator exists, say that plainly.
 

@@ -78,6 +78,15 @@ If those answers are vague, the workflow is not ready for more autonomy.
 7. Validate outputs and downgrade confidence honestly when upstream inputs are stale, partial, or manual.
 8. Record the result in the relevant project continuity note and daily memory.
 
+For major automation-facing workflows, also make these explicit:
+- owner layer
+- review window
+- stop lines
+- surface / handoff posture
+- canonical mutation posture
+- checkpoint decision
+- next pass
+
 ## Safe Automation Preference Order
 
 Prefer this progression:
@@ -121,6 +130,9 @@ When using this skill, report in this order:
 - recommended next phase
 - safe automation boundary
 - schedule recommendation
+- owner layer
+- review window
+- stop lines
 - trust gates still missing
 - validation or evidence
 
