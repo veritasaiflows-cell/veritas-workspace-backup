@@ -17,7 +17,7 @@ Usage:
 
 Outputs:
     tmp/entry-band-data/{TICKER}.json
-    generated documents/entry-bands/{TICKER}_entry_band.html   (with --html)
+    tmp/entry-band-reports/{TICKER}_entry_band.html   (with --html)
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ except ImportError:
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP_DATA_DIR = WORKSPACE / "tmp" / "entry-band-data"
-HTML_DIR = WORKSPACE / "generated documents" / "entry-bands"
+HTML_DIR = WORKSPACE / "tmp" / "entry-band-reports"
 JSX_PATH = WORKSPACE / "scripts" / "entry_band_viewer.jsx"
 PORTFOLIO_CONFIG_PATH = WORKSPACE / "tmp" / "portfolio-config.json"
 TECH_REFRESH_PATH = WORKSPACE / "tmp" / "technical-refresh.json"

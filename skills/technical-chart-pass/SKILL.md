@@ -9,6 +9,8 @@ Use this skill to turn a market idea into a disciplined technical setup.
 
 This is not for vague chart commentary. Use it when the output needs exact levels, entry discipline, invalidation logic, and a clear readiness judgment.
 
+Boundary: treat this as the generic technical-analysis fallback, not the canonical Veritas workflow skill for board sync, deployment-sheet decisions, weekly brief production, or post-earnings workflow integration.
+
 ## Core workflow
 
 1. Confirm the asset and context

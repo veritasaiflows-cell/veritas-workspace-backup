@@ -239,6 +239,6 @@ Use this skill for prompts like:
 
 ## Relationship to other skills
 
-- Use `technical-chart-pass` when timing, support/resistance, and entry discipline matter more than business quality.
+- Use `veritas-technical-pass` when timing, support/resistance, and entry discipline matter more than business quality in the Veritas workflow.
 - Use this skill first when deciding whether a name deserves serious coverage at all.
 - In the Veritas workflow, fundamentals decide whether the business belongs in the serious board. Technicals decide whether the timing is good enough to act.

@@ -537,12 +537,12 @@ Acceptance check:
 
 ### Workflow 9A - Workspace structure and drift cleanup
 Status:
-- newly inserted on 2026-05-02 as the immediate next priority before the earlier Workflow 10-12 backlog
-- opened from the paired workspace-optimization / scale-readiness audits after repeated findings showed the OS is stronger operationally than it is organizationally
-- root cause for the daily-note duplication gap is now confirmed: the session-memory append path writes without an existence check, and stale helper/worktree doctrine still reinforces append-only behavior
-- bounded local fix landed: `scripts/daily_note_dedupe.py` cleaned the known duplicate daily notes and protocol surfaces now require running the dedupe guard when automated daily-note writes touch `memory/YYYY-MM-DD.md`
-- Phase 2 caller-risk analysis is now complete: `generated documents/` is confirmed as live code-path debt rather than a cosmetic folder issue, `scripts/.claude/...` appears to be untracked stale residue with no live callers, the technical-pass overlap is confirmed as a skill-boundary problem rather than an automation-chain dependency, and the real `__pycache__` gap was missing ignore coverage plus local cache noise rather than tracked index residue; `.gitignore` now includes `__pycache__/`.
-- Current gate: Workflow 9A is now in the Phase 3 operator-decision state. The implementation contract is clear enough to present, but Phase 4 cleanup cannot start until Randall explicitly decides the fast-track delete/move bucket and the `generated documents/` / technical-skill end-state.
+- completed on 2026-05-02 after the approved Phase 4-7 execution pass
+- retired the root `generated documents/` exception by moving entry-band HTML outputs to `tmp/entry-band-reports/`, rewriting the four live callers, regenerating the downstream dashboard/status artifacts, and removing the old root folder after verification
+- removed the stale nested worktree residue under `scripts/.claude/...`, moved the active-root control-plane `.bak-*` files into `migration-backups/2026-05-02-control-plane-hardening-baks/`, archived the two superseded non-prefixed predecessor continuity notes into `09. Archive/Project Continuity/`, and kept the numbered workflow continuity notes in place
+- resolved the technical-skill boundary narrowly: `veritas-technical-pass` is now the canonical Veritas workflow skill, while `technical-chart-pass` is explicitly documented as the generic fallback
+- verified the local daily-note fail-safe and dashboard surfaces honestly: `python scripts/daily_note_dedupe.py --all` stayed clean, `tmp/dashboard-validation.json` stayed `0 critical / 0 warning`, and `tmp/dashboard-acceptance-report.json` stayed `17/17` passing
+- remaining residue is named and handed off instead of absorbed silently: `GS` surface drift -> Workflow 9B; stale completion-state and root-worktree metadata issues -> Workflow 10; upstream session-memory writer debt remains upstream/runtime debt
 
 Why now:
 - Randall explicitly reprioritized restructuring and organization ahead of further expansion work
@@ -565,8 +565,9 @@ Acceptance check:
 
 ### Workflow 9B - Surface alignment and drift-guard hardening
 Status:
-- newly inserted directly after Workflow 9A as the second organization-first pass before the older Workflow 10-12 backlog
-- opened from the combined scale-readiness and architecture audits to force dashboards, validators, and note-owned mirrors onto one coherent lane / ownership contract
+- now the active next priority after honest Workflow 9A closure
+- inherits the named surface-contract residue from 9A rather than reopening workspace-structure cleanup: `GS` state drift, note-mirror / validator parity, non-execution-lane presentation gaps, and the dry-run-first write-back contract for technical levels / entry bands
+- still opened from the combined scale-readiness and architecture audits to force dashboards, validators, and note-owned mirrors onto one coherent lane / ownership contract
 
 Why now:
 - the backend lane model and note-sync hardening moved faster than the human-facing surfaces and validator contracts
@@ -588,8 +589,9 @@ Acceptance check:
 
 ### Workflow 10 - Subagent/session lifecycle reliability review
 Status:
-- queued behind Workflow 9A and Workflow 9B as the next runtime / control-surface hardening pass
+- queued directly behind active Workflow 9B as the next runtime / control-surface hardening pass now that Workflow 9A is closed
 - scope now explicitly includes stale completion-state signals such as `execution.chain_status = "running"` after success and other state-independent run-ledger gaps
+- now also owns the root-worktree metadata / `git worktree prune` permission-denied residue left outside the approved 9A structural scope
 
 Why now:
 - workflow control cannot be trusted fully while subagent run state, session activity, and run-summary completion fields can disagree
@@ -700,9 +702,9 @@ Run in this order:
 12. Workflow 7 - sector coverage expansion plan [completed - closed with follow-up; single-name Healthcare watch-lane pilot (`LLY`) added under Option C, Utilities queued for post-add review cycle]
 13. Workflow 8 - command center chain readiness review [completed - historical pass-3 no-go preserved; bounded reopen QC-closed; downstream-only ownership rule preserved]
 14. Workflow 9 - research department operating model [completed - closed with follow-up; functional desk model normalized, Risk Rules doctrine additions operator-approved, and Command Center kept downstream/non-authoritative]
-15. Workflow 9A - workspace structure and drift cleanup [new top priority; reorganize playbooks/root exceptions/cleanup decisions before more expansion work]
-16. Workflow 9B - surface alignment and drift-guard hardening [new second priority; lock truth-sync/validator/owner contracts before scaling further]
-17. Workflow 10 - subagent/session lifecycle reliability review [runtime/control-surface pass; includes stale completion-state and run-ledger hardening]
+15. Workflow 9A - workspace structure and drift cleanup [completed - root generated-documents exception retired; stale nested worktree and predecessor-note/archive cleanup closed; residue handed to Workflow 9B / Workflow 10]
+16. Workflow 9B - surface alignment and drift-guard hardening [active top priority; lock truth-sync/validator/owner contracts before scaling further]
+17. Workflow 10 - subagent/session lifecycle reliability review [queued next runtime/control-surface pass; includes stale completion-state, run-ledger hardening, and root-worktree metadata residue]
 18. Workflow 11 - coverage admission model [do not relitigate Workflow 6; operationalize per-ticker intake / promotion procedure and execution-lane admission gates instead]
 19. Workflow 12 - macro / policy trust repair [close or explicitly own the remaining macro/policy and timing-trust manual-dependency debt]
 

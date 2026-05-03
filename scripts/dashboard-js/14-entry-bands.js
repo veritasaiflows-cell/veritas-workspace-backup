@@ -8,7 +8,7 @@ const BAND_STATUS_TONE = {
   'BELOW STOP': 'bad', 'IN BAND': 'ok', 'NEAR BAND': 'warn',
   'BELOW BAND': 'warn', 'ABOVE BAND': 'info', 'NO BAND': 'info', 'NO DATA': 'info',
 };
-const ENTRY_BANDS_BASE = '../generated documents/entry-bands/';
+const ENTRY_BANDS_BASE = 'entry-band-reports/';
 
 let activeBandTicker = null;
 

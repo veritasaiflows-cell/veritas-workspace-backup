@@ -18,8 +18,6 @@ The root should contain only:
 - documented exceptions that still have a real operational reason
 
 ### Current documented root exceptions
-- `generated documents/`
-  - temporary generated-surface exception because live scripts still read/write `generated documents/entry-bands/`
 - `migration-backups/`
   - justified reversible-backup surface
 
@@ -40,6 +38,7 @@ Use `Home.md` as the top-level navigator.
 - `scripts/` -> durable implementation and tooling
 - `skills/` -> reusable AgentSkills only
 - `tmp/` -> machine-generated or staged outputs
+- entry-band HTML reports now live under `tmp/entry-band-reports/`, not in a root-level generated-documents exception
 
 ## Playbooks structure
 `06. Playbooks/` is for operating doctrine and control surfaces.

@@ -25,7 +25,7 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 TECH_REFRESH_PATH = TMP / "technical-refresh.json"
 CONFIG_PATH = TMP / "portfolio-config.json"
-HTML_REPORTS_DIR = WORKSPACE / "generated documents" / "entry-bands"
+HTML_REPORTS_DIR = WORKSPACE / "tmp" / "entry-band-reports"
 OUT_PATH = TMP / "entry-band-status.html"
 
 NEAR_BAND_THRESHOLD_PCT = 5.0  # price within this % above band high = NEAR BAND
@@ -151,7 +151,7 @@ def build_rows(tech: dict, config: dict) -> list[dict]:
             "dist_pct": dist_pct,
             "data_date": rec.get("data_date") or "—",
             "html_exists": html_file.exists(),
-            "html_path": f"../generated documents/entry-bands/{ticker}_entry_band.html",
+            "html_path": f"entry-band-reports/{ticker}_entry_band.html",
         })
 
     rows.sort(key=lambda r: (STATUS_ORDER.get(r["status"], 99), r["ticker"]))

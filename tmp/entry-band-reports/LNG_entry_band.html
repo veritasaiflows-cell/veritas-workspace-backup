@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LNG -- Entry Band Analysis</title>
+  <style>
+    html, body { margin: 0; padding: 0; background: #0c0f14; color: #e8eaed;
+                  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    #root { min-height: 100vh; }
+    .__loading { padding: 60px 24px; color: #6b7280; text-align: center; font-size: 14px; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "react":             "https://esm.sh/react@18.2.0",
+      "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+      "react-dom":         "https://esm.sh/react-dom@18.2.0",
+      "react-dom/client":  "https://esm.sh/react-dom@18.2.0/client",
+      "recharts":          "https://esm.sh/recharts@2.12.7?external=react,react-dom"
+    }
+  }
+  </script>
+  <script src="https://unpkg.com/@babel/standalone@7.24.0/babel.min.js"></script>
+</head>
+<body>
+  <div id="root">
+    <div class="__loading">Loading LNG entry-band analysis...</div>
+  </div>
+  <script>window.__ENTRY_BAND_DATA__ = {"ticker": "LNG", "name": "Cheniere Energy, Inc.", "asof": "2026-05-02", "currency": "USD", "interval": "1mo", "period": {"start": "2016-06", "end": "2026-05"}, "data": [{"d": "2016-06", "o": 32.13, "h": 38.15, "l": 31.02, "c": 37.55, "v": 61.39}, {"d": "2016-07", "o": 37.34, "h": 42.07, "l": 35.86, "c": 41.83, "v": 48.05}, {"d": "2016-08", "o": 41.69, "h": 45.94, "l": 38.75, "c": 42.9, "v": 45.42}, {"d": "2016-09", "o": 42.64, "h": 46.0, "l": 41.72, "c": 43.6, "v": 43.0}, {"d": "2016-10", "o": 42.45, "h": 44.45, "l": 37.16, "c": 37.7, "v": 41.6}, {"d": "2016-11", "o": 38.0, "h": 42.17, "l": 35.07, "c": 40.86, "v": 56.59}, {"d": "2016-12", "o": 41.75, "h": 44.03, "l": 40.64, "c": 41.43, "v": 48.5}, {"d": "2017-01", "o": 41.46, "h": 50.53, "l": 41.46, "c": 47.65, "v": 52.97}, {"d": "2017-02", "o": 47.81, "h": 50.0, "l": 46.0, "c": 48.05, "v": 39.9}, {"d": "2017-03", "o": 48.32, "h": 48.76, "l": 43.2, "c": 47.27, "v": 37.09}, {"d": "2017-04", "o": 47.11, "h": 49.2, "l": 45.15, "c": 45.35, "v": 31.02}, {"d": "2017-05", "o": 45.15, "h": 51.41, "l": 43.79, "c": 48.72, "v": 49.52}, {"d": "2017-06", "o": 49.0, "h": 50.15, "l": 45.69, "c": 48.71, "v": 34.25}, {"d": "2017-07", "o": 48.8, "h": 49.59, "l": 44.65, "c": 45.2, "v": 31.12}, {"d": "2017-08", "o": 45.38, "h": 46.15, "l": 40.36, "c": 42.79, "v": 46.85}, {"d": "2017-09", "o": 43.15, "h": 45.71, "l": 41.77, "c": 45.04, "v": 46.03}, {"d": "2017-10", "o": 44.55, "h": 48.49, "l": 43.83, "c": 46.74, "v": 45.08}, {"d": "2017-11", "o": 47.18, "h": 51.51, "l": 46.74, "c": 48.32, "v": 42.04}, {"d": "2017-12", "o": 48.77, "h": 54.83, "l": 46.0, "c": 53.84, "v": 43.58}, {"d": "2018-01", "o": 53.96, "h": 60.22, "l": 53.25, "c": 56.56, "v": 44.95}, {"d": "2018-02", "o": 56.0, "h": 58.89, "l": 52.52, "c": 52.52, "v": 41.92}, {"d": "2018-03", "o": 52.77, "h": 55.05, "l": 50.08, "c": 53.45, "v": 44.14}, {"d": "2018-04", "o": 53.69, "h": 59.12, "l": 52.37, "c": 58.16, "v": 42.16}, {"d": "2018-05", "o": 58.13, "h": 68.04, "l": 57.44, "c": 66.62, "v": 59.6}, {"d": "2018-06", "o": 67.04, "h": 69.5, "l": 63.04, "c": 65.19, "v": 51.41}, {"d": "2018-07", "o": 64.36, "h": 66.68, "l": 60.44, "c": 63.5, "v": 44.01}, {"d": "2018-08", "o": 62.82, "h": 68.16, "l": 58.45, "c": 66.93, "v": 45.84}, {"d": "2018-09", "o": 66.72, "h": 70.21, "l": 63.11, "c": 69.49, "v": 41.16}, {"d": "2018-10", "o": 70.01, "h": 71.03, "l": 56.06, "c": 60.41, "v": 55.68}, {"d": "2018-11", "o": 60.8, "h": 66.04, "l": 57.04, "c": 61.12, "v": 50.73}, {"d": "2018-12", "o": 64.67, "h": 66.23, "l": 55.09, "c": 59.19, "v": 44.36}, {"d": "2019-01", "o": 57.7, "h": 67.0, "l": 57.36, "c": 65.65, "v": 37.41}, {"d": "2019-02", "o": 65.38, "h": 67.65, "l": 63.05, "c": 64.45, "v": 30.86}, {"d": "2019-03", "o": 64.42, "h": 70.6, "l": 62.65, "c": 68.36, "v": 39.89}, {"d": "2019-04", "o": 68.99, "h": 69.48, "l": 63.92, "c": 64.35, "v": 29.6}, {"d": "2019-05", "o": 64.43, "h": 68.33, "l": 60.01, "c": 63.18, "v": 48.26}, {"d": "2019-06", "o": 63.3, "h": 69.08, "l": 63.3, "c": 68.45, "v": 35.48}, {"d": "2019-07", "o": 69.5, "h": 70.49, "l": 64.48, "c": 65.15, "v": 34.88}, {"d": "2019-08", "o": 64.66, "h": 65.44, "l": 57.9, "c": 59.71, "v": 43.05}, {"d": "2019-09", "o": 59.81, "h": 67.49, "l": 58.16, "c": 63.06, "v": 38.04}, {"d": "2019-10", "o": 63.77, "h": 64.99, "l": 59.44, "c": 61.55, "v": 31.55}, {"d": "2019-11", "o": 61.28, "h": 63.91, "l": 59.45, "c": 60.54, "v": 33.49}, {"d": "2019-12", "o": 60.35, "h": 62.67, "l": 58.65, "c": 61.07, "v": 33.13}, {"d": "2020-01", "o": 61.12, "h": 67.11, "l": 58.25, "c": 59.24, "v": 39.06}, {"d": "2020-02", "o": 59.08, "h": 60.37, "l": 45.18, "c": 51.29, "v": 54.74}, {"d": "2020-03", "o": 51.72, "h": 52.81, "l": 27.06, "c": 33.5, "v": 102.52}, {"d": "2020-04", "o": 31.95, "h": 48.67, "l": 30.8, "c": 46.69, "v": 62.26}, {"d": "2020-05", "o": 44.94, "h": 47.1, "l": 39.51, "c": 44.35, "v": 44.95}, {"d": "2020-06", "o": 44.29, "h": 52.79, "l": 42.81, "c": 48.32, "v": 50.24}, {"d": "2020-07", "o": 47.86, "h": 51.89, "l": 47.36, "c": 49.48, "v": 33.13}, {"d": "2020-08", "o": 49.15, "h": 57.15, "l": 49.03, "c": 52.05, "v": 26.76}, {"d": "2020-09", "o": 52.75, "h": 54.65, "l": 45.89, "c": 46.27, "v": 32.53}, {"d": "2020-10", "o": 46.0, "h": 51.52, "l": 44.65, "c": 47.87, "v": 30.63}, {"d": "2020-11", "o": 48.15, "h": 59.93, "l": 46.86, "c": 56.69, "v": 35.26}, {"d": "2020-12", "o": 57.5, "h": 61.92, "l": 56.09, "c": 60.03, "v": 35.69}, {"d": "2021-01", "o": 60.99, "h": 69.35, "l": 58.26, "c": 63.33, "v": 34.69}, {"d": "2021-02", "o": 63.68, "h": 71.5, "l": 61.56, "c": 67.39, "v": 23.39}, {"d": "2021-03", "o": 67.15, "h": 77.11, "l": 67.15, "c": 72.01, "v": 36.71}, {"d": "2021-04", "o": 71.57, "h": 78.19, "l": 70.51, "c": 77.52, "v": 19.35}, {"d": "2021-05", "o": 78.2, "h": 85.51, "l": 78.03, "c": 84.9, "v": 26.05}, {"d": "2021-06", "o": 85.24, "h": 90.0, "l": 82.79, "c": 86.74, "v": 28.46}, {"d": "2021-07", "o": 87.48, "h": 88.82, "l": 80.06, "c": 84.93, "v": 21.28}, {"d": "2021-08", "o": 84.85, "h": 90.11, "l": 82.15, "c": 87.46, "v": 24.22}, {"d": "2021-09", "o": 87.51, "h": 100.01, "l": 84.19, "c": 97.67, "v": 37.47}, {"d": "2021-10", "o": 98.5, "h": 113.4, "l": 96.27, "c": 103.4, "v": 38.44}, {"d": "2021-11", "o": 104.0, "h": 110.33, "l": 101.45, "c": 104.81, "v": 33.4}, {"d": "2021-12", "o": 106.02, "h": 109.0, "l": 97.85, "c": 101.42, "v": 34.48}, {"d": "2022-01", "o": 101.93, "h": 115.73, "l": 100.13, "c": 111.9, "v": 36.1}, {"d": "2022-02", "o": 112.0, "h": 139.5, "l": 110.65, "c": 132.9, "v": 44.71}, {"d": "2022-03", "o": 135.45, "h": 149.42, "l": 122.91, "c": 138.65, "v": 63.41}, {"d": "2022-04", "o": 139.34, "h": 144.96, "l": 127.5, "c": 135.81, "v": 41.57}, {"d": "2022-05", "o": 134.89, "h": 150.0, "l": 127.5, "c": 136.77, "v": 45.56}, {"d": "2022-06", "o": 136.65, "h": 146.35, "l": 120.09, "c": 133.03, "v": 52.94}, {"d": "2022-07", "o": 131.91, "h": 150.61, "l": 120.29, "c": 149.58, "v": 43.95}, {"d": "2022-08", "o": 147.84, "h": 172.25, "l": 142.0, "c": 160.18, "v": 55.09}, {"d": "2022-09", "o": 158.17, "h": 178.62, "l": 147.7, "c": 165.91, "v": 71.21}, {"d": "2022-10", "o": 170.85, "h": 178.96, "l": 165.04, "c": 176.41, "v": 51.63}, {"d": "2022-11", "o": 177.72, "h": 182.35, "l": 158.63, "c": 175.36, "v": 48.39}, {"d": "2022-12", "o": 176.72, "h": 178.12, "l": 147.1, "c": 149.96, "v": 35.74}, {"d": "2023-01", "o": 148.75, "h": 156.71, "l": 135.0, "c": 152.79, "v": 44.13}, {"d": "2023-02", "o": 151.55, "h": 163.49, "l": 142.26, "c": 157.34, "v": 35.47}, {"d": "2023-03", "o": 157.74, "h": 167.28, "l": 139.5, "c": 157.6, "v": 45.36}, {"d": "2023-04", "o": 159.91, "h": 159.92, "l": 148.51, "c": 153.0, "v": 23.75}, {"d": "2023-05", "o": 153.0, "h": 154.62, "l": 135.3, "c": 139.77, "v": 37.31}, {"d": "2023-06", "o": 137.99, "h": 153.34, "l": 137.85, "c": 152.36, "v": 36.35}, {"d": "2023-07", "o": 153.03, "h": 162.57, "l": 148.57, "c": 161.86, "v": 24.38}, {"d": "2023-08", "o": 161.21, "h": 170.58, "l": 155.32, "c": 163.2, "v": 30.55}, {"d": "2023-09", "o": 165.26, "h": 169.44, "l": 158.72, "c": 165.96, "v": 27.59}, {"d": "2023-10", "o": 166.02, "h": 177.55, "l": 156.1, "c": 166.42, "v": 32.29}, {"d": "2023-11", "o": 167.37, "h": 183.24, "l": 165.36, "c": 182.15, "v": 29.61}, {"d": "2023-12", "o": 181.0, "h": 183.46, "l": 168.39, "c": 170.71, "v": 28.3}, {"d": "2024-01", "o": 170.7, "h": 173.23, "l": 160.11, "c": 163.99, "v": 32.07}, {"d": "2024-02", "o": 163.04, "h": 166.4, "l": 152.66, "c": 155.2, "v": 48.23}, {"d": "2024-03", "o": 155.23, "h": 163.53, "l": 152.31, "c": 161.28, "v": 39.22}, {"d": "2024-04", "o": 161.28, "h": 163.0, "l": 152.88, "c": 157.82, "v": 37.9}, {"d": "2024-05", "o": 157.82, "h": 163.63, "l": 153.03, "c": 157.79, "v": 41.23}, {"d": "2024-06", "o": 157.13, "h": 175.56, "l": 154.82, "c": 174.83, "v": 43.08}, {"d": "2024-07", "o": 175.36, "h": 184.62, "l": 172.07, "c": 182.64, "v": 34.47}, {"d": "2024-08", "o": 182.64, "h": 187.44, "l": 167.66, "c": 185.26, "v": 29.8}, {"d": "2024-09", "o": 184.29, "h": 185.36, "l": 175.14, "c": 179.84, "v": 31.16}, {"d": "2024-10", "o": 178.05, "h": 193.16, "l": 177.79, "c": 191.38, "v": 34.27}, {"d": "2024-11", "o": 190.66, "h": 225.44, "l": 185.43, "c": 224.01, "v": 38.16}, {"d": "2024-12", "o": 224.1, "h": 228.1, "l": 203.4, "c": 214.87, "v": 30.08}, {"d": "2025-01", "o": 217.5, "h": 257.65, "l": 216.45, "c": 223.65, "v": 46.52}, {"d": "2025-02", "o": 222.9, "h": 233.29, "l": 206.6, "c": 228.56, "v": 48.02}, {"d": "2025-03", "o": 228.87, "h": 236.34, "l": 209.71, "c": 231.4, "v": 40.96}, {"d": "2025-04", "o": 230.29, "h": 238.78, "l": 188.7, "c": 231.11, "v": 50.73}, {"d": "2025-05", "o": 228.5, "h": 244.05, "l": 225.03, "c": 236.99, "v": 37.58}, {"d": "2025-06", "o": 239.8, "h": 246.42, "l": 227.77, "c": 243.52, "v": 40.32}, {"d": "2025-07", "o": 245.4, "h": 246.0, "l": 221.0, "c": 235.88, "v": 44.41}, {"d": "2025-08", "o": 234.31, "h": 244.92, "l": 226.93, "c": 241.82, "v": 36.63}, {"d": "2025-09", "o": 240.64, "h": 243.5, "l": 228.5, "c": 234.98, "v": 33.16}, {"d": "2025-10", "o": 234.8, "h": 238.31, "l": 207.91, "c": 212.0, "v": 40.73}, {"d": "2025-11", "o": 211.53, "h": 217.81, "l": 200.51, "c": 208.46, "v": 36.26}, {"d": "2025-12", "o": 207.96, "h": 211.4, "l": 186.2, "c": 194.39, "v": 44.44}, {"d": "2026-01", "o": 194.46, "h": 214.04, "l": 191.64, "c": 211.52, "v": 38.85}, {"d": "2026-02", "o": 209.36, "h": 236.63, "l": 206.19, "c": 235.73, "v": 35.71}, {"d": "2026-03", "o": 247.87, "h": 300.89, "l": 241.14, "c": 283.76, "v": 95.78}, {"d": "2026-04", "o": 279.96, "h": 290.89, "l": 246.44, "c": 274.95, "v": 54.96}, {"d": "2026-05", "o": 274.18, "h": 274.97, "l": 264.26, "c": 270.06, "v": 2.0}], "macro_regimes": {"low_rate_low_vol": {"label": "Low Rate / Low Vol", "color": "#3b82f6", "periods": ["2015-01:2015-07", "2017-01:2017-12"]}, "tightening": {"label": "Tightening Cycle", "color": "#f59e0b", "periods": ["2016-11:2016-12", "2018-01:2018-09", "2022-01:2022-12", "2025-01:2025-12", "2026-01:2026-12"]}, "vol_spike_crisis": {"label": "Vol Spike / Crisis", "color": "#ef4444", "periods": ["2015-08:2015-10", "2018-10:2018-12", "2020-02:2020-04"]}, "easing_recovery": {"label": "Easing / Recovery", "color": "#10b981", "periods": ["2016-01:2016-10", "2019-01:2019-12", "2020-05:2021-06"]}, "peak_hold": {"label": "Peak Rate Hold", "color": "#8b5cf6", "periods": ["2023-01:2024-03"]}, "stimulus_boom": {"label": "Stimulus / Capex Boom", "color": "#ec4899", "periods": ["2021-07:2021-12", "2024-04:2024-12"]}}, "preferred_band": {"low": 260.82, "high": 275.56, "stop": 253.45, "set": "2026-05-01", "label": "260.82–275.56"}, "current_quote": {"close": 270.06, "ma20": 264.51, "ma50": 261.44, "ma200": 228.36, "data_date": "2026-05-01"}, "generated_at": "2026-05-03T04:42:27+00:00"};</script>
+  <script type="text/babel" data-type="module" data-presets="react">
+// scripts/entry_band_viewer.jsx
+//
+// Generalized Entry Band Viewer — ticker-agnostic.
+//
+// Original: hard-coded ETN monthly OHLC + ETN-specific macro regimes.
+// This version: reads everything from a data bundle (props or
+// window.__ENTRY_BAND_DATA__) produced by scripts/entry_band_fetch.py.
+//
+// Expected data bundle shape:
+// {
+//   "ticker": "NVDA",
+//   "name": "NVIDIA Corporation",
+//   "asof": "2026-04-26",
+//   "interval": "1mo",
+//   "currency": "USD",
+//   "period": { "start": "2015-01", "end": "2026-04" },
+//   "data": [{ "d": "2015-01", "o": 0.5, "h": 0.6, "l": 0.4, "c": 0.55, "v": 1.2 }, ...],
+//   "macro_regimes": {
+//      "low_rate_low_vol": { "label": "Low Rate / Low Vol", "color": "#3b82f6", "periods": ["2015-01:2015-07", ...] },
+//      ...
+//   },
+//   "preferred_band": { "low": 100.0, "high": 110.0, "stop": 92.0, "set": "2026-04-22" } | null,
+//   "current_quote": { "close": 105.4, "ma20": 102.1, "ma50": 99.8, "ma200": 92.7 } | null
+// }
+//
+// The component accepts the bundle as a `data` prop OR falls back to
+// window.__ENTRY_BAND_DATA__. This lets the same JSX serve both a
+// build-step React app AND a self-contained HTML report (where the
+// fetcher inlines the bundle).
+
+import { useState, useMemo, useCallback } from "react";
+import {
+  ComposedChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  ReferenceLine, Bar, CartesianGrid, Cell, BarChart,
+} from "recharts";
+
+// ── Helpers ────────────────────────────────────────────────────────
+
+function isInPeriod(date, periodStr) {
+  const [start, end] = periodStr.split(":");
+  return date >= start && date <= end;
+}
+
+function makeRegimeLookup(regimes) {
+  return (date) => {
+    for (const [key, regime] of Object.entries(regimes)) {
+      for (const period of regime.periods) {
+        if (isInPeriod(date, period)) return key;
+      }
+    }
+    return "unknown";
+  };
+}
+
+// ── Indicator math ────────────────────────────────────────────────
+
+function computeSMA(data, window) {
+  return data.map((_, i) => {
+    if (i < window - 1) return null;
+    let sum = 0;
+    for (let j = i - window + 1; j <= i; j++) sum += data[j].c;
+    return sum / window;
+  });
+}
+
+function computeEMA(data, window) {
+  if (!data.length) return [];
+  const k = 2 / (window + 1);
+  const ema = [data[0].c];
+  for (let i = 1; i < data.length; i++) {
+    ema.push(data[i].c * k + ema[i - 1] * (1 - k));
+  }
+  return ema;
+}
+
+function computeATR(data, window) {
+  if (!data.length) return [];
+  const tr = data.map((d, i) => {
+    if (i === 0) return d.h - d.l;
+    const prev = data[i - 1].c;
+    return Math.max(d.h - d.l, Math.abs(d.h - prev), Math.abs(d.l - prev));
+  });
+  const atr = [tr[0]];
+  const k = 2 / (window + 1);
+  for (let i = 1; i < tr.length; i++) {
+    atr.push(tr[i] * k + atr[i - 1] * (1 - k));
+  }
+  return atr;
+}
+
+function computeRSI(data, window = 14) {
+  const rsi = new Array(data.length).fill(null);
+  if (data.length < window + 1) return rsi;
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= window; i++) {
+    const diff = data[i].c - data[i - 1].c;
+    if (diff > 0) gains += diff; else losses -= diff;
+  }
+  let avgGain = gains / window;
+  let avgLoss = losses / window;
+  rsi[window] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  for (let i = window + 1; i < data.length; i++) {
+    const diff = data[i].c - data[i - 1].c;
+    avgGain = (avgGain * (window - 1) + (diff > 0 ? diff : 0)) / window;
+    avgLoss = (avgLoss * (window - 1) + (diff < 0 ? -diff : 0)) / window;
+    rsi[i] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  }
+  return rsi;
+}
+
+// ── Band methods ──────────────────────────────────────────────────
+
+function computeBands(data, method, params) {
+  const { smaLen = 10, atrLen = 10, atrMult = 2, envPct = 5, shortMA = 5, longMA = 10 } = params;
+
+  if (method === "sma_envelope") {
+    const sma = computeSMA(data, smaLen);
+    return data.map((_, i) => {
+      if (sma[i] === null) return { mid: null, upper: null, lower: null };
+      return { mid: sma[i], upper: sma[i] * (1 + envPct / 100), lower: sma[i] * (1 - envPct / 100) };
+    });
+  }
+  if (method === "keltner") {
+    const ema = computeEMA(data, smaLen);
+    const atr = computeATR(data, atrLen);
+    return data.map((_, i) => ({
+      mid: ema[i],
+      upper: ema[i] + atrMult * atr[i],
+      lower: ema[i] - atrMult * atr[i],
+    }));
+  }
+  if (method === "dual_ma") {
+    const short = computeSMA(data, shortMA);
+    const long = computeSMA(data, longMA);
+    return data.map((_, i) => {
+      if (short[i] === null || long[i] === null) return { mid: null, upper: null, lower: null };
+      const upper = Math.max(short[i], long[i]);
+      const lower = Math.min(short[i], long[i]);
+      return { mid: (short[i] + long[i]) / 2, upper, lower };
+    });
+  }
+  if (method === "bollinger") {
+    const sma = computeSMA(data, smaLen);
+    const mult = params.bbMult ?? 2;
+    return data.map((_, i) => {
+      if (sma[i] === null) return { mid: null, upper: null, lower: null };
+      const slice = data.slice(Math.max(0, i - smaLen + 1), i + 1).map(d => d.c);
+      const variance = slice.reduce((sum, v) => sum + (v - sma[i]) ** 2, 0) / slice.length;
+      const sd = Math.sqrt(variance);
+      return { mid: sma[i], upper: sma[i] + mult * sd, lower: sma[i] - mult * sd };
+    });
+  }
+  return data.map(() => ({ mid: null, upper: null, lower: null }));
+}
+
+// ── Backtest ──────────────────────────────────────────────────────
+
+function backtestEntries(data, bands, regimeFilter, getRegime, fwdPeriods) {
+  const entries = [];
+  for (let i = 1; i < data.length; i++) {
+    if (bands[i].lower === null) continue;
+    const regime = getRegime(data[i].d);
+    if (regimeFilter !== "all" && regime !== regimeFilter) continue;
+    if (data[i].c <= bands[i].lower) {
+      const fwdReturns = {};
+      const fwdDrawdowns = {};
+      for (const p of fwdPeriods) {
+        if (i + p < data.length) {
+          fwdReturns[`fwd_${p}`] = ((data[i + p].c - data[i].c) / data[i].c) * 100;
+          let minLow = Infinity;
+          for (let j = i + 1; j <= Math.min(i + p, data.length - 1); j++) {
+            minLow = Math.min(minLow, data[j].l);
+          }
+          fwdDrawdowns[`dd_${p}`] = ((minLow - data[i].c) / data[i].c) * 100;
+        }
+      }
+      entries.push({ idx: i, date: data[i].d, price: data[i].c, regime, bandLower: bands[i].lower, ...fwdReturns, ...fwdDrawdowns });
+    }
+  }
+  return entries;
+}
+
+function computeStats(entries, fwdPeriods) {
+  if (entries.length === 0) return null;
+  const stats = {};
+  for (const p of fwdPeriods) {
+    const key = `fwd_${p}`;
+    const ddKey = `dd_${p}`;
+    const vals = entries.filter(e => e[key] !== undefined).map(e => e[key]);
+    const dds = entries.filter(e => e[ddKey] !== undefined).map(e => e[ddKey]);
+    if (vals.length === 0) continue;
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const winRate = vals.filter(v => v > 0).length / vals.length;
+    const median = [...vals].sort((a, b) => a - b)[Math.floor(vals.length / 2)];
+    const avgDD = dds.length > 0 ? dds.reduce((a, b) => a + b, 0) / dds.length : 0;
+    const maxDD = dds.length > 0 ? Math.min(...dds) : 0;
+    stats[p] = { avg, median, winRate, avgDD, maxDD, n: vals.length };
+  }
+  return stats;
+}
+
+// ── UI primitives ─────────────────────────────────────────────────
+
+const METHODS = [
+  { id: "sma_envelope", label: "SMA Envelope" },
+  { id: "keltner", label: "Keltner Channel" },
+  { id: "dual_ma", label: "Dual MA Band" },
+  { id: "bollinger", label: "Bollinger Bands" },
+];
+
+const fmt = (v, d = 1) => (v == null || Number.isNaN(v)) ? "—" : v.toFixed(d);
+const fmtPct = (v) => (v == null || Number.isNaN(v)) ? "—" : (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+
+function StatCard({ label, value, sub, accent }) {
+  return (
+    <div style={{ background: "var(--card)", borderRadius: 10, padding: "14px 16px", flex: 1, minWidth: 110, border: "1px solid var(--border)" }}>
+      <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 22, fontWeight: 700, color: accent || "var(--text)", fontFamily: "'JetBrains Mono', monospace" }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{sub}</div>}
+    </div>
+  );
+}
+
+function Pill({ active, onClick, children, color }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: "6px 14px",
+        borderRadius: 20,
+        border: active ? `2px solid ${color || "var(--accent)"}` : "1px solid var(--border)",
+        background: active ? (color || "var(--accent)") + "18" : "transparent",
+        color: active ? (color || "var(--accent)") : "var(--muted)",
+        fontWeight: active ? 600 : 400,
+        fontSize: 12,
+        cursor: "pointer",
+        transition: "all 0.2s",
+        fontFamily: "inherit",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────
+function EntryBandViewer({ data: dataProp }) {
+  // Resolve data bundle: prop > window global > error placeholder
+  const bundle = dataProp ?? (typeof window !== "undefined" ? window.__ENTRY_BAND_DATA__ : null);
+
+  if (!bundle || !bundle.data || bundle.data.length === 0) {
+    return (
+      <div style={{ padding: 40, color: "#6b7280", fontFamily: "'DM Sans', sans-serif", textAlign: "center" }}>
+        No entry-band data bundle found. Run <code>python scripts/entry_band_fetch.py TICKER --html</code> to generate one.
+      </div>
+    );
+  }
+
+  const RAW_DATA = bundle.data;
+  const MACRO_REGIMES = bundle.macro_regimes || {};
+  const getRegime = useMemo(() => makeRegimeLookup(MACRO_REGIMES), [MACRO_REGIMES]);
+
+  // Forward periods scale with the data interval. Monthly = 1/3/6 months.
+  // Daily = roughly 21/63/126 trading days. Use bundle.fwd_periods if provided.
+  const FWD = bundle.fwd_periods || (bundle.interval === "1d" ? [21, 63, 126] : [1, 3, 6]);
+  const FWD_LABEL = bundle.fwd_label || (bundle.interval === "1d" ? "Trading Days" : "Months");
+
+  // Sensible defaults that match the original ETN view but adapt to data length
+  const defaultParams = useMemo(() => {
+    const isDaily = bundle.interval === "1d";
+    return isDaily
+      ? { smaLen: 50, atrLen: 14, atrMult: 2.0, envPct: 6, shortMA: 20, longMA: 50, bbMult: 2.0 }
+      : { smaLen: 10, atrLen: 10, atrMult: 2.0, envPct: 6, shortMA: 5, longMA: 10, bbMult: 2.0 };
+  }, [bundle.interval]);
+
+  const [method, setMethod] = useState("keltner");
+  const [regime, setRegime] = useState("all");
+  const [tab, setTab] = useState("chart");
+  const [params, setParams] = useState(defaultParams);
+
+  const updateParam = useCallback((key, val) => setParams(p => ({ ...p, [key]: val })), []);
+
+  const bands = useMemo(() => computeBands(RAW_DATA, method, params), [RAW_DATA, method, params]);
+  const rsi = useMemo(() => computeRSI(RAW_DATA, 14), [RAW_DATA]);
+  const entries = useMemo(() => backtestEntries(RAW_DATA, bands, regime, getRegime, FWD), [RAW_DATA, bands, regime, getRegime, FWD]);
+  const stats = useMemo(() => computeStats(entries, FWD), [entries, FWD]);
+
+  const chartData = useMemo(() => RAW_DATA.map((d, i) => {
+    const r = getRegime(d.d);
+    const isEntry = entries.some(e => e.idx === i);
+    return {
+      date: d.d,
+      close: d.c,
+      high: d.h,
+      low: d.l,
+      volume: d.v ?? null,
+      mid: bands[i].mid,
+      upper: bands[i].upper,
+      lower: bands[i].lower,
+      bandRange: bands[i].upper && bands[i].lower ? [bands[i].lower, bands[i].upper] : null,
+      regime: r,
+      regimeColor: MACRO_REGIMES[r]?.color || "#666",
+      isEntry,
+      entryMarker: isEntry ? d.c : null,
+      rsi: rsi[i],
+    };
+  }), [RAW_DATA, bands, entries, rsi, getRegime, MACRO_REGIMES]);
+
+  const latest = chartData[chartData.length - 1];
+  const bandPosition = latest.lower && latest.upper ? ((latest.close - latest.lower) / (latest.upper - latest.lower) * 100) : null;
+
+  const currentBandLabel = bandPosition !== null
+    ? bandPosition <= 15 ? "AT LOWER BAND"
+    : bandPosition <= 35 ? "NEAR LOWER BAND"
+    : bandPosition >= 85 ? "AT UPPER BAND"
+    : bandPosition >= 65 ? "NEAR UPPER BAND"
+    : "MID-BAND"
+    : "N/A";
+
+  const currentBandColor = bandPosition !== null
+    ? bandPosition <= 25 ? "#10b981"
+    : bandPosition >= 75 ? "#ef4444"
+    : "#f59e0b"
+    : "#666";
+
+  const preferred = bundle.preferred_band || null;
+
+  return (
+    <div style={{
+      fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
+      background: "var(--bg)",
+      color: "var(--text)",
+      minHeight: "100vh",
+      padding: 0,
+      "--bg": "#0c0f14",
+      "--card": "#141820",
+      "--border": "#1e2530",
+      "--text": "#e8eaed",
+      "--muted": "#6b7280",
+      "--accent": "#3b82f6",
+      "--green": "#10b981",
+      "--red": "#ef4444",
+      "--amber": "#f59e0b",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ padding: "24px 24px 0", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 4, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 28, fontWeight: 700, letterSpacing: -0.5 }}>{bundle.ticker}</span>
+          <span style={{ fontSize: 14, color: "var(--muted)" }}>{bundle.name || ""}</span>
+          <span style={{ fontSize: 14, color: "var(--muted)", marginLeft: "auto" }}>
+            {bundle.interval === "1d" ? "Daily" : bundle.interval === "1wk" ? "Weekly" : "Monthly"} · {bundle.period?.start || ""}–{bundle.period?.end || ""}
+            {bundle.asof ? ` · as of ${bundle.asof}` : ""}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 32, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>
+            {bundle.currency === "USD" ? "$" : ""}{fmt(latest.close, 2)}
+          </span>
+          <span style={{
+            fontSize: 13, fontWeight: 600, padding: "3px 10px", borderRadius: 6,
+            background: currentBandColor + "20", color: currentBandColor,
+          }}>{currentBandLabel}</span>
+          {bandPosition !== null && (
+            <span style={{ fontSize: 12, color: "var(--muted)" }}>{fmt(bandPosition, 0)}% from lower band</span>
+          )}
+          {preferred && (
+            <span style={{
+              fontSize: 12, padding: "3px 10px", borderRadius: 6,
+              background: "#8b5cf620", color: "#8b5cf6", fontFamily: "'JetBrains Mono', monospace",
+            }}>
+              {preferred.low != null && preferred.high != null
+                ? `Vault band: $${fmt(preferred.low, 2)}–$${fmt(preferred.high, 2)}`
+                : preferred.label
+                  ? `Vault: ${preferred.label}`
+                  : "Vault: band TBD"}
+              {preferred.stop != null ? ` · stop $${fmt(preferred.stop, 2)}` : ""}
+            </span>
+          )}
+        </div>
+
+        {/* Method selection */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+          {METHODS.map(m => (
+            <Pill key={m.id} active={method === m.id} onClick={() => setMethod(m.id)}>{m.label}</Pill>
+          ))}
+        </div>
+
+        {/* Parameters */}
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16, alignItems: "center" }}>
+          {method === "sma_envelope" && (
+            <>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                SMA Length
+                <input type="range" min={3} max={bundle.interval === "1d" ? 200 : 24} value={params.smaLen} onChange={e => updateParam("smaLen", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.smaLen}</span>
+              </label>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                Envelope %
+                <input type="range" min={1} max={15} step={0.5} value={params.envPct} onChange={e => updateParam("envPct", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.envPct}%</span>
+              </label>
+            </>
+          )}
+          {method === "keltner" && (
+            <>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                EMA Length
+                <input type="range" min={3} max={bundle.interval === "1d" ? 200 : 24} value={params.smaLen} onChange={e => updateParam("smaLen", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.smaLen}</span>
+              </label>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                ATR Mult
+                <input type="range" min={0.5} max={4} step={0.25} value={params.atrMult} onChange={e => updateParam("atrMult", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.atrMult}×</span>
+              </label>
+            </>
+          )}
+          {method === "dual_ma" && (
+            <>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                Short MA
+                <input type="range" min={2} max={bundle.interval === "1d" ? 100 : 12} value={params.shortMA} onChange={e => updateParam("shortMA", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.shortMA}</span>
+              </label>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                Long MA
+                <input type="range" min={5} max={bundle.interval === "1d" ? 200 : 24} value={params.longMA} onChange={e => updateParam("longMA", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.longMA}</span>
+              </label>
+            </>
+          )}
+          {method === "bollinger" && (
+            <>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                SMA Length
+                <input type="range" min={3} max={bundle.interval === "1d" ? 200 : 24} value={params.smaLen} onChange={e => updateParam("smaLen", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.smaLen}</span>
+              </label>
+              <label style={{ fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                Std Dev Mult
+                <input type="range" min={0.5} max={4} step={0.25} value={params.bbMult} onChange={e => updateParam("bbMult", +e.target.value)} style={{ width: 80 }} />
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 12, color: "var(--text)", width: 32 }}>{params.bbMult}σ</span>
+              </label>
+            </>
+          )}
+        </div>
+
+        {/* Macro regime filter */}
+        {Object.keys(MACRO_REGIMES).length > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Macro Regime Filter</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <Pill active={regime === "all"} onClick={() => setRegime("all")} color="#9ca3af">All Regimes</Pill>
+              {Object.entries(MACRO_REGIMES).map(([key, r]) => (
+                <Pill key={key} active={regime === key} onClick={() => setRegime(key)} color={r.color}>{r.label}</Pill>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tab bar */}
+        <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--border)", marginBottom: 16 }}>
+          {[["chart", "Price Chart"], ["stats", "Backtest Stats"], ["entries", "Entry Signals"]].map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              style={{
+                padding: "10px 20px",
+                background: "none",
+                border: "none",
+                borderBottom: tab === id ? "2px solid var(--accent)" : "2px solid transparent",
+                color: tab === id ? "var(--text)" : "var(--muted)",
+                fontWeight: tab === id ? 600 : 400,
+                fontSize: 13,
+                cursor: "pointer",
+                fontFamily: "inherit",
+              }}
+            >{label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: "0 24px 24px", maxWidth: 1200, margin: "0 auto" }}>
+        {/* CHART TAB */}
+        {tab === "chart" && (
+          <div>
+            <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: 16 }}>
+              <ResponsiveContainer width="100%" height={360}>
+                <ComposedChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e2530" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fill: "#6b7280", fontSize: 10 }}
+                    tickFormatter={v => bundle.interval === "1d" ? v.slice(2, 10) : v.slice(2, 7)}
+                    interval={Math.max(1, Math.floor(chartData.length / 12))}
+                    stroke="#1e2530"
+                  />
+                  <YAxis
+                    tick={{ fill: "#6b7280", fontSize: 10 }}
+                    domain={["auto", "auto"]}
+                    stroke="#1e2530"
+                    tickFormatter={v => `$${v}`}
+                  />
+                  <Tooltip
+                    contentStyle={{ background: "#141820", border: "1px solid #1e2530", borderRadius: 8, fontSize: 12 }}
+                    labelFormatter={v => v}
+                    formatter={(value, name) => {
+                      if (name === "bandRange") return [`$${fmt(value[0], 2)} – $${fmt(value[1], 2)}`, "Band"];
+                      return [`$${fmt(value, 2)}`, name.charAt(0).toUpperCase() + name.slice(1)];
+                    }}
+                  />
+                  <Area dataKey="bandRange" fill="#3b82f6" fillOpacity={0.08} stroke="none" />
+                  <Line dataKey="upper" stroke="#3b82f680" strokeWidth={1} dot={false} strokeDasharray="4 2" />
+                  <Line dataKey="lower" stroke="#3b82f680" strokeWidth={1} dot={false} strokeDasharray="4 2" />
+                  <Line dataKey="mid" stroke="#3b82f640" strokeWidth={1} dot={false} />
+                  <Line dataKey="close" stroke="#e8eaed" strokeWidth={1.5} dot={false} />
+                  {preferred && preferred.low != null && (
+                    <ReferenceLine y={preferred.low} stroke="#8b5cf6" strokeDasharray="2 4" strokeWidth={1.2} label={{ value: "Vault low", position: "right", fill: "#8b5cf6", fontSize: 10 }} />
+                  )}
+                  {preferred && preferred.high != null && (
+                    <ReferenceLine y={preferred.high} stroke="#8b5cf6" strokeDasharray="2 4" strokeWidth={1.2} label={{ value: "Vault high", position: "right", fill: "#8b5cf6", fontSize: 10 }} />
+                  )}
+                  {preferred && preferred.stop != null && (
+                    <ReferenceLine y={preferred.stop} stroke="#ef4444" strokeDasharray="2 4" strokeWidth={1.2} label={{ value: "Stop", position: "right", fill: "#ef4444", fontSize: 10 }} />
+                  )}
+                  {bundle.current_quote?.ma20 != null && (
+                    <ReferenceLine y={bundle.current_quote.ma20} stroke="#60a5fa" strokeDasharray="3 3" strokeWidth={1} label={{ value: "MA20", position: "right", fill: "#60a5fa", fontSize: 9 }} />
+                  )}
+                  {bundle.current_quote?.ma50 != null && (
+                    <ReferenceLine y={bundle.current_quote.ma50} stroke="#a78bfa" strokeDasharray="3 3" strokeWidth={1} label={{ value: "MA50", position: "right", fill: "#a78bfa", fontSize: 9 }} />
+                  )}
+                  {bundle.current_quote?.ma200 != null && (
+                    <ReferenceLine y={bundle.current_quote.ma200} stroke="#f472b6" strokeDasharray="3 3" strokeWidth={1} label={{ value: "MA200", position: "right", fill: "#f472b6", fontSize: 9 }} />
+                  )}
+                  <Line
+                    dataKey="entryMarker"
+                    stroke="none"
+                    dot={(props) => {
+                      if (props.payload.entryMarker == null) return null;
+                      return (
+                        <circle
+                          key={props.index}
+                          cx={props.cx}
+                          cy={props.cy}
+                          r={5}
+                          fill="#10b981"
+                          stroke="#0c0f14"
+                          strokeWidth={2}
+                        />
+                      );
+                    }}
+                    isAnimationActive={false}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+              <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 11, color: "var(--muted)" }}><span style={{ display: "inline-block", width: 12, height: 2, background: "#e8eaed", verticalAlign: "middle", marginRight: 4 }}></span>Close</span>
+                <span style={{ fontSize: 11, color: "var(--muted)" }}><span style={{ display: "inline-block", width: 12, height: 8, background: "#3b82f618", border: "1px dashed #3b82f680", verticalAlign: "middle", marginRight: 4 }}></span>Computed band</span>
+                {preferred && (
+                  <span style={{ fontSize: 11, color: "var(--muted)" }}><span style={{ display: "inline-block", width: 12, height: 2, background: "#8b5cf6", verticalAlign: "middle", marginRight: 4, borderTop: "1px dashed #8b5cf6" }}></span>Vault preferred band</span>
+                )}
+                <span style={{ fontSize: 11, color: "var(--muted)" }}><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#10b981", verticalAlign: "middle", marginRight: 4 }}></span>Entry signal</span>
+                {bundle.current_quote?.ma20 != null && (
+                  <span style={{ fontSize: 11, color: "var(--muted)" }}><span style={{ display: "inline-block", width: 12, height: 0, borderTop: "2px dashed #60a5fa", verticalAlign: "middle", marginRight: 4 }}></span>Live MAs</span>
+                )}
+              </div>
+            </div>
+
+            {/* Regime timeline */}
+            {Object.keys(MACRO_REGIMES).length > 0 && (
+              <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: 16, marginTop: 12 }}>
+                <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Macro Regime Timeline</div>
+                <div style={{ display: "flex", height: 18, borderRadius: 4, overflow: "hidden" }}>
+                  {chartData.map((d, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        flex: 1,
+                        background: d.regimeColor,
+                        opacity: regime === "all" || d.regime === regime ? 0.7 : 0.12,
+                        transition: "opacity 0.3s",
+                      }}
+                      title={`${d.date}: ${MACRO_REGIMES[d.regime]?.label || "Unknown"}`}
+                    />
+                  ))}
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+                  <span style={{ fontSize: 10, color: "var(--muted)" }}>{chartData[0]?.date}</span>
+                  <span style={{ fontSize: 10, color: "var(--muted)" }}>{chartData[chartData.length - 1]?.date}</span>
+                </div>
+              </div>
+            )}
+
+            {/* RSI sub-panel */}
+            <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: "12px 16px", marginTop: 12 }}>
+              <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>RSI (14)</div>
+              <ResponsiveContainer width="100%" height={110}>
+                <ComposedChart data={chartData} margin={{ top: 4, right: 10, bottom: 0, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e2530" vertical={false} />
+                  <XAxis dataKey="date" hide />
+                  <YAxis domain={[0, 100]} tick={{ fill: "#6b7280", fontSize: 10 }} stroke="#1e2530" ticks={[30, 50, 70]} width={28} />
+                  <Tooltip
+                    contentStyle={{ background: "#141820", border: "1px solid #1e2530", borderRadius: 8, fontSize: 12 }}
+                    formatter={(v) => [v != null ? v.toFixed(1) : "—", "RSI"]}
+                    labelFormatter={v => v}
+                  />
+                  <ReferenceLine y={70} stroke="#ef444450" strokeDasharray="3 3" strokeWidth={1} />
+                  <ReferenceLine y={30} stroke="#10b98150" strokeDasharray="3 3" strokeWidth={1} />
+                  <ReferenceLine y={50} stroke="#6b728030" strokeDasharray="2 2" strokeWidth={1} />
+                  <Line dataKey="rsi" stroke="#f59e0b" strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+              <div style={{ display: "flex", gap: 16, justifyContent: "flex-end", marginTop: 4 }}>
+                <span style={{ fontSize: 10, color: "#ef4444" }}>— 70 overbought</span>
+                <span style={{ fontSize: 10, color: "#10b981" }}>— 30 oversold</span>
+              </div>
+            </div>
+
+            {/* Volume sub-panel */}
+            <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: "12px 16px", marginTop: 12 }}>
+              <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Volume (M shares)</div>
+              <ResponsiveContainer width="100%" height={90}>
+                <BarChart data={chartData} margin={{ top: 4, right: 10, bottom: 0, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e2530" vertical={false} />
+                  <XAxis dataKey="date" hide />
+                  <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} stroke="#1e2530" width={28} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}B` : `${v}M`} />
+                  <Tooltip
+                    contentStyle={{ background: "#141820", border: "1px solid #1e2530", borderRadius: 8, fontSize: 12 }}
+                    formatter={(v) => [v != null ? `${v.toFixed(1)}M` : "—", "Volume"]}
+                    labelFormatter={v => v}
+                  />
+                  <Bar dataKey="volume" fill="#3b82f6" fillOpacity={0.4} radius={[2, 2, 0, 0]}>
+                    {chartData.map((d, i) => (
+                      <Cell key={i} fill={d.close >= (chartData[i - 1]?.close ?? d.close) ? "#10b981" : "#ef4444"} fillOpacity={0.35} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        {/* STATS TAB */}
+        {tab === "stats" && (
+          <div>
+            {entries.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "var(--muted)" }}>
+                No entry signals found for this regime/method combination. Try adjusting parameters or broadening the regime filter.
+              </div>
+            ) : (
+              <>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+                  <StatCard label="Total Signals" value={entries.length} sub={regime === "all" ? "All regimes" : MACRO_REGIMES[regime]?.label} />
+                  <StatCard label="Current Price" value={`$${fmt(latest.close, 2)}`} sub={`Lower band: $${fmt(latest.lower, 2)}`} />
+                  <StatCard
+                    label="Distance to Entry"
+                    value={latest.lower ? fmtPct(((latest.lower - latest.close) / latest.close) * 100) : "—"}
+                    accent={latest.close <= (latest.lower || 0) ? "var(--green)" : "var(--amber)"}
+                    sub={latest.close <= (latest.lower || 0) ? "IN ENTRY ZONE" : "Above band"}
+                  />
+                </div>
+
+                <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: 20, marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 16 }}>Forward Returns After Entry Signal</div>
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                          <th style={{ textAlign: "left", padding: "8px 12px", color: "var(--muted)", fontSize: 11, textTransform: "uppercase" }}>Horizon</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "var(--muted)", fontSize: 11 }}>Signals</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "var(--muted)", fontSize: 11 }}>Win Rate</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "var(--muted)", fontSize: 11 }}>Avg Return</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "var(--muted)", fontSize: 11 }}>Median</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "var(--muted)", fontSize: 11 }}>Avg Drawdown</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "var(--muted)", fontSize: 11 }}>Max Drawdown</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {stats && FWD.map(p => stats[p] && (
+                          <tr key={p} style={{ borderBottom: "1px solid var(--border)" }}>
+                            <td style={{ padding: "10px 12px", fontWeight: 600 }}>{p} {FWD_LABEL}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "right", fontFamily: "'JetBrains Mono'" }}>{stats[p].n}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: stats[p].winRate >= 0.6 ? "var(--green)" : stats[p].winRate >= 0.45 ? "var(--amber)" : "var(--red)" }}>
+                              {(stats[p].winRate * 100).toFixed(0)}%
+                            </td>
+                            <td style={{ padding: "10px 12px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: stats[p].avg >= 0 ? "var(--green)" : "var(--red)" }}>
+                              {fmtPct(stats[p].avg)}
+                            </td>
+                            <td style={{ padding: "10px 12px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: stats[p].median >= 0 ? "var(--green)" : "var(--red)" }}>
+                              {fmtPct(stats[p].median)}
+                            </td>
+                            <td style={{ padding: "10px 12px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: "var(--red)" }}>
+                              {fmtPct(stats[p].avgDD)}
+                            </td>
+                            <td style={{ padding: "10px 12px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: "var(--red)" }}>
+                              {fmtPct(stats[p].maxDD)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Distribution chart for the middle horizon */}
+                {(() => {
+                  const midHorizon = FWD[Math.floor(FWD.length / 2)];
+                  if (!stats || !stats[midHorizon]) return null;
+                  const distData = entries.filter(e => e[`fwd_${midHorizon}`] !== undefined).map(e => ({ date: e.date, ret: e[`fwd_${midHorizon}`] }));
+                  return (
+                    <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: 20 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>{midHorizon}-{FWD_LABEL.toLowerCase()} Forward Return Distribution</div>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={distData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#1e2530" vertical={false} />
+                          <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 9 }} tickFormatter={v => v.slice(2)} stroke="#1e2530" />
+                          <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} tickFormatter={v => `${v}%`} stroke="#1e2530" />
+                          <Tooltip contentStyle={{ background: "#141820", border: "1px solid #1e2530", borderRadius: 8, fontSize: 12 }} formatter={v => [fmtPct(v), "Return"]} />
+                          <ReferenceLine y={0} stroke="#6b728050" />
+                          <Bar dataKey="ret" radius={[3, 3, 0, 0]}>
+                            {distData.map((e, i) => (
+                              <Cell key={i} fill={e.ret >= 0 ? "#10b981" : "#ef4444"} fillOpacity={0.7} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  );
+                })()}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ENTRIES TAB */}
+        {tab === "entries" && (
+          <div style={{ background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", padding: 20 }}>
+            {entries.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "var(--muted)" }}>
+                No entry signals found. Try adjusting the band parameters or macro regime filter.
+              </div>
+            ) : (
+              <>
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 16 }}>{entries.length} Entry Signals Detected</div>
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                        <th style={{ textAlign: "left", padding: "8px 10px", color: "var(--muted)", fontSize: 11 }}>Date</th>
+                        <th style={{ textAlign: "right", padding: "8px 10px", color: "var(--muted)", fontSize: 11 }}>Entry Price</th>
+                        <th style={{ textAlign: "right", padding: "8px 10px", color: "var(--muted)", fontSize: 11 }}>Lower Band</th>
+                        <th style={{ textAlign: "center", padding: "8px 10px", color: "var(--muted)", fontSize: 11 }}>Regime</th>
+                        {FWD.map(p => (
+                          <th key={p} style={{ textAlign: "right", padding: "8px 10px", color: "var(--muted)", fontSize: 11 }}>{p}{FWD_LABEL[0].toLowerCase()} Fwd</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map((e, i) => (
+                        <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+                          <td style={{ padding: "8px 10px", fontFamily: "'JetBrains Mono'" }}>{e.date}</td>
+                          <td style={{ padding: "8px 10px", textAlign: "right", fontFamily: "'JetBrains Mono'" }}>${fmt(e.price, 2)}</td>
+                          <td style={{ padding: "8px 10px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: "var(--muted)" }}>${fmt(e.bandLower, 2)}</td>
+                          <td style={{ padding: "8px 10px", textAlign: "center" }}>
+                            <span style={{
+                              fontSize: 10, padding: "2px 8px", borderRadius: 10,
+                              background: (MACRO_REGIMES[e.regime]?.color || "#666") + "20",
+                              color: MACRO_REGIMES[e.regime]?.color || "#666",
+                            }}>
+                              {MACRO_REGIMES[e.regime]?.label || e.regime}
+                            </span>
+                          </td>
+                          {FWD.map(p => (
+                            <td key={p} style={{ padding: "8px 10px", textAlign: "right", fontFamily: "'JetBrains Mono'", color: ((e[`fwd_${p}`] ?? 0) >= 0) ? "var(--green)" : "var(--red)" }}>
+                              {e[`fwd_${p}`] !== undefined ? fmtPct(e[`fwd_${p}`]) : "—"}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        <div style={{ marginTop: 16, padding: 16, background: "var(--card)", borderRadius: 12, border: "1px solid var(--border)", fontSize: 11, color: "var(--muted)", lineHeight: 1.6 }}>
+          <strong style={{ color: "var(--text)" }}>Methodology</strong> — Entry signals trigger when the bar close penetrates the lower band of the chosen method.
+          Forward returns are measured at the configured horizons from the entry bar. Drawdown measures the worst intra-period low relative to entry.
+          The macro regime filter isolates periods with comparable monetary policy, volatility, and growth dynamics.
+          Price data is from yfinance via <code>scripts/entry_band_fetch.py</code>; macro regime tags are workspace-defined and editable in that script.
+          {preferred && <> Vault preferred band/stop overlay reflects the current entries in the Technical Entry and Invalidation Sheet (set {preferred.set || "—"}).</>}
+          {" "}<strong style={{ color: "var(--amber)" }}>Decision support, not financial advice.</strong>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+import React from "react";
+import { createRoot } from "react-dom/client";
+const __root = createRoot(document.getElementById("root"));
+__root.render(React.createElement(EntryBandViewer));
+  </script>
+</body>
+</html>

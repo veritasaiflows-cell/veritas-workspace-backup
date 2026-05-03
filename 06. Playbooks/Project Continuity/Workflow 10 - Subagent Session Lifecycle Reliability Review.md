@@ -6,7 +6,7 @@
 
 ## Current State
 - Not started as an implementation workflow.
-- This now sits behind Workflow 9A and Workflow 9B in the reprioritized queue.
+- This now sits directly behind active Workflow 9B in the reprioritized queue because Workflow 9A is honestly closed.
 - Scope is widened slightly: this is no longer just about session-state disagreement, but also about stale completion-state signals and state-independent run-ledger trust.
 - Real failures and ambiguities have already been observed in subagent/session behavior and memory/runtime reporting.
 
@@ -35,9 +35,22 @@
 - Observable consequence: command labels can appear to finish only after the fact and can terminate without a trustworthy success/failure artifact, which reinforces that runtime completion events alone are not enough evidence for closeout.
 - Resulting hardening implication: Workflow 10 should explicitly cover async exec-event failure handling and the need to reconcile labeled helper commands against artifact-level proof before treating a background pass as resolved.
 
+### Incident 4 - 2026-05-02 async interactive auth prompt leakage
+- Context: previously launched helper commands later completed through `exec-event` with terminal-control output instead of a normal artifact or clean log summary.
+- What happened: async command `mellow-c` exited `0` but surfaced a GitHub device-auth prompt transcript fragment (`Authenticate Git...`, one-time code prompt, `Press Enter to open...`) in the delayed completion event. A later async command `glow-she` then failed with `SIGKILL` while still emitting the same GitHub auth prompt / terminal-control sequence.
+- Observable consequence: async commands can report either nominal success or hard failure while still actually being stuck at an unresolved interactive auth boundary, and the delayed events can leak terminal UI fragments that are not valid completion proof.
+- Resulting hardening implication: treat async interactive-auth completions as unresolved until the underlying task is reconciled explicitly; do not count either exit code or delayed failure alone as proof when the payload shows a pending external login step.
+
+### Incident 5 - 2026-05-02 worktree-prune permission residue after approved cleanup
+- Context: Workflow 9A removed the stale nested worktree `scripts/.claude/worktrees/wonderful-matsumoto-f7ad44/` with the correct git-worktree-first mechanics.
+- What happened: `git worktree remove --force` deregistered the nested stale worktree successfully, but Windows permission issues prevented git from fully deleting the corresponding `.git/worktrees/wonderful-matsumoto-f7ad44` metadata directory. A later `git worktree prune` also still reported permission-denied deletes on other root worktree metadata paths outside the approved 9A cleanup scope.
+- Observable consequence: git/runtime cleanup can report a structurally successful removal while still leaving behind undeleted metadata that an organization workflow should not guess at or silently erase when the residue sits in root runtime/tooling surfaces.
+- Resulting hardening implication: Workflow 10 should define what counts as a trustworthy worktree/session cleanup signal, how to separate safe local residue from active runtime state, and when manual filesystem cleanup is acceptable versus when the runtime/control surface needs a deeper fix.
+
 ## Outstanding
 - Expand the named incidents into a fuller pattern inventory instead of leaving them as one-off anecdotes.
 - Include stale completion-state problems like `execution.chain_status = "running"` after successful finance-window runs in that pattern inventory.
+- Include root-worktree metadata cleanup failures and `git worktree prune` permission-denied cases in that pattern inventory instead of treating them as one-off filesystem annoyances.
 - Define safe operator workarounds and no-go assumptions.
 - Decide whether a dedicated bug/hardening note or external issue should remain active.
 - Define what orchestration can trust versus what must be verified through files or outputs.

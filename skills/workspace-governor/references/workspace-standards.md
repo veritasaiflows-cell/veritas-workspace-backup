@@ -92,7 +92,7 @@ Rules:
 - generated files do not outrank canonical notes
 - keep helper scripts out of `tmp/` when they are durable tooling and belong in `scripts/`
 - remove or relocate stale scratch artifacts once they stop supporting an active workflow or audit trail
-- `generated documents/entry-bands/` is a documented temporary exception while live entry-band scripts still read or write that path; do not widen the exception, and migrate it into `tmp/` only as an intentional code-path change
+- entry-band HTML reports belong under `tmp/entry-band-reports/`; do not recreate a root-level `generated documents/` exception for them
 
 ## Naming conventions
 

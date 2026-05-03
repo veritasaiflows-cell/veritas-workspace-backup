@@ -27,7 +27,7 @@ from dashboard_validation import build_validation
 from market_data_utils import guard_dict_or_empty
 
 HISTORY_PATH = TMP / "deployment-history.json"
-ENTRY_BAND_REPORTS_DIR = WORKSPACE / "generated documents" / "entry-bands"
+ENTRY_BAND_REPORTS_DIR = WORKSPACE / "tmp" / "entry-band-reports"
 NEAR_BAND_THRESHOLD_PCT = 5.0
 
 # Required payload-shape contract — keys the dashboard view layer relies on.
@@ -499,7 +499,7 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
         )
         report_file = ENTRY_BAND_REPORTS_DIR / f"{ticker}_entry_band.html"
         entry_band_report_path = (
-            f"../generated documents/entry-bands/{ticker}_entry_band.html"
+            f"entry-band-reports/{ticker}_entry_band.html"
             if report_file.exists() else None
         )
 
