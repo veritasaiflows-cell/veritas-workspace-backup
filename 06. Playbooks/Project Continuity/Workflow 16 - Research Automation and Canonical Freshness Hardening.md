@@ -12,7 +12,7 @@
 - Research automation remains **unstarted implementation-wise**: no recurring source bundle, intake packet contract, routing/promotion contract, or canonical freshness patch contract is approved yet.
 - Capital Deployment Readiness already proved one important boundary: scheduled review surfaces can be useful daily without giving away canonical judgment ownership.
 - **Current gate:** Workflow 16 is now the active readiness gate that should convert Workflow 17 / Workflow 18 outputs into the live research automation skeleton without opening research cron or note-helper execution yet.
-- Governance baseline commit exists before Workflow 16A opens: `574bb56` — `Workflow 17-18 closure: contract and governance hardening`.
+- Governance baseline commit exists before Workflow 16A opens: `89ab296` — `Workflow 16 readiness hardening: clear stale blockers and archive drift`.
 
 ## Why this workflow exists
 - Randall wants the OS to keep research and canonical notes fresh daily.

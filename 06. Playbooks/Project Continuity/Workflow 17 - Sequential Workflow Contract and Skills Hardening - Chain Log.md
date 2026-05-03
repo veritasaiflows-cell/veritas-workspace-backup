@@ -31,7 +31,7 @@
   - `openclaw skills check` passed
   - WF16A / WF16B stale prerequisite wording was corrected before Workflow 16A opens
 - Checkpoint posture:
-  - final pre-WF16 hardening checkpoint taken in commit `c11904e` (`Workflow 17-18 hardening: governance audit and closure fixes`)
+  - final pre-WF16 hardening checkpoint taken in commit `89ab296` (`Workflow 16 readiness hardening: clear stale blockers and archive drift`)
 - Residue:
   - none inside Workflow 17 scope
 - Reopen triggers:

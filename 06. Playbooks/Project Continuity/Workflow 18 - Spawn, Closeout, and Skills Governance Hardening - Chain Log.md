@@ -34,7 +34,7 @@
   - queue / registry show Workflow 16 active and Workflow 16A as next active implementation lane
   - ETN pre-print stand-aside posture already explicit in the Trigger Sheet
 - Checkpoint posture:
-  - final pre-WF16 hardening checkpoint taken in commit `c11904e` (`Workflow 17-18 hardening: governance audit and closure fixes`)
+  - final pre-WF16 hardening checkpoint taken in commit `89ab296` (`Workflow 16 readiness hardening: clear stale blockers and archive drift`)
 - Residue:
   - no research cron or canonical-note helper is allowed yet
 - Reopen triggers:
