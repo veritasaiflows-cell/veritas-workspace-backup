@@ -41,7 +41,7 @@
 ## Key Files
 - `06. Playbooks/OpenClaw Parallel Pilot Queue.md` - queue order and Workflow 9 control state.
 - `06. Playbooks/IC Project Registry.md` - active project status and next pass visibility.
-- `06. Playbooks/Project Continuity/Command Center Chain Readiness Review.md` - closed Workflow 8 pickup point and Command Center ownership boundary.
+- `09. Archive/Project Continuity/Command Center Chain Readiness Review.md` - archived Workflow 8 pickup point and preserved Command Center ownership-boundary record.
 - `Home.md` - workspace navigation spine.
 - `01. Dashboards/Executive Brief.md` - executive output surface.
 - `01. Dashboards/This Week.md` - near-term operating priorities.

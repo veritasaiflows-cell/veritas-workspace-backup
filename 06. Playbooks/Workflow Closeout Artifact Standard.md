@@ -31,6 +31,16 @@ Every major workflow closeout should update or produce these, unless one is expl
    - real remaining debt, not hidden caveats
 6. **Named reopen triggers**
    - what future condition would justify reopening the workflow
+7. **Independent audit artifact**
+   - a fresh spawned-session audit note or equivalent
+   - closure verdict
+   - acceptance-proof check
+   - named gaps / residue
+   - reopen triggers
+   - next-pass recommendation
+   - when useful, 1-2 bounded adjacent workflow recommendations
+
+The default expectation is that this artifact comes from an independent auditor lane, not the implementation lane.
 
 ## Minimum chain-log entry template
 
@@ -44,6 +54,10 @@ Every major workflow closeout should update or produce these, unless one is expl
 - Reopen triggers:
 - Next pass:
 ```
+
+When an independent audit was run, also record:
+- Audit artifact:
+- Audit verdict:
 
 ## Closure labels
 
@@ -77,6 +91,7 @@ A workflow is not honestly closed if:
 - the registry still shows an unresolved current phase
 - the chain log has no validation evidence
 - the next workflow opens on an uncommitted unstable baseline despite a required checkpoint
+- a meaningful workflow skipped the independent spawned audit without recording an honest exception
 
 ## Where this standard is used
 

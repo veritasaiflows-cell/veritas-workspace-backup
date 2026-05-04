@@ -79,6 +79,13 @@ Acceptance should name the smallest meaningful proof available, such as:
 
 If no meaningful proof can run, say why.
 
+For meaningful workflow closeout, default expectation is:
+- a **fresh independent audit pass** spawned in a new session
+- the auditor is not the implementation lane that just did the work
+- the audit returns: acceptance verdict, real gaps, residue, reopen triggers, and 1-2 bounded next-work recommendations
+
+If an independent spawned audit is intentionally skipped, the workflow note must say why and why a lower bar is still honest.
+
 ## Exit / Closeout Checklist
 
 Before closing a major workflow, confirm:
@@ -89,6 +96,7 @@ Before closing a major workflow, confirm:
 5. real residual debt is named instead of hidden
 6. the next pass is explicit
 7. 1-2 bounded adjacent workflow candidates are named when useful
+8. an independent spawned audit was completed or an explicit honest exception is recorded
 
 ## Checkpoint Decision
 
@@ -191,6 +199,7 @@ If canonical mutation is allowed at all, the workflow must name:
 Related standards:
 - `06. Playbooks/Skill Quality Standard.md`
 - `06. Playbooks/Workflow Closeout Artifact Standard.md`
+- `06. Playbooks/Spawn and Closeout Governance Matrix.md`
 
 ## Status minimum for live control surfaces
 

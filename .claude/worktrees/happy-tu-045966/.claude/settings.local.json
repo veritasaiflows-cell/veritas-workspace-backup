@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//c/Users/Veritas2.0/.openclaw/workspace/**)",
-      "Bash(python scripts/generate_dashboard.py)"
-    ]
-  }
-}

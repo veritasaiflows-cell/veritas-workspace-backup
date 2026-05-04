@@ -26,7 +26,7 @@ Validation posture for this index on 2026-05-03:
 | openclaw-operator | Veritas workspace | workspace/runtime/config/skill hygiene | model-agnostic; OpenClaw defaults | 2026-05-03 | review if runtime/operator procedures move into a new canonical operator layer |
 | openclaw-troubleshooter | Veritas workspace | OpenClaw runtime/config troubleshooting | model-agnostic; OpenClaw defaults | 2026-05-03 | review if troubleshooting doctrine drifts from live runtime or docs |
 | project-continuity-manager | Veritas workspace | thin project pickup points and continuity notes | model-agnostic; OpenClaw defaults | 2026-05-03 | review if project continuity standard is replaced by a stronger canonical workflow contract |
-| technical-chart-pass | Veritas workspace | generic technical chart analysis fallback | model-agnostic; OpenClaw defaults | 2026-05-03 | deprecate or narrow further if it conflicts with `veritas-technical-pass` ownership |
+| technical-chart-pass | Veritas workspace | generic technical chart analysis fallback | model-agnostic; OpenClaw defaults | 2026-05-03 | resolve trigger-language overlap explicitly at the next skill-governance review; deprecate or narrow further if it conflicts with `veritas-technical-pass` ownership |
 | veritas-fundamental-pass | Veritas workspace | Veritas equity fundamentals workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if finance evidence standards or vault structure change materially |
 | veritas-investment-deck | Veritas workspace | finance-first investment presentation workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if deck workflow is superseded by a canonical packaging layer |
 | veritas-macro-pass | Veritas workspace | macro regime and market context workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if macro source/trust rules change materially |
@@ -51,6 +51,12 @@ that reference should be treated as **operator-maintained** unless it is validat
 
 Current skill with explicit operator-maintained external lane posture:
 - `ic-swarm-orchestrator`
+
+## Known governance follow-up
+
+- `technical-chart-pass` vs `veritas-technical-pass` remains a known bounded overlap.
+- Current posture is acceptable because the generic-fallback vs canonical-Veritas distinction is already documented.
+- It should still receive an explicit keep-both / narrow-further / deprecate decision at the next skill-governance review rather than remaining open-ended.
 
 ## No-skill-sprawl rule
 

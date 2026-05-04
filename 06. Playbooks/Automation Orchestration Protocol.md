@@ -298,10 +298,18 @@ After a meaningful automation-protocol or queue-governance change:
 - do not claim the new posture is ready merely because the wording sounds good
 - verify the startup/governing files still point at the real posture
 
+Default expectation for meaningful workflow orchestration work:
+- QC/QA and closeout audit should be performed by an **independent auditor** spawned in a **fresh new session**
+- the audit lane should be read-only and file-grounded
+- the audit should return: closure verdict, acceptance-proof check, gaps/residue, reopen triggers, and next-work recommendations
+
+Do not let the implementation lane grade its own closeout unless an explicit exception is recorded.
+
 ## Executive-summary gate
 For any meaningful workflow, do not issue an executive summary until all are true:
 - acceptance evidence exists
 - expected helper lanes are integrated or explicitly abandoned
+- the independent spawned audit is integrated or an explicit exception is recorded
 - queue / registry / continuity note agree on state
 - checkpoint decision is explicit
 - real residual debt is named

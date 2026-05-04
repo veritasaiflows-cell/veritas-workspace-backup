@@ -110,6 +110,7 @@ Reopen this plan for execution only when:
 - queue/registry references are stable
 - the move list is explicit
 - validation and link checks are part of the same pass
+- the work is being executed inside `06. Playbooks/Project Continuity/Workflow 19 - Playbooks Retrieval and Governance Cleanup.md` or another explicitly approved successor lane
 
 ## Acceptance for a future execution pass
 - every moved file has a before/after map

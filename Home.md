@@ -85,13 +85,21 @@ The numbered folders define the default vault review order.
 - [[05. Intelligence/Event Calendar]]
 
 ### 06. Playbooks
+- [[06. Playbooks/Playbooks Index]]
 - [[06. Playbooks/Operating Model]]
 - [[06. Playbooks/Weekly Review Process]]
 - [[06. Playbooks/Automation Orchestration Protocol]]
+- [[06. Playbooks/OpenClaw Parallel Pilot Queue]]
 - [[06. Playbooks/Cron Run Ledger]]
 - [[06. Playbooks/Notes Layer Governance Protocol]]
 - [[06. Playbooks/Workspace Structure Protocol]]
 - [[06. Playbooks/Notes Layer Audit Checklist]]
+- Workflow / Governance Standards:
+  - [[06. Playbooks/Major Workflow Contract Standard]]
+  - [[06. Playbooks/Spawn and Closeout Governance Matrix]]
+  - [[06. Playbooks/Workflow Closeout Artifact Standard]]
+  - [[06. Playbooks/Skill Quality Standard]]
+  - [[06. Playbooks/Skills Governance Index]]
 
 ### 07. Risk
 - [[07. Risk/Read-Only Trading Policy]]

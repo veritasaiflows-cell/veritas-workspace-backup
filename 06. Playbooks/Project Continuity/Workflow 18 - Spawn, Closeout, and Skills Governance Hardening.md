@@ -75,6 +75,8 @@ Updated live protocol / control documents:
 - Workflow 16 remains an umbrella readiness gate, not the substantive implementation pass.
 - Workflow 16A and 16B still need contract execution and pilot proof.
 - No new research cron or canonical note helper should be scheduled until those downstream contracts are approved.
+- Future high-trust governance passes should route acceptance through an external audit before the next major lane opens; WF17 / WF18 closed correctly, but both benefited from post-closeout hardening that should be caught earlier next time.
+- WF17 -> WF18 dependency ended in a correct final state, but the execution path was slightly compressed; future dependency chains should keep that sequence explicit when one workflow's standard defines the next workflow's basis.
 
 ## Next Action
 - Promote Workflow 16 to the active lane and run the readiness gate that converts Workflow 17 / Workflow 18 outputs into the research automation skeleton.

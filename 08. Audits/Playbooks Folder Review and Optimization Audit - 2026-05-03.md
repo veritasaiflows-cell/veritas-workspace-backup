@@ -4,7 +4,7 @@
 - P1 stale WF16A / WF16B blocker wording -> fixed on 2026-05-03
 - P2 stale Workflow 10-open cron wording -> fixed on 2026-05-03
 - P2 split continuity archive destination guidance -> fixed on 2026-05-03
-- P3 retrieval / density recommendations -> intentionally deferred; not a pre-WF16 blocker
+- P3 retrieval / density recommendations -> routed on 2026-05-03 to `06. Playbooks/Project Continuity/Workflow 19 - Playbooks Retrieval and Governance Cleanup.md`; intentionally deferred, not a pre-WF16 blocker
 
 ## Scope audited
 - `06. Playbooks/` root

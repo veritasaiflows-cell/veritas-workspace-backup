@@ -19,9 +19,10 @@ Before real work:
 1. Read `SOUL.md`
 2. Read `USER.md`
 3. Read `TOOLS.md`
-4. Read today's and yesterday's daily notes in `memory/`
-5. In a direct main session, read `MEMORY.md`
-6. Read the active finance navigation stack:
+4. Read `06. Playbooks/Obsidian CLI Runtime Note.md`
+5. Read today's and yesterday's daily notes in `memory/`
+6. In a direct main session, read `MEMORY.md`
+7. Read the active finance navigation stack:
    - `Home.md`
    - `01. Dashboards/Executive Brief.md`
    - `01. Dashboards/This Week.md`
@@ -31,8 +32,8 @@ Before real work:
    - `02. Markets/Watchlist.md`
    - `03. Portfolio/Portfolio Snapshot.md`
    - `07. Risk/Risk Rules.md`
-7. If present, read `05. Intelligence/Weekly Intelligence Brief.md`
-8. When control-plane, automation, or parallel-work governance is active, also read:
+8. If present, read `05. Intelligence/Weekly Intelligence Brief.md`
+9. When control-plane, automation, or parallel-work governance is active, also read:
    - `06. Playbooks/Automation Orchestration Protocol.md`
    - `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
    - `06. Playbooks/IC Project Registry.md`

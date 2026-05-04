@@ -11,6 +11,7 @@ Procedures belong in skills.
 - Long-term memory note: `MEMORY.md`
 - Home note: `Home.md`
 - Obsidian vault should point at the workspace root, not `.obsidian/` itself
+- Obsidian CLI on this Windows host is provided by `notesmd-cli.exe` with local `obsidian-cli` / `obsidian` compatibility wrappers in `C:\Users\Veritas\AppData\Roaming\npm`; the default vault is `workspace` -> `C:\Users\Veritas\.openclaw\workspace`
 - Active runtime posture: native Windows
 - Keep the current OpenClaw version pinned at `2026.4.22` for now; Randall considers it the more stable build on this machine. Do not update OpenClaw unless that stability judgment is intentionally revisited.
 

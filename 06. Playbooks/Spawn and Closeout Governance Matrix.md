@@ -84,14 +84,40 @@ Until an automation workflow explicitly widens scope, spawned helper lanes in th
 
 If helper output starts behaving like a second truth layer, stop the workflow immediately.
 
+## Independent auditor closeout rule
+
+For any meaningful workflow closeout, QC/QA should default to an **independent auditor** spawned in a **fresh new session**.
+
+Meaning here:
+- not the implementation lane that just did the working pass
+- not a same-thread continuation pretending to be independent
+- bounded to read-only audit / contradiction / gap-finding authority
+
+The independent audit should return at minimum:
+1. closure verdict (`complete`, `closed with follow-up`, or `blocked`)
+2. acceptance-proof check
+3. real gaps or residue
+4. reopen triggers
+5. one immediate next-pass recommendation
+6. when useful, 1-2 bounded adjacent workflow recommendations
+
+Default spawn posture for that audit:
+- **Spawn read-only**
+- fresh session
+- explicit file-grounded handoff packet
+- no queue movement, no canonical mutation, no final closeout authority
+
+If a meaningful workflow closes without this independent audit, record the exception explicitly and say why that lower bar was still honest.
+
 ## Executive-summary gate
 
 Do not issue an executive summary for a meaningful workflow until all are true:
 1. acceptance evidence exists
 2. expected helper lanes are complete or intentionally abandoned
-3. queue / registry / continuity note agree on the real state
-4. residual debt is named honestly
-5. checkpoint decision is explicit
+3. the independent spawned audit is complete or an explicit exception is recorded
+4. queue / registry / continuity note agree on the real state
+5. residual debt is named honestly
+6. checkpoint decision is explicit
 
 If one of those is missing, give a status update instead of an executive summary.
 
@@ -100,12 +126,13 @@ If one of those is missing, give a status update instead of an executive summary
 Before closing a major workflow:
 1. confirm the scope actually closed
 2. confirm acceptance or blocker evidence
-3. integrate helper-lane outputs
-4. update queue / registry / continuity note
-5. name real residual risks
-6. make the checkpoint decision explicit
-7. name the next pass
-8. name up to two adjacent candidates when useful
+3. complete the independent spawned audit or record the honest exception
+4. integrate helper-lane outputs
+5. update queue / registry / continuity note
+6. name real residual risks
+7. make the checkpoint decision explicit
+8. name the next pass
+9. name up to two adjacent candidates when useful
 
 Use `06. Playbooks/Workflow Closeout Artifact Standard.md` as the closing artifact contract.
 
@@ -129,6 +156,8 @@ Default to a checkpoint when the workflow changed:
 At closeout, always name:
 - one immediate next pass
 - and, when useful, 1-2 bounded adjacent workflow candidates
+
+Default source for those recommendations should be the independent audit closeout pass, then main-session integration decides whether to adopt them.
 
 Do not open them automatically unless the queue already approves the chain.
 
