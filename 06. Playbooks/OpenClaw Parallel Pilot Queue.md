@@ -136,20 +136,20 @@ WF24 closeout facts now live:
    - closeout rule: satisfied; WF28 now has chain-log, executive-summary, checkpoint, and independent-audit artifacts
 
 7. **WF29 Phase 1 - validation tier truth and machine-proof utility design**
-   - status: active
+   - status: completed (closed with follow-up)
    - owner: Veritas main lane
    - category: skills / validation
    - posture: serial
    - deliverable: honest validation-tier labeling plus bounded machine-proof utility design for swarm handshake / sidecar validators / automation trust block
    - acceptance check: validation tiers and the first executable-proof pilot set are explicit instead of implied
-   - current progress: validation-tier posture is explicit, `ic-swarm-orchestrator` has a Tier 2 handshake-proof pilot, `veritas-technical-pass` has a Tier 2 sidecar-validator pilot, `automation-hardening-manager` and `cron-automation-manager` now have a Tier 2 trust-block producer/consumer pilot, and the next bounded step is independent audit / closeout judgment
-   - closeout rule: same finish-to-closeout discipline; add downstream workflows only after QA and executive-summary closure artifacts are real
+   - current progress: validation-tier posture is explicit, all three bounded proof families landed with local proof, runtime/bootstrap limits are explicit, and independent audit says the workflow is closeout-ready at intended scope
+   - closeout rule: satisfied; WF29 now has chain-log, checkpoint, executive-summary, and independent-audit closure artifacts
 
 8. **WF21 Phase 1 - source map and pilot coverage set**
-   - status: queued behind WF29
+   - status: active
    - owner: Veritas main lane, helper lanes optional later
    - category: research / automation
-   - posture: serial until the source map is explicit
+   - posture: serial
    - deliverable: approved source tiers, blocked source classes, pilot names, and first raw-event input file aligned to WF25 intake needs
    - acceptance check: `scripts/research_intake_packet.py` can be run against a real narrow input set that feeds the research desk cleanly without scope drift
 
@@ -224,8 +224,8 @@ WF24 closeout facts now live:
 30. Workflow 24 - cron job build contract and session handoff hardening [closed with follow-up]
 31. Workflow 25 - research department completion and coverage admission operations [closed with follow-up]
 32. Workflow 28 - skills critical corrections and coherence hardening [closed with follow-up]
-33. Workflow 29 - skill validation and machine-proof utilities [active]
-34. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 29]
+33. Workflow 29 - skill validation and machine-proof utilities [closed with follow-up]
+34. Workflow 21 - recurring source bundle and review window pilot [active]
 35. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]
 36. Workflow 27 - predictive analytics and forecasting readiness [queued behind Workflow 26]
 37. Workflow 22 - canonical freshness patch pilot and surface sync [queued behind Workflow 21]

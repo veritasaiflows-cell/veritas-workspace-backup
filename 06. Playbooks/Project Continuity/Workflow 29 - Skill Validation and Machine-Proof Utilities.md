@@ -13,7 +13,7 @@
 
 ## Current State
 - opened on 2026-05-04 from the independent skills-and-protocols audits
-- active downstream workflow after Workflow 28 closed with follow-up on 2026-05-04
+- closed with follow-up on 2026-05-04 after bounded proof pilots for handshake gating, sidecar validation, and automation trust blocks all landed with local proof and independent audit
 - inherits the cleaned skill/governance layer from Workflow 28, so this lane can focus on executable proof instead of wording cleanup
 - should stay bounded: build proof utilities only where the trust value is real
 - Phase 1 is partially pre-landed because `06. Playbooks/Skills Governance Index.md` already carries the validation-tier column and honest Tier 1 baseline posture from Workflow 28
@@ -98,7 +98,7 @@ Workflow 29 should not close unless all are true:
 5. runtime/bootstrap implications are explicit instead of silently assumed
 
 ## Next Action
-- Run the independent Workflow 29 audit and decide closeout honestly from the full proof stack now that Phases 1 through 4 all have landed pilot outputs.
+- No further action inside WF29 unless a named reopen trigger fires. Promote Workflow 21 active so the next real downstream lane can use the new proof surfaces instead of leaving them unused.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`

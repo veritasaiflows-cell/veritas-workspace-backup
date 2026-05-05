@@ -13,6 +13,7 @@
 - No recurring research-source cron is live yet.
 - Existing finance refresh jobs remain the only recurring finance writers.
 - Workflow 25 is now the immediate upstream consumer this lane must serve, so the pilot coverage set and packet outputs should be shaped around real research-department intake and admission needs rather than generic automation widening.
+- Workflow 29 is now closed with follow-up, so this lane becomes the active downstream consumer that should start using the newly landed proof surfaces rather than leaving them theoretical.
 
 ## Scope
 - define the v1 approved source bundle by category and trust tier
@@ -43,7 +44,7 @@ Required outputs:
 - raw-event intake file contract
 
 Status:
-- queued
+- active
 
 ### Phase 2 - Manual review-window dry run
 Purpose:
@@ -122,7 +123,7 @@ Workflow 21 should not close unless all are true:
 6. the lane stays review-only and does not blur ownership
 
 ## Next Action
-- Wait behind Workflow 25. After the research-department intake queue and admission decision object are explicit, build the v1 source map for the active pilot names and first macro/geopolitical sleeve, then start the first real manual raw-event file in the exact shape required by `06. Playbooks/Research Automation Raw Event Input Contract.md`.
+- Start Phase 1: build the v1 source map for the active pilot names and first macro/geopolitical sleeve, then start the first real manual raw-event file in the exact shape required by `06. Playbooks/Research Automation Raw Event Input Contract.md`.
 
 ## Key Files
 - `06. Playbooks/Research Automation Source Bundle Contract.md`
