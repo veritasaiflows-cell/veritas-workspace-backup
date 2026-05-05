@@ -53,33 +53,31 @@ Each meaningful queued item should make clear:
 ## Current chain state
 
 ### Active workflow
-**Workflow 24 - Cron Job Build Contract and Session Handoff Hardening**
-
-Status:
-- active downstream lane after WF20 closed with follow-up on 2026-05-04
-- inherits the now-landed WF20 review-layer doctrine instead of inventing new cron/handoff semantics
-- sibling retrofit checklist is landed and the live finance cron sibling payloads are now tightened
-- a forced post-close proof run regenerated clean artifacts under the new packet contract
-- immediate next pass is resolving why the forced retrofit run is not yet visible in `cron runs` even though artifact proof is clean
-
-Reason:
-- Workflow 20 is honestly closed at the intended scope
-- Workflow 24 is the approved enabling gate before Workflow 25 and the downstream research-intake widening chain can open safely
-
-### Next approved queue item
 **Workflow 25 - Research Department Completion and Coverage Admission Operations**
 
 Status:
-- newly inserted downstream priority on 2026-05-04
-- queued directly behind Workflow 24
-- exists to operationalize the already-landed WF6 / WF9 / WF11 doctrine before broader research-intake widening
-- keeps new-ticker intake, promotion/demotion, and research-desk handoffs explicit before recurring source-bundle expansion
+- active downstream lane after WF24 closed with follow-up on 2026-05-04
+- exists to operationalize the already-landed WF6 / WF9 / WF11 doctrine into a real research-department intake and admission operating lane
+- Phase 1 now owns the intake queue, decision objects, and first bounded live case set
+- WF21 remains queued behind this lane so recurring research packets feed a real desk process instead of widening into vagueness
 
-WF20 closeout facts now live:
-- review-layer doctrine is explicit
-- helper-lane authority is explicit
-- canonical mutation remains manual-only
-- review cadence/owner map is explicit
+Reason:
+- Workflow 24 is honestly closed at the intended scope
+- Workflow 25 is the approved next downstream lane before Workflow 21 and the broader intelligence / prediction chain can open safely
+
+### Next approved queue item
+**Workflow 21 - Recurring Source Bundle and Review Window Pilot**
+
+Status:
+- still queued behind Workflow 25
+- remains blocked from opening until the research desk intake and admission objects are real
+- should feed the WF25 operating lane instead of widening research intake into a deskless flow
+
+WF24 closeout facts now live:
+- cron-builder doctrine is explicit
+- sibling retrofit checklist exists
+- live finance sibling payloads were retrofitted to the explicit packet contract
+- direct cron-history proof exists for the retrofitted post-close sibling
 - independent audit and executive-summary artifacts exist
 
 ## Strict ordered execution queue for today (2026-05-04)
@@ -108,14 +106,16 @@ WF20 closeout facts now live:
    - deliverable: reusable cron-build contract plus retrofit checklist for live sibling finance jobs
    - acceptance check: met; the contract and checklist now exist and the sibling prompts were retrofitted to match
 
-4. **WF24 Phase 2 - proof the retrofitted siblings**
+4. **WF24 Phase 2 through Phase 4 - proof, audit, and closeout**
+   - status: completed (closed with follow-up)
    - owner: Veritas main lane
    - category: control plane / automation
    - posture: serial
-   - deliverable: controlled run-history and artifact proof that the retrofitted morning, post-close, and Sunday jobs satisfy the new packet contract in practice
-   - acceptance check: partially met; a forced post-close proof path produced the expected artifacts and a clean run summary, but the corresponding forced run is not yet visible in `cron runs`
+   - deliverable: controlled proof, independent audit, closeout artifacts, and downstream promotion for the retrofitted cron family
+   - acceptance check: met for closure at intended scope; post-close proof is history-visible, while morning/Sunday symmetry remains named residue and reopen-trigger material
 
 5. **WF25 Phase 1 - research-department intake queue and admission decision object**
+   - status: active
    - owner: Veritas main lane
    - category: research / governance
    - posture: serial
@@ -197,8 +197,8 @@ WF20 closeout facts now live:
 27. Workflow 16B - canonical freshness sync and gated note update helpers [completed]
 28. Workflow 19 - playbooks retrieval and governance cleanup [closed with follow-up]
 29. Workflow 20 - parallel agents automation and human-gated review workflow [closed with follow-up]
-30. Workflow 24 - cron job build contract and session handoff hardening [active]
-31. Workflow 25 - research department completion and coverage admission operations [queued behind Workflow 24]
+30. Workflow 24 - cron job build contract and session handoff hardening [closed with follow-up]
+31. Workflow 25 - research department completion and coverage admission operations [active]
 32. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 25]
 33. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]
 34. Workflow 27 - predictive analytics and forecasting readiness [queued behind Workflow 26]

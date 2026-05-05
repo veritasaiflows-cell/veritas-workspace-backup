@@ -13,7 +13,7 @@
 - Randall explicitly wants the research department, ticker-entry decision process, and coverage-admission model tackled first.
 
 ## Current State
-- approved as the new downstream priority after Workflow 24 on 2026-05-04
+- active downstream workflow after Workflow 24 closed with follow-up on 2026-05-04
 - depends on WF24 only for cron/handoff discipline, not for finance-judgment widening
 - inherits the settled lane framework from WF6 and must not relitigate it
 - inherits the desk ownership model from WF9 and must operationalize it
@@ -46,6 +46,11 @@ Required outputs:
 - promotion / demotion review object / checklist
 - explicit desk handoff map to coverage, portfolio, and publishing surfaces
 
+Execution approach:
+- start with the smallest usable queue that can hold four states only: new-name intake, promotion review, demotion review, and removal / bench review
+- turn WF11 into concrete operator review objects rather than prose-only doctrine
+- force each decision object to name owner, evidence status, blockers, required notes, and downstream handoff surface before any name is considered actionable
+
 ### Phase 2 - Pilot case set
 Purpose:
 - choose bounded live cases instead of leaving the process hypothetical
@@ -55,6 +60,11 @@ Required outputs:
 - 1 existing-name promotion/demotion candidate
 - evidence requirements and owner files for each case
 - explicit no-go conditions
+
+Execution approach:
+- choose one candidate that is genuinely unresolved rather than a fake-easy layup
+- choose one existing tracked name whose lane status actually needs confirmation, not a ceremonial review
+- reject any pilot that would require hidden thesis rewrite or broad universe sprawl just to make the workflow look busy
 
 ### Phase 3 - Real operating proof
 Purpose:
@@ -66,6 +76,11 @@ Required outputs:
 - visible use of the settled WF11 protocol
 - validator / surface reruns after each approved mutation
 
+Execution approach:
+- run each case to a real decision: admit, defer, hold, demote, or remove
+- if a case is not ready, treat that as a valid outcome instead of padding the record
+- after any approved mutation, rerun only the validator and owner surfaces that actually need to move
+
 ### Phase 4 - Downstream handoff contract
 Purpose:
 - define what later workflows must feed this desk
@@ -76,6 +91,11 @@ Required outputs:
 - required operator-action output for portfolio and command-center surfaces
 - widen / hold decision for follow-on research automation
 
+Execution approach:
+- define the minimum acceptable packet from WF21 before allowing recurring source widening
+- define which geopolitical / fresh-intelligence facts are mandatory for admission versus merely helpful context
+- end with an explicit widen / hold recommendation for WF21, WF26, and later decision-surface work instead of vague “ready for next steps” language
+
 ## Acceptance Gates
 Workflow 25 should not close unless all are true:
 1. the research-department operating queue is explicit
@@ -85,7 +105,7 @@ Workflow 25 should not close unless all are true:
 5. downstream dependencies for source-bundle / geopolitical / decision-surface work are explicit
 
 ## Next Action
-- After WF24, define the research-department intake queue plus the exact admission / promotion decision object, then choose the first bounded live case set.
+- Phase 1 now opens: define the research-department intake queue plus the exact admission / promotion decision objects, then choose the first bounded live case set.
 
 ## Key Files
 - `06. Playbooks/Project Continuity/Workflow 6 - Coverage Tier Framework.md`
