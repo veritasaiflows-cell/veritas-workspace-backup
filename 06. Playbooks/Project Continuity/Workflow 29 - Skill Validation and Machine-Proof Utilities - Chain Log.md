@@ -19,7 +19,16 @@
   - result: `status=blocked`, unresolved verifier lane + missing artifact blocked synthesis, shell exit confirmed as `EXIT=2`
 - Promoted `ic-swarm-orchestrator` in `06. Playbooks/Skills Governance Index.md` from Tier 1 structural to **Tier 2 functional local proof**.
 
+## 2026-05-04 - Phase 3 sidecar validator pilot landed
+- Added `scripts/veritas_technical_pass_validate.py` as the first sidecar validator pilot for a file-contract-heavy workflow skill.
+- Updated `skills/veritas-technical-pass/SKILL.md` with an explicit sidecar-validator pilot section.
+- Documented the validator in `scripts/README.md`.
+- Verified local proof:
+  - `python scripts/veritas_technical_pass_validate.py --write`
+  - result: `status=ok`, wrote `tmp/veritas-technical-pass-validation.json`
+- Promoted `veritas-technical-pass` in `06. Playbooks/Skills Governance Index.md` from Tier 1 structural to **Tier 2 functional local proof**.
+
 ## Current posture
 - Workflow 29 remains active.
-- Phase 2 pilot is real and locally proved.
-- Next bounded step: sidecar validator pilot for `veritas-technical-pass`.
+- Phase 2 and Phase 3 pilots are real and locally proved.
+- Next bounded step: machine-readable automation trust-block pilot for `automation-hardening-manager` and `cron-automation-manager`.

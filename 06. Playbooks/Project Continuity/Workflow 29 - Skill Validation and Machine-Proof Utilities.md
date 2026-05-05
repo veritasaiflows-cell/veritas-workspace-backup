@@ -26,6 +26,11 @@
   - sample manifests: `scripts/testdata/swarm-handshake-sample.json` and `scripts/testdata/swarm-handshake-fail.json`
   - fail-closed proof: unresolved verifier lane + missing artifact blocked synthesis with `EXIT=2`
   - success proof: completed reasoner/verifier lanes plus artifacts allowed synthesis and wrote `tmp/swarm-handshake-status.json`
+- Phase 3 pilot is now landed and locally verified:
+  - `scripts/veritas_technical_pass_validate.py`
+  - `skills/veritas-technical-pass/SKILL.md` now carries an explicit sidecar-validator pilot section
+  - proof result: `python scripts/veritas_technical_pass_validate.py --write` -> `status=ok`, wrote `tmp/veritas-technical-pass-validation.json`
+  - governance impact: `veritas-technical-pass` is now recorded as Tier 2 functional local proof in `06. Playbooks/Skills Governance Index.md`
 
 ## Scope
 - define honest validation-tier labeling in the governance index
@@ -86,7 +91,7 @@ Workflow 29 should not close unless all are true:
 5. runtime/bootstrap implications are explicit instead of silently assumed
 
 ## Next Action
-- Record the Phase 2 handshake pilot in the chain log and active surfaces, then move to the first sidecar validator pilot for `veritas-technical-pass` before touching broader skill-check integration.
+- Start Phase 4: design the first machine-readable automation trust block for `automation-hardening-manager`, then define the bounded consumer/read rule for `cron-automation-manager`.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`

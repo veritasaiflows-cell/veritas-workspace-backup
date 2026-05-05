@@ -36,7 +36,7 @@ Validation posture for this index on 2026-05-03:
 | veritas-positioning-pass | Veritas workspace | portfolio-positioning decisions from macro/fundamental/technical inputs | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if positioning doctrine or risk rules change materially |
 | veritas-post-earnings-sync | Veritas workspace | post-earnings closure workflow and note-layer sync | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | promote toward Tier 3 live-workflow proof as a priority core workflow |
 | veritas-self-improvement | Veritas workspace | doctrine-aligned reflection and correction capture | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if self-improvement outputs begin overlapping continuity or operator layers excessively |
-| veritas-technical-pass | Veritas workspace | canonical Veritas technical timing workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if ownership drifts back toward deprecated legacy technical-state vocab or chart standards change materially |
+| veritas-technical-pass | Veritas workspace | canonical Veritas technical timing workflow | model-agnostic; OpenClaw defaults | Tier 2 functional local proof | 2026-05-04 | review if ownership drifts back toward deprecated legacy technical-state vocab or chart standards change materially |
 | veritas-weekly-brief | Veritas workspace | weekly intelligence rebuild and synthesis workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | promote toward Tier 3 live-workflow proof as a priority core workflow |
 | workspace-governor | Veritas workspace | workspace structure, note placement, organization governance | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if workspace architecture or root-folder policy changes materially |
 | workspace-qa-pass | Veritas workspace | bounded high-signal QA audits after meaningful changes | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if QA standards drift from live control-plane or workflow contract standards |
@@ -68,7 +68,7 @@ Current skill with explicit operator-maintained external lane posture:
 
 Workflow 29 should start with a narrow proof set instead of pretending the whole skill layer upgrades at once:
 - `ic-swarm-orchestrator` -> completion-handshake proof **landed** via `scripts/swarm_completion_handshake.py` with local fail/pass verification on 2026-05-04
-- `veritas-technical-pass` -> first sidecar validator pilot for a file-contract-heavy workflow skill
+- `veritas-technical-pass` -> first sidecar validator pilot for a file-contract-heavy workflow skill **landed** via `scripts/veritas_technical_pass_validate.py` with local proof on 2026-05-04
 - `automation-hardening-manager` + `cron-automation-manager` -> machine-readable trust-block producer/consumer pilot
 
 ## No-skill-sprawl rule

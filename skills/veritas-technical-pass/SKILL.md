@@ -185,6 +185,23 @@ Use this skill for prompts like:
 - "is this blocked or in repair mode"
 - "rank these names by technical readiness"
 
+## Sidecar validator pilot
+
+Workflow 29 pilot validator:
+- `python scripts/veritas_technical_pass_validate.py --write`
+
+What it proves locally:
+- the file references named in this skill's required pre-read contract still exist in the workspace
+- the canonical four-state model still appears in this skill
+- the minimum data-requirement contract still appears in this skill
+
+What it does not prove:
+- live chart correctness
+- market-data freshness
+- end-to-end technical-sheet quality
+
+Treat this validator as a bounded Tier 2 local proof sidecar, not a substitute for live workflow judgment.
+
 ## Relationship to other skills
 
 - Use `veritas-fundamental-pass` to decide whether the business belongs in the serious board.

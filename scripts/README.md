@@ -651,6 +651,28 @@ Notes:
 - surfaces package age and upstream warning-grade status inside the workbook control panel so stale/manual packaging remains visible
 - remains an operator-invoked staging package by default; scheduled workbook packaging stays fail-closed until the Workflow 5 trust contract is upgraded explicitly
 
+### `veritas_technical_pass_validate.py`
+
+Status: Workflow 29 pilot validator
+
+Bounded sidecar validator for the `veritas-technical-pass` skill. Proves the skill's local file contract still exists and that the skill still names the canonical four-state model plus minimum technical-output requirements.
+
+Run:
+```bash
+python scripts/veritas_technical_pass_validate.py --write
+```
+
+Writes when `--write` is used:
+- `tmp/veritas-technical-pass-validation.json`
+
+Exit codes:
+- `0` = file contract and required skill clauses present
+- `2` = missing referenced files or missing required contract clauses
+
+Notes:
+- this is a Tier 2 local-proof pilot, not a live chart or workflow-quality validator
+- keeps scope intentionally narrow to the file-contract-heavy `veritas-technical-pass` skill
+
 ### `run_finance_refresh_chain.py`
 
 Status: live operating-window runner
