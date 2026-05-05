@@ -35,6 +35,7 @@ Run the smallest relevant refresh first:
 
 Then inspect, as relevant:
 - `tmp/trigger-sheet.json`
+- `tmp/deployment-readiness-surface.json`
 - `tmp/band-proposals.json`
 - `tmp/band-update-log.txt`
 - `tmp/deployment-check.json`

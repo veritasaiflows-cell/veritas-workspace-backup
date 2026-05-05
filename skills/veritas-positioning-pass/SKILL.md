@@ -16,6 +16,7 @@ Read the current workspace stack first:
 - `03. Portfolio/Portfolio Snapshot.md`
 - `03. Portfolio/Deployment Trigger Sheet.md`
 - `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `tmp/deployment-readiness-surface.json`
 - `02. Markets/Watchlist.md`
 - `05. Intelligence/Weekly Positioning Review.md`
 - `02. Markets/Macro Regime Dashboard.md`

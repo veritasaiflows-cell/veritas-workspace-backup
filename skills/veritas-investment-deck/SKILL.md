@@ -27,6 +27,8 @@ Read the relevant workspace stack first when it matters:
 - `03. Portfolio/Portfolio Snapshot.md`
 - `03. Portfolio/Deployment Trigger Sheet.md`
 - `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `tmp/deployment-readiness-surface.json` when the deck touches current actionability or board posture
+- `tmp/dashboard-validation.json` when trust grade or stale/manual caveats could affect the output
 - `05. Intelligence/Weekly Positioning Review.md`
 - `07. Risk/Risk Rules.md`
 - any company-specific report, JSON payload, or generated visual panels already created for the name
@@ -118,6 +120,19 @@ Use this structure unless there is a strong reason not to:
 - no hype
 - no generic consulting language
 - no fake certainty
+
+## Trust and disclosure rules
+
+Every decision-grade deck should make the trust state visible.
+
+At minimum, include or clearly state:
+- as-of date
+- trust grade or confidence framing
+- stale/manual/partial dependency caveats when they matter
+- whether the deck reflects note-layer judgment, machine scaffolding, or both
+
+If the underlying research or board state is warning-heavy, degraded, or provisional, do not polish that away with cleaner slide language.
+The deck must preserve uncertainty instead of laundering it.
 
 ## Relationship to scripts
 

@@ -59,6 +59,7 @@ Status:
 - active downstream lane after WF25 closed with follow-up on 2026-05-04
 - exists to land the 2026-05-04 audit's critical skill fixes before the next board-sync / weekly-brief path relies on stale skill contracts
 - Phase 1 now owns the critical live-skill corrections and technical-overlap decision path
+- Phase 1 critical corrections are already underway on the audited workflow skills and deck disclosure contract
 - WF29 remains queued behind this lane so executable proof utilities are built only after the coherence layer is honest
 - Randall explicitly directed strict sequential execution: finish WF28 with QA, hardening pass, and executive-summary closeout before WF29 opens
 

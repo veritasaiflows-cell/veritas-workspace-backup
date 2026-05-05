@@ -37,6 +37,7 @@ Then inspect:
 - `tmp/weekly-intelligence-brief.json`
 - `tmp/weekly-macro-snapshot.json`
 - `tmp/macro-regime.json`
+- `tmp/deployment-readiness-surface.json`
 - `tmp/dashboard-validation.json`
 - `tmp/trigger-sheet.json`
 - `tmp/technical-refresh.json`

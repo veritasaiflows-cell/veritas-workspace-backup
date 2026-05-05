@@ -26,6 +26,7 @@ Inspect before scheduling:
 - `MEMORY.md`
 - `06. Playbooks/Operating Model.md`
 - `06. Playbooks/Cron Job Protocol.md`
+- `06. Playbooks/Cron Job Retrofit Checklist.md`
 - `06. Playbooks/Automation Run Summary Contract.md`
 - `06. Playbooks/Cron Run Ledger.md`
 - `06. Playbooks/OpenClaw Parallel Pilot Queue.md`

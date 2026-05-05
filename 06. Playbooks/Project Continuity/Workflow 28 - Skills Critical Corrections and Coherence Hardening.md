@@ -17,6 +17,7 @@
 - active downstream workflow after WF25 closed with follow-up on 2026-05-04
 - should run before the next meaningful board-sync / weekly-brief execution that relies on the audited skills
 - does not widen research autonomy; it hardens the control surface
+- Phase 1 critical corrections are underway: the deployment-readiness surface is being added to the audited workflow skills, the investment-deck disclosure contract is being tightened, and the cron skill now points at the retrofit checklist
 
 ## Scope
 - add missing critical input artifacts and trust-disclosure rules to active skills
@@ -67,7 +68,7 @@ Workflow 28 should not close unless all are true:
 5. an independent audit confirms the skill layer is more coherent, not just more verbose
 
 ## Next Action
-- Start Phase 1 with the critical live-skill corrections, then decide the exact deprecation path for `technical-chart-pass` before moving to broader workflow expansion.
+- Finish verifying the Phase 1 critical live-skill corrections, then move directly into the `technical-chart-pass` overlap-resolution path before opening any broader proof-utility work.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`
