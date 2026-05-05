@@ -21,8 +21,8 @@ Do not treat this as a deployment board.
 
 | Case | Review type | Candidate | Current state | Why this is the right pilot now | Owner surfaces | Honest no-go condition | Next action |
 |---|---|---|---|---|---|---|---|
-| WF25-P1 | New-name admission | **EOG** | Queued | Real near-term catalyst from the current cluster, not already in the tracked universe, and forces an honest decision on whether the energy sleeve needs a new high-quality upstream name instead of vague sector curiosity. | `04. Research/Coverage Universe.md`, `02. Markets/Watchlist.md`, `tmp/portfolio-config.json` | If EOG is only interesting because it is in the earnings cluster, or if it offers no cleaner role than XOM/CVX/LNG, defer instead of admitting. | Build the admission object and decide admit-to-watch, defer, or reject. |
-| WF25-P2 | Promotion review | **GS** | Queued | Already live on the board as deployable-now tactical secondary to JPM, so this is a real lane question: should GS remain tactical, or has the evidence earned a promotion review toward a stronger standing? | `04. Research/Coverage Universe.md`, `02. Markets/Watchlist.md`, `03. Portfolio/Deployment Trigger Sheet.md`, `03. Portfolio/Technical Entry and Invalidation Sheet.md` | If GS is still just a tactical alternative to JPM without a distinct portfolio role, keep it tactical and say so plainly. | Build the promotion review object and decide promote, hold tactical, or demote. |
+| WF25-P1 | New-name admission | **EOG** | Decided — **defer** | Real near-term catalyst from the current cluster, not already in the tracked universe, and forces an honest decision on whether the energy sleeve needs a new high-quality upstream name instead of vague sector curiosity. | `04. Research/Coverage Universe.md`, `02. Markets/Watchlist.md`, `tmp/portfolio-config.json` | If EOG is only interesting because it is in the earnings cluster, or if it offers no cleaner role than XOM/CVX/LNG, defer instead of admitting. | Decision landed in `06. Playbooks/Research Department Reviews/WF25-P1 - EOG Admission Review.md`; no owner-surface mutation approved. |
+| WF25-P2 | Promotion review | **GS** | Decided — **hold tactical** | Already live on the board as deployable-now tactical secondary to JPM, so this is a real lane question: should GS remain tactical, or has the evidence earned a promotion review toward a stronger standing? | `04. Research/Coverage Universe.md`, `02. Markets/Watchlist.md`, `03. Portfolio/Deployment Trigger Sheet.md`, `03. Portfolio/Technical Entry and Invalidation Sheet.md` | If GS is still just a tactical alternative to JPM without a distinct portfolio role, keep it tactical and say so plainly. | Decision landed in `06. Playbooks/Research Department Reviews/WF25-P2 - GS Promotion Review.md`; preserve tactical-secondary framing. |
 
 ## Not chosen yet
 - **LDOS** - credible alternate new-name defense admission case, but second-priority behind EOG for now
@@ -30,3 +30,8 @@ Do not treat this as a deployment board.
 
 ## Rule
 A pilot case is allowed to end in **defer** or **hold**. The point is honest desk procedure, not forced additions.
+
+## Current takeaway
+- The first two WF25 pilot cases already proved the desk can reject scope creep and resist fake promotion pressure:
+  - **EOG** -> defer
+  - **GS** -> hold tactical

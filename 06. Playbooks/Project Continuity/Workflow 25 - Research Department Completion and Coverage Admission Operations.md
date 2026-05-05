@@ -20,6 +20,7 @@
 - inherits the admission/promotion procedure from WF11 and must prove it on real cases
 - Phase 1 operator surfaces now exist: `06. Playbooks/Research Department Intake Queue.md`, `06. Playbooks/Research Department Admission Review Object.md`, and `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
 - first recommended pilot cases are now named: **EOG** for new-name admission and **GS** for promotion review
+- first live pilot outcomes now exist: **EOG -> defer** and **GS -> hold tactical**
 
 ## Scope
 - define the live research-department operating queue for new names, promotions, demotions, and removals
@@ -107,7 +108,7 @@ Workflow 25 should not close unless all are true:
 5. downstream dependencies for source-bundle / geopolitical / decision-surface work are explicit
 
 ## Next Action
-- Phase 1 is underway: fill the live review objects for **EOG** and **GS**, then decide whether EOG is admitted to the watch lane and whether GS stays tactical or earns promotion.
+- Record the first WF25 pilot-case proof as complete, then decide whether a second-wave candidate set is needed before Phase 1 is called done or whether the workflow can move straight into closeout prep for the intake/promotion operating layer.
 
 ## Key Files
 - `06. Playbooks/Project Continuity/Workflow 6 - Coverage Tier Framework.md`
@@ -117,6 +118,8 @@ Workflow 25 should not close unless all are true:
 - `06. Playbooks/Research Department Intake Queue.md`
 - `06. Playbooks/Research Department Admission Review Object.md`
 - `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
+- `06. Playbooks/Research Department Reviews/WF25-P1 - EOG Admission Review.md`
+- `06. Playbooks/Research Department Reviews/WF25-P2 - GS Promotion Review.md`
 - `04. Research/Coverage Universe.md`
 - `02. Markets/Watchlist.md`
 - `03. Portfolio/Deployment Trigger Sheet.md`
