@@ -61,6 +61,7 @@ Status:
 - Phase 1 now owns the intake queue, decision objects, and first bounded live case set
 - active pilot candidates are **EOG** for new-name admission and **GS** for promotion review
 - WF21 remains queued behind this lane so recurring research packets feed a real desk process instead of widening into vagueness
+- Randall explicitly directed strict sequential execution: finish WF25 with QA, hardening pass, and executive-summary closeout before WF28 opens
 
 Reason:
 - Workflow 24 is honestly closed at the intended scope
@@ -73,6 +74,7 @@ Status:
 - queued directly behind the current WF25 Phase 1 opening pass
 - exists to land the 2026-05-04 audit's critical skill fixes before the next board-sync / weekly-brief execution path relies on stale skill contracts
 - should run before Workflow 21 because the audit identified live-skill correctness gaps, not optional polish
+- when opened, it should follow the same finish-to-closeout discipline as WF25: sequential execution, QA/hardening pass, and executive-summary artifacts before WF29 opens
 
 WF24 closeout facts now live:
 - cron-builder doctrine is explicit
@@ -122,6 +124,7 @@ WF24 closeout facts now live:
    - posture: serial
    - deliverable: real operating queue plus explicit admission / promotion review object that operationalizes WF6, WF9, and WF11
    - acceptance check: now grounded with live surfaces and first pilot cases (`EOG` admission, `GS` promotion review); complete when both review objects are filled honestly without reconstructing chat history
+   - closeout rule: do not open WF28 until WF25 reaches QA, hardening pass, independent audit / executive-summary closeout, and cross-surface sync
 
 6. **WF28 Phase 1 - critical skill corrections**
    - status: queued behind WF25
@@ -130,6 +133,7 @@ WF24 closeout facts now live:
    - posture: serial
    - deliverable: land the audit's critical live-skill fixes and resolve the technical-analysis overlap decision path
    - acceptance check: the audited critical fixes are landed and the overlap/routing cleanup path is explicit before the next board-sync / weekly-brief execution
+   - closeout rule: do not open WF29 until WF28 reaches QA, hardening pass, independent audit / executive-summary closeout, and cross-surface sync
 
 7. **WF29 Phase 1 - validation tier truth and machine-proof utility design**
    - status: queued behind WF28
@@ -138,6 +142,7 @@ WF24 closeout facts now live:
    - posture: serial behind WF28
    - deliverable: honest validation-tier labeling plus bounded machine-proof utility design for swarm handshake / sidecar validators / automation trust block
    - acceptance check: validation tiers and the first executable-proof pilot set are explicit instead of implied
+   - closeout rule: same finish-to-closeout discipline; add downstream workflows only after QA and executive-summary closure artifacts are real
 
 8. **WF21 Phase 1 - source map and pilot coverage set**
    - status: queued behind WF29
