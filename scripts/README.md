@@ -673,6 +673,47 @@ Notes:
 - this is a Tier 2 local-proof pilot, not a live chart or workflow-quality validator
 - keeps scope intentionally narrow to the file-contract-heavy `veritas-technical-pass` skill
 
+### `automation_trust_block.py`
+
+Status: Workflow 29 pilot validator/normalizer
+
+Builds and validates the first machine-readable automation trust block for the bounded `automation-hardening-manager` -> `cron-automation-manager` producer/consumer path.
+
+Run:
+```bash
+python scripts/automation_trust_block.py --input scripts/testdata/automation-trust-block-approved.json --write
+```
+
+Writes when `--write` is used:
+- `tmp/automation-trust-block.json`
+
+Exit codes:
+- `0` = trust block is valid and approved for the pilot's read-only consumer posture
+- `2` = trust block is missing required fields or fails the pilot approval rules
+
+Notes:
+- `approve` is only valid when `trust_level=automation_ready`, `trust_gates_missing=[]`, and consumer posture is `read_only`
+- this artifact is a bounded cron-facing trust gate, not a scheduler-expansion or note-mutation permission slip
+
+### `cron_trust_block_consumer.py`
+
+Status: Workflow 29 pilot fail-closed consumer
+
+Reads the normalized automation trust block and exits non-zero unless cron may safely continue in the already-approved read-only posture.
+
+Run:
+```bash
+python scripts/cron_trust_block_consumer.py --trust-block tmp/automation-trust-block.json --require-workflow "finance scheduled artifact generation pilot"
+```
+
+Exit codes:
+- `0` = trust block explicitly allows the bounded read-only consumer posture
+- `2` = missing/blocked/mismatched/unsafe trust state
+
+Notes:
+- intentionally narrow consumer: requires `status=ok`, `cron_read_allowed=true`, and `allowed_posture=read_only`
+- fail closed when the trust block is absent, invalid, blocked, or workflow-mismatched
+
 ### `run_finance_refresh_chain.py`
 
 Status: live operating-window runner

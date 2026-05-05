@@ -1,0 +1,30 @@
+{
+  "workflow": "finance scheduled artifact generation pilot",
+  "producer_skill": "automation-hardening-manager",
+  "reviewed_at_utc": "2026-05-04T23:20:00Z",
+  "current_phase": "scheduled_artifact_generation",
+  "recommended_next_phase": "scheduled_review_surfaces",
+  "trust_level": "review_required",
+  "decision": "approve",
+  "consumer_posture": "read_only",
+  "safe_automation_boundary": "Cron may only consume explicit approved trust blocks.",
+  "owner_layer": "tmp/ machine-artifact surface",
+  "review_window": "Before widening automation scope.",
+  "validation_evidence": [
+    "pilot draft only"
+  ],
+  "trust_gates_passed": [
+    "owner layer explicit"
+  ],
+  "trust_gates_missing": [
+    "validation actually run",
+    "review surface approved"
+  ],
+  "stop_lines": [
+    "missing trust block",
+    "missing approval evidence"
+  ],
+  "notes": [
+    "Intentionally invalid sample: approve without automation_ready and with missing gates."
+  ]
+}

@@ -138,6 +138,35 @@ When using this skill, report in this order:
 - trust gates still missing
 - validation or evidence
 
+## Machine-readable trust block pilot
+
+Workflow 29 Phase 4 bounded pilot:
+- producer: `python scripts/automation_trust_block.py --input <trust-block-input.json> --write`
+- default artifact: `tmp/automation-trust-block.json`
+
+Required trust-block fields for this pilot:
+- `workflow`
+- `producer_skill`
+- `reviewed_at_utc`
+- `current_phase`
+- `recommended_next_phase`
+- `trust_level` (`unsafe` / `review_required` / `automation_ready`)
+- `decision` (`approve` / `deny` / `defer`)
+- `consumer_posture` (`read_only` / `review_only` / `blocked`)
+- `safe_automation_boundary`
+- `owner_layer`
+- `review_window`
+- `validation_evidence[]`
+- `trust_gates_passed[]`
+- `trust_gates_missing[]`
+- `stop_lines[]`
+- `notes[]`
+
+Pilot approval rule:
+- only `decision=approve` + `trust_level=automation_ready` + zero `trust_gates_missing` may produce `status=ok`
+- pilot consumers may treat the block as permission for **read-only gating decisions only**
+- this trust block does **not** authorize canonical note mutation, destructive apply steps, or broader scheduler autonomy
+
 ## Memory Update Rules
 
 - log meaningful automation architecture decisions in `memory/YYYY-MM-DD.md`

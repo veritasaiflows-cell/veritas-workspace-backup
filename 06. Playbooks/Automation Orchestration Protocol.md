@@ -203,6 +203,23 @@ Do not leave completed lane output waiting unintegrated.
 ## Runtime proof rule
 Runtime/session state is advisory until it earns boring consistency.
 
+## Machine-readable automation trust-block pilot
+Workflow 29 Phase 4 adds one bounded producer/consumer path for cron-facing automation trust.
+
+Producer:
+- `scripts/automation_trust_block.py`
+- source posture still comes from `automation-hardening-manager` judgment
+- output becomes the normalized machine-readable artifact at `tmp/automation-trust-block.json`
+
+Consumer:
+- `scripts/cron_trust_block_consumer.py`
+- read rule is intentionally narrow: fail closed unless the trust block is explicitly `status=ok`, workflow-matched when required, and limited to `read_only`
+
+Scope boundary:
+- this pilot is only for machine-readable approval of already-bounded read-only automation posture
+- it does not grant canonical note mutation, destructive apply rights, or general scheduler autonomy
+- missing trust block, invalid shape, non-ok status, or non-read-only posture must all stop the automation path instead of letting cron infer safety
+
 Do not treat any of these alone as completion proof:
 - a child/session looking finished in the control surface
 - an async exec event with only exit code or terminal fragments

@@ -28,7 +28,21 @@
   - result: `status=ok`, wrote `tmp/veritas-technical-pass-validation.json`
 - Promoted `veritas-technical-pass` in `06. Playbooks/Skills Governance Index.md` from Tier 1 structural to **Tier 2 functional local proof**.
 
+## 2026-05-04 - Phase 4 machine-readable automation trust-block pilot landed
+- Added `scripts/automation_trust_block.py` as the bounded trust-block producer.
+- Added `scripts/cron_trust_block_consumer.py` as the fail-closed consumer for cron-facing read decisions.
+- Added approved and blocked sample inputs under `scripts/testdata/`.
+- Verified approved path:
+  - `python scripts/automation_trust_block.py --input scripts/testdata/automation-trust-block-approved.json --write`
+  - `python scripts/cron_trust_block_consumer.py --trust-block tmp/automation-trust-block.json`
+  - result: normalized trust block `status=ok`; consumer allowed only `read_only`
+- Verified blocked path:
+  - `python scripts/automation_trust_block.py --input scripts/testdata/automation-trust-block-blocked.json`
+  - result: blocked with `EXIT=2`
+- Promoted `automation-hardening-manager` and `cron-automation-manager` in `06. Playbooks/Skills Governance Index.md` from Tier 1 structural to **Tier 2 functional local proof**.
+- Runtime/bootstrap implication made explicit: no `openclaw skills check` or startup integration was added in this pilot; these utilities remain manual bounded proof surfaces until a later approved widening pass.
+
 ## Current posture
 - Workflow 29 remains active.
-- Phase 2 and Phase 3 pilots are real and locally proved.
-- Next bounded step: machine-readable automation trust-block pilot for `automation-hardening-manager` and `cron-automation-manager`.
+- Phases 2, 3, and 4 all have real local proof pilots.
+- Next bounded step: independent audit and honest closeout decision.

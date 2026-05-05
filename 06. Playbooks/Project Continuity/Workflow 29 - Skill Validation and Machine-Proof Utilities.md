@@ -31,6 +31,13 @@
   - `skills/veritas-technical-pass/SKILL.md` now carries an explicit sidecar-validator pilot section
   - proof result: `python scripts/veritas_technical_pass_validate.py --write` -> `status=ok`, wrote `tmp/veritas-technical-pass-validation.json`
   - governance impact: `veritas-technical-pass` is now recorded as Tier 2 functional local proof in `06. Playbooks/Skills Governance Index.md`
+- Phase 4 pilot is now landed and locally verified:
+  - `scripts/automation_trust_block.py`
+  - `scripts/cron_trust_block_consumer.py`
+  - approved proof result: normalized trust block wrote `tmp/automation-trust-block.json` and the consumer allowed only `read_only`
+  - blocked proof result: invalid approval posture failed closed with `EXIT=2`
+  - governance impact: `automation-hardening-manager` and `cron-automation-manager` are now recorded as Tier 2 functional local proof in `06. Playbooks/Skills Governance Index.md`
+- Runtime/bootstrap implication is now explicit for pilot scope: no `openclaw skills check` integration and no startup hook were added; these proof utilities remain manual bounded validators until a later workflow intentionally widens enforcement
 
 ## Scope
 - define honest validation-tier labeling in the governance index
@@ -91,7 +98,7 @@ Workflow 29 should not close unless all are true:
 5. runtime/bootstrap implications are explicit instead of silently assumed
 
 ## Next Action
-- Start Phase 4: design the first machine-readable automation trust block for `automation-hardening-manager`, then define the bounded consumer/read rule for `cron-automation-manager`.
+- Run the independent Workflow 29 audit and decide closeout honestly from the full proof stack now that Phases 1 through 4 all have landed pilot outputs.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`

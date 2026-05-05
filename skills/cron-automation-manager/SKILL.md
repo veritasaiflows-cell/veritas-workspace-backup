@@ -68,6 +68,24 @@ For research or freshness automation, do not schedule until these are explicit:
 - Keep reminder text readable as a reminder when it fires.
 - Validate the resulting artifacts, not just the job creation command.
 - If a safe forward fix exists for a broken cron path, take it before stopping at diagnosis.
+- If a workflow depends on an automation trust block, fail closed when the trust block is missing, blocked, mismatched, or anything other than explicit read-only approval.
+
+## Machine-readable trust block consumer pilot
+
+Workflow 29 Phase 4 bounded pilot consumer:
+- `python scripts/cron_trust_block_consumer.py --trust-block tmp/automation-trust-block.json --require-workflow <workflow>`
+
+Consumer read rule for this pilot:
+1. read only the normalized trust-block artifact produced by `scripts/automation_trust_block.py`
+2. require `status=ok`
+3. require `consumer.cron_read_allowed=true`
+4. require `consumer.allowed_posture=read_only`
+5. if an expected workflow name is supplied, require an exact workflow match
+6. otherwise stop with blocked status and do not widen automation behavior
+
+Pilot boundary:
+- this consumer path only answers whether a cron-facing workflow may proceed in its already-approved **read-only artifact-generation posture**
+- it must not authorize canonical note mutation, scheduler expansion, or destructive/apply behavior
 
 ## Files This Skill May Read
 

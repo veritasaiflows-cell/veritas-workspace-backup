@@ -21,8 +21,8 @@ Validation posture for this index on 2026-05-03:
 
 | Skill | Owner | Scope | Model posture | Validation tier | Last tested | Deprecation trigger |
 |---|---|---|---|---|---|---|
-| automation-hardening-manager | Veritas workspace | automation architecture, trust gates, ownership boundaries | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | replace or merge if automation-governance contract moves fully into a newer canonical playbook/skill |
-| cron-automation-manager | Veritas workspace | cron design, scheduling boundaries, overlap risk | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if cron layer changes enough that scheduling guidance becomes stale or duplicates another skill |
+| automation-hardening-manager | Veritas workspace | automation architecture, trust gates, ownership boundaries | model-agnostic; OpenClaw defaults | Tier 2 functional local proof | 2026-05-04 | replace or merge if automation-governance contract moves fully into a newer canonical playbook/skill |
+| cron-automation-manager | Veritas workspace | cron design, scheduling boundaries, overlap risk | model-agnostic; OpenClaw defaults | Tier 2 functional local proof | 2026-05-04 | review if cron layer changes enough that scheduling guidance becomes stale or duplicates another skill |
 | ic-swarm-orchestrator | Veritas workspace | bounded multi-lane orchestration, challenge lanes, completion handshake | operator-maintained external-lane references; validate routing via protocol before use | Tier 2 functional local proof | 2026-05-04 | review if external lane posture or helper-lane governance drifts materially |
 | memory-continuity-manager | Veritas workspace | daily/durable memory routing and dedupe posture | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if continuity system or daily-note contract changes materially |
 | openclaw-operator | Veritas workspace | workspace/runtime/config/skill hygiene | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if runtime/operator procedures move into a new canonical operator layer |
@@ -69,7 +69,7 @@ Current skill with explicit operator-maintained external lane posture:
 Workflow 29 should start with a narrow proof set instead of pretending the whole skill layer upgrades at once:
 - `ic-swarm-orchestrator` -> completion-handshake proof **landed** via `scripts/swarm_completion_handshake.py` with local fail/pass verification on 2026-05-04
 - `veritas-technical-pass` -> first sidecar validator pilot for a file-contract-heavy workflow skill **landed** via `scripts/veritas_technical_pass_validate.py` with local proof on 2026-05-04
-- `automation-hardening-manager` + `cron-automation-manager` -> machine-readable trust-block producer/consumer pilot
+- `automation-hardening-manager` + `cron-automation-manager` -> machine-readable trust-block producer/consumer pilot **landed** via `scripts/automation_trust_block.py` and `scripts/cron_trust_block_consumer.py` with local pass/fail samples on 2026-05-04
 
 ## No-skill-sprawl rule
 
