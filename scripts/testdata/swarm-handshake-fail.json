@@ -1,0 +1,20 @@
+{
+  "swarm_id": "wf29-fail-sample",
+  "expected_lanes": [
+    {
+      "lane_id": "reasoner_subagent",
+      "status": "completed",
+      "verdict": "draft ready",
+      "required_artifacts": [
+        {"path": "scripts/testdata/swarm-handshake-sample-reasoner.json", "kind": "json"}
+      ]
+    },
+    {
+      "lane_id": "verifier_cli",
+      "status": "running",
+      "required_artifacts": [
+        {"path": "tmp/swarm-handshake-missing.json", "kind": "json"}
+      ]
+    }
+  ]
+}

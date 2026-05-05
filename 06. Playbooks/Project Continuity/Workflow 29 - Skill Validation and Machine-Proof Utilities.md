@@ -16,6 +16,16 @@
 - active downstream workflow after Workflow 28 closed with follow-up on 2026-05-04
 - inherits the cleaned skill/governance layer from Workflow 28, so this lane can focus on executable proof instead of wording cleanup
 - should stay bounded: build proof utilities only where the trust value is real
+- Phase 1 is partially pre-landed because `06. Playbooks/Skills Governance Index.md` already carries the validation-tier column and honest Tier 1 baseline posture from Workflow 28
+- first bounded Tier 2 pilot set selected:
+  - `ic-swarm-orchestrator` -> swarm completion handshake utility / expected-output proof
+  - `veritas-technical-pass` -> first sidecar validator pilot for a file-contract-heavy workflow skill
+  - `automation-hardening-manager` plus `cron-automation-manager` -> machine-readable automation trust block producer/consumer path
+- Phase 2 pilot is now landed and locally verified:
+  - `scripts/swarm_completion_handshake.py`
+  - sample manifests: `scripts/testdata/swarm-handshake-sample.json` and `scripts/testdata/swarm-handshake-fail.json`
+  - fail-closed proof: unresolved verifier lane + missing artifact blocked synthesis with `EXIT=2`
+  - success proof: completed reasoner/verifier lanes plus artifacts allowed synthesis and wrote `tmp/swarm-handshake-status.json`
 
 ## Scope
 - define honest validation-tier labeling in the governance index
@@ -42,6 +52,12 @@ Required outputs:
 - lightweight script for blocking synthesis until expected lane outputs exist and are finalized
 - `ic-swarm-orchestrator` instructions updated to use it
 - fail-closed behavior when required outputs are missing
+
+Current bounded implementation pilot:
+- `scripts/swarm_completion_handshake.py`
+- contract: read a small JSON manifest with `expected_lanes[]`, lane status, optional verdict, and required artifacts
+- output: machine-readable handshake result with `synthesis_allowed`, `blocking_lanes`, and per-lane artifact checks
+- exit behavior: `0` only when every expected lane is resolved and ready; otherwise fail-closed non-zero
 
 ### Phase 3 - Sidecar validator pilot
 Required outputs:
@@ -70,7 +86,7 @@ Workflow 29 should not close unless all are true:
 5. runtime/bootstrap implications are explicit instead of silently assumed
 
 ## Next Action
-- Start Phase 1: verify the governance index's new validation-tier posture, then design the bounded swarm-handshake utility before touching broader skill-check integration.
+- Record the Phase 2 handshake pilot in the chain log and active surfaces, then move to the first sidecar validator pilot for `veritas-technical-pass` before touching broader skill-check integration.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`

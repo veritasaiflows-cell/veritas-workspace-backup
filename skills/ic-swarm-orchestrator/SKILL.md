@@ -36,6 +36,30 @@ Before synthesis, define expected lanes and require all to resolve.
 - If one finishes first, hold final closeout.
 - If one fails, retry once then fallback.
 - Publish one merged decision only after all expected lanes complete or are explicitly abandoned.
+- For file-grounded proof, prefer a small manifest plus `python scripts/swarm_completion_handshake.py --manifest <path> --write`.
+- Treat `synthesis_allowed=false` or any `blocking_lanes` output as fail-closed: no final synthesis yet.
+
+Suggested manifest shape:
+```json
+{
+  "swarm_id": "wf29-example",
+  "expected_lanes": [
+    {
+      "lane_id": "reasoner_subagent",
+      "status": "completed",
+      "verdict": "draft ready",
+      "required_artifacts": [
+        {"path": "tmp/reasoner-output.json", "kind": "json"}
+      ]
+    },
+    {
+      "lane_id": "verifier_cli",
+      "status": "abandoned",
+      "required_artifacts": []
+    }
+  ]
+}
+```
 
 Do not issue an executive-summary-style closeout until acceptance evidence and checkpoint posture are explicit.
 

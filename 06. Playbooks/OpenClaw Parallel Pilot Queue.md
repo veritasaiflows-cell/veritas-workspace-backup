@@ -142,6 +142,7 @@ WF24 closeout facts now live:
    - posture: serial
    - deliverable: honest validation-tier labeling plus bounded machine-proof utility design for swarm handshake / sidecar validators / automation trust block
    - acceptance check: validation tiers and the first executable-proof pilot set are explicit instead of implied
+   - current progress: validation-tier posture is explicit, `ic-swarm-orchestrator` now has a Tier 2 handshake-proof pilot via `scripts/swarm_completion_handshake.py`, and the next bounded step is the `veritas-technical-pass` sidecar validator pilot
    - closeout rule: same finish-to-closeout discipline; add downstream workflows only after QA and executive-summary closure artifacts are real
 
 8. **WF21 Phase 1 - source map and pilot coverage set**
