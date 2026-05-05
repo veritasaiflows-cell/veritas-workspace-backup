@@ -67,12 +67,12 @@ Reason:
 - Workflow 25 is the approved next downstream lane before Workflow 21 and the broader intelligence / prediction chain can open safely
 
 ### Next approved queue item
-**Workflow 21 - Recurring Source Bundle and Review Window Pilot**
+**Workflow 28 - Skills Critical Corrections and Coherence Hardening**
 
 Status:
-- still queued behind Workflow 25
-- remains blocked from opening until the research desk intake and admission objects are real
-- should feed the WF25 operating lane instead of widening research intake into a deskless flow
+- queued directly behind the current WF25 Phase 1 opening pass
+- exists to land the 2026-05-04 audit's critical skill fixes before the next board-sync / weekly-brief execution path relies on stale skill contracts
+- should run before Workflow 21 because the audit identified live-skill correctness gaps, not optional polish
 
 WF24 closeout facts now live:
 - cron-builder doctrine is explicit
@@ -123,42 +123,59 @@ WF24 closeout facts now live:
    - deliverable: real operating queue plus explicit admission / promotion review object that operationalizes WF6, WF9, and WF11
    - acceptance check: now grounded with live surfaces and first pilot cases (`EOG` admission, `GS` promotion review); complete when both review objects are filled honestly without reconstructing chat history
 
-6. **WF21 Phase 1 - source map and pilot coverage set**
+6. **WF28 Phase 1 - critical skill corrections**
+   - status: queued behind WF25
+   - owner: Veritas main lane
+   - category: skills / governance
+   - posture: serial
+   - deliverable: land the audit's critical live-skill fixes and resolve the technical-analysis overlap decision path
+   - acceptance check: the audited critical fixes are landed and the overlap/routing cleanup path is explicit before the next board-sync / weekly-brief execution
+
+7. **WF29 Phase 1 - validation tier truth and machine-proof utility design**
+   - status: queued behind WF28
+   - owner: Veritas main lane
+   - category: skills / validation
+   - posture: serial behind WF28
+   - deliverable: honest validation-tier labeling plus bounded machine-proof utility design for swarm handshake / sidecar validators / automation trust block
+   - acceptance check: validation tiers and the first executable-proof pilot set are explicit instead of implied
+
+8. **WF21 Phase 1 - source map and pilot coverage set**
+   - status: queued behind WF29
    - owner: Veritas main lane, helper lanes optional later
    - category: research / automation
    - posture: serial until the source map is explicit
    - deliverable: approved source tiers, blocked source classes, pilot names, and first raw-event input file aligned to WF25 intake needs
    - acceptance check: `scripts/research_intake_packet.py` can be run against a real narrow input set that feeds the research desk cleanly without scope drift
 
-7. **WF26 Phase 1 - fresh external intelligence and geopolitical verification map**
+9. **WF26 Phase 1 - fresh external intelligence and geopolitical verification map**
    - owner: Veritas main lane
    - category: research / external intelligence
    - posture: serial
    - deliverable: approved fresh-news / geopolitical source map, pilot sleeves, and unresolved-truth handling rules
    - acceptance check: the lane can keep fast-moving developments visible without rumor-driven false certainty
 
-8. **WF27 Phase 1 - predictive analytics and forecasting readiness**
+10. **WF27 Phase 1 - predictive analytics and forecasting readiness**
    - owner: Veritas main lane
    - category: research / quantitative methods
    - posture: blocked until upstream evidence and provenance layers are real
    - deliverable: bounded forecast-question set, target definitions, and data-readiness audit
    - acceptance check: predictive work stays methodology-first rather than model theater
 
-9. **WF21 Phase 2 - one manual packet dry run**
+11. **WF21 Phase 2 - one manual packet dry run**
    - owner: Veritas main lane
    - category: research / automation
    - posture: serial
    - deliverable: one reviewed packet run with visible stop lines and unresolved-truth handling
    - acceptance check: the packet remains review-only and low-noise
 
-10. **WF22 Phase 1 - stale-claim pilot inventory**
+12. **WF22 Phase 1 - stale-claim pilot inventory**
    - owner: Veritas main lane
    - category: note-sync / reconciliation
    - posture: blocked until WF21 yields honest candidates
    - deliverable: pilot stale-claim list and owner-surface map
    - acceptance check: candidates stay freshness/mechanical, not thesis rewrite
 
-11. **WF23 stays gated**
+13. **WF23 stays gated**
    - do not open today unless WF21 and WF22 both become materially real
 
 ### Recent completed item
@@ -200,11 +217,13 @@ WF24 closeout facts now live:
 29. Workflow 20 - parallel agents automation and human-gated review workflow [closed with follow-up]
 30. Workflow 24 - cron job build contract and session handoff hardening [closed with follow-up]
 31. Workflow 25 - research department completion and coverage admission operations [active]
-32. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 25]
-33. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]
-34. Workflow 27 - predictive analytics and forecasting readiness [queued behind Workflow 26]
-35. Workflow 22 - canonical freshness patch pilot and surface sync [queued behind Workflow 21]
-36. Workflow 23 - Command Center fresh brief and decision surface tightening [queued behind Workflow 22]
+32. Workflow 28 - skills critical corrections and coherence hardening [queued behind Workflow 25]
+33. Workflow 29 - skill validation and machine-proof utilities [queued behind Workflow 28]
+34. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 29]
+35. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]
+36. Workflow 27 - predictive analytics and forecasting readiness [queued behind Workflow 26]
+37. Workflow 22 - canonical freshness patch pilot and surface sync [queued behind Workflow 21]
+38. Workflow 23 - Command Center fresh brief and decision surface tightening [queued behind Workflow 22]
 
 ## Capacity rule for this queue
 
