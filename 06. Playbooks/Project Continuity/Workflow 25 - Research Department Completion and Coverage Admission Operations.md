@@ -18,6 +18,8 @@
 - inherits the settled lane framework from WF6 and must not relitigate it
 - inherits the desk ownership model from WF9 and must operationalize it
 - inherits the admission/promotion procedure from WF11 and must prove it on real cases
+- Phase 1 operator surfaces now exist: `06. Playbooks/Research Department Intake Queue.md`, `06. Playbooks/Research Department Admission Review Object.md`, and `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
+- first recommended pilot cases are now named: **EOG** for new-name admission and **GS** for promotion review
 
 ## Scope
 - define the live research-department operating queue for new names, promotions, demotions, and removals
@@ -105,13 +107,16 @@ Workflow 25 should not close unless all are true:
 5. downstream dependencies for source-bundle / geopolitical / decision-surface work are explicit
 
 ## Next Action
-- Phase 1 now opens: define the research-department intake queue plus the exact admission / promotion decision objects, then choose the first bounded live case set.
+- Phase 1 is underway: fill the live review objects for **EOG** and **GS**, then decide whether EOG is admitted to the watch lane and whether GS stays tactical or earns promotion.
 
 ## Key Files
 - `06. Playbooks/Project Continuity/Workflow 6 - Coverage Tier Framework.md`
 - `06. Playbooks/Project Continuity/Workflow 9 - Research Department Operating Model.md`
 - `06. Playbooks/Project Continuity/Workflow 11 - Coverage Admission Model.md`
 - `06. Playbooks/Coverage Admission and Promotion Protocol.md`
+- `06. Playbooks/Research Department Intake Queue.md`
+- `06. Playbooks/Research Department Admission Review Object.md`
+- `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
 - `04. Research/Coverage Universe.md`
 - `02. Markets/Watchlist.md`
 - `03. Portfolio/Deployment Trigger Sheet.md`

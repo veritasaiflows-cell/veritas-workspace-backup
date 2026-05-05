@@ -59,6 +59,7 @@ Status:
 - active downstream lane after WF24 closed with follow-up on 2026-05-04
 - exists to operationalize the already-landed WF6 / WF9 / WF11 doctrine into a real research-department intake and admission operating lane
 - Phase 1 now owns the intake queue, decision objects, and first bounded live case set
+- active pilot candidates are **EOG** for new-name admission and **GS** for promotion review
 - WF21 remains queued behind this lane so recurring research packets feed a real desk process instead of widening into vagueness
 
 Reason:
@@ -120,7 +121,7 @@ WF24 closeout facts now live:
    - category: research / governance
    - posture: serial
    - deliverable: real operating queue plus explicit admission / promotion review object that operationalizes WF6, WF9, and WF11
-   - acceptance check: one new-name review path and one promotion/demotion review path can be run without reconstructing chat history
+   - acceptance check: now grounded with live surfaces and first pilot cases (`EOG` admission, `GS` promotion review); complete when both review objects are filled honestly without reconstructing chat history
 
 6. **WF21 Phase 1 - source map and pilot coverage set**
    - owner: Veritas main lane, helper lanes optional later
