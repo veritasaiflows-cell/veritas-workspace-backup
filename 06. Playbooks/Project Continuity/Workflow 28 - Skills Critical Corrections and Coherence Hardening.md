@@ -14,13 +14,15 @@
 
 ## Current State
 - opened on 2026-05-04 from the independent skills-and-protocols audit
-- active downstream workflow after WF25 closed with follow-up on 2026-05-04
+- closed with follow-up on 2026-05-04 after the critical fixes, overlap resolution, governance-hook hardening, structural validation, and independent audit all landed
 - should run before the next meaningful board-sync / weekly-brief execution that relies on the audited skills
 - does not widen research autonomy; it hardens the control surface
 - Phase 1 critical corrections are landed: the deployment-readiness surface was added to the audited workflow skills, the investment-deck disclosure contract was tightened, and the cron skill now points at the retrofit checklist
 - `memory-continuity-manager` was checked against the audit finding and already had `USER.md` in its editable-file manifest, so no extra patch was required there
-- Phase 2 coherence fixes are also landed in the working tree: `technical-chart-pass` is now explicitly deprecated into a narrow legacy fallback, `veritas-technical-pass` owns canonical state translation, `automation-hardening-manager` no longer treats TaskFlow as an assumed live path, and `ic-swarm-orchestrator` now defers routing doctrine to `Automation Orchestration Protocol.md`
-- Phase 3 governance hooks are partially landed in the working tree: `workspace-qa-pass`, `veritas-self-improvement`, and `Skills Governance Index.md` now reflect skills-specific governance posture and honest validation-tier accounting
+- Phase 2 coherence fixes are landed: `technical-chart-pass` is now explicitly deprecated into a narrow legacy fallback, `veritas-technical-pass` owns canonical state translation, `automation-hardening-manager` no longer treats TaskFlow as an assumed live path, and `ic-swarm-orchestrator` now defers routing doctrine to `Automation Orchestration Protocol.md`
+- Phase 3 governance hooks are landed: `workspace-qa-pass`, `veritas-self-improvement`, and `Skills Governance Index.md` now reflect skills-specific governance posture and honest validation-tier accounting
+- Structural validation evidence exists: `openclaw skills check` passed after the changes
+- Independent audit verdict: ready to close with follow-up; remaining residue is future Tier 3 proof debt, which properly belongs to Workflow 29
 
 ## Scope
 - add missing critical input artifacts and trust-disclosure rules to active skills
@@ -71,7 +73,7 @@ Workflow 28 should not close unless all are true:
 5. an independent audit confirms the skill layer is more coherent, not just more verbose
 
 ## Next Action
-- Verify the landed Phase 1–3 skill changes together, then record the Phase 1/2/3 chain progress and move WF28 into its independent audit / closeout-prep path.
+- No further action inside WF28 unless a named reopen trigger fires. Promote Workflow 29 active for validation-tier truth plus bounded machine-proof utilities.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`

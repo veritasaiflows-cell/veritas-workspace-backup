@@ -126,20 +126,20 @@ WF24 closeout facts now live:
    - acceptance check: met for closure at intended scope; the desk can now produce honest admit/defer/hold outcomes without reconstructing chat history
    - closeout rule: satisfied; WF25 now has chain-log, executive-summary, checkpoint, and audit surfaces in progress for final verification
 
-6. **WF28 Phase 1 - critical skill corrections**
-   - status: active
+6. **WF28 Phase 1 through Phase 4 - skill coherence hardening and closeout**
+   - status: completed (closed with follow-up)
    - owner: Veritas main lane
    - category: skills / governance
    - posture: serial
-   - deliverable: land the audit's critical live-skill fixes and resolve the technical-analysis overlap decision path
-   - acceptance check: the audited critical fixes are landed and the overlap/routing cleanup path is explicit before the next board-sync / weekly-brief execution
-   - closeout rule: do not open WF29 until WF28 reaches QA, hardening pass, independent audit / executive-summary closeout, and cross-surface sync
+   - deliverable: land the audit's critical live-skill fixes, resolve the technical-analysis overlap, remove routing-drift assumptions, harden governance hooks, and close with audit-backed honesty
+   - acceptance check: met for closure at intended scope; the skill layer now fails closed more cleanly and the governance index is honest about validation posture
+   - closeout rule: satisfied; WF28 now has chain-log, executive-summary, checkpoint, and independent-audit artifacts
 
 7. **WF29 Phase 1 - validation tier truth and machine-proof utility design**
-   - status: queued behind WF28
+   - status: active
    - owner: Veritas main lane
    - category: skills / validation
-   - posture: serial behind WF28
+   - posture: serial
    - deliverable: honest validation-tier labeling plus bounded machine-proof utility design for swarm handshake / sidecar validators / automation trust block
    - acceptance check: validation tiers and the first executable-proof pilot set are explicit instead of implied
    - closeout rule: same finish-to-closeout discipline; add downstream workflows only after QA and executive-summary closure artifacts are real
@@ -222,8 +222,8 @@ WF24 closeout facts now live:
 29. Workflow 20 - parallel agents automation and human-gated review workflow [closed with follow-up]
 30. Workflow 24 - cron job build contract and session handoff hardening [closed with follow-up]
 31. Workflow 25 - research department completion and coverage admission operations [closed with follow-up]
-32. Workflow 28 - skills critical corrections and coherence hardening [active]
-33. Workflow 29 - skill validation and machine-proof utilities [queued behind Workflow 28]
+32. Workflow 28 - skills critical corrections and coherence hardening [closed with follow-up]
+33. Workflow 29 - skill validation and machine-proof utilities [active]
 34. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 29]
 35. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]
 36. Workflow 27 - predictive analytics and forecasting readiness [queued behind Workflow 26]

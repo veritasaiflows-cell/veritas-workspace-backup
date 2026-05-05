@@ -13,7 +13,8 @@
 
 ## Current State
 - opened on 2026-05-04 from the independent skills-and-protocols audits
-- depends on Workflow 28 for the first coherence cleanup, but should remain a separate lane because it creates executable trust infrastructure rather than wording-only fixes
+- active downstream workflow after Workflow 28 closed with follow-up on 2026-05-04
+- inherits the cleaned skill/governance layer from Workflow 28, so this lane can focus on executable proof instead of wording cleanup
 - should stay bounded: build proof utilities only where the trust value is real
 
 ## Scope
@@ -69,7 +70,7 @@ Workflow 29 should not close unless all are true:
 5. runtime/bootstrap implications are explicit instead of silently assumed
 
 ## Next Action
-- Wait behind Workflow 28, then start with validation-tier truth and the bounded swarm-handshake utility design before touching broader skill-check integration.
+- Start Phase 1: verify the governance index's new validation-tier posture, then design the bounded swarm-handshake utility before touching broader skill-check integration.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`
