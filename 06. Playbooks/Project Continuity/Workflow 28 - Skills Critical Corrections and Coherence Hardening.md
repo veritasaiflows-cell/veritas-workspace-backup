@@ -17,7 +17,10 @@
 - active downstream workflow after WF25 closed with follow-up on 2026-05-04
 - should run before the next meaningful board-sync / weekly-brief execution that relies on the audited skills
 - does not widen research autonomy; it hardens the control surface
-- Phase 1 critical corrections are underway: the deployment-readiness surface is being added to the audited workflow skills, the investment-deck disclosure contract is being tightened, and the cron skill now points at the retrofit checklist
+- Phase 1 critical corrections are landed: the deployment-readiness surface was added to the audited workflow skills, the investment-deck disclosure contract was tightened, and the cron skill now points at the retrofit checklist
+- `memory-continuity-manager` was checked against the audit finding and already had `USER.md` in its editable-file manifest, so no extra patch was required there
+- Phase 2 coherence fixes are also landed in the working tree: `technical-chart-pass` is now explicitly deprecated into a narrow legacy fallback, `veritas-technical-pass` owns canonical state translation, `automation-hardening-manager` no longer treats TaskFlow as an assumed live path, and `ic-swarm-orchestrator` now defers routing doctrine to `Automation Orchestration Protocol.md`
+- Phase 3 governance hooks are partially landed in the working tree: `workspace-qa-pass`, `veritas-self-improvement`, and `Skills Governance Index.md` now reflect skills-specific governance posture and honest validation-tier accounting
 
 ## Scope
 - add missing critical input artifacts and trust-disclosure rules to active skills
@@ -68,7 +71,7 @@ Workflow 28 should not close unless all are true:
 5. an independent audit confirms the skill layer is more coherent, not just more verbose
 
 ## Next Action
-- Finish verifying the Phase 1 critical live-skill corrections, then move directly into the `technical-chart-pass` overlap-resolution path before opening any broader proof-utility work.
+- Verify the landed Phase 1–3 skill changes together, then record the Phase 1/2/3 chain progress and move WF28 into its independent audit / closeout-prep path.
 
 ## Key Files
 - `08. Audits/Skills and Protocols Audit - 2026-05-04.md`

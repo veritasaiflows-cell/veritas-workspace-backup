@@ -29,7 +29,7 @@ Read only what the pass needs, but default to:
 - the changed files and the smallest useful neighboring files
 - the most relevant prior audit in `08. Audits/`
 
-If the pass is about skills, also read one or two strong local skills to match current workspace style.
+If the pass is about skills, read `06. Playbooks/Skill Quality Standard.md` and `06. Playbooks/Skills Governance Index.md` as the style and governance anchor instead of anchoring the audit to a sample skill file.
 
 ## Boundaries
 

@@ -15,22 +15,20 @@ Never let helper lanes publish final queue state alone.
 For early automation lanes, default helper scope to contract-building, audit, contradiction, or QA unless the workflow contract explicitly widens authority.
 
 ## Role routing
-These external lane references are operator-maintained posture, not permanent truth. Validate live availability before use.
-- Use **Gemini Pro** as preferred IC for implementation, scripts, and broad research when that lane is actually available.
-- Use **Claude** for harder judgment-heavy review and high-stakes challenge passes when that lane is actually available.
-- Use spawned OpenClaw subagents for bounded file-grounded implementation.
+Read `06. Playbooks/Automation Orchestration Protocol.md` first for the canonical lane-routing, fallback, and operator-posture rules.
+
+This skill should not maintain a second routing doctrine.
+Its job is to define the lane contract, handshake, and merge discipline after routing is chosen.
+
+Treat all external lane references as operator-maintained posture, not permanent truth. Validate live availability before use.
 
 ## Effort posture
-- Hard judgment/trust decisions: Claude `--effort high` (or higher when needed).
-- Mechanical verification/coding scans: Gemini Pro with concise bounded prompt.
-- Small low-risk checks: lower prompt depth and tighter scope.
+Use the effort posture and model-routing guidance from `06. Playbooks/Automation Orchestration Protocol.md`.
+If the live environment or current operator protocol does not prove a lane/effort path, do not invent one here.
 
 ## Fallback order
-If preferred lane is unavailable:
-1. ACP harness lane (if available)
-2. local CLI lane (`gemini -m gemini-3.1-pro-preview -p ...` / `claude -p ...`)
-3. spawned subagent with same decision contract
-
+Use the fallback order from `06. Playbooks/Automation Orchestration Protocol.md`.
+Remove undefined or unproven routing labels rather than pretending they exist.
 Treat 429/capacity failures as lane availability failures, not evidence.
 
 ## Completion handshake

@@ -8,37 +8,44 @@ Provide one operator-facing index for the active workspace skills so scope, post
 - **Owner**
 - **Scope**
 - **Model posture**
+- **Validation tier**
 - **Last tested**
 - **Deprecation trigger**
 
 Validation posture for this index on 2026-05-03:
 - baseline validation method: `openclaw skills check`
 - this is a governance/accounting surface, not proof that every skill just completed a live end-to-end workflow pass
+- unless explicitly upgraded, the honest default validation posture for active skills is **Tier 1 structural**
 
-## Active workspace skills (20)
+## Active workspace skills (19 canonical)
 
-| Skill | Owner | Scope | Model posture | Last tested | Deprecation trigger |
-|---|---|---|---|---|---|
-| automation-hardening-manager | Veritas workspace | automation architecture, trust gates, ownership boundaries | model-agnostic; OpenClaw defaults | 2026-05-03 | replace or merge if automation-governance contract moves fully into a newer canonical playbook/skill |
-| cron-automation-manager | Veritas workspace | cron design, scheduling boundaries, overlap risk | model-agnostic; OpenClaw defaults | 2026-05-03 | review if cron layer changes enough that scheduling guidance becomes stale or duplicates another skill |
-| ic-swarm-orchestrator | Veritas workspace | bounded multi-lane orchestration, challenge lanes, completion handshake | operator-maintained external-lane references; validate Claude/Gemini/OpenClaw routing before use | 2026-05-03 | review if external lane posture or helper-lane governance drifts materially |
-| memory-continuity-manager | Veritas workspace | daily/durable memory routing and dedupe posture | model-agnostic; OpenClaw defaults | 2026-05-03 | review if continuity system or daily-note contract changes materially |
-| openclaw-operator | Veritas workspace | workspace/runtime/config/skill hygiene | model-agnostic; OpenClaw defaults | 2026-05-03 | review if runtime/operator procedures move into a new canonical operator layer |
-| openclaw-troubleshooter | Veritas workspace | OpenClaw runtime/config troubleshooting | model-agnostic; OpenClaw defaults | 2026-05-03 | review if troubleshooting doctrine drifts from live runtime or docs |
-| project-continuity-manager | Veritas workspace | thin project pickup points and continuity notes | model-agnostic; OpenClaw defaults | 2026-05-03 | review if project continuity standard is replaced by a stronger canonical workflow contract |
-| technical-chart-pass | Veritas workspace | generic technical chart analysis fallback | model-agnostic; OpenClaw defaults | 2026-05-03 | resolve trigger-language overlap explicitly at the next skill-governance review; deprecate or narrow further if it conflicts with `veritas-technical-pass` ownership |
-| veritas-fundamental-pass | Veritas workspace | Veritas equity fundamentals workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if finance evidence standards or vault structure change materially |
-| veritas-investment-deck | Veritas workspace | finance-first investment presentation workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if deck workflow is superseded by a canonical packaging layer |
-| veritas-macro-pass | Veritas workspace | macro regime and market context workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if macro source/trust rules change materially |
-| veritas-pdf-brief | Veritas workspace | finance-first PDF deliverable workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if fixed-layout output flow changes materially |
-| veritas-portfolio-update | Veritas workspace | portfolio board synchronization and trust-boundary handling | model-agnostic; OpenClaw defaults | 2026-05-03 | review if portfolio owner surfaces or sync contracts change materially |
-| veritas-positioning-pass | Veritas workspace | portfolio-positioning decisions from macro/fundamental/technical inputs | model-agnostic; OpenClaw defaults | 2026-05-03 | review if positioning doctrine or risk rules change materially |
-| veritas-post-earnings-sync | Veritas workspace | post-earnings closure workflow and note-layer sync | model-agnostic; OpenClaw defaults | 2026-05-03 | review if post-earnings artifact flow or note ownership changes materially |
-| veritas-self-improvement | Veritas workspace | doctrine-aligned reflection and correction capture | model-agnostic; OpenClaw defaults | 2026-05-03 | review if self-improvement outputs begin overlapping continuity or operator layers excessively |
-| veritas-technical-pass | Veritas workspace | canonical Veritas technical timing workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if ownership drifts back toward `technical-chart-pass` or chart standards change materially |
-| veritas-weekly-brief | Veritas workspace | weekly intelligence rebuild and synthesis workflow | model-agnostic; OpenClaw defaults | 2026-05-03 | review if weekly rebuild chain or publication contract changes materially |
-| workspace-governor | Veritas workspace | workspace structure, note placement, organization governance | model-agnostic; OpenClaw defaults | 2026-05-03 | review if workspace architecture or root-folder policy changes materially |
-| workspace-qa-pass | Veritas workspace | bounded high-signal QA audits after meaningful changes | model-agnostic; OpenClaw defaults | 2026-05-03 | review if QA standards drift from live control-plane or workflow contract standards |
+| Skill | Owner | Scope | Model posture | Validation tier | Last tested | Deprecation trigger |
+|---|---|---|---|---|---|---|
+| automation-hardening-manager | Veritas workspace | automation architecture, trust gates, ownership boundaries | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | replace or merge if automation-governance contract moves fully into a newer canonical playbook/skill |
+| cron-automation-manager | Veritas workspace | cron design, scheduling boundaries, overlap risk | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if cron layer changes enough that scheduling guidance becomes stale or duplicates another skill |
+| ic-swarm-orchestrator | Veritas workspace | bounded multi-lane orchestration, challenge lanes, completion handshake | operator-maintained external-lane references; validate routing via protocol before use | Tier 1 structural | 2026-05-03 | review if external lane posture or helper-lane governance drifts materially |
+| memory-continuity-manager | Veritas workspace | daily/durable memory routing and dedupe posture | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if continuity system or daily-note contract changes materially |
+| openclaw-operator | Veritas workspace | workspace/runtime/config/skill hygiene | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if runtime/operator procedures move into a new canonical operator layer |
+| openclaw-troubleshooter | Veritas workspace | OpenClaw runtime/config troubleshooting | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if troubleshooting doctrine drifts from live runtime or docs |
+| project-continuity-manager | Veritas workspace | thin project pickup points and continuity notes | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if project continuity standard is replaced by a stronger canonical workflow contract |
+| veritas-fundamental-pass | Veritas workspace | Veritas equity fundamentals workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if finance evidence standards or vault structure change materially |
+| veritas-investment-deck | Veritas workspace | finance-first investment presentation workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if deck workflow is superseded by a canonical packaging layer |
+| veritas-macro-pass | Veritas workspace | macro regime and market context workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if macro source/trust rules change materially |
+| veritas-pdf-brief | Veritas workspace | finance-first PDF deliverable workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if fixed-layout output flow changes materially |
+| veritas-portfolio-update | Veritas workspace | portfolio board synchronization and trust-boundary handling | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if portfolio owner surfaces or sync contracts change materially |
+| veritas-positioning-pass | Veritas workspace | portfolio-positioning decisions from macro/fundamental/technical inputs | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if positioning doctrine or risk rules change materially |
+| veritas-post-earnings-sync | Veritas workspace | post-earnings closure workflow and note-layer sync | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | promote toward Tier 3 live-workflow proof as a priority core workflow |
+| veritas-self-improvement | Veritas workspace | doctrine-aligned reflection and correction capture | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if self-improvement outputs begin overlapping continuity or operator layers excessively |
+| veritas-technical-pass | Veritas workspace | canonical Veritas technical timing workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if ownership drifts back toward deprecated legacy technical-state vocab or chart standards change materially |
+| veritas-weekly-brief | Veritas workspace | weekly intelligence rebuild and synthesis workflow | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | promote toward Tier 3 live-workflow proof as a priority core workflow |
+| workspace-governor | Veritas workspace | workspace structure, note placement, organization governance | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if workspace architecture or root-folder policy changes materially |
+| workspace-qa-pass | Veritas workspace | bounded high-signal QA audits after meaningful changes | model-agnostic; OpenClaw defaults | Tier 1 structural | 2026-05-03 | review if QA standards drift from live control-plane or workflow contract standards |
+
+## Deprecated legacy fallback
+
+| Skill | Status | Current posture | Replacement |
+|---|---|---|---|
+| technical-chart-pass | Deprecated legacy fallback | Keep only as a narrow generic chart-read fallback; do not use for board sync, technical-sheet updates, or Veritas deployment-state work | `veritas-technical-pass` |
 
 ## Stale-model-reference rule
 
@@ -54,13 +61,13 @@ Current skill with explicit operator-maintained external lane posture:
 
 ## Known governance follow-up
 
-- `technical-chart-pass` vs `veritas-technical-pass` remains a known bounded overlap.
-- Current posture is acceptable because the generic-fallback vs canonical-Veritas distinction is already documented.
-- It should still receive an explicit keep-both / narrow-further / deprecate decision at the next skill-governance review rather than remaining open-ended.
+- `technical-chart-pass` overlap has now been resolved by deprecating it into a narrow legacy generic-fallback posture and routing canonical board work to `veritas-technical-pass`.
+- Next governance focus should be validation-tier promotion for the core workflow skills rather than further overlap expansion.
 
 ## No-skill-sprawl rule
 
-Current active workspace skill count: **20**.
+Current canonical active workspace skill count: **19**.
+Deprecated legacy fallback count: **1** (`technical-chart-pass`).
 
 Trigger a governance review when:
 - the count exceeds 20

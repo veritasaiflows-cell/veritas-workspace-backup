@@ -60,6 +60,7 @@ Status:
 - exists to land the 2026-05-04 audit's critical skill fixes before the next board-sync / weekly-brief path relies on stale skill contracts
 - Phase 1 now owns the critical live-skill corrections and technical-overlap decision path
 - Phase 1 critical corrections are already underway on the audited workflow skills and deck disclosure contract
+- overlap resolution and governance-hook tightening are now also landed in the working tree; next step is verification plus independent audit/closeout prep
 - WF29 remains queued behind this lane so executable proof utilities are built only after the coherence layer is honest
 - Randall explicitly directed strict sequential execution: finish WF28 with QA, hardening pass, and executive-summary closeout before WF29 opens
 

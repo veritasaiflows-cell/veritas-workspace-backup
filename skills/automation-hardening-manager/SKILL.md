@@ -21,7 +21,7 @@ Use this skill when:
 - the OS needs a rollout path from manual -> semi-automated -> more autonomous
 - an artifact or note layer needs clearer authority and ownership
 - a proposed automation change may blur trust boundaries
-- you need to decide whether a workflow should use cron, heartbeat, TaskFlow, or stay manual
+- you need to decide whether a workflow should use cron, heartbeat, a spawned subagent / detached helper path, or stay manual
 
 Do not use this skill for simple one-off reminders.
 Do not use it to justify removing review steps without evidence.
@@ -42,7 +42,7 @@ It does not replace:
 - `memory-continuity-manager` for memory routing
 - `project-continuity-manager` for project pickup points
 - `openclaw-operator` for general workspace/runtime hygiene
-- `taskflow` for durable detached execution substrate
+- a dedicated detached execution substrate when one is actually verified live
 
 ## Core Review Questions
 
@@ -104,8 +104,10 @@ Use this routing logic:
 
 - **heartbeat** -> lightweight maintenance only
 - **cron** -> exact recurring windows, reminders, scheduled artifact generation
-- **TaskFlow** -> multi-step detached work that still needs one owner context and resumable state
+- **detached helper lane** -> spawned subagent or other verified detached path when bounded work needs one owner context outside the main lane
 - **manual** -> anything with weak trust, sparse validation, or high consequence
+
+Do not assume `TaskFlow` is a live approved mechanism in this workspace unless it is explicitly validated in the current operator protocol. If that proof is absent, default to a spawned subagent or manual path instead.
 
 If a workflow mutates canonical notes or high-consequence config, default to manual or gated apply until proven otherwise.
 

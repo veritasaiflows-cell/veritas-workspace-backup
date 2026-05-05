@@ -190,3 +190,5 @@ Use this skill for prompts like:
 - Use `veritas-fundamental-pass` to decide whether the business belongs in the serious board.
 - Use this skill to decide whether timing quality is good enough to act.
 - In the Veritas workflow, fundamentals decide whether a name deserves attention. Technicals decide whether the setup is disciplined enough for real deployment work.
+- If an inbound request uses older generic labels such as `Ready now`, `Close`, `Bench`, or `Avoid for now`, translate that request into the canonical four-state Veritas model instead of routing to the deprecated `technical-chart-pass` unless the user explicitly wants the legacy generic format.
+- If an inbound request uses older generic labels such as `Ready now`, `Close`, `Bench`, or `Avoid for now`, translate that request into the canonical four-state Veritas model instead of routing to the deprecated `technical-chart-pass` unless the user explicitly wants the legacy generic format.

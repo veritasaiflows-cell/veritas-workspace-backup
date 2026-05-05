@@ -1,15 +1,22 @@
 ---
 name: technical-chart-pass
-description: Produce a decision-grade technical analysis pass for stocks, ETFs, and other liquid public-market assets using live charts and reliable public market data. Use when defining or refreshing support/resistance, trend posture, moving-average structure, entry bands, stop levels, invalidation logic, readiness labels, or rank-ordering candidates for watchlists and model portfolios. Especially useful when converting a thesis or watchlist into an execution-aware technical sheet.
+description: Deprecated generic technical-analysis fallback for stocks, ETFs, and other liquid public-market assets. Use only when a non-Veritas generic chart read is explicitly requested outside the canonical board-sync workflow. Do not use for technical-sheet updates, watchlist-to-board conversion, deployment-state decisions, or other Veritas board-sync work; use `veritas-technical-pass` instead.
 ---
 
 # Technical Chart Pass
+
+## Status
+
+Deprecated legacy fallback.
+
+Default to `veritas-technical-pass` for all live Veritas board-sync, watchlist, technical-sheet, weekly-brief, and deployment-readiness work.
+Use this skill only when the user explicitly wants a generic technical read that does **not** need the canonical Veritas four-state model.
 
 Use this skill to turn a market idea into a disciplined technical setup.
 
 This is not for vague chart commentary. Use it when the output needs exact levels, entry discipline, invalidation logic, and a clear readiness judgment.
 
-Boundary: treat this as the generic technical-analysis fallback, not the canonical Veritas workflow skill for board sync, deployment-sheet decisions, weekly brief production, or post-earnings workflow integration.
+Boundary: treat this as a legacy generic technical-analysis fallback, not the canonical Veritas workflow skill for board sync, deployment-sheet decisions, weekly brief production, post-earnings workflow integration, or watchlist-to-board conversion.
 
 ## Core workflow
 
@@ -35,6 +42,14 @@ Use one of these labels:
 - Avoid for now
 
 Base the label on both thesis alignment and technical quality. A good company with bad structure is not ready.
+
+Legacy-label translation rule:
+- `Ready now` -> usually `Deployable` in the canonical Veritas system
+- `Close` -> usually `Watch-only`, or `Blocked` when a catalyst/timing rule is the real reason to wait
+- `Bench` -> usually `Watch-only`, or `Repair mode` if the chart is structurally damaged
+- `Avoid for now` -> usually `Blocked` or `Repair mode`, not a free-floating bucket
+
+If the output will feed any Veritas board or workflow, stop and use `veritas-technical-pass` instead of relying on this translation layer.
 
 4. Define the trade discipline layer
 For each asset, specify:
@@ -79,19 +94,20 @@ Use this format unless the user asks for another one:
 
 ## Portfolio use
 
-When this skill is used for a portfolio sheet:
+When this skill is used for a generic comparison sheet:
 - rank the names by risk-adjusted entry quality, not by story strength alone
 - call out which names are ready versus just attractive businesses
-- keep the output concise enough to paste into a technical sheet or portfolio review note
+- do not present the output as the canonical Veritas technical sheet state
 
 ## Good triggers
 
 Use this skill for prompts like:
 - "finish the precision technical pass"
 - "add exact entry and stop levels"
-- "update the technical sheet"
 - "which of these watchlist names are technically ready"
 - "give me support, resistance, moving averages, and invalidation"
+
+If the request is to update the technical sheet, sync the board, classify deployment state, or produce a Veritas operating judgment, use `veritas-technical-pass` instead.
 
 ## Do not use this skill when
 

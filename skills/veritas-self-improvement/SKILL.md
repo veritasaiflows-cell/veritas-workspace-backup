@@ -216,6 +216,11 @@ Recommend creating or improving a skill when all are true:
 - a reusable workflow would improve reliability or speed
 - the knowledge should outlive the current chat
 
+Before creating or materially expanding a skill:
+- check `06. Playbooks/Skills Governance Index.md` for current skill-count and overlap posture
+- apply the minimum quality bar from `06. Playbooks/Skill Quality Standard.md`
+- if the workspace is already at or above the governance-review threshold, prefer merge / deprecate / narrow decisions before adding another overlapping skill
+
 Do not create a skill just because something is interesting.
 Create one when reuse is real.
 
