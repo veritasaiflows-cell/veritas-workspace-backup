@@ -1,0 +1,227 @@
+{
+  "canonical_mutation_allowed": false,
+  "created_at": "2026-05-04T05:14:43+00:00",
+  "packet_count": 2,
+  "packets": [
+    {
+      "affected_tickers_or_themes": [
+        "NVDA"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "Fresh timing information suggests the note layer should remain cautious until primary confirmation is available.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [
+            "stale_canonical_note_candidate",
+            "timing_freshness_check"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is high. Stop-line: False.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": "canonical_freshness_patch_candidate",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "High materiality and stale canonical note risk: draft patch candidate for human review.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "high",
+      "contradictions_uncertainty": [],
+      "created_at": "2026-05-04T05:14:43+00:00",
+      "event_datetime": "2026-05-03T16:30:00-07:00",
+      "event_title": "NVDA timing confirmation remains unresolved after fresh calendar check",
+      "materiality_level": "high",
+      "next_required_review": "Human canonical freshness review required. Draft exact patch only; no auto-apply.",
+      "packet_id": "rip_c9b18e95b1173119",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [
+        {
+          "excerpt": "Calendar item requires manual confirmation before note mutation.",
+          "published_at": "2026-05-03T09:00:00-07:00",
+          "retrieved_at": null,
+          "source": "Company IR",
+          "source_tier": "tier_1_primary",
+          "title": "Company investor relations calendar",
+          "url": "https://example.com/ir-calendar"
+        }
+      ],
+      "recommended_routing": "canonical_freshness_patch_candidate",
+      "routing_reason": "High materiality and stale canonical note risk: draft patch candidate for human review.",
+      "secondary_evidence": [
+        {
+          "excerpt": null,
+          "published_at": "2026-05-03T08:00:00-07:00",
+          "retrieved_at": null,
+          "source": "Trusted financial media",
+          "source_tier": "tier_2_trusted",
+          "title": "Trusted market calendar update",
+          "url": "https://example.com/calendar-update"
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": true,
+      "stop_line_triggered": false,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": []
+    },
+    {
+      "affected_tickers_or_themes": [
+        "XOM",
+        "OIL",
+        "HORMUZ"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "Unverified claim without primary confirmation.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "low",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution",
+            "has_macro_context"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution, has_macro_context.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "low",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": [
+            "No company, exchange, or trusted wire confirmation."
+          ]
+        },
+        {
+          "confidence": "low",
+          "contradictions": [
+            "No company, exchange, or trusted wire confirmation."
+          ],
+          "flags": [
+            "low_confidence",
+            "material_event_without_primary_evidence",
+            "missing_primary_evidence",
+            "missing_secondary_evidence",
+            "rumor_or_unverified_source",
+            "unresolved_contradiction_without_primary_evidence",
+            "weak_source_tier"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is low. Stop-line: True.",
+          "uncertainty": [
+            "Evidence quality does not support autonomous routing beyond review."
+          ]
+        },
+        {
+          "confidence": "low",
+          "contradictions": [],
+          "flags": [
+            "low_confidence",
+            "rumor_or_unverified_source",
+            "material_event_without_primary_evidence",
+            "unresolved_contradiction_without_primary_evidence"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "Low confidence, rumor-heavy, duplicate, or unresolved evidence gap: no promotion.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "low",
+      "contradictions_uncertainty": [
+        "Evidence quality does not support autonomous routing beyond review.",
+        "No company, exchange, or trusted wire confirmation.",
+        "low_confidence",
+        "material_event_without_primary_evidence",
+        "rumor_or_unverified_source",
+        "unresolved_contradiction_without_primary_evidence"
+      ],
+      "created_at": "2026-05-04T05:14:43+00:00",
+      "event_datetime": "2026-05-03T15:10:00-07:00",
+      "event_title": "Unverified social post claims major XOM production disruption",
+      "materiality_level": "high",
+      "next_required_review": "Human review required to repair packet validation errors.",
+      "packet_id": "rip_adebc04a13374063",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [],
+      "recommended_routing": "stop_line_no_promotion",
+      "routing_reason": "Validation failed: packet is fail-closed.",
+      "secondary_evidence": [],
+      "source_tier": "rumor_unverified",
+      "stale_canonical_note": false,
+      "stop_line_triggered": true,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [
+        "medium/high materiality packet requires primary_evidence or must stop-line"
+      ]
+    }
+  ]
+}

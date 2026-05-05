@@ -90,6 +90,10 @@ Per-window ownership is cleaner.
     "Band review queue remains open"
   ],
   "blockers": [],
+  "operator_action_required": [
+    "Review fallback/manual policy expectations before treating the window as presentation-ready"
+  ],
+  "next_action": "Review warning-grade outputs and decide whether any queue item needs to run before the next finance window.",
   "fallback_state": {
     "used": true,
     "reason": "policy expectations fallback source in effect"
@@ -117,6 +121,8 @@ Per-window ownership is cleaner.
 - `outputs`
 - `warnings`
 - `blockers`
+- `operator_action_required`
+- `next_action`
 - `fallback_state`
 - `downstream`
 
@@ -242,6 +248,20 @@ Examples:
 
 If any meaningful fallback is active, this block should say so even if the overall status is still `warning` instead of `blocked`.
 
+## Operator action block
+
+The run summary must make unresolved operator work explicit.
+
+Required fields:
+- `operator_action_required` (array)
+- `next_action` (string)
+
+Rules:
+- use `operator_action_required` for concrete review or repair steps that still belong to the operator after the run
+- use an empty array only when no human follow-up is required beyond normal consumption
+- `next_action` should name the single best immediate follow-up, not a vague backlog
+- do not imply closure when warnings or blocked states still require a manual decision
+
 ## Downstream policy block
 
 The `downstream` object prevents every consumer from inventing its own trust rule.
@@ -303,6 +323,7 @@ The run summary becomes the workflow-level trust source for:
 - workbook control-panel trust state
 - packaging eligibility
 - scheduled-run review logging
+- operator follow-up visibility
 
 Do not let each surface invent its own parallel state machine.
 

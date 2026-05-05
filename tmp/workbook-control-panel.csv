@@ -1,25 +1,25 @@
 record_type,metric_key,metric_label,metric_value,severity,summary,action_needed,export_generated_at_utc,source_last_trading_day,validation_grade,data_status
-kpi,refresh_timestamp,Refresh Timestamp,2026-05-03T15:31:28.263175+00:00,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,export_manifest_generated_at,Export Manifest Generated At,2026-05-03T15:31:29.584089+00:00,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,validation_grade,Validation Grade,Clean,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,critical_count,Critical Count,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,warning_count,Warning Count,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,source_freshness_status,Source Freshness Status,Fresh,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,oldest_source_age_hours,Oldest Source Age Hours,18.95,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,stale_source_file_count,Stale Source File Count,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,warning_source_file_count,Warning Source File Count,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,universe_consistency,Universe Consistency,Clean,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,universe_tracked,Universe Tracked,22,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,technical_drift_scope,Technical Drift Scope,18,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,execution_board_scope,Execution Board Scope,10,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,non_execution_tracked,Non Execution Tracked,12,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,actionable_count,Actionable Count,3,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,blocked_count,Blocked Count,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,extended_count,Extended Count,3,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,repair_count,Repair Count,3,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,stale_band_count,Stale Band Count,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,technical_note_parity_gaps,Technical Note Parity Gaps,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,technical_note_missing_sections,Technical Note Missing Sections,0,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,near_earnings_count,Near Earnings Count,1,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,macro_regime,Macro Regime,"Restrictive pause, resilient growth, selective risk-on — large-cap quality bias",,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
-kpi,policy_mode,Policy Mode,ok,,,,2026-05-03T15:31:29.584089+00:00,2026-05-01,Clean,ok
+kpi,refresh_timestamp,Refresh Timestamp,2026-05-05T00:50:05.911099+00:00,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,export_manifest_generated_at,Export Manifest Generated At,2026-05-05T00:50:07.180490+00:00,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,validation_grade,Validation Grade,Clean,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,critical_count,Critical Count,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,warning_count,Warning Count,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,source_freshness_status,Source Freshness Status,Warning,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,oldest_source_age_hours,Oldest Source Age Hours,32.88,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,stale_source_file_count,Stale Source File Count,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,warning_source_file_count,Warning Source File Count,1,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,universe_consistency,Universe Consistency,Clean,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,universe_tracked,Universe Tracked,22,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,technical_drift_scope,Technical Drift Scope,18,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,execution_board_scope,Execution Board Scope,10,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,non_execution_tracked,Non Execution Tracked,12,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,actionable_count,Actionable Count,3,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,blocked_count,Blocked Count,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,extended_count,Extended Count,3,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,repair_count,Repair Count,3,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,stale_band_count,Stale Band Count,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,technical_note_parity_gaps,Technical Note Parity Gaps,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,technical_note_missing_sections,Technical Note Missing Sections,0,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,near_earnings_count,Near Earnings Count,1,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,macro_regime,Macro Regime,"Restrictive pause, resilient growth, selective risk-on — large-cap quality bias",,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok
+kpi,policy_mode,Policy Mode,ok,,,,2026-05-05T00:50:07.180490+00:00,2026-05-04,Clean,ok

@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:04.265307+00:00",
+  "generated_at_utc": "2026-05-05T00:49:41.543637+00:00",
   "status": "ok",
   "stale_after_hours": 36,
   "expected_update_window": "Refresh after the close for next-session regime work and before weekly macro outputs.",
-  "last_trading_day": "2026-04-30",
+  "last_trading_day": "2026-05-01",
   "source_last_trading_day": {
-    "ig_oas": "2026-04-30",
-    "hy_oas": "2026-04-30"
+    "ig_oas": "2026-05-01",
+    "hy_oas": "2026-05-01"
   },
   "freshness_notes": [
     "fred_ice_bofa_series_can_lag_one_trading_day",
@@ -20,19 +20,19 @@
       "value": 0.81,
       "unit": "percent",
       "series": "BAMLC0A0CM",
-      "as_of": "2026-04-30"
+      "as_of": "2026-05-01"
     },
     "high_yield_oas": {
-      "value": 2.83,
+      "value": 2.77,
       "unit": "percent",
       "series": "BAMLH0A0HYM2",
-      "as_of": "2026-04-30"
+      "as_of": "2026-05-01"
     },
-    "hy_minus_ig_spread": 2.02,
+    "hy_minus_ig_spread": 1.96,
     "direction": {
       "ig_5d": "flat",
       "ig_20d": "tightening",
-      "hy_5d": "flat",
+      "hy_5d": "tightening",
       "hy_20d": "tightening"
     },
     "stress_regime": "benign",

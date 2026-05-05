@@ -1,7 +1,7 @@
 {
   "ticker": "LNG",
   "name": "Cheniere Energy, Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "260.82–275.56"
   },
   "current_quote": {
-    "close": 270.06,
-    "ma20": 264.51,
-    "ma50": 261.44,
-    "ma200": 228.36,
-    "data_date": "2026-05-01"
+    "close": 272.85,
+    "ma20": 263.95,
+    "ma50": 262.37,
+    "ma200": 228.57,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:27+00:00"
+  "generated_at": "2026-05-05T00:50:05+00:00"
 }

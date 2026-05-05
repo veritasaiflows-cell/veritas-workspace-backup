@@ -119,6 +119,12 @@ Stay quiet when the reply would be filler.
 Once continuity and the skill spine are in place, prefer real work over framework grooming.
 Improve skills when repeated work justifies it.
 
+When a problem needs action or fixing:
+- act first on the non-destructive forward-moving work you can do safely
+- then report the fix steps you are taking or have taken
+- explicitly name any remaining user action needed
+- do not stop at describing what is broken if safe execution can already move it forward
+
 ## Sequential workflow completion rule
 
 When Randall approves an ordered workflow chain, drive the current workflow to completion before pausing for optional reflection or side exploration.

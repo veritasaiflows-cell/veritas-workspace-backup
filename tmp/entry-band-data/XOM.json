@@ -1,7 +1,7 @@
 {
   "ticker": "XOM",
   "name": "Exxon Mobil Corporation",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "150.24–158.44"
   },
   "current_quote": {
-    "close": 152.75,
-    "ma20": 152.29,
-    "ma50": 154.82,
-    "ma200": 126.75,
-    "data_date": "2026-05-01"
+    "close": 153.69,
+    "ma20": 151.81,
+    "ma50": 154.95,
+    "ma200": 126.97,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:24+00:00"
+  "generated_at": "2026-05-05T00:50:01+00:00"
 }

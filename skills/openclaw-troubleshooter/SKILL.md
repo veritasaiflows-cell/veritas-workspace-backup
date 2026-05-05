@@ -65,6 +65,10 @@ Then inspect:
    - `openclaw config get agents.list --json`
 11. Record the real lesson in the correct file.
 
+When the issue has a safe non-destructive forward fix:
+- take that step before ending at diagnosis
+- then report what changed, what remains broken, and what user action is still required
+
 ## Safety Rules
 
 - Do not stack speculative fixes.
@@ -98,6 +102,7 @@ Use this structure:
 - root cause
 - safe fix
 - validation
+- user action needed
 - durable lesson
 
 ## Memory Update Rules

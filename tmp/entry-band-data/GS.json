@@ -1,7 +1,7 @@
 {
   "ticker": "GS",
   "name": "The Goldman Sachs Group, Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "878.71–926.76"
   },
   "current_quote": {
-    "close": 923.71,
-    "ma20": 912.61,
-    "ma50": 869.99,
-    "ma200": 825.5,
-    "data_date": "2026-05-01"
+    "close": 903.27,
+    "ma20": 914.47,
+    "ma50": 869.71,
+    "ma200": 826.54,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:26+00:00"
+  "generated_at": "2026-05-05T00:50:03+00:00"
 }

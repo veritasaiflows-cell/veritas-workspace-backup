@@ -53,42 +53,112 @@ Each meaningful queued item should make clear:
 ## Current chain state
 
 ### Active workflow
-**No active major workflow open**
+**Workflow 24 - Cron Job Build Contract and Session Handoff Hardening**
 
 Status:
-- Workflow 19 is closed with follow-up
-- Workflow 20 is the next approved lane, but it is not opened yet
+- active downstream lane after WF20 closed with follow-up on 2026-05-04
+- inherits the now-landed WF20 review-layer doctrine instead of inventing new cron/handoff semantics
+- sibling retrofit checklist is landed and the live finance cron sibling payloads are now tightened
+- a forced post-close proof run regenerated clean artifacts under the new packet contract
+- immediate next pass is resolving why the forced retrofit run is not yet visible in `cron runs` even though artifact proof is clean
 
 Reason:
-- Workflow 19 closeout is integrated and honest
-- no new major lane is being opened automatically in the same turn
+- Workflow 20 is honestly closed at the intended scope
+- Workflow 24 is the approved enabling gate before Workflow 25 and the downstream research-intake widening chain can open safely
 
 ### Next approved queue item
-**Workflow 20 - Parallel Agents Automation and Human-Gated Review Workflow**
+**Workflow 25 - Research Department Completion and Coverage Admission Operations**
 
 Status:
-- queued next
-- held behind the deferred normal repo checkpoint from Workflow 19
-- may open when the human-gated review workflow is intentionally started after that checkpoint is taken
+- newly inserted downstream priority on 2026-05-04
+- queued directly behind Workflow 24
+- exists to operationalize the already-landed WF6 / WF9 / WF11 doctrine before broader research-intake widening
+- keeps new-ticker intake, promotion/demotion, and research-desk handoffs explicit before recurring source-bundle expansion
 
-Planned scope:
-- cron-backed review-surface workflow only
-- no autonomous canonical note mutation
-- status replies must surface concrete operator actions still required
-- helper lanes remain bounded to review, contradiction, packet prep, and distinct-output work until trust gates are proven
+WF20 closeout facts now live:
+- review-layer doctrine is explicit
+- helper-lane authority is explicit
+- canonical mutation remains manual-only
+- review cadence/owner map is explicit
+- independent audit and executive-summary artifacts exist
 
-Required operator-action taxonomy for that lane:
-- review and approval of entry bands
-- run required local scripts until more of the chain is safely automated
-- add a new machine-tracked name
-- promote event-watch to daily execution
-- demote daily execution
-- remove a name from the tracked universe
-- change deployment state
-- change thesis rating or posture
-- change portfolio action language
-- apply a canonical note patch
-- publish presentation / workbook / PDF output as decision-grade
+## Strict ordered execution queue for today (2026-05-04)
+
+1. **WF20 Phase 2A - cron-builder packet standard**
+   - status: completed
+   - owner: Veritas main lane
+   - category: control plane / automation
+   - posture: serial
+   - deliverable: hardened `06. Playbooks/Cron Job Protocol.md` so every new cron job must specify read-first files, execution order, response contract, stop lines, and spawn recommendation
+   - acceptance check: met
+
+2. **WF20 Phase 2B - review cadence and owner map**
+   - status: completed
+   - owner: Veritas main lane
+   - category: control plane / automation
+   - posture: serial
+   - deliverable: one smallest honest review cadence with overlap-owner and downgrade rules
+   - acceptance check: met via `06. Playbooks/Parallel Review Cadence and Owner Map.md`
+
+3. **WF24 Phase 1 - cron build contract and retrofit checklist**
+   - status: completed
+   - owner: Veritas main lane
+   - category: control plane / automation
+   - posture: serial
+   - deliverable: reusable cron-build contract plus retrofit checklist for live sibling finance jobs
+   - acceptance check: met; the contract and checklist now exist and the sibling prompts were retrofitted to match
+
+4. **WF24 Phase 2 - proof the retrofitted siblings**
+   - owner: Veritas main lane
+   - category: control plane / automation
+   - posture: serial
+   - deliverable: controlled run-history and artifact proof that the retrofitted morning, post-close, and Sunday jobs satisfy the new packet contract in practice
+   - acceptance check: partially met; a forced post-close proof path produced the expected artifacts and a clean run summary, but the corresponding forced run is not yet visible in `cron runs`
+
+5. **WF25 Phase 1 - research-department intake queue and admission decision object**
+   - owner: Veritas main lane
+   - category: research / governance
+   - posture: serial
+   - deliverable: real operating queue plus explicit admission / promotion review object that operationalizes WF6, WF9, and WF11
+   - acceptance check: one new-name review path and one promotion/demotion review path can be run without reconstructing chat history
+
+6. **WF21 Phase 1 - source map and pilot coverage set**
+   - owner: Veritas main lane, helper lanes optional later
+   - category: research / automation
+   - posture: serial until the source map is explicit
+   - deliverable: approved source tiers, blocked source classes, pilot names, and first raw-event input file aligned to WF25 intake needs
+   - acceptance check: `scripts/research_intake_packet.py` can be run against a real narrow input set that feeds the research desk cleanly without scope drift
+
+7. **WF26 Phase 1 - fresh external intelligence and geopolitical verification map**
+   - owner: Veritas main lane
+   - category: research / external intelligence
+   - posture: serial
+   - deliverable: approved fresh-news / geopolitical source map, pilot sleeves, and unresolved-truth handling rules
+   - acceptance check: the lane can keep fast-moving developments visible without rumor-driven false certainty
+
+8. **WF27 Phase 1 - predictive analytics and forecasting readiness**
+   - owner: Veritas main lane
+   - category: research / quantitative methods
+   - posture: blocked until upstream evidence and provenance layers are real
+   - deliverable: bounded forecast-question set, target definitions, and data-readiness audit
+   - acceptance check: predictive work stays methodology-first rather than model theater
+
+9. **WF21 Phase 2 - one manual packet dry run**
+   - owner: Veritas main lane
+   - category: research / automation
+   - posture: serial
+   - deliverable: one reviewed packet run with visible stop lines and unresolved-truth handling
+   - acceptance check: the packet remains review-only and low-noise
+
+10. **WF22 Phase 1 - stale-claim pilot inventory**
+   - owner: Veritas main lane
+   - category: note-sync / reconciliation
+   - posture: blocked until WF21 yields honest candidates
+   - deliverable: pilot stale-claim list and owner-surface map
+   - acceptance check: candidates stay freshness/mechanical, not thesis rewrite
+
+11. **WF23 stays gated**
+   - do not open today unless WF21 and WF22 both become materially real
 
 ### Recent completed item
 **Workflow 16 family - Research Automation and Canonical Freshness Hardening**
@@ -126,7 +196,14 @@ Required operator-action taxonomy for that lane:
 26. Workflow 16A - research intake desk and parallel review packets [completed]
 27. Workflow 16B - canonical freshness sync and gated note update helpers [completed]
 28. Workflow 19 - playbooks retrieval and governance cleanup [closed with follow-up]
-29. Workflow 20 - parallel agents automation and human-gated review workflow [queued]
+29. Workflow 20 - parallel agents automation and human-gated review workflow [closed with follow-up]
+30. Workflow 24 - cron job build contract and session handoff hardening [active]
+31. Workflow 25 - research department completion and coverage admission operations [queued behind Workflow 24]
+32. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 25]
+33. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]
+34. Workflow 27 - predictive analytics and forecasting readiness [queued behind Workflow 26]
+35. Workflow 22 - canonical freshness patch pilot and surface sync [queued behind Workflow 21]
+36. Workflow 23 - Command Center fresh brief and decision surface tightening [queued behind Workflow 22]
 
 ## Capacity rule for this queue
 

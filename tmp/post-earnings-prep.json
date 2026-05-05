@@ -1,27 +1,27 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:28.382191+00:00",
+  "generated_at_utc": "2026-05-05T00:50:06.043007+00:00",
   "status": "partial",
   "stale_after_hours": 24,
   "expected_update_window": "Run after trigger_sheet_refresh.py and before post-earnings note targeting or post-earnings vault edits.",
-  "last_trading_day": "2026-05-01",
+  "last_trading_day": "2026-05-04",
   "source_last_trading_day": {
-    "trigger": "2026-05-01",
-    "technical": "2026-05-01",
-    "deployment": "2026-05-01",
-    "market_state": "2026-05-01",
+    "trigger": "2026-05-04",
+    "technical": "2026-05-04",
+    "deployment": "2026-05-04",
+    "market_state": "2026-05-04",
     "earnings": null
   },
   "freshness": {
     "trigger_file": {
-      "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\trigger-sheet.json",
-      "generated_at_utc": "2026-05-03T15:31:28.263175+00:00",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\trigger-sheet.json",
+      "generated_at_utc": "2026-05-05T00:50:05.911099+00:00",
       "age_hours": 0.0,
       "age_label": "0m old",
       "is_stale": false
     },
     "earnings_file": {
-      "path": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\earnings-calendar.json",
-      "generated_at_utc": "2026-05-03T15:31:01.704015+00:00",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\earnings-calendar.json",
+      "generated_at_utc": "2026-05-05T00:49:38.809351+00:00",
       "age_hours": 0.01,
       "age_label": "0m old",
       "is_stale": false
@@ -29,11 +29,11 @@
   },
   "macro_context": {
     "status": "ok",
-    "spx": 7230.1201,
-    "vix": 16.99,
-    "brent": 108.17,
-    "wti": 101.94,
-    "summary": "S&P 500 7230.1201, VIX 16.99, Brent 108.17, WTI 101.94"
+    "spx": 7200.75,
+    "vix": 18.29,
+    "brent": 113.94,
+    "wti": 104.95,
+    "summary": "S&P 500 7200.75, VIX 18.29, Brent 113.94, WTI 104.95"
   },
   "window": {
     "back_days": 11,
@@ -42,6 +42,7 @@
   },
   "warnings": [
     "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+    "Market-state sources are not aligned on one trading day: 2y",
     "Non-blocking watchlist/date mismatches remain outside the active timing window."
   ],
   "packets": [
@@ -50,7 +51,7 @@
       "priority": "critical",
       "stage": "imminent",
       "phase": "pre_earnings",
-      "days_to_or_from_earnings": 2,
+      "days_to_or_from_earnings": 1,
       "next_earnings_date": "2026-05-05",
       "watch_items": [
         "grid and electrification demand",
@@ -67,20 +68,20 @@
         "03. Portfolio/Portfolio Snapshot.md"
       ],
       "technical_context": {
-        "close": 425.55,
+        "close": 422.44,
         "ma_posture": "above all MAs -- bullish 20>50>200 stack",
         "in_entry_band": false,
         "below_stop": false,
-        "data_date": "2026-05-01"
+        "data_date": "2026-05-04"
       },
       "deployment_context": {
         "action_state": "ALMOST",
-        "reason": "close 425.55 -- posture constructive but not yet in band"
+        "reason": "close 422.44 -- posture constructive but not yet in band"
       },
       "trigger_context": {
         "action_state": "ALMOST DEPLOYABLE",
         "technical_trigger": "Pullback into 388 to 396 with support holding, or disciplined continuation that does not become a chase",
-        "catalyst_blocker": "Next earnings 2026-05-05 in 2d -- treat as timing-sensitive",
+        "catalyst_blocker": "Next earnings 2026-05-05 in 0d -- treat as timing-sensitive",
         "why": "Best chart in the sheet, but current price is extended versus the preferred zone",
         "invalidation": 383.23,
         "size_tier": "Tier 2"

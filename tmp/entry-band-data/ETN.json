@@ -1,7 +1,7 @@
 {
   "ticker": "ETN",
   "name": "Eaton Corporation plc",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "395.59–420.31"
   },
   "current_quote": {
-    "close": 425.55,
-    "ma20": 404.99,
-    "ma50": 378.77,
-    "ma200": 361.32,
-    "data_date": "2026-05-01"
+    "close": 422.44,
+    "ma20": 407.91,
+    "ma50": 379.78,
+    "ma200": 361.54,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:22+00:00"
+  "generated_at": "2026-05-05T00:49:59+00:00"
 }

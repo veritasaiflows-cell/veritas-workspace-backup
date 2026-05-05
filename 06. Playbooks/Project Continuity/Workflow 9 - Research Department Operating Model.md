@@ -29,7 +29,7 @@
 - NVDA's likely **May 20** date remains an explicitly unconfirmed timing path until the written recheck obligation is satisfied on or before **2026-05-13**.
 
 ## Next Action
-- Use this note as the operating reference for the next queue steps. Workflow 10 remains the next numbered workflow unless a fresh lifecycle failure pulls it forward sooner, and `LLY` remains the first bounded live admission-model pilot before formal Workflow 11 drafting.
+- Use this note as the operating reference for the next queue steps. Workflow 25 is now the live downstream consumer that should operationalize the desk model with a real intake queue, coverage-admission reviews, and explicit handoffs to later source-bundle and fresh-intelligence workflows.
 
 ## Completed sub-pass - Risk Rules ownership + refresh discipline
 - **Owner:** Portfolio / deployment desk inside Workflow 9

@@ -1,7 +1,7 @@
 {
   "ticker": "JPM",
   "name": "JPMorgan Chase & Co.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "306.82–318.12"
   },
   "current_quote": {
-    "close": 312.47,
-    "ma20": 309.65,
-    "ma50": 298.64,
-    "ma200": 302.25,
-    "data_date": "2026-05-01"
+    "close": 307.65,
+    "ma20": 310.26,
+    "ma50": 298.61,
+    "ma200": 302.36,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:22+00:00"
+  "generated_at": "2026-05-05T00:49:59+00:00"
 }

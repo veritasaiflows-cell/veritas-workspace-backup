@@ -1,7 +1,7 @@
 {
   "ticker": "LMT",
   "name": "Lockheed Martin Corporation",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "566.46–598.98"
   },
   "current_quote": {
-    "close": 512.77,
-    "ma20": 574.59,
-    "ma50": 614.54,
-    "ma200": 520.01,
-    "data_date": "2026-05-01"
+    "close": 518.15,
+    "ma20": 568.6,
+    "ma50": 611.81,
+    "ma200": 520.3,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:23+00:00"
+  "generated_at": "2026-05-05T00:50:00+00:00"
 }

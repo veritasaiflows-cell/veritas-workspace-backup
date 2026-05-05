@@ -1,7 +1,7 @@
 {
   "ticker": "MSFT",
   "name": "Microsoft Corporation",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "389.64–412.56"
   },
   "current_quote": {
-    "close": 414.44,
-    "ma20": 405.57,
-    "ma50": 396.11,
-    "ma200": 466.64,
-    "data_date": "2026-05-01"
+    "close": 413.62,
+    "ma20": 407.61,
+    "ma50": 396.44,
+    "ma200": 466.16,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:23+00:00"
+  "generated_at": "2026-05-05T00:50:00+00:00"
 }

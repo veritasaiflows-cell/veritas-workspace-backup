@@ -6,6 +6,9 @@ Define the only kind of canonical-note help allowed in v1: narrow freshness patc
 ## Core rule
 Freshness patch != thesis rewrite.
 
+A freshness patch may update dates, event status, post-earnings state, source references, or dashboard alignment.
+It may not automatically upgrade, downgrade, promote, bench, or change deployment posture unless that is explicitly approved.
+
 ## Freshness classes
 1. **Mechanical date / elapsed-event wording**
 2. **Post-catalyst or post-earnings status wording**
@@ -15,6 +18,20 @@ Freshness patch != thesis rewrite.
 Only classes 1 and 2 are normal v1 patch candidates.
 Class 3 requires extra review.
 Class 4 is fully human-gated.
+
+## Bounded parallel roles
+Parallel support is allowed here only as narrow patch-prep help.
+
+| Role | Job |
+|---|---|
+| Freshness scanner | finds stale dates, outdated earnings references, stale ratings, stale catalysts, or old macro assumptions |
+| Evidence validator | verifies the new evidence and checks conflicts |
+| Patch drafter | drafts a narrow proposed update |
+| Surface-impact auditor | checks whether dashboard, workbook, trigger sheet, weekly brief, and owner notes need alignment |
+| Final QA agent | confirms the patch is narrow, reversible, and does not change judgment without approval |
+
+These lanes may draft and challenge.
+They do not approve or apply.
 
 ## Required patch packet fields
 Every patch candidate must include:
@@ -66,6 +83,12 @@ Not allowed in v1:
 - deployment-state change
 - target-weight or posture change
 - cross-surface truth arbitration by helpers
+
+## Why this still matters after Workflow 4C
+Visible finance-note drift was reduced, but trust-limited freshness work still exists where narrow patch prep is useful and safer than broad rewrite pressure:
+- reduced trust and open review backlog
+- unresolved earnings-date confirmation cases
+- post-earnings freshness review for names like GOOG / MSFT
 
 ## Approval and rollback rule
 - all patch packets require Veritas/main approval before apply

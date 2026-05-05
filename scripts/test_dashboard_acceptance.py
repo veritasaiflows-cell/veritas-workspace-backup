@@ -600,8 +600,8 @@ def case_earnings_new_alert_visibility() -> tuple[str, list[str]]:
 def _mutate_state_transition(s: dict[str, Any]) -> None:
     """
     Set ETN into a fully coherent in-band state so the validator does not fire
-    entry_band_mismatch. Band is derived from ETN's actual close at test time so
-    computed_in_band matches the inBand flag we set.
+    entry_band_mismatch and the dashboard has enough source health to surface
+    triggerToday=True.
     """
     etn_tech = next(r for r in s["technical"]["records"] if r["ticker"] == "ETN")
     close = etn_tech.get("close") or 300.0
@@ -614,6 +614,45 @@ def _mutate_state_transition(s: dict[str, Any]) -> None:
     next(r for r in s["deployment"]["records"] if r["ticker"] == "ETN").update(
         {"action_state": "ALMOST", "reason": "in band with constructive posture", "priority": 2}
     )
+
+    for source_name in ("market", "policy", "credit", "breadth"):
+        if isinstance(s.get(source_name), dict):
+            s[source_name]["status"] = "ok"
+            s[source_name]["warnings"] = []
+
+    market_fed = (((s.get("market") or {}).get("data") or {}).get("fed") or {})
+    market_fed.update({
+        "target_low": 3.5,
+        "target_high": 3.75,
+        "cut_probability_next_meeting": 0.04,
+        "manual_update_required": False,
+        "target_invalid_reason": None,
+    })
+
+    market_meta = (s.get("market") or {}).setdefault("meta", {})
+    market_meta["generated_at_utc"] = "2026-05-04T13:23:00+00:00"
+
+    policy_data = (s.get("policy") or {}).setdefault("data", {})
+    policy_data["current_target_range"] = {
+        "low": 3.5,
+        "high": 3.75,
+        "as_of": "2026-05-01",
+        "confirmed": True,
+        "source": "acceptance stub",
+        "invalid_reason": None,
+    }
+    policy_data["next_fomc"] = {
+        "date": "2026-07-29",
+        "days_until": 89,
+        "distribution": [
+            {"outcome": "hold", "probability": 0.96},
+            {"outcome": "cut_25bp", "probability": 0.04},
+        ],
+        "implied_rate": 3.62,
+    }
+    (s.get("policy") or {}).setdefault("manual_dependencies", [])
+    (s.get("policy") or {})["manual_dependencies"] = []
+    (s.get("policy") or {})["generated_at_utc"] = "2026-05-04T13:23:00+00:00"
 
 
 def main() -> int:

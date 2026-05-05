@@ -13,10 +13,11 @@ Durable repeatable helpers for the finance operating system.
 ## Requirements
 
 ```bash
-pip install yfinance
+pip install yfinance tzdata
 ```
 
-That is the only required dependency for the current supported script surface.
+Those are the minimum required Python dependencies for the current supported script surface.
+On this Windows / Python 3.14 runtime, `tzdata` is required so `zoneinfo` can resolve market time zones reliably.
 
 Optional dependencies for richer report generation:
 ```bash
@@ -31,6 +32,52 @@ pip install python-docx pillow
 - Do not assume everything in `scripts/` root is chain-active; use `run_finance_refresh_chain.py` as the authoritative chain map.
 
 ## Supported active tooling
+
+### `research_intake_packet.py`
+
+Status: bounded review-only prototype
+
+Builds fail-closed intake packets from raw research-event input for the approved research-automation contract. The script is a packet-prep surface only: it may recommend routing, but it never authorizes canonical mutation.
+
+Run:
+```bash
+python scripts/research_intake_packet.py --init-sample
+python scripts/research_intake_packet.py --input tmp/research-automation/raw-events.json
+```
+
+Writes:
+- `tmp/research-automation/raw-events.json` (sample input when `--init-sample` is used)
+- `tmp/research-automation/intake-packets-<timestamp>.json`
+
+Notes:
+- the exact pre-packet input shape is documented in `06. Playbooks/Research Automation Raw Event Input Contract.md`
+- parallel role lanes are deterministic contract lanes in this first version (`event_detector`, `materiality_scorer`, `thesis_drift_agent`, `evidence_qa_agent`, `routing_agent`)
+- unresolved truths and fast-moving geopolitical items can stay open as verification objects instead of being forced into fake certainty
+- `canonical_mutation_allowed` stays `false`
+- validation failures force `stop_line_no_promotion`
+- this is an intake/review object, not a verdict or auto-apply surface
+
+### `canonical_freshness_patch.py`
+
+Status: bounded review-only prototype
+
+Builds narrow canonical freshness patch proposals from explicit candidate input. It does not apply patches. It exists to prepare human-review packets for mechanical/alignment freshness work only.
+
+Run:
+```bash
+python scripts/canonical_freshness_patch.py --init-sample
+python scripts/canonical_freshness_patch.py --input tmp/research-automation/raw-freshness-candidates.json
+```
+
+Writes:
+- `tmp/research-automation/raw-freshness-candidates.json` (sample input when `--init-sample` is used)
+- `tmp/research-automation/freshness-patch-candidates-<timestamp>.json`
+
+Notes:
+- `apply_allowed` stays `false`
+- mechanical date / elapsed-event and post-catalyst status are the normal safe v1 classes
+- cross-surface contradiction and thesis/posture change candidates are review-escalation or rejection cases, not auto-help surfaces
+- this is a patch-proposal surface, not an apply surface
 
 ### `technical_refresh.py`
 

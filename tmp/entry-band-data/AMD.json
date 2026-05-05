@@ -1,7 +1,7 @@
 {
   "ticker": "AMD",
   "name": "Advanced Micro Devices, Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "275.92–311.8"
   },
   "current_quote": {
-    "close": 360.54,
-    "ma20": 284.89,
-    "ma50": 235.38,
-    "ma200": 211.38,
-    "data_date": "2026-05-01"
+    "close": 341.54,
+    "ma20": 290.96,
+    "ma50": 238.2,
+    "ma200": 212.29,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:27+00:00"
+  "generated_at": "2026-05-05T00:50:04+00:00"
 }

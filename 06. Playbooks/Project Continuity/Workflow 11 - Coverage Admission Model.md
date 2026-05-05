@@ -8,6 +8,7 @@
 - Workflow 6's operating tier model (`Daily Execution`, `Event-Driven Watch`, `Macro Context`, `Speculative Monitor`) stayed inherited rather than reopened.
 - The missing procedure layer is now explicit: admission gates, thesis obligations, promotion/demotion rules, and owner-note mutations are defined in `06. Playbooks/Coverage Admission and Promotion Protocol.md`.
 - The former written-thesis residue (`CAT`, `CVX`, `LLY`, `SMCI`) was resolved directly in `04. Research/Coverage Universe.md` instead of being left as indefinite machine-only drift.
+- The new downstream consumer for this work is Workflow 25, which will operationalize the protocol on fresh live cases instead of treating Workflow 11 as a dead memo.
 
 ## Last Meaningful Progress
 - Workflow 7 added `LLY` as a single-name Healthcare watch-lane pilot.
@@ -16,8 +17,8 @@
 - Validation and acceptance reruns still passed after the note/procedure changes, while the remaining policy/manual-dependency warnings stayed explicit for Workflow 12 rather than being hidden.
 
 ## Outstanding
-- Commit the Workflow 11 change set after queue/registry/continuity sync is included.
-- Use the next real ticker add/promotion as the first post-closure proof case for the new protocol.
+- No blocking work remains inside Workflow 11 itself.
+- The next real proof obligation now belongs to Workflow 25: use at least one fresh new-name intake and one promotion/demotion case without bypassing the protocol in chat.
 
 ## Blockers / Trust Gaps
 - Main residual risk is procedure drift in future use, not missing procedure text.
@@ -25,7 +26,7 @@
 - Macro/manual-dependency warnings remain visible in the validator layer, but they belong to Workflow 12 rather than reopening Workflow 11.
 
 ## Next Action
-- Workflow 12 is the active next pass.
+- Keep this workflow closed and use Workflow 25 as the live downstream operating proof for the admission/promotion protocol.
 
 ## Key Files
 - `06. Playbooks/Project Continuity/Workflow 6 - Coverage Tier Framework.md` - settled tier framework this workflow must inherit rather than reopen.

@@ -1,7 +1,7 @@
 {
   "ticker": "NVDA",
   "name": "NVIDIA Corporation",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "188.03–199.28"
   },
   "current_quote": {
-    "close": 198.45,
-    "ma20": 197.22,
-    "ma50": 187.15,
-    "ma200": 183.84,
-    "data_date": "2026-05-01"
+    "close": 198.48,
+    "ma20": 198.27,
+    "ma50": 187.33,
+    "ma200": 183.97,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:24+00:00"
+  "generated_at": "2026-05-05T00:50:01+00:00"
 }

@@ -1,22 +1,144 @@
 # Cron Job Protocol
 
 ## Purpose
-Keep scheduled OpenClaw jobs useful, bounded, and honest.
+Keep scheduled OpenClaw jobs useful, bounded, honest, and symmetrical.
 
 Pair this protocol with `06. Playbooks/Spawn and Closeout Governance Matrix.md` when a job might spawn helper lanes or produce closeout claims.
 Use that file as the canonical spawn decision source rather than treating this document as an independent spawn standard.
 
-## Job Card Format
-Every cron job should define:
+Local OpenClaw code/docs truth that matters here:
+- cron runs inside the Gateway, not inside the model
+- job definitions persist separately from runtime state
+- isolated jobs are usually the right default for background work; main-session jobs are mainly for reminders/system events
+- live cron state wins over inherited notes if they disagree
+
+## Symmetrical Job Card Format
+Every cron job should define the same fields in the same order:
 - **Name**
+- **Window family**: pre-market / post-close / post-earnings / Sunday / reminder / other
 - **Schedule / time zone**
+- **Session target**: main / isolated / current / session:<id>
 - **Owner**
 - **Trigger goal**
+- **Read first**
+- **Execute in order**
+- **Artifacts or notes to inspect after execution**
+- **Response contract**
+- **Spawn recommendation**
 - **Inputs read**
 - **Artifacts or notes it may write**
+- **Delivery mode**: none / announce / webhook
 - **Trust grade**: internal-only / review-required / automation-ready
+- **Validation proof**: exact artifact, run-history, or note evidence required
 - **Stop line**: what makes the job stop instead of pretending success
 - **Escalation path**: direct finish / update notes / spawn worker / wait for human input
+- **Overlap owner**: what other workflow window this job must not compete with
+
+## Symmetry standard
+Jobs that belong to the same family should be structurally parallel unless there is a documented reason not to be.
+
+At minimum, sibling jobs should align on:
+1. naming pattern
+2. timezone handling
+3. session-target choice
+4. delivery posture
+ 5. read-first packet shape
+ 6. response contract shape
+ 7. artifact proof expectations
+ 8. rerun policy
+ 9. failure / skipped-run follow-up
+
+If one sibling diverges, write the exception down instead of letting the set drift silently.
+
+## Cron design sequence
+Before adding or editing a recurring job, walk these steps in order:
+1. **Classify the mechanism** - heartbeat vs cron
+2. **Choose the owner window** - one writer per output family
+3. **Choose the execution surface** - main reminder vs isolated worker vs current/custom session
+4. **Define the smallest useful cadence** - no ornamental schedules
+5. **Define proof and downgrade rules** - what proves success, what forces partial/stale/manual language
+6. **Define overlap and rerun rules** - what it must not race, what justifies rerun
+7. **Validate live** - list/show/run/runs plus artifact inspection
+
+Do not skip directly from idea to scheduled job.
+
+## Cron run packet contract
+Every non-trivial cron job should carry an explicit run packet inside the job design or payload prompt.
+
+Required packet fields:
+1. **Objective** - one-sentence statement of what this run owns
+2. **Read first** - exact files to inspect before acting, in priority order
+3. **Execute in order** - exact scripts or commands to run, in order
+4. **Inspect after execution** - exact artifacts, notes, or proofs to check before claiming completion
+5. **Response contract** - exact structure the run should use when summarizing results
+6. **Spawn recommendation** - whether to stay in-run, spawn one worker, or stop for operator input
+7. **Out-of-bounds** - what the run must not touch or imply
+8. **Stop lines** - what forces blocked/error instead of optimistic language
+
+If a run depends on file truth, do not rely on hidden memory or vague inherited context. Name the files.
+
+## Read-first rule
+Cron prompts should not say only “use the workspace” or “check the usual files.”
+
+They should name the exact read order for the window.
+
+Good:
+- read `06. Playbooks/Automation Orchestration Protocol.md`
+- read `06. Playbooks/Cron Job Protocol.md`
+- read `tmp/run-summary-morning.json`
+
+Bad:
+- read whatever seems relevant
+- infer the current queue from prior chat
+
+## Execute-in-order rule
+Cron prompts should name the exact execution surface and sequence whenever the order matters.
+
+Good:
+1. run `python scripts\\run_finance_refresh_chain.py morning`
+2. inspect `tmp/run-summary-morning.json`
+3. inspect `tmp/dashboard-validation.json`
+
+Bad:
+- refresh the morning chain and then look around
+
+## Response contract rule
+Each scheduled run should be told exactly how to respond.
+
+Minimum response fields for non-trivial jobs:
+- active item
+- completion decision
+- trust state
+- fresh outputs checked
+- next queued item
+- next concrete action
+- blocker or warning, if any
+- whether a worker was spawned
+
+If the job is review-only, it must say what operator action is still required instead of implying completion from artifacts alone.
+
+## Spawn recommendation rule
+Each cron design should say which of these is expected:
+- **stay in-run** -> low-effort work, no separate worker
+- **spawn one bounded worker** -> medium-effort detached pass with explicit files and acceptance target
+- **stop for operator input** -> trust, auth, destructive, or ambiguous judgment boundary
+
+If spawning is allowed, the packet should also specify:
+- recommended model posture
+- exact files to read first
+- exact acceptance target
+- out-of-bounds surfaces
+- whether the child is read-only, distinct-output, or patch-prep only
+
+Do not let cron invent a spawn contract at runtime.
+
+## Efficiency fields
+To keep runs smaller, faster, and more coherent, prefer adding these fields when the job is more than trivial:
+- **Time budget** - expected max run length before the run should downgrade or stop
+- **Retry budget** - whether retry is allowed and for which failure class
+- **Allowed tools/surfaces** - the smallest required tool set
+- **Decision owner** - who owns the final judgment if the run ends in warning or review-required state
+- **Resume anchor** - continuity note or file path a later worker should use if the run must be resumed
 
 ## Core Rules
 1. **One owner per workflow window.**
@@ -29,6 +151,43 @@ Every cron job should define:
    If trust, inputs, or completion state are unclear, stop and record the blocker.
 5. **Use the smallest real action.**
    Correct the outlier, not every file.
+
+## Session-target rule
+- **main** -> reminders and system events only
+- **isolated** -> default for background reports, review windows, and bounded artifact work
+- **current** -> only when the job truly depends on the current bound session context
+- **session:<id>** -> only when deliberate persistent history is part of the workflow contract
+
+If a recurring job does not need chat-history continuity, do not give it one.
+
+## Scheduling rule
+- always write cron expressions in the intended local wall-clock timezone
+- always declare the timezone when the wall-clock matters
+- prefer one smallest useful review window over many overlapping nudges
+- stagger top-of-hour recurring windows when exact timing is not required
+- treat current live cron state as authoritative over stale notes or memory
+
+## Validation sequence after create/edit
+After adding or editing a job, verify in this order:
+1. `cron list` - job exists and schedule looks right
+2. delivery preview / job detail - route resolves the way you expect
+3. one controlled manual run when safe
+4. run history - outcome matches the intended contract
+5. artifact proof - expected file/note/output actually exists
+6. overlap check - no sibling window is competing for the same writer layer
+
+A job is not real because it was created. It is real after proof.
+
+## Failure and skipped-run rule
+- treat `skipped` as meaningful state, not fake success
+- if local providers, upstream inputs, or manual dependencies are unavailable, downgrade honestly instead of forcing green output
+- define whether skipped runs should alert, and where
+- do not rerun merely to hide truthful warning-grade output
+
+## Git / audit posture
+- if cron definitions are tracked, definitions belong in the durable layer and runtime state does not
+- prefer one compact operator-readable source of truth for active job design
+- keep audit proof in cron run history plus workspace artifacts, not only chat memory
 
 ## Effort Routing
 - **Low effort** -> handle in the main cron run
@@ -43,7 +202,7 @@ When spawn is allowed:
 - `streamTo="parent"` only when the runtime actually supports it
 - one active worker at a time for that lane
 - explicit bounded task contract
-- file-grounded handoff packet: active workflow, current truth, blocker/trust gap, next acceptance target, exact files, and out-of-bounds surfaces
+- file-grounded handoff packet: active workflow, current truth, blocker/trust gap, next acceptance target, exact files, exact response contract, and out-of-bounds surfaces
 - no auth, network, destructive, or canonical-finance-note changes without approval
 - if persistent thread-bound subagent sessions are unavailable in the current surface, treat the spawn as one-shot and rely on continuity notes plus resume keywords instead of pretending resumable live state exists
 
@@ -51,6 +210,8 @@ When spawn is allowed:
 Each cron run should end with:
 - active item
 - completion decision
+- trust state
+- fresh outputs checked
 - current project status
 - next queued item
 - next action

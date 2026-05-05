@@ -1,7 +1,7 @@
 {
   "ticker": "LLY",
   "name": "Eli Lilly and Company",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1026,11 +1026,11 @@
   },
   "preferred_band": null,
   "current_quote": {
-    "close": 963.33,
-    "ma20": 916.58,
-    "ma50": 947.66,
-    "ma200": 909.59,
-    "data_date": "2026-05-01"
+    "close": 967.93,
+    "ma20": 918.63,
+    "ma50": 946.82,
+    "ma200": 910.65,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:28+00:00"
+  "generated_at": "2026-05-05T00:50:05+00:00"
 }

@@ -1,7 +1,7 @@
 {
   "ticker": "AMZN",
   "name": "Amazon.com, Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "243.59–258.71"
   },
   "current_quote": {
-    "close": 268.26,
-    "ma20": 247.37,
-    "ma50": 224.8,
-    "ma200": 227.38,
-    "data_date": "2026-05-01"
+    "close": 272.05,
+    "ma20": 250.33,
+    "ma50": 226.04,
+    "ma200": 227.62,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:24+00:00"
+  "generated_at": "2026-05-05T00:50:02+00:00"
 }

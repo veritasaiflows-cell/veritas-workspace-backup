@@ -1,0 +1,72 @@
+[
+  {
+    "event_title": "NVDA timing confirmation remains unresolved after fresh calendar check",
+    "event_datetime": "2026-05-03T16:30:00-07:00",
+    "affected": [
+      "NVDA"
+    ],
+    "source_tier": "tier_2_trusted",
+    "event_class": "company_event",
+    "verification_status": "unresolved",
+    "event_summary": "Fresh timing information suggests the note layer should remain cautious until primary confirmation is available.",
+    "tags": [
+      "earnings_date",
+      "timing_confirmation"
+    ],
+    "stale_canonical_note": true,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": true,
+    "primary_evidence": [
+      {
+        "title": "Company investor relations calendar",
+        "source": "Company IR",
+        "source_tier": "tier_1_primary",
+        "url": "https://example.com/ir-calendar",
+        "published_at": "2026-05-03T09:00:00-07:00",
+        "excerpt": "Calendar item requires manual confirmation before note mutation."
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "Trusted market calendar update",
+        "source": "Trusted financial media",
+        "source_tier": "tier_2_trusted",
+        "url": "https://example.com/calendar-update",
+        "published_at": "2026-05-03T08:00:00-07:00"
+      }
+    ],
+    "contradiction_notes": [],
+    "open_questions": [
+      "Has NVDA primary investor-relations timing confirmation been updated directly?"
+    ]
+  },
+  {
+    "event_title": "Unverified social post claims major XOM production disruption",
+    "event_datetime": "2026-05-03T15:10:00-07:00",
+    "affected": [
+      "XOM",
+      "OIL",
+      "HORMUZ"
+    ],
+    "source_tier": "rumor",
+    "event_class": "geopolitical_event",
+    "verification_status": "unresolved",
+    "event_summary": "Unverified claim without primary confirmation.",
+    "tags": [
+      "oil_shock",
+      "production_disruption"
+    ],
+    "stale_canonical_note": false,
+    "rumor_heavy": true,
+    "requires_primary_confirmation": true,
+    "primary_evidence": [],
+    "secondary_evidence": [],
+    "contradiction_notes": [
+      "No company, exchange, or trusted wire confirmation."
+    ],
+    "open_questions": [
+      "Is there any primary confirmation from company, exchange, regulator, or trusted wire?",
+      "Is the event operationally material or a repost chain?"
+    ]
+  }
+]

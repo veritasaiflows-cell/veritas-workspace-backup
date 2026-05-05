@@ -1,7 +1,7 @@
 {
   "ticker": "VRT",
   "name": "Vertiv Holdings Co",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -824,11 +824,11 @@
     "label": "295.49–326.63"
   },
   "current_quote": {
-    "close": 328.31,
-    "ma20": 303.28,
-    "ma50": 275.8,
-    "ma200": 191.93,
-    "data_date": "2026-05-01"
+    "close": 330.97,
+    "ma20": 306.89,
+    "ma50": 277.54,
+    "ma200": 192.93,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:25+00:00"
+  "generated_at": "2026-05-05T00:50:02+00:00"
 }

@@ -1,0 +1,86 @@
+{
+  "apply_allowed": false,
+  "candidate_count": 2,
+  "candidates": [
+    {
+      "affected_surfaces": [
+        "01. Dashboards/Executive Brief.md",
+        "01. Dashboards/This Week.md"
+      ],
+      "apply_allowed": false,
+      "candidate_id": "cfp_2ded79a7777f7848",
+      "created_at": "2026-05-04T05:58:03+00:00",
+      "freshness_class": "mechanical_date_elapsed_event",
+      "judgment_impact": "none",
+      "linked_packet_id": "rip_example1234",
+      "main_approval_required": true,
+      "new_evidence": [
+        {
+          "excerpt": null,
+          "published_at": null,
+          "source": "Internal verified event review",
+          "source_quality": "tier_1_primary",
+          "title": "Updated event calendar review",
+          "url": null
+        }
+      ],
+      "notes": "",
+      "patch_scope": "single sentence wording cleanup only",
+      "proposed_replacement": "BRK.B already reported on May 2; keep the post-print state explicit instead of future-tense catalyst language.",
+      "rejection_reasons": [],
+      "required_downstream_sync": [
+        "Check This Week wording after patch approval."
+      ],
+      "rollback_note": "Restore the previous future-tense sentence if the event date was misread.",
+      "source_quality": "tier_1_primary",
+      "stale_claim": "The BRK.B catalyst wording still speaks as if the event is upcoming.",
+      "status": "proposed",
+      "target_note": "01. Dashboards/Executive Brief.md",
+      "validation_errors": [],
+      "verifier_signoff": "Pending main-session review",
+      "why_stale": "BRK.B already reported on May 2, so future-tense catalyst wording is stale."
+    },
+    {
+      "affected_surfaces": [
+        "03. Portfolio/Portfolio Snapshot.md"
+      ],
+      "apply_allowed": false,
+      "candidate_id": "cfp_e1fed7d01f95a13d",
+      "created_at": "2026-05-04T05:58:03+00:00",
+      "freshness_class": "thesis_or_posture_change",
+      "judgment_impact": "material",
+      "linked_packet_id": null,
+      "main_approval_required": true,
+      "new_evidence": [
+        {
+          "excerpt": null,
+          "published_at": null,
+          "source": "social repost chain",
+          "source_quality": "rumor_unverified",
+          "title": "Unverified repost chain",
+          "url": null
+        }
+      ],
+      "notes": "",
+      "patch_scope": "energy posture rewrite",
+      "proposed_replacement": "Upgrade energy posture and deployment state.",
+      "rejection_reasons": [
+        "freshness_class_not_safe_for_v1:thesis_or_posture_change",
+        "material_judgment_impact",
+        "thesis_or_posture_change_is_out_of_bounds"
+      ],
+      "required_downstream_sync": [
+        "Would require cross-surface truth arbitration."
+      ],
+      "rollback_note": "Restore prior posture wording.",
+      "source_quality": "rumor_unverified",
+      "stale_claim": "Energy sleeve stance should be upgraded immediately.",
+      "status": "rejected",
+      "target_note": "03. Portfolio/Portfolio Snapshot.md",
+      "validation_errors": [],
+      "verifier_signoff": "Pending main-session review",
+      "why_stale": "New geopolitical chatter suggests stronger oil follow-through."
+    }
+  ],
+  "created_at": "2026-05-04T05:58:03+00:00"
+}

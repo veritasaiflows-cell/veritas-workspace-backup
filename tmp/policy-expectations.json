@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:03.317622+00:00",
+  "generated_at_utc": "2026-05-05T00:49:40.603037+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh daily during active market sessions and before macro-sensitive weekly outputs. Refresh again on scheduled FOMC decision days after the announcement.",
-  "last_trading_day": "2026-05-03",
+  "last_trading_day": "2026-05-05",
   "source_last_trading_day": {
-    "policy_expectations": "2026-05-03",
-    "current_target_range": "2026-05-03"
+    "policy_expectations": "2026-05-05",
+    "current_target_range": "2026-05-04"
   },
   "freshness_notes": [
     "fred_target_range",
@@ -21,14 +21,14 @@
     "current_target_range": {
       "low": 3.5,
       "high": 3.75,
-      "as_of": "2026-05-03",
+      "as_of": "2026-05-04",
       "confirmed": true,
       "source": "FRED DFEDTARL/DFEDTARU",
       "invalid_reason": null
     },
     "next_fomc": {
       "meeting_date": "2026-06-17",
-      "days_until": 45,
+      "days_until": 43,
       "zq_ticker": "ZQM26",
       "contract_source": "derived from resolved next FOMC date",
       "date_source": "official Fed calendar",

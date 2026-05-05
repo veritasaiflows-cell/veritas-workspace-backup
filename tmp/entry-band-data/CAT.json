@@ -1,7 +1,7 @@
 {
   "ticker": "CAT",
   "name": "Caterpillar Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "787.41–840.59"
   },
   "current_quote": {
-    "close": 889.67,
-    "ma20": 800.7,
-    "ma50": 749.23,
-    "ma200": 588.79,
-    "data_date": "2026-05-01"
+    "close": 874.78,
+    "ma20": 808.45,
+    "ma50": 751.56,
+    "ma200": 591.09,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:25+00:00"
+  "generated_at": "2026-05-05T00:50:03+00:00"
 }

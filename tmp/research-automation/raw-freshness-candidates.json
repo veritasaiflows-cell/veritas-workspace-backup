@@ -1,0 +1,56 @@
+[
+  {
+    "target_note": "01. Dashboards/Executive Brief.md",
+    "stale_claim": "The BRK.B catalyst wording still speaks as if the event is upcoming.",
+    "why_stale": "BRK.B already reported on May 2, so future-tense catalyst wording is stale.",
+    "new_evidence": [
+      {
+        "title": "Updated event calendar review",
+        "source": "Internal verified event review",
+        "source_quality": "tier_1_primary"
+      }
+    ],
+    "source_quality": "tier_1_primary",
+    "freshness_class": "mechanical_date_elapsed_event",
+    "patch_scope": "single sentence wording cleanup only",
+    "proposed_replacement": "BRK.B already reported on May 2; keep the post-print state explicit instead of future-tense catalyst language.",
+    "judgment_impact": "none",
+    "affected_surfaces": [
+      "01. Dashboards/Executive Brief.md",
+      "01. Dashboards/This Week.md"
+    ],
+    "required_downstream_sync": [
+      "Check This Week wording after patch approval."
+    ],
+    "rollback_note": "Restore the previous future-tense sentence if the event date was misread.",
+    "verifier_signoff": "Pending main-session review",
+    "main_approval_required": true,
+    "linked_packet_id": "rip_example1234"
+  },
+  {
+    "target_note": "03. Portfolio/Portfolio Snapshot.md",
+    "stale_claim": "Energy sleeve stance should be upgraded immediately.",
+    "why_stale": "New geopolitical chatter suggests stronger oil follow-through.",
+    "new_evidence": [
+      {
+        "title": "Unverified repost chain",
+        "source": "social repost chain",
+        "source_quality": "rumor_unverified"
+      }
+    ],
+    "source_quality": "rumor_unverified",
+    "freshness_class": "thesis_or_posture_change",
+    "patch_scope": "energy posture rewrite",
+    "proposed_replacement": "Upgrade energy posture and deployment state.",
+    "judgment_impact": "material",
+    "affected_surfaces": [
+      "03. Portfolio/Portfolio Snapshot.md"
+    ],
+    "required_downstream_sync": [
+      "Would require cross-surface truth arbitration."
+    ],
+    "rollback_note": "Restore prior posture wording.",
+    "verifier_signoff": "Pending main-session review",
+    "main_approval_required": true
+  }
+]

@@ -39,6 +39,10 @@ Every major workflow closeout should update or produce these, unless one is expl
    - reopen triggers
    - next-pass recommendation
    - when useful, 1-2 bounded adjacent workflow recommendations
+8. **Executive-summary folder**
+   - one folder under `08. Audits/Workflow Executive Summaries/Workflow <n> - <short title>/`
+   - concise `Executive Summary.md`
+   - objective, actual completion, workspace changes, named residue, downstream workflow or reopen trigger, key files, and checkpoint facts
 
 The default expectation is that this artifact comes from an independent auditor lane, not the implementation lane.
 

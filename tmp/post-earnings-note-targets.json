@@ -1,25 +1,26 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:28.425347+00:00",
+  "generated_at_utc": "2026-05-05T00:50:06.093501+00:00",
   "status": "partial",
   "stale_after_hours": 24,
   "expected_update_window": "Run after post_earnings_prep.py and before any post-earnings note edits.",
-  "last_trading_day": "2026-05-01",
+  "last_trading_day": "2026-05-04",
   "source_last_trading_day": {
-    "trigger": "2026-05-01",
-    "technical": "2026-05-01",
-    "deployment": "2026-05-01",
-    "market_state": "2026-05-01",
+    "trigger": "2026-05-04",
+    "technical": "2026-05-04",
+    "deployment": "2026-05-04",
+    "market_state": "2026-05-04",
     "earnings": null
   },
   "source": {
-    "prep_file": "C:\\Users\\Veritas.RQs_Business\\.openclaw\\workspace\\tmp\\post-earnings-prep.json",
-    "generated_at_utc": "2026-05-03T15:31:28.382191+00:00",
+    "prep_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\post-earnings-prep.json",
+    "generated_at_utc": "2026-05-05T00:50:06.043007+00:00",
     "age_hours": 0.0,
     "is_stale": false,
     "status": "partial"
   },
   "warnings": [
     "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+    "Market-state sources are not aligned on one trading day: 2y",
     "Non-blocking watchlist/date mismatches remain outside the active timing window."
   ],
   "impacted_notes": {

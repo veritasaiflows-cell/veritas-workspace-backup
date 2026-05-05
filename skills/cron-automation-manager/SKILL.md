@@ -25,6 +25,10 @@ Inspect before scheduling:
 - `AGENTS.md`
 - `MEMORY.md`
 - `06. Playbooks/Operating Model.md`
+- `06. Playbooks/Cron Job Protocol.md`
+- `06. Playbooks/Automation Run Summary Contract.md`
+- `06. Playbooks/Cron Run Ledger.md`
+- `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
 - `scripts/README.md`
 - current cron state
 - the upstream artifacts or files the job depends on
@@ -32,12 +36,14 @@ Inspect before scheduling:
 ## Procedure
 
 1. Decide whether the need is heartbeat or cron.
-2. Define the smallest schedule that solves the real problem.
-3. Identify dependencies, artifacts, and freshness assumptions.
-4. Prefer one owner for each workflow window.
-5. Avoid overlapping jobs that write the same layer.
-6. Validate coherence after scheduling.
-7. Record durable automation rules in the right file.
+2. Use the `Cron Job Protocol.md` job-card fields in order so the design is symmetrical with sibling jobs.
+3. Define the smallest schedule that solves the real problem.
+4. Identify dependencies, artifacts, freshness assumptions, and downgrade rules.
+5. Prefer one owner for each workflow window.
+6. Avoid overlapping jobs that write the same layer.
+7. Define the operator-facing response contract and the machine-readable proof surface together.
+8. Validate coherence after scheduling with list/show/run/runs plus artifact inspection.
+8. Record durable automation rules in the right file.
 
 For research or freshness automation, do not schedule until these are explicit:
 - approved source bundle
@@ -60,6 +66,7 @@ For research or freshness automation, do not schedule until these are explicit:
 - Do not let two jobs silently compete over the same notes or artifacts.
 - Keep reminder text readable as a reminder when it fires.
 - Validate the resulting artifacts, not just the job creation command.
+- If a safe forward fix exists for a broken cron path, take it before stopping at diagnosis.
 
 ## Files This Skill May Read
 
@@ -82,7 +89,9 @@ For research or freshness automation, do not schedule until these are explicit:
 Use this structure:
 - scheduling goal
 - chosen mechanism: heartbeat or cron
+- job card
 - dependency chain
+- operator action still required
 - risk or trust downgrade rules
 - validation result
 
@@ -91,3 +100,4 @@ Use this structure:
 - log meaningful scheduling changes in the daily note
 - promote durable automation policy to `TOOLS.md` or `MEMORY.md`
 - keep one clear source of truth for each recurring workflow
+- if a new scheduling pattern becomes standard, update `06. Playbooks/Cron Job Protocol.md` instead of inventing a second doctrine note

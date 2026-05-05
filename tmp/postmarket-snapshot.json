@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:29.847509+00:00",
-  "snapshot_date": "2026-05-03",
-  "market_data_as_of": "2026-05-01",
+  "generated_at_utc": "2026-05-05T00:50:07.282748+00:00",
+  "snapshot_date": "2026-05-04",
+  "market_data_as_of": "2026-05-04",
   "trust_label": "clean",
   "canonical_mutation_allowed": true,
   "trust_reason": "dashboard validation clean",
@@ -18,5 +18,5 @@
   ],
   "blocked": [],
   "delta_summary": "No material changes",
-  "wrote_to": "01. Dashboards\\Post-Market Snapshot\\2026-05-03.md"
+  "wrote_to": "01. Dashboards\\Post-Market Snapshot\\2026-05-04.md"
 }

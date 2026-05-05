@@ -1,7 +1,7 @@
 {
   "ticker": "BRK.B",
   "name": "Berkshire Hathaway Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "471.93–484.15"
   },
   "current_quote": {
-    "close": 473.01,
-    "ma20": 474.98,
-    "ma50": 482.48,
-    "ma200": 489.9,
-    "data_date": "2026-05-01"
+    "close": 468.52,
+    "ma20": 474.59,
+    "ma50": 481.88,
+    "ma200": 489.88,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:23+00:00"
+  "generated_at": "2026-05-05T00:50:01+00:00"
 }

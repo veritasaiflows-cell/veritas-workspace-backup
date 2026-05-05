@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:14.657793+00:00",
+  "generated_at_utc": "2026-05-05T00:49:52.260744+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh after the close and on FOMC decision days. Re-run whenever any upstream data artifact is updated.",
-  "last_trading_day": "2026-05-03",
+  "last_trading_day": "2026-05-05",
   "warnings": [],
   "regime": {
     "key": "restrictive_pause_benign_broad",
@@ -24,31 +24,31 @@
         "high": 3.75
       },
       "next_fomc_date": "2026-06-17",
-      "days_until_fomc": 45
+      "days_until_fomc": 43
     },
     "credit": {
       "key": "benign",
-      "label": "Benign credit — HY 2.83%, IG 0.81%, HY flat",
+      "label": "Benign credit — HY 2.77%, IG 0.81%, HY tightening",
       "source_status": "ok",
       "stress_regime": "benign",
-      "hy_oas": 2.83,
+      "hy_oas": 2.77,
       "ig_oas": 0.81,
-      "hy_minus_ig": 2.02,
-      "hy_direction_5d": "flat",
+      "hy_minus_ig": 1.96,
+      "hy_direction_5d": "tightening",
       "hy_direction_20d": "tightening"
     },
     "breadth": {
       "key": "broad_recovering",
-      "label": "Breadth recovering — 10/11 sectors above 50DMA, RSP/SPY -0.54% 5d",
+      "label": "Breadth recovering — 8/11 sectors above 50DMA, RSP/SPY -0.47% 5d",
       "source_status": "ok",
       "breadth_regime": "recovering",
-      "composite_score": 0.7456,
-      "sectors_above_50dma": 10,
+      "composite_score": 0.6239,
+      "sectors_above_50dma": 8,
       "sectors_total": 11,
-      "participation_pct": 90.9,
-      "rsp_spy_ratio": 0.28144,
+      "participation_pct": 72.7,
+      "rsp_spy_ratio": 0.280832,
       "rsp_spy_direction": "deteriorating",
-      "rsp_spy_5d_change_pct": -0.5439
+      "rsp_spy_5d_change_pct": -0.4696
     }
   },
   "sector_fit": {

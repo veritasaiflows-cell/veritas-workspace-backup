@@ -7,6 +7,19 @@ Define what evidence the research-automation lane may trust, how strongly it may
 Research automation may only assemble review packets from approved sources.
 It may not treat broad web noise as canonical truth.
 
+## Bounded parallel roles
+The source-bundle contract is a good fit for bounded parallel challenge lanes before cron widens.
+
+| Role | Job |
+|---|---|
+| Source-quality agent | proposes approved source tiers and category-level source sets |
+| Coverage-gap agent | checks whether the bundle misses important sources by ticker, sector, macro sleeve, or geopolitical risk |
+| Noise/risk agent | defines excluded sources, rumor rules, duplicate-event handling, and stop lines |
+| Workflow integration agent | decides what belongs in cron, what stays manual, and what may enter review packets only |
+
+These lanes may challenge or extend the contract.
+They do not authorize new live sources by themselves.
+
 ## Source tiers
 
 ### Tier 1 - Primary / authoritative
@@ -41,6 +54,18 @@ Useful for watchlisting, not enough for direct canonical trust on their own.
 - repost chains quoting each other
 - scraped calendars with no attributable evidence
 
+## Contract output
+The source bundle contract should answer:
+- approved source tiers
+- approved sources by category
+- blocked / low-confidence sources
+- refresh cadence by source type
+- ticker / macro sleeve coverage map
+- what belongs in cron
+- what requires manual review
+- what is only allowed into review packets
+- stop lines for rumor-heavy, low-confidence, duplicate, or unsourced events
+
 ## Coverage map
 The v1 research lane covers only:
 - active deployment-board names
@@ -50,6 +75,19 @@ The v1 research lane covers only:
 - oil, LNG, shipping, Hormuz, and related energy-geopolitical sleeves
 
 Do not widen into broad universe maintenance in this phase.
+
+## Best first version
+Do not try to build the full research universe immediately.
+
+Start with:
+- company filings / IR
+- earnings transcripts
+- major financial news
+- macro calendar / Fed / rates / inflation
+- oil and geopolitical risk sources
+- sector-specific sources for active names only
+
+Expand only after the source bundle proves useful and low-noise.
 
 ## Refresh cadence by source type
 - company filings / IR: event-driven and post-close review windows

@@ -1,7 +1,7 @@
 {
   "ticker": "PLTR",
   "name": "Palantir Technologies Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -624,11 +624,11 @@
     "label": "138.6–150.44"
   },
   "current_quote": {
-    "close": 144.07,
-    "ma20": 141.56,
-    "ma50": 145.18,
-    "ma200": 164.3,
-    "data_date": "2026-05-01"
+    "close": 146.03,
+    "ma20": 141.47,
+    "ma50": 145.4,
+    "ma200": 164.26,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:27+00:00"
+  "generated_at": "2026-05-05T00:50:04+00:00"
 }

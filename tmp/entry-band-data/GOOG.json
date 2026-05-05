@@ -1,7 +1,7 @@
 {
   "ticker": "GOOG",
   "name": "Alphabet Inc.",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "330.01–349.37"
   },
   "current_quote": {
-    "close": 383.22,
-    "ma20": 334.85,
-    "ma50": 314.17,
-    "ma200": 281.03,
-    "data_date": "2026-05-01"
+    "close": 379.64,
+    "ma20": 338.95,
+    "ma50": 315.47,
+    "ma200": 282.01,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:22+00:00"
+  "generated_at": "2026-05-05T00:50:00+00:00"
 }

@@ -1,7 +1,7 @@
 {
   "ticker": "RTX",
   "name": "RTX Corporation",
-  "asof": "2026-05-03",
+  "asof": "2026-05-04",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -1032,11 +1032,11 @@
     "label": "186.76–197.48"
   },
   "current_quote": {
-    "close": 173.99,
-    "ma20": 189.44,
-    "ma50": 196.23,
-    "ma200": 177.95,
-    "data_date": "2026-05-01"
+    "close": 172.9,
+    "ma20": 188.16,
+    "ma50": 195.59,
+    "ma200": 178.06,
+    "data_date": "2026-05-04"
   },
-  "generated_at": "2026-05-03T15:31:25+00:00"
+  "generated_at": "2026-05-05T00:50:03+00:00"
 }
