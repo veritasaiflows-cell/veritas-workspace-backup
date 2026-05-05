@@ -14,6 +14,7 @@
 
 ## Current State
 - opened on 2026-05-04 from the independent skills-and-protocols audit
+- active downstream workflow after WF25 closed with follow-up on 2026-05-04
 - should run before the next meaningful board-sync / weekly-brief execution that relies on the audited skills
 - does not widen research autonomy; it hardens the control surface
 

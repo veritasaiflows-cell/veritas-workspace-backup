@@ -13,7 +13,7 @@
 - Randall explicitly wants the research department, ticker-entry decision process, and coverage-admission model tackled first.
 
 ## Current State
-- active downstream workflow after Workflow 24 closed with follow-up on 2026-05-04
+- closed with follow-up on 2026-05-04 after the intake queue, decision objects, two live proof cases, and downstream handoff contract were completed and synchronized
 - depends on WF24 only for cron/handoff discipline, not for finance-judgment widening
 - inherits the settled lane framework from WF6 and must not relitigate it
 - inherits the desk ownership model from WF9 and must operationalize it
@@ -21,6 +21,28 @@
 - Phase 1 operator surfaces now exist: `06. Playbooks/Research Department Intake Queue.md`, `06. Playbooks/Research Department Admission Review Object.md`, and `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
 - first recommended pilot cases are now named: **EOG** for new-name admission and **GS** for promotion review
 - first live pilot outcomes now exist: **EOG -> defer** and **GS -> hold tactical**
+- downstream handoff contract now exists at `06. Playbooks/Research Department Downstream Handoff Contract.md`
+
+## Closure Label
+- Closed with follow-up
+
+## Acceptance Evidence
+- `06. Playbooks/Research Department Intake Queue.md` makes the desk queue explicit
+- `06. Playbooks/Research Department Admission Review Object.md` and `06. Playbooks/Research Department Promotion-Demotion Review Object.md` make the decision objects explicit
+- `06. Playbooks/Research Department Reviews/WF25-P1 - EOG Admission Review.md` proves a real new-name **defer** decision
+- `06. Playbooks/Research Department Reviews/WF25-P2 - GS Promotion Review.md` proves a real promotion-review **hold tactical** decision
+- `06. Playbooks/Research Department Downstream Handoff Contract.md` makes WF21 / WF26 desk handoff rules explicit
+
+## Named Residue
+- the proof set is intentionally narrow: one new-name defer and one promotion hold
+- no ticker was admitted and no standing was promoted in this first proof pass
+- recurring packet / fresh-intelligence pressure from WF21 and WF26 still needs later real-world use, but that is downstream follow-up rather than an in-scope blocker
+
+## Reopen Triggers
+- WF21 or WF26 cannot route cleanly through the handoff contract
+- the next real admission or promotion case exposes missing fields, owner ambiguity, or downstream mutation confusion
+- queue, registry, continuity, chain-log, and audit surfaces drift out of agreement on WF25 state
+- a future case proves the current desk objects too weak under real pressure
 
 ## Scope
 - define the live research-department operating queue for new names, promotions, demotions, and removals
@@ -108,7 +130,7 @@ Workflow 25 should not close unless all are true:
 5. downstream dependencies for source-bundle / geopolitical / decision-surface work are explicit
 
 ## Next Action
-- Record the first WF25 pilot-case proof as complete, then decide whether a second-wave candidate set is needed before Phase 1 is called done or whether the workflow can move straight into closeout prep for the intake/promotion operating layer.
+- Promote Workflow 28 as the active downstream lane and fix the critical skills/protocol coherence gaps before broader research-packet widening resumes.
 
 ## Key Files
 - `06. Playbooks/Project Continuity/Workflow 6 - Coverage Tier Framework.md`
@@ -118,6 +140,8 @@ Workflow 25 should not close unless all are true:
 - `06. Playbooks/Research Department Intake Queue.md`
 - `06. Playbooks/Research Department Admission Review Object.md`
 - `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
+- `06. Playbooks/Research Department Downstream Handoff Contract.md`
+- `06. Playbooks/Project Continuity/Workflow 25 - Research Department Completion and Coverage Admission Operations - Chain Log.md`
 - `06. Playbooks/Research Department Reviews/WF25-P1 - EOG Admission Review.md`
 - `06. Playbooks/Research Department Reviews/WF25-P2 - GS Promotion Review.md`
 - `04. Research/Coverage Universe.md`

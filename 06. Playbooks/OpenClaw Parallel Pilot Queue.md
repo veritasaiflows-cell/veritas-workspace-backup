@@ -53,29 +53,26 @@ Each meaningful queued item should make clear:
 ## Current chain state
 
 ### Active workflow
-**Workflow 25 - Research Department Completion and Coverage Admission Operations**
-
-Status:
-- active downstream lane after WF24 closed with follow-up on 2026-05-04
-- exists to operationalize the already-landed WF6 / WF9 / WF11 doctrine into a real research-department intake and admission operating lane
-- Phase 1 now owns the intake queue, decision objects, and first bounded live case set
-- active pilot candidates are **EOG** for new-name admission and **GS** for promotion review
-- first pilot outcomes are now explicit: **EOG -> defer**, **GS -> hold tactical**
-- WF21 remains queued behind this lane so recurring research packets feed a real desk process instead of widening into vagueness
-- Randall explicitly directed strict sequential execution: finish WF25 with QA, hardening pass, and executive-summary closeout before WF28 opens
-
-Reason:
-- Workflow 24 is honestly closed at the intended scope
-- Workflow 25 is the approved next downstream lane before Workflow 21 and the broader intelligence / prediction chain can open safely
-
-### Next approved queue item
 **Workflow 28 - Skills Critical Corrections and Coherence Hardening**
 
 Status:
-- queued directly behind the current WF25 Phase 1 opening pass
-- exists to land the 2026-05-04 audit's critical skill fixes before the next board-sync / weekly-brief execution path relies on stale skill contracts
-- should run before Workflow 21 because the audit identified live-skill correctness gaps, not optional polish
-- when opened, it should follow the same finish-to-closeout discipline as WF25: sequential execution, QA/hardening pass, and executive-summary artifacts before WF29 opens
+- active downstream lane after WF25 closed with follow-up on 2026-05-04
+- exists to land the 2026-05-04 audit's critical skill fixes before the next board-sync / weekly-brief path relies on stale skill contracts
+- Phase 1 now owns the critical live-skill corrections and technical-overlap decision path
+- WF29 remains queued behind this lane so executable proof utilities are built only after the coherence layer is honest
+- Randall explicitly directed strict sequential execution: finish WF28 with QA, hardening pass, and executive-summary closeout before WF29 opens
+
+Reason:
+- Workflow 25 is honestly closed at the intended scope
+- Workflow 28 is the approved next downstream lane before WF29 and broader workflow widening because the audit found live correctness gaps in the skill layer
+
+### Next approved queue item
+**Workflow 29 - Skill Validation and Machine-Proof Utilities**
+
+Status:
+- queued directly behind WF28
+- exists to turn the audit's proof-layer recommendations into bounded executable trust infrastructure
+- should not open until WF28 closes with its own QA / hardening / executive-summary artifacts
 
 WF24 closeout facts now live:
 - cron-builder doctrine is explicit
@@ -118,17 +115,17 @@ WF24 closeout facts now live:
    - deliverable: controlled proof, independent audit, closeout artifacts, and downstream promotion for the retrofitted cron family
    - acceptance check: met for closure at intended scope; post-close proof is history-visible, while morning/Sunday symmetry remains named residue and reopen-trigger material
 
-5. **WF25 Phase 1 - research-department intake queue and admission decision object**
-   - status: active
+5. **WF25 Phase 1 through Phase 4 - desk operating proof and handoff contract**
+   - status: completed (closed with follow-up)
    - owner: Veritas main lane
    - category: research / governance
    - posture: serial
-   - deliverable: real operating queue plus explicit admission / promotion review object that operationalizes WF6, WF9, and WF11
-   - acceptance check: now grounded with live surfaces and first pilot outcomes (`EOG` defer, `GS` hold tactical); complete when Phase 1 truthfully decides whether another pilot set is needed before closeout
-   - closeout rule: do not open WF28 until WF25 reaches QA, hardening pass, independent audit / executive-summary closeout, and cross-surface sync
+   - deliverable: real operating queue, decision objects, first live pilot proofs, downstream handoff contract, and closeout-layer artifacts
+   - acceptance check: met for closure at intended scope; the desk can now produce honest admit/defer/hold outcomes without reconstructing chat history
+   - closeout rule: satisfied; WF25 now has chain-log, executive-summary, checkpoint, and audit surfaces in progress for final verification
 
 6. **WF28 Phase 1 - critical skill corrections**
-   - status: queued behind WF25
+   - status: active
    - owner: Veritas main lane
    - category: skills / governance
    - posture: serial
@@ -222,8 +219,8 @@ WF24 closeout facts now live:
 28. Workflow 19 - playbooks retrieval and governance cleanup [closed with follow-up]
 29. Workflow 20 - parallel agents automation and human-gated review workflow [closed with follow-up]
 30. Workflow 24 - cron job build contract and session handoff hardening [closed with follow-up]
-31. Workflow 25 - research department completion and coverage admission operations [active]
-32. Workflow 28 - skills critical corrections and coherence hardening [queued behind Workflow 25]
+31. Workflow 25 - research department completion and coverage admission operations [closed with follow-up]
+32. Workflow 28 - skills critical corrections and coherence hardening [active]
 33. Workflow 29 - skill validation and machine-proof utilities [queued behind Workflow 28]
 34. Workflow 21 - recurring source bundle and review window pilot [queued behind Workflow 29]
 35. Workflow 26 - fresh external intelligence and geopolitical verification pilot [queued behind Workflow 21]

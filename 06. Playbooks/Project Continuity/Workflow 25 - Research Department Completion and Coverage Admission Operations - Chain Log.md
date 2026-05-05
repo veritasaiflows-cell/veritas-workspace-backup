@@ -1,0 +1,32 @@
+# Workflow 25 - Research Department Completion and Coverage Admission Operations - Chain Log
+
+## 2026-05-04 - Phase 1 through closeout pass
+- Outcome: Closed with follow-up after the intake queue, decision objects, live pilot proofs, downstream handoff contract, and closeout-layer artifacts were completed and cross-surface state was synchronized.
+- Delivered:
+  - added `06. Playbooks/Research Department Intake Queue.md`
+  - added `06. Playbooks/Research Department Admission Review Object.md`
+  - added `06. Playbooks/Research Department Promotion-Demotion Review Object.md`
+  - added `06. Playbooks/Research Department Downstream Handoff Contract.md`
+  - completed two bounded live pilot reviews:
+    - `WF25-P1 - EOG Admission Review.md` -> **defer**
+    - `WF25-P2 - GS Promotion Review.md` -> **hold tactical**
+  - synchronized WF25 continuity, queue, and registry state
+  - promoted Workflow 28 as the next active downstream lane
+- Validation:
+  - `06. Playbooks/Research Department Intake Queue.md` now holds explicit queue states plus real decided pilot rows
+  - `06. Playbooks/Research Department Reviews/WF25-P1 - EOG Admission Review.md` proves the desk can reject a weak-role new-name add
+  - `06. Playbooks/Research Department Reviews/WF25-P2 - GS Promotion Review.md` proves the desk can resist a fake promotion when a stronger peer still owns the primary role
+  - `06. Playbooks/Research Department Downstream Handoff Contract.md` makes WF21/WF26 subordinate to WF25 desk judgment
+- Audit artifact: `08. Audits/Workflow Executive Summaries/Workflow 25 - Research Department Completion and Coverage Admission Operations/Independent Audit.md`
+- Audit verdict: initial independent audit said WF25 was substantively ready but not honestly closeable until chain-log, executive-summary, checkpoint, and cross-surface closeout artifacts were added; those were then completed in the same workstream for re-audit.
+- Checkpoint posture: Checkpoint taken. WF25 changed active workflow state, control surfaces, and research-desk operating artifacts, so closure should not live only in an uncommitted working tree.
+- Residue:
+  - the proof set is intentionally narrow: one new-name defer and one promotion hold, not an open-ended case library
+  - no new ticker was admitted and no tier was promoted in this first proof pass
+  - recurring use under WF21/WF26 still needs later real-world pressure, but that is downstream follow-up rather than an in-scope WF25 blocker
+- Reopen triggers:
+  - WF21 or WF26 cannot route cleanly through the handoff contract
+  - the next real admission or promotion case exposes missing fields, owner ambiguity, or downstream mutation confusion
+  - queue, registry, continuity, chain-log, and audit surfaces drift out of agreement on WF25 state
+  - a future case shows the current queue / decision objects are too weak to carry a real desk judgment
+- Next pass: Promote Workflow 28 as the active downstream lane and close the critical skills/protocol coherence gaps before broader research-packet widening resumes.
