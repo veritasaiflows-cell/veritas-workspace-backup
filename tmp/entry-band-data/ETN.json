@@ -1,7 +1,7 @@
 {
   "ticker": "ETN",
   "name": "Eaton Corporation plc",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -965,9 +965,9 @@
       "d": "2026-05",
       "o": 435.0,
       "h": 435.43,
-      "l": 422.84,
-      "c": 425.55,
-      "v": 2.48
+      "l": 388.26,
+      "c": 401.51,
+      "v": 24.3
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "395.59–420.31"
   },
   "current_quote": {
-    "close": 422.44,
-    "ma20": 407.91,
-    "ma50": 379.78,
-    "ma200": 361.54,
-    "data_date": "2026-05-04"
+    "close": 401.51,
+    "ma20": 410.59,
+    "ma50": 381.8,
+    "ma200": 361.25,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:49:59+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 378.22,
+    "suggested_high": 409.81,
+    "suggested_stop": 360.67,
+    "sma_envelope_low": 369.88,
+    "sma_envelope_high": 408.82,
+    "earnings_state": "CLEAR",
+    "band_confidence": 3,
+    "needs_review": true,
+    "canonical_apply_eligible": true
+  },
+  "generated_at": "2026-05-10T03:38:33+00:00"
 }

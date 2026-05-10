@@ -1,9 +1,270 @@
 {
-  "overall": "clean",
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-10T03:38:40.230977+00:00",
+  "stale_after_hours": 8,
+  "source_freshness": {
+    "overall_classification": "partial",
+    "trust_level": "review_required",
+    "stop_line": false,
+    "presentation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "capital_action_allowed": false,
+    "owner_review_required": true,
+    "sources": [
+      {
+        "source_key": "market",
+        "path": "tmp/market-state.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:26.113802+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 24,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [
+          "upstream status=partial",
+          "Fed target range is manually maintained",
+          "freshness note: policy_artifact_ingested",
+          "manual dependency: fed_target_range"
+        ],
+        "tags": [
+          "partial",
+          "manual",
+          "macro_manual_dependency",
+          "mixed_dates"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "policy",
+        "path": "tmp/policy-expectations.json",
+        "classification": "manual_dependency",
+        "freshness_rank": 2,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:13.610407+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 24,
+        "required": true,
+        "criticality": "important",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [
+          "upstream status=manual",
+          "manual dependency: Still manually maintained in policy_expectations_refresh.py and must be updated after each FOMC decision.",
+          "freshness note: manual_target_range",
+          "freshness note: official_next_fomc_date",
+          "freshness note: auto_derived_next_fomc_contract",
+          "warning: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+          "manual dependency: current_target_range"
+        ],
+        "tags": [
+          "manual",
+          "policy_manual_dependency",
+          "mixed_dates",
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "credit",
+        "path": "tmp/credit-spreads.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:14.806438+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 36,
+        "required": true,
+        "criticality": "important",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [
+          "upstream status=partial",
+          "Credit spreads are using proxy basket only (HYG/JNK/LQD), not direct OAS series",
+          "warning: IG OAS fetch failed for BAMLC0A0CM. FRED_API_KEY not set",
+          "warning: HY OAS fetch failed for BAMLH0A0HYM2. FRED_API_KEY not set",
+          "warning: Direct OAS coverage is incomplete; using proxy basket to preserve directional context.",
+          "missing required fields: IG OAS, HY OAS"
+        ],
+        "tags": [
+          "partial",
+          "fallback_proxy_only",
+          "warning_notes",
+          "missing_fields"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "breadth",
+        "path": "tmp/breadth-state.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:16.955292+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 24,
+        "required": true,
+        "criticality": "important",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "technical",
+        "path": "tmp/technical-refresh.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:29.145176+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 36,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "deployment",
+        "path": "tmp/deployment-check.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:38.939263+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 24,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "earnings",
+        "path": "tmp/earnings-calendar.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:12.276624+00:00",
+        "file_mtime_utc": null,
+        "age_hours": 0.0,
+        "stale_after_hours": 168,
+        "required": true,
+        "criticality": "important",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "portfolio",
+        "path": "tmp/portfolio-config.json",
+        "classification": "manual_dependency",
+        "freshness_rank": 2,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-07T22:14:01Z",
+        "file_mtime_utc": null,
+        "age_hours": 53.4,
+        "stale_after_hours": 168,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "dashboard_source_assessment",
+        "issues": [
+          "human-maintained config, update when note-layer posture or risk rules change",
+          "manual dependency: all"
+        ],
+        "tags": [
+          "manual"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      }
+    ],
+    "operator_actions": [
+      "Review market: partial",
+      "Review policy: manual_dependency",
+      "Review credit: partial",
+      "Review portfolio: manual_dependency"
+    ]
+  },
+  "overall": "warning",
   "summary": {
     "critical": 0,
-    "warning": 0,
+    "warning": 4,
     "info": 0
   },
-  "warnings": []
+  "warnings": [
+    {
+      "code": "credit_spreads_fallback_proxy_only",
+      "severity": "warning",
+      "scope": "macro",
+      "message": "Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable."
+    },
+    {
+      "code": "credit_spreads_partial",
+      "severity": "warning",
+      "scope": "macro",
+      "message": "Credit spreads artifact is partial; one or more required fields are missing or estimated."
+    },
+    {
+      "code": "macro_manual_dependency",
+      "severity": "warning",
+      "scope": "macro",
+      "message": "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags."
+    },
+    {
+      "code": "policy_expectations_manual_dependency",
+      "severity": "warning",
+      "scope": "policy",
+      "message": "Policy expectations still rely on manual target-range constants and require explicit review."
+    }
+  ]
 }

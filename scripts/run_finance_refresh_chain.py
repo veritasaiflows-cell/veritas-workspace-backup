@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import subprocess
 import sys
@@ -8,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from chain_manifest import expected_outputs_by_script, manifest_steps, window_description, window_names
 from market_data_utils import atomic_write_json
 
 WORKSPACE = Path(__file__).resolve().parents[1]
@@ -17,129 +19,12 @@ RECOVERY_FINALIZER_SCRIPTS = {"run_summary_refresh.py", "dashboard_run_summary_c
 DASHBOARD_BACKUP_FAILURE_SCRIPTS = {"test_dashboard_acceptance.py", "generate_dashboard.py"}
 
 WINDOW_CHAINS: dict[str, list[list[str]]] = {
-    "morning": [
-        ["validate_portfolio_config.py"],
-        # Macro inputs first so market_state_refresh ingests fresh policy/credit/breadth
-        ["policy_expectations_refresh.py"],
-        ["credit_spread_refresh.py"],
-        ["breadth_refresh.py"],
-        ["market_state_refresh.py"],
-        ["macro_regime_refresh.py"],
-        ["technical_refresh.py"],
-        ["regime_scoring_refresh.py"],
-        ["band_refresh.py"],
-        ["entry_band_fetch.py", "--all-tracked", "--html"],
-        ["generate_entry_band_status.py"],
-        ["deployment_check.py"],
-        ["trigger_sheet_refresh.py"],
-        ["positioning_ranking_refresh.py"],
-        # Refresh post-earnings packets so the panel reflects last night's prints
-        ["post_earnings_prep.py"],
-        ["universe_consistency_check.py"],
-        ["test_dashboard_acceptance.py"],
-        ["generate_dashboard.py"],
-        ["validate_dashboard_state.py", "--write"],
-        ["workbook_export.py"],
-        # Intelligence layer: write the pre-market snapshot to the dashboard surface
-        ["premarket_snapshot.py"],
-        ["run_summary_refresh.py", "--window", "morning"],
-        ["dashboard_run_summary_consumer.py", "--window", "morning"],
-        ["deployment_readiness_surface.py", "--window", "morning"],
-    ],
-    "post-close": [
-        ["earnings_calendar_enrichment.py"],
-        ["validate_portfolio_config.py"],
-        ["policy_expectations_refresh.py"],
-        ["credit_spread_refresh.py"],
-        ["breadth_refresh.py"],
-        ["market_state_refresh.py"],
-        ["macro_regime_refresh.py"],
-        ["technical_refresh.py"],
-        ["regime_scoring_refresh.py"],
-        ["band_refresh.py"],
-        ["entry_band_fetch.py", "--all-tracked", "--html"],
-        ["generate_entry_band_status.py"],
-        ["deployment_check.py"],
-        ["trigger_sheet_refresh.py"],
-        ["positioning_ranking_refresh.py"],
-        ["post_earnings_prep.py"],
-        ["post_earnings_note_targets.py"],
-        ["universe_consistency_check.py"],
-        ["test_dashboard_acceptance.py"],
-        ["generate_dashboard.py"],
-        ["validate_dashboard_state.py", "--write"],
-        ["workbook_export.py"],
-        # Intelligence layer: post-market snapshot + daily executive brief
-        ["postmarket_snapshot.py"],
-        ["daily_executive_brief.py"],
-        ["run_summary_refresh.py", "--window", "post-close"],
-        ["dashboard_run_summary_consumer.py", "--window", "post-close"],
-        ["deployment_readiness_surface.py", "--window", "post-close"],
-    ],
-    "post-earnings": [
-        ["earnings_calendar_enrichment.py"],
-        ["validate_portfolio_config.py"],
-        ["post_earnings_prep.py"],
-        ["post_earnings_note_targets.py"],
-        ["positioning_ranking_refresh.py"],
-        ["universe_consistency_check.py"],
-        ["test_dashboard_acceptance.py"],
-        ["generate_dashboard.py"],
-        ["validate_dashboard_state.py", "--write"],
-        ["workbook_export.py"],
-        ["run_summary_refresh.py", "--window", "post-earnings"],
-        ["dashboard_run_summary_consumer.py", "--window", "post-earnings"],
-        ["deployment_readiness_surface.py", "--window", "post-earnings"],
-    ],
-    # Sunday: full weekly intelligence rebuild — runs all data layers, scores the
-    # universe, generates the Weekly Positioning Review scaffold, and revalidates.
-    # Run once on Sunday before the weekly review session.
-    "sunday": [
-        ["earnings_calendar_enrichment.py"],
-        ["validate_portfolio_config.py"],
-        ["policy_expectations_refresh.py"],
-        ["credit_spread_refresh.py"],
-        ["breadth_refresh.py"],
-        ["market_state_refresh.py"],
-        ["macro_regime_refresh.py"],
-        ["technical_refresh.py"],
-        ["regime_scoring_refresh.py"],
-        ["weekly_review_skeleton.py"],
-        ["band_refresh.py"],
-        ["entry_band_fetch.py", "--all-tracked", "--html"],
-        ["generate_entry_band_status.py"],
-        ["deployment_check.py"],
-        ["trigger_sheet_refresh.py"],
-        ["positioning_ranking_refresh.py"],
-        ["post_earnings_prep.py"],
-        ["post_earnings_note_targets.py"],
-        ["call_log_sync.py"],
-        ["universe_consistency_check.py"],
-        ["test_dashboard_acceptance.py"],
-        ["generate_dashboard.py"],
-        ["validate_dashboard_state.py", "--write"],
-        ["workbook_export.py"],
-        # Intelligence layer: weekly macro snapshot + WIB append
-        ["weekly_macro_snapshot.py"],
-        ["weekly_intelligence_brief.py"],
-        # Daily artifacts also written so Sunday session is fully primed
-        ["postmarket_snapshot.py"],
-        ["daily_executive_brief.py"],
-        ["run_summary_refresh.py", "--window", "sunday"],
-        ["dashboard_run_summary_consumer.py", "--window", "sunday"],
-        ["deployment_readiness_surface.py", "--window", "sunday"],
-    ],
+    window: [[step["script"], *list(step.get("args") or [])] for step in manifest_steps(window)]
+    for window in window_names()
 }
-WINDOW_CHAINS["full"] = WINDOW_CHAINS["post-close"]
 DEFAULT_WINDOW = "post-close"
 
-WINDOW_DESCRIPTIONS = {
-    "morning": "Pre-open readiness refresh. Rebuilds macro, technical, regime scores, and band-staleness artifacts, then regenerates trigger layer and dashboard.",
-    "post-close": "End-of-day refresh after the close. Refreshes earnings timing, rebuilds readiness, regime scores, and band-staleness artifacts, then stages post-earnings follow-up packets.",
-    "post-earnings": "Event-driven follow-up after a material report lands. Refreshes earnings timing, rebuilds post-earnings packets and selective note targets, then revalidates dashboard trust.",
-    "sunday": "Weekly intelligence rebuild. Runs all data layers, auto-scores the tracked universe, generates the Weekly Positioning Review scaffold, syncs the call log, and revalidates the full dashboard.",
-    "full": "Alias for post-close for backward compatibility.",
-}
+WINDOW_DESCRIPTIONS = {window: window_description(window) for window in window_names()}
 
 
 def parse_args() -> argparse.Namespace:
@@ -232,7 +117,12 @@ def initial_chain_state(window: str, steps: list[list[str]], strict: bool) -> di
 
 
 def write_chain_state(window: str, state: dict[str, Any]) -> None:
-    atomic_write_json(chain_state_path(window), state)
+    path = chain_state_path(window)
+    try:
+        atomic_write_json(path, state)
+    except PermissionError:
+        with path.open("w", encoding="utf-8", newline="\n") as fh:
+            json.dump(state, fh, indent=2)
 
 
 def maybe_backup_dashboard(script: str) -> None:
@@ -251,11 +141,43 @@ def maybe_backup_dashboard(script: str) -> None:
 
 def print_window_list() -> None:
     print("Supported finance refresh windows:\n")
-    for name in ("morning", "post-close", "post-earnings", "full"):
+    for name in ("morning", "post-close", "post-earnings", "sunday", "full"):
         print(f"- {name}: {WINDOW_DESCRIPTIONS[name]}")
         for step in WINDOW_CHAINS[name]:
             print("    - " + " ".join(step))
         print("")
+
+
+def _manifest_summary(window: str, steps: list[list[str]]) -> list[dict[str, Any]]:
+    manifest = manifest_steps(window)
+    expected_by_script = expected_outputs_by_script(window)
+    prior_scripts: list[str] = []
+    summary: list[dict[str, Any]] = []
+    step_index_by_script = {step[0]: idx for idx, step in enumerate(steps)}
+    for step in manifest:
+        script = step["script"]
+        if script not in step_index_by_script:
+            continue
+        expected_outputs = list(step.get("expected_outputs") or [])
+        declared_dependencies = list(step.get("depends_on") or [])
+        missing_declared_dependencies = [dep for dep in declared_dependencies if dep not in prior_scripts]
+        missing_dependency_outputs = []
+        for dep in declared_dependencies:
+            for output in expected_by_script.get(dep, []):
+                if not (WORKSPACE / output).exists():
+                    missing_dependency_outputs.append(output)
+        summary.append({
+            "script": script,
+            "args": list(step.get("args") or []),
+            "category": step.get("category"),
+            "expected_outputs": expected_outputs,
+            "depends_on": declared_dependencies,
+            "missing_declared_dependencies": missing_declared_dependencies,
+            "missing_dependency_outputs": missing_dependency_outputs,
+            "recovery_posture": step.get("recovery_posture"),
+        })
+        prior_scripts.append(script)
+    return summary
 
 
 def resolved_steps(window: str, build_workbook: bool, cleanup: bool) -> list[list[str]]:
@@ -292,6 +214,19 @@ def run_chain(window: str, dry_run: bool = False, strict: bool = False, build_wo
         print("Tmp cleanup tail: enabled (manual opt-in)")
     for index, step in enumerate(steps, start=1):
         print(f"  {index}. {' '.join(step)}")
+
+    manifest_summary = _manifest_summary(window, steps)
+    print("\nManifest summary:")
+    for index, item in enumerate(manifest_summary, start=1):
+        print(f"  {index}. {item['script']} [{item['category']}] recovery={item['recovery_posture']}")
+        if item["depends_on"]:
+            print(f"     depends_on: {', '.join(item['depends_on'])}")
+        if item["expected_outputs"]:
+            print(f"     expected_outputs: {', '.join(item['expected_outputs'])}")
+        if item["missing_declared_dependencies"]:
+            print(f"     MISSING PRIOR DEPENDENCIES: {', '.join(item['missing_declared_dependencies'])}")
+        if item["missing_dependency_outputs"]:
+            print(f"     missing_dependency_outputs_on_disk: {', '.join(item['missing_dependency_outputs'])}")
 
     if dry_run:
         print("\nDry run only, nothing executed.")

@@ -31,6 +31,72 @@ pip install python-docx pillow
 - Root entrypoints such as `python scripts/apply_band_update.py` are intentionally preserved as thin compatibility wrappers so existing docs and operator habits do not break.
 - Do not assume everything in `scripts/` root is chain-active; use `run_finance_refresh_chain.py` as the authoritative chain map.
 
+## Governance validators
+
+### `workspace_governance_truth_check.py`
+
+Status: read-only validator
+
+Checks boot-file approval boundaries, active workflow alignment across the parallel queue and IC registry, workspace-structure ownership text, active-control-surface model-routing policy drift, and safe channel/plugin config snippets when the OpenClaw CLI exposes them.
+
+Run:
+```bash
+python scripts/workspace_governance_truth_check.py
+python scripts/workspace_governance_truth_check.py --write
+```
+
+Writes with `--write` only:
+- `tmp/workspace-governance-truth-check.json`
+
+Notes:
+- warnings are explicit but do not fail the run
+- critical cross-surface contradictions exit nonzero
+- config snippets are summarized only; the validator does not print owner IDs or raw config
+- model-routing checks scan active control surfaces only and report bounded file/line/snippet evidence for stale disallowed provider/runtime wording
+
+### `archive_suggester.py`
+
+Status: read-only archive/cleanup suggestion report
+
+Scans for conservative cleanup candidates without moving, deleting, or rewriting anything. It is a pre-automation guardrail: suggestions require owner approval and are not an apply plan.
+
+Run:
+```bash
+python scripts/archive_suggester.py
+python scripts/archive_suggester.py --include-tmp-md
+```
+
+Writes:
+- `tmp/archive-suggestions.json`
+- `tmp/archive-suggestions.md`
+
+Notes:
+- `apply_allowed=false` and `moves_performed=false` are hard boundaries
+- protected surfaces include canonical finance notes, active workflow surfaces, `data/`, memory, scripts, and skills
+- current v1 focuses on undocumented root `backups/`, executable helpers in `tmp/`, and runtime cache candidates
+- use the report to decide what to promote/archive manually; do not treat it as auto-archive authority
+
+### `cyber_security_daily_audit.py`
+
+Status: bounded read-only security audit
+
+Runs the current daily cyber-security / workspace-hardening audit for the local OpenClaw host. It combines `openclaw security audit --json`, a bounded `openclaw doctor` pass, skills inventory, workspace boundary/governance validators, and Windows firewall/antivirus checks. It writes report artifacts only under `tmp/`; it does not mutate config, notes, auth, or packages.
+
+Run:
+```bash
+python scripts/cyber_security_daily_audit.py
+```
+
+Writes:
+- `tmp/cyber-security-daily-audit.json`
+- `tmp/cyber-security-daily-audit.md`
+
+Notes:
+- default posture is read-only / review-only
+- `status=warning` is expected whenever real drift exists; do not rerun just to hide warning-grade truth
+- `stop_line=true` is reserved for critical conditions where the audit should force human review
+- `openclaw doctor` is treated as advisory because the current install can emit useful warnings and still hang or error during reinstall/runtime drift
+
 ## Supported active tooling
 
 ### `research_intake_packet.py`
@@ -159,6 +225,134 @@ python scripts/deployment_check.py
 Writes:
 - `tmp/deployment-check.json`
 
+### `market_intelligence_event_router.py`
+
+Status: live review-only event/materiality router
+
+Builds the bounded WF41-style v1 event packet from approved workspace artifacts. This is not broad news crawling. It routes existing dashboard trust warnings, macro warnings, promotion-review / near-deployable names, band-review debt, provider-calendar catalyst windows, and post-earnings prep packets into ranked owner-review events.
+
+Run:
+```bash
+python scripts/market_intelligence_event_router.py --window morning
+python scripts/market_intelligence_event_router.py --window post-close
+```
+
+Writes:
+- `tmp/market-intelligence-events-morning.json`
+- `tmp/market-intelligence-events-post-close.json`
+- `tmp/market-intelligence-events-post-earnings.json`
+- `tmp/market-intelligence-events-sunday.json`
+
+Notes:
+- remains strictly `review_only`
+- every event keeps `owner_review_required=true`
+- may rank and route events, but may not mutate thesis, portfolio state, canonical notes, config, or trades
+- source quality is workspace-artifact based in v1; wider external-source automation still needs a separate approval/proof pass
+
+Regression guard:
+```bash
+python scripts/test_market_intelligence_event_router.py
+```
+
+### `daily_review_objects.py`
+
+Status: live review-only decision-prep layer
+
+Builds the bounded daily review-object packet that ranks what matters, escalates only the highest-signal items, and prepares owner-gated capital-deployment recommendation objects from the native finance artifact stack. It consumes the read-only market-intelligence event router when present.
+
+Run:
+```bash
+python scripts/daily_review_objects.py --window morning
+python scripts/daily_review_objects.py --window post-close
+```
+
+Writes:
+- `tmp/daily-review-objects-morning.json`
+- `tmp/daily-review-objects-post-close.json`
+- `tmp/daily-review-objects-post-earnings.json`
+- `tmp/daily-review-objects-sunday.json`
+
+Notes:
+- remains strictly `review_only`
+- every capital recommendation keeps `owner_approval_required=true`
+- may rank and recommend, but may not mutate canonical notes, change deployment state, or execute
+- current known gaps stay explicit: wider external-source automation, sector/correlation machine artifact, and state-history retention are not wired yet
+
+Regression guard:
+```bash
+python scripts/test_daily_review_objects.py
+```
+
+### `state_history_capture.py`
+
+Status: live append-only historical review writer; durable path approved, consumer wiring pending
+
+Captures point-in-time post-close review state into JSONL history without mutating canonical notes, portfolio state, deployment state, owner approval, or trade execution surfaces.
+
+Default durable output:
+- `data/state-history/state-history-v1.jsonl`
+
+Legacy proof artifact:
+- `tmp/state-history-v1.jsonl` remains proof-only residue, not durable truth.
+
+Run:
+```bash
+python scripts/state_history_capture.py sample --window post-close
+python scripts/state_history_capture.py append --window post-close
+python scripts/state_history_capture.py validate
+```
+
+Proof contract:
+```bash
+python -m py_compile scripts\state_history_capture.py scripts\test_state_history_capture.py
+python scripts\test_state_history_capture.py
+python scripts\state_history_capture.py sample --window post-close
+python scripts\state_history_capture.py append --window post-close
+python scripts\state_history_capture.py validate
+```
+
+Authority:
+- historical review and provenance only
+- no model training by default
+- no model-driven deployment
+- no canonical note mutation
+- no portfolio/deployment mutation
+- no trade execution
+- no owner-approval inference
+
+Stop lines:
+- validation fails
+- source provenance or hashes are missing
+- known-at-time fields are mixed with realized future outcomes
+- any authority flag widens beyond historical review
+
+### `artifact_index.py`
+
+Status: live derived retrieval index
+
+Builds a read-only SQLite index from the current market-intelligence event packets and daily review-object packets. This is a retrieval and history helper only: the JSON artifacts and note layer remain the operating truth, and the SQLite DB must not be treated as canonical portfolio state.
+
+Run:
+```bash
+python scripts/artifact_index.py rebuild
+python scripts/artifact_index.py latest --limit 10
+python scripts/artifact_index.py ticker ETN --limit 20
+python scripts/artifact_index.py window post-close
+python scripts/artifact_index.py capital --limit 20
+python scripts/artifact_index.py trust --limit 20
+```
+
+Writes:
+- `tmp/veritas-artifact-index.sqlite`
+- SQLite sidecars may also appear under `tmp/` when WAL mode is active: `tmp/veritas-artifact-index.sqlite-wal` and `tmp/veritas-artifact-index.sqlite-shm`
+
+Notes:
+- derived index only; rebuild from source artifacts when in doubt
+- enables fast lookup by ticker/sleeve, window, escalations, capital recommendations, and trust/freshness boundaries
+- `latest` and `ticker` output include `source_file` and `list_name` so full-list rows, escalation rows, and capital-recommendation rows are distinguishable
+- uses WAL, `busy_timeout`, explicit indexes, strict tables, and batch rebuild transactions
+- not wired into `chain_manifest.py` yet; chain integration should be a later fail-soft pass after manual usefulness is proven
+
 ### `earnings_calendar_enrichment.py`
 
 Status: live
@@ -219,9 +413,9 @@ Writes:
 
 Status: live
 
-Reads `tmp/technical-refresh.json` and `tmp/portfolio-config.json` to detect stale or miscalibrated entry bands. For each name with a defined band, computes days since the band was last set, MA20 drift from the band midpoint, price drift from the band midpoint, and ATR-14 from yfinance. Proposes updated bands anchored to current MA structure. Flags `needs_review=true` if a band is more than 7 trading days old or price has moved more than 5% from the band midpoint.
+Reads `tmp/technical-refresh.json`, `tmp/portfolio-config.json`, and `tmp/earnings-calendar.json` to detect stale or miscalibrated entry bands. The proposal engine is now **Keltner-first, Dual-MA-gated, and SMA-envelope-audited**: it calculates EMA20/EMA50/SMA200, ATR20/ATRP20, trend-stack, method label, band type, band status, confidence, SMA-envelope audit levels, and earnings-state handling.
 
-Read-only. Does not modify `portfolio-config.json` or the note layer. All changes require human approval via `apply_band_update.py`.
+Read-only. Does not modify `portfolio-config.json` or the note layer. Normal band changes remain human-gated through `apply_band_update.py`; proposals are `canonical_apply_eligible=true` only when they are execution-lane, band-defined, decision-grade workflow states with clear earnings state and approved band status (`IN_BAND` / `NEAR_BAND`). Earnings-imminent, earnings-timing-window, above-band-wait, below-stop/reclaim, watch-lane, underdefined, and non-execution proposals are review-only / non-applyable.
 
 Run:
 ```bash
@@ -236,9 +430,15 @@ Depends on:
 - `tmp/portfolio-config.json` (must contain `band_last_set` in each entry_bands entry)
 
 Band proposal review workflow:
-1. Run `band_refresh.py` - review `tmp/band-proposals.json` for any `needs_review=true` entries
-2. If levels look reasonable, run `apply_band_update.py` to apply approved changes
-3. Update `03. Portfolio/Technical Entry and Invalidation Sheet.md` using `tmp/band-update-log.txt`
+1. Run `band_refresh.py` - review `tmp/band-proposals.json` for any `needs_review=true` entries and their `entry_band_method`, `band_status`, `trend_stack`, `earnings_state`, and `canonical_apply_eligible` values.
+2. If levels look reasonable, run `apply_band_update.py` to apply approved eligible changes only.
+3. Update `03. Portfolio/Technical Entry and Invalidation Sheet.md` using `tmp/band-update-log.txt`.
+
+Regression guard:
+```bash
+python scripts/test_entry_band_automation.py
+```
+Checks same-day band-age honesty, workflow badge color rendering, earnings-imminent non-applyability, and live protection for unsafe watch-lane / underdefined / timing-window / above-band-wait / below-stop proposals.
 
 ### `apply_band_update.py`
 
@@ -248,7 +448,7 @@ Implementation location:
 - CLI entrypoint preserved at `scripts/apply_band_update.py`
 - underlying implementation now lives at `scripts/operators/apply_band_update.py`
 
-Human-gated applier for band proposals generated by `band_refresh.py`. Reads `tmp/band-proposals.json`, presents each `needs_review=true` proposal for confirmation (or accepts all with `--all`), writes approved changes back to `tmp/portfolio-config.json`, and writes a formatted summary to `tmp/band-update-log.txt` for pasting into the Technical Entry and Invalidation Sheet.
+Human-gated applier for band proposals generated by `band_refresh.py`. Reads `tmp/band-proposals.json`, presents each `needs_review=true` / `canonical_apply_eligible=true` proposal for confirmation (or accepts all eligible proposals with `--all`), writes approved changes back to `tmp/portfolio-config.json`, and writes a formatted summary to `tmp/band-update-log.txt` for pasting into the Technical Entry and Invalidation Sheet.
 
 Approved updates now stamp `band_last_set` from the proposal/trading data date when available, instead of the current UTC wall-clock date, so Arizona-session note sync does not drift a day ahead.
 
@@ -266,6 +466,7 @@ python scripts/apply_band_update.py --tickers ETN NVDA
 python scripts/apply_band_update.py --dry-run
 
 # Accept all needs_review proposals non-interactively
+# Only canonical_apply_eligible=true proposals are included; unsafe/review-only proposals are skipped.
 python scripts/apply_band_update.py --all
 ```
 
@@ -273,7 +474,7 @@ Writes:
 - `tmp/portfolio-config.json` (updated entry bands and band_last_set dates)
 - `tmp/band-update-log.txt` (formatted note-layer update summary)
 
-After running: use `python scripts/band_note_sync.py` to generate an exact note-sync report, then update `03. Portfolio/Technical Entry and Invalidation Sheet.md` from the helper output and `tmp/band-update-log.txt`.
+After running: use `python scripts/band_note_sync.py` to generate an exact note-sync report, then update `03. Portfolio/Technical Entry and Invalidation Sheet.md` from the helper output and `tmp/band-update-log.txt` if owner-note mutation is approved.
 
 ### `band_note_sync.py`
 
@@ -469,7 +670,7 @@ Idempotency: same session-precedence rule as `premarket_snapshot.py`.
 
 Status: live intelligence-layer writer
 
-Generates the autonomous Daily Executive Summary in the established 7-section template. Quantitative sections auto-populate (executive bottom line, execution context, what changed since yesterday, today's catalysts, closest actionable names with dollar/percent gap to band, trigger conditions, recommended actions). Confidence grade is derived from the dashboard validation summary.
+Generates the autonomous Daily Executive Summary in the established 7-section template. Quantitative sections auto-populate (executive bottom line, execution context, what changed since the prior dashboard run, today's catalysts, closest actionable names with dollar/percent gap to band, trigger conditions, recommended actions). Confidence grade is derived from the dashboard validation summary.
 
 Run:
 ```bash
@@ -491,6 +692,45 @@ Writes:
 - `tmp/daily-executive-brief.json`
 
 Critical rule: never overwrite a session-written brief. If the canonical file exists and was NOT auto-generated by this script, the script writes to `YYYY-MM-DD-machine.md` so the agent version takes precedence.
+
+### `summary_brief_packet.py`
+
+Status: bounded review-only packet producer for AI-authored commercial briefs
+
+Builds the machine-side handoff packet for a future bounded agent writer. This script does **not** write canonical notes or publish a brief by itself. It packages owner layers, trust posture, source artifact status, state summary, unresolved-truth constraints, and allowed / forbidden claim shapes for either the morning or post-close window.
+
+Current live posture:
+- the scheduled `morning` and `post-close` chains now run this packet producer automatically
+- packets are generated under `tmp/` as review-only handoff objects
+- any human-readable draft should live under `01. Dashboards/Review-Only Briefs/`
+- no review brief is auto-delivered or auto-written to a canonical note yet
+
+Run:
+```bash
+python scripts/summary_brief_packet.py --window morning
+python scripts/summary_brief_packet.py --window post-close
+```
+
+Writes:
+- `tmp/premarket-brief-input.json`
+- `tmp/postclose-brief-input.json`
+
+Key rule: output is `review_only` and `canonical_mutation_allowed: false`. The packet is a bounded writer input, not a second truth surface or an authorization surface.
+
+### `summary_brief_lint.py`
+
+Status: bounded validator for future AI-authored commercial briefs
+
+Checks a draft brief against its packet contract. Current v1 coverage is intentionally simple and fail-closed: review-only posture, owner citation presence, unresolved-truth visibility, and forbidden authority / trade language.
+
+Run:
+```bash
+python scripts/summary_brief_lint.py --packet tmp/premarket-brief-input.json --draft tmp/wf37-safe-draft.md
+```
+
+Typical use:
+- run after a bounded agent writer produces a draft
+- block promotion if the draft bypasses owner notes or publishes state it does not own
 
 ### `weekly_macro_snapshot.py`
 
@@ -558,6 +798,38 @@ Notes:
 - this is the first PDF path for printable/shareable finance briefs
 - it reuses the report JSON and generated PNG panels rather than duplicating the full research workflow
 - use this when the user wants a clean PDF deliverable instead of Word or PowerPoint
+
+### `regime_scoring_refresh.py`
+
+Status: live controlled machine-companion ranking writer
+
+Scores every tracked name against the current macro regime and writes the derived score artifact. It is also approved to update bounded scoring/ranking/freshness blocks in `02. Markets/Regime Scoring Matrix.md`.
+
+Run:
+```bash
+python scripts/regime_scoring_refresh.py
+```
+
+Reads:
+- `tmp/portfolio-config.json`
+- `tmp/trigger-sheet.json`
+- `tmp/technical-refresh.json`
+- `tmp/earnings-calendar.json`
+- `tmp/macro-regime.json`
+
+Writes:
+- `tmp/regime-scores.json`
+- bounded sections of `02. Markets/Regime Scoring Matrix.md`
+
+Authority:
+- `Regime Scoring Matrix.md` is a controlled machine-companion ranking note, not final canonical deployment truth
+- final action authority remains with `03. Portfolio/Deployment Trigger Sheet.md`, `03. Portfolio/Portfolio Snapshot.md`, `07. Risk/Risk Rules.md`, and explicit owner approval
+- no portfolio mutation, deployment-state mutation, trade execution, or owner-approval inference is allowed
+
+Proof:
+```bash
+python scripts/test_regime_scoring_authority.py
+```
 
 ### `positioning_ranking_refresh.py`
 
@@ -714,6 +986,41 @@ Notes:
 - intentionally narrow consumer: requires `status=ok`, `cron_read_allowed=true`, and `allowed_posture=read_only`
 - fail closed when the trust block is absent, invalid, blocked, or workflow-mismatched
 
+### WF38 promotion-review automation checks
+
+Status: live bounded foundation, review-verdict automation only
+
+These scripts support the sector-expansion / promotion-review gate chain. Candidate packets remain review-only and do not authorize ticker promotion or canonical note mutation. `promotion_review_check.py` may now auto-approve the workspace review verdict only when the exact bounded gate pattern passes; it still does not authorize trade execution or automatic canonical note mutation.
+
+Run:
+```bash
+python scripts/candidate_packet_validator.py tmp/wf38-fixtures/passing_packet.json
+python scripts/portfolio_integrity_check.py tmp/wf38-fixtures/passing_packet.json
+python scripts/catalyst_window_check.py tmp/wf38-fixtures/passing_packet.json
+python scripts/ranking_shadow_canon_check.py
+python scripts/promotion_review_check.py --ticker JPM --write
+python scripts/promotion_review_check.py --ticker NVDA --write
+python scripts/test_wf38_authority.py
+```
+
+Files:
+- `scripts/schemas/candidate_packet_schema.json`
+- `scripts/candidate_packet_validator.py`
+- `scripts/portfolio_integrity_check.py`
+- `scripts/catalyst_window_check.py`
+- `scripts/ranking_shadow_canon_check.py`
+- `scripts/promotion_review_check.py`
+
+Notes:
+- `ALMOST DEPLOYABLE` does not require a Promotion Review Queue row by default.
+- `DEPLOYABLE` / `DEPLOYABLE NOW` requires a queue row unless an explicit written threshold override exists.
+- Catalyst status vocabulary is `clear`, `warning`, `blocked`, or `unknown`.
+- Coverage Universe is thesis/research context only; it is not the candidate-packet authority gate, deployment owner, universe-membership owner, or dashboard consistency surface.
+- The candidate-packet thesis field is `thesis_evidence_source`; do not reintroduce canonical-thesis wording for research context.
+- `promotion_review_check.py` auto-approves only the workspace review verdict when all of these are true: thesis `pass`, macro/regime `pass`, technical `pass`, catalyst `clear`, risk/sizing `warning`, action state `PROMOTION REVIEW`, execution lane, ALMOST/PROMOTION REVIEW workflow state, queue row present, all owner surfaces present, and no readiness blockers.
+- Auto-approval leaves `canonical_mutation_allowed=false` and `trade_execution_authorized=false`; owner-note updates remain separate and explicit.
+- Correlated-sleeve taxonomy is currently local to `portfolio_integrity_check.py` and should be centralized later if this chain widens.
+
 ### `run_finance_refresh_chain.py`
 
 Status: live operating-window runner
@@ -726,10 +1033,12 @@ Supported windows:
    - data spine: `market_state_refresh.py`, `technical_refresh.py`, `regime_scoring_refresh.py`, `band_refresh.py`, `entry_band_fetch.py --all-tracked --html`, `generate_entry_band_status.py`, `deployment_check.py`, `trigger_sheet_refresh.py`
    - dashboard surface: `test_dashboard_acceptance.py`, `generate_dashboard.py`, `validate_dashboard_state.py --write`
    - intelligence layer: `premarket_snapshot.py` - writes `01. Dashboards/Pre-Market Snapshot/YYYY-MM-DD.md`
+   - review-only brief packet: `summary_brief_packet.py --window morning` - writes `tmp/premarket-brief-input.json`
 2. `post-close` (default)
    - data spine: `earnings_calendar_enrichment.py`, `market_state_refresh.py`, `technical_refresh.py`, `regime_scoring_refresh.py`, `band_refresh.py`, `entry_band_fetch.py --all-tracked --html`, `generate_entry_band_status.py`, `deployment_check.py`, `trigger_sheet_refresh.py`, `post_earnings_prep.py`, `post_earnings_note_targets.py`
    - dashboard surface: `test_dashboard_acceptance.py`, `generate_dashboard.py`, `validate_dashboard_state.py --write`
    - intelligence layer: `postmarket_snapshot.py` - writes `01. Dashboards/Post-Market Snapshot/YYYY-MM-DD.md`; `daily_executive_brief.py` - writes `01. Dashboards/Daily Executive Summary/YYYY-MM-DD.md` (machine-sidecar pattern preserves any session-written brief)
+   - review-only brief packet: `summary_brief_packet.py --window post-close` - writes `tmp/postclose-brief-input.json`
 3. `post-earnings`
    - `earnings_calendar_enrichment.py`
    - `post_earnings_prep.py`

@@ -48,6 +48,14 @@
     "portfolio-manager": {
       "version": "0.1.0",
       "installedAt": 1777085788486
+    },
+    "sqlite": {
+      "version": "1.0.0",
+      "installedAt": 1778359275208
+    },
+    "obsidian": {
+      "version": "1.0.0",
+      "installedAt": 1778359345912
     }
   }
 }

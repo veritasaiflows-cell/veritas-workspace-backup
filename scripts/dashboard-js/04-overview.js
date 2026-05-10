@@ -57,13 +57,14 @@ function actionCard(item, accent) {
   return `<div class="action-card action-${accent}">
     <div class="action-card-head">
       <div><span class="mono" style="font-size:16px;font-weight:700">${esc(item.ticker)}</span></div>
-      <div>${pill(item.state || (accent==='earnings'?'EARNINGS PENDING':accent==='risk'?'BELOW STOP':accent.toUpperCase()), accent==='deployable'?'ok':accent==='almost'?'warn':accent==='earnings'?'info':'bad')}</div>
+      <div>${pill(item.state || (accent==='earnings'?'EARNINGS PENDING':accent==='risk'?'BELOW STOP':accent.toUpperCase()), accent==='deployable'?'ok':accent==='almost'||accent==='review'?'warn':accent==='earnings'?'info':'bad')}</div>
     </div>
     <div class="kv">
       <div>Close</div><div class="mono">${esc(item.close)}</div>
       <div>Entry band</div><div class="mono">${esc(item.entryBand || '—')}</div>
       <div>Stop</div><div class="mono">${esc(item.stop || '—')}</div>
       ${accent==='deployable' || accent==='almost' || accent==='blocked' ? `<div>Band gap</div><div>${bandGapLine}</div><div>Stop dist</div><div class="mono">${esc(item.stopDist || '—')}</div>` : ''}
+      ${accent==='review' ? `<div>Band gap</div><div>${bandGapLine}</div><div>Stop dist</div><div class="mono">${esc(item.stopDist || '—')}</div><div>Authority</div><div>Owner approval required</div>` : ''}
       ${accent==='risk' ? `<div>Stop dist</div><div class="mono tone-bad">${esc(item.stopDist || '—')}</div>` : ''}
       <div>Posture</div><div>${esc(item.posture || '—')}</div>
       <div>Earnings</div><div>${earningsLine}</div>
@@ -93,6 +94,7 @@ function renderTodayAction() {
     : '';
   const sections = [
     actionSection('Deployable now', 'Trigger conditions met — review sizing before adding', ta.deployable, 'deployable'),
+    actionSection('Promotion review', 'In band / high-priority review — owner approval still required; not deployable-now', ta.promotionReview, 'review'),
     actionSection('Almost deployable', 'Constructive setup, waiting on price or band entry', ta.almost, 'almost'),
     actionSection('Blocked / revalidation', 'Do not deploy until the blocker is explicitly cleared in the trigger layer', ta.blocked, 'blocked'),
     actionSection('Earnings pending', 'Catalyst pause — do not deploy until print is reviewed', ta.earningsPending, 'earnings'),
@@ -113,6 +115,7 @@ function renderDeploymentStrip() {
   const ds = DATA.deployment_summary || {};
   const cells = [
     {label:'Deployable', tickers:ds.deployable, tone:'ok',   filter:'deployable'},
+    {label:'Promotion review', tickers:ds.promotion_review, tone:'warn', filter:'review'},
     {label:'Almost',     tickers:ds.almost,     tone:'warn', filter:'almost'},
     {label:'Blocked',    tickers:ds.blocked,    tone:'bad',  filter:'blocked'},
     {label:'Below stop', tickers:ds.below_stop, tone:'bad',  filter:'blocked'},
@@ -146,6 +149,7 @@ function renderDeploymentOverview() {
   const ds = DATA.deployment_summary || {};
   const entries = [
     ['Deployable',       ds.deployable, 'ok'],
+    ['Promotion review', ds.promotion_review, 'warn'],
     ['Almost',           ds.almost,     'warn'],
     ['Blocked',          ds.blocked,    'bad'],
     ['Below stop',       ds.below_stop, 'bad'],

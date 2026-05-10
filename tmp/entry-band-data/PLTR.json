@@ -1,7 +1,7 @@
 {
   "ticker": "PLTR",
   "name": "Palantir Technologies Inc.",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -556,10 +556,10 @@
     {
       "d": "2026-05",
       "o": 143.25,
-      "h": 146.44,
-      "l": 141.39,
-      "c": 144.07,
-      "v": 33.09
+      "h": 149.64,
+      "l": 131.15,
+      "c": 137.8,
+      "v": 382.31
     }
   ],
   "macro_regimes": {
@@ -617,18 +617,34 @@
     }
   },
   "preferred_band": {
-    "low": 138.6,
-    "high": 150.44,
-    "stop": 132.68,
-    "set": "2026-05-01",
-    "label": "138.6–150.44"
+    "low": 137.37,
+    "high": 149.53,
+    "stop": 131.29,
+    "set": "2026-05-06",
+    "label": "137.37–149.53"
   },
   "current_quote": {
-    "close": 146.03,
-    "ma20": 141.47,
-    "ma50": 145.4,
-    "ma200": 164.26,
-    "data_date": "2026-05-04"
+    "close": 137.8,
+    "ma20": 141.23,
+    "ma50": 145.7,
+    "ma200": 163.93,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:04+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "DUAL_MA_RECLAIM",
+    "type": "VAULT_RECLAIM",
+    "status": "BELOW_STOP",
+    "trend_stack": "BELOW_ALL_MAS",
+    "suggested_low": 163.93,
+    "suggested_high": 171.61,
+    "suggested_stop": 157.79,
+    "sma_envelope_low": 137.49,
+    "sma_envelope_high": 151.97,
+    "earnings_state": "CLEAR",
+    "band_confidence": 2,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:37+00:00"
 }

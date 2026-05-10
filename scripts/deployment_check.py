@@ -31,14 +31,16 @@ CONFIG_PATH = WORKSPACE / "tmp" / "portfolio-config.json"
 EARNINGS_PATH = WORKSPACE / "tmp" / "earnings-calendar.json"
 OUT_PATH    = WORKSPACE / "tmp" / "deployment-check.json"
 STALE_HOURS = 24
+SCHEMA_VERSION = 1
 
 PRIORITY: dict[str, int] = {
-    "DEPLOYABLE": 1,
-    "ALMOST": 2,
+    "DEPLOYABLE NOW": 1,
+    "PROMOTION REVIEW": 2,
+    "ALMOST DEPLOYABLE": 2,
     "BLOCKED": 3,
     "BELOW STOP": 4,
     "BENCH": 5,
-    "WATCH": 6,
+    "WATCH / RESEARCH NEEDED": 6,
     "ERROR": 7,
 }
 
@@ -50,10 +52,21 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
     notes = rec.get("notes") or []
     coverage_lane = (meta.get("coverage_lane") or "").lower()
     entry_policy = (meta.get("entry_policy") or "").lower()
+    workflow_state = (meta.get("workflow_state") or "").upper()
+    repair_mode = workflow_state == "REPAIR" or bool(meta.get("repair_mode"))
+    force_below_stop = bool(meta.get("force_do_not_touch_if_below_stop"))
 
     if close is None:
         msg = notes[0] if notes else "unknown"
         return "ERROR", "fetch failed -- " + msg
+
+    # Repair mode is an owner-layer workflow gate. A simple below-stop technical
+    # read must not erase that deliberate bench/do-not-touch judgment unless the
+    # config explicitly says to force below-stop handling.
+    if repair_mode and not (below_stop and force_below_stop):
+        if in_band:
+            return "BENCH", f"in band at {round(close, 2)} but workflow state is REPAIR -- wait for setup to rebuild"
+        return "BENCH", "workflow state is REPAIR -- wait for setup to rebuild"
 
     if below_stop:
         if coverage_lane and coverage_lane != "execution":
@@ -65,28 +78,26 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
             return "BLOCKED", f"in entry band at {round(close, 2)} but earnings block active"
         return "BLOCKED", "earnings block active -- wait for print"
 
-    # Enforce workflow_state gate before evaluating constructive technicals
-    workflow_state = (meta.get("workflow_state") or "").upper()
-    if workflow_state == "REPAIR" or meta.get("repair_mode"):
-        if in_band:
-            return "BENCH", f"in band at {round(close, 2)} but workflow state is REPAIR -- wait for setup to rebuild"
-        return "BENCH", "workflow state is REPAIR -- wait for setup to rebuild"
-
     if workflow_state == "WATCH":
         if in_band is None and entry_policy == "underdefined":
             if coverage_lane and coverage_lane != "execution":
-                return "WATCH", f"{coverage_lane}-lane only -- explicit entry and stop are not defined yet"
-            return "WATCH", "setup is not yet decision-grade -- requires explicit entry and stop definition"
+                return "WATCH / RESEARCH NEEDED", f"{coverage_lane}-lane only -- explicit entry and stop are not defined yet"
+            return "WATCH / RESEARCH NEEDED", "setup is not yet decision-grade -- requires explicit entry and stop definition"
         if coverage_lane and coverage_lane != "execution":
             if in_band:
-                return "WATCH", f"in band, but {coverage_lane}-lane only -- no execution-board entitlement"
-            return "WATCH", f"{coverage_lane}-lane only -- not in execution-board scope yet"
+                return "WATCH / RESEARCH NEEDED", f"in band, but {coverage_lane}-lane only -- no execution-board entitlement"
+            return "WATCH / RESEARCH NEEDED", f"{coverage_lane}-lane only -- not in execution-board scope yet"
         if in_band:
-            return "WATCH", "in band, but this execution setup remains watch-only until it is intentionally promoted"
-        return "WATCH", "levels are defined, but this execution setup remains watch-only until it is intentionally promoted"
+            return "WATCH / RESEARCH NEEDED", "in band, but this execution setup remains watch-only until it is intentionally promoted"
+        return "WATCH / RESEARCH NEEDED", "levels are defined, but this execution setup remains watch-only until it is intentionally promoted"
+
+    if workflow_state == "ALMOST":
+        if in_band:
+            return "PROMOTION REVIEW", f"in band at {round(close, 2)} -- explicit owner promotion review required before deployable-now status"
+        return "ALMOST DEPLOYABLE", "workflow state is ALMOST -- constructive but not yet promoted"
 
     if entry_policy == "underdefined":
-        return "WATCH", "setup is not yet decision-grade -- requires explicit entry and stop definition"
+        return "WATCH / RESEARCH NEEDED", "setup is not yet decision-grade -- requires explicit entry and stop definition"
 
     above_ma20 = rec.get("above_ma20")
     above_ma50 = rec.get("above_ma50")
@@ -100,12 +111,12 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
         return "BENCH", "chart structure weak -- wait for setup to improve"
 
     if in_band:
-        return "DEPLOYABLE", f"close {round(close, 2)} is within entry band"
+        return "DEPLOYABLE NOW", f"close {round(close, 2)} is within entry band"
 
     if in_band is None:
-        return "WATCH", "entry band not yet defined -- research needed"
+        return "WATCH / RESEARCH NEEDED", "entry band not yet defined -- research needed"
 
-    return "ALMOST", f"close {round(close, 2)} -- posture constructive but not yet in band"
+    return "ALMOST DEPLOYABLE", f"close {round(close, 2)} -- posture constructive but not yet in band"
 
 
 def age_hours(iso_ts: str | None) -> float | None:
@@ -280,18 +291,20 @@ def main() -> None:
         print("  " + "{:<8}  {}".format("", rec["reason"]))
 
     buckets = {
-        "deployable": [r["ticker"] for r in rows if r["action_state"] == "DEPLOYABLE"],
-        "almost": [r["ticker"] for r in rows if r["action_state"] == "ALMOST"],
+        "deployable": [r["ticker"] for r in rows if r["action_state"] == "DEPLOYABLE NOW"],
+        "promotion_review": [r["ticker"] for r in rows if r["action_state"] == "PROMOTION REVIEW"],
+        "almost": [r["ticker"] for r in rows if r["action_state"] == "ALMOST DEPLOYABLE"],
         "blocked": [r["ticker"] for r in rows if r["action_state"] == "BLOCKED"],
         "below_stop": [r["ticker"] for r in rows if r["action_state"] == "BELOW STOP"],
         "bench": [r["ticker"] for r in rows if r["action_state"] == "BENCH"],
-        "watch": [r["ticker"] for r in rows if r["action_state"] == "WATCH"],
+        "watch": [r["ticker"] for r in rows if r["action_state"] == "WATCH / RESEARCH NEEDED"],
         "error": [r["ticker"] for r in rows if r["action_state"] == "ERROR"],
     }
 
     print("\n  BOTTOM LINE")
     print("  " + "-" * 50)
     print("  " + "{:<24} {}".format("Act now (in band):", build_summary(buckets["deployable"])))
+    print("  " + "{:<24} {}".format("Promotion review:", build_summary(buckets["promotion_review"])))
     print("  " + "{:<24} {}".format("Almost (pullback only):", build_summary(buckets["almost"])))
     print("  " + "{:<24} {}".format("Earnings blocked:", build_summary(buckets["blocked"])))
     print("  " + "{:<24} {}".format("Below stop:", build_summary(buckets["below_stop"])))
@@ -320,6 +333,7 @@ def main() -> None:
         status = "partial" if status == "ok" else status
 
     payload: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "stale_after_hours": STALE_HOURS,

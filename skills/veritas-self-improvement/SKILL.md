@@ -27,6 +27,16 @@ When reflection is warranted:
 3. decide whether the lesson is transient, durable, behavioral, tooling-related, or domain-specific
 4. write it to the right canonical place
 5. propose structural fixes when repeated patterns justify them
+6. convert repeated manual friction into an explicit queue, SOP, validator, automation, or skill-improvement candidate instead of leaving it as chat memory
+
+Veritas main session is the live truth surface and final integrator; the workspace file layer is the durable canonical financial database. Substantial self-improvement or workspace work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA should default to a file-grounded `openai-codex/gpt-5.5` high-thinking helper lane when available.
+
+Helper-completion loop:
+1. integrate and verify the completed helper result against live files, artifacts, or control surfaces
+2. check the live queue / registry / continuity note for the next approved action
+3. choose one: spawn the next safe helper lane, complete a quick bounded main-session task, or ask Randall a concrete blocking question
+4. continue until the active workflow is complete, blocked, or genuinely requires human judgment
+5. if direction, priority, or authority is ambiguous, ask before moving the queue
 
 ## What to improve
 
@@ -186,6 +196,28 @@ When a review, audit, or IC pass produces grounded findings:
 4. if a new mechanism fixes one residue case, inspect sibling cases before declaring closure
 5. write the lesson into the right operating file, note, or skill instead of leaving it trapped in chat
 
+## Automation and SOP optimization posture
+
+When a lesson reveals repeated manual work, do not stop at reflection.
+
+Route it into one of these concrete outcomes:
+- queue item with owner, next pass, blocker, acceptance check, category, and parallel posture
+- operating procedure when the work is operator-facing and repeatable
+- validator or script when proof can be made mechanical
+- skill update when the sequence is non-obvious and reusable across sessions
+- automation candidate only when trust gates, ownership boundaries, and failure modes are explicit
+
+For coding and workspace-governance work, improvement capture is mandatory when a repeatable lesson appears:
+- code / script / validator lessons -> tighten `disciplined-implementation`, the relevant test, or the owning script contract
+- folder / note / root-boundary lessons -> tighten `workspace-governor`, workspace standards, or the relevant validator
+- orchestration lessons -> tighten queue, spawn governance, or automation orchestration docs
+- if no safe improvement can be made immediately, create an explicit queue item with acceptance criteria
+
+Default boundary:
+- under roughly five minutes and reversible -> main session may execute directly
+- over roughly five minutes, multi-artifact, broad-inspection, or QA-heavy -> spawn `openai-codex/gpt-5.5` high-thinking helper lane with file-grounded context
+- final truth, queue state, canonical conflict resolution, portfolio judgment, and closeout remain main-session responsibilities
+
 ## Evaluation loop
 
 Use this loop when stepping back from a workstream:
@@ -197,7 +229,11 @@ Use this loop when stepping back from a workstream:
    - What work still depends on chat rescue or manual reconstruction?
 3. **Compounding review**
    - What, if formalized once, would save time repeatedly?
-4. **Right abstraction review**
+4. **Queue / SOP review**
+   - Does this expose a current operating need that belongs on the live queue?
+   - Would a short SOP reduce repeated reconstruction or operator ambiguity?
+   - Is the SOP a genuine procedure, or would it become a second control plane?
+5. **Right abstraction review**
    - Should this become:
      - a script
      - a validator

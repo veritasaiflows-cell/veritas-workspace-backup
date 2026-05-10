@@ -2,89 +2,73 @@
 
 ## Role
 
-This is the high-level derived operating view for Randall and Veritas.
+This is the fastest high-level operating view for Randall and Veritas.
 
-It should answer, fast:
+Use it to answer:
 - what matters now
-- what the current operating focus is
-- what the next important move is
-- whether trust or freshness is degraded
+- what is trusted enough for review
+- what needs owner judgment
+- what workflow or data risk is blocking cleaner action
 
 Boundary:
-- this is an orientation surface, not a canonical source of truth
-- do not restate full deployment logic, portfolio tables, or weekly catalyst detail
-- if a script-backed input is partial, stale, missing, manual, or unconfirmed, summarize that degradation instead of implying clean confidence
+- this is an orientation surface, not canonical truth
+- dashboards summarize; owner notes decide
+- no trade, portfolio, deployment, or approval authority is inferred here
 
 Canonical owners:
+- deployment state: [[03. Portfolio/Deployment Trigger Sheet]]
 - portfolio posture: [[03. Portfolio/Portfolio Snapshot]]
-- risk posture: [[07. Risk/Risk Rules]]
-- weekly operating stance: [[05. Intelligence/Weekly Positioning Review]]
-- event timing: [[05. Intelligence/Event Calendar]]
+- technical discipline: [[03. Portfolio/Technical Entry and Invalidation Sheet]]
+- weekly stance: [[05. Intelligence/Weekly Positioning Review]]
+- macro/risk: [[02. Markets/Macro Regime Dashboard]] and [[07. Risk/Risk Rules]]
+- workflow order: [[06. Playbooks/OpenClaw Parallel Pilot Queue]]
 
-## Current focus
+## Current reality
 
-- keep the visible finance note layer aligned with the fresh machine layer after the Apr 29–May 1 catalyst cluster
-- protect capital by keeping the active setup list narrow instead of forcing broad deployment
-- clear the most misleading stale-note surfaces before widening research or packaging work
+The system is stronger than it was this morning, but it is not clean enough to loosen authority.
 
-## What matters now
+Today's work tightened the truth architecture: post-close authority vocabulary, run-summary terminal semantics, Command Center visibility, stale-source fail-soft classification, regime-scoring ownership, state-history pathing, retrieval metadata, reinstall recovery, and tmp/script boundary controls all moved forward.
 
-1. **The live action list is narrow.** **JPM**, **NVDA**, and **GS** are the names currently in band. GS is now a confirmed tactical secondary to JPM at Tier 2 sizing. **ETN** remains an event-risk decision into May 5 earnings.
-2. **GOOG and MSFT are no longer unresolved post-earnings cases.** The scorecards are now written, but both names still stay off the live board because GOOG is extended above band and MSFT still needs cleaner repair below the 200-day.
-3. **XOM reported on May 1 and the scorecard is done, but the name is still benched.** Oil is strong, but follow-through still is not clean enough to put energy back on the active board.
-4. **BRK.B reported May 2 and the ETN / AMD / SMCI cluster lands this week.** That is the next real catalyst window.
-5. **Trust is improved, not perfect.** The dashboard layer is fresh through the 2026-05-01 close and validation is clean again, but execution freshness still stays usable-with-caution because the policy model is simplified and true pre-market tape remains limited.
+Finance posture remains owner-gated:
+- **JPM** and **ETN** are the current deployable-now / conditional-add names in the owner layer.
+- **ETN** must stay disciplined inside its written band; no chase above the band.
+- **NVDA** is wait / no-chase after the fresh rerun showed it above band.
+- **GS / MSFT / GOOG** remain review-first / almost-deployable context, not automatic deployment.
+- **XOM** remains repair/bench/do-not-touch until follow-through and evidence improve.
+
+## Trust state
+
+- Dashboard validation is structurally usable, but source trust is **partial / review_required**.
+- Policy and credit data still carry FRED/runtime dependency issues; do not treat macro precision as clean.
+- Telegram is enabled only as a setup-pending exception; delivery is not proven.
+- WF40 security automation is warning-grade and still needs one clean ordinary scheduled repeat before closure.
+- Workspace boundary warnings are now mostly cleanup residue: root `backups/` plus six executable helpers in `tmp/` pending owner-approved archive cleanup.
 
 ## Current next move
 
-- treat **JPM**, **NVDA**, and **GS** as the live in-band candidates — GS at Tier 2 sizing, subordinate to JPM
-- treat **ETN** as an event-risk decision: stand aside into the May 5 print or define a post-print entry-on-weakness plan explicitly
-- use the **XOM** scorecard as the canonical read, but keep energy benched until follow-through improves
-- use the new **GOOG** and **MSFT** scorecards as canon, but keep both names out of the live deployment list until entry quality improves
+1. Keep finance decisions in the owner notes: read the Trigger Sheet, Portfolio Snapshot, Technical Sheet, and Risk Rules before treating any dashboard state as actionable.
+2. Wait for the next ordinary WF40 scheduled security proof; do not close WF40 from the controlled rerun alone.
+3. Run the WF43 durable state-history append/validate proof before wiring any consumer to `data/state-history/state-history-v1.jsonl`.
+4. Archive the six `tmp/*.py` helpers only after owner approval and manifest/hashes under WF50.
+5. Keep WF49 operator-gated until the exposed FRED key is rotated/replaced outside chat and runtime persistence is handled safely.
 
-## Trust and operating rule
+## Operating rule
 
-- capital preservation comes first
-- dashboards summarize, canonical notes decide
-- good businesses do not override bad timing
-- provider date-rolls do not clear blockers by themselves
-- warning-grade machine output is evidence, not automatic canon
-
-## Active dashboard warnings
-
-- **overall trust grade:** usable with caution
-- **validation surface:** clean (0 critical / 0 warning in the live dashboard validation artifact)
-- **date integrity:** narrow remaining caution led by the unresolved NVDA timing path
-- **macro dependency:** policy expectations are primary-sourced but still use a simplified futures-approximation model
-- **data constraint:** true pre-market pricing was unavailable from the current yfinance responses
+Freshness and truth beat convenience. If a source is partial, manual, stale, setup-pending, or warning-grade, say that plainly and route to the owner surface instead of cleaning up the story.
 
 ## Navigation
 
 Read in this order:
 1. [[01. Dashboards/Executive Brief]]
-2. [[01. Dashboards/Pre-Market Snapshot]] (auto-generated each morning)
-3. [[01. Dashboards/Daily Executive Summary]] (auto-generated each post-close)
-4. [[01. Dashboards/This Week]]
-5. [[01. Dashboards/Next Actions]]
-6. [[05. Intelligence/Weekly Intelligence Brief]]
-7. [[02. Markets/Macro Regime Dashboard]]
-8. [[03. Portfolio/Technical Entry and Invalidation Sheet]]
-9. [[03. Portfolio/Portfolio Snapshot]]
-
-## References
-
-- [[02. Markets/Macro Regime Dashboard]]
-- [[02. Markets/Watchlist]]
-- [[02. Markets/Weekly Macro Snapshot]] (auto-generated each Sunday)
-- [[03. Portfolio/Portfolio Snapshot]]
-- [[05. Intelligence/Weekly Positioning Review]]
-- [[05. Intelligence/Weekly Intelligence Brief]]
-- [[07. Risk/Risk Rules]]
-- `scripts/README.md`
+2. [[01. Dashboards/This Week]]
+3. [[01. Dashboards/Next Actions]]
+4. [[05. Intelligence/Weekly Positioning Review]]
+5. [[03. Portfolio/Deployment Trigger Sheet]]
+6. [[03. Portfolio/Portfolio Snapshot]]
+7. [[03. Portfolio/Technical Entry and Invalidation Sheet]]
+8. [[02. Markets/Macro Regime Dashboard]]
+9. [[07. Risk/Risk Rules]]
 
 ## Last updated
 
-- 2026-05-02 — refreshed against 2026-05-01 close. Updated for: JPM and NVDA now in band; ETN still conditional; GOOG/MSFT post-earnings revalidation now explicit but still not deployable; XOM interpreted but still benched; dashboard trust remains reduced with a real band-review backlog.
-- 2026-05-03 — heartbeat freshness cleanup only: rolled the BRK.B catalyst wording forward after the date change and removed the obsolete GS WATCH-mismatch warning from this orientation surface.
-- 2026-05-03 — Workflow 12 trust repair removed stale manual-policy and broad date-integrity wording so this orientation surface now matches the live policy artifact and narrower timing residue.
-- 2026-05-03 — GS promoted from WATCH to deployable-now tactical secondary at Tier 2 sizing. Live board now reads JPM / NVDA / GS in band; ETN reframed as event-risk decision into May 5 rather than routine pullback.
+- 2026-05-09 — tightened after the WF40/WF43/WF48/WF50 and retrieval/runtime hardening session. Reframed this as a lean orientation surface: owner notes govern finance truth, source trust is partial/review-required, WF40 remains scheduled-repeat pending, WF43 durable proof remains pending, and cleanup/credential residue stays owner-gated.

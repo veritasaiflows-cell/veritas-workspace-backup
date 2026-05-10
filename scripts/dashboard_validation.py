@@ -18,7 +18,6 @@ import universe
 BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
 WORKSPACE = TMP.parent
 WATCHLIST_PATH = WORKSPACE / "02. Markets" / "Watchlist.md"
-COVERAGE_UNIVERSE_PATH = WORKSPACE / "04. Research" / "Coverage Universe.md"
 POLICY_MANUAL_NOTE_PATHS = [
     WORKSPACE / "01. Dashboards" / "Executive Brief.md",
     WORKSPACE / "01. Dashboards" / "Next Actions.md",
@@ -72,23 +71,6 @@ def _parse_watchlist_rows() -> dict[str, dict[str, str]]:
             "coverage_tier": cells[2],
             "current_state": cells[3],
             "canonical_source": cells[4],
-        }
-    return out
-
-
-def _parse_coverage_quick_reference() -> dict[str, dict[str, str]]:
-    rows = _extract_table_rows(
-        _read_note_text(COVERAGE_UNIVERSE_PATH),
-        "| Ticker | Sector | Tier | Status |",
-    )
-    out: dict[str, dict[str, str]] = {}
-    for cells in rows:
-        if len(cells) < 4:
-            continue
-        out[cells[0]] = {
-            "sector": cells[1],
-            "tier": cells[2],
-            "status": cells[3],
         }
     return out
 
@@ -157,7 +139,6 @@ def build_validation(
     portfolio = (pf_raw or {}).get("portfolio", {})
     posture_labels = (pf_raw or {}).get("posture_labels", {})
     watchlist_rows = _parse_watchlist_rows()
-    coverage_rows = _parse_coverage_quick_reference()
 
     # Priority 2.5: Move posture expectations to config
     posture_expectations = (pf_raw or {}).get("posture_expectations")
@@ -282,7 +263,10 @@ def build_validation(
             continue
 
         action_state = deploy.get("action_state")
-        if row.get("belowStop") and action_state != "BELOW STOP":
+        repair_mode = str(meta.get("workflow_state") or "").upper() == "REPAIR" or bool(meta.get("repair_mode"))
+        force_below_stop = bool(meta.get("force_do_not_touch_if_below_stop"))
+        repair_bench_allowed = bool(row.get("belowStop") and repair_mode and not force_below_stop and action_state in {"BENCH", "DO NOT TOUCH"})
+        if row.get("belowStop") and action_state != "BELOW STOP" and not repair_bench_allowed:
             add_warning(
                 "state_vs_stop_conflict",
                 "critical",
@@ -298,7 +282,7 @@ def build_validation(
                 f"{ticker} is earnings-blocked but deployment state is {action_state}",
                 ticker,
             )
-        if computed_in_band and action_state in {"WATCH", "UNKNOWN"} and meta and universe.is_entitled(ticker, meta, "deployment_ranking"):
+        if computed_in_band and action_state in {"WATCH", "UNKNOWN", "WATCH / RESEARCH NEEDED"} and meta and universe.is_entitled(ticker, meta, "deployment_ranking"):
             add_warning(
                 "state_vs_entry_band_conflict",
                 "warning",
@@ -331,12 +315,13 @@ def build_validation(
 
     # deployment summary vs records
     summary_expected = {
-        "deployable": "DEPLOYABLE",
-        "almost": "ALMOST",
+        "deployable": "DEPLOYABLE NOW",
+        "promotion_review": "PROMOTION REVIEW",
+        "almost": "ALMOST DEPLOYABLE",
         "blocked": "BLOCKED",
         "below_stop": "BELOW STOP",
         "bench": "BENCH",
-        "watch": "WATCH",
+        "watch": "WATCH / RESEARCH NEEDED",
         "error": "ERROR",
     }
     counts = {key: 0 for key in summary_expected}
@@ -530,13 +515,32 @@ def build_validation(
             if isinstance(proposal, dict) and proposal.get("ticker") and band_review_is_blocking(proposal, price_drift_threshold)
         ]
     if blocking_review_tickers:
+        proposals_by_ticker = {
+            proposal.get("ticker"): proposal
+            for proposal in band_proposals_raw.get("proposals", []) or []
+            if isinstance(proposal, dict) and proposal.get("ticker")
+        }
+        non_applyable_blockers = [
+            ticker for ticker in blocking_review_tickers
+            if (proposals_by_ticker.get(ticker) or {}).get("canonical_apply_eligible") is False
+        ]
+        applyable_blockers = [ticker for ticker in blocking_review_tickers if ticker not in non_applyable_blockers]
+        if applyable_blockers and non_applyable_blockers:
+            remediation = (
+                f"Review/apply eligible proposals for {', '.join(applyable_blockers)} via apply_band_update.py; "
+                f"keep non-applyable event-risk proposals under manual review/wait state: {', '.join(non_applyable_blockers)}."
+            )
+        elif applyable_blockers:
+            remediation = f"Run apply_band_update.py to review and apply eligible proposed levels for {', '.join(applyable_blockers)}."
+        else:
+            remediation = f"These proposal(s) are review-only / non-applyable; keep manual review or wait-state active: {', '.join(non_applyable_blockers)}."
         add_warning(
             "band_staleness",
             "warning",
             "bands",
             f"{len(blocking_review_tickers)} entry band(s) still have blocking review debt: "
             f"{', '.join(blocking_review_tickers)}. "
-            f"Run apply_band_update.py to review and apply proposed levels.",
+            f"{remediation}",
         )
     elif band_proposals_raw and band_proposals_raw.get("status") == "ok":
         pass
@@ -572,26 +576,6 @@ def build_validation(
                     "warning",
                     "notes",
                     f"{ticker} still reads as an unpromoted watch name in Watchlist despite deployable-now trigger state.",
-                    ticker,
-                )
-
-        coverage_row = coverage_rows.get(ticker)
-        if coverage_row and action_state in {"DEPLOYABLE NOW", "ALMOST", "ALMOST DEPLOYABLE"} and entry_policy == "band_defined":
-            status_text = coverage_row.get("status", "").lower()
-            if "no levels yet" in status_text:
-                add_warning(
-                    "coverage_quickref_stale_levels_phrase",
-                    "warning",
-                    "notes",
-                    f"{ticker} quick-reference status still says no levels yet even though a band-defined setup exists.",
-                    ticker,
-                )
-            if "earnings apr 29" in status_text or "requalification" in status_text:
-                add_warning(
-                    "coverage_quickref_stale_event_phrase",
-                    "warning",
-                    "notes",
-                    f"{ticker} quick-reference status still carries stale event wording that no longer matches the current owner surfaces.",
                     ticker,
                 )
 

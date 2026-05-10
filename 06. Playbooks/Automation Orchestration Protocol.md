@@ -10,6 +10,8 @@ For spawn / closeout governance, pair it with `06. Playbooks/Spawn and Closeout 
 For closeout artifacts, pair it with `06. Playbooks/Workflow Closeout Artifact Standard.md`.
 
 ## Core role posture
+Veritas main session is Randall's live financial truth surface: it reads the workspace file layer as the durable canonical financial database, reconciles owner notes, artifacts, market evidence, and queue state, and makes final judgment traceable.
+
 Veritas remains the:
 - orchestrator
 - auditor / QA owner
@@ -17,10 +19,10 @@ Veritas remains the:
 - final integrator
 
 Claude CLI, Gemini Flash, OpenClaw subagents, and other helper lanes are support lanes.
-They do not own final queue state, final judgment, or canonical conflict resolution. Prioritize OpenClaw subagents. 
+They do not own final queue state, final judgment, or canonical conflict resolution. Prioritize OpenClaw subagents inside the allowed `openai-codex/*` model set, but choose thinking effort by role rather than defaulting every substantial workspace task to high.
 
 ## Main-lane reserve rule
-When an approved workflow is being advanced, default to a spawned sub-session for the working pass.
+When an approved workflow is being advanced, default to a spawned sub-session for the working pass. Substantial work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA should use a file-grounded helper lane, with model/thinking selected from the role-effort matrix instead of a blanket high-effort default.
 
 The main session should remain available as the:
 - PM / orchestrator
@@ -37,12 +39,25 @@ The canonical spawn decision source is `06. Playbooks/Spawn and Closeout Governa
 This document keeps the orchestration posture, not a competing spawn standard.
 
 Main-session exceptions are allowed only when one of these is true:
-- the edit is trivial and bounded
+- the work is quick, reversible, and bounded enough to stay under roughly five minutes
 - an emergency truth fix is needed immediately
 - the work is the final merge / QC step
 - spawning would add more friction than value
 
 If the main session takes one of those exceptions on a meaningful workflow pass, say so explicitly in the continuity note or status summary.
+
+## Helper-completion continuation rule
+
+When a helper lane finishes, Veritas/main must not treat the event as an endpoint by default.
+
+Required sequence:
+1. integrate the helper output and verify it against live files, artifacts, or control surfaces
+2. check the live queue / registry / continuity note for the next approved action
+3. decide whether another role-appropriate helper lane can safely move the queue, whether the main session should execute the next quick bounded task, or whether the chain is blocked on human judgment
+4. continue until the active workflow is complete, blocked, or ambiguous enough to require Randall's direction
+5. if priority, authority, or next action is ambiguous, ask the smallest concrete question before moving the queue
+
+Do not spawn continuation work just to look busy. The next lane must have a clear owner, deliverable, stop line, and acceptance check.
 
 ## Queue freshness rule
 The active project queue must stay fresh enough that the next move is visible without reconstructing chat history.
@@ -172,7 +187,10 @@ Best for:
 - high-risk reasoning where false-green risk is high
 
 Effort posture:
-- hard judgment/trust work: run Claude with higher effort (`--effort high` or above)
+- routine research and read-only audits: use low thinking by default; escalate only when evidence conflict, high-stakes judgment, or broad ambiguous contracts require it
+- implementation and bounded script/workflow edits: use medium thinking by default with exact validation gates
+- hard debugging, cross-contract failures, security/trust-sensitive adjudication, or repeated false-green/false-red residue: use high thinking
+- hard judgment/trust work in Claude: run Claude with higher effort (`--effort high` or above) only when the task risk justifies it
 - routine bounded checks: keep effort lower and prompts tighter
 - Gemini CLI has no direct effort flag in this environment; adjust effort by task scope, model choice, and prompt depth
 
@@ -202,6 +220,15 @@ Do not leave completed lane output waiting unintegrated.
 
 ## Runtime proof rule
 Runtime/session state is advisory until it earns boring consistency.
+
+## Shared-contract drift rule
+When a workflow changes a shared state vocabulary, JSON contract, manifest shape, or trust/freshness field:
+- inspect adjacent consumers, validators, ranking maps, fallback paths, and presentation adapters before calling the change closed
+- regenerate or freshen the relevant proof artifacts before accepting QA conclusions
+- treat stale fixtures and stale generated artifacts as a real false-red / false-green risk
+- if SQL/index consumers depend on the changed contract, update their consumer notes or follow-up queue entry before widening use
+
+Do not treat the first patched producer as sufficient proof that the contract change is actually integrated.
 
 ## Machine-readable automation trust-block pilot
 Workflow 29 Phase 4 adds one bounded producer/consumer path for cron-facing automation trust.
@@ -281,6 +308,32 @@ For approved sequential workflow chains:
 If that execution/QC chain is not visible on the live control surfaces, treat the workflow as not yet advanced.
 
 This keeps the main lane free for QA/QC and prevents it from getting trapped as the implementation lane by default.
+
+Spawn launch requirement:
+- follow `06. Playbooks/Spawn and Closeout Governance Matrix.md` as the canonical spawn/closeout authority
+- use `06. Playbooks/Subagent Spawn Handoff Template.md` for the copyable handoff packet
+- do not duplicate spawn-budget rules here; if timeout, artifact-first, early-checkpoint, or closeout rules change, update the matrix/template first
+
+Failure classification rule:
+- **contract failure**: scope too broad, missing stop line, missing files-to-read-first, no partial artifact, or no timeout budget
+- **runtime/tool failure**: provider/network/tool abort, approval blockage, missing binary, or process failure
+- **worker-execution failure**: child ignored a clear bounded contract
+
+Do not respond to a spawn timeout by simply relaunching the same broad prompt. Inspect the child history, classify the failure, and narrow or budget the next spawn.
+
+## Workflow completion hardening rule
+Default closeout chain for any meaningful workflow:
+1. main session defines scope, acceptance target, and worker handoff
+2. spawned worker performs the implementation or bounded working pass
+3. independent spawned auditor checks closure, proof, and residue in a fresh session
+4. main session applies only the smallest verified quick fixes that the worker/auditor surfaced
+5. main session performs final integration and control-surface updates
+
+If a workflow skips the worker lane or the independent audit lane, record the exception explicitly instead of pretending the default posture happened.
+
+Main-session quick-fix boundary:
+- allowed: tiny follow-up repairs, truth fixes, and final merge/QC edits
+- not allowed: quietly absorbing the whole implementation pass back into the main lane without an explicit exception
 
 ## Parallelization rule
 Parallel work is justified only when all are true:

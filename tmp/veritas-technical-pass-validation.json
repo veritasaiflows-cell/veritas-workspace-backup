@@ -1,0 +1,74 @@
+{
+  "status": "ok",
+  "validated_at_utc": "2026-05-05T06:13:45Z",
+  "skill": "veritas-technical-pass",
+  "validation_tier": "Tier 2 functional local proof (pilot)",
+  "skill_path": "skills/veritas-technical-pass/SKILL.md",
+  "summary": {
+    "required_reference_count": 6,
+    "present_reference_count": 6,
+    "missing_reference_count": 0,
+    "missing_state_label_count": 0,
+    "missing_data_requirement_count": 0
+  },
+  "required_file_contract": [
+    {
+      "path": "02. Markets/Watchlist.md",
+      "exists": true,
+      "kind": "file",
+      "detail": "ok"
+    },
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "exists": true,
+      "kind": "file",
+      "detail": "ok"
+    },
+    {
+      "path": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+      "exists": true,
+      "kind": "file",
+      "detail": "ok"
+    },
+    {
+      "path": "03. Portfolio/Deployment Trigger Sheet.md",
+      "exists": true,
+      "kind": "file",
+      "detail": "ok"
+    },
+    {
+      "path": "05. Intelligence/Weekly Positioning Review.md",
+      "exists": true,
+      "kind": "file",
+      "detail": "ok"
+    },
+    {
+      "path": "07. Risk/Risk Rules.md",
+      "exists": true,
+      "kind": "file",
+      "detail": "ok"
+    }
+  ],
+  "required_state_labels": {
+    "expected": [
+      "Deployable",
+      "Blocked",
+      "Repair mode",
+      "Watch-only"
+    ],
+    "missing": []
+  },
+  "required_data_requirements": {
+    "expected": [
+      "current price or latest reliable reference price",
+      "20-day, 50-day, and 200-day moving-average posture",
+      "nearest meaningful support levels",
+      "nearest meaningful resistance levels",
+      "whether price is in, above, below, or far from the preferred entry zone",
+      "stop or invalidation threshold"
+    ],
+    "missing": []
+  },
+  "issues": [],
+  "validator_note": "Bounded sidecar validator pilot: proves the skill's required local file contract and core technical-output contract still exist. This does not validate live market data or end-to-end workflow quality."
+}

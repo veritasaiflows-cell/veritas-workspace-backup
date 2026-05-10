@@ -1,7 +1,7 @@
 {
   "ticker": "AMZN",
   "name": "Amazon.com, Inc.",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 265.58,
-      "h": 273.32,
+      "h": 278.56,
       "l": 262.74,
-      "c": 268.26,
-      "v": 50.78
+      "c": 272.68,
+      "v": 291.48
     }
   ],
   "macro_regimes": {
@@ -1025,18 +1025,34 @@
     }
   },
   "preferred_band": {
-    "low": 243.59,
-    "high": 258.71,
-    "stop": 236.03,
-    "set": "2026-05-01",
-    "label": "243.59–258.71"
+    "low": 252.27,
+    "high": 267.19,
+    "stop": 244.81,
+    "set": "2026-05-06",
+    "label": "252.27–267.19"
   },
   "current_quote": {
-    "close": 272.05,
-    "ma20": 250.33,
-    "ma50": 226.04,
-    "ma200": 227.62,
-    "data_date": "2026-05-04"
+    "close": 272.68,
+    "ma20": 259.6,
+    "ma50": 231.24,
+    "ma200": 228.52,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:02+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "NEAR_BAND",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 244.2,
+    "suggested_high": 259.97,
+    "suggested_stop": 230.75,
+    "sma_envelope_low": 229.21,
+    "sma_envelope_high": 253.33,
+    "earnings_state": "CLEAR",
+    "band_confidence": 4,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:35+00:00"
 }

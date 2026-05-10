@@ -1,8 +1,8 @@
 {
   "summary": {
-    "passed": 17,
+    "passed": 18,
     "failed": 0,
-    "total": 17,
+    "total": 18,
     "all_passed": true
   },
   "results": [
@@ -13,7 +13,7 @@
       "exec_freshness": "partial",
       "validation": {
         "critical": 0,
-        "warning": 0,
+        "warning": 4,
         "info": 0
       },
       "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
@@ -25,7 +25,7 @@
       "exec_freshness": "partial",
       "validation": {
         "critical": 0,
-        "warning": 0,
+        "warning": 4,
         "info": 0
       },
       "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
@@ -37,7 +37,7 @@
       "exec_freshness": "partial",
       "validation": {
         "critical": 0,
-        "warning": 2,
+        "warning": 6,
         "info": 0
       },
       "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
@@ -49,7 +49,7 @@
       "exec_freshness": "stale",
       "validation": {
         "critical": 0,
-        "warning": 0,
+        "warning": 4,
         "info": 0
       },
       "trust_summary": "Execution context is stale. Refresh before relying on execution signals."
@@ -58,25 +58,25 @@
       "name": "contradiction_entry_band",
       "passed": true,
       "errors": [],
-      "exec_freshness": "usable_with_caution",
+      "exec_freshness": "partial",
       "validation": {
         "critical": 1,
-        "warning": 0,
+        "warning": 4,
         "info": 0
       },
-      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
     },
     {
       "name": "earnings_date_change_visibility",
       "passed": true,
       "errors": [],
-      "exec_freshness": "usable_with_caution",
+      "exec_freshness": "partial",
       "validation": {
         "critical": 0,
-        "warning": 1,
+        "warning": 5,
         "info": 0
       },
-      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
     },
     {
       "name": "state_transition_in_band_ready",
@@ -85,7 +85,7 @@
       "exec_freshness": "usable_with_caution",
       "validation": {
         "critical": 0,
-        "warning": 0,
+        "warning": 4,
         "info": 0
       },
       "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
@@ -164,6 +164,14 @@
     },
     {
       "name": "workflow8_command_center_alignment",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "decision_queue_visibility",
       "passed": true,
       "errors": [],
       "exec_freshness": null,

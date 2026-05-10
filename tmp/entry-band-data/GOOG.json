@@ -1,7 +1,7 @@
 {
   "ticker": "GOOG",
   "name": "Alphabet Inc.",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 377.98,
-      "h": 383.39,
+      "h": 398.37,
       "l": 375.26,
-      "c": 383.22,
-      "v": 28.01
+      "c": 397.05,
+      "v": 127.14
     }
   ],
   "macro_regimes": {
@@ -1025,18 +1025,34 @@
     }
   },
   "preferred_band": {
-    "low": 330.01,
-    "high": 349.37,
-    "stop": 320.33,
-    "set": "2026-05-01",
-    "label": "330.01–349.37"
+    "low": 341.96,
+    "high": 362.08,
+    "stop": 331.9,
+    "set": "2026-05-06",
+    "label": "341.96–362.08"
   },
   "current_quote": {
-    "close": 379.64,
-    "ma20": 338.95,
-    "ma50": 315.47,
-    "ma200": 282.01,
-    "data_date": "2026-05-04"
+    "close": 397.05,
+    "ma20": 355.0,
+    "ma50": 322.07,
+    "ma200": 286.07,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:00+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "ABOVE_BAND_WAIT",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 341.3,
+    "suggested_high": 361.75,
+    "suggested_stop": 321.62,
+    "sma_envelope_low": 318.5,
+    "sma_envelope_high": 352.02,
+    "earnings_state": "CLEAR",
+    "band_confidence": 4,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:33+00:00"
 }

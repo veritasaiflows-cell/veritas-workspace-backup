@@ -1,7 +1,7 @@
 {
   "ticker": "VRT",
   "name": "Vertiv Holdings Co",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -756,10 +756,10 @@
     {
       "d": "2026-05",
       "o": 330.65,
-      "h": 331.97,
-      "l": 324.23,
-      "c": 328.31,
-      "v": 4.4
+      "h": 359.84,
+      "l": 321.45,
+      "c": 339.97,
+      "v": 33.97
     }
   ],
   "macro_regimes": {
@@ -817,18 +817,34 @@
     }
   },
   "preferred_band": {
-    "low": 295.49,
-    "high": 326.63,
-    "stop": 279.92,
-    "set": "2026-05-01",
-    "label": "295.49–326.63"
+    "low": 306.85,
+    "high": 338.33,
+    "stop": 291.11,
+    "set": "2026-05-06",
+    "label": "306.85–338.33"
   },
   "current_quote": {
-    "close": 330.97,
-    "ma20": 306.89,
-    "ma50": 277.54,
-    "ma200": 192.93,
-    "data_date": "2026-05-04"
+    "close": 339.97,
+    "ma20": 319.58,
+    "ma50": 284.75,
+    "ma200": 197.28,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:02+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "ABOVE_BAND_WAIT",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 281.67,
+    "suggested_high": 322.72,
+    "suggested_stop": 263.0,
+    "sma_envelope_low": 273.55,
+    "sma_envelope_high": 302.35,
+    "earnings_state": "CLEAR",
+    "band_confidence": 4,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:36+00:00"
 }

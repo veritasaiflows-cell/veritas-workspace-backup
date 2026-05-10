@@ -2,66 +2,83 @@
 
 ## Role in the stack
 
-This note defines the week's intended outcomes.
+This note defines the current operating outcomes.
 
 Use it to answer:
-- what still has to get done this week?
-- what would count as a successful week?
+- what has to be true by the end of this operating window?
+- what would count as real progress?
+- what should not be widened yet?
 
 Boundary:
-- keep this note outcome-focused and short
-- do not turn it into the detailed deployment board, portfolio table, or catalyst map
+- short outcome map only
+- not a deployment board
+- not a catalyst calendar
+- not a workflow registry
 
-## Week of April 27 – May 3
+## Current operating window
 
-The biggest late-week truth is simple: the Apr 29 FOMC / megacap cluster already passed, **XOM** already reported, and the remaining work is no longer “stand down until the event.” It is **clean up the post-event decision layer without pretending the warnings disappeared.**
+The work has shifted from building more surfaces to making the existing surfaces truthful, fresh, and owner-gated.
+
+The main objective is not more automation for its own sake. It is cleaner decision support: fewer fake-green states, better freshness labels, clearer ownership boundaries, and faster retrieval without script clutter.
 
 ## Primary outcome
 
-Finish the week with a truthful visible board:
-- **JPM** and **NVDA** recognized as the primary live in-band names, with **GS** now explicit as a deployable-now tactical secondary
-- **ETN** kept conditional only
-- **GOOG** and **MSFT** kept almost deployable only — post-earnings revalidation is explicit, but entry discipline still matters
-- **XOM** kept benched even after the May 1 report is interpreted
-- the highest-risk stale notes no longer speaking in late-April future tense
+Finish this operating window with a tighter Veritas OS:
+- live dashboards route back to canonical owner notes instead of becoming a second portfolio truth layer
+- scheduled/security automation proves itself through ordinary repeat runs, not just controlled reruns
+- durable state history exists only after append/validate proof
+- retrieval metadata and SQLite/Obsidian lookup help us find evidence faster without replacing source Markdown/JSON
+- scratch helpers and generated residue are classified, archived, or promoted only when they truly reduce drift
 
-## This week's priorities
+## Current priorities
 
-1. **Keep the active setup list narrow**
-   - **JPM** and **NVDA** are the primary live in-band names.
-   - **GS** is now a deployable-now tactical secondary at Tier 2 sizing, still subordinate to JPM.
-   - **ETN** remains conditional into the May 5 print.
-   - No chase above bands.
+1. **Keep capital deployment owner-gated**
+   - Use [[03. Portfolio/Deployment Trigger Sheet]], [[03. Portfolio/Portfolio Snapshot]], [[03. Portfolio/Technical Entry and Invalidation Sheet]], and [[07. Risk/Risk Rules]] for real state.
+   - Treat dashboard and generated artifacts as review support only.
+   - JPM and ETN are the current owner-layer deployable/conditional-add names; NVDA remains wait/no-chase.
 
-2. **Finish the post-event note sync**
-   - The highest-risk dashboard / weekly / portfolio / macro notes needed the top-six truth-sync pass.
-   - Secondary surfaces should not be allowed to keep contradicting the refreshed primary notes.
+2. **Close WF40 honestly, not prematurely**
+   - Controlled proof is warning-grade and no longer critical.
+   - Closure still requires the next ordinary scheduled run to repeat cleanly.
+   - Telegram, owner-allow visibility, and runtime/security warnings stay explicit.
 
-3. **Use the XOM scorecard before changing any energy posture**
-   - The interpretation now exists.
-   - The follow-through still needs to improve.
-   - Interpreted does not equal requalified.
+3. **Prove WF43 durable state history before consumer wiring**
+   - Approved path: `data/state-history/state-history-v1.jsonl`.
+   - Next proof is compile/test, sample row, append durable row, validate JSONL, and inspect provenance/authority.
+   - No model-driven deployment, hindsight rewriting, or owner-approval inference.
 
-4. **Process the immediate next catalysts without widening scope**
-   - **BRK.B** already reported on May 2; post-print bench state is explicit, but the scorecard / next-date cleanup still needs completion.
-   - **ETN / AMD / SMCI** and the rest of the May 4–8 cluster next week.
+4. **Keep retrieval useful but subordinate**
+   - Use `workspace_index.py` / `artifact_index.py` as locators, not truth authorities.
+   - SQL and retrieval hits must route back to source notes/artifacts before judgment.
+   - `## Retrieval Notes` blocks should help future lookup without creating bureaucratic sludge.
 
-5. **Respect the trust warnings**
-- The old four-warning blocker stack is cleared in the live validator; do not keep talking as if it still exists.
-- Monitor-only band-review residue and far-window earnings mismatches should stay visible without being promoted back into fake blockers.
-- Keep the real provider caveats visible and avoid fake precision.
+5. **Clean script/tmp boundaries without clutter**
+   - The six `tmp/*.py` helpers should not be promoted as standalone scripts.
+   - The useful model-routing drift idea was folded into `workspace_governance_truth_check.py`.
+   - WF50 owns archive cleanup after owner approval.
+
+6. **Keep credential/runtime work operator-gated**
+   - FRED runtime persistence remains WF49.
+   - The exposed FRED key should be rotated/replaced outside chat before persistent runtime work.
 
 ## Success condition
 
-By the end of this week, we should have:
-- the highest-risk visible notes speaking from current evidence, not from Apr 29 future tense
-- **JPM / NVDA / GS / ETN** clearly framed as the real live action list, with GS kept subordinate to JPM and ETN kept conditional into earnings
-- **GOOG / MSFT** clearly framed as almost deployable post-earnings names, while **XOM** stays honestly benched
-- the next catalyst week reduced to a manageable short list instead of another stale-note pileup
+A successful window means:
+- WF40 either repeats cleanly or remains open with a named blocker
+- WF43 has a validated first durable row or remains explicitly proof-pending
+- dashboards stay lean and owner-subordinate
+- source trust remains visible as partial/review-required where appropriate
+- tmp/script cleanup has an owner-approved archive path, not hidden clutter
+- no workflow widens into execution, sizing, canonical mutation, or approval inference
 
 ## Things to avoid
 
-- acting as if the clean state came from cron timing alone rather than real same-window remediation and validation
-- clearing blockers from provider date-rolls alone
-- treating XOM's report as a conclusion before the follow-through exists
-- letting secondary dashboard notes drift back into contradiction with the primary decision notes
+- calling controlled reruns the same as scheduled proof
+- treating clean dashboard validation as clean source trust
+- promoting scratch scripts just because they were useful once
+- creating a second market-data truth surface
+- letting convenience override provenance, freshness, or owner approval
+
+## Last updated
+
+- 2026-05-09 — rewritten after the runtime/retrieval/workflow hardening session to focus on truth, freshness, owner-gated deployment, scheduled-proof discipline, durable state-history proof, and low-clutter cleanup.

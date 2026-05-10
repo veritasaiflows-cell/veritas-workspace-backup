@@ -1,8 +1,8 @@
 {
   "window": "post-close",
   "owner": "scripts/run_finance_refresh_chain.py",
-  "started_at_utc": "2026-05-05T00:49:35Z",
-  "completed_at_utc": "2026-05-05T00:50:07Z",
+  "started_at_utc": "2026-05-10T03:38:09Z",
+  "completed_at_utc": "2026-05-10T03:38:41Z",
   "status": "ok",
   "exit_code": 0,
   "strict": false,
@@ -19,8 +19,8 @@
       "args": [],
       "command": "earnings_calendar_enrichment.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:35Z",
-      "completed_at_utc": "2026-05-05T00:49:38Z",
+      "started_at_utc": "2026-05-10T03:38:09Z",
+      "completed_at_utc": "2026-05-10T03:38:12Z",
       "exit_code": 0
     },
     {
@@ -29,8 +29,8 @@
       "args": [],
       "command": "validate_portfolio_config.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:38Z",
-      "completed_at_utc": "2026-05-05T00:49:39Z",
+      "started_at_utc": "2026-05-10T03:38:12Z",
+      "completed_at_utc": "2026-05-10T03:38:12Z",
       "exit_code": 0
     },
     {
@@ -39,8 +39,8 @@
       "args": [],
       "command": "policy_expectations_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:39Z",
-      "completed_at_utc": "2026-05-05T00:49:40Z",
+      "started_at_utc": "2026-05-10T03:38:12Z",
+      "completed_at_utc": "2026-05-10T03:38:13Z",
       "exit_code": 0
     },
     {
@@ -49,8 +49,8 @@
       "args": [],
       "command": "credit_spread_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:40Z",
-      "completed_at_utc": "2026-05-05T00:49:41Z",
+      "started_at_utc": "2026-05-10T03:38:13Z",
+      "completed_at_utc": "2026-05-10T03:38:14Z",
       "exit_code": 0
     },
     {
@@ -59,8 +59,8 @@
       "args": [],
       "command": "breadth_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:41Z",
-      "completed_at_utc": "2026-05-05T00:49:43Z",
+      "started_at_utc": "2026-05-10T03:38:14Z",
+      "completed_at_utc": "2026-05-10T03:38:17Z",
       "exit_code": 0
     },
     {
@@ -69,8 +69,8 @@
       "args": [],
       "command": "market_state_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:43Z",
-      "completed_at_utc": "2026-05-05T00:49:52Z",
+      "started_at_utc": "2026-05-10T03:38:17Z",
+      "completed_at_utc": "2026-05-10T03:38:26Z",
       "exit_code": 0
     },
     {
@@ -79,8 +79,8 @@
       "args": [],
       "command": "macro_regime_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:52Z",
-      "completed_at_utc": "2026-05-05T00:49:52Z",
+      "started_at_utc": "2026-05-10T03:38:26Z",
+      "completed_at_utc": "2026-05-10T03:38:26Z",
       "exit_code": 0
     },
     {
@@ -89,8 +89,8 @@
       "args": [],
       "command": "technical_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:52Z",
-      "completed_at_utc": "2026-05-05T00:49:55Z",
+      "started_at_utc": "2026-05-10T03:38:26Z",
+      "completed_at_utc": "2026-05-10T03:38:29Z",
       "exit_code": 0
     },
     {
@@ -99,8 +99,8 @@
       "args": [],
       "command": "regime_scoring_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:55Z",
-      "completed_at_utc": "2026-05-05T00:49:55Z",
+      "started_at_utc": "2026-05-10T03:38:29Z",
+      "completed_at_utc": "2026-05-10T03:38:29Z",
       "exit_code": 0
     },
     {
@@ -109,8 +109,8 @@
       "args": [],
       "command": "band_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:55Z",
-      "completed_at_utc": "2026-05-05T00:49:58Z",
+      "started_at_utc": "2026-05-10T03:38:29Z",
+      "completed_at_utc": "2026-05-10T03:38:32Z",
       "exit_code": 0
     },
     {
@@ -122,8 +122,8 @@
       ],
       "command": "entry_band_fetch.py --all-tracked --html",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:49:58Z",
-      "completed_at_utc": "2026-05-05T00:50:05Z",
+      "started_at_utc": "2026-05-10T03:38:32Z",
+      "completed_at_utc": "2026-05-10T03:38:38Z",
       "exit_code": 0
     },
     {
@@ -132,8 +132,8 @@
       "args": [],
       "command": "generate_entry_band_status.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:05Z",
-      "completed_at_utc": "2026-05-05T00:50:05Z",
+      "started_at_utc": "2026-05-10T03:38:38Z",
+      "completed_at_utc": "2026-05-10T03:38:38Z",
       "exit_code": 0
     },
     {
@@ -142,8 +142,8 @@
       "args": [],
       "command": "deployment_check.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:05Z",
-      "completed_at_utc": "2026-05-05T00:50:05Z",
+      "started_at_utc": "2026-05-10T03:38:38Z",
+      "completed_at_utc": "2026-05-10T03:38:38Z",
       "exit_code": 0
     },
     {
@@ -152,8 +152,8 @@
       "args": [],
       "command": "trigger_sheet_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:05Z",
-      "completed_at_utc": "2026-05-05T00:50:05Z",
+      "started_at_utc": "2026-05-10T03:38:38Z",
+      "completed_at_utc": "2026-05-10T03:38:39Z",
       "exit_code": 0
     },
     {
@@ -162,8 +162,8 @@
       "args": [],
       "command": "positioning_ranking_refresh.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:05Z",
-      "completed_at_utc": "2026-05-05T00:50:05Z",
+      "started_at_utc": "2026-05-10T03:38:39Z",
+      "completed_at_utc": "2026-05-10T03:38:39Z",
       "exit_code": 0
     },
     {
@@ -172,8 +172,8 @@
       "args": [],
       "command": "post_earnings_prep.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:06Z",
-      "completed_at_utc": "2026-05-05T00:50:06Z",
+      "started_at_utc": "2026-05-10T03:38:39Z",
+      "completed_at_utc": "2026-05-10T03:38:39Z",
       "exit_code": 0
     },
     {
@@ -182,8 +182,8 @@
       "args": [],
       "command": "post_earnings_note_targets.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:06Z",
-      "completed_at_utc": "2026-05-05T00:50:06Z",
+      "started_at_utc": "2026-05-10T03:38:39Z",
+      "completed_at_utc": "2026-05-10T03:38:39Z",
       "exit_code": 0
     },
     {
@@ -192,8 +192,8 @@
       "args": [],
       "command": "universe_consistency_check.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:06Z",
-      "completed_at_utc": "2026-05-05T00:50:06Z",
+      "started_at_utc": "2026-05-10T03:38:39Z",
+      "completed_at_utc": "2026-05-10T03:38:39Z",
       "exit_code": 0
     },
     {
@@ -202,8 +202,8 @@
       "args": [],
       "command": "test_dashboard_acceptance.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:06Z",
-      "completed_at_utc": "2026-05-05T00:50:06Z",
+      "started_at_utc": "2026-05-10T03:38:39Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
@@ -212,8 +212,8 @@
       "args": [],
       "command": "generate_dashboard.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:06Z",
-      "completed_at_utc": "2026-05-05T00:50:06Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
@@ -224,8 +224,8 @@
       ],
       "command": "validate_dashboard_state.py --write",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:06Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
@@ -234,8 +234,8 @@
       "args": [],
       "command": "workbook_export.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:07Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
@@ -244,8 +244,8 @@
       "args": [],
       "command": "postmarket_snapshot.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:07Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
@@ -254,12 +254,35 @@
       "args": [],
       "command": "daily_executive_brief.py",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:07Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
       "index": 25,
+      "script": "summary_brief_packet.py",
+      "args": [
+        "--window",
+        "post-close"
+      ],
+      "command": "summary_brief_packet.py --window post-close",
+      "status": "ok",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
+      "exit_code": 0
+    },
+    {
+      "index": 26,
+      "script": "pipeline_state_consistency_check.py",
+      "args": [],
+      "command": "pipeline_state_consistency_check.py",
+      "status": "ok",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
+      "exit_code": 0
+    },
+    {
+      "index": 27,
       "script": "run_summary_refresh.py",
       "args": [
         "--window",
@@ -267,12 +290,12 @@
       ],
       "command": "run_summary_refresh.py --window post-close",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:07Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
-      "index": 26,
+      "index": 28,
       "script": "dashboard_run_summary_consumer.py",
       "args": [
         "--window",
@@ -280,12 +303,12 @@
       ],
       "command": "dashboard_run_summary_consumer.py --window post-close",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:07Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
       "exit_code": 0
     },
     {
-      "index": 27,
+      "index": 29,
       "script": "deployment_readiness_surface.py",
       "args": [
         "--window",
@@ -293,8 +316,34 @@
       ],
       "command": "deployment_readiness_surface.py --window post-close",
       "status": "ok",
-      "started_at_utc": "2026-05-05T00:50:07Z",
-      "completed_at_utc": "2026-05-05T00:50:07Z",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:40Z",
+      "exit_code": 0
+    },
+    {
+      "index": 30,
+      "script": "market_intelligence_event_router.py",
+      "args": [
+        "--window",
+        "post-close"
+      ],
+      "command": "market_intelligence_event_router.py --window post-close",
+      "status": "ok",
+      "started_at_utc": "2026-05-10T03:38:40Z",
+      "completed_at_utc": "2026-05-10T03:38:41Z",
+      "exit_code": 0
+    },
+    {
+      "index": 31,
+      "script": "daily_review_objects.py",
+      "args": [
+        "--window",
+        "post-close"
+      ],
+      "command": "daily_review_objects.py --window post-close",
+      "status": "ok",
+      "started_at_utc": "2026-05-10T03:38:41Z",
+      "completed_at_utc": "2026-05-10T03:38:41Z",
       "exit_code": 0
     }
   ]

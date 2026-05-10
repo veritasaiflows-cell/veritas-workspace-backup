@@ -1,17 +1,17 @@
 {
   "window": "post-close",
-  "run_id": "20260505T005007Z_post-close",
-  "generated_at_utc": "2026-05-05T00:50:07Z",
-  "status": "ok",
+  "run_id": "20260510T033840Z_post-close",
+  "generated_at_utc": "2026-05-10T03:38:40Z",
+  "status": "warning",
   "stop_line": false,
   "owner": {
     "entrypoint": "python scripts/run_finance_refresh_chain.py post-close",
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-05-05T00:49:35Z",
-    "completed_at_utc": "2026-05-05T00:50:07Z",
-    "duration_seconds": 32
+    "started_at_utc": "2026-05-10T03:38:09Z",
+    "completed_at_utc": "2026-05-10T03:38:40Z",
+    "duration_seconds": 31
   },
   "execution": {
     "chain_status": "ok",
@@ -27,63 +27,91 @@
   },
   "validation": {
     "acceptance_passed": true,
-    "dashboard_validation_status": "clean",
+    "dashboard_validation_status": "warning",
     "critical": 0,
-    "warning": 0,
+    "warning": 4,
     "info": 0,
-    "exec_freshness": "usable_with_caution"
+    "exec_freshness": "partial"
   },
   "outputs": {
     "command_center": {
       "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-05T00:50:06Z"
+      "generated_at_utc": "2026-05-10T03:38:40Z"
     },
     "dashboard_validation": {
-      "status": "ok",
+      "status": "partial",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-05T00:50:07Z"
+      "generated_at_utc": "2026-05-10T03:38:40.230977+00:00"
     },
     "dashboard_acceptance": {
       "status": "ok",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-05T00:50:06Z"
+      "generated_at_utc": "2026-05-10T03:38:39Z"
     },
     "workbook_exports": {
-      "status": "ok",
+      "status": "partial",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-05T00:50:07.197900+00:00"
+      "generated_at_utc": "2026-05-10T03:38:40.332631+00:00"
     },
     "post_earnings_prep": {
       "status": "partial",
       "path": "tmp/post-earnings-prep.json",
-      "generated_at_utc": "2026-05-05T00:50:06.043007+00:00"
+      "generated_at_utc": "2026-05-10T03:38:39.117076+00:00"
     },
     "post_earnings_note_targets": {
       "status": "partial",
       "path": "tmp/post-earnings-note-targets.json",
-      "generated_at_utc": "2026-05-05T00:50:06.093501+00:00"
+      "generated_at_utc": "2026-05-10T03:38:39.162675+00:00"
     },
     "postmarket_snapshot": {
       "status": "ok",
       "path": "tmp/postmarket-snapshot.json",
-      "generated_at_utc": "2026-05-05T00:50:07.282748+00:00"
+      "generated_at_utc": "2026-05-10T03:38:40.420676+00:00"
     },
     "daily_executive_brief": {
       "status": "ok",
       "path": "tmp/daily-executive-brief.json",
-      "generated_at_utc": "2026-05-05T00:50:07.371116+00:00"
+      "generated_at_utc": "2026-05-10T03:38:40.512328+00:00"
+    },
+    "postclose_brief_input": {
+      "status": "ok",
+      "path": "tmp/postclose-brief-input.json",
+      "generated_at_utc": "2026-05-10T03:38:40Z"
     }
   },
-  "warnings": [],
+  "warnings": [
+    "Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.",
+    "Credit spreads artifact is partial; one or more required fields are missing or estimated.",
+    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+    "Policy expectations still rely on manual target-range constants and require explicit review."
+  ],
   "blockers": [],
+  "operator_action_required": [
+    "Review fallback/manual dependencies before treating the window as presentation-ready.",
+    "Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action.",
+    "Ask Veritas to generate and lint the review-only post-close commercial brief from the packet, or inspect the packet JSON directly."
+  ],
+  "next_action": "Ask Veritas to generate and lint the review-only post-close commercial brief from the packet, or inspect the packet JSON directly.",
   "fallback_state": {
-    "used": false,
-    "reason": ""
+    "used": true,
+    "reason": "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.; Policy expectations still rely on manual target-range constants and require explicit review."
+  },
+  "review_only_brief": {
+    "enabled": true,
+    "packet_path": "tmp/postclose-brief-input.json",
+    "packet_ready": true,
+    "generated_at_utc": "2026-05-10T03:38:40Z",
+    "review_output_path": "01. Dashboards/Review-Only Briefs/Post-Close/2026-05-09.md",
+    "target_note": "01. Dashboards/Daily Executive Summary/2026-05-09.md",
+    "target_posture": "commercial_review_brief",
+    "delivery_mode": "manual_review_only",
+    "communication": "The scheduled chain now auto-generates the review packet. Drafts belong in the non-canonical Review-Only Briefs folder; no chat delivery or canonical note write is configured for the commercial brief yet.",
+    "operator_next_action": "Ask Veritas to generate and lint the review-only post-close commercial brief from the packet, or inspect the packet JSON directly."
   },
   "downstream": {
-    "command_center_badge": "ok",
-    "workbook_trust_grade": "clean",
+    "command_center_badge": "warn",
+    "workbook_trust_grade": "warning",
     "presentation_allowed": false,
     "canonical_note_mutation_allowed": false,
     "canonical_note_mutation_reason": "scheduled windows remain fail-closed for canonical note mutation in v1"

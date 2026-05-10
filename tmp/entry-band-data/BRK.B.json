@@ -1,7 +1,7 @@
 {
   "ticker": "BRK.B",
   "name": "Berkshire Hathaway Inc.",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 475.08,
-      "h": 479.1,
-      "l": 473.0,
-      "c": 473.01,
-      "v": 4.81
+      "h": 479.87,
+      "l": 464.34,
+      "c": 475.94,
+      "v": 39.1
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "471.93–484.15"
   },
   "current_quote": {
-    "close": 468.52,
-    "ma20": 474.59,
-    "ma50": 481.88,
-    "ma200": 489.88,
-    "data_date": "2026-05-04"
+    "close": 475.94,
+    "ma20": 472.76,
+    "ma50": 479.91,
+    "ma200": 489.76,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:01+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "DUAL_MA_RECLAIM",
+    "type": "VAULT_RECLAIM",
+    "status": "BELOW_STOP",
+    "trend_stack": "BELOW_200",
+    "suggested_low": 489.76,
+    "suggested_high": 497.66,
+    "suggested_stop": 483.44,
+    "sma_envelope_low": 454.93,
+    "sma_envelope_high": 502.81,
+    "earnings_state": "CLEAR",
+    "band_confidence": 2,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:34+00:00"
 }

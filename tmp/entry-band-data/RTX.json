@@ -1,7 +1,7 @@
 {
   "ticker": "RTX",
   "name": "RTX Corporation",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 176.23,
-      "h": 176.99,
-      "l": 173.26,
-      "c": 173.99,
-      "v": 4.48
+      "h": 178.09,
+      "l": 171.2,
+      "c": 176.09,
+      "v": 38.59
     }
   ],
   "macro_regimes": {
@@ -1025,18 +1025,34 @@
     }
   },
   "preferred_band": {
-    "low": 186.76,
-    "high": 197.48,
-    "stop": 181.4,
-    "set": "2026-05-01",
-    "label": "186.76–197.48"
+    "low": 183.01,
+    "high": 193.23,
+    "stop": 177.91,
+    "set": "2026-05-06",
+    "label": "183.01–193.23"
   },
   "current_quote": {
-    "close": 172.9,
-    "ma20": 188.16,
-    "ma50": 195.59,
-    "ma200": 178.06,
-    "data_date": "2026-05-04"
+    "close": 176.09,
+    "ma20": 182.98,
+    "ma50": 193.76,
+    "ma200": 178.57,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:03+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "DUAL_MA_RECLAIM",
+    "type": "VAULT_RECLAIM",
+    "status": "BELOW_STOP",
+    "trend_stack": "BELOW_ALL_MAS",
+    "suggested_low": 188.48,
+    "suggested_high": 194.44,
+    "suggested_stop": 183.71,
+    "sma_envelope_low": 179.06,
+    "sma_envelope_high": 197.9,
+    "earnings_state": "CLEAR",
+    "band_confidence": 2,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:36+00:00"
 }

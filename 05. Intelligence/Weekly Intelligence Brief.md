@@ -16,9 +16,9 @@ Script-backed prep path:
 
 ---
 
-## Week of April 27–May 3, 2026
+## Week of May 4–May 8, 2026
 
-*Refreshed 2026-05-02. Data as of 2026-05-01 close unless noted. Machine evidence came from `tmp/market-state.json`, `tmp/trigger-sheet.json`, `tmp/post-earnings-prep.json`, `tmp/post-earnings-note-targets.json`, `tmp/weekly-intelligence-brief.json`, and the latest run summaries. Canonical mutation remained human-gated because dashboard validation still carried 11 warnings.*
+*Refreshed 2026-05-07. Data as of 2026-05-06 close unless noted. Machine evidence came from `tmp/market-state.json`, `tmp/trigger-sheet.json`, `tmp/technical-refresh.json`, `tmp/dashboard-validation.json`, current post-earnings packets, and the latest run summaries. Canonical mutation remains owner-gated: dashboard validation is warning-grade because LNG is the only blocking band-review warning; 16 other band-review items are monitor-only.*
 
 ---
 
@@ -26,24 +26,24 @@ Script-backed prep path:
 
 - **Fed funds rate:** 3.50%–3.75%, confirmed 2026-04-29. Next FOMC 2026-06-17.
 - **Fed cut expectations:** 0% cut probability in the current machine layer.
-- **2Y Treasury:** 3.880% as of 2026-04-30.
-- **10Y Treasury:** 4.378% as of 2026-05-01.
-- **3M T-bill:** 3.575% as of 2026-05-01.
-- **2s10s spread:** +49.8 bps.
-- **3M-10Y spread:** +80.3 bps.
-- **Dollar:** DXY 98.21 as of 2026-05-01.
-- **Volatility / tape:** SPX 7,230.12 and VIX 16.99.
+- **2Y Treasury:** 3.930% as of 2026-05-05.
+- **10Y Treasury:** 4.356% as of 2026-05-06.
+- **3M T-bill:** 3.600% as of 2026-05-06.
+- **2s10s spread:** +42.6 bps.
+- **3M-10Y spread:** +75.6 bps.
+- **Dollar:** DXY 97.96 as of 2026-05-06.
+- **Volatility / tape:** SPX 7,365.12 and VIX 17.39.
 
-**Regime read:** Restrictive pause, resilient growth baseline, selective risk-on. That is still the right base case, but confidence is not clean because the policy layer is partly manual, the warning stack remains real, and energy is still elevated enough to keep inflation risk alive.
+**Regime read:** Restrictive pause, resilient growth baseline, selective risk-on. That is still the right base case, but confidence is not clean because policy expectations remain simplified, dashboard validation has one LNG blocking warning, and energy is still elevated enough to keep inflation risk alive.
 
 ---
 
 ### 2. Energy sweep
 
-- **Brent crude:** 108.17 as of 2026-05-01.
-- **WTI crude:** 101.94 as of 2026-05-01.
-- **Brent/WTI spread:** 6.23.
-- **Portfolio implication:** energy pricing is strong enough to matter, but that does **not** automatically make energy names deployable. The live decision still runs through post-earnings interpretation plus chart quality.
+- **Brent crude:** 102.06 as of 2026-05-06.
+- **WTI crude:** 95.82 as of 2026-05-06.
+- **Brent/WTI spread:** 6.24.
+- **Portfolio implication:** energy pricing is still strong enough to matter, but it cooled from the prior note and does **not** automatically make energy names deployable. The live decision still runs through post-earnings interpretation plus chart quality.
 - **XOM implication:** the market backdrop is better for the business than it was when oil was in the low 90s, and the scorecard now says the quarter was stronger than the GAAP headline. That still does **not** put XOM back on the active board. It stays benched until post-print follow-through gets cleaner.
 
 ---
@@ -61,25 +61,20 @@ Script-backed prep path:
 **Just reported / immediate review:**
 - **XOM** — reported 2026-05-01. Scorecard complete. Underlying quarter was stronger than the GAAP headline, but the name remains *closed with follow-up*, not requalified.
 
-**Earnings today / immediate window:**
-- **BRK.B** — 2026-05-02.
+**Just processed from the May 5 window:**
+- **ETN** — Q1 2026 interpreted from secondary evidence after direct primary-source fetch did not land cleanly. Beat / revenue upside / raised-guidance evidence is constructive, but guidance and reaction nuance keep ETN **almost deployable**, not promoted.
+- **AMD** — Q1 2026 primary-source confirmed. Revenue $10.253B (+38% YoY), non-GAAP EPS $1.37, Data Center revenue $5.8B (+57% YoY). Constructive AI infrastructure read-through, but no standalone portfolio deployment trigger.
+- **SMCI** — Q3 2026 interpreted from secondary evidence after IR fetch was blocked. EPS beat / upbeat forward-demand signal is constructive for AI servers, but company-specific risk and missing primary details keep this read-through only.
 
-**Next week (May 4–8):**
-- **WMB** — 2026-05-04
-- **PLTR** — 2026-05-04
-- **EOG** — 2026-05-05
-- **ET** — 2026-05-05
-- **MPLX** — 2026-05-05
-- **LDOS** — 2026-05-05
-- **ETN** — 2026-05-05
-- **AMD** — 2026-05-05
-- **SMCI** — 2026-05-05
+**Next immediate window:**
 - **KTOS** — 2026-05-06
 - **LNG** — 2026-05-07
+- **April NFP** — 2026-05-08
 
 **Key earnings judgment for the week:**
-- **GOOG** and **MSFT** are no longer “about to report,” but they are also **not** cleanly unlocked yet. The trigger layer still carries them as blocked pending post-earnings revalidation.
-- **ETN** is the next important setup because it is still almost deployable while the May 5 report is only days away.
+- The May 5 AI-infrastructure cluster supports the demand regime, but it does **not** unlock capital deployment by itself.
+- ETN remains an almost-deployable post-earnings candidate pending primary-source confirmation and next-session price confirmation.
+- AMD and SMCI are read-through evidence for the AI infrastructure sleeve, especially NVDA / server / power-enabler demand, not direct deployment triggers.
 
 ---
 
@@ -94,27 +89,29 @@ Script-backed prep path:
 ### 6. Technical check
 
 **Closest actionable names:**
-- **JPM** — deployable now; close 312.47 inside the refreshed 306.82–318.12 band.
-- **NVDA** — deployable now; close 198.45 inside the 188.03–199.28 band.
-- **ETN** — almost deployable; close 425.55, still above the 395.59–420.31 band and now close to earnings.
+- **JPM** — deployable now in the owner layer; explicit approval landed on 2026-05-07, but normal size discipline and no automatic execution still apply.
+- **NVDA** — promotion review only; in band, but crowding, sizing, and May 20 timing risk still require discipline.
+- **ETN** — almost deployable; post-earnings interpretation is constructive but still needs primary-source follow-up and next-session confirmation.
+- **GOOG** — almost deployable on thesis, but close is extended above the refreshed band; no chase.
+- **GS** — almost deployable; above band, tactical secondary to JPM, and still not deployable-now just because the cash/cap posture is now resolved.
+- **MSFT** — almost deployable; slightly above band and still needs cleaner repair / promotion.
 
 **Blocked / repair names that still matter:**
-- **GOOG, MSFT** — blocked pending post-earnings revalidation.
 - **BRK.B, LMT, XOM** — do not touch / repair.
 
 **Important caveat:**
-- 17 entry bands still need review.
-- **GS** is in band while deployment state still reads WATCH.
+- Dashboard validation is warning-grade because **LNG** is the only blocking band-review warning.
+- The other 16 band-review items are monitor-only, not deployment blockers.
 - That means the technical layer is usable, but not clean enough to justify loose interpretation.
 
 ---
 
 ### 7. Sentiment gauge
 
-- **VIX:** 16.99.
-- **S&P 500:** 7,230.12.
+- **VIX:** 17.39.
+- **S&P 500:** 7,365.12.
 - **Breadth:** the machine layer says breadth is broad / recovering.
-- **Read:** the tape still supports selective risk-on, but this is not a low-risk “buy everything” environment. The live setup list is narrow and the warning stack is still doing real work.
+- **Read:** the tape still supports selective risk-on, but this is not a low-risk “buy everything” environment. The live setup list is narrow and the one-warning validation surface is still doing real work.
 
 ---
 
@@ -123,11 +120,11 @@ Script-backed prep path:
 **Posture:** Selective risk-on, reduced confidence.
 
 **Highest-priority actions this week:**
-1. **Treat JPM and NVDA as the only live in-band names.** JPM is the cleaner quality setup; NVDA still needs crowding discipline.
-2. **Keep ETN conditional.** No chase above the written band into May 5 earnings.
-3. **Keep GOOG and MSFT blocked until post-earnings revalidation is explicit.**
-4. **Use the XOM scorecard as the canonical read and keep energy benched until follow-through improves.**
-5. **Use the BRK.B / ETN / AMD / SMCI cluster as the next real decision window.**
+1. **Treat deployable-now as narrow, not broad.** **JPM** is now the sole deployable-now name in the owner layer.
+2. **Keep NVDA in promotion review** and do not widen from one approved name into a broad green light; timing sensitivity and crowding still matter.
+3. **Use AMD and SMCI as constructive AI-infrastructure read-through**, not as standalone portfolio triggers.
+4. **Keep ETN conditional after the print.** Constructive evidence is not enough without primary-source follow-up and next-session price confirmation.
+5. **Use the XOM scorecard as the canonical read and keep energy benched until follow-through improves.**
 
 **Avoid:**
 - Overriding blocked status just because provider next-earnings dates rolled forward.
@@ -138,7 +135,7 @@ Script-backed prep path:
 
 ## Freshness and refresh policy
 
-- **Last updated:** 2026-05-02
-- **Data as of:** 2026-05-01 close
-- **Next refresh due:** after BRK.B is processed and again after the ETN / AMD / SMCI cluster next week
+- **Last updated:** 2026-05-07
+- **Data as of:** 2026-05-06 close plus May 5 ETN / AMD / SMCI post-earnings interpretation
+- **Next refresh due:** after Eaton and SMCI primary-source follow-up is captured, LNG / NFP follow-up is processed, and NVDA timing is rechecked no later than 2026-05-13
 - **Refresh policy:** rewrite only the sections whose truth changed. Do not drag stale prior-week language forward just because it already exists.

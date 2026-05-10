@@ -24,6 +24,7 @@ USAGE:
 RULES:
   - Only proposals with needs_review=true are eligible for application.
   - Proposals with skip_reason set are never applied.
+  - Proposals with canonical_apply_eligible=false are never applied.
   - Each eligible proposal is shown for confirmation unless --all is passed.
   - Suggested values are applied as-is. If you want different levels,
     edit portfolio-config.json directly and update band_last_set manually.
@@ -42,6 +43,10 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 
 from market_data_utils import atomic_write_json, atomic_write_text
 
@@ -119,6 +124,8 @@ def format_log_entry(
     new_stop: float | None,
     applied_at: str,
     reasons: list[str],
+    method: str | None = None,
+    band_status: str | None = None,
 ) -> str:
     """Format a single ticker's update for the Technical Entry Sheet."""
     is_initial = old_low is None and old_high is None and old_stop is None
@@ -129,6 +136,8 @@ def format_log_entry(
         f"  Prior band:    {prior_label}",
         f"  Updated band:  {new_low} – {new_high}  stop {new_stop}",
     ]
+    if method or band_status:
+        lines.append(f"  Engine:        {method or 'unknown'} / {band_status or 'unknown'}")
     if reasons:
         lines.append("  Reasons:")
         for r in reasons:
@@ -144,6 +153,13 @@ def resolve_applied_date(proposals: list[dict]) -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
+def split_review_proposals(all_proposals: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+    """Split proposals into review, non-applyable review, and apply-eligible review sets."""
+    review_proposals = [p for p in all_proposals if p.get("needs_review") and not p.get("skip_reason")]
+    ineligible = [p for p in review_proposals if not p.get("canonical_apply_eligible", True)]
+    eligible = [p for p in review_proposals if p.get("canonical_apply_eligible", True)]
+    return review_proposals, ineligible, eligible
+
 
 def main() -> None:
     args = parse_args()
@@ -153,15 +169,21 @@ def main() -> None:
 
     all_proposals: list[dict] = proposals_data.get("proposals") or []
 
-    # Filter to eligible proposals: needs_review=True and no skip_reason
-    eligible = [
-        p for p in all_proposals
-        if p.get("needs_review") and not p.get("skip_reason")
-    ]
+    # Filter to eligible proposals: needs_review=True, no skip_reason, and explicitly applyable.
+    review_proposals, ineligible, eligible = split_review_proposals(all_proposals)
 
     if not eligible:
-        print("\nNo proposals currently flagged as needs_review.")
-        print("Run band_refresh.py to regenerate proposals with fresh data.")
+        if review_proposals:
+            print("\nNo review proposals are currently eligible for application.")
+            print("The following proposal(s) are review-only / non-applyable:")
+            for p in ineligible:
+                print(
+                    f"  - {p.get('ticker')}: {p.get('entry_band_method') or 'unknown'} / "
+                    f"{p.get('band_status') or 'unknown'}"
+                )
+        else:
+            print("\nNo proposals currently flagged as needs_review.")
+            print("Run band_refresh.py to regenerate proposals with fresh data.")
         print("Nothing to apply.\n")
         sys.exit(0)
 
@@ -173,8 +195,17 @@ def main() -> None:
         eligible = [p for p in eligible if p["ticker"].upper() in requested]
         missing = requested - {p["ticker"].upper() for p in eligible}
         if missing:
-            print(f"\nWARNING: The following tickers were not found in needs_review proposals: "
+            print(f"\nWARNING: The following tickers were not found in eligible needs_review proposals: "
                   f"{', '.join(sorted(missing))}")
+            blocked_requested = [
+                p for p in ineligible
+                if str(p.get("ticker") or "").upper() in missing
+            ]
+            for p in blocked_requested:
+                print(
+                    f"  - {p.get('ticker')} is review-only / non-applyable: "
+                    f"{p.get('entry_band_method') or 'unknown'} / {p.get('band_status') or 'unknown'}"
+                )
         if not eligible:
             print("Nothing to apply for the specified tickers.\n")
             sys.exit(0)
@@ -184,7 +215,15 @@ def main() -> None:
     mode_label = "DRY RUN — " if args.dry_run else ""
     print(f"  {mode_label}APPLY BAND UPDATES  --  data date {applied_date}")
     print(sep)
-    print(f"\n  {len(eligible)} proposal(s) eligible for application.\n")
+    print(f"\n  {len(eligible)} proposal(s) eligible for application.")
+    if ineligible:
+        print(f"  {len(ineligible)} review proposal(s) are non-applyable and will be skipped:")
+        for p in ineligible:
+            print(
+                f"    - {p.get('ticker')}: {p.get('entry_band_method') or 'unknown'} / "
+                f"{p.get('band_status') or 'unknown'}"
+            )
+    print("")
 
     applied: list[dict] = []
     skipped_by_user: list[str] = []
@@ -202,6 +241,8 @@ def main() -> None:
         close     = proposal.get("close")
         ma20      = proposal.get("ma20")
         band_set  = proposal.get("band_last_set")
+        method    = proposal.get("entry_band_method")
+        status    = proposal.get("band_status")
 
         is_initial = old_low is None and old_high is None and old_stop is None
         print(f"  {ticker}{'  [INITIAL SETUP — no band defined yet]' if is_initial else ''}")
@@ -210,6 +251,7 @@ def main() -> None:
         else:
             print(f"    Current band:   {old_low} – {old_high}  stop {old_stop}  (set {band_set})")
         print(f"    Suggested band: {new_low} – {new_high}  stop {new_stop}")
+        print(f"    Method/status:  {method} / {status}")
         print(f"    Close: {close}  MA20: {ma20}  ATR14: {atr14}")
         for r in reasons:
             print(f"    ⚠  {r}")
@@ -258,6 +300,8 @@ def main() -> None:
             "new_high": new_high,
             "new_stop": new_stop,
             "reasons": reasons,
+            "method": method,
+            "band_status": status,
         })
         print(f"    ✓ Applied: {new_low} – {new_high}  stop {new_stop}\n")
 
@@ -296,6 +340,8 @@ def main() -> None:
                 new_stop=a["new_stop"],
                 applied_at=applied_date,
                 reasons=a["reasons"],
+                method=a.get("method"),
+                band_status=a.get("band_status"),
             )
         )
 

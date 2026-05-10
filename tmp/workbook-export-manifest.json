@@ -1,109 +1,114 @@
 {
   "manifest_version": 2,
-  "generated_at_utc": "2026-05-05T00:50:07.197900+00:00",
-  "overall_status": "clean",
+  "generated_at_utc": "2026-05-10T03:38:40.332631+00:00",
+  "overall_status": "warning",
   "source_files": {
     "trigger-sheet.json": {
       "path": "tmp/trigger-sheet.json",
-      "timestamp_utc": "2026-05-05T00:50:05.911099+00:00",
+      "timestamp_utc": "2026-05-10T03:38:38.994425+00:00",
       "exists": true,
       "age_hours_at_export": 0.0,
       "freshness_status": "fresh"
     },
     "dashboard-validation.json": {
       "path": "tmp/dashboard-validation.json",
-      "timestamp_utc": "2026-05-05T00:50:07.090681+00:00",
+      "timestamp_utc": "2026-05-10T03:38:40.230977+00:00",
       "exists": true,
       "age_hours_at_export": 0.0,
       "freshness_status": "fresh"
     },
     "technical-refresh.json": {
       "path": "tmp/technical-refresh.json",
-      "timestamp_utc": "2026-05-05T00:49:55.281512+00:00",
+      "timestamp_utc": "2026-05-10T03:38:29.145176+00:00",
       "exists": true,
       "age_hours_at_export": 0.0,
       "freshness_status": "fresh"
     },
     "earnings-calendar.json": {
       "path": "tmp/earnings-calendar.json",
-      "timestamp_utc": "2026-05-05T00:49:38.809351+00:00",
+      "timestamp_utc": "2026-05-10T03:38:12.276624+00:00",
       "exists": true,
       "age_hours_at_export": 0.01,
       "freshness_status": "fresh"
     },
     "post-earnings-prep.json": {
       "path": "tmp/post-earnings-prep.json",
-      "timestamp_utc": "2026-05-05T00:50:06.043007+00:00",
+      "timestamp_utc": "2026-05-10T03:38:39.117076+00:00",
       "exists": true,
       "age_hours_at_export": 0.0,
       "freshness_status": "fresh"
     },
     "post-earnings-note-targets.json": {
       "path": "tmp/post-earnings-note-targets.json",
-      "timestamp_utc": "2026-05-05T00:50:06.093501+00:00",
+      "timestamp_utc": "2026-05-10T03:38:39.162675+00:00",
       "exists": true,
       "age_hours_at_export": 0.0,
       "freshness_status": "fresh"
     },
     "band-note-sync.json": {
       "path": "tmp/band-note-sync.json",
-      "timestamp_utc": "2026-05-03T15:57:22.698642+00:00",
+      "timestamp_utc": "2026-05-07T22:15:22.043018+00:00",
       "exists": true,
-      "age_hours_at_export": 32.88,
-      "freshness_status": "warning"
+      "age_hours_at_export": 53.39,
+      "freshness_status": "stale"
     }
   },
   "freshness": {
-    "overall_status": "warning",
-    "oldest_source_age_hours": 32.88,
+    "overall_status": "stale",
+    "oldest_source_age_hours": 53.39,
     "newest_source_age_hours": 0.0,
-    "warning_source_files": [
+    "warning_source_files": [],
+    "stale_source_files": [
       "band-note-sync.json"
     ],
-    "stale_source_files": [],
     "missing_timestamp_files": []
   },
   "exports": {
     "workbook-control-panel.csv": {
       "path": "tmp/workbook-control-panel.csv",
-      "row_count": 24,
+      "row_count": 28,
       "status": "ok",
-      "sha256": "7c8190390f00b3b6dc624e7dba93b190dd4b50c22e3aad6974a146cf2ec84be3",
-      "file_bytes": 2787,
-      "modified_at_utc": "2026-05-05T00:50:07.183760+00:00"
+      "sha256": "b649fac1fac8d2e2fcb1a0ac1b5207ca0a18fa1206f0d608afeb6ac5d18691e2",
+      "file_bytes": 4517,
+      "modified_at_utc": "2026-05-10T03:38:40.316045+00:00"
     },
     "workbook-watchlist-board.csv": {
       "path": "tmp/workbook-watchlist-board.csv",
       "row_count": 22,
       "status": "ok",
-      "sha256": "0d6f46e5253375850127d5fbc97aaa797640cc59690a0589a687b2af6f660ba9",
-      "file_bytes": 10103,
-      "modified_at_utc": "2026-05-05T00:50:07.183760+00:00"
+      "sha256": "51b36e25bb1f84e7130490eb0b675649040d161f4607d85b216f976b2ef1bcc5",
+      "file_bytes": 10699,
+      "modified_at_utc": "2026-05-10T03:38:40.316045+00:00"
     },
     "workbook-deployment-ranking.csv": {
       "path": "tmp/workbook-deployment-ranking.csv",
       "row_count": 10,
       "status": "ok",
-      "sha256": "e8f3fdd10b827ec93f7a5cda92a432c8b14cabdba6942e9c9f0a7fd7872f6f2d",
-      "file_bytes": 3935,
-      "modified_at_utc": "2026-05-05T00:50:07.183760+00:00"
+      "sha256": "3ced42164665fa6f3523b1811282f1767a03105509d1a0f45f139754a8d552f5",
+      "file_bytes": 3897,
+      "modified_at_utc": "2026-05-10T03:38:40.316045+00:00"
     },
     "workbook-earnings-tracker.csv": {
       "path": "tmp/workbook-earnings-tracker.csv",
-      "row_count": 1,
-      "status": "ok",
-      "sha256": "53b796af4f487bfcd38867172bf69eddd312ca57cd4dcc47f104b49319ceaec6",
-      "file_bytes": 579,
-      "modified_at_utc": "2026-05-05T00:50:07.193210+00:00"
+      "row_count": 0,
+      "status": "partial",
+      "sha256": "896753deb004a9b8d67b59ae9bee2e5136ec4b09130974fb80df07fc6e6686f2",
+      "file_bytes": 230,
+      "modified_at_utc": "2026-05-10T03:38:40.316045+00:00"
     },
     "workbook-technical-drift.csv": {
       "path": "tmp/workbook-technical-drift.csv",
       "row_count": 18,
       "status": "ok",
-      "sha256": "722ceec54a91831ea5e0e1fe472ea89d3c90bea2b13738b2f3f1535b60904ec3",
-      "file_bytes": 5113,
-      "modified_at_utc": "2026-05-05T00:50:07.193210+00:00"
+      "sha256": "40f7a4b44cc482dc6698cfea84153411ebd6104f3ef8e7cdde0971932a0b2d00",
+      "file_bytes": 5696,
+      "modified_at_utc": "2026-05-10T03:38:40.316045+00:00"
     }
   },
-  "warnings": []
+  "warnings": [
+    "Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.",
+    "Credit spreads artifact is partial; one or more required fields are missing or estimated.",
+    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+    "Policy expectations still rely on manual target-range constants and require explicit review."
+  ]
 }

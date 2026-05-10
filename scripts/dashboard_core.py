@@ -8,6 +8,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from market_data_utils import load_json_artifact
+from source_freshness_classifier import classify_dashboard_source, summarize_source_freshness
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
@@ -277,7 +278,7 @@ def get_market_session(dt: datetime) -> str:
 def assess_source(name: str, src: dict | None) -> dict[str, Any]:
     spec = SOURCE_SPECS[name]
     if src is None:
-        return {
+        result = {
             "key": name,
             "label": spec["label"],
             "source": spec["path"],
@@ -290,7 +291,10 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
             "tags": ["missing"],
             "issues": ["source file not found"],
             "manual_fields": [],
+            "raw_status": "missing",
         }
+        result["source_state"] = classify_dashboard_source(result)
+        return result
 
     tags: list[str] = []
     issues: list[str] = []
@@ -433,7 +437,7 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
         tags.append("missing_fields")
         issues.append("missing required fields: " + ", ".join(missing_required))
 
-    return {
+    result = {
         "key": name,
         "label": spec["label"],
         "source": spec["path"],
@@ -448,6 +452,8 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
         "manual_fields": manual_fields,
         "raw_status": raw_status,
     }
+    result["source_state"] = classify_dashboard_source(result)
+    return result
 
 
 def get_vault_freshness() -> dict[str, Any]:

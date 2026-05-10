@@ -4,6 +4,7 @@ let activeDeployFilter = 'all';
 const deployFilters = [
   ['all',        'All'],
   ['deployable', 'Deployable'],
+  ['review',     'Review'],
   ['almost',     'Almost'],
   ['blocked',    'Blocked / Stop'],
   ['watch',      'Watch / Bench'],
@@ -12,6 +13,7 @@ const deployFilters = [
 function stateRowClass(state) {
   if (!state) return '';
   const s = state.toUpperCase();
+  if (s === 'REVIEW') return 'state-almost';
   if (s === 'ALMOST') return 'state-almost';
   if (s === 'BLOCKED') return 'state-blocked';
   if (s === 'BELOW STOP') return 'state-below-stop';
@@ -22,6 +24,7 @@ function stateFilterMatch(state, filter) {
   if (filter === 'all') return true;
   const s = (state||'').toUpperCase();
   if (filter === 'deployable') return s === 'DEPLOYABLE';
+  if (filter === 'review')     return s === 'REVIEW' || s === 'PROMOTION REVIEW';
   if (filter === 'almost')     return s === 'ALMOST';
   if (filter === 'blocked')    return s === 'BLOCKED' || s === 'BELOW STOP';
   if (filter === 'watch')      return s === 'WATCH' || s === 'BENCH';

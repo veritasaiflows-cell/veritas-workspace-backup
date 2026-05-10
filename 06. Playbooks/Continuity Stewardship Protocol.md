@@ -162,7 +162,8 @@ Examples:
 Posture:
 - require preflight review first
 - if the work is cleared to proceed without fresh human input, spawn one bounded detached worker
-- preferred model: `openai-codex/gpt-5.4`
+- preferred model: `openai-codex/gpt-5.5` with high-thinking posture when available
+- if `openai-codex/gpt-5.5` is unavailable, keep the same bounded contract and record the fallback instead of silently downgrading trust
 - if a second-opinion judgment lane is needed rather than implementation labor, stop and record that need instead of faking unattended progress
 
 ## Secure subagent spawn rule

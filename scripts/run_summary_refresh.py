@@ -21,6 +21,16 @@ WINDOW_ENTRYPOINTS = {
     "post-earnings": "python scripts/run_finance_refresh_chain.py post-earnings",
     "sunday": "python scripts/run_finance_refresh_chain.py sunday",
 }
+WINDOW_REVIEW_ONLY_BRIEF_CONFIG: dict[str, dict[str, str]] = {
+    "morning": {
+        "packet": "tmp/premarket-brief-input.json",
+        "operator_next_action": "Ask Veritas to generate and lint the review-only pre-market commercial brief from the packet, or inspect the packet JSON directly.",
+    },
+    "post-close": {
+        "packet": "tmp/postclose-brief-input.json",
+        "operator_next_action": "Ask Veritas to generate and lint the review-only post-close commercial brief from the packet, or inspect the packet JSON directly.",
+    },
+}
 WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
     "morning": {
         "command_center": {"path": TMP / "veritas-command-center.html", "kind": "file"},
@@ -28,6 +38,7 @@ WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
         "dashboard_acceptance": {"path": TMP / "dashboard-acceptance-report.json", "kind": "json"},
         "workbook_exports": {"path": TMP / "workbook-export-manifest.json", "kind": "json"},
         "premarket_snapshot": {"path": TMP / "premarket-snapshot.json", "kind": "json"},
+        "premarket_brief_input": {"path": TMP / "premarket-brief-input.json", "kind": "json"},
     },
     "post-close": {
         "command_center": {"path": TMP / "veritas-command-center.html", "kind": "file"},
@@ -38,6 +49,7 @@ WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
         "post_earnings_note_targets": {"path": TMP / "post-earnings-note-targets.json", "kind": "json"},
         "postmarket_snapshot": {"path": TMP / "postmarket-snapshot.json", "kind": "json"},
         "daily_executive_brief": {"path": TMP / "daily-executive-brief.json", "kind": "json"},
+        "postclose_brief_input": {"path": TMP / "postclose-brief-input.json", "kind": "json"},
     },
     "post-earnings": {
         "command_center": {"path": TMP / "veritas-command-center.html", "kind": "file"},
@@ -167,8 +179,10 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
     raw_status = str((chain_execution or {}).get("status") or "unknown")
     steps = (chain_execution or {}).get("steps") or []
     recovery = (chain_execution or {}).get("recovery") or {}
-    if raw_status in {"ok", "failed", "completed_with_recovery", "unknown"}:
-        return raw_status, "runtime status already terminal", False
+    if raw_status in {"ok", "failed", "completed_with_recovery"}:
+        return raw_status, "runtime status already terminal", True
+    if raw_status == "unknown":
+        return raw_status, "runtime status unavailable", False
 
     running_steps = [step for step in steps if step.get("status") == "running"]
     pending_steps = [step for step in steps if step.get("status") == "pending"]
@@ -184,7 +198,13 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
         and str(running_steps[0].get("script") or "") == "run_summary_refresh.py"
     ):
         pending_scripts = {str(step.get("script") or "") for step in pending_steps}
-        allowed_pending_tail = {"dashboard_run_summary_consumer.py", "deployment_readiness_surface.py", "tmp_cleanup.py"}
+        allowed_pending_tail = {
+            "dashboard_run_summary_consumer.py",
+            "deployment_readiness_surface.py",
+            "market_intelligence_event_router.py",
+            "daily_review_objects.py",
+            "tmp_cleanup.py",
+        }
         if pending_scripts and not pending_scripts.issubset(allowed_pending_tail):
             return raw_status, "runtime state not safe to normalize", False
         if bool(recovery.get("triggered")):
@@ -238,6 +258,95 @@ def canonical_note_mutation_allowed(status: str, stop_line: bool, validation: di
     return False, "scheduled windows remain fail-closed for canonical note mutation in v1"
 
 
+def review_only_brief_status(window: str) -> dict[str, Any]:
+    config = WINDOW_REVIEW_ONLY_BRIEF_CONFIG.get(window)
+    if not config:
+        return {"enabled": False}
+
+    packet_path = WORKSPACE / config["packet"]
+    packet = read_json(packet_path)
+    target_note = str((packet or {}).get("target_note") or "")
+    review_output_path = str((packet or {}).get("review_output_path") or "")
+    target_posture = str((packet or {}).get("target_posture") or "")
+    generated_at = file_generated_at(packet_path, packet)
+    return {
+        "enabled": True,
+        "packet_path": str(packet_path.relative_to(WORKSPACE)).replace("\\", "/"),
+        "packet_ready": packet is not None,
+        "generated_at_utc": generated_at,
+        "review_output_path": review_output_path,
+        "target_note": target_note,
+        "target_posture": target_posture,
+        "delivery_mode": "manual_review_only",
+        "communication": "The scheduled chain now auto-generates the review packet. Drafts belong in the non-canonical Review-Only Briefs folder; no chat delivery or canonical note write is configured for the commercial brief yet.",
+        "operator_next_action": config["operator_next_action"],
+    }
+
+
+def dedupe_preserve_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for item in items:
+        text = str(item or "").strip()
+        if not text or text in seen:
+            continue
+        seen.add(text)
+        ordered.append(text)
+    return ordered
+
+
+def operator_action_block(
+    window: str,
+    status: str,
+    outputs: dict[str, dict[str, Any]],
+    acceptance_passed: bool,
+    warnings: list[str],
+    fallback_reasons: list[str],
+    chain_execution: dict[str, Any] | None,
+    review_only_brief: dict[str, Any],
+) -> tuple[list[str], str]:
+    recovery = (chain_execution or {}).get("recovery") or {}
+    failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
+    stale_or_failed_outputs = [name for name, meta in outputs.items() if str(meta.get("status") or "") != "ok"]
+
+    actions: list[str] = []
+    next_action = f"Consume the {window} window outputs normally; no immediate repair action is required."
+
+    if status in {"blocked", "error"}:
+        if failed_step:
+            script = str(failed_step.get("script") or "the failed step")
+            exit_code = failed_step.get("exit_code")
+            exit_text = f" (exit code {exit_code})" if exit_code is not None else ""
+            actions.append(f"Repair or rerun {script}{exit_text} before trusting the {window} window.")
+        if stale_or_failed_outputs:
+            actions.append(f"Refresh the required outputs still marked stale, missing, or failed: {', '.join(stale_or_failed_outputs)}.")
+        if not acceptance_passed:
+            actions.append("Inspect tmp/dashboard-acceptance-report.json and clear the failing dashboard acceptance assertions before the next scheduled window.")
+        if fallback_reasons:
+            actions.append("Review fallback-dependent macro and policy inputs before trusting any surviving warning-grade artifacts.")
+
+        if failed_step and str(failed_step.get("script") or "") == "test_dashboard_acceptance.py":
+            next_action = f"Inspect tmp/dashboard-acceptance-report.json and fix the failing acceptance assertions before trusting the {window} window."
+        elif failed_step:
+            next_action = f"Inspect {failed_step.get('script')} and rerun the {window} window once that blocker is fixed."
+        elif stale_or_failed_outputs:
+            next_action = f"Refresh the blocked {window} outputs now marked stale or missing before using this window."
+    elif status == "warning":
+        if fallback_reasons:
+            actions.append("Review fallback/manual dependencies before treating the window as presentation-ready.")
+        if warnings:
+            actions.append("Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action.")
+        brief_next = str(review_only_brief.get("operator_next_action") or "").strip()
+        if review_only_brief.get("enabled") and review_only_brief.get("packet_ready") and brief_next:
+            actions.append(brief_next)
+            next_action = brief_next
+        elif actions:
+            next_action = actions[0]
+
+    actions = dedupe_preserve_order(actions)
+    return actions, next_action
+
+
 def build_run_summary(window: str) -> dict[str, Any]:
     validation_path = TMP / "dashboard-validation.json"
     acceptance_path = TMP / "dashboard-acceptance-report.json"
@@ -267,6 +376,16 @@ def build_run_summary(window: str) -> dict[str, Any]:
     status, stop_line, blockers = determine_status(outputs, acceptance, validation, chain_execution)
     warnings = [w.get("message", "") for w in (validation or {}).get("warnings", []) if w.get("message")]
     fallback_reasons = detect_fallbacks(validation)
+    chain_status, chain_status_reason, chain_status_normalized = normalized_chain_status(chain_execution)
+    terminal_chain_statuses = {"ok", "failed", "completed_with_recovery"}
+    execution_state_ambiguous = chain_status not in terminal_chain_statuses or not chain_status_normalized
+    if execution_state_ambiguous:
+        warnings.append(
+            "Run summary execution state is ambiguous; chain_status="
+            f"{chain_status}, normalized={chain_status_normalized}."
+        )
+        if status == "ok":
+            status = "warning"
 
     generated_at = utc_now_iso()
     if attempt_started_at:
@@ -291,9 +410,19 @@ def build_run_summary(window: str) -> dict[str, Any]:
     downstream_badge = "bad" if status in {"blocked", "error"} else ("warn" if status == "warning" else "ok")
     recovery = (chain_execution or {}).get("recovery") or {}
     failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
-    chain_status, chain_status_reason, chain_status_normalized = normalized_chain_status(chain_execution)
 
     note_mutation_allowed, note_mutation_reason = canonical_note_mutation_allowed(status, stop_line, validation)
+    review_only_brief = review_only_brief_status(window)
+    operator_action_required, next_action = operator_action_block(
+        window,
+        status,
+        outputs,
+        bool((acceptance or {}).get("summary", {}).get("all_passed")),
+        warnings,
+        fallback_reasons,
+        chain_execution,
+        review_only_brief,
+    )
 
     presentation_allowed = False
 
@@ -335,10 +464,13 @@ def build_run_summary(window: str) -> dict[str, Any]:
         "outputs": outputs,
         "warnings": warnings,
         "blockers": blockers,
+        "operator_action_required": operator_action_required,
+        "next_action": next_action,
         "fallback_state": {
             "used": bool(fallback_reasons),
             "reason": "; ".join(fallback_reasons),
         },
+        "review_only_brief": review_only_brief,
         "downstream": {
             "command_center_badge": downstream_badge,
             "workbook_trust_grade": workbook_status,

@@ -1,7 +1,7 @@
 {
   "ticker": "LNG",
   "name": "Cheniere Energy, Inc.",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -965,9 +965,9 @@
       "d": "2026-05",
       "o": 274.18,
       "h": 274.97,
-      "l": 264.26,
-      "c": 270.06,
-      "v": 2.0
+      "l": 236.0,
+      "c": 240.11,
+      "v": 18.39
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "260.82–275.56"
   },
   "current_quote": {
-    "close": 272.85,
-    "ma20": 263.95,
-    "ma50": 262.37,
-    "ma200": 228.57,
-    "data_date": "2026-05-04"
+    "close": 240.11,
+    "ma20": 260.3,
+    "ma50": 264.78,
+    "ma200": 229.11,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:05+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "BELOW_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 240.43,
+    "suggested_high": 263.88,
+    "suggested_stop": 229.76,
+    "sma_envelope_low": 244.54,
+    "sma_envelope_high": 270.28,
+    "earnings_state": "CLEAR",
+    "band_confidence": 3,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:38+00:00"
 }

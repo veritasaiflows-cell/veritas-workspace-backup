@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-05T00:49:52.260744+00:00",
+  "generated_at_utc": "2026-05-10T03:38:26.275254+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh after the close and on FOMC decision days. Re-run whenever any upstream data artifact is updated.",
-  "last_trading_day": "2026-05-05",
+  "last_trading_day": "2026-05-10",
   "warnings": [],
   "regime": {
     "key": "restrictive_pause_benign_broad",
@@ -13,42 +13,42 @@
   "pillars": {
     "policy": {
       "key": "restrictive_pause",
-      "label": "Restrictive pause — hold dominant (96%, target 3.50–3.75%)",
-      "source_status": "ok",
-      "implied_rate": 3.635,
-      "hold_probability": 96.0,
+      "label": "Restrictive pause — hold dominant (100%, target 3.50–3.75%)",
+      "source_status": "manual",
+      "implied_rate": 3.625,
+      "hold_probability": 100.0,
       "cut_probability": 0.0,
-      "hike_probability": 4.0,
+      "hike_probability": 0.0,
       "target_range": {
         "low": 3.5,
         "high": 3.75
       },
       "next_fomc_date": "2026-06-17",
-      "days_until_fomc": 43
+      "days_until_fomc": 38
     },
     "credit": {
       "key": "benign",
-      "label": "Benign credit — HY 2.77%, IG 0.81%, HY tightening",
-      "source_status": "ok",
+      "label": "Benign credit — HY widening",
+      "source_status": "partial",
       "stress_regime": "benign",
-      "hy_oas": 2.77,
-      "ig_oas": 0.81,
-      "hy_minus_ig": 1.96,
-      "hy_direction_5d": "tightening",
+      "hy_oas": null,
+      "ig_oas": null,
+      "hy_minus_ig": null,
+      "hy_direction_5d": "widening",
       "hy_direction_20d": "tightening"
     },
     "breadth": {
       "key": "broad_recovering",
-      "label": "Breadth recovering — 8/11 sectors above 50DMA, RSP/SPY -0.47% 5d",
+      "label": "Breadth recovering — 8/11 sectors above 50DMA, RSP/SPY -1.68% 5d",
       "source_status": "ok",
       "breadth_regime": "recovering",
-      "composite_score": 0.6239,
+      "composite_score": 0.5328,
       "sectors_above_50dma": 8,
       "sectors_total": 11,
       "participation_pct": 72.7,
-      "rsp_spy_ratio": 0.280832,
+      "rsp_spy_ratio": 0.276701,
       "rsp_spy_direction": "deteriorating",
-      "rsp_spy_5d_change_pct": -0.4696
+      "rsp_spy_5d_change_pct": -1.6838
     }
   },
   "sector_fit": {

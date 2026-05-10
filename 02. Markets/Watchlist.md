@@ -20,11 +20,11 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 
 | Ticker | Sector | Coverage Tier | Current Deployment State | Canonical Source |
 |---|---|---|---|---|
-| JPM | Financials | Core candidate | Deployable now | Trigger Sheet |
-| ETN | Tech / AI Infrastructure | Core candidate | Almost deployable (conditional) | Trigger Sheet |
+| JPM | Financials | Core candidate | Deployable now — explicit owner approval landed on 2026-05-07; still manual-only with normal size discipline | Trigger Sheet |
+| ETN | Tech / AI Infrastructure | Core candidate | Deployable now / conditional add — owner-promoted on 2026-05-09 after fresh entry-band rerun confirmed it remained in band; manual-only Tier 2, no chase | Trigger Sheet |
 | VRT | Tech / AI Infrastructure | Tactical | Watch / research needed | Trigger Sheet |
-| NVDA | Tech / AI Infrastructure | Tactical | Deployable now | Trigger Sheet |
-| MSFT | Tech / AI Infrastructure | Core candidate | Almost deployable — scorecard complete, but still needs cleaner repair | Trigger Sheet |
+| NVDA | Tech / AI Infrastructure | Tactical | Wait / no chase — above band after 2026-05-09 rerun, with May 20 timing / crowding keeping deployable-now blocked | Trigger Sheet |
+| MSFT | Tech / AI Infrastructure | Core candidate | Almost deployable — scorecard complete, slightly above band, and still needs cleaner repair / promotion | Trigger Sheet |
 | BRK.B | Diversified Quality | Core candidate | Do not touch — repair / chart weakness still active | Trigger Sheet |
 | RTX | Defense | Tactical | Active watch — repair / underdefined setup | Technical Sheet |
 | GOOG | Tech / AI Infrastructure | Core candidate | Almost deployable — scorecard complete, but still needs pullback into band | Trigger Sheet |
@@ -32,8 +32,8 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 | XOM | Energy | Core candidate | Do not touch — interpreted, but follow-up still required | Trigger Sheet |
 | CVX | Energy | Tactical | Active watch | Coverage Universe |
 | LMT | Defense | Core candidate | Do not touch — repair mode | Trigger Sheet |
-| AMD | Tech / AI Infrastructure | Tactical | Active watch — May 5 earnings | Coverage Universe |
-| GS | Financials | Tactical | Deployable now — tactical secondary to JPM | Trigger Sheet |
+| AMD | Tech / AI Infrastructure | Tactical | Active watch — post-May 5 earnings read-through only | Coverage Universe |
+| GS | Financials | Tactical | Almost deployable — tactical secondary to JPM, explicit promotion still required | Trigger Sheet |
 | CAT | Industrials | Tactical | Active watch — post-print setup still secondary | Technical Sheet |
 | LNG | Energy | Tactical | Active watch | Coverage Universe |
 | PLTR | Tech / Defense | Tactical / Speculative | Active watch | Coverage Universe |
@@ -41,7 +41,7 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 | SLV | Macro | Speculative | Draft speculative sleeve | Coverage Universe |
 | TLT | Macro | Speculative | Benched | Coverage Universe |
 | SMCI | Tech / AI Infrastructure | Speculative | Active watch — high volatility | Coverage Universe |
-| LLY | Healthcare | Sector monitor | Active watch — Workflow 7 pilot add, watch lane only | Coverage Universe |
+| LLY | Healthcare | Sector monitor | Active watch — Workflow 7 pilot add, watch lane only | Technical Sheet |
 
 ---
 
@@ -50,9 +50,11 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 See [[02. Markets/Regime Scoring Matrix]] for the current scored ranking.
 
 Current live action orientation:
-- **Deployable now:** JPM, NVDA, GS (tactical secondary)
-- **Almost deployable:** ETN
-- **Almost deployable / benched:** GOOG, MSFT, XOM
+- **Deployable now:** JPM, ETN
+- **Wait / no chase:** NVDA
+- **Almost deployable:** GOOG, GS, MSFT
+- **Bench / do not touch / repair:** BRK.B, LMT, XOM
+- **Watch / research needed:** VRT and the broader watch-lane names
 
 This file should mirror those high-level states, not invent its own ranking system.
 
@@ -60,6 +62,6 @@ This file should mirror those high-level states, not invent its own ranking syst
 
 ## Freshness
 
-- Last updated: 2026-05-03 — Workflow 9B mirror-sync follow-through promoted GS from stale watch wording to deployable-now tactical-secondary status so this mirror no longer contradicts Trigger Sheet / Technical Entry ownership surfaces
+- Last updated: 2026-05-09 — ETN moved to deployable-now / conditional add after Randall approved promotion and the fresh entry-band rerun confirmed it remained in band; JPM remains deployable-now, NVDA moved to wait / no chase after moving above band, and GOOG / GS / MSFT remain almost deployable.
 - Refresh this index when names are added to or removed from the active tracking universe, or when deployment state changes materially
 - Do not add thesis content, tier rankings, or setup detail to this file — those belong in Coverage Universe, Trigger Sheet, and Regime Scoring Matrix respectively

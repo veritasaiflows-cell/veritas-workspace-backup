@@ -1,0 +1,198 @@
+[
+  {
+    "event_title": "ETN Q1 2026 print remains constructive but still lacks captured primary release/transcript",
+    "event_datetime": "2026-05-05T17:15:00-07:00",
+    "affected": [
+      "ETN"
+    ],
+    "source_tier": "tier_2_trusted",
+    "event_class": "company_event",
+    "verification_status": "partial",
+    "event_summary": "Secondary-confirmed beat / raised-guidance read-through is constructive, but Eaton primary release or transcript was not captured cleanly in the 2026-05-05 post-earnings pass, so promotion should remain stop-lined.",
+    "tags": [
+      "earnings",
+      "guidance_raise",
+      "timing_confirmation"
+    ],
+    "stale_canonical_note": true,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": true,
+    "primary_evidence": [
+      {
+        "title": "Eaton investor-relations earnings release / transcript placeholder",
+        "source": "Eaton IR",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": "2026-05-05T00:00:00-07:00",
+        "excerpt": "Primary release or transcript still needs capture before promotion.",
+        "retrieved_at": "2026-05-05T18:30:00-07:00"
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "Secondary earnings headline cluster referenced in the ETN post-earnings scorecard",
+        "source": "Trusted financial media",
+        "source_tier": "tier_2_trusted",
+        "url": null,
+        "published_at": "2026-05-05T16:00:00-07:00",
+        "excerpt": "Beat / raised-guidance read-through, with forward-tone caution.",
+        "retrieved_at": "2026-05-05T18:30:00-07:00"
+      }
+    ],
+    "contradiction_notes": [
+      "Primary-source capture remained incomplete in the 2026-05-05 ETN post-earnings pass."
+    ],
+    "open_questions": [
+      "Can Eaton IR release or transcript be captured cleanly before any deployment-state promotion?",
+      "Does the forward-tone nuance weaken the otherwise constructive beat / guidance read-through?"
+    ],
+    "manual_notes": "Starter WF21 Phase 1 event derived from the 2026-05-05 ETN post-earnings scorecard and live post-earnings prep artifacts. Use this to prove routing discipline, not to authorize promotion."
+  },
+  {
+    "event_title": "AMD Q1 2026 strengthens the AI infrastructure demand read-through for pilot names",
+    "event_datetime": "2026-05-05T17:40:00-07:00",
+    "affected": [
+      "NVDA",
+      "MSFT",
+      "GOOG",
+      "ETN",
+      "AI_INFRASTRUCTURE"
+    ],
+    "source_tier": "tier_1_primary",
+    "event_class": "sector_readthrough",
+    "verification_status": "confirmed",
+    "event_summary": "AMD's primary-source-confirmed Q1 print strengthened the AI infrastructure demand backdrop, but it remains a read-through object only and does not by itself promote NVDA, MSFT, GOOG, or ETN.",
+    "tags": [
+      "earnings",
+      "sector_readthrough",
+      "ai_infrastructure"
+    ],
+    "stale_canonical_note": false,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": false,
+    "primary_evidence": [
+      {
+        "title": "AMD Q1 2026 earnings release",
+        "source": "AMD IR",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": "2026-05-05T13:00:00-07:00",
+        "excerpt": "Primary-source earnings release confirming strong data-center and AI demand.",
+        "retrieved_at": "2026-05-05T18:35:00-07:00"
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "AMD post-earnings scorecard synthesis",
+        "source": "Workspace review pass",
+        "source_tier": "tier_2_trusted",
+        "url": null,
+        "published_at": "2026-05-05T18:40:00-07:00",
+        "excerpt": "Use only as a reviewed summary of the primary release, not as a substitute for it.",
+        "retrieved_at": "2026-05-05T18:40:00-07:00"
+      }
+    ],
+    "contradiction_notes": [],
+    "open_questions": [
+      "Which pilot-name review surface should carry this read-through first: weekly intelligence, post-close packet, or both?",
+      "Does any pilot name now need a fresh company-specific event object instead of relying on sector read-through only?"
+    ],
+    "manual_notes": "This is a context packet for NVDA / MSFT / GOOG / ETN, not a deployment-state promotion request."
+  },
+  {
+    "event_title": "NVDA timing confirmation still needs clean primary-source capture",
+    "event_datetime": "2026-05-05T18:00:00-07:00",
+    "affected": [
+      "NVDA"
+    ],
+    "source_tier": "tier_2_trusted",
+    "event_class": "company_event",
+    "verification_status": "unresolved",
+    "event_summary": "The workspace still treats NVDA timing as caution-worthy until a direct primary investor-relations confirmation is captured cleanly enough for decision-grade use.",
+    "tags": [
+      "earnings_date",
+      "timing_confirmation"
+    ],
+    "stale_canonical_note": true,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": true,
+    "primary_evidence": [
+      {
+        "title": "NVDA investor-relations calendar placeholder",
+        "source": "NVDA IR",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": null,
+        "excerpt": "Primary confirmation still needs a clean capture path.",
+        "retrieved_at": "2026-05-05T18:00:00-07:00"
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "Trusted market calendar update",
+        "source": "Trusted financial media",
+        "source_tier": "tier_2_trusted",
+        "url": null,
+        "published_at": "2026-05-05T12:00:00-07:00",
+        "excerpt": "Provider-level timing signal exists, but the primary confirmation path remains incomplete.",
+        "retrieved_at": "2026-05-05T18:00:00-07:00"
+      }
+    ],
+    "contradiction_notes": [
+      "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty."
+    ],
+    "open_questions": [
+      "Can NVDA IR timing confirmation be captured directly before the next decision-critical window?"
+    ],
+    "manual_notes": "Keep this object unresolved on purpose until primary capture is real."
+  },
+  {
+    "event_title": "Rates / credit / policy backdrop stays supportive for JPM but still does not unlock deployment",
+    "event_datetime": "2026-05-05T18:10:00-07:00",
+    "affected": [
+      "JPM",
+      "RATES_CREDIT_POLICY"
+    ],
+    "source_tier": "tier_1_primary",
+    "event_class": "macro_event",
+    "verification_status": "confirmed",
+    "event_summary": "Fed target range remains 3.50%-3.75%, next-meeting cut probability remains 0%, credit is benign, and breadth is recovering; that backdrop supports JPM contextually but does not override the current zero-deployable board or macro-gate caution.",
+    "tags": [
+      "macro",
+      "policy",
+      "rates",
+      "credit"
+    ],
+    "stale_canonical_note": false,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": false,
+    "primary_evidence": [
+      {
+        "title": "Fed target-range source set",
+        "source": "FRED DFEDTARL / DFEDTARU",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": "2026-05-05T00:00:00-07:00",
+        "excerpt": "Target range confirmed at 3.50%-3.75%.",
+        "retrieved_at": "2026-05-05T19:10:00-07:00"
+      },
+      {
+        "title": "Fed funds futures / rates context",
+        "source": "Fed funds futures via Yahoo Finance and FRED DGS2 / ^TNX",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": "2026-05-05T16:00:00-07:00",
+        "excerpt": "0% cut probability for the next meeting; 2s10s remains positive; credit posture remains benign.",
+        "retrieved_at": "2026-05-05T19:10:00-07:00"
+      }
+    ],
+    "secondary_evidence": [],
+    "contradiction_notes": [
+      "Macro support is real, but the deployment-readiness surface still shows zero deployable names and a degraded macro gate."
+    ],
+    "open_questions": [
+      "What specific macro or board-state change would be enough to promote JPM from almost deployable to deployable now?"
+    ],
+    "manual_notes": "This object exists to keep JPM tied to an explicit macro sleeve in the first WF21 pilot instead of relying only on company-event intake."
+  }
+]

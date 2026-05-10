@@ -1,0 +1,624 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-08T09:27:13Z",
+  "window": "post-earnings",
+  "consumer_posture": "review_only",
+  "canonical_mutation_allowed": false,
+  "deployment_state_mutation_allowed": false,
+  "trade_execution_allowed": false,
+  "owner_review_required": true,
+  "source_artifacts": {
+    "required": {
+      "deployment_surface": {
+        "path": "tmp/deployment-readiness-surface.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T01:44:16.625829+00:00",
+        "status": "ok"
+      },
+      "dashboard_validation": {
+        "path": "tmp/dashboard-validation.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T01:44:16.218109+00:00",
+        "status": "ok"
+      },
+      "band_proposals": {
+        "path": "tmp/band-proposals.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T01:43:02.403275+00:00",
+        "status": "ok"
+      },
+      "post_earnings_prep": {
+        "path": "tmp/post-earnings-prep.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T01:44:15.079022+00:00",
+        "status": "ok"
+      }
+    },
+    "optional": {
+      "market_state": {
+        "path": "tmp/market-state.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T01:42:55.834372+00:00",
+        "status": "ok"
+      },
+      "earnings_calendar": {
+        "path": "tmp/earnings-calendar.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T01:44:14.846368+00:00",
+        "status": "ok"
+      }
+    }
+  },
+  "summary": {
+    "event_count": 16,
+    "escalated_count": 5,
+    "top_routes": [
+      "deployment_review",
+      "promotion_review",
+      "risk_review"
+    ],
+    "top_tickers_or_sleeves": [
+      "SYSTEM",
+      "ETN",
+      "GS",
+      "LNG",
+      "NVDA"
+    ]
+  },
+  "events": [
+    {
+      "event_id": "post-earnings:risk:system-dashboard-deployment-validation-limits-decision-grade-confidence",
+      "ticker_or_macro_sleeve": "SYSTEM",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "risk",
+      "materiality_score": 4,
+      "thesis_field_impacted": "trust_ceiling",
+      "portfolio_surface_impacted": "dashboard/deployment-readiness trust gate",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "blocked_reason": "Resolve or explicitly accept trust warnings before treating recommendations as clean.",
+      "owner_review_required": true,
+      "event_title": "Dashboard/deployment validation limits decision-grade confidence",
+      "evidence": [
+        "critical=0",
+        "warning=1",
+        "warning_codes=['band_staleness']"
+      ],
+      "source_artifacts": [
+        "tmp/dashboard-validation.json",
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 1
+    },
+    {
+      "event_id": "post-earnings:sector:etn-etn-is-in-promotion-review",
+      "ticker_or_macro_sleeve": "ETN",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 4,
+      "thesis_field_impacted": "promotion_candidate",
+      "portfolio_surface_impacted": "deployment readiness / promotion review",
+      "recommended_route": "promotion_review",
+      "urgency": "today",
+      "blocked_reason": "Owner approval required before deployable-now status or capital action.",
+      "owner_review_required": true,
+      "event_title": "ETN is in promotion review",
+      "evidence": [
+        "in band at 399.15 -- explicit owner promotion review required before deployable-now status",
+        "band_position=IN BAND",
+        "macro_gate=DEGRADED"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 2
+    },
+    {
+      "event_id": "post-earnings:sector:gs-gs-is-in-promotion-review",
+      "ticker_or_macro_sleeve": "GS",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 4,
+      "thesis_field_impacted": "promotion_candidate",
+      "portfolio_surface_impacted": "deployment readiness / promotion review",
+      "recommended_route": "promotion_review",
+      "urgency": "today",
+      "blocked_reason": "Owner approval required before deployable-now status or capital action.",
+      "owner_review_required": true,
+      "event_title": "GS is in promotion review",
+      "evidence": [
+        "in band at 925.87 -- explicit owner promotion review required before deployable-now status",
+        "band_position=IN BAND",
+        "macro_gate=DEGRADED"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 3
+    },
+    {
+      "event_id": "post-earnings:earnings:lng-lng-earnings-catalyst-window-is-active-or-near",
+      "ticker_or_macro_sleeve": "LNG",
+      "source_tier": "tier_3_provider_calendar",
+      "event_type": "earnings",
+      "materiality_score": 3,
+      "thesis_field_impacted": "catalyst_timing",
+      "portfolio_surface_impacted": "deployment catalyst window",
+      "recommended_route": "deployment_review",
+      "urgency": "today",
+      "blocked_reason": "Provider-calendar timing is not enough for autonomous thesis or deployment-state mutation; verify against IR when decision-critical.",
+      "owner_review_required": true,
+      "event_title": "LNG earnings catalyst window is active or near",
+      "evidence": [
+        "next_earnings_date=2026-05-07",
+        "days_to_earnings=0",
+        "source=yfinance"
+      ],
+      "source_artifacts": [
+        "tmp/earnings-calendar.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 4
+    },
+    {
+      "event_id": "post-earnings:sector:nvda-nvda-remains-almost-deployable",
+      "ticker_or_macro_sleeve": "NVDA",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 3,
+      "thesis_field_impacted": "setup_timing",
+      "portfolio_surface_impacted": "deployment short list",
+      "recommended_route": "deployment_review",
+      "urgency": "today",
+      "blocked_reason": "Not a deployable-now authorization; keep as owner-gated setup review.",
+      "owner_review_required": true,
+      "event_title": "NVDA remains almost deployable",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "band_position=0.3% above band top",
+        "Next earnings 2026-05-20 in 12d -- treat as timing-sensitive"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 5
+    },
+    {
+      "event_id": "post-earnings:earnings:amat-amat-earnings-catalyst-window-is-active-or-near",
+      "ticker_or_macro_sleeve": "AMAT",
+      "source_tier": "tier_3_provider_calendar",
+      "event_type": "earnings",
+      "materiality_score": 3,
+      "thesis_field_impacted": "catalyst_timing",
+      "portfolio_surface_impacted": "deployment catalyst window",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Provider-calendar timing is not enough for autonomous thesis or deployment-state mutation; verify against IR when decision-critical.",
+      "owner_review_required": true,
+      "event_title": "AMAT earnings catalyst window is active or near",
+      "evidence": [
+        "next_earnings_date=2026-05-14",
+        "days_to_earnings=7",
+        "source=yfinance"
+      ],
+      "source_artifacts": [
+        "tmp/earnings-calendar.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 6
+    },
+    {
+      "event_id": "post-earnings:risk:etn-etn-has-native-config-layer-band-update-eligible-under-gates",
+      "ticker_or_macro_sleeve": "ETN",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "risk",
+      "materiality_score": 3,
+      "thesis_field_impacted": "technical_band_config",
+      "portfolio_surface_impacted": "config-layer band proposal",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Config-layer eligibility is not canonical note mutation and does not authorize trade execution.",
+      "owner_review_required": true,
+      "event_title": "ETN has native config-layer band update eligible under gates",
+      "evidence": [
+        "suggested_band=379.99 to 411.42",
+        "suggested_stop=362.53",
+        "Keltner/MA proposed midpoint is 3.0% lower than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "source_artifacts": [
+        "tmp/band-proposals.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 7
+    },
+    {
+      "event_id": "post-earnings:sector:goog-goog-remains-almost-deployable",
+      "ticker_or_macro_sleeve": "GOOG",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 3,
+      "thesis_field_impacted": "setup_timing",
+      "portfolio_surface_impacted": "deployment short list",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Not a deployable-now authorization; keep as owner-gated setup review.",
+      "owner_review_required": true,
+      "event_title": "GOOG remains almost deployable",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "band_position=9.2% above band top",
+        "Next earnings 2026-07-23 (76d out)"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 8
+    },
+    {
+      "event_id": "post-earnings:risk:gs-gs-has-native-config-layer-band-update-eligible-under-gates",
+      "ticker_or_macro_sleeve": "GS",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "risk",
+      "materiality_score": 3,
+      "thesis_field_impacted": "technical_band_config",
+      "portfolio_surface_impacted": "config-layer band proposal",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Config-layer eligibility is not canonical note mutation and does not authorize trade execution.",
+      "owner_review_required": true,
+      "event_title": "GS has native config-layer band update eligible under gates",
+      "evidence": [
+        "suggested_band=882.18 to 918.69",
+        "suggested_stop=853.45",
+        "Band is ~6 trading days old; price is 2.6% from midpoint; KELTNER_MA_CONSTRAINED status NEAR_BAND; no review required at this time"
+      ],
+      "source_artifacts": [
+        "tmp/band-proposals.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 9
+    },
+    {
+      "event_id": "post-earnings:sector:jpm-jpm-remains-almost-deployable",
+      "ticker_or_macro_sleeve": "JPM",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 3,
+      "thesis_field_impacted": "setup_timing",
+      "portfolio_surface_impacted": "deployment short list",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Not a deployable-now authorization; keep as owner-gated setup review.",
+      "owner_review_required": true,
+      "event_title": "JPM remains almost deployable",
+      "evidence": [
+        "close 306.27 -- posture constructive but not yet in band",
+        "band_position=0.2% below band low",
+        "Next earnings 2026-07-14 (67d out)"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 10
+    },
+    {
+      "event_id": "post-earnings:risk:jpm-jpm-has-native-config-layer-band-update-eligible-under-gates",
+      "ticker_or_macro_sleeve": "JPM",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "risk",
+      "materiality_score": 3,
+      "thesis_field_impacted": "technical_band_config",
+      "portfolio_surface_impacted": "config-layer band proposal",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Config-layer eligibility is not canonical note mutation and does not authorize trade execution.",
+      "owner_review_required": true,
+      "event_title": "JPM has native config-layer band update eligible under gates",
+      "evidence": [
+        "suggested_band=296.76 to 310.06",
+        "suggested_stop=289.37",
+        "Keltner/MA proposed midpoint is 2.9% lower than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "source_artifacts": [
+        "tmp/band-proposals.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 11
+    },
+    {
+      "event_id": "post-earnings:sector:msft-msft-remains-almost-deployable",
+      "ticker_or_macro_sleeve": "MSFT",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 3,
+      "thesis_field_impacted": "setup_timing",
+      "portfolio_surface_impacted": "deployment short list",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Not a deployable-now authorization; keep as owner-gated setup review.",
+      "owner_review_required": true,
+      "event_title": "MSFT remains almost deployable",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "band_position=2.0% above band top",
+        "Next earnings 2026-07-29 (82d out)"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 12
+    },
+    {
+      "event_id": "post-earnings:earnings:nvda-nvda-earnings-catalyst-window-is-active-or-near",
+      "ticker_or_macro_sleeve": "NVDA",
+      "source_tier": "tier_3_provider_calendar",
+      "event_type": "earnings",
+      "materiality_score": 3,
+      "thesis_field_impacted": "catalyst_timing",
+      "portfolio_surface_impacted": "deployment catalyst window",
+      "recommended_route": "deployment_review",
+      "urgency": "this_week",
+      "blocked_reason": "Provider-calendar timing is not enough for autonomous thesis or deployment-state mutation; verify against IR when decision-critical.",
+      "owner_review_required": true,
+      "event_title": "NVDA earnings catalyst window is active or near",
+      "evidence": [
+        "next_earnings_date=2026-05-20",
+        "days_to_earnings=13",
+        "source=yfinance"
+      ],
+      "source_artifacts": [
+        "tmp/earnings-calendar.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 13
+    },
+    {
+      "event_id": "post-earnings:earnings:earnings-post-earnings-prep-carries-warnings",
+      "ticker_or_macro_sleeve": "EARNINGS",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "earnings",
+      "materiality_score": 3,
+      "thesis_field_impacted": "post_earnings_freshness",
+      "portfolio_surface_impacted": "post-earnings prep / note targeting",
+      "recommended_route": "weekly_review",
+      "urgency": "this_week",
+      "blocked_reason": "Warnings are review-only and do not authorize note mutation.",
+      "owner_review_required": true,
+      "event_title": "Post-earnings prep carries warnings",
+      "evidence": [
+        "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+        "Non-blocking watchlist/date mismatches remain outside the active timing window."
+      ],
+      "source_artifacts": [
+        "tmp/post-earnings-prep.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 14
+    },
+    {
+      "event_id": "post-earnings:macro:macro-macro-artifact-carries-freshness-or-interpretation-warnings",
+      "ticker_or_macro_sleeve": "MACRO",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "macro",
+      "materiality_score": 3,
+      "thesis_field_impacted": "market_data_freshness",
+      "portfolio_surface_impacted": "macro regime / daily brief context",
+      "recommended_route": "weekly_review",
+      "urgency": "this_week",
+      "blocked_reason": "Macro warning is context-only until owner review; no regime mutation is authorized.",
+      "owner_review_required": true,
+      "event_title": "Macro artifact carries freshness or interpretation warnings",
+      "evidence": [
+        "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape."
+      ],
+      "source_artifacts": [
+        "tmp/market-state.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 15
+    },
+    {
+      "event_id": "post-earnings:earnings:eog-eog-earnings-catalyst-window-is-active-or-near",
+      "ticker_or_macro_sleeve": "EOG",
+      "source_tier": "tier_3_provider_calendar",
+      "event_type": "earnings",
+      "materiality_score": 2,
+      "thesis_field_impacted": "catalyst_timing",
+      "portfolio_surface_impacted": "deployment catalyst window",
+      "recommended_route": "thesis_review",
+      "urgency": "today",
+      "blocked_reason": "Provider-calendar timing is not enough for autonomous thesis or deployment-state mutation; verify against IR when decision-critical.",
+      "owner_review_required": true,
+      "event_title": "EOG earnings catalyst window is active or near",
+      "evidence": [
+        "next_earnings_date=2026-05-05",
+        "days_to_earnings=-2",
+        "source=yfinance"
+      ],
+      "source_artifacts": [
+        "tmp/earnings-calendar.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 16
+    }
+  ],
+  "escalations": [
+    {
+      "event_id": "post-earnings:risk:system-dashboard-deployment-validation-limits-decision-grade-confidence",
+      "ticker_or_macro_sleeve": "SYSTEM",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "risk",
+      "materiality_score": 4,
+      "thesis_field_impacted": "trust_ceiling",
+      "portfolio_surface_impacted": "dashboard/deployment-readiness trust gate",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "blocked_reason": "Resolve or explicitly accept trust warnings before treating recommendations as clean.",
+      "owner_review_required": true,
+      "event_title": "Dashboard/deployment validation limits decision-grade confidence",
+      "evidence": [
+        "critical=0",
+        "warning=1",
+        "warning_codes=['band_staleness']"
+      ],
+      "source_artifacts": [
+        "tmp/dashboard-validation.json",
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 1
+    },
+    {
+      "event_id": "post-earnings:sector:etn-etn-is-in-promotion-review",
+      "ticker_or_macro_sleeve": "ETN",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 4,
+      "thesis_field_impacted": "promotion_candidate",
+      "portfolio_surface_impacted": "deployment readiness / promotion review",
+      "recommended_route": "promotion_review",
+      "urgency": "today",
+      "blocked_reason": "Owner approval required before deployable-now status or capital action.",
+      "owner_review_required": true,
+      "event_title": "ETN is in promotion review",
+      "evidence": [
+        "in band at 399.15 -- explicit owner promotion review required before deployable-now status",
+        "band_position=IN BAND",
+        "macro_gate=DEGRADED"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 2
+    },
+    {
+      "event_id": "post-earnings:sector:gs-gs-is-in-promotion-review",
+      "ticker_or_macro_sleeve": "GS",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 4,
+      "thesis_field_impacted": "promotion_candidate",
+      "portfolio_surface_impacted": "deployment readiness / promotion review",
+      "recommended_route": "promotion_review",
+      "urgency": "today",
+      "blocked_reason": "Owner approval required before deployable-now status or capital action.",
+      "owner_review_required": true,
+      "event_title": "GS is in promotion review",
+      "evidence": [
+        "in band at 925.87 -- explicit owner promotion review required before deployable-now status",
+        "band_position=IN BAND",
+        "macro_gate=DEGRADED"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 3
+    },
+    {
+      "event_id": "post-earnings:earnings:lng-lng-earnings-catalyst-window-is-active-or-near",
+      "ticker_or_macro_sleeve": "LNG",
+      "source_tier": "tier_3_provider_calendar",
+      "event_type": "earnings",
+      "materiality_score": 3,
+      "thesis_field_impacted": "catalyst_timing",
+      "portfolio_surface_impacted": "deployment catalyst window",
+      "recommended_route": "deployment_review",
+      "urgency": "today",
+      "blocked_reason": "Provider-calendar timing is not enough for autonomous thesis or deployment-state mutation; verify against IR when decision-critical.",
+      "owner_review_required": true,
+      "event_title": "LNG earnings catalyst window is active or near",
+      "evidence": [
+        "next_earnings_date=2026-05-07",
+        "days_to_earnings=0",
+        "source=yfinance"
+      ],
+      "source_artifacts": [
+        "tmp/earnings-calendar.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 4
+    },
+    {
+      "event_id": "post-earnings:sector:nvda-nvda-remains-almost-deployable",
+      "ticker_or_macro_sleeve": "NVDA",
+      "source_tier": "tier_1_workspace_artifact",
+      "event_type": "sector",
+      "materiality_score": 3,
+      "thesis_field_impacted": "setup_timing",
+      "portfolio_surface_impacted": "deployment short list",
+      "recommended_route": "deployment_review",
+      "urgency": "today",
+      "blocked_reason": "Not a deployable-now authorization; keep as owner-gated setup review.",
+      "owner_review_required": true,
+      "event_title": "NVDA remains almost deployable",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "band_position=0.3% above band top",
+        "Next earnings 2026-05-20 in 12d -- treat as timing-sensitive"
+      ],
+      "source_artifacts": [
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "canonical_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "rank": 5
+    }
+  ],
+  "authority_boundary": "Read-only event/materiality router. It may rank and route review objects, but may not mutate thesis, portfolio state, canonical notes, config, or trades."
+}

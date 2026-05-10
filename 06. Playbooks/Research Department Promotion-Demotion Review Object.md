@@ -3,6 +3,8 @@
 ## Purpose
 Operator review object for promoting, holding, demoting, or removing an already tracked name under Workflow 25.
 
+Promotion review ownership now routes through `06. Playbooks/Promotion Review Queue.md`. A lane change or deployable-state promotion requires an explicit queue row before owner-note mutation.
+
 ## Required fields
 - **candidate**
 - **review date**

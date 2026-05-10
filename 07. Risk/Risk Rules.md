@@ -3,10 +3,10 @@
 ## Ownership and freshness
 
 - **Owner:** portfolio / deployment desk
-- **Last reviewed:** 2026-05-02
-- **Review outcome:** content updated during the Workflow 9 Risk Rules pass
-- **Operator sign-off:** Randall approved on 2026-05-02 the tightened speculative-sleeve cap wording plus the correlated-sleeve / sector-cap and catalyst-window escalation additions, so those lines are now canonical doctrine rather than provisional agent-added text
-- **Current regime fit:** the existing tier sizes, single-name limits, and sector-cap posture still fit the live regime (`restrictive pause / resilient growth / selective risk-on`), but concentration and catalyst-window escalation needed clearer written treatment
+- **Last reviewed:** 2026-05-07
+- **Review outcome:** content updated during the WF38 owner-posture sync
+- **Operator sign-off:** Randall approved on 2026-05-07 the tighter 25% single-sector cap and reaffirmed the 15% normal single-name ceiling, building on the 2026-05-02 speculative-sleeve / correlated-sleeve / catalyst-window hardening
+- **Current regime fit:** the tightened 15% normal single-name ceiling and 25% single-sector cap still fit the live regime (`restrictive pause / resilient growth / selective risk-on`), while keeping concentration and catalyst-window escalation explicit
 - **Review cadence:** review during weekly portfolio-positioning maintenance, after any material macro-regime change, before any aggressive deployment judgment or sizing exception, and after any meaningful concentration drift
 - **Freshness reset rule:** a same-window review with no rule changes may reset freshness only if it is explicitly marked reviewed; silent carry-forward does not count
 
@@ -25,7 +25,7 @@
 - Tier 3: 1% to 3%
 - Normal max single position: 15%
 - Stretch max single position: 20% to 25% only for exceptional high-conviction cases after explicit review
-- Max single sector: 25% to 35%
+- Max single sector: 25%
 - Default speculative sleeve target: up to 5% total
 - Do not exceed 10% total in the speculative sleeve without an explicit written exception
 

@@ -1,41 +1,43 @@
 {
-  "generated_at_utc": "2026-05-05T00:49:40.603037+00:00",
-  "status": "ok",
+  "generated_at_utc": "2026-05-10T03:38:13.610407+00:00",
+  "status": "manual",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh daily during active market sessions and before macro-sensitive weekly outputs. Refresh again on scheduled FOMC decision days after the announcement.",
-  "last_trading_day": "2026-05-05",
+  "last_trading_day": "2026-05-10",
   "source_last_trading_day": {
-    "policy_expectations": "2026-05-05",
-    "current_target_range": "2026-05-04"
+    "policy_expectations": "2026-05-10",
+    "current_target_range": "2026-04-29"
   },
   "freshness_notes": [
-    "fred_target_range",
+    "manual_target_range",
     "official_next_fomc_date",
     "auto_derived_next_fomc_contract"
   ],
-  "warnings": [],
+  "warnings": [
+    "Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set"
+  ],
   "data": {
     "source_label": "30-day Fed Funds futures via Yahoo Finance (ZQM26.CBT)",
-    "source_mode": "primary",
+    "source_mode": "mixed",
     "implied_rate_source_mode": "primary",
     "current_target_range": {
       "low": 3.5,
       "high": 3.75,
-      "as_of": "2026-05-04",
+      "as_of": "2026-04-29",
       "confirmed": true,
-      "source": "FRED DFEDTARL/DFEDTARU",
+      "source": "manual constants in scripts/policy_expectations_refresh.py",
       "invalid_reason": null
     },
     "next_fomc": {
       "meeting_date": "2026-06-17",
-      "days_until": 43,
+      "days_until": 38,
       "zq_ticker": "ZQM26",
       "contract_source": "derived from resolved next FOMC date",
       "date_source": "official Fed calendar",
       "distribution": [
         {
           "outcome": "hold",
-          "probability": 96.0
+          "probability": 100.0
         },
         {
           "outcome": "cut_25bp",
@@ -43,12 +45,12 @@
         },
         {
           "outcome": "hike_25bp",
-          "probability": 4.0
+          "probability": 0.0
         }
       ],
       "most_likely_outcome": "hold",
-      "implied_rate": 3.635,
-      "delta_bps_vs_target_mid": -1.0,
+      "implied_rate": 3.625,
+      "delta_bps_vs_target_mid": 0.0,
       "method_note": "Single-step 25bp approximation from one 30-day Fed Funds futures contract; not a full multi-outcome meeting-distribution model.",
       "implied_rate_source_mode": "primary",
       "fetch_note": null
@@ -59,11 +61,17 @@
         "date_source": "official Fed calendar",
         "most_likely_outcome": "hold",
         "cut_probability": 0.0,
-        "hold_probability": 96.0,
-        "hike_probability": 4.0
+        "hold_probability": 100.0,
+        "hike_probability": 0.0
       }
     ],
-    "manual_dependencies": [],
+    "manual_dependencies": [
+      {
+        "field": "current_target_range",
+        "label": "Current Fed target range",
+        "detail": "Still manually maintained in policy_expectations_refresh.py and must be updated after each FOMC decision."
+      }
+    ],
     "notes": [
       "This artifact is the first dedicated policy layer and is intentionally explicit about manual dependencies.",
       "Probability distribution is a single-step 25bp approximation from one 30-day Fed Funds futures contract, not a full FedWatch meeting tree.",

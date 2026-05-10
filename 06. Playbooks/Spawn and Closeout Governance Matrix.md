@@ -10,7 +10,7 @@ Other protocol docs may keep short local summaries, but they should point here r
 ## Core rule
 
 Helper lanes support.
-Veritas/main integrates, judges, and closes.
+Veritas/main is the live truth surface: it interprets the workspace file layer as the durable canonical financial database, integrates evidence, judges, and closes.
 
 Parallel agents in the current automation posture are for:
 - contract-building
@@ -48,12 +48,63 @@ If a workflow cannot be classified cleanly, stop and default to blocked or main-
 ## Main-session exception rule
 
 Meaningful work may stay in the main session only when one of these is true:
-- the edit is trivial and bounded
+- the work is quick, reversible, and bounded enough to stay under roughly five minutes
 - an immediate truth fix is safer than spawning
 - the work is the final merge / QC step
 - spawning adds more friction than value
 
+Substantial work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA should default to a file-grounded helper lane, but not automatically to maximum thinking. Select effort by role: low for routine research/read-only audit, medium for implementation, high for hard debugging, repeated contract failures, or high-stakes trust adjudication.
+
 If a meaningful workflow pass uses a main-session exception, record that explicitly in the continuity note or status summary.
+
+## Post-helper continuation decision
+
+After each helper completion, Veritas/main must choose the next state deliberately:
+- **spawn next helper** when the queue has a clear bounded next action that is substantial, file-grounded, and helper-safe
+- **main-session execute** when the next action is quick, reversible, and bounded
+- **ask Randall** when priority, authority, scope, or human judgment is the blocker
+- **close / pause** only when acceptance evidence and control-surface sync are complete or a real blocker is recorded
+
+Ambiguity is not permission to guess the queue direction. Ask a concrete question first.
+
+## Spawn preflight and runtime-budget rule
+
+Before opening a spawned helper lane, the main session must make the spawn contract explicit enough that the child does not burn its runtime reconstructing context.
+
+Minimum preflight:
+1. classify the lane mode from the execution-mode matrix
+2. name the objective in one sentence
+3. name the exact files to read first
+4. name the stop line / what not to touch
+5. choose model and thinking level from the role-effort matrix; do not default to high just because the task is spawned
+6. set an explicit `runTimeoutSeconds` budget instead of relying on the runtime default
+7. require an artifact-first partial output when the work may exceed 10 minutes
+8. for implementation lanes, require an early progress checkpoint within 3-5 minutes when practical
+9. name the acceptance proof before launch
+
+Role-effort matrix:
+
+| Role / task shape | Default thinking | Escalate when |
+|---|---|---|
+| Routine research, inventory, read-only audit, alignment check | low | evidence conflicts, high financial/trust stakes, or broad ambiguous ownership |
+| Implementation, validator/script edits, workflow artifact production | medium | repeated test failures, shared-contract drift, or unclear downstream consumers |
+| Hard debugging, runtime failures, auth/config diagnosis, false-green/false-red residue, trust adjudication | high | already high; narrow scope before increasing runtime |
+
+Use `openai-codex/gpt-5.5` when available for important lanes, but route effort independently from model choice. If a lower allowed model is sufficient for a routine lane, use it rather than burning top-tier effort by habit.
+
+Use `06. Playbooks/Subagent Spawn Handoff Template.md` for the copyable packet.
+
+Default timeout guidance:
+- quick read-only check: 900-1200 seconds
+- bounded multi-file audit: 2400-3600 seconds
+- broad inventory / architecture audit: 5400-7200 seconds, or split into smaller phases
+- implementation pass: 3600-7200 seconds with exact validation gates
+
+If the task needs more than that, the contract is probably too broad. Split it before spawning.
+
+Root-cause lesson from the 2026-05-09 finance-OS audit timeout: a broad audit with no explicit runtime budget and no artifact-first checkpoint can time out after doing useful inspection but before delivering a usable packet. Treat that as a contract failure, not a worker-quality verdict.
+
+Runtime lesson from the 2026-05-09 SQLite artifact-index implementation spawn: a helper can have valid write/exec access and still fail with `subagent run lost active execution context` before writing the intended files. Treat that as runtime/session reliability residue. Preserve any partial inspection output, verify access separately if needed, then continue in main or relaunch a narrower lane with an early progress checkpoint.
 
 ## Helper-lane authority rule
 
@@ -70,6 +121,7 @@ Helper lanes may not:
 - resolve canonical conflicts alone
 - close a workflow alone
 - issue executive summaries alone
+- claim final closeout authority or a final canonical verdict
 - mutate canonical finance notes unless an explicit later workflow contract permits it
 
 ## Contract-building and QA rule for automation lanes
@@ -94,12 +146,19 @@ Meaning here:
 - bounded to read-only audit / contradiction / gap-finding authority
 
 The independent audit should return at minimum:
-1. closure verdict (`complete`, `closed with follow-up`, or `blocked`)
+1. audit closure verdict (`complete`, `closed with follow-up`, or `blocked`) without final closeout authority
 2. acceptance-proof check
 3. real gaps or residue
-4. reopen triggers
-5. one immediate next-pass recommendation
-6. when useful, 1-2 bounded adjacent workflow recommendations
+4. stale inherited blockers or diagnoses that should now be marked superseded when live evidence overturned them
+5. reopen triggers
+6. one immediate next-pass recommendation
+7. when useful, 1-2 bounded adjacent workflow recommendations
+
+Detail standard:
+- bounded does not mean under-explained
+- each material gap should include evidence/source file, why it matters, severity, owner or affected surface, recommended fix, and acceptance proof
+- each closure claim should name the exact proof that makes it safe to treat as closed
+- if the audit is intentionally only a smoke check, label it as a smoke check and do not let it satisfy major closeout QA by itself
 
 Default spawn posture for that audit:
 - **Spawn read-only**
@@ -128,7 +187,7 @@ Before closing a major workflow:
 2. confirm acceptance or blocker evidence
 3. complete the independent spawned audit or record the honest exception
 4. integrate helper-lane outputs
-5. update queue / registry / continuity note
+5. update the closeout sync bundle: queue top summary, recent-closures summary when present, registry row, continuity note, audit artifact, and daily memory entry
 6. name real residual risks
 7. make the checkpoint decision explicit
 8. name the next pass

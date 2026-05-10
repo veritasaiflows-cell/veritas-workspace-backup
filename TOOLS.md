@@ -5,26 +5,34 @@ Procedures belong in skills.
 
 ## Local setup
 
-- Workspace root: `C:\Users\Veritas.RQs_Business\.openclaw\workspace`
+- Workspace root: `C:\Users\Veritas\.openclaw\workspace`
 - OpenClaw config: `~/.openclaw/openclaw.json`
 - Daily notes folder: `memory/`
 - Long-term memory note: `MEMORY.md`
 - Home note: `Home.md`
 - Obsidian vault should point at the workspace root, not `.obsidian/` itself
-- Obsidian CLI on this Windows host is provided by `notesmd-cli.exe` with local `obsidian-cli` / `obsidian` compatibility wrappers in `C:\Users\Veritas\AppData\Roaming\npm`; the default vault is `workspace` -> `C:\Users\Veritas\.openclaw\workspace`
+- Obsidian CLI on this Windows host is provided by `notesmd-cli.exe` v0.3.6 with local `obsidian-cli` / `obsidian` compatibility wrappers in `C:\Users\Veritas\AppData\Roaming\npm`; the default vault is `workspace` -> `C:\Users\Veritas\.openclaw\workspace`
+- SQLite CLI is installed via Winget (`SQLite.SQLite`) with `sqlite3.cmd` wrapper in `C:\Users\Veritas\AppData\Roaming\npm` because the live OpenClaw process may not inherit Winget PATH changes until restart.
+- `rg` and `jq` are installed via Winget (`BurntSushi.ripgrep.MSVC`, `jqlang.jq`). Because the live OpenClaw process may not inherit Winget PATH changes until restart, local wrappers live in `C:\Users\Veritas\AppData\Roaming\npm\rg.cmd` and `jq.cmd`, matching the existing OpenClaw/npm command path.
+- Git for Windows is installed at `C:\Users\Veritas\AppData\Local\Programs\Git\cmd\git.exe`; the current OpenClaw process may not inherit the new PATH until restart, so use the full path if plain `git` is unavailable.
 - Active runtime posture: native Windows
-- Keep the current OpenClaw version pinned at `2026.4.22` for now; Randall considers it the more stable build on this machine. Do not update OpenClaw unless that stability judgment is intentionally revisited.
+- Plugin skill publication on this Windows host depends on directory symlink privilege. After an OpenClaw update or reinstall changes plugin target paths, `~/.openclaw/plugin-skills` may need fresh symlinks; if the runtime logs `EPERM` / `WinError 1314` while creating plugin-skill links, fix Windows symlink privilege first (prefer Developer Mode) instead of assuming the skill itself is missing.
+- Current intentionally approved stable OpenClaw pin on this machine: `2026.5.4`. Randall accepted `2026.5.4` as the new stable runtime on 2026-05-05 after reinstall drift from the previous `2026.4.22` pin. Do not update OpenClaw again unless that stability judgment is intentionally revisited.
+- `web_search` is currently unusable on this host because the SearXNG base URL is not configured. Until that is fixed, use native `openclaw skills search <term>` for ClawHub discovery and `web_fetch` for direct-page fallback instead of pretending a normal web-search pass happened.
 
 ## Model routing
 
-- Primary model for the main agent / new top-level sessions: `openai-codex/gpt-5.4`
-- Primary model for spawned sub-sessions: `openai-codex/gpt-5.4`
+- Primary posture for the main agent / new top-level sessions: automatically generate decision-grade review objects every day, rank what matters, escalate only the highest-signal items, and prepare capital-deployment recommendations that still require owner approval.. Live truth surface, workspace-file truth interpreter, orchestration, QC, and final integration
+- Primary model family for spawned sub-sessions: stay inside the allowed `openai-codex/*` set and select thinking by role rather than defaulting every substantial task to high.
+- 2026-05-06 config change requested by Randall: keep the allowed model set constrained to `openai-codex/gpt-5.5`, `openai-codex/gpt-5.4`, and `openai-codex/gpt-5.3-codex`, with `agents.defaults.model.primary` on `openai-codex/gpt-5.5`
 - Use OpenAI Codex OAuth-backed routing by default
+- Verify live route availability before relying on `openai-codex/gpt-5.5`
 - Gemini Pro CLI (`gemini -m gemini-3.1-pro-preview`) is the preferred IC lane for implementation, script/code, and broad research passes when available
 - Claude CLI is the hard-judgment lane for trust/contract adjudication and high-stakes review; increase effort (`--effort high` or above) when the task risk justifies it
 - Gemini CLI in this environment does not expose a direct effort flag; scale effort via model choice, prompt depth, and bounded scope
 - Veritas remains the orchestrator, auditor, and product owner/manager for queue movement and final integration
-- Do not assume direct `openai/gpt-5.4` or `openai/gpt-5.4` works unless `OPENAI_API_KEY` was intentionally configured
+- Default workspace execution posture: use a bounded spawned subagent for work likely to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA; select thinking by role: low for routine research/read-only audit, medium for implementation, high for hard debugging or high-stakes trust/contract adjudication. Keep the main session for orchestration, QC, final integration, and quick bounded fixes.
+- Do not route outside the allowed `openai-codex/*` model set unless Randall explicitly changes the runtime policy
 
 ## Skill posture
 
@@ -32,7 +40,9 @@ Procedures belong in skills.
 - Current bundled allowlist: `github`, `healthcheck`, `node-connect`, `skill-creator`, `taskflow`, `taskflow-inbox-triage`, `weather`
 - Workspace skills are the primary custom operating layer
 - Existing finance spine (OpenClaw): `veritas-fundamental-pass`, `veritas-technical-pass`, `veritas-macro-pass`, `veritas-positioning-pass`, `veritas-investment-deck`, `veritas-pdf-brief`, `veritas-self-improvement`, `workspace-governor`
-- Operator skills now own repeatable OpenClaw procedures: `openclaw-operator`, `openclaw-troubleshooter`, `memory-continuity-manager`, `cron-automation-manager`
+- Operator skills now own repeatable OpenClaw procedures: `openclaw-operator`, `openclaw-troubleshooter`, `memory-continuity-manager`, `cron-automation-manager`, `operating-procedure-repository-manager`
+- Local coding spine (2026-05-05): `disciplined-implementation` for acceptance-contract implementation passes, `code-review-auditor` for high-signal diff/contract review, and `safe-refactor-planner` for low-risk structural cleanup with parity gates
+- Retrieval skills restored/installed after the 2026-05-09 restart: `obsidian` for fast vault note search/printing through `obsidian-cli`, and `SQLite` for local SQLite inspection/query design.
 - `09. Archive/temp-skill-inspect - Archived/` holds scratch skill-inspection material; it is preserved for reference but is not an active skill root
 
 ## Cowork skills (Claude layer)
@@ -60,7 +70,9 @@ Document-layer skills also installed: `docx`, `pdf`, `xlsx`, `pptx`, `schedule`,
 - If runtime behavior does not match a default setting, inspect override surfaces with `openclaw config get agents.list --json`
 - Never expose tokens, OAuth credentials, API keys, or gateway secrets in logs or chat
 - Treat gateway-token rotation as a multi-file cleanup problem, not just a single-config edit: check `openclaw.json`, `.bak`, `.last-good`, migration backups, and session transcript artifacts for stale copies after any rotation.
+- Exec approvals are a two-layer surface here: `tools.exec` policy in config plus host-local durable approvals in `~/.openclaw/exec-approvals.json`. On this Windows host, interpreter-launched scheduled chains like `python scripts\\run_finance_refresh_chain.py <window>` should use narrow exact-command durable approvals rather than broad interpreter safe-bins or guessed path allowlists.
 - Ask before changing auth, network exposure, permissions, or destructive settings
+- Ask before editing any config, credential, startup, service, plugin, or runtime file outside `C:\Users\Veritas\.openclaw\workspace`; inspection is allowed, mutation is approval-gated even when local and reversible
 - Validate skill state after skill changes with `openclaw skills check`
 
 ## Tool safety rules
@@ -80,6 +92,7 @@ Document-layer skills also installed: `docx`, `pdf`, `xlsx`, `pptx`, `schedule`,
 - `CLAUDE.md` is retained for external-process compatibility only; it is not part of the active OpenClaw constitutional hierarchy
 - If browser availability matters, verify live browser state instead of assuming it from prior notes
 - In local webchat / Control UI work, prefer session-bound cron jobs for follow-up work over chat-channel fallback assumptions; delivery previews can look fail-closed even when the bound session target is the real route.
+- Current channel hardening posture (updated 2026-05-09): local Control UI remains the trusted operating surface, but Randall has explicitly enabled Telegram as a setup-pending exception. Treat Telegram/channel exposure as intentional-but-not-yet-proven until live bot/token/allowlist/owner-route behavior is verified. Discord remains disabled. Do not assume Telegram delivery is reliable until a test message or cron delivery proof succeeds. Before any broader Telegram, Discord, guild, group, or channel expansion, reverse this deliberately from `openclaw.json` rather than assuming defaults: restore the intended channel, `groupPolicy`, explicit allowlists, mention behavior, and owner allowlist so authority does not widen accidentally.
 - Keep queue movement category-driven and trust-gated: classify major work by category and parallel posture before opening helper lanes, rather than treating every open item as parallel by default.
 - In this local webchat / Control UI posture, do not assume thread-bound persistent subagent sessions are available. If `mode="session"` / `thread=true` subagent spawning is unavailable, use a continuity note plus a resume keyword that launches a fresh bounded subagent run against the file-based project context instead of pretending a live resumable worker exists.
 - When spawning subagents in this environment, pass file-grounded context explicitly; do not rely on memory search or hidden session continuity to reconstruct critical project state.

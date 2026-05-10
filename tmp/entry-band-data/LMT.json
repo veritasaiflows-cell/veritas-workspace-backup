@@ -1,7 +1,7 @@
 {
   "ticker": "LMT",
   "name": "Lockheed Martin Corporation",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 517.95,
-      "h": 519.58,
-      "l": 512.12,
-      "c": 512.77,
-      "v": 1.4
+      "h": 524.5,
+      "l": 500.31,
+      "c": 506.51,
+      "v": 10.11
     }
   ],
   "macro_regimes": {
@@ -1025,18 +1025,34 @@
     }
   },
   "preferred_band": {
-    "low": 566.46,
-    "high": 598.98,
-    "stop": 550.2,
-    "set": "2026-05-01",
-    "label": "566.46–598.98"
+    "low": 548.51,
+    "high": 582.27,
+    "stop": 531.63,
+    "set": "2026-05-06",
+    "label": "548.51–582.27"
   },
   "current_quote": {
-    "close": 518.15,
-    "ma20": 568.6,
-    "ma50": 611.81,
-    "ma200": 520.3,
-    "data_date": "2026-05-04"
+    "close": 506.51,
+    "ma20": 546.02,
+    "ma50": 600.64,
+    "ma200": 521.91,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:00+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "DUAL_MA_RECLAIM",
+    "type": "VAULT_RECLAIM",
+    "status": "BELOW_STOP",
+    "trend_stack": "BELOW_ALL_MAS",
+    "suggested_low": 573.49,
+    "suggested_high": 591.99,
+    "suggested_stop": 558.69,
+    "sma_envelope_low": 544.82,
+    "sma_envelope_high": 602.16,
+    "earnings_state": "CLEAR",
+    "band_confidence": 2,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:34+00:00"
 }

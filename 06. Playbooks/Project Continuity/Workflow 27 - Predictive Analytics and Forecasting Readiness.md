@@ -11,9 +11,15 @@
 - This workflow exists to make predictive work real and evidence-based rather than aspirational buzzwords.
 
 ## Current State
-- queued behind the research-intake and fresh-intelligence layers
-- intentionally blocked from live decision influence until upstream research, provenance, and review-packet workflows are real enough
-- should start as a methodology and data-readiness lane, not as a “ship a model” lane
+- closed with follow-up on 2026-05-06 after the bounded methodology and provenance pass
+- upstream research-intake, freshness, and retrieval-hardening gates are now organized enough to start the methodology/data-readiness pass
+- still intentionally blocked from live decision influence; this remains a methodology and data-readiness lane, not a “ship a model” lane
+- Phase 1 now has an explicit bounded artifact in `06. Playbooks/WF27 Forecast Question Set - Phase 1.md`
+- QA forced the right constraint before advance: forecast questions must stay observable-state-first and must carry explicit forbidden-interpretation language so they do not drift into portfolio authority
+- Phase 2 now has an explicit data/provenance audit in `06. Playbooks/WF27 Data and Provenance Audit - Phase 2.md`
+- Phases 3-4 now have an explicit baseline-method and decision-boundary contract in `06. Playbooks/WF27 Baseline Methods and Decision-Boundary Contract - Phases 3-4.md`
+- The honest conclusion is conservative: the methodology spine is now explicit, but frozen historical state and review-outcome retention are still prerequisites before any real modeling should reopen
+- closeout audit: `08. Audits/WF27 Predictive Readiness Methodology Audit - 2026-05-06.md`
 
 ## Scope
 - define the first forecastable question set that is actually useful for this workspace
@@ -22,6 +28,14 @@
 - define acceptable statistical baseline methods before ML widening
 - define backtest, walk-forward, and failure-analysis rules
 - define what predictive outputs may and may not influence in portfolio decision support
+
+## Phase 1 question-shape rule
+- every proposed forecast question must target an **observable market, event, or state variable**, not a portfolio action
+- every proposed forecast question must include a short **forbidden interpretation** line stating that the question does **not** authorize deployment, sizing, promotion, demotion, or posture change by itself
+- reject Phase 1 questions that behave like hidden buy/sell/rank instructions, vague regime theater, or black-box portfolio guidance
+
+## Phase 2 label-reconstruction rule
+- Phase 2 must **not** treat deployment-state labels such as `deployable now`, `almost deployable`, `in band`, or `near band` as clean historical targets or features until owner precedence, point-in-time reconstruction rules, and stale-note handling are defined explicitly.
 
 ## Out of Scope
 - live trading automation
@@ -68,9 +82,12 @@ Workflow 27 should not close unless all are true:
 5. decision-boundary rules are explicit and conservative
 
 ## Next Action
-- Wait behind WF26. Once the research-intake and fresh-intelligence layers are real, define the bounded forecast question set and data-readiness audit.
+- Hand the queue to Workflow 23. If predictive work reopens later, start with state-history and label-retention hardening rather than modeling.
 
 ## Key Files
+- `06. Playbooks/WF27 Forecast Question Set - Phase 1.md`
+- `06. Playbooks/WF27 Data and Provenance Audit - Phase 2.md`
+- `06. Playbooks/WF27 Baseline Methods and Decision-Boundary Contract - Phases 3-4.md`
 - `08. Audits/Parallel Finance OS Research/2026-05-04 - Bounded Parallel Lanes and Script Roadmap/Research Note.md`
 - `06. Playbooks/Project Continuity/Workflow 25 - Research Department Completion and Coverage Admission Operations.md`
 - `06. Playbooks/Project Continuity/Workflow 26 - Fresh External Intelligence and Geopolitical Verification Pilot.md`

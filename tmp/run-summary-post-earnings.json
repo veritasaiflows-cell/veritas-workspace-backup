@@ -1,81 +1,108 @@
 {
   "window": "post-earnings",
-  "run_id": "20260503T140445Z_post-earnings",
-  "generated_at_utc": "2026-05-03T14:04:45Z",
-  "status": "ok",
-  "stop_line": false,
+  "run_id": "20260508T224209Z_post-earnings",
+  "generated_at_utc": "2026-05-08T22:42:09Z",
+  "status": "blocked",
+  "stop_line": true,
   "owner": {
     "entrypoint": "python scripts/run_finance_refresh_chain.py post-earnings",
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-05-02T15:03:42Z",
-    "completed_at_utc": "2026-05-02T15:03:47Z",
-    "duration_seconds": 5
+    "started_at_utc": "2026-05-08T22:42:04Z",
+    "completed_at_utc": "2026-05-08T22:42:08Z",
+    "duration_seconds": 4
   },
   "execution": {
-    "chain_status": "ok",
-    "chain_status_raw": "ok",
+    "chain_status": "recovering",
+    "chain_status_raw": "recovering",
     "chain_status_normalized": false,
-    "chain_status_reason": "runtime status already terminal",
-    "chain_exit_code": 0,
-    "recovery_triggered": false,
-    "recovery_reason": "",
-    "failed_step": null,
-    "skipped_steps": [],
-    "finalized_after_failure": false
+    "chain_status_reason": "runtime state not safe to normalize",
+    "chain_exit_code": 1,
+    "recovery_triggered": true,
+    "recovery_reason": "test_dashboard_acceptance.py exited with code 1",
+    "failed_step": {
+      "index": 7,
+      "script": "test_dashboard_acceptance.py",
+      "args": [],
+      "command": "test_dashboard_acceptance.py",
+      "exit_code": 1
+    },
+    "skipped_steps": [
+      "generate_dashboard.py",
+      "validate_dashboard_state.py",
+      "workbook_export.py"
+    ],
+    "finalized_after_failure": true
   },
   "validation": {
-    "acceptance_passed": true,
-    "dashboard_validation_status": "clean",
+    "acceptance_passed": false,
+    "dashboard_validation_status": "warning",
     "critical": 0,
-    "warning": 0,
+    "warning": 2,
     "info": 0,
     "exec_freshness": "usable_with_caution"
   },
   "outputs": {
     "command_center": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-03T04:42:37Z"
+      "generated_at_utc": "2026-05-08T22:37:37Z"
     },
     "dashboard_validation": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-03T13:55:21Z"
+      "generated_at_utc": "2026-05-08T13:01:05.736661+00:00"
     },
     "dashboard_acceptance": {
       "status": "ok",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-03T13:55:22Z"
+      "generated_at_utc": "2026-05-08T22:42:08Z"
     },
     "workbook_exports": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-02T23:14:54.532266+00:00"
+      "generated_at_utc": "2026-05-08T13:01:05.837577+00:00"
     },
     "post_earnings_prep": {
       "status": "partial",
       "path": "tmp/post-earnings-prep.json",
-      "generated_at_utc": "2026-05-02T23:14:53.327830+00:00"
+      "generated_at_utc": "2026-05-08T22:42:08.007715+00:00"
     },
     "post_earnings_note_targets": {
       "status": "partial",
       "path": "tmp/post-earnings-note-targets.json",
-      "generated_at_utc": "2026-05-02T23:14:53.376839+00:00"
+      "generated_at_utc": "2026-05-08T22:42:08.082408+00:00"
     }
   },
-  "warnings": [],
-  "blockers": [],
+  "warnings": [
+    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+    "Policy expectations still rely on manual target-range constants and require explicit review."
+  ],
+  "blockers": [
+    "Finance refresh chain failed at test_dashboard_acceptance.py (exit code 1)",
+    "Missing, stale, or failed required outputs: command_center, dashboard_validation, workbook_exports",
+    "Dashboard acceptance did not fully pass"
+  ],
+  "operator_action_required": [
+    "Repair or rerun test_dashboard_acceptance.py (exit code 1) before trusting the post-earnings window.",
+    "Refresh the required outputs still marked stale, missing, or failed: command_center, dashboard_validation, workbook_exports, post_earnings_prep, post_earnings_note_targets.",
+    "Inspect tmp/dashboard-acceptance-report.json and clear the failing dashboard acceptance assertions before the next scheduled window.",
+    "Review fallback-dependent macro and policy inputs before trusting any surviving warning-grade artifacts."
+  ],
+  "next_action": "Inspect tmp/dashboard-acceptance-report.json and fix the failing acceptance assertions before trusting the post-earnings window.",
   "fallback_state": {
-    "used": false,
-    "reason": ""
+    "used": true,
+    "reason": "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.; Policy expectations still rely on manual target-range constants and require explicit review."
+  },
+  "review_only_brief": {
+    "enabled": false
   },
   "downstream": {
-    "command_center_badge": "ok",
-    "workbook_trust_grade": "clean",
+    "command_center_badge": "bad",
+    "workbook_trust_grade": "blocked",
     "presentation_allowed": false,
     "canonical_note_mutation_allowed": false,
-    "canonical_note_mutation_reason": "scheduled windows remain fail-closed for canonical note mutation in v1"
+    "canonical_note_mutation_reason": "run summary status=blocked"
   }
 }

@@ -1,7 +1,7 @@
 {
   "ticker": "CVX",
   "name": "Chevron Corporation",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -965,9 +965,9 @@
       "d": "2026-05",
       "o": 191.3,
       "h": 194.09,
-      "l": 189.75,
-      "c": 190.63,
-      "v": 10.43
+      "l": 179.53,
+      "c": 181.62,
+      "v": 72.54
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "186.91–196.41"
   },
   "current_quote": {
-    "close": 192.28,
-    "ma20": 188.96,
-    "ma50": 193.11,
-    "ma200": 164.72,
-    "data_date": "2026-05-04"
+    "close": 181.62,
+    "ma20": 187.39,
+    "ma50": 193.18,
+    "ma200": 165.51,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:04+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 179.01,
+    "suggested_high": 189.88,
+    "suggested_stop": 172.97,
+    "sma_envelope_low": 178.99,
+    "sma_envelope_high": 197.83,
+    "earnings_state": "CLEAR",
+    "band_confidence": 3,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:37+00:00"
 }

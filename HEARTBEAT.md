@@ -17,6 +17,7 @@ If nothing meaningful needs attention, reply exactly `HEARTBEAT_OK`.
 - prefer silence at night unless something genuinely matters
 - do not repeat old tasks just because they existed in prior chats
 - do not turn heartbeat into a major project
+- do not advance the workflow queue from heartbeat; at most flag a clear queue/registry/continuity contradiction or missing daily log entry
 - do not nag about commits during heartbeats
 - do not append daily-note entries for unchanged state or routine rechecks
 - if today's note already has the same topic, update/merge it instead of appending another bullet

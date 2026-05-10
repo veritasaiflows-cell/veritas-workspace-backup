@@ -3,3 +3,11 @@
 .openclaw/workspace-state.json
 memory/.dreams/
 __pycache__/
+tmp/workspace-index.sqlite*
+tmp/veritas-artifact-index.sqlite*
+tmp/workspace-boundary-check.json
+tmp/dashboard-truth-lint.json
+backups/
+migration-backups/**/*.bak
+migration-backups/**/openclaw.json
+migration-backups/openclaw.json.*

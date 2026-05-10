@@ -15,9 +15,11 @@ VALIDATION_PATH = TMP / "dashboard-validation.json"
 BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
 OUT_PATH = TMP / "deployment-readiness-surface.json"
 RUN_SUMMARY_GLOB = "run-summary-*.json"
+SCHEMA_VERSION = 1
 
 STATE_ORDER = [
     "DEPLOYABLE NOW",
+    "PROMOTION REVIEW",
     "ALMOST DEPLOYABLE",
     "ALMOST / NEAR-EARNINGS CAUTION",
     "POST-EARNINGS REVIEW",
@@ -28,13 +30,20 @@ STATE_ORDER = [
 ]
 
 RAW_TO_SURFACE = {
+    # Canonical forms (deployment_check.py emits these since WF32B)
+    "DEPLOYABLE NOW": "DEPLOYABLE NOW",
+    "PROMOTION REVIEW": "PROMOTION REVIEW",
+    "ALMOST DEPLOYABLE": "ALMOST DEPLOYABLE",
+    "ALMOST / NEAR-EARNINGS CAUTION": "ALMOST / NEAR-EARNINGS CAUTION",
+    "BLOCKED": "BLOCKED",
+    "BENCH": "BENCH",
+    "BELOW STOP": "DO NOT TOUCH",
+    "WATCH / RESEARCH NEEDED": "WATCH / RESEARCH NEEDED",
+    "ERROR": "WATCH / RESEARCH NEEDED",
+    # Legacy aliases for backward compatibility with older cached artifacts
     "DEPLOYABLE": "DEPLOYABLE NOW",
     "ALMOST": "ALMOST DEPLOYABLE",
-    "BLOCKED": "BLOCKED",
-    "BENCH": "DO NOT TOUCH",
-    "BELOW STOP": "DO NOT TOUCH",
     "WATCH": "WATCH / RESEARCH NEEDED",
-    "ERROR": "WATCH / RESEARCH NEEDED",
 }
 
 
@@ -110,6 +119,24 @@ def warning_counts(validation: dict[str, Any]) -> tuple[int, int, int]:
     return int(summary.get("critical", 0)), int(summary.get("warning", 0)), int(summary.get("info", 0))
 
 
+def validation_staleness(validation: dict[str, Any]) -> tuple[bool, str | None, str | None]:
+    generated_raw = validation.get("generated_at_utc")
+    generated = parse_iso_ts(generated_raw)
+    stale_after_hours = validation.get("stale_after_hours", 8)
+    try:
+        stale_after_hours = float(stale_after_hours)
+    except (TypeError, ValueError):
+        stale_after_hours = 8.0
+
+    if not generated:
+        return True, generated_raw, "validation artifact missing usable generated_at_utc"
+
+    age_hours = (datetime.now(timezone.utc) - generated).total_seconds() / 3600
+    if age_hours > stale_after_hours:
+        return True, generated.isoformat(), f"validation artifact is stale ({age_hours:.2f}h old > {stale_after_hours:.1f}h threshold)"
+    return False, generated.isoformat(), None
+
+
 def fmt_band_position(record: dict[str, Any]) -> str:
     close = record.get("close")
     band = record.get("entry_band") or {}
@@ -166,10 +193,10 @@ def surface_state_for(
         return "WATCH / RESEARCH NEEDED", "RULE 4", "workflow_state = WATCH"
     if workflow_state == "REPAIR":
         return "DO NOT TOUCH", "RULE 5", "repair mode remains active"
-    if machine_state == "DEPLOYABLE" and (fallback_used or band_stale):
+    if machine_state == "DEPLOYABLE NOW" and (fallback_used or band_stale):
         reason = "trust ceiling — " + ("fallback active" if fallback_used else "band review debt still active")
         return "ALMOST DEPLOYABLE", "RULE 6", reason
-    if machine_state == "DEPLOYABLE" and earnings_date_ir_confirmed is False and isinstance(days_to_earnings, int) and 0 < days_to_earnings <= 21:
+    if machine_state == "DEPLOYABLE NOW" and earnings_date_ir_confirmed is False and isinstance(days_to_earnings, int) and 0 < days_to_earnings <= 21:
         return "ALMOST DEPLOYABLE", "RULE 6B", "timing confirmation still unresolved inside the active catalyst window"
     if earnings_blocked and isinstance(days_to_earnings, int) and 0 < days_to_earnings <= 14:
         return "BLOCKED", "RULE 7", f"valid active earnings block ({days_to_earnings}d)"
@@ -209,11 +236,15 @@ def main() -> int:
     macro_gate = map_macro_gate(run_summary)
     critical_count, warning_count, info_count = warning_counts(validation)
     warning_codes = [item.get("code") for item in validation.get("warnings", []) if item.get("code")]
+    validation_is_stale, validation_generated_at_utc, validation_staleness_warning = validation_staleness(validation)
     stale_blocks = [
         rec.get("ticker")
         for rec in trigger.get("records", []) or []
         if rec.get("earnings_blocked") and isinstance(rec.get("days_to_earnings"), int) and rec.get("days_to_earnings") > 14
     ]
+
+    if validation_is_stale:
+        macro_gate = "DEGRADED"
 
     run_generated = parse_iso_ts((run_summary or {}).get("generated_at_utc"))
     trigger_generated = parse_iso_ts(trigger.get("generated_at_utc"))
@@ -268,6 +299,7 @@ def main() -> int:
 
     summary = {state: len(grouped.get(state, [])) for state in STATE_ORDER}
     output = {
+        "schema_version": SCHEMA_VERSION,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "window": args.window,
         "source_run_summary": run_summary_name,
@@ -279,6 +311,8 @@ def main() -> int:
             "macro_gate": macro_gate,
             "warning_counts": {"critical": critical_count, "warning": warning_count, "info": info_count},
             "warning_codes": warning_codes,
+            "validation_generated_at_utc": validation_generated_at_utc,
+            "validation_staleness_warning": validation_staleness_warning,
             "stale_earnings_blocks": stale_blocks,
             "timestamp_gap_hours": timestamp_gap_hours,
             "timestamp_gap_warning": timestamp_gap_warning,
@@ -301,6 +335,8 @@ def main() -> int:
             print(f"  {state}: {count}")
     if timestamp_gap_warning:
         print(f"  WARNING: {timestamp_gap_warning}")
+    if validation_staleness_warning:
+        print(f"  WARNING: {validation_staleness_warning}")
     return 0
 
 

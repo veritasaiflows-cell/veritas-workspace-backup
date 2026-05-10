@@ -1,7 +1,7 @@
 {
   "ticker": "NVDA",
   "name": "NVIDIA Corporation",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 201.28,
-      "h": 203.0,
-      "l": 197.12,
-      "c": 198.45,
-      "v": 128.26
+      "h": 217.8,
+      "l": 194.74,
+      "c": 215.2,
+      "v": 994.32
     }
   ],
   "macro_regimes": {
@@ -1025,18 +1025,34 @@
     }
   },
   "preferred_band": {
-    "low": 188.03,
-    "high": 199.28,
-    "stop": 182.4,
-    "set": "2026-04-28",
-    "label": "188.03–199.28"
+    "low": 197.01,
+    "high": 210.84,
+    "stop": 190.1,
+    "set": "2026-05-06",
+    "label": "197.01–210.84"
   },
   "current_quote": {
-    "close": 198.48,
-    "ma20": 198.27,
-    "ma50": 187.33,
-    "ma200": 183.97,
-    "data_date": "2026-05-04"
+    "close": 215.2,
+    "ma20": 203.18,
+    "ma50": 188.65,
+    "ma200": 184.72,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:01+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "ABOVE_BAND_WAIT",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 190.37,
+    "suggested_high": 203.22,
+    "suggested_stop": 182.2,
+    "sma_envelope_low": 183.95,
+    "sma_envelope_high": 203.31,
+    "earnings_state": "TIMING_WINDOW",
+    "band_confidence": 4,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:35+00:00"
 }

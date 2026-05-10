@@ -27,12 +27,21 @@ def upsert_run_summary_alert(payload: dict[str, Any], run_summary: dict[str, Any
     alerts = (payload.get("ui") or {}).setdefault("alerts", [])
     alerts = [a for a in alerts if a.get("title") != "Workflow window status"]
     status = str(run_summary.get("status") or "warning")
-    tone = "bad" if status in {"blocked", "error"} else ("warn" if status == "warning" else "ok")
     execution = run_summary.get("execution") or {}
+    terminal_chain_statuses = {"ok", "failed", "completed_with_recovery"}
+    chain_status = str(execution.get("chain_status") or "unknown")
+    execution_ambiguous = chain_status not in terminal_chain_statuses or not bool(execution.get("chain_status_normalized"))
+    tone = "bad" if status in {"blocked", "error"} else ("warn" if status == "warning" or execution_ambiguous else "ok")
     failed_step = execution.get("failed_step") or {}
     detail_bits = [
         f"Window {run_summary.get('window', 'unknown')} finished with status {status}.",
     ]
+    if execution_ambiguous:
+        detail_bits.append(
+            "Execution finalization is ambiguous "
+            f"(chain_status={chain_status}, normalized={bool(execution.get('chain_status_normalized'))}); "
+            "do not treat this window as fully terminal."
+        )
     if execution.get("recovery_triggered") and failed_step.get("script"):
         detail_bits.append(
             f"Controlled recovery emitted a degraded trust snapshot after {failed_step.get('script')} failed"

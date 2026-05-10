@@ -39,12 +39,15 @@ Inspect before scheduling:
 1. Decide whether the need is heartbeat or cron.
 2. Use the `Cron Job Protocol.md` job-card fields in order so the design is symmetrical with sibling jobs.
 3. Define the smallest schedule that solves the real problem.
-4. Identify dependencies, artifacts, freshness assumptions, and downgrade rules.
+4. Identify dependencies, artifacts, freshness assumptions, downgrade rules, and any shared state/JSON contracts the run depends on.
 5. Prefer one owner for each workflow window.
 6. Avoid overlapping jobs that write the same layer.
 7. Define the operator-facing response contract and the machine-readable proof surface together.
 8. Validate coherence after scheduling with list/show/run/runs plus artifact inspection.
-8. Record durable automation rules in the right file.
+9. If the chain depends on shared vocab or contract changes, inspect at least one downstream consumer or validator before calling the scheduled path clean.
+10. Record durable automation rules in the right file.
+
+If one skill clearly owns the recurring workflow, explicitly name that skill's `SKILL.md` in the run packet's **Read first** list. That is guidance rather than hard enforcement, but it reduces drift for scheduled runs.
 
 For research or freshness automation, do not schedule until these are explicit:
 - approved source bundle
@@ -59,7 +62,9 @@ For research or freshness automation, do not schedule until these are explicit:
 - Use heartbeat for lightweight periodic maintenance only.
 - Prefer isolated jobs unless current-session binding is explicitly needed.
 - Do not emulate timers with polling loops.
+- If a recurring job clearly belongs to one local skill, do not assume the run will infer that skill from context; name it explicitly.
 - If upstream artifacts are partial, stale, or manual, the workflow must downgrade confidence instead of speaking with false precision.
+- If a chain window will later feed SQL/index consumers, keep the SQL layer read-only and update the consumer contract before allowing the index to influence queue movement or judgment.
 
 ## Safety Rules
 

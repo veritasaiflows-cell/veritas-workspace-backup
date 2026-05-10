@@ -1,0 +1,1674 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-10T03:38:41Z",
+  "window": "post-close",
+  "review_window": "post-close",
+  "consumer_posture": "review_only",
+  "canonical_mutation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "deployment_state_mutation_allowed": false,
+  "trade_execution_allowed": false,
+  "owner_approval_required_for_capital": true,
+  "owner_approval_granted": false,
+  "market_data_as_of": "2026-05-08",
+  "note_date": "2026-05-09",
+  "owner_layers": [
+    "03. Portfolio/Deployment Trigger Sheet.md",
+    "03. Portfolio/Portfolio Snapshot.md",
+    "05. Intelligence/Weekly Positioning Review.md",
+    "07. Risk/Risk Rules.md"
+  ],
+  "source_artifacts": {
+    "required": {
+      "deployment_surface": {
+        "path": "tmp/deployment-readiness-surface.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:40.963428+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "deployment-readiness-surface",
+          "path": "tmp/deployment-readiness-surface.json",
+          "classification": "fresh",
+          "freshness_rank": 0,
+          "usable_for_review": true,
+          "usable_for_presentation": true,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:40.963428+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:40Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [],
+          "tags": [],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "clean"
+        },
+        "classification": "fresh"
+      },
+      "deployment_check": {
+        "path": "tmp/deployment-check.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:38.939263+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "deployment-check",
+          "path": "tmp/deployment-check.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:38.939263+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:39Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "warning: 2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+            "warning: Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+            "warning: Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+            "warning: Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+            "warning: Only 7/8 live fields populated.",
+            "warning: True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape."
+          ],
+          "tags": [
+            "warning_notes"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      },
+      "dashboard_validation": {
+        "path": "tmp/dashboard-validation.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:40.230977+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "dashboard-validation",
+          "path": "tmp/dashboard-validation.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:40.230977+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:40Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "warning: {'code': 'credit_spreads_fallback_proxy_only', 'severity': 'warning', 'scope': 'macro', 'message': 'Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.'}",
+            "warning: {'code': 'credit_spreads_partial', 'severity': 'warning', 'scope': 'macro', 'message': 'Credit spreads artifact is partial; one or more required fields are missing or estimated.'}",
+            "warning: {'code': 'macro_manual_dependency', 'severity': 'warning', 'scope': 'macro', 'message': 'Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.'}",
+            "warning: {'code': 'policy_expectations_manual_dependency', 'severity': 'warning', 'scope': 'policy', 'message': 'Policy expectations still rely on manual target-range constants and require explicit review.'}"
+          ],
+          "tags": [
+            "warning_notes"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      },
+      "run_summary": {
+        "path": "tmp/run-summary-post-close.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:40Z",
+        "status": "ok",
+        "source_state": {
+          "source_key": "run-summary-post-close",
+          "path": "tmp/run-summary-post-close.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:40Z",
+          "file_mtime_utc": "2026-05-10T03:38:40Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "upstream status=warning",
+            "warning: Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.",
+            "warning: Credit spreads artifact is partial; one or more required fields are missing or estimated.",
+            "warning: Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+            "warning: Policy expectations still rely on manual target-range constants and require explicit review."
+          ],
+          "tags": [
+            "partial",
+            "warning_notes"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      },
+      "market_state": {
+        "path": "tmp/market-state.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:26.113802+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "market-state",
+          "path": "tmp/market-state.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:26.113802+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:39Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "upstream status=partial",
+            "warning: 2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+            "warning: Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+            "warning: Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+            "warning: Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+            "warning: Only 7/8 live fields populated.",
+            "warning: True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape."
+          ],
+          "tags": [
+            "partial",
+            "warning_notes"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      },
+      "band_proposals": {
+        "path": "tmp/band-proposals.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:32.305297+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "band-proposals",
+          "path": "tmp/band-proposals.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:32.305297+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:32Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "upstream status=needs_review"
+          ],
+          "tags": [
+            "partial"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      },
+      "primary_summary": {
+        "path": "tmp/daily-executive-brief.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:40.512328+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "daily-executive-brief",
+          "path": "tmp/daily-executive-brief.json",
+          "classification": "fresh",
+          "freshness_rank": 0,
+          "usable_for_review": true,
+          "usable_for_presentation": true,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:40.512328+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:40Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [],
+          "tags": [],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "clean"
+        },
+        "classification": "fresh"
+      },
+      "snapshot": {
+        "path": "tmp/postmarket-snapshot.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:40.420676+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "postmarket-snapshot",
+          "path": "tmp/postmarket-snapshot.json",
+          "classification": "fresh",
+          "freshness_rank": 0,
+          "usable_for_review": true,
+          "usable_for_presentation": true,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:40.420676+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:40Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [],
+          "tags": [],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "clean"
+        },
+        "classification": "fresh"
+      },
+      "post_earnings_prep": {
+        "path": "tmp/post-earnings-prep.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "post-earnings-prep",
+          "path": "tmp/post-earnings-prep.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:39Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": true,
+          "criticality": "critical",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "upstream status=partial",
+            "warning: 2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+            "warning: Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+            "warning: Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+            "warning: Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+            "warning: Only 7/8 live fields populated.",
+            "warning: True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+            "warning: Non-blocking watchlist/date mismatches remain outside the active timing window."
+          ],
+          "tags": [
+            "partial",
+            "warning_notes"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      }
+    },
+    "optional": {
+      "earnings_calendar": {
+        "path": "tmp/earnings-calendar.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:12.276624+00:00",
+        "status": "ok",
+        "source_state": {
+          "source_key": "earnings-calendar",
+          "path": "tmp/earnings-calendar.json",
+          "classification": "partial",
+          "freshness_rank": 3,
+          "usable_for_review": true,
+          "usable_for_presentation": false,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:12.276624+00:00",
+          "file_mtime_utc": "2026-05-10T03:38:39Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": false,
+          "criticality": "context",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [
+            "warning: Non-blocking watchlist/date mismatches remain outside the active timing window."
+          ],
+          "tags": [
+            "warning_notes"
+          ],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "review_required"
+        },
+        "classification": "partial"
+      },
+      "market_intelligence_events": {
+        "path": "tmp/market-intelligence-events-post-close.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-05-10T03:38:41Z",
+        "status": "ok",
+        "source_state": {
+          "source_key": "market-intelligence-events-post-close",
+          "path": "tmp/market-intelligence-events-post-close.json",
+          "classification": "fresh",
+          "freshness_rank": 0,
+          "usable_for_review": true,
+          "usable_for_presentation": true,
+          "usable_for_canonical_mutation": false,
+          "stop_line": false,
+          "generated_at_utc": "2026-05-10T03:38:41Z",
+          "file_mtime_utc": "2026-05-10T03:38:41Z",
+          "age_hours": 0.0,
+          "stale_after_hours": 30,
+          "required": false,
+          "criticality": "context",
+          "owner_layer": "artifact:daily_review_objects.py",
+          "issues": [],
+          "tags": [],
+          "missing_fields": [],
+          "contradictions": [],
+          "confidence_ceiling": "clean"
+        },
+        "classification": "fresh"
+      }
+    }
+  },
+  "source_freshness": {
+    "overall_classification": "partial",
+    "trust_level": "review_required",
+    "stop_line": false,
+    "presentation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "capital_action_allowed": false,
+    "owner_review_required": true,
+    "sources": [
+      {
+        "source_key": "deployment_surface",
+        "path": "tmp/deployment-readiness-surface.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:40.963428+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:40Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "deployment_check",
+        "path": "tmp/deployment-check.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:38.939263+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:39Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "warning: 2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+          "warning: Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+          "warning: Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+          "warning: Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+          "warning: Only 7/8 live fields populated.",
+          "warning: True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape."
+        ],
+        "tags": [
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "dashboard_validation",
+        "path": "tmp/dashboard-validation.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:40.230977+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:40Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "warning: {'code': 'credit_spreads_fallback_proxy_only', 'severity': 'warning', 'scope': 'macro', 'message': 'Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.'}",
+          "warning: {'code': 'credit_spreads_partial', 'severity': 'warning', 'scope': 'macro', 'message': 'Credit spreads artifact is partial; one or more required fields are missing or estimated.'}",
+          "warning: {'code': 'macro_manual_dependency', 'severity': 'warning', 'scope': 'macro', 'message': 'Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.'}",
+          "warning: {'code': 'policy_expectations_manual_dependency', 'severity': 'warning', 'scope': 'policy', 'message': 'Policy expectations still rely on manual target-range constants and require explicit review.'}"
+        ],
+        "tags": [
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "run_summary",
+        "path": "tmp/run-summary-post-close.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:40Z",
+        "file_mtime_utc": "2026-05-10T03:38:40Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "upstream status=warning",
+          "warning: Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.",
+          "warning: Credit spreads artifact is partial; one or more required fields are missing or estimated.",
+          "warning: Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+          "warning: Policy expectations still rely on manual target-range constants and require explicit review."
+        ],
+        "tags": [
+          "partial",
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "market_state",
+        "path": "tmp/market-state.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:26.113802+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:39Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "upstream status=partial",
+          "warning: 2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+          "warning: Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+          "warning: Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+          "warning: Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+          "warning: Only 7/8 live fields populated.",
+          "warning: True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape."
+        ],
+        "tags": [
+          "partial",
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "band_proposals",
+        "path": "tmp/band-proposals.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:32.305297+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:32Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "upstream status=needs_review"
+        ],
+        "tags": [
+          "partial"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "primary_summary",
+        "path": "tmp/daily-executive-brief.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:40.512328+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:40Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "snapshot",
+        "path": "tmp/postmarket-snapshot.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:40.420676+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:40Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      },
+      {
+        "source_key": "post_earnings_prep",
+        "path": "tmp/post-earnings-prep.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:39Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": true,
+        "criticality": "critical",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "upstream status=partial",
+          "warning: 2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+          "warning: Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+          "warning: Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+          "warning: Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+          "warning: Only 7/8 live fields populated.",
+          "warning: True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
+          "warning: Non-blocking watchlist/date mismatches remain outside the active timing window."
+        ],
+        "tags": [
+          "partial",
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "earnings_calendar",
+        "path": "tmp/earnings-calendar.json",
+        "classification": "partial",
+        "freshness_rank": 3,
+        "usable_for_review": true,
+        "usable_for_presentation": false,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:12.276624+00:00",
+        "file_mtime_utc": "2026-05-10T03:38:39Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": false,
+        "criticality": "context",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [
+          "warning: Non-blocking watchlist/date mismatches remain outside the active timing window."
+        ],
+        "tags": [
+          "warning_notes"
+        ],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "review_required"
+      },
+      {
+        "source_key": "market_intelligence_events",
+        "path": "tmp/market-intelligence-events-post-close.json",
+        "classification": "fresh",
+        "freshness_rank": 0,
+        "usable_for_review": true,
+        "usable_for_presentation": true,
+        "usable_for_canonical_mutation": false,
+        "stop_line": false,
+        "generated_at_utc": "2026-05-10T03:38:41Z",
+        "file_mtime_utc": "2026-05-10T03:38:41Z",
+        "age_hours": 0.0,
+        "stale_after_hours": 30,
+        "required": false,
+        "criticality": "context",
+        "owner_layer": "artifact:daily_review_objects.py",
+        "issues": [],
+        "tags": [],
+        "missing_fields": [],
+        "contradictions": [],
+        "confidence_ceiling": "clean"
+      }
+    ],
+    "operator_actions": [
+      "Review deployment_check: partial",
+      "Review dashboard_validation: partial",
+      "Review run_summary: partial",
+      "Review market_state: partial",
+      "Review band_proposals: partial",
+      "Review post_earnings_prep: partial",
+      "Review earnings_calendar: partial"
+    ]
+  },
+  "system": {
+    "consumer_posture": "review_only",
+    "trust_level": "review_required",
+    "stop_line": false,
+    "critical": 0,
+    "warning": 4,
+    "info": 0,
+    "macro_gate": "DEGRADED",
+    "warning_codes": [
+      "credit_spreads_fallback_proxy_only",
+      "credit_spreads_partial",
+      "macro_manual_dependency",
+      "policy_expectations_manual_dependency"
+    ],
+    "canonical_mutation_allowed": false,
+    "owner_approval_required_for_capital": true,
+    "trust_ceiling_reasons": [
+      "dashboard validation has 4 warning(s)",
+      "macro gate is DEGRADED",
+      "Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.",
+      "Credit spreads artifact is partial; one or more required fields are missing or estimated.",
+      "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags."
+    ],
+    "run_status": "warning",
+    "presentation_allowed": false
+  },
+  "summary": {
+    "review_object_count": 16,
+    "escalated_count": 3,
+    "capital_recommendation_count": 1,
+    "top_tickers": [
+      "BRK.B",
+      "ETN"
+    ],
+    "portfolio_call": {
+      "recommended_action": "wait_for_better_entry_or_clearance",
+      "owner_approval_required": true,
+      "reason": "Candidates exist, but timing / band / trust gates still argue for wait-state discipline."
+    }
+  },
+  "review_objects": [
+    {
+      "id": "post-close:market-intelligence:1",
+      "object_type": "market_intelligence_event",
+      "ticker": "BRK.B",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "BRK.B has band-review debt",
+      "evidence": [
+        "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+        "band_position=IN BAND"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 1
+    },
+    {
+      "id": "post-close:market-intelligence:2",
+      "object_type": "market_intelligence_event",
+      "ticker": "ETN",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "ETN has band-review debt",
+      "evidence": [
+        "in band at 401.51 -- explicit owner promotion review required before deployable-now status",
+        "band_position=IN BAND"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 2
+    },
+    {
+      "id": "post-close:market-intelligence:3",
+      "object_type": "market_intelligence_event",
+      "ticker": "GOOG",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "GOOG has band-review debt",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "band_position=9.7% above band top"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 3
+    },
+    {
+      "id": "post-close:market-intelligence:4",
+      "object_type": "market_intelligence_event",
+      "ticker": "JPM",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "JPM has band-review debt",
+      "evidence": [
+        "close 302.1 -- posture constructive but not yet in band",
+        "band_position=1.5% below band low"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 4
+    },
+    {
+      "id": "post-close:market-intelligence:5",
+      "object_type": "market_intelligence_event",
+      "ticker": "LMT",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "LMT has band-review debt",
+      "evidence": [
+        "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+        "band_position=7.7% below band low"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 5
+    },
+    {
+      "id": "post-close:etn",
+      "object_type": "ticker",
+      "ticker": "ETN",
+      "category": "review_debt",
+      "surface_state": "PROMOTION REVIEW",
+      "machine_state": "PROMOTION REVIEW",
+      "workflow_state": "ALMOST",
+      "signal_score": 92,
+      "days_to_earnings": 86,
+      "band_position": "IN BAND",
+      "band_status": "IN_BAND",
+      "band_stale": true,
+      "canonical_apply_eligible": true,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "in band at 401.51 -- explicit owner promotion review required before deployable-now status",
+      "evidence": [
+        "in band at 401.51 -- explicit owner promotion review required before deployable-now status",
+        "Band position: IN BAND",
+        "Trigger: Pullback into 388 to 396 with support holding, or disciplined continuation that does not become a chase",
+        "Band proposal is config-layer apply-eligible under the native gates.",
+        "Keltner/MA proposed midpoint is 3.4% lower than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "blockers": [
+        "Next earnings 2026-08-04 (86d out); earnings date changed in latest provider feed; verify against IR before relying on timing",
+        "band review debt remains active",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "owner_question": "Does ETN need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for ETN before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 6
+    },
+    {
+      "id": "system-trust-ceiling",
+      "object_type": "system",
+      "category": "trust_ceiling",
+      "signal_score": 90,
+      "surface_state": "REVIEW REQUIRED",
+      "escalation_reason": "Trust posture directly limits what can be treated as decision-grade today.",
+      "why_now": "dashboard validation has 4 warning(s); macro gate is DEGRADED; Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.; Credit spreads artifact is partial; one or more required fields are missing or estimated.; Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+      "recommended_next_step": "Review trust warnings before treating any capital recommendation as clean.",
+      "owner_question": "Is today clean enough to review deployment candidates, or should trust debt be resolved first?",
+      "owner_reads": [
+        "tmp/dashboard-validation.json",
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "supporting_artifacts": [
+        "tmp/dashboard-validation.json",
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "owner_review_required": true,
+      "rank": 7
+    },
+    {
+      "id": "post-close:brk.b",
+      "object_type": "ticker",
+      "ticker": "BRK.B",
+      "category": "review_debt",
+      "surface_state": "DO NOT TOUCH",
+      "machine_state": "BENCH",
+      "workflow_state": "REPAIR",
+      "signal_score": 88,
+      "days_to_earnings": 83,
+      "band_position": "IN BAND",
+      "band_status": "BELOW_STOP",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+      "evidence": [
+        "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+        "Band position: IN BAND",
+        "Trigger: Only actionable on clear repair through 481 plus improving posture",
+        "Keltner/MA proposed midpoint is 3.3% higher than current midpoint; exceeds 1.0% material-change threshold",
+        "workflow state is not decision-grade for band application"
+      ],
+      "blockers": [
+        "repair mode remains active",
+        "Next earnings 2026-08-01 (83d out); earnings date changed in latest provider feed; verify against IR before relying on timing",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)"
+      ],
+      "owner_question": "Does BRK.B need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for BRK.B before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 8
+    },
+    {
+      "id": "post-close:gs",
+      "object_type": "ticker",
+      "ticker": "GS",
+      "category": "near_deployable",
+      "surface_state": "ALMOST DEPLOYABLE",
+      "machine_state": "ALMOST DEPLOYABLE",
+      "workflow_state": "ALMOST",
+      "signal_score": 84,
+      "days_to_earnings": 65,
+      "band_position": "1.0% above band top",
+      "band_status": "NEAR_BAND",
+      "band_stale": false,
+      "canonical_apply_eligible": true,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "conditional_pullback_review",
+      "why_now": "workflow state is ALMOST -- constructive but not yet promoted",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "Band position: 1.0% above band top",
+        "Trigger: In band at 878.71 to 926.76, but only as a tactical add with disciplined size while JPM remains the primary bank setup",
+        "Band proposal is config-layer apply-eligible under the native gates.",
+        "Band is ~7 trading days old; price is 3.7% from midpoint; KELTNER_MA_CONSTRAINED status NEAR_BAND; no review required at this time"
+      ],
+      "blockers": [
+        "Next earnings 2026-07-14 (65d out)",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "owner_question": "Is GS close enough to keep on the short list, or does it stay in wait-state?",
+      "recommended_next_step": "Keep GS on the short list and only approve on a disciplined pullback / band interaction.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 9
+    },
+    {
+      "id": "post-close:jpm",
+      "object_type": "ticker",
+      "ticker": "JPM",
+      "category": "review_debt",
+      "surface_state": "ALMOST DEPLOYABLE",
+      "machine_state": "ALMOST DEPLOYABLE",
+      "workflow_state": "PROMOTION REVIEW",
+      "signal_score": 82,
+      "days_to_earnings": 65,
+      "band_position": "1.5% below band low",
+      "band_status": "RECLAIM_ONLY",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "close 302.1 -- posture constructive but not yet in band",
+      "evidence": [
+        "close 302.1 -- posture constructive but not yet in band",
+        "Band position: 1.5% below band low",
+        "Trigger: Pullback into 300 to 306 while holding the 200-day and higher-low structure",
+        "Keltner/MA proposed midpoint is 1.3% lower than current midpoint; exceeds 1.0% material-change threshold",
+        "band status RECLAIM_ONLY is not auto-apply approved"
+      ],
+      "blockers": [
+        "Next earnings 2026-07-14 (65d out)",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "owner_question": "Does JPM need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for JPM before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 10
+    },
+    {
+      "id": "post-close:msft",
+      "object_type": "ticker",
+      "ticker": "MSFT",
+      "category": "review_debt",
+      "surface_state": "ALMOST DEPLOYABLE",
+      "machine_state": "ALMOST DEPLOYABLE",
+      "workflow_state": "ALMOST",
+      "signal_score": 82,
+      "days_to_earnings": 80,
+      "band_position": "0.6% above band top",
+      "band_status": "BELOW_STOP",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "workflow state is ALMOST -- constructive but not yet promoted",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "Band position: 0.6% above band top",
+        "Trigger: Pullback into 389.64 to 412.56 with support holding, or stronger repair that can reclaim the 200-day cleanly",
+        "Keltner/MA proposed midpoint is 17.6% higher than current midpoint; exceeds 1.0% material-change threshold",
+        "band status BELOW_STOP is not auto-apply approved"
+      ],
+      "blockers": [
+        "Next earnings 2026-07-29 (80d out)",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "owner_question": "Does MSFT need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for MSFT before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 11
+    },
+    {
+      "id": "post-close:lmt",
+      "object_type": "ticker",
+      "ticker": "LMT",
+      "category": "review_debt",
+      "surface_state": "DO NOT TOUCH",
+      "machine_state": "BELOW STOP",
+      "workflow_state": "REPAIR",
+      "signal_score": 78,
+      "days_to_earnings": 72,
+      "band_position": "7.7% below band low",
+      "band_status": "BELOW_STOP",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+      "evidence": [
+        "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+        "Band position: 7.7% below band low",
+        "Trigger: No trigger until after earnings and a fresh post-event base",
+        "Close 506.51 is 10.4% below the band midpoint 565.39; exceeds 5.0% drift threshold",
+        "Keltner/MA proposed midpoint is 3.1% higher than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "blockers": [
+        "below stop",
+        "Repair mode remains active until a fresh support base forms after earnings",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)"
+      ],
+      "owner_question": "Does LMT need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for LMT before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 12
+    },
+    {
+      "id": "post-close:xom",
+      "object_type": "ticker",
+      "ticker": "XOM",
+      "category": "review_debt",
+      "surface_state": "DO NOT TOUCH",
+      "machine_state": "BENCH",
+      "workflow_state": "REPAIR",
+      "signal_score": 78,
+      "days_to_earnings": 82,
+      "band_position": "3.8% below band low",
+      "band_status": "IN_BAND",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+      "evidence": [
+        "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+        "Band position: 3.8% below band low",
+        "Trigger: Only if price stabilizes above 141.97 and starts reclaiming the 50-day with supportive energy context",
+        "Close 144.57 is 6.3% below the band midpoint 154.34; exceeds 5.0% drift threshold",
+        "Keltner/MA proposed midpoint is 4.3% lower than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "blockers": [
+        "below stop",
+        "Keep benched until the next one to two EIA reads plus Hormuz and Qatar LNG follow-through clarify whether the setup can reclaim the 50-day cleanly",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)"
+      ],
+      "owner_question": "Does XOM need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for XOM before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 13
+    },
+    {
+      "id": "post-close:vrt",
+      "object_type": "ticker",
+      "ticker": "VRT",
+      "category": "review_debt",
+      "surface_state": "WATCH / RESEARCH NEEDED",
+      "machine_state": "WATCH / RESEARCH NEEDED",
+      "workflow_state": "WATCH",
+      "signal_score": 76,
+      "days_to_earnings": 80,
+      "band_position": "0.5% above band top",
+      "band_status": "ABOVE_BAND_WAIT",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "levels are defined, but this execution setup remains watch-only until it is intentionally promoted",
+      "evidence": [
+        "levels are defined, but this execution setup remains watch-only until it is intentionally promoted",
+        "Band position: 0.5% above band top",
+        "Trigger: Pullback into 295.49 to 326.63 with support holding; still secondary to ETN unless the setup improves further",
+        "Close 339.97 is 5.4% above the band midpoint 322.59000000000003; exceeds 5.0% drift threshold",
+        "Keltner/MA proposed midpoint is 6.3% lower than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "blockers": [
+        "workflow_state = WATCH",
+        "Next earnings 2026-07-29 (80d out)",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)"
+      ],
+      "owner_question": "Does VRT need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for VRT before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 14
+    },
+    {
+      "id": "post-close:goog",
+      "object_type": "ticker",
+      "ticker": "GOOG",
+      "category": "review_debt",
+      "surface_state": "ALMOST DEPLOYABLE",
+      "machine_state": "ALMOST DEPLOYABLE",
+      "workflow_state": "ALMOST",
+      "signal_score": 70,
+      "days_to_earnings": 74,
+      "band_position": "9.7% above band top",
+      "band_status": "ABOVE_BAND_WAIT",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "workflow state is ALMOST -- constructive but not yet promoted",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "Band position: 9.7% above band top",
+        "Trigger: Pullback into 330.01 to 349.37 with the post-print structure holding; no chase after the ~10% earnings gap",
+        "Close 397.05 is 12.8% above the band midpoint 352.02; exceeds 5.0% drift threshold",
+        "band status ABOVE_BAND_WAIT is not auto-apply approved"
+      ],
+      "blockers": [
+        "Next earnings 2026-07-23 (74d out)",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "owner_question": "Does GOOG need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for GOOG before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 15
+    },
+    {
+      "id": "post-close:nvda",
+      "object_type": "ticker",
+      "ticker": "NVDA",
+      "category": "review_debt",
+      "surface_state": "ALMOST DEPLOYABLE",
+      "machine_state": "ALMOST DEPLOYABLE",
+      "workflow_state": "ALMOST",
+      "signal_score": 48,
+      "days_to_earnings": 10,
+      "band_position": "2.1% above band top",
+      "band_status": "ABOVE_BAND_WAIT",
+      "band_stale": true,
+      "canonical_apply_eligible": false,
+      "macro_gate": "DEGRADED",
+      "recommendation_class": "resolve_review_debt",
+      "why_now": "workflow state is ALMOST -- constructive but not yet promoted",
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "Band position: 2.1% above band top",
+        "Trigger: Pullback into 186 to 191 only, not a chase above current levels",
+        "Close 215.2 is 5.5% above the band midpoint 203.925; exceeds 5.0% drift threshold",
+        "Keltner/MA proposed midpoint is 3.5% lower than current midpoint; exceeds 1.0% material-change threshold"
+      ],
+      "blockers": [
+        "Next earnings 2026-05-20 in 10d -- treat as timing-sensitive",
+        "band review debt remains active",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "owner_question": "Does NVDA need trust-debt cleanup before any new conclusion is trusted?",
+      "recommended_next_step": "Resolve the trust / band-review debt for NVDA before elevating it in the decision stack.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/deployment-readiness-surface.json",
+        "tmp/deployment-check.json",
+        "tmp/band-proposals.json",
+        "tmp/run-summary-post-close.json",
+        "tmp/dashboard-validation.json",
+        "tmp/daily-executive-brief.json",
+        "tmp/postmarket-snapshot.json"
+      ],
+      "owner_review_required": true,
+      "rank": 16
+    }
+  ],
+  "escalations": [
+    {
+      "id": "system-trust-ceiling",
+      "object_type": "system",
+      "category": "trust_ceiling",
+      "signal_score": 90,
+      "surface_state": "REVIEW REQUIRED",
+      "escalation_reason": "Trust posture directly limits what can be treated as decision-grade today.",
+      "why_now": "dashboard validation has 4 warning(s); macro gate is DEGRADED; Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.; Credit spreads artifact is partial; one or more required fields are missing or estimated.; Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+      "recommended_next_step": "Review trust warnings before treating any capital recommendation as clean.",
+      "owner_question": "Is today clean enough to review deployment candidates, or should trust debt be resolved first?",
+      "owner_reads": [
+        "tmp/dashboard-validation.json",
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "supporting_artifacts": [
+        "tmp/dashboard-validation.json",
+        "tmp/deployment-readiness-surface.json"
+      ],
+      "owner_review_required": true,
+      "rank": 7
+    },
+    {
+      "id": "post-close:market-intelligence:1",
+      "object_type": "market_intelligence_event",
+      "ticker": "BRK.B",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "BRK.B has band-review debt",
+      "evidence": [
+        "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again",
+        "band_position=IN BAND"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 1
+    },
+    {
+      "id": "post-close:market-intelligence:2",
+      "object_type": "market_intelligence_event",
+      "ticker": "ETN",
+      "category": "fresh_intelligence",
+      "signal_score": 97,
+      "surface_state": "REVIEW REQUIRED",
+      "event_type": "risk",
+      "recommended_route": "risk_review",
+      "urgency": "today",
+      "materiality_score": 4,
+      "why_now": "ETN has band-review debt",
+      "evidence": [
+        "in band at 401.51 -- explicit owner promotion review required before deployable-now status",
+        "band_position=IN BAND"
+      ],
+      "blockers": [
+        "Band staleness blocks clean deployment interpretation until reviewed."
+      ],
+      "owner_question": "Does this risk_review event change today's owner-gated review priorities?",
+      "recommended_next_step": "Review the routed event packet before changing thesis, macro wording, deployment state, or capital posture.",
+      "owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ],
+      "supporting_artifacts": [
+        "tmp/market-intelligence-events-post-close.json"
+      ],
+      "owner_review_required": true,
+      "rank": 2
+    }
+  ],
+  "capital_deployment_recommendations": [
+    {
+      "ticker": "GS",
+      "current_state": "ALMOST DEPLOYABLE",
+      "entry_band_status": "NEAR_BAND",
+      "macro_regime_check": "DEGRADED",
+      "fresh_intelligence_status": "deployment_review:this_week:materiality_3",
+      "sector_correlation_check": "missing_artifact_manual_fallback_required",
+      "state_history_status": "missing_artifact_manual_fallback_required",
+      "risk_invalidation": [
+        "Next earnings 2026-07-14 (65d out)",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED"
+      ],
+      "risk_invalidation_summary": "Next earnings 2026-07-14 (65d out); dashboard validation has 4 warning(s); macro gate is DEGRADED",
+      "recommended_action": "wait_for_band",
+      "recommendation_class": "conditional_pullback_review",
+      "recommendation_action": "wait",
+      "action_vocabulary": "WF42 deploy/wait/reject/review; existing recommended_action retained for compatibility.",
+      "confidence": "moderate",
+      "trust_level": "review_required",
+      "source_freshness": {
+        "overall_classification": "partial",
+        "trust_level": "review_required",
+        "stop_line": false,
+        "capital_action_allowed": false,
+        "degraded_sources": [
+          {
+            "source_key": "deployment_check",
+            "classification": "partial",
+            "confidence_ceiling": "review_required"
+          },
+          {
+            "source_key": "dashboard_validation",
+            "classification": "partial",
+            "confidence_ceiling": "review_required"
+          },
+          {
+            "source_key": "run_summary",
+            "classification": "partial",
+            "confidence_ceiling": "review_required"
+          },
+          {
+            "source_key": "market_state",
+            "classification": "partial",
+            "confidence_ceiling": "review_required"
+          },
+          {
+            "source_key": "band_proposals",
+            "classification": "partial",
+            "confidence_ceiling": "review_required"
+          }
+        ]
+      },
+      "evidence": [
+        "workflow state is ALMOST -- constructive but not yet promoted",
+        "Band position: 1.0% above band top",
+        "Trigger: In band at 878.71 to 926.76, but only as a tactical add with disciplined size while JPM remains the primary bank setup",
+        "Band proposal is config-layer apply-eligible under the native gates.",
+        "Band is ~7 trading days old; price is 3.7% from midpoint; KELTNER_MA_CONSTRAINED status NEAR_BAND; no review required at this time"
+      ],
+      "evidence_provenance": [
+        {
+          "claim": "workflow state is ALMOST -- constructive but not yet promoted",
+          "source_artifact": "tmp/deployment-readiness-surface.json",
+          "source_type": "workspace_artifact"
+        },
+        {
+          "claim": "Band position: 1.0% above band top",
+          "source_artifact": "tmp/deployment-readiness-surface.json",
+          "source_type": "workspace_artifact"
+        },
+        {
+          "claim": "Trigger: In band at 878.71 to 926.76, but only as a tactical add with disciplined size while JPM remains the primary bank setup",
+          "source_artifact": "tmp/deployment-readiness-surface.json",
+          "source_type": "workspace_artifact"
+        },
+        {
+          "claim": "Band proposal is config-layer apply-eligible under the native gates.",
+          "source_artifact": "tmp/band-proposals.json",
+          "source_type": "workspace_artifact"
+        },
+        {
+          "claim": "Band is ~7 trading days old; price is 3.7% from midpoint; KELTNER_MA_CONSTRAINED status NEAR_BAND; no review required at this time",
+          "source_artifact": "tmp/deployment-readiness-surface.json",
+          "source_type": "workspace_artifact"
+        }
+      ],
+      "missing_evidence": [
+        "sector/correlation check artifact is not wired; treat as manual fallback before position-impact judgment",
+        "state-history / owner-outcome retention is not wired; no predictive outcome score is available"
+      ],
+      "blocked_reasons": [
+        "Next earnings 2026-07-14 (65d out)",
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED",
+        "sector/correlation check artifact is not wired; treat as manual fallback before position-impact judgment",
+        "state-history / owner-outcome retention is not wired; no predictive outcome score is available"
+      ],
+      "owner_approval_required": true,
+      "owner_approval_granted": false,
+      "canonical_mutation_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "trade_execution_allowed": false,
+      "trust_ceiling": [
+        "dashboard validation has 4 warning(s)",
+        "macro gate is DEGRADED",
+        "Credit spreads are running on proxy basket only (HYG/JNK/LQD). Direct FRED OAS series unavailable.",
+        "Credit spreads artifact is partial; one or more required fields are missing or estimated.",
+        "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags."
+      ],
+      "guidance": "Keep GS on the short list and only approve on a disciplined pullback / band interaction.",
+      "required_owner_reads": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "05. Intelligence/Weekly Positioning Review.md",
+        "07. Risk/Risk Rules.md"
+      ]
+    }
+  ],
+  "known_gaps": [
+    "Fresh-intelligence routing is now artifact-derived v1 only; it does not perform freeform web/news crawling or autonomous thesis updates.",
+    "Sector/correlation checks are not yet exposed as a stable machine-readable artifact for this packet.",
+    "State-history / owner-outcome retention is not yet wired, so this layer does not score realized outcomes or predictive labels.",
+    "Canonical note mutation stays blocked; this packet is recommendation-only / review-only."
+  ],
+  "promotion_rule": "This packet may rank and recommend, but it may not mutate canonical notes, change deployment state, or trigger execution."
+}

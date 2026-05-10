@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "ok",
+  "records": [
+    {
+      "ticker": "NVDA",
+      "action_state": "DEPLOYABLE NOW",
+      "priority": 1
+    },
+    {
+      "ticker": "JPM",
+      "action_state": "ALMOST DEPLOYABLE",
+      "priority": 2
+    }
+  ]
+}

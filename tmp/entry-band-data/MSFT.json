@@ -1,7 +1,7 @@
 {
   "ticker": "MSFT",
   "name": "Microsoft Corporation",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 412.8,
-      "h": 417.11,
-      "l": 410.44,
-      "c": 414.44,
-      "v": 31.33
+      "h": 427.98,
+      "l": 405.11,
+      "c": 415.12,
+      "v": 216.67
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "389.64–412.56"
   },
   "current_quote": {
-    "close": 413.62,
-    "ma20": 407.61,
-    "ma50": 396.44,
-    "ma200": 466.16,
-    "data_date": "2026-05-04"
+    "close": 415.12,
+    "ma20": 416.14,
+    "ma50": 398.15,
+    "ma200": 464.37,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:00+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "DUAL_MA_RECLAIM",
+    "type": "VAULT_RECLAIM",
+    "status": "BELOW_STOP",
+    "trend_stack": "BELOW_200",
+    "suggested_low": 464.37,
+    "suggested_high": 479.3,
+    "suggested_stop": 452.43,
+    "sma_envelope_low": 387.97,
+    "sma_envelope_high": 428.81,
+    "earnings_state": "CLEAR",
+    "band_confidence": 2,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:34+00:00"
 }

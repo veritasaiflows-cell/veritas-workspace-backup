@@ -1,0 +1,493 @@
+{
+  "canonical_mutation_allowed": false,
+  "created_at": "2026-05-06T15:20:48+00:00",
+  "packet_count": 4,
+  "packets": [
+    {
+      "affected_tickers_or_themes": [
+        "JPM",
+        "RATES_CREDIT_POLICY"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "The FRED-backed macro regime and the latest weekly review skeleton both still show a restrictive-pause / benign-credit backdrop, but the signal is unchanged enough to stay digest-only rather than pretending there is a fresh thesis or deployment delta.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "low",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as low for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "low",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "thesis_drift_agent",
+          "summary": "No clear thesis-drift impact detected.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "low",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is high. Stop-line: False.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "low",
+          "recommended_route": "archive_weekly_digest",
+          "requires_human_review": false,
+          "role": "routing_agent",
+          "summary": "Low materiality with high confidence: archive or weekly digest only.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "high",
+      "contradictions_uncertainty": [
+        "Does a later company-specific JPM event need to replace this weekly context object before any thesis-review route is useful?"
+      ],
+      "created_at": "2026-05-06T15:20:48+00:00",
+      "event_class": "macro_event",
+      "event_datetime": "2026-05-06T06:30:21-07:00",
+      "event_title": "Rates / credit / policy backdrop remains stable versus the last Sunday finance refresh",
+      "materiality_level": "low",
+      "next_required_review": "Archive or include in weekly digest only.",
+      "open_questions": [
+        "Does a later company-specific JPM event need to replace this weekly context object before any thesis-review route is useful?"
+      ],
+      "packet_id": "rip_bf73b2bea5348ede",
+      "portfolio_posture_impact": "No immediate portfolio posture impact identified.",
+      "primary_evidence": [
+        {
+          "excerpt": "Restrictive pause remains dominant; credit is benign; breadth is recovering.",
+          "published_at": "2026-05-06T13:01:35+00:00",
+          "retrieved_at": "2026-05-06T08:05:00-07:00",
+          "source": "tmp/macro-regime.json (FRED / Treasury backed)",
+          "source_tier": "tier_1_primary",
+          "title": "Macro regime snapshot as of 2026-05-06",
+          "url": null
+        }
+      ],
+      "recommended_routing": "archive_weekly_digest",
+      "routing_reason": "Low materiality with high confidence: archive or weekly digest only.",
+      "secondary_evidence": [
+        {
+          "excerpt": "JPM remains almost deployable; no fresh deployable-state unlock is visible from the weekly synthesis alone.",
+          "published_at": "2026-05-06T06:30:21+00:00",
+          "retrieved_at": "2026-05-06T08:05:00-07:00",
+          "source": "tmp/weekly-review-skeleton.json",
+          "source_tier": "tier_2_trusted",
+          "title": "Weekly review skeleton deployment summary",
+          "url": null
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": false,
+      "stop_line_triggered": false,
+      "thesis_impact": "No clear thesis-drift impact detected.",
+      "validation_errors": [],
+      "verification_status": "confirmed"
+    },
+    {
+      "affected_tickers_or_themes": [
+        "NVDA",
+        "MSFT",
+        "GOOG",
+        "ETN",
+        "AI_INFRASTRUCTURE"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "AMD's primary-source-confirmed Q1 print still strengthens the AI infrastructure demand backdrop for the narrow pilot set, but it remains a review-only read-through rather than permission to promote any pilot name automatically.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is high. Stop-line: False.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": "thesis_review_queue",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "High materiality: route to thesis-review queue.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "high",
+      "contradictions_uncertainty": [
+        "Which pilot-name surface should own this read-through first after the Sunday packet: thesis-review queue, weekly intelligence, or both?"
+      ],
+      "created_at": "2026-05-06T15:20:48+00:00",
+      "event_class": "sector_readthrough",
+      "event_datetime": "2026-05-05T17:40:00-07:00",
+      "event_title": "AMD Q1 2026 AI infrastructure read-through remains relevant for the pilot-name weekly packet",
+      "materiality_level": "high",
+      "next_required_review": "Human thesis-review queue. Compare against existing thesis before any canonical or posture change.",
+      "open_questions": [
+        "Which pilot-name surface should own this read-through first after the Sunday packet: thesis-review queue, weekly intelligence, or both?"
+      ],
+      "packet_id": "rip_0a2a6b5291e7eb7b",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [
+        {
+          "excerpt": "Primary-source release confirmed strong data-center and AI demand.",
+          "published_at": "2026-05-05T13:00:00-07:00",
+          "retrieved_at": "2026-05-05T18:35:00-07:00",
+          "source": "AMD IR",
+          "source_tier": "tier_1_primary",
+          "title": "AMD Q1 2026 earnings release",
+          "url": null
+        }
+      ],
+      "recommended_routing": "thesis_review_queue",
+      "routing_reason": "High materiality: route to thesis-review queue.",
+      "secondary_evidence": [
+        {
+          "excerpt": "Carry this only as reviewed summary context, not as a substitute for the primary release.",
+          "published_at": "2026-05-05T18:40:00-07:00",
+          "retrieved_at": "2026-05-05T18:40:00-07:00",
+          "source": "Workspace review pass",
+          "source_tier": "tier_2_trusted",
+          "title": "AMD post-earnings scorecard synthesis",
+          "url": null
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": false,
+      "stop_line_triggered": false,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [],
+      "verification_status": "confirmed"
+    },
+    {
+      "affected_tickers_or_themes": [
+        "NVDA"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "The workspace still treats NVDA timing as caution-worthy because provider-level timing exists but the primary investor-relations confirmation path is not captured cleanly enough for decision-grade use.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "stale_canonical_note_candidate",
+            "timing_freshness_check"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": [
+            "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [
+            "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty."
+          ],
+          "flags": [
+            "verification_status:unresolved"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is medium. Stop-line: True.",
+          "uncertainty": [
+            "Evidence quality does not support autonomous routing beyond review."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "verification_status:unresolved"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "Low confidence, rumor-heavy, duplicate, or unresolved evidence gap: no promotion.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "medium",
+      "contradictions_uncertainty": [
+        "Can NVDA IR timing confirmation be captured directly before the next decision-critical window?",
+        "Evidence quality does not support autonomous routing beyond review.",
+        "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty.",
+        "verification_status:unresolved"
+      ],
+      "created_at": "2026-05-06T15:20:48+00:00",
+      "event_class": "company_event",
+      "event_datetime": "2026-05-06T07:00:00-07:00",
+      "event_title": "NVDA timing confirmation still needs clean primary-source capture before the next decision-critical window",
+      "materiality_level": "high",
+      "next_required_review": "Human evidence review required. Do not promote, patch, or surface as action-ready.",
+      "open_questions": [
+        "Can NVDA IR timing confirmation be captured directly before the next decision-critical window?"
+      ],
+      "packet_id": "rip_b5d44a01b63a1942",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [
+        {
+          "excerpt": "Primary confirmation still needs a clean capture path.",
+          "published_at": null,
+          "retrieved_at": "2026-05-06T07:00:00-07:00",
+          "source": "NVDA IR",
+          "source_tier": "tier_1_primary",
+          "title": "NVDA investor-relations calendar placeholder",
+          "url": null
+        }
+      ],
+      "recommended_routing": "stop_line_no_promotion",
+      "routing_reason": "Low confidence, rumor-heavy, duplicate, or unresolved evidence gap: no promotion.",
+      "secondary_evidence": [
+        {
+          "excerpt": "Provider-level timing signal exists, but the primary confirmation path remains incomplete.",
+          "published_at": "2026-05-05T12:00:00-07:00",
+          "retrieved_at": "2026-05-06T07:00:00-07:00",
+          "source": "Trusted financial media",
+          "source_tier": "tier_2_trusted",
+          "title": "Trusted market calendar update",
+          "url": null
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": true,
+      "stop_line_triggered": true,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [],
+      "verification_status": "unresolved"
+    },
+    {
+      "affected_tickers_or_themes": [
+        "OIL",
+        "HORMUZ"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "A blocked-source energy / shipping risk chatter cluster was seen during manual review, but no Tier 1 or Tier 2 attributable source chain was captured, so this must remain an explicit verification object rather than a routed claim.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "low",
+          "contradictions": [],
+          "flags": [
+            "has_macro_context"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_macro_context.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "low",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": [
+            "No Tier 1 or Tier 2 attributable source chain was captured in this pass."
+          ]
+        },
+        {
+          "confidence": "low",
+          "contradictions": [
+            "No Tier 1 or Tier 2 attributable source chain was captured in this pass."
+          ],
+          "flags": [
+            "low_confidence",
+            "material_event_without_primary_evidence",
+            "missing_primary_evidence",
+            "requires_primary_confirmation_without_primary_evidence",
+            "rumor_or_unverified_source",
+            "unresolved_contradiction_without_primary_evidence",
+            "verification_status:unresolved",
+            "weak_source_tier"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is low. Stop-line: True.",
+          "uncertainty": [
+            "Evidence quality does not support autonomous routing beyond review."
+          ]
+        },
+        {
+          "confidence": "low",
+          "contradictions": [],
+          "flags": [
+            "low_confidence",
+            "rumor_or_unverified_source",
+            "material_event_without_primary_evidence",
+            "requires_primary_confirmation_without_primary_evidence",
+            "verification_status:unresolved",
+            "unresolved_contradiction_without_primary_evidence"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "Low confidence, rumor-heavy, duplicate, or unresolved evidence gap: no promotion.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "low",
+      "contradictions_uncertainty": [
+        "Can any primary, regulator, exchange, or trusted-wire confirmation be found before this leaves verification-only status?",
+        "Does any approved-source evidence emerge that makes this materially relevant to active finance surfaces?",
+        "Evidence quality does not support autonomous routing beyond review.",
+        "No Tier 1 or Tier 2 attributable source chain was captured in this pass.",
+        "low_confidence",
+        "material_event_without_primary_evidence",
+        "requires_primary_confirmation_without_primary_evidence",
+        "rumor_or_unverified_source",
+        "unresolved_contradiction_without_primary_evidence",
+        "verification_status:unresolved"
+      ],
+      "created_at": "2026-05-06T15:20:48+00:00",
+      "event_class": "geopolitical_event",
+      "event_datetime": "2026-05-06T07:05:00-07:00",
+      "event_title": "Oil / Hormuz verification object remains open because no attributable confirmation was captured in the weekly pass",
+      "materiality_level": "high",
+      "next_required_review": "Human review required to repair packet validation errors.",
+      "open_questions": [
+        "Can any primary, regulator, exchange, or trusted-wire confirmation be found before this leaves verification-only status?",
+        "Does any approved-source evidence emerge that makes this materially relevant to active finance surfaces?"
+      ],
+      "packet_id": "rip_667f7a8b0b96b6aa",
+      "portfolio_posture_impact": "May affect macro/regime context. Human review required before changing macro gate or portfolio posture.",
+      "primary_evidence": [],
+      "recommended_routing": "stop_line_no_promotion",
+      "routing_reason": "Validation failed: packet is fail-closed.",
+      "secondary_evidence": [
+        {
+          "excerpt": "Weekend energy / shipping chatter lacked attributable confirmation and was intentionally not promoted.",
+          "published_at": null,
+          "retrieved_at": "2026-05-06T07:05:00-07:00",
+          "source": "Manual blocked-source review",
+          "source_tier": "rumor_unverified",
+          "title": "Blocked-source chatter cluster (review only; not approved for truth)",
+          "url": null
+        }
+      ],
+      "source_tier": "rumor_unverified",
+      "stale_canonical_note": false,
+      "stop_line_triggered": true,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [
+        "medium/high materiality packet requires primary_evidence or must stop-line"
+      ],
+      "verification_status": "unresolved"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-05T06:21:17Z",
+  "input_path": "scripts/testdata/automation-trust-block-approved.json",
+  "trust_block": {
+    "schema_version": 1,
+    "workflow": "finance scheduled artifact generation pilot",
+    "producer_skill": "automation-hardening-manager",
+    "reviewed_at_utc": "2026-05-04T23:20:00Z",
+    "current_phase": "scheduled_artifact_generation",
+    "recommended_next_phase": "scheduled_review_surfaces",
+    "trust_level": "automation_ready",
+    "decision": "approve",
+    "consumer_posture": "read_only",
+    "safe_automation_boundary": "Cron may read this trust block to decide whether scheduled artifact generation remains allowed, but it may not infer permission for canonical note mutation or new scheduling scope.",
+    "owner_layer": "tmp/ machine-artifact surface with human-reviewed playbook governance",
+    "review_window": "Before any cron-facing expansion beyond artifact generation.",
+    "validation_evidence": [
+      "scripts/automation_trust_block.py local validation pass",
+      "Workflow 29 Phase 4 bounded pilot review"
+    ],
+    "trust_gates_passed": [
+      "owner layer explicit",
+      "stop lines explicit",
+      "canonical note mutation remains denied",
+      "consumer posture bounded to read_only"
+    ],
+    "trust_gates_missing": [],
+    "stop_lines": [
+      "missing trust block",
+      "status not ok",
+      "consumer posture not read_only",
+      "workflow mismatch"
+    ],
+    "notes": [
+      "Pilot scope only; not a general scheduler integration approval."
+    ]
+  },
+  "summary": {
+    "missing_gate_count": 0,
+    "passed_gate_count": 4,
+    "validation_evidence_count": 2,
+    "stop_line": false
+  },
+  "consumer": {
+    "cron_read_allowed": true,
+    "allowed_posture": "read_only",
+    "fail_closed_reason": ""
+  },
+  "issues": []
+}

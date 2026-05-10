@@ -1,0 +1,195 @@
+{
+  "status": "review_required",
+  "generated_at_utc": "2026-05-10T04:13:11Z",
+  "script": "scripts/archive_suggester.py",
+  "apply_allowed": false,
+  "moves_performed": false,
+  "owner_approval_required": true,
+  "canonical_truth_note": "This is a read-only cleanup suggestion report. It is not an archive apply plan and must not override source notes, queue surfaces, or owner approval boundaries.",
+  "protected_surfaces": [
+    "01. Dashboards",
+    "02. Markets",
+    "03. Portfolio",
+    "04. Research",
+    "05. Intelligence",
+    "06. Playbooks",
+    "07. Risk",
+    "08. Audits",
+    "09. Archive",
+    "data",
+    "memory",
+    "scripts",
+    "skills"
+  ],
+  "counts": {
+    "suggestions": 9,
+    "by_kind": {
+      "undocumented_root_backup_surface": 1,
+      "tmp_executable_helper": 6,
+      "runtime_cache": 2
+    },
+    "with_inbound_references": 7
+  },
+  "suggestions": [
+    {
+      "path": "backups/",
+      "kind": "undocumented_root_backup_surface",
+      "recommendation": "classify as active migration backup, archive under `09. Archive/`, or remove only after owner approval and reference check",
+      "proposed_destination": "09. Archive/backups - Archived/",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 47,
+      "blockers": [
+        "root `backups/` is not documented as an active root entitlement",
+        "inbound references found; inspect before moving"
+      ],
+      "evidence": [
+        "workspace boundary audit reports root `backups/` as undocumented"
+      ],
+      "sha256": null
+    },
+    {
+      "path": "tmp/dump_bands.py",
+      "kind": "tmp_executable_helper",
+      "recommendation": "promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval",
+      "proposed_destination": "09. Archive/tmp-python-helpers - Archived/dump_bands.py",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 6,
+      "blockers": [
+        "executable helper lives in generated-artifact tmp/ surface",
+        "inbound references found; promote/archive only after inspecting current use"
+      ],
+      "evidence": [
+        "tmp/ should hold generated artifacts and staged outputs, not durable executable helpers"
+      ],
+      "sha256": "021507619a69c45a3174302e1404b82a0a58513fa87436dc34019bb2cef0cf77"
+    },
+    {
+      "path": "tmp/find_band_refs.py",
+      "kind": "tmp_executable_helper",
+      "recommendation": "promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval",
+      "proposed_destination": "09. Archive/tmp-python-helpers - Archived/find_band_refs.py",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 6,
+      "blockers": [
+        "executable helper lives in generated-artifact tmp/ surface",
+        "inbound references found; promote/archive only after inspecting current use"
+      ],
+      "evidence": [
+        "tmp/ should hold generated artifacts and staged outputs, not durable executable helpers"
+      ],
+      "sha256": "f2acf1de1705d2ce65f1b07f30bc318f86128709ab0980700a319704801028da"
+    },
+    {
+      "path": "tmp/find_disallowed_model_refs.py",
+      "kind": "tmp_executable_helper",
+      "recommendation": "promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval",
+      "proposed_destination": "09. Archive/tmp-python-helpers - Archived/find_disallowed_model_refs.py",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 6,
+      "blockers": [
+        "executable helper lives in generated-artifact tmp/ surface",
+        "inbound references found; promote/archive only after inspecting current use"
+      ],
+      "evidence": [
+        "tmp/ should hold generated artifacts and staged outputs, not durable executable helpers"
+      ],
+      "sha256": "7243c3956d49a19c579a1d67cb2344653d678353d9fc822bc9841355bf313189"
+    },
+    {
+      "path": "tmp/find_disallowed_openclaw_refs.py",
+      "kind": "tmp_executable_helper",
+      "recommendation": "promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval",
+      "proposed_destination": "09. Archive/tmp-python-helpers - Archived/find_disallowed_openclaw_refs.py",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 6,
+      "blockers": [
+        "executable helper lives in generated-artifact tmp/ surface",
+        "inbound references found; promote/archive only after inspecting current use"
+      ],
+      "evidence": [
+        "tmp/ should hold generated artifacts and staged outputs, not durable executable helpers"
+      ],
+      "sha256": "dd6a589cf74b1744fe7057260d6f56812713487e4d01e92e8d05d4c7302f96de"
+    },
+    {
+      "path": "tmp/find_model_refs.py",
+      "kind": "tmp_executable_helper",
+      "recommendation": "promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval",
+      "proposed_destination": "09. Archive/tmp-python-helpers - Archived/find_model_refs.py",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 6,
+      "blockers": [
+        "executable helper lives in generated-artifact tmp/ surface",
+        "inbound references found; promote/archive only after inspecting current use"
+      ],
+      "evidence": [
+        "tmp/ should hold generated artifacts and staged outputs, not durable executable helpers"
+      ],
+      "sha256": "7ce6a88e7a3a39980077521d91dc2d594f961673d8c3233589dd2284c5711546"
+    },
+    {
+      "path": "tmp/market_close_quick.py",
+      "kind": "tmp_executable_helper",
+      "recommendation": "promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval",
+      "proposed_destination": "09. Archive/tmp-python-helpers - Archived/market_close_quick.py",
+      "confidence": "low",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 7,
+      "blockers": [
+        "executable helper lives in generated-artifact tmp/ surface",
+        "inbound references found; promote/archive only after inspecting current use"
+      ],
+      "evidence": [
+        "tmp/ should hold generated artifacts and staged outputs, not durable executable helpers"
+      ],
+      "sha256": "cfe3ee7da72e44cea41498256976390c79e91ec6015a3e6c91bd881b94359590"
+    },
+    {
+      "path": "scripts/__pycache__/",
+      "kind": "runtime_cache",
+      "recommendation": "safe cleanup candidate after confirming no process is relying on it; do not treat as operating evidence",
+      "proposed_destination": null,
+      "confidence": "medium",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 0,
+      "blockers": [
+        "deletion is destructive; keep as approval-gated even for cache cleanup"
+      ],
+      "evidence": [
+        "Python runtime cache is rebuildable and non-canonical"
+      ],
+      "sha256": null
+    },
+    {
+      "path": "scripts/operators/__pycache__/",
+      "kind": "runtime_cache",
+      "recommendation": "safe cleanup candidate after confirming no process is relying on it; do not treat as operating evidence",
+      "proposed_destination": null,
+      "confidence": "medium",
+      "owner_approval_required": true,
+      "apply_allowed": false,
+      "reference_count": 0,
+      "blockers": [
+        "deletion is destructive; keep as approval-gated even for cache cleanup"
+      ],
+      "evidence": [
+        "Python runtime cache is rebuildable and non-canonical"
+      ],
+      "sha256": null
+    }
+  ]
+}

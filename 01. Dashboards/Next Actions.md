@@ -3,78 +3,77 @@
 ## Role
 
 This dashboard answers one question:
-- what should Randall do next?
+- what should Randall or Veritas do next?
 
 Boundary:
-- this is the immediate action queue
-- point to the right source notes instead of restating them
-- keep it to the next few concrete moves, not full weekly analysis or doctrine
+- immediate action queue only
+- route to owner notes and proof artifacts
+- do not restate the full portfolio, catalyst, or workflow registry
+- do not infer trade, deployment, portfolio mutation, or owner approval authority
 
-## Current best next actions (as of 2026-05-03)
+## Current best next actions
 
-1. **Treat JPM and NVDA as the only live in-band candidates — but not as auto-buys**
-   - **JPM** closed at 312.47 inside the refreshed 306.82–318.12 band.
-   - **NVDA** closed at 198.45 inside the 188.03–199.28 band.
-   - Size discipline still matters because the dashboard layer is warning-grade and NVDA crowding risk is still real.
-   - Use [[03. Portfolio/Deployment Trigger Sheet]] and [[03. Portfolio/Technical Entry and Invalidation Sheet]] before treating either as a real add.
+1. **Wait for the next ordinary WF40 security cron proof**
+   - Owner surface: [[06. Playbooks/OpenClaw Parallel Pilot Queue]] and [[06. Playbooks/Cron Run Ledger]].
+   - Required proof: `tmp/cyber-security-daily-audit-cron-proof.json` fresh from the scheduled run with `proof_status=ok`, `audit_stop_line=false`, and empty wrapper errors.
+   - Do not close WF40 from the controlled manual rerun alone.
 
-2. **Make the ETN pre-print decision explicit before May 5**
-   - **ETN** at 425.55 vs. band 395.59–420.31 is only ~1.2% above the band ceiling, but the real issue now is earnings-event risk, not minor entry-distance math.
-   - Default posture should be stand aside into the print unless an explicit event-risk exception is chosen.
-   - No chase above written bands.
+2. **Run WF43 durable state-history proof when ready**
+   - Owner surface: [[06. Playbooks/Project Continuity/Workflow 43 - State History and Review Outcome Retention]].
+   - Proof path:
+     - `python -m py_compile scripts\state_history_capture.py scripts\test_state_history_capture.py`
+     - `python scripts\test_state_history_capture.py`
+     - `python scripts\state_history_capture.py sample --window post-close`
+     - `python scripts\state_history_capture.py append --window post-close`
+     - `python scripts\state_history_capture.py validate`
+   - Inspect the first durable row before any consumer wiring.
 
-3. **Use the XOM scorecard before changing any energy posture**
-   - XOM reported on May 1.
-   - The scorecard is now written and the underlying quarter was stronger than the GAAP headline.
-   - Keep it in do-not-touch status until the next one to two EIA reads plus post-print follow-through improve the setup.
+3. **Use owner notes before any finance action**
+   - Read [[03. Portfolio/Deployment Trigger Sheet]], [[03. Portfolio/Portfolio Snapshot]], [[03. Portfolio/Technical Entry and Invalidation Sheet]], and [[07. Risk/Risk Rules]].
+   - Current owner-layer posture: JPM and ETN are deployable/conditional-add names; ETN requires band discipline; NVDA is wait/no-chase; XOM remains repair/bench.
+   - This is review support only, not trade execution.
 
-4. **Use the GOOG and MSFT scorecards, but keep both names off the live board for now**
-   - The post-earnings note / trigger / interpretation gap is now closed.
-   - **GOOG** still needs a pullback into the written band.
-   - **MSFT** still needs either a cleaner pullback or better 200-day repair.
+4. **Keep source trust partial / review-required visible**
+   - Review `tmp/dashboard-validation.json` before trusting any generated dashboard state.
+   - Current key limits: FRED-backed policy/credit inputs are incomplete without runtime FRED persistence; policy still has manual dependency; source trust is not presentation-clean.
 
-5. **Process the next catalyst cluster without widening scope**
-   - **BRK.B** reported May 2; post-print posture confirmed benched — scorecard still pending.
-   - **ETN, AMD, SMCI, EOG, LDOS, ET, MPLX, WMB, PLTR, KTOS, LNG** hit next week.
-   - Keep the update path evidence-first and selective.
+5. **Handle WF50 cleanup only with owner approval**
+   - Owner surface: [[06. Playbooks/Project Continuity/Workflow 50 - Tmp Helper Archive Cleanup]].
+   - Do not promote the six `tmp/*.py` helpers as standalone scripts.
+   - If approved, archive them with manifest/hashes and rerun boundary/governance/truth validators.
 
-6. **Respect the remaining trust limits instead of inventing new ones**
-   - Dashboard validation is clean again, but execution freshness still stays usable-with-caution.
-   - Keep direct timing confirmation focused on names where it still matters, led by NVDA.
-   - Treat policy expectations as primary-sourced but still approximate, not as a manually maintained truth layer.
+6. **Keep WF49 credential/runtime work separate**
+   - Rotate/replace the exposed FRED key outside chat before persistent runtime configuration.
+   - Do not write secrets to workspace files.
+   - Do not mutate config/auth/runtime surfaces without explicit approval.
 
-7. **Do not expand the Tech / AI sleeve while it is still over cap**
-   - Draft Tech / AI exposure still reads **37% vs a 35% cap**.
-   - NVDA being in band does not override the concentration rule.
-
-8. **Force an explicit decision on Capital Deployment Readiness instead of leaving it in Phase 3 limbo**
-   - Either revive it, close it as superseded, or state plainly that the current Trigger Sheet is now sufficient.
+7. **Use retrieval, but verify source**
+   - Use `scripts\workspace_index.py --search "<query>" --limit 10` or `scripts\artifact_index.py` to locate evidence faster.
+   - Open the source Markdown/JSON before judgment, queue movement, or note mutation.
 
 ## If there are only 15 minutes
 
-Do one of these, not five:
-- read [[01. Dashboards/Daily Executive Summary]] and decide whether **NVDA**, **ETN**, or **JPM** changed state materially
-- review the current warnings in `tmp/dashboard-validation.json`
-- read the current **XOM** packet before touching any energy note
-- update one clearly stale sentence in a canonical note instead of skimming six files loosely
+Do one of these:
+- check whether WF40 scheduled proof is fresh and clean
+- run the WF43 durable proof sequence through validate
+- inspect `tmp/dashboard-validation.json` and name the current source-trust blockers
+- classify the six tmp helpers for WF50 archive approval
+- read the owner portfolio notes before considering JPM/ETN/NVDA/XOM
 
 ## If there is a full focused session
 
 Work in this order:
-1. [[01. Dashboards/Daily Executive Summary]]
-2. [[05. Intelligence/Weekly Positioning Review]]
-3. [[05. Intelligence/Weekly Intelligence Brief]]
-4. [[03. Portfolio/Technical Entry and Invalidation Sheet]]
-5. [[03. Portfolio/Portfolio Snapshot]]
-6. [[02. Markets/Macro Regime Dashboard]]
-7. [[02. Markets/Watchlist]]
+1. WF40 scheduled proof review / close-or-keep-open decision
+2. WF43 durable append/validate proof
+3. WF50 owner-approved archive cleanup, if approved
+4. WF45 artifact-index freshness/provenance follow-up
+5. WF44 LMT dual-layer owner-state / technical-risk rendering follow-up
+6. WF49 FRED runtime persistence after key rotation/replacement
 
 ## Anti-drift rule
 
-If a task does not improve market understanding, watchlist quality, portfolio discipline, risk awareness, or decision clarity, it is probably not the best next action.
+If the action does not improve truth, freshness, retrieval efficiency, portfolio discipline, risk awareness, or owner-gated decision clarity, it is probably not the next action.
 
 ## Last updated
 
-- 2026-05-02 — refreshed against 2026-05-01 close. Updated the live list to JPM and NVDA in band, ETN still conditional, XOM interpreted but still benched, and GOOG/MSFT now revalidated but still not deployable.
-- 2026-05-03 — Workflow 12 trust repair narrowed the live caution set: removed stale manual-policy wording and broad date-mismatch phrasing in favor of specific remaining trust limits.
-- 2026-05-03 — post-chain audit follow-up: promoted ETN from vague pullback framing to explicit pre-print decision status, kept the Tech / AI over-cap rule visible, and surfaced the Capital Deployment Readiness limbo as a real decision rather than background drift.
+- 2026-05-09 — tightened after the current session. Reframed around WF40 scheduled proof, WF43 durable state-history proof, owner-note finance action, partial source trust, WF50 tmp-helper cleanup, and WF49 credential/runtime gating.

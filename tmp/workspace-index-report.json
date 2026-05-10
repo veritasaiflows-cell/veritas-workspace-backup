@@ -1,0 +1,92 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-10T05:25:55Z",
+  "root": "C:\\Users\\Veritas\\.openclaw\\workspace",
+  "db_path": "tmp\\workspace-index.sqlite",
+  "schema_version": 3,
+  "run_id": "workspace-index-20260510T052555Z",
+  "fts_enabled": true,
+  "counts": {
+    "documents": 560,
+    "headings": 7966,
+    "links": 179,
+    "aliases": 302,
+    "owners": 11,
+    "artifacts": 111,
+    "artifact_metadata": 312,
+    "freshness": 671,
+    "runs": 1
+  },
+  "by_type": {
+    "audit": 86,
+    "daily-memory": 44,
+    "dashboard": 36,
+    "intelligence-note": 11,
+    "machine-companion": 17,
+    "market-note": 4,
+    "note": 154,
+    "playbook": 105,
+    "portfolio-note": 6,
+    "project-continuity": 91,
+    "research-note": 3,
+    "risk-note": 3
+  },
+  "by_domain": {
+    "01. Dashboards": 51,
+    "02. Markets": 5,
+    "03. Portfolio": 6,
+    "04. Research": 3,
+    "05. Intelligence": 12,
+    "06. Playbooks": 184,
+    "07. Risk": 3,
+    "08. Audits": 87,
+    "09. Archive": 122,
+    "AGENTS.md": 1,
+    "CLAUDE.md": 1,
+    "Continuity Protocol.md": 1,
+    "GEMINI.md": 1,
+    "HEARTBEAT.md": 1,
+    "Home.md": 1,
+    "IDENTITY.md": 1,
+    "MEMORY.md": 1,
+    "SOUL.md": 1,
+    "TOOLS.md": 1,
+    "USER.md": 1,
+    "data": 1,
+    "memory": 44,
+    "migration-review.md": 1,
+    "scripts": 3,
+    "skills": 27
+  },
+  "canonical_truth_note": "SQLite index is retrieval/cache only; source Markdown notes remain authoritative.",
+  "consumer_rule": "Retrieval hit -> open source file(s) before judgment, queue movement, or mutation.",
+  "artifact_metadata_summary": {
+    "status": "discovery-only",
+    "source_required": true,
+    "artifacts_summarized": 78,
+    "rows": 312,
+    "included_keys": [
+      "top_level_keys",
+      "schema_version",
+      "generated_at_utc",
+      "run_id"
+    ],
+    "note": "Artifact metadata summaries are provenance/shape hints only; they must not be used as alternate authority for workflow, deployment, dashboard, or portfolio judgments."
+  },
+  "excluded_dirs": [
+    ".clawhub",
+    ".git",
+    ".obsidian",
+    ".openclaw",
+    "__pycache__",
+    "migration-backups",
+    "tmp"
+  ],
+  "artifact_globs": [
+    "tmp/*.json",
+    "tmp/*.html",
+    "tmp/*.csv",
+    "tmp/research-automation/*.json",
+    "tmp/entry-band-reports/*.html"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "ticker": "LLY",
   "name": "Eli Lilly and Company",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 948.95,
-      "h": 984.45,
+      "h": 996.49,
       "l": 943.8,
-      "c": 963.33,
-      "v": 4.35
+      "c": 948.45,
+      "v": 25.22
     }
   ],
   "macro_regimes": {
@@ -1024,13 +1024,35 @@
       ]
     }
   },
-  "preferred_band": null,
-  "current_quote": {
-    "close": 967.93,
-    "ma20": 918.63,
-    "ma50": 946.82,
-    "ma200": 910.65,
-    "data_date": "2026-05-04"
+  "preferred_band": {
+    "low": 907.64,
+    "high": 969.88,
+    "stop": 876.52,
+    "set": "2026-05-06",
+    "label": "907.64–969.88"
   },
-  "generated_at": "2026-05-05T00:50:05+00:00"
+  "current_quote": {
+    "close": 948.45,
+    "ma20": 924.64,
+    "ma50": 941.78,
+    "ma200": 914.68,
+    "data_date": "2026-05-08"
+  },
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "NEAR_BAND",
+    "trend_stack": "ABOVE_ALL_MAS",
+    "suggested_low": 877.75,
+    "suggested_high": 944.98,
+    "suggested_stop": 840.4,
+    "sma_envelope_low": 900.12,
+    "sma_envelope_high": 994.86,
+    "earnings_state": "CLEAR",
+    "band_confidence": 3,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:38+00:00"
 }

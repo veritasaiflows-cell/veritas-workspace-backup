@@ -28,28 +28,37 @@ EARNINGS_PATH = TMP / "earnings-calendar.json"
 CONFIG_PATH = TMP / "portfolio-config.json"
 OUT_PATH = TMP / "trigger-sheet.json"
 STALE_HOURS = 24
+SCHEMA_VERSION = 1
 EXPECTED_UPDATE_WINDOW = (
     "Run after deployment check, earnings enrichment, and market-state refresh "
     "before dashboard generation or note-layer deployment review."
 )
 
 DEPLOY_STATE_MAP = {
-    "DEPLOYABLE": "DEPLOYABLE NOW",
-    "ALMOST": "ALMOST DEPLOYABLE",
+    # Canonical forms (deployment_check.py emits these since WF32B)
+    "DEPLOYABLE NOW": "DEPLOYABLE NOW",
+    "PROMOTION REVIEW": "PROMOTION REVIEW",
+    "ALMOST DEPLOYABLE": "ALMOST DEPLOYABLE",
     "BLOCKED": "BLOCKED",
     "BELOW STOP": "DO NOT TOUCH",
-    "BENCH": "DO NOT TOUCH",
-    "WATCH": "WATCH / RESEARCH NEEDED",
+    "BENCH": "BENCH",
+    "WATCH / RESEARCH NEEDED": "WATCH / RESEARCH NEEDED",
     "ERROR": "ERROR",
+    # Legacy aliases for backward compatibility with older cached artifacts
+    "DEPLOYABLE": "DEPLOYABLE NOW",
+    "ALMOST": "ALMOST DEPLOYABLE",
+    "WATCH": "WATCH / RESEARCH NEEDED",
 }
 
 ACTION_STATE_RANK = {
     "DEPLOYABLE NOW": 0,
-    "ALMOST DEPLOYABLE": 1,
-    "BLOCKED": 2,
-    "DO NOT TOUCH": 3,
-    "WATCH / RESEARCH NEEDED": 4,
-    "ERROR": 5,
+    "PROMOTION REVIEW": 1,
+    "ALMOST DEPLOYABLE": 2,
+    "BLOCKED": 3,
+    "BENCH": 4,
+    "DO NOT TOUCH": 5,
+    "WATCH / RESEARCH NEEDED": 6,
+    "ERROR": 7,
 }
 
 
@@ -376,7 +385,7 @@ def main() -> None:
                 why = "levels are defined, but this execution setup remains watch-only until it is intentionally promoted"
         elif entry_policy == "underdefined":
             why = "Name is tracked, but not yet decision-grade because explicit entry and stop are still missing"
-        elif ticker == "ETN" and deploy_rec.get("action_state") == "ALMOST":
+        elif ticker == "ETN" and "ALMOST" in (deploy_rec.get("action_state") or ""):
             why = "Best chart in the sheet, but current price is extended versus the preferred zone"
 
         record = {
@@ -416,11 +425,12 @@ def main() -> None:
     trigger_records.sort(key=lambda r: (ACTION_STATE_RANK.get(r.get("action_state"), 9), r.get("ticker") or ""))
 
     summary: dict[str, list[str]] = {
-        "deployable_now": [], "almost_deployable": [], "blocked": [],
+        "deployable_now": [], "promotion_review": [], "almost_deployable": [], "blocked": [],
         "do_not_touch": [], "watch": [], "error": [],
     }
     bucket_for_state = {
         "DEPLOYABLE NOW": "deployable_now",
+        "PROMOTION REVIEW": "promotion_review",
         "ALMOST DEPLOYABLE": "almost_deployable",
         "BLOCKED": "blocked",
         "DO NOT TOUCH": "do_not_touch",
@@ -440,6 +450,7 @@ def main() -> None:
     )
 
     output = {
+        "schema_version": SCHEMA_VERSION,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "status": "ok" if not warnings else "ok_with_warnings",
         "stale_after_hours": STALE_HOURS,
@@ -467,7 +478,7 @@ def main() -> None:
 
     print("trigger_sheet_refresh.py")
     print(f"  Records:           {len(trigger_records)}")
-    for bucket_label in ("deployable_now", "almost_deployable", "blocked", "do_not_touch", "watch", "error"):
+    for bucket_label in ("deployable_now", "promotion_review", "almost_deployable", "blocked", "do_not_touch", "watch", "error"):
         names = summary.get(bucket_label, [])
         joined = " ".join(names) if names else "-"
         print(f"  {bucket_label:18s} {len(names):2d}  {joined}")

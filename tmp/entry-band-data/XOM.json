@@ -1,7 +1,7 @@
 {
   "ticker": "XOM",
   "name": "Exxon Mobil Corporation",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 152.61,
-      "h": 155.01,
-      "l": 151.13,
-      "c": 152.75,
-      "v": 15.45
+      "h": 155.29,
+      "l": 143.92,
+      "c": 144.57,
+      "v": 123.95
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "150.24–158.44"
   },
   "current_quote": {
-    "close": 153.69,
-    "ma20": 151.81,
-    "ma50": 154.95,
-    "ma200": 126.97,
-    "data_date": "2026-05-04"
+    "close": 144.57,
+    "ma20": 150.16,
+    "ma50": 154.89,
+    "ma200": 127.83,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:50:01+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 142.98,
+    "suggested_high": 152.36,
+    "suggested_stop": 137.77,
+    "sma_envelope_low": 143.6,
+    "sma_envelope_high": 158.72,
+    "earnings_state": "CLEAR",
+    "band_confidence": 3,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:35+00:00"
 }

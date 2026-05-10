@@ -1,0 +1,492 @@
+{
+  "canonical_mutation_allowed": false,
+  "created_at": "2026-05-06T02:19:40+00:00",
+  "packet_count": 4,
+  "packets": [
+    {
+      "affected_tickers_or_themes": [
+        "ETN"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "Secondary-confirmed beat / raised-guidance read-through is constructive, but Eaton primary release or transcript was not captured cleanly in the 2026-05-05 post-earnings pass, so promotion should remain stop-lined.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "stale_canonical_note_candidate",
+            "timing_freshness_check"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": [
+            "Primary-source capture remained incomplete in the 2026-05-05 ETN post-earnings pass."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [
+            "Primary-source capture remained incomplete in the 2026-05-05 ETN post-earnings pass."
+          ],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is medium. Stop-line: False.",
+          "uncertainty": [
+            "Evidence quality does not support autonomous routing beyond review."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": "canonical_freshness_patch_candidate",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "High materiality and stale canonical note risk: draft patch candidate for human review.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "medium",
+      "contradictions_uncertainty": [
+        "Can Eaton IR release or transcript be captured cleanly before any deployment-state promotion?",
+        "Does the forward-tone nuance weaken the otherwise constructive beat / guidance read-through?",
+        "Evidence quality does not support autonomous routing beyond review.",
+        "Primary-source capture remained incomplete in the 2026-05-05 ETN post-earnings pass."
+      ],
+      "created_at": "2026-05-06T02:19:40+00:00",
+      "event_class": "company_event",
+      "event_datetime": "2026-05-05T17:15:00-07:00",
+      "event_title": "ETN Q1 2026 print remains constructive but still lacks captured primary release/transcript",
+      "materiality_level": "high",
+      "next_required_review": "Human canonical freshness review required. Draft exact patch only; no auto-apply.",
+      "open_questions": [
+        "Can Eaton IR release or transcript be captured cleanly before any deployment-state promotion?",
+        "Does the forward-tone nuance weaken the otherwise constructive beat / guidance read-through?"
+      ],
+      "packet_id": "rip_5c8731e804bd7464",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [
+        {
+          "excerpt": "Primary release or transcript still needs capture before promotion.",
+          "published_at": "2026-05-05T00:00:00-07:00",
+          "retrieved_at": "2026-05-05T18:30:00-07:00",
+          "source": "Eaton IR",
+          "source_tier": "tier_1_primary",
+          "title": "Eaton investor-relations earnings release / transcript placeholder",
+          "url": null
+        }
+      ],
+      "recommended_routing": "canonical_freshness_patch_candidate",
+      "routing_reason": "High materiality and stale canonical note risk: draft patch candidate for human review.",
+      "secondary_evidence": [
+        {
+          "excerpt": "Beat / raised-guidance read-through, with forward-tone caution.",
+          "published_at": "2026-05-05T16:00:00-07:00",
+          "retrieved_at": "2026-05-05T18:30:00-07:00",
+          "source": "Trusted financial media",
+          "source_tier": "tier_2_trusted",
+          "title": "Secondary earnings headline cluster referenced in the ETN post-earnings scorecard",
+          "url": null
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": true,
+      "stop_line_triggered": false,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [],
+      "verification_status": "partial"
+    },
+    {
+      "affected_tickers_or_themes": [
+        "NVDA",
+        "MSFT",
+        "GOOG",
+        "ETN",
+        "AI_INFRASTRUCTURE"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "AMD's primary-source-confirmed Q1 print strengthened the AI infrastructure demand backdrop, but it remains a read-through object only and does not by itself promote NVDA, MSFT, GOOG, or ETN.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is high. Stop-line: False.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "high",
+          "recommended_route": "thesis_review_queue",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "High materiality: route to thesis-review queue.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "high",
+      "contradictions_uncertainty": [
+        "Does any pilot name now need a fresh company-specific event object instead of relying on sector read-through only?",
+        "Which pilot-name review surface should carry this read-through first: weekly intelligence, post-close packet, or both?"
+      ],
+      "created_at": "2026-05-06T02:19:40+00:00",
+      "event_class": "sector_readthrough",
+      "event_datetime": "2026-05-05T17:40:00-07:00",
+      "event_title": "AMD Q1 2026 strengthens the AI infrastructure demand read-through for pilot names",
+      "materiality_level": "high",
+      "next_required_review": "Human thesis-review queue. Compare against existing thesis before any canonical or posture change.",
+      "open_questions": [
+        "Which pilot-name review surface should carry this read-through first: weekly intelligence, post-close packet, or both?",
+        "Does any pilot name now need a fresh company-specific event object instead of relying on sector read-through only?"
+      ],
+      "packet_id": "rip_06ddd9719017ab4c",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [
+        {
+          "excerpt": "Primary-source earnings release confirming strong data-center and AI demand.",
+          "published_at": "2026-05-05T13:00:00-07:00",
+          "retrieved_at": "2026-05-05T18:35:00-07:00",
+          "source": "AMD IR",
+          "source_tier": "tier_1_primary",
+          "title": "AMD Q1 2026 earnings release",
+          "url": null
+        }
+      ],
+      "recommended_routing": "thesis_review_queue",
+      "routing_reason": "High materiality: route to thesis-review queue.",
+      "secondary_evidence": [
+        {
+          "excerpt": "Use only as a reviewed summary of the primary release, not as a substitute for it.",
+          "published_at": "2026-05-05T18:40:00-07:00",
+          "retrieved_at": "2026-05-05T18:40:00-07:00",
+          "source": "Workspace review pass",
+          "source_tier": "tier_2_trusted",
+          "title": "AMD post-earnings scorecard synthesis",
+          "url": null
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": false,
+      "stop_line_triggered": false,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [],
+      "verification_status": "confirmed"
+    },
+    {
+      "affected_tickers_or_themes": [
+        "NVDA"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "The workspace still treats NVDA timing as caution-worthy until a direct primary investor-relations confirmation is captured cleanly enough for decision-grade use.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as high for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "stale_canonical_note_candidate",
+            "timing_freshness_check"
+          ],
+          "materiality": "high",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "thesis_drift_agent",
+          "summary": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+          "uncertainty": [
+            "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [
+            "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty."
+          ],
+          "flags": [
+            "verification_status:unresolved"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is medium. Stop-line: True.",
+          "uncertainty": [
+            "Evidence quality does not support autonomous routing beyond review."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "verification_status:unresolved"
+          ],
+          "materiality": "high",
+          "recommended_route": "stop_line_no_promotion",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "Low confidence, rumor-heavy, duplicate, or unresolved evidence gap: no promotion.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "medium",
+      "contradictions_uncertainty": [
+        "Can NVDA IR timing confirmation be captured directly before the next decision-critical window?",
+        "Evidence quality does not support autonomous routing beyond review.",
+        "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty.",
+        "verification_status:unresolved"
+      ],
+      "created_at": "2026-05-06T02:19:40+00:00",
+      "event_class": "company_event",
+      "event_datetime": "2026-05-05T18:00:00-07:00",
+      "event_title": "NVDA timing confirmation still needs clean primary-source capture",
+      "materiality_level": "high",
+      "next_required_review": "Human evidence review required. Do not promote, patch, or surface as action-ready.",
+      "open_questions": [
+        "Can NVDA IR timing confirmation be captured directly before the next decision-critical window?"
+      ],
+      "packet_id": "rip_2bc76dc6bd7d26ab",
+      "portfolio_posture_impact": "May affect deployment timing or active capital competition. Human review required; no action language is authorized.",
+      "primary_evidence": [
+        {
+          "excerpt": "Primary confirmation still needs a clean capture path.",
+          "published_at": null,
+          "retrieved_at": "2026-05-05T18:00:00-07:00",
+          "source": "NVDA IR",
+          "source_tier": "tier_1_primary",
+          "title": "NVDA investor-relations calendar placeholder",
+          "url": null
+        }
+      ],
+      "recommended_routing": "stop_line_no_promotion",
+      "routing_reason": "Low confidence, rumor-heavy, duplicate, or unresolved evidence gap: no promotion.",
+      "secondary_evidence": [
+        {
+          "excerpt": "Provider-level timing signal exists, but the primary confirmation path remains incomplete.",
+          "published_at": "2026-05-05T12:00:00-07:00",
+          "retrieved_at": "2026-05-05T18:00:00-07:00",
+          "source": "Trusted financial media",
+          "source_tier": "tier_2_trusted",
+          "title": "Trusted market calendar update",
+          "url": null
+        }
+      ],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": true,
+      "stop_line_triggered": true,
+      "thesis_impact": "Potential thesis-drift item. Compare against current thesis assumptions before any note or posture change.",
+      "validation_errors": [],
+      "verification_status": "unresolved"
+    },
+    {
+      "affected_tickers_or_themes": [
+        "JPM",
+        "RATES_CREDIT_POLICY"
+      ],
+      "agent_findings": [
+        {
+          "confidence": "high",
+          "contradictions": [],
+          "flags": [],
+          "materiality": null,
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "event_detector",
+          "summary": "Fed target range remains 3.50%-3.75%, next-meeting cut probability remains 0%, credit is benign, and breadth is recovering; that backdrop supports JPM contextually but does not override the current zero-deployable board or macro-gate caution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [
+            "has_daily_execution"
+          ],
+          "materiality": "medium",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "materiality_scorer",
+          "summary": "Materiality scored as medium for affected scope: has_daily_execution.",
+          "uncertainty": []
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "medium",
+          "recommended_route": null,
+          "requires_human_review": false,
+          "role": "thesis_drift_agent",
+          "summary": "No clear thesis-drift impact detected.",
+          "uncertainty": [
+            "Macro support is real, but the deployment-readiness surface still shows zero deployable names and a degraded macro gate."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [
+            "Macro support is real, but the deployment-readiness surface still shows zero deployable names and a degraded macro gate."
+          ],
+          "flags": [
+            "missing_secondary_evidence"
+          ],
+          "materiality": "medium",
+          "recommended_route": null,
+          "requires_human_review": true,
+          "role": "evidence_qa_agent",
+          "summary": "Evidence QA confidence is medium. Stop-line: False.",
+          "uncertainty": [
+            "Evidence quality does not support autonomous routing beyond review."
+          ]
+        },
+        {
+          "confidence": "medium",
+          "contradictions": [],
+          "flags": [],
+          "materiality": "medium",
+          "recommended_route": "dashboard_watch_item",
+          "requires_human_review": true,
+          "role": "routing_agent",
+          "summary": "Medium materiality tied to daily/macro coverage: dashboard watch item.",
+          "uncertainty": []
+        }
+      ],
+      "canonical_mutation_allowed": false,
+      "confidence_level": "medium",
+      "contradictions_uncertainty": [
+        "Evidence quality does not support autonomous routing beyond review.",
+        "Macro support is real, but the deployment-readiness surface still shows zero deployable names and a degraded macro gate.",
+        "What specific macro or board-state change would be enough to promote JPM from almost deployable to deployable now?"
+      ],
+      "created_at": "2026-05-06T02:19:40+00:00",
+      "event_class": "macro_event",
+      "event_datetime": "2026-05-05T18:10:00-07:00",
+      "event_title": "Rates / credit / policy backdrop stays supportive for JPM but still does not unlock deployment",
+      "materiality_level": "medium",
+      "next_required_review": "Operator review for dashboard watch item. No deployment or canonical mutation.",
+      "open_questions": [
+        "What specific macro or board-state change would be enough to promote JPM from almost deployable to deployable now?"
+      ],
+      "packet_id": "rip_cab9ae12f78ecbf3",
+      "portfolio_posture_impact": "No immediate portfolio posture impact identified.",
+      "primary_evidence": [
+        {
+          "excerpt": "Target range confirmed at 3.50%-3.75%.",
+          "published_at": "2026-05-05T00:00:00-07:00",
+          "retrieved_at": "2026-05-05T19:10:00-07:00",
+          "source": "FRED DFEDTARL / DFEDTARU",
+          "source_tier": "tier_1_primary",
+          "title": "Fed target-range source set",
+          "url": null
+        },
+        {
+          "excerpt": "0% cut probability for the next meeting; 2s10s remains positive; credit posture remains benign.",
+          "published_at": "2026-05-05T16:00:00-07:00",
+          "retrieved_at": "2026-05-05T19:10:00-07:00",
+          "source": "Fed funds futures via Yahoo Finance and FRED DGS2 / ^TNX",
+          "source_tier": "tier_1_primary",
+          "title": "Fed funds futures / rates context",
+          "url": null
+        }
+      ],
+      "recommended_routing": "dashboard_watch_item",
+      "routing_reason": "Medium materiality tied to daily/macro coverage: dashboard watch item.",
+      "secondary_evidence": [],
+      "source_tier": "tier_1_primary",
+      "stale_canonical_note": false,
+      "stop_line_triggered": false,
+      "thesis_impact": "No clear thesis-drift impact detected.",
+      "validation_errors": [],
+      "verification_status": "confirmed"
+    }
+  ]
+}

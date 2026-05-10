@@ -15,6 +15,7 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 EARNINGS_NOTES_DIR = WORKSPACE / "05. Intelligence" / "Earnings"
 TECHNICAL_NOTE_PATH = "03. Portfolio/Technical Entry and Invalidation Sheet.md"
+WATCHLIST_NOTE_PATH = "02. Markets/Watchlist.md"
 BAND_NOTE_SYNC_JSON = "band-note-sync.json"
 FRESH_WARNING_HOURS = 24.0
 FRESH_STALE_HOURS = 48.0
@@ -273,8 +274,8 @@ def note_parity_status_for_surface(ticker: str, band_sync: dict[str, Any], techn
     return note_parity_status(ticker, band_sync)
 
 
-def canonical_note_pointer_for_ticker(ticker: str, technical_entitled: bool) -> str:
-    return scorecard_path_for_ticker(ticker) or (TECHNICAL_NOTE_PATH if technical_entitled else "04. Research/Coverage Universe.md")
+def owner_note_pointer_for_ticker(ticker: str, technical_entitled: bool) -> str:
+    return scorecard_path_for_ticker(ticker) or (TECHNICAL_NOTE_PATH if technical_entitled else WATCHLIST_NOTE_PATH)
 
 
 def sync_status_from_note_targets(ticker: str, note_targets: dict[str, Any]) -> tuple[bool, bool]:
@@ -525,7 +526,7 @@ def build_watchlist_board(trigger: dict[str, Any], validation: dict[str, Any], e
                 "technical_note_status": note_status,
                 "technical_note_action": note_action,
                 "priority_bucket": "",
-                "canonical_note_pointer": canonical_note_pointer_for_ticker(ticker, ticker in technical_entitled),
+                "owner_note_pointer": owner_note_pointer_for_ticker(ticker, ticker in technical_entitled),
                 "last_sync_date": rec.get("data_date") or source_last_trading_day,
                 "notes_short": notes_short,
                 "export_generated_at_utc": export_time,
@@ -786,7 +787,7 @@ def main() -> int:
         "record_type", "metric_key", "metric_label", "metric_value", "severity", "summary", "action_needed", "export_generated_at_utc", "source_last_trading_day", "validation_grade", "data_status"
     ])
     write_csv(TMP / "workbook-watchlist-board.csv", watchlist_rows, [
-        "ticker", "company", "coverage_tier", "coverage_lane", "sleeve", "board_state", "deployability_label", "surface_scope", "nearest_catalyst_date", "catalyst_type", "earnings_blocked", "thesis_status", "technical_freshness", "technical_note_status", "technical_note_action", "priority_bucket", "canonical_note_pointer", "last_sync_date", "notes_short", "export_generated_at_utc"
+        "ticker", "company", "coverage_tier", "coverage_lane", "sleeve", "board_state", "deployability_label", "surface_scope", "nearest_catalyst_date", "catalyst_type", "earnings_blocked", "thesis_status", "technical_freshness", "technical_note_status", "technical_note_action", "priority_bucket", "owner_note_pointer", "last_sync_date", "notes_short", "export_generated_at_utc"
     ])
     write_csv(TMP / "workbook-deployment-ranking.csv", ranking_rows, [
         "ticker", "board_state", "distance_to_band_pct", "entry_band_low", "entry_band_high", "technical_readiness", "earnings_catalyst_risk", "macro_fit", "invalidation_clarity", "portfolio_role", "priority_rank", "priority_bucket", "reason_for_rank", "next_trigger", "export_generated_at_utc"

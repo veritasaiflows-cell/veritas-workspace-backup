@@ -39,6 +39,17 @@ Then inspect:
 - relevant audits in `08. Audits/`
 - local docs and official docs for field-level or runtime guidance
 
+After an OpenClaw reinstall, update, gateway restart, or environment rebuild, also verify the recovery spine before resuming finance work:
+- `python --version`
+- `obsidian-cli --version` or `obsidian --version`
+- `sqlite3 --version`
+- `rg --version`
+- `jq --version`
+- `openclaw skills check`
+- live cron list/history for scheduled workflows that must survive restart
+- wrapper/path facts in `TOOLS.md`
+Treat reinstall recovery as incomplete until binaries, skills, retrieval tools, and scheduled jobs are live-proven, not merely installed.
+
 ## Procedure
 
 1. Reproduce or restate the symptom clearly.
@@ -59,11 +70,35 @@ Then inspect:
 8. Apply one change at a time when the issue is live.
 9. Validate after every meaningful config change:
    - `openclaw config validate`
-   - restart gateway if runtime-sensitive: `openclaw gateway restart`
-   - verify with `openclaw config get <path>` and `openclaw status`
-10. If runtime does not match the default setting, inspect override surfaces before guessing:
+   - `openclaw config get <changed.path>` for each changed value
+   - if the command output says restart is required, or if `openclaw doctor` still reports the old value, treat the fix as unapplied until the gateway restarts
+   - after restart, rerun the exact failing check, usually `openclaw doctor`, and confirm the specific warning disappeared
+   - use `openclaw status` only as supporting evidence; it does not replace the original failing check
+10. For runtime-loaded warning fixes such as bootstrap limits, model runtime routing, plugins, channels, or message behavior:
+   - do not claim fixed from config validity alone
+   - distinguish `written`, `valid`, `runtime-applied`, and `doctor-clean`
+   - if a restart is aborted or interrupted, say so and leave the item in `written/valid but not runtime-proven` state
+11. If runtime does not match the default setting, inspect override surfaces before guessing:
    - `openclaw config get agents.list --json`
-11. Record the real lesson in the correct file.
+12. For stuck `agent:main:main` lanes, do not rely on gateway restart alone:
+   - restart reloads persisted session state from `sessions.json` and transcript `.jsonl` files
+   - first target the exact stuck key with `sessions.abort` and `sessions.reset`, or send `/new` through `sessions.send` when abort/reset does not clear the lane
+   - in PowerShell, generate RPC params with `ConvertTo-Json -Compress`; do not hand-type fragile JSON through `.cmd` shims
+   - verify with `openclaw sessions --active 120 --json` and `openclaw status`; look for a new `sessionId`, cleared active/queued work, and lower current context, not just disappeared checkpoint badges
+   - use targeted hard cleanup of only `~/.openclaw/agents/main/sessions` entries for `agent:main:main` only after stopping the gateway and backing up the session directory
+13. Interpret compaction and plugin evidence carefully:
+   - compaction/checkpoint counts can be persisted history and are not by themselves proof that the current session context is still bloated
+   - distinguish gateway feature/channel plugins from model-provider plugin inventory; verbose provider registration noise does not mean those providers are being called or burning tokens
+   - when removing plugin load noise, prefer an explicit `plugins.allow` plus `plugins.bundledDiscovery="allowlist"` after confirming required providers remain available
+14. For reinstall/restart recovery, reconstruct the minimum return-to-service sequence in order:
+   - runtime and model route sanity
+   - Python / package dependencies
+   - retrieval tools: Obsidian CLI, SQLite, `rg`, `jq`
+   - skill visibility and plugin-symlink warnings
+   - cron/scheduled job survival and next-run proof
+   - finance-chain smoke proof before acting on stale artifacts
+   - continuity/control-surface updates for any changed job IDs, tool paths, or trust limits
+15. Record the real lesson in the correct file.
 
 When the issue has a safe non-destructive forward fix:
 - take that step before ending at diagnosis

@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-01T06:48:17.567868+00:00",
+  "generated_at_utc": "2026-05-07T22:14:01Z",
   "status": "ok",
   "stale_after_hours": 168,
   "expected_update_window": "Update after any portfolio model change, rebalance, risk rule revision, entry-band refresh, or tracked-universe policy change.",
-  "last_updated_by": "Veritas - architecture tightening pass",
+  "last_updated_by": "Veritas - WF38 closeout and WF40 hardening prep",
   "manual_review_policy": "This file is the machine-readable portfolio and execution config spine. Review it whenever the note-layer portfolio, risk rules, tracked universe, entry-band semantics, or workflow-state semantics change.",
   "manual_review_fields": [
     {
@@ -35,8 +35,7 @@
       "source_of_truth": [
         "02. Markets/Watchlist.md",
         "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-        "03. Portfolio/Deployment Trigger Sheet.md",
-        "04. Research/Coverage Universe.md"
+        "03. Portfolio/Deployment Trigger Sheet.md"
       ]
     },
     {
@@ -73,12 +72,12 @@
   "portfolio": {
     "posture": "Neutral to Moderately Offensive",
     "regime": "Late-cycle, restrictive, resilient, selective risk-on",
-    "cash": 20,
+    "cash": 10,
     "capital": "$5k-$10k",
     "core": [
       {
         "ticker": "MSFT",
-        "weight": 12,
+        "weight": 10,
         "thesis": "Highest-quality AI-enabled platform with real earnings power",
         "entry": "Accumulate only on disciplined pullbacks or post-earnings revalidation",
         "stop": "Reassess on major earnings deterioration or AI monetization disappointment",
@@ -86,7 +85,7 @@
       },
       {
         "ticker": "JPM",
-        "weight": 12,
+        "weight": 14,
         "thesis": "High-quality financial aligned with macro, valuation, and large-cap strength",
         "entry": "Add on constructive chart support and stable credit backdrop",
         "stop": "Reassess if credit, curve, or macro stress worsens materially",
@@ -94,7 +93,7 @@
       },
       {
         "ticker": "GOOG",
-        "weight": 12,
+        "weight": 10,
         "thesis": "Large-cap quality with AI optionality and better valuation support than some peers",
         "entry": "Only on technical stability and post-earnings revalidation",
         "stop": "Reassess if core business weakens or AI execution lags",
@@ -102,7 +101,7 @@
       },
       {
         "ticker": "XOM",
-        "weight": 8,
+        "weight": 10,
         "thesis": "Cash-generative macro and geopolitical energy exposure",
         "entry": "Only after oil structure and post-earnings evidence requalify the setup",
         "stop": "Reassess if oil structure and demand thesis break",
@@ -110,7 +109,7 @@
       },
       {
         "ticker": "LMT",
-        "weight": 8,
+        "weight": 10,
         "thesis": "Durable defense demand and geopolitical relevance",
         "entry": "Pullback or support-based accumulation only after a fresh post-earnings base exists",
         "stop": "Reassess if defense thesis weakens or execution slips materially",
@@ -118,11 +117,11 @@
       },
       {
         "ticker": "BRK.B",
-        "weight": 10,
+        "weight": 12,
         "thesis": "Diversified quality ballast and capital-allocation vehicle",
         "entry": "Market pullback or fair accumulation zone only after structure repair",
         "stop": "Reassess if superior capital deployment opportunities dominate elsewhere",
-        "sector": "Financials"
+        "sector": "Diversified Quality"
       }
     ],
     "tactical": [
@@ -136,11 +135,19 @@
       },
       {
         "ticker": "NVDA",
-        "weight": 6,
+        "weight": 5,
         "thesis": "AI leader with unmatched earnings power, but requires crowding discipline",
         "entry": "Only on controlled pullback entry, never on vertical chasing",
         "stop": "Reassess on failed momentum or excessive valuation stretch",
         "sector": "Tech"
+      },
+      {
+        "ticker": "GS",
+        "weight": 7,
+        "thesis": "Capital-markets-sensitive financial; useful tactical secondary to JPM when both setups are live",
+        "entry": "Only on disciplined pullbacks into the written band; no chase while price remains extended above band",
+        "stop": "Reassess if chart loses the 50-day or macro credit conditions deteriorate",
+        "sector": "Financials"
       }
     ],
     "speculative": [
@@ -199,7 +206,7 @@
       "portfolio_role": "core",
       "sector": "Financials",
       "sizing_tier": "Tier 1",
-      "workflow_state": "ALMOST",
+      "workflow_state": "PROMOTION REVIEW",
       "daily_technical_priority": true,
       "entry_policy": "band_defined",
       "earnings_policy": "normal",
@@ -275,7 +282,7 @@
       "yfinance": "BRK-B",
       "coverage_tier": "daily",
       "portfolio_role": "core",
-      "sector": "Financials",
+      "sector": "Diversified Quality",
       "sizing_tier": "Tier 1",
       "workflow_state": "REPAIR",
       "daily_technical_priority": true,
@@ -392,12 +399,12 @@
       "sizing_tier": "Tier 2",
       "workflow_state": "WATCH",
       "daily_technical_priority": false,
-      "entry_policy": "underdefined",
+      "entry_policy": "band_defined",
       "earnings_policy": "normal",
       "repair_mode": false,
       "thesis_status": "under active review",
       "macro_fit": "Useful industrial capex and infrastructure proxy if regime holds",
-      "trigger_condition": "Needs explicit entry band and stop before becoming deployable",
+      "trigger_condition": "Pullback into 811.65 to 866.48 with support holding; remain watch-lane only until explicit promotion and sizing review",
       "coverage_lane": "watch",
       "last_earnings_date": "2026-04-30",
       "post_earnings_review_date": null,
@@ -548,12 +555,12 @@
       "sizing_tier": "Tier 1 only after valuation / setup review",
       "workflow_state": "WATCH",
       "daily_technical_priority": false,
-      "entry_policy": "underdefined",
+      "entry_policy": "band_defined",
       "earnings_policy": "normal",
       "repair_mode": false,
       "thesis_status": "Workflow 7 Healthcare watch-lane pilot \u2014 preferred sector leader over JNJ for first sleeve monitor",
       "macro_fit": "Defensive-growth healthcare leader and useful diversifier versus the current tech-cyclical tilt",
-      "trigger_condition": "Watch-lane only for now; define explicit entry band and stop only if later promoted for real capital competition",
+      "trigger_condition": "Pullback into 907.64 to 969.88 with support holding; remain watch-lane only until explicit promotion and sizing review",
       "coverage_lane": "watch"
     }
   },
@@ -575,12 +582,12 @@
       "band_last_set": "2026-05-01"
     },
     "GOOG": {
-      "low": 330.01,
-      "high": 349.37,
-      "stop": 320.33,
-      "label": "330.01\u2013349.37",
-      "stop_label": "320.33",
-      "band_last_set": "2026-05-01"
+      "low": 341.96,
+      "high": 362.08,
+      "stop": 331.9,
+      "label": "341.96\u2013362.08",
+      "stop_label": "331.9",
+      "band_last_set": "2026-05-06"
     },
     "MSFT": {
       "low": 389.64,
@@ -591,12 +598,12 @@
       "band_last_set": "2026-04-28"
     },
     "LMT": {
-      "low": 566.46,
-      "high": 598.98,
-      "stop": 550.2,
-      "label": "566.46\u2013598.98",
-      "stop_label": "550.2",
-      "band_last_set": "2026-05-01"
+      "low": 548.51,
+      "high": 582.27,
+      "stop": 531.63,
+      "label": "548.51\u2013582.27",
+      "stop_label": "531.63",
+      "band_last_set": "2026-05-06"
     },
     "BRK.B": {
       "low": 471.93,
@@ -615,44 +622,44 @@
       "band_last_set": "2026-05-01"
     },
     "NVDA": {
-      "low": 188.03,
-      "high": 199.28,
-      "stop": 182.4,
-      "label": "188.03\u2013199.28",
-      "stop_label": "182.4",
-      "band_last_set": "2026-04-28"
+      "low": 197.01,
+      "high": 210.84,
+      "stop": 190.1,
+      "label": "197.01\u2013210.84",
+      "stop_label": "190.1",
+      "band_last_set": "2026-05-06"
     },
     "AMZN": {
-      "low": 243.59,
-      "high": 258.71,
-      "stop": 236.03,
-      "label": "243.59\u2013258.71",
-      "stop_label": "236.03",
-      "band_last_set": "2026-05-01"
+      "low": 252.27,
+      "high": 267.19,
+      "stop": 244.81,
+      "label": "252.27\u2013267.19",
+      "stop_label": "244.81",
+      "band_last_set": "2026-05-06"
     },
     "VRT": {
-      "low": 295.49,
-      "high": 326.63,
-      "stop": 279.92,
-      "label": "295.49\u2013326.63",
-      "stop_label": "279.92",
-      "band_last_set": "2026-05-01"
+      "low": 306.85,
+      "high": 338.33,
+      "stop": 291.11,
+      "label": "306.85\u2013338.33",
+      "stop_label": "291.11",
+      "band_last_set": "2026-05-06"
     },
     "RTX": {
-      "low": 186.76,
-      "high": 197.48,
-      "stop": 181.4,
-      "label": "186.76\u2013197.48",
-      "stop_label": "181.4",
-      "band_last_set": "2026-05-01"
+      "low": 183.01,
+      "high": 193.23,
+      "stop": 177.91,
+      "label": "183.01\u2013193.23",
+      "stop_label": "177.91",
+      "band_last_set": "2026-05-06"
     },
     "CAT": {
-      "low": 787.41,
-      "high": 840.59,
-      "stop": 760.82,
-      "label": "787.41\u2013840.59",
-      "stop_label": "760.82",
-      "band_last_set": "2026-05-01"
+      "low": 811.65,
+      "high": 866.48,
+      "stop": 784.25,
+      "label": "811.65\u2013866.48",
+      "stop_label": "784.25",
+      "band_last_set": "2026-05-06"
     },
     "GS": {
       "low": 878.71,
@@ -672,12 +679,12 @@
       "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
     },
     "PLTR": {
-      "low": 138.6,
-      "high": 150.44,
-      "stop": 132.68,
-      "label": "138.6\u2013150.44",
-      "stop_label": "132.68",
-      "band_last_set": "2026-05-01",
+      "low": 137.37,
+      "high": 149.53,
+      "stop": 131.29,
+      "label": "137.37\u2013149.53",
+      "stop_label": "131.29",
+      "band_last_set": "2026-05-06",
       "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
     },
     "KTOS": {
@@ -699,12 +706,12 @@
       "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
     },
     "AMD": {
-      "low": 275.92,
-      "high": 311.8,
-      "stop": 257.98,
-      "label": "275.92\u2013311.8",
-      "band_last_set": "2026-05-01",
-      "stop_label": "257.98"
+      "low": 295.33,
+      "high": 342.53,
+      "stop": 271.73,
+      "label": "295.33\u2013342.53",
+      "band_last_set": "2026-05-06",
+      "stop_label": "271.73"
     },
     "LNG": {
       "low": 260.82,
@@ -733,13 +740,13 @@
       "note": "Event/macro-tier name \u2014 no daily technical refresh; band intentionally undefined until thesis matures or coverage upgraded to daily."
     },
     "LLY": {
-      "low": null,
-      "high": null,
-      "stop": null,
-      "label": "Watch-lane healthcare proxy only",
-      "stop_label": "TBD",
-      "band_last_set": "2026-05-02",
-      "note": "Workflow 7 watch-lane pilot \u2014 band intentionally undefined until thesis matures or coverage is upgraded."
+      "low": 907.64,
+      "high": 969.88,
+      "stop": 876.52,
+      "label": "907.64\u2013969.88",
+      "stop_label": "876.52",
+      "band_last_set": "2026-05-06",
+      "note": "Workflow 7 watch-lane pilot \u2014 levels are defined for owner review, but the name remains watch-lane only until explicit promotion and sizing approval."
     }
   },
   "posture_labels": {
@@ -769,7 +776,7 @@
   "risk_thresholds": {
     "max_single_position_normal": 15,
     "max_single_position_stretch": 25,
-    "max_sector_pct": 35,
+    "max_sector_pct": 25,
     "min_cash_pct": 5,
     "drawdown_review_trigger_pct": 6,
     "tier1_normal_range": [
@@ -825,7 +832,8 @@
       "color_key": "red"
     }
   ],
-  "schema_version": {
+  "schema_version": 1,
+  "schema_notes": {
     "coverage_lane": "phase1.0",
     "coverage_lane_added_at": "2026-04-30",
     "coverage_lane_note": "Phase 1 sub-pass 1: coverage_lane added to every tracked_universe entry. Legacy include_in_* booleans retained for backward compatibility until all downstream scripts migrate."

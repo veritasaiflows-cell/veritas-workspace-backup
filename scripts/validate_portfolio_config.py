@@ -13,7 +13,7 @@ TMP = WORKSPACE / "tmp"
 CONFIG_PATH = TMP / "portfolio-config.json"
 OUT_PATH = TMP / "portfolio-config-validation.json"
 
-APPROVED_WORKFLOW_STATES = {"ALMOST", "WATCH", "REPAIR", "BLOCKED", "MACRO"}
+APPROVED_WORKFLOW_STATES = {"ALMOST", "WATCH", "REPAIR", "BLOCKED", "MACRO", "PROMOTION REVIEW", "DEPLOYED"}
 APPROVED_COVERAGE_LANES = {"execution", "watch", "macro", "speculative"}
 APPROVED_COVERAGE_TIERS = {"daily", "event", "macro", "watch"}
 

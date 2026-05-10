@@ -20,6 +20,14 @@ The root should contain only:
 ### Current documented root exceptions
 - `migration-backups/`
   - justified reversible-backup surface
+- `data/`
+  - justified durable derived-data surface for approved append-only state/history datasets such as `data/state-history/`; each subfolder needs its own README and authority boundary
+- `attachments/`
+  - justified while `.obsidian/app.json` still points `attachmentFolderPath` there
+- `migration-review.md`
+  - justified while it still holds active review or retrieval value
+
+`backups/` is not a documented active root entitlement. Treat it as an archive/migration-backup classification decision, not as an approved permanent root folder.
 
 Do **not** create a root `00/` layer.
 Use `Home.md` as the top-level navigator.
@@ -38,6 +46,7 @@ Use `Home.md` as the top-level navigator.
 - `scripts/` -> durable implementation and tooling
 - `skills/` -> reusable AgentSkills only
 - `tmp/` -> machine-generated or staged outputs
+- `data/` -> approved durable append-only derived state/history datasets only; not credentials, runtime config, or canonical portfolio truth
 - entry-band HTML reports now live under `tmp/entry-band-reports/`, not in a root-level generated-documents exception
 
 ## Playbooks structure
@@ -116,9 +125,12 @@ When creating a new file, ask:
 1. Is this canonical human judgment, control doctrine, generated output, or implementation?
 2. Is it active or retired?
 3. Does an existing governed location already fit it?
+4. Does it need a `## Retrieval Notes` block because status, owner, next action, archive posture, or key entities will matter later?
 
 If yes, file it there.
 If no, stop before inventing a new category.
+
+For audits, workflow continuity notes, major research notes, and reusable procedures, follow `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md`. The block is an index aid only; it must not override the body of the note, canonical finance ownership, or owner approval boundaries.
 
 ## Anti-drift rules
 Do not:
@@ -127,6 +139,9 @@ Do not:
 - store durable procedures in random notes when they belong in skills or governed playbooks
 - keep generated artifacts in numbered human-note domains unless the workflow explicitly requires it
 - leave scratch inspection material at root once its purpose has ended
+- create retrieval metadata that says a note is clean, canonical, or approved when the body says otherwise
+- auto-archive a note only from metadata; verify references and ownership first
+- let documented policy drift behind approved runtime exceptions; update the policy text before pretending the structure is fully governed
 
 ## Structure change threshold
 Before making a folder-level reorganization, require at least one of:

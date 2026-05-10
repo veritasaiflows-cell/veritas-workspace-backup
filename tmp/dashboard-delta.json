@@ -1,7 +1,25 @@
 {
-  "generated_at": "2026-05-05 00:50 UTC",
-  "compared_to": "2026-05-04 22:28 UTC",
+  "generated_at": "2026-05-10 03:38 UTC",
+  "compared_to": "2026-05-10 02:25 UTC",
   "first_run": false,
-  "changes": [],
-  "summary": "No material changes"
+  "changes": [
+    {
+      "type": "source_status_change",
+      "source": "Market",
+      "from": "usable_with_caution",
+      "to": "partial"
+    },
+    {
+      "type": "source_status_change",
+      "source": "Credit spreads",
+      "from": "fresh",
+      "to": "partial"
+    },
+    {
+      "type": "exec_freshness_change",
+      "from": "usable_with_caution",
+      "to": "partial"
+    }
+  ],
+  "summary": "2 source status change(s); 1 exec-freshness change(s)"
 }

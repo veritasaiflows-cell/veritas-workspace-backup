@@ -1,23 +1,23 @@
 {
   "window": "morning",
-  "run_id": "20260504T222846Z_morning",
-  "generated_at_utc": "2026-05-04T22:28:46Z",
-  "status": "ok",
+  "run_id": "20260508T130106Z_morning",
+  "generated_at_utc": "2026-05-08T13:01:06Z",
+  "status": "warning",
   "stop_line": false,
   "owner": {
     "entrypoint": "python scripts/run_finance_refresh_chain.py morning",
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-05-04T22:28:17Z",
-    "completed_at_utc": "2026-05-04T22:28:46Z",
-    "duration_seconds": 29
+    "started_at_utc": "2026-05-08T13:00:24Z",
+    "completed_at_utc": "2026-05-08T13:01:06Z",
+    "duration_seconds": 42
   },
   "execution": {
-    "chain_status": "ok",
+    "chain_status": "running",
     "chain_status_raw": "running",
-    "chain_status_normalized": true,
-    "chain_status_reason": "normalized from finalizer self-observation during run_summary_refresh.py before post-summary tail steps",
+    "chain_status_normalized": false,
+    "chain_status_reason": "runtime state not safe to normalize",
     "chain_exit_code": null,
     "recovery_triggered": false,
     "recovery_reason": "",
@@ -27,9 +27,9 @@
   },
   "validation": {
     "acceptance_passed": true,
-    "dashboard_validation_status": "clean",
+    "dashboard_validation_status": "warning",
     "critical": 0,
-    "warning": 0,
+    "warning": 2,
     "info": 0,
     "exec_freshness": "usable_with_caution"
   },
@@ -37,38 +37,64 @@
     "command_center": {
       "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-04T22:28:46Z"
+      "generated_at_utc": "2026-05-08T13:01:05Z"
     },
     "dashboard_validation": {
-      "status": "ok",
+      "status": "partial",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-04T22:28:46Z"
+      "generated_at_utc": "2026-05-08T13:01:05.736661+00:00"
     },
     "dashboard_acceptance": {
       "status": "ok",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-04T22:28:46Z"
+      "generated_at_utc": "2026-05-08T13:01:05Z"
     },
     "workbook_exports": {
-      "status": "ok",
+      "status": "partial",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-04T22:28:46.652026+00:00"
+      "generated_at_utc": "2026-05-08T13:01:05.837577+00:00"
     },
     "premarket_snapshot": {
       "status": "ok",
       "path": "tmp/premarket-snapshot.json",
-      "generated_at_utc": "2026-05-04T22:28:46.737428+00:00"
+      "generated_at_utc": "2026-05-08T13:01:05.915803+00:00"
+    },
+    "premarket_brief_input": {
+      "status": "ok",
+      "path": "tmp/premarket-brief-input.json",
+      "generated_at_utc": "2026-05-08T13:01:06Z"
     }
   },
-  "warnings": [],
+  "warnings": [
+    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+    "Policy expectations still rely on manual target-range constants and require explicit review."
+  ],
   "blockers": [],
+  "operator_action_required": [
+    "Review fallback/manual dependencies before treating the window as presentation-ready.",
+    "Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action.",
+    "Ask Veritas to generate and lint the review-only pre-market commercial brief from the packet, or inspect the packet JSON directly."
+  ],
+  "next_action": "Ask Veritas to generate and lint the review-only pre-market commercial brief from the packet, or inspect the packet JSON directly.",
   "fallback_state": {
-    "used": false,
-    "reason": ""
+    "used": true,
+    "reason": "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.; Policy expectations still rely on manual target-range constants and require explicit review."
+  },
+  "review_only_brief": {
+    "enabled": true,
+    "packet_path": "tmp/premarket-brief-input.json",
+    "packet_ready": true,
+    "generated_at_utc": "2026-05-08T13:01:06Z",
+    "review_output_path": "01. Dashboards/Review-Only Briefs/Pre-Market/2026-05-08.md",
+    "target_note": "01. Dashboards/Pre-Market Brief/2026-05-08.md",
+    "target_posture": "commercial_review_brief",
+    "delivery_mode": "manual_review_only",
+    "communication": "The scheduled chain now auto-generates the review packet. Drafts belong in the non-canonical Review-Only Briefs folder; no chat delivery or canonical note write is configured for the commercial brief yet.",
+    "operator_next_action": "Ask Veritas to generate and lint the review-only pre-market commercial brief from the packet, or inspect the packet JSON directly."
   },
   "downstream": {
-    "command_center_badge": "ok",
-    "workbook_trust_grade": "clean",
+    "command_center_badge": "warn",
+    "workbook_trust_grade": "warning",
     "presentation_allowed": false,
     "canonical_note_mutation_allowed": false,
     "canonical_note_mutation_reason": "scheduled windows remain fail-closed for canonical note mutation in v1"

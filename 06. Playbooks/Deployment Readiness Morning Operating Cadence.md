@@ -94,4 +94,4 @@ The machine surface may **not**:
 
 ## Handoff rule
 
-Helper lanes may prepare evidence or contradiction packets, but the main session remains the only owner that can integrate those packets into the canonical Trigger Sheet judgment.
+Helper lanes may prepare evidence or contradiction packets, but only the main session may reconcile those packets into a proposed Trigger Sheet update against the workspace-file truth layer. The durable Trigger Sheet remains a file-owned decision surface; chat is only a reconciliation interface.

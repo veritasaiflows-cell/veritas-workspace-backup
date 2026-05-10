@@ -13,7 +13,7 @@ Coverage via yfinance (no API key required):
   ES=F   S&P 500 futures snapshot
   NQ=F   Nasdaq 100 futures snapshot
   XLI/XLF/XLK/XLE  sector posture snapshot
-  ETN/JPM/NVDA  top actionable-name snapshot
+  active-board equity snapshot derived from trigger-sheet / portfolio-config
 
 Optional better macro source via FRED API:
   DGS2   2Y Treasury yield
@@ -48,6 +48,7 @@ from zoneinfo import ZoneInfo
 
 import yfinance as yf
 
+from board_state_contract import resolve_market_snapshot_targets
 from market_data_utils import atomic_write_json, fetch_fred_latest, load_json_artifact
 
 WORKSPACE = Path(__file__).resolve().parents[1]
@@ -55,7 +56,10 @@ OUT_PATH = WORKSPACE / "tmp" / "market-state.json"
 POLICY_PATH = WORKSPACE / "tmp" / "policy-expectations.json"
 CREDIT_PATH = WORKSPACE / "tmp" / "credit-spreads.json"
 BREADTH_PATH = WORKSPACE / "tmp" / "breadth-state.json"
+TRIGGER_HINT_PATH = WORKSPACE / "tmp" / "trigger-sheet.json"
+PORTFOLIO_CONFIG_PATH = WORKSPACE / "tmp" / "portfolio-config.json"
 STALE_AFTER_HOURS = 24
+SCHEMA_VERSION = 1
 EXPECTED_UPDATE_WINDOW = "Refresh before weekly intelligence, weekday executive briefs, deployment review, trigger-sheet generation, and any macro-sensitive portfolio review."
 EASTERN = ZoneInfo("America/New_York")
 PREMARKET_CUTOFF = time(9, 30)
@@ -81,13 +85,6 @@ SECTOR_FIELDS = [
     ("xlk", "XLK", "Technology"),
     ("xle", "XLE", "Energy"),
 ]
-
-ACTIONABLE_FIELDS = [
-    ("ETN", "ETN", "ETN"),
-    ("JPM", "JPM", "JPM"),
-    ("NVDA", "NVDA", "NVDA"),
-]
-
 
 def get_path(data: Any, dotted_path: str) -> Any:
     cur = data
@@ -352,13 +349,22 @@ def main() -> None:
         sectors[key] = {"ticker": ticker, "label": label, **snapshot}
         print("ok" if snapshot.get("available") else "FAILED")
 
+    actionable_contract = resolve_market_snapshot_targets(
+        trigger_hint=load_json_artifact(TRIGGER_HINT_PATH),
+        portfolio_config=load_json_artifact(PORTFOLIO_CONFIG_PATH),
+    )
     actionable: dict[str, dict[str, Any]] = {}
     print("  Actionable-name snapshots...")
-    for key, ticker, label in ACTIONABLE_FIELDS:
+    for target in actionable_contract.get("targets", []) or []:
+        key = target["key"]
+        ticker = target["ticker"]
+        label = target["label"]
         print(f"    {label} ({ticker})...", end=" ", flush=True)
         snapshot = fetch_snapshot(ticker)
         actionable[key] = {"ticker": ticker, "label": label, **snapshot}
         print("ok" if snapshot.get("available") else "FAILED")
+    if not actionable:
+        print("    No active-board quote targets resolved.")
 
     spx, spx_date = results["spx"]
     vix, vix_date = results["vix"]
@@ -491,6 +497,7 @@ def main() -> None:
             sector["relative_label"] = "roughly in line with SPY"
 
     state: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
         "generated_at_utc": utc_now(),
         "status": status,
         "stale_after_hours": STALE_AFTER_HOURS,
@@ -594,6 +601,11 @@ def main() -> None:
             },
             "futures": futures,
             "sectors": sectors,
+            "actionable_contract": {
+                "source": actionable_contract.get("source"),
+                "target_count": actionable_contract.get("target_count", 0),
+                "targets": [target.get("key") for target in actionable_contract.get("targets", []) if isinstance(target, dict)],
+            },
             "actionable": actionable,
         },
     }

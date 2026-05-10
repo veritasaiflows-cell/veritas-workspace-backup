@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-06T23:00:00Z",
+  "ticker": "AMZN",
+  "source_surface": "02. Markets/Watchlist.md",
+  "consumer_posture": "review_only",
+  "canonical_mutation_allowed": false,
+  "deployment_authority": false,
+  "watchlist_entitlement": false,
+  "thesis_evidence_source": "research_note_layer",
+  "canonical_trigger_source": "03. Portfolio/Deployment Trigger Sheet.md",
+  "canonical_portfolio_source": "03. Portfolio/Portfolio Snapshot.md",
+  "regime_score_total": 16,
+  "regime_score_rank": 7,
+  "current_watch_state": "Watch",
+  "current_trigger_state": "not on active deployment board",
+  "entry_band_defined": false,
+  "invalidation_defined": false,
+  "sizing_tier_defined": false,
+  "catalyst_window_status": "clear",
+  "sector": "Large-cap Quality",
+  "correlated_sleeve": "Tech / AI adjacency",
+  "sector_cap_check": {
+    "status": "warning",
+    "reason": "Technology / AI Infrastructure draft sleeve is already 37% vs 35% cap; expansion requires sequencing or offset elsewhere."
+  },
+  "five_gate_status": {
+    "thesis_gate": "pass",
+    "macro_and_regime_gate": "pass",
+    "technical_gate": "missing",
+    "catalyst_gate": "pass",
+    "risk_and_sizing_gate": "missing"
+  },
+  "missing_gates": [
+    "entry band",
+    "invalidation",
+    "sizing tier"
+  ],
+  "promotion_blockers": [
+    "No canonical entry band / invalidation defined yet.",
+    "Sector-cap expansion would need sequencing or offset elsewhere.",
+    "Watchlist status alone does not grant deployment entitlement."
+  ],
+  "promotion_candidate": false,
+  "promotion_review_required": true,
+  "output_class": "needs_research",
+  "notes": [
+    "AMZN is a quality expansion candidate outside the current almost-deployable six, but it is still underdefined technically.",
+    "Use this packet as a review object only; do not treat it as a promotion decision."
+  ],
+  "proposed_lane": "execution",
+  "thesis_exists": true,
+  "levels_exist": false,
+  "timing_posture": "clean",
+  "portfolio_competition_assessed": true,
+  "sector_cap_checked": true,
+  "correlated_sleeve_checked": true
+}

@@ -1,0 +1,185 @@
+[
+  {
+    "event_title": "Rates / credit / policy backdrop remains stable versus the last Sunday finance refresh",
+    "event_datetime": "2026-05-06T06:30:21-07:00",
+    "affected": [
+      "JPM",
+      "RATES_CREDIT_POLICY"
+    ],
+    "source_tier": "tier_1_primary",
+    "event_class": "macro_event",
+    "verification_status": "confirmed",
+    "event_summary": "The FRED-backed macro regime and the latest weekly review skeleton both still show a restrictive-pause / benign-credit backdrop, but the signal is unchanged enough to stay digest-only rather than pretending there is a fresh thesis or deployment delta.",
+    "tags": [
+      "macro",
+      "policy",
+      "credit",
+      "background_noise"
+    ],
+    "stale_canonical_note": false,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": false,
+    "primary_evidence": [
+      {
+        "title": "Macro regime snapshot as of 2026-05-06",
+        "source": "tmp/macro-regime.json (FRED / Treasury backed)",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": "2026-05-06T13:01:35+00:00",
+        "excerpt": "Restrictive pause remains dominant; credit is benign; breadth is recovering.",
+        "retrieved_at": "2026-05-06T08:05:00-07:00"
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "Weekly review skeleton deployment summary",
+        "source": "tmp/weekly-review-skeleton.json",
+        "source_tier": "tier_2_trusted",
+        "url": null,
+        "published_at": "2026-05-06T06:30:21+00:00",
+        "excerpt": "JPM remains almost deployable; no fresh deployable-state unlock is visible from the weekly synthesis alone.",
+        "retrieved_at": "2026-05-06T08:05:00-07:00"
+      }
+    ],
+    "contradiction_notes": [],
+    "open_questions": [
+      "Does a later company-specific JPM event need to replace this weekly context object before any thesis-review route is useful?"
+    ],
+    "manual_notes": "Sunday packet digest-only macro context; do not treat this as a new deployment signal."
+  },
+  {
+    "event_title": "AMD Q1 2026 AI infrastructure read-through remains relevant for the pilot-name weekly packet",
+    "event_datetime": "2026-05-05T17:40:00-07:00",
+    "affected": [
+      "NVDA",
+      "MSFT",
+      "GOOG",
+      "ETN",
+      "AI_INFRASTRUCTURE"
+    ],
+    "source_tier": "tier_1_primary",
+    "event_class": "sector_readthrough",
+    "verification_status": "confirmed",
+    "event_summary": "AMD's primary-source-confirmed Q1 print still strengthens the AI infrastructure demand backdrop for the narrow pilot set, but it remains a review-only read-through rather than permission to promote any pilot name automatically.",
+    "tags": [
+      "earnings",
+      "sector_readthrough",
+      "ai_infrastructure"
+    ],
+    "stale_canonical_note": false,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": false,
+    "primary_evidence": [
+      {
+        "title": "AMD Q1 2026 earnings release",
+        "source": "AMD IR",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": "2026-05-05T13:00:00-07:00",
+        "excerpt": "Primary-source release confirmed strong data-center and AI demand.",
+        "retrieved_at": "2026-05-05T18:35:00-07:00"
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "AMD post-earnings scorecard synthesis",
+        "source": "Workspace review pass",
+        "source_tier": "tier_2_trusted",
+        "url": null,
+        "published_at": "2026-05-05T18:40:00-07:00",
+        "excerpt": "Carry this only as reviewed summary context, not as a substitute for the primary release.",
+        "retrieved_at": "2026-05-05T18:40:00-07:00"
+      }
+    ],
+    "contradiction_notes": [],
+    "open_questions": [
+      "Which pilot-name surface should own this read-through first after the Sunday packet: thesis-review queue, weekly intelligence, or both?"
+    ],
+    "manual_notes": "Sunday packet route candidate for the narrow pilot set; no canonical mutation allowed."
+  },
+  {
+    "event_title": "NVDA timing confirmation still needs clean primary-source capture before the next decision-critical window",
+    "event_datetime": "2026-05-06T07:00:00-07:00",
+    "affected": [
+      "NVDA"
+    ],
+    "source_tier": "tier_2_trusted",
+    "event_class": "company_event",
+    "verification_status": "unresolved",
+    "event_summary": "The workspace still treats NVDA timing as caution-worthy because provider-level timing exists but the primary investor-relations confirmation path is not captured cleanly enough for decision-grade use.",
+    "tags": [
+      "earnings_date",
+      "timing_confirmation"
+    ],
+    "stale_canonical_note": true,
+    "rumor_heavy": false,
+    "requires_primary_confirmation": true,
+    "primary_evidence": [
+      {
+        "title": "NVDA investor-relations calendar placeholder",
+        "source": "NVDA IR",
+        "source_tier": "tier_1_primary",
+        "url": null,
+        "published_at": null,
+        "excerpt": "Primary confirmation still needs a clean capture path.",
+        "retrieved_at": "2026-05-06T07:00:00-07:00"
+      }
+    ],
+    "secondary_evidence": [
+      {
+        "title": "Trusted market calendar update",
+        "source": "Trusted financial media",
+        "source_tier": "tier_2_trusted",
+        "url": null,
+        "published_at": "2026-05-05T12:00:00-07:00",
+        "excerpt": "Provider-level timing signal exists, but the primary confirmation path remains incomplete.",
+        "retrieved_at": "2026-05-06T07:00:00-07:00"
+      }
+    ],
+    "contradiction_notes": [
+      "Provider-level timing is usable for watchfulness but still not enough for clean canonical certainty."
+    ],
+    "open_questions": [
+      "Can NVDA IR timing confirmation be captured directly before the next decision-critical window?"
+    ],
+    "manual_notes": "Carry this unresolved object through the Sunday lane on purpose; do not over-promote it."
+  },
+  {
+    "event_title": "Oil / Hormuz verification object remains open because no attributable confirmation was captured in the weekly pass",
+    "event_datetime": "2026-05-06T07:05:00-07:00",
+    "affected": [
+      "OIL",
+      "HORMUZ"
+    ],
+    "source_tier": "rumor_unverified",
+    "event_class": "geopolitical_event",
+    "verification_status": "unresolved",
+    "event_summary": "A blocked-source energy / shipping risk chatter cluster was seen during manual review, but no Tier 1 or Tier 2 attributable source chain was captured, so this must remain an explicit verification object rather than a routed claim.",
+    "tags": [
+      "oil_shock"
+    ],
+    "stale_canonical_note": false,
+    "rumor_heavy": true,
+    "requires_primary_confirmation": true,
+    "primary_evidence": [],
+    "secondary_evidence": [
+      {
+        "title": "Blocked-source chatter cluster (review only; not approved for truth)",
+        "source": "Manual blocked-source review",
+        "source_tier": "rumor_unverified",
+        "url": null,
+        "published_at": null,
+        "excerpt": "Weekend energy / shipping chatter lacked attributable confirmation and was intentionally not promoted.",
+        "retrieved_at": "2026-05-06T07:05:00-07:00"
+      }
+    ],
+    "contradiction_notes": [
+      "No Tier 1 or Tier 2 attributable source chain was captured in this pass."
+    ],
+    "open_questions": [
+      "Can any primary, regulator, exchange, or trusted-wire confirmation be found before this leaves verification-only status?",
+      "Does any approved-source evidence emerge that makes this materially relevant to active finance surfaces?"
+    ],
+    "manual_notes": "Intentionally outside canonical truth. This object exists to prove the Sunday lane keeps fast-moving geopolitical risk open instead of promoting blocked-source noise."
+  }
+]

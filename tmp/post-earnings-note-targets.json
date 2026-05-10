@@ -1,89 +1,32 @@
 {
-  "generated_at_utc": "2026-05-05T00:50:06.093501+00:00",
+  "generated_at_utc": "2026-05-10T03:38:39.162675+00:00",
   "status": "partial",
   "stale_after_hours": 24,
   "expected_update_window": "Run after post_earnings_prep.py and before any post-earnings note edits.",
-  "last_trading_day": "2026-05-04",
+  "last_trading_day": "2026-05-08",
   "source_last_trading_day": {
-    "trigger": "2026-05-04",
-    "technical": "2026-05-04",
-    "deployment": "2026-05-04",
-    "market_state": "2026-05-04",
+    "trigger": "2026-05-08",
+    "technical": "2026-05-08",
+    "deployment": "2026-05-08",
+    "market_state": "2026-05-08",
     "earnings": null
   },
   "source": {
     "prep_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\post-earnings-prep.json",
-    "generated_at_utc": "2026-05-05T00:50:06.043007+00:00",
+    "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
     "age_hours": 0.0,
     "is_stale": false,
     "status": "partial"
   },
   "warnings": [
+    "2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+    "Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+    "Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+    "Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+    "Only 7/8 live fields populated.",
     "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
-    "Market-state sources are not aligned on one trading day: 2y",
     "Non-blocking watchlist/date mismatches remain outside the active timing window."
   ],
-  "impacted_notes": {
-    "05. Intelligence/Event Calendar.md": [
-      "ETN"
-    ],
-    "05. Intelligence/Weekly Intelligence Brief.md": [
-      "ETN"
-    ],
-    "03. Portfolio/Technical Entry and Invalidation Sheet.md": [
-      "ETN"
-    ],
-    "03. Portfolio/Deployment Trigger Sheet.md": [
-      "ETN"
-    ],
-    "03. Portfolio/Portfolio Snapshot.md": [
-      "ETN"
-    ]
-  },
-  "workflows": [
-    {
-      "ticker": "ETN",
-      "priority": "critical",
-      "stage": "imminent",
-      "next_earnings_date": "2026-05-05",
-      "action_state": "ALMOST DEPLOYABLE",
-      "candidate_updates": [
-        {
-          "path": "05. Intelligence/Event Calendar.md",
-          "urgency": "high",
-          "when_rule": "always for material tracked earnings",
-          "intent": "mark reported status, preserve concise what happened / what it means / what we do now line, and clear or roll the catalyst forward",
-          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
-        },
-        {
-          "path": "05. Intelligence/Weekly Intelligence Brief.md",
-          "urgency": "high",
-          "when_rule": "when the report changes company thesis, sector read-through, or near-term positioning",
-          "intent": "update earnings radar and recommended-actions sections with decision-grade interpretation",
-          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
-        },
-        {
-          "path": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-          "urgency": "high",
-          "when_rule": "when price structure, blocker status, or invalidation logic changed materially after the report",
-          "intent": "rebuild entry zone, stop, and stance only if the earnings reaction materially changed the setup",
-          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
-        },
-        {
-          "path": "03. Portfolio/Deployment Trigger Sheet.md",
-          "urgency": "high",
-          "when_rule": "when action state, blocker status, or trigger logic changed",
-          "intent": "promote, demote, unblock, or keep blocked with explicit why",
-          "rationale": "ETN: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
-        },
-        {
-          "path": "03. Portfolio/Portfolio Snapshot.md",
-          "urgency": "high",
-          "when_rule": "when the report changes whether a draft holding remains justified, suspended, or under review",
-          "intent": "update posture, status line, and review action rather than churning the whole snapshot",
-          "rationale": "ETN: update only if the report changes whether the draft slot remains justified, suspended, or under review"
-        }
-      ]
-    }
-  ]
+  "impacted_notes": {},
+  "workflows": []
 }

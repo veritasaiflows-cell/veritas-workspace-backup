@@ -1,7 +1,7 @@
 {
   "ticker": "JPM",
   "name": "JPMorgan Chase & Co.",
-  "asof": "2026-05-04",
+  "asof": "2026-05-09",
   "currency": "USD",
   "interval": "1mo",
   "period": {
@@ -964,10 +964,10 @@
     {
       "d": "2026-05",
       "o": 313.95,
-      "h": 316.08,
-      "l": 311.83,
-      "c": 312.47,
-      "v": 6.13
+      "h": 316.3,
+      "l": 300.5,
+      "c": 302.1,
+      "v": 55.59
     }
   ],
   "macro_regimes": {
@@ -1032,11 +1032,27 @@
     "label": "306.82–318.12"
   },
   "current_quote": {
-    "close": 307.65,
-    "ma20": 310.26,
-    "ma50": 298.61,
-    "ma200": 302.36,
-    "data_date": "2026-05-04"
+    "close": 302.1,
+    "ma20": 310.61,
+    "ma50": 299.3,
+    "ma200": 302.76,
+    "data_date": "2026-05-08"
   },
-  "generated_at": "2026-05-05T00:49:59+00:00"
+  "band_engine_proposal": {
+    "engine_version": "keltner-ma-v1",
+    "method": "DUAL_MA_RECLAIM",
+    "type": "VAULT_RECLAIM",
+    "status": "RECLAIM_ONLY",
+    "trend_stack": "BELOW_ALL_MAS",
+    "suggested_low": 304.58,
+    "suggested_high": 312.27,
+    "suggested_stop": 298.43,
+    "sma_envelope_low": 289.35,
+    "sma_envelope_high": 319.81,
+    "earnings_state": "CLEAR",
+    "band_confidence": 2,
+    "needs_review": true,
+    "canonical_apply_eligible": false
+  },
+  "generated_at": "2026-05-10T03:38:33+00:00"
 }

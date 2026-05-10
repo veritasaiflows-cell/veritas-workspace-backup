@@ -3,11 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from generate_dashboard import TMP, build_payload, load_sources, write_json
 
 OUT_PATH = TMP / "dashboard-validation.json"
+SCHEMA_VERSION = 1
 
 
 def main() -> int:
@@ -21,7 +23,9 @@ def main() -> int:
     validation = payload["validation"]
     trust = payload["trust"]
 
+    source_freshness = payload.get("source_freshness") or trust.get("source_freshness") or {}
     print(f"overall_exec_status: {payload['exec_freshness']}")
+    print(f"source_freshness: {source_freshness.get('overall_classification', 'unknown')} / {source_freshness.get('trust_level', 'unknown')}")
     print(f"integrity: {validation['summary']['critical']} critical, {validation['summary']['warning']} warning")
     print("source_statuses:")
     for source in trust["sources"]:
@@ -40,7 +44,14 @@ def main() -> int:
         print("warnings:\n  - none")
 
     if args.write:
-        write_json(OUT_PATH, validation)
+        validation_output = {
+            "schema_version": SCHEMA_VERSION,
+            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+            "stale_after_hours": 8,
+            "source_freshness": source_freshness,
+            **validation,
+        }
+        write_json(OUT_PATH, validation_output)
         print(f"wrote {OUT_PATH}")
 
     if validation["summary"]["critical"]:

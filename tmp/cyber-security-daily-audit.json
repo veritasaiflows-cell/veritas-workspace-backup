@@ -1,0 +1,644 @@
+{
+  "generated_at_utc": "2026-05-10T01:47:00Z",
+  "status": "warning",
+  "stop_line": false,
+  "operator_action_required": true,
+  "next_action": "Keep `channels` empty unless channel expansion is intentional.",
+  "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
+  "openclaw_home": "C:\\Users\\Veritas\\.openclaw",
+  "trust_boundary": {
+    "mode": "read_only_audit",
+    "canonical_note_mutation_allowed": false,
+    "config_mutation_allowed": false,
+    "external_delivery": "none"
+  },
+  "summary": {
+    "critical": 0,
+    "warning": 10,
+    "info": 9
+  },
+  "checks": [
+    {
+      "id": "config_posture",
+      "status": "warning",
+      "details": {
+        "model_primary": "openai-codex/gpt-5.5",
+        "agent_runtime_id": null,
+        "plugins_allow": [],
+        "channels_enabled": [
+          "telegram"
+        ],
+        "owner_allow_from": [],
+        "gateway_bind": "loopback"
+      }
+    },
+    {
+      "id": "exec_approvals_posture",
+      "status": "info",
+      "details": {
+        "exists": true,
+        "allowlist_count": 0,
+        "risky_patterns": []
+      }
+    },
+    {
+      "id": "openclaw_security_audit_basic",
+      "status": "warning",
+      "details": {
+        "returncode": 0,
+        "timed_out": false,
+        "summary": {
+          "critical": 0,
+          "warn": 2,
+          "info": 1
+        },
+        "deep": null,
+        "stdout_excerpt": "{\n  \"ts\": 1778377537393,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 2,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway.\",\n      \"remediation\": \"If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\\\"all\\\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.\"\n    }\n  ],\n  \"secretDiagnostics\": []\n}\n",
+        "stderr_excerpt": ""
+      }
+    },
+    {
+      "id": "openclaw_security_audit_deep",
+      "status": "warning",
+      "details": {
+        "returncode": 0,
+        "timed_out": false,
+        "summary": {
+          "critical": 0,
+          "warn": 2,
+          "info": 1
+        },
+        "deep": {
+          "gateway": {
+            "attempted": true,
+            "url": "ws://127.0.0.1:18789",
+            "ok": true,
+            "error": null,
+            "close": null
+          }
+        },
+        "stdout_excerpt": "{\n  \"ts\": 1778377548294,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 2,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway.\",\n      \"remediation\": \"If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\\\"all\\\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.\"\n    }\n  ],\n  \"deep\": {\n    \"gateway\": {\n      \"attempted\": true,\n      \"url\": \"ws://127.0.0.1:18789\",\n      \"ok\": true,\n      \"error\": null,\n      \"close\": null\n    }\n  },\n  \"secretDiagnostics\": []\n}\n",
+        "stderr_excerpt": "[skills] failed to create plugin skill symlink \"C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation\" \u00e2\u2020\u2019 \"C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation\": Error: EPERM: operation not permitted, symlink 'C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation' -> 'C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation'\n"
+      }
+    },
+    {
+      "id": "skills_inventory",
+      "status": "info",
+      "details": {
+        "returncode": 0,
+        "summary": {
+          "total": 78,
+          "eligible": 34,
+          "modelVisible": 34,
+          "commandVisible": 33,
+          "disabled": 44,
+          "blocked": 0,
+          "agentFiltered": 0,
+          "notInjected": 0,
+          "missingRequirements": 0
+        },
+        "eligible": [
+          "automation-hardening-manager",
+          "browser-automation",
+          "code-review-auditor",
+          "cron-automation-manager",
+          "disciplined-implementation",
+          "github",
+          "healthcheck",
+          "ic-swarm-orchestrator",
+          "memory-continuity-manager",
+          "node-connect",
+          "obsidian",
+          "openclaw-operator",
+          "openclaw-troubleshooter",
+          "operating-procedure-repository-manager",
+          "project-continuity-manager",
+          "safe-refactor-planner",
+          "skill-creator",
+          "SQLite",
+          "taskflow",
+          "taskflow-inbox-triage",
+          "technical-chart-pass",
+          "veritas-fundamental-pass",
+          "veritas-investment-deck",
+          "veritas-macro-pass",
+          "veritas-pdf-brief",
+          "veritas-portfolio-update",
+          "veritas-positioning-pass",
+          "veritas-post-earnings-sync",
+          "veritas-self-improvement",
+          "veritas-technical-pass",
+          "veritas-weekly-brief",
+          "weather",
+          "workspace-governor",
+          "workspace-qa-pass"
+        ]
+      }
+    },
+    {
+      "id": "doctor_posture",
+      "status": "warning",
+      "details": {
+        "returncode": null,
+        "timed_out": true,
+        "parsed": {
+          "orphan_transcripts": null,
+          "codex_runtime_warning": false,
+          "session_lock_stale": false,
+          "raw_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                  \u00f0\u0178\u00a6\u017e OPENCLAW \u00f0\u0178\u00a6\u017e                    \n \nT  OpenClaw doctor\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - messages.groupChat.visibleReplies is set to \"message_tool\", but the   |\n|    message tool is unavailable for default tool policy; OpenClaw falls   |\n|    back to automatic visible replies, so normal replies may post to the  |\n|    source chat. Enable the message tool or set                           |\n|    messages.groupChat.visibleReplies to \"automatic\".                     |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ------------------------------------------------------+\n|                                                                        |\n|  - channels.telegram: default account has no available bot token, and  |\n|    TELEGRAM_BOT_TOKEN is absent in this doctor environment. After      |\n|    migration, verify TELEGRAM_BOT_TOKEN is present in the state-dir    |\n|    .env or configure channels.telegram.botToken /                      |\n|    channels.telegram.accounts.default.botToken as a SecretRef.         |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - `openai-codex/*` model refs use the Codex OAuth route through         |\n|    OpenClaw PI.                                                          |\n|  - agents.defaults.model.primary: openai-codex/gpt-5.5 is preserved;     |\n|    current runtime is \"pi\".                                              |\n|  - agents.defaults.models.openai-codex/gpt-5.5: openai-codex/gpt-5.5 is  |\n|    preserved.                                                            |\n|  - `openclaw doctor --fix` preserves these routes because they are the   |\n|    working Codex OAuth route through OpenClaw PI.                        |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Command owner ---------------------------------------------------------+\n|                                                                         |\n|  No command owner is configured.                                        |\n|  A command owner is the human operator account allowed to run           |\n|  owner-only commands and approve dangerous actions, including           |\n|  /diagnostics, /export-trajectory, /config, and exec approvals.         |\n|  DM pairing only lets someone talk to the bot; it does not make that    |\n|  sender the owner for privileged commands.                              |\n|  Fix: set commands.ownerAllowFrom to your channel user id, for example  |\n|  openclaw config set commands.ownerAllowFrom '[\"telegram:123456789\"]'   |\n|  Restart the gateway after changing this if it is already running.      |\n|"
+        },
+        "stdout_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                  \u00f0\u0178\u00a6\u017e OPENCLAW \u00f0\u0178\u00a6\u017e                    \n \nT  OpenClaw doctor\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - messages.groupChat.visibleReplies is set to \"message_tool\", but the   |\n|    message tool is unavailable for default tool policy; OpenClaw falls   |\n|    back to automatic visible replies, so normal replies may post to the  |\n|    source chat. Enable the message tool or set                           |\n|    messages.groupChat.visibleReplies to \"automatic\".                     |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ------------------------------------------------------+\n|                                                                        |\n|  - channels.telegram: default account has no available bot token, and  |\n|    TELEGRAM_BOT_TOKEN is absent in this doctor environment. After      |\n|    migration, verify TELEGRAM_BOT_TOKEN is present in the state-dir    |\n|    .env or configure channels.telegram.botToken /                      |\n|    channels.telegram.accounts.default.botToken as a SecretRef.         |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - `openai-codex/*` model refs use the Codex OAuth route through         |\n|    OpenClaw PI.                                                          |\n|  - agents.defaults.model.primary: openai-codex/gpt-5.5 is preserved;     |\n|    current runtime is \"pi\".                                              |\n|  - agents.defaults.models.openai-codex/gpt-5.5: openai-codex/gpt-5.5 is  |\n|    preserved.                                                            |\n|  - `openclaw doctor --fix` preserves these routes because they are the   |\n|    working Codex OAuth route through OpenClaw PI.                        |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Command owner ---------------------------------------------------------+\n|                                                                         |\n|  No command owner is configured.                                        |\n|  A command owner is the human operator account allowed to run           |\n|  owner-only commands and approve dangerous actions, including           |\n|  /diagnostics, /export-trajectory, /config, and exec approvals.         |\n|  DM pairing only lets someone talk to the bot; it does not make that    |\n|  sender the owner for privileged commands.                              |\n|  Fix: set commands.ownerAllowFrom to your channel user id, for example  |\n|  openclaw config set commands.ownerAllowFrom '[\"telegram:123456789\"]'   |\n|  Restart the gateway after changing this if it is already running.      |\n|",
+        "stderr_excerpt": "[skills] failed to create plugin skill symlink \"C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation\" \u00e2\u2020\u2019 \"C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation\": Error: EPERM: operation not permitted, symlink 'C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation' -> 'C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation'\n[skills] failed to create plugin skill symlink \"C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation\" \u00e2\u2020\u2019 \"C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation\": Error: EPERM: operation not permitted, symlink 'C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation' -> 'C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation'\n"
+      }
+    },
+    {
+      "id": "workspace_boundary_check",
+      "status": "warning",
+      "details": {
+        "returncode": 1,
+        "payload": {
+          "status": "warning",
+          "generated_at_utc": "2026-05-10T01:46:52Z",
+          "canonical_truth_note": "This report is a boundary-audit aid only. Source files and governance notes remain authoritative.",
+          "counts": {
+            "findings": 11,
+            "warnings": 7,
+            "info": 4
+          },
+          "findings": [
+            {
+              "path": "backups/",
+              "severity": "warning",
+              "issue": "root directory has no documented active entitlement",
+              "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "tmp/dump_bands.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/find_band_refs.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/find_disallowed_model_refs.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/find_disallowed_openclaw_refs.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/find_model_refs.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/market_close_quick.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "scripts/__pycache__/",
+              "severity": "info",
+              "issue": "Python runtime cache; non-canonical debris",
+              "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
+            },
+            {
+              "path": "scripts/operators/__pycache__/",
+              "severity": "info",
+              "issue": "Python runtime cache; non-canonical debris",
+              "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
+            },
+            {
+              "path": "tmp/workspace-index.sqlite",
+              "severity": "info",
+              "issue": "generated SQLite retrieval cache",
+              "recommended_action": "retain ignored; source Markdown remains canonical"
+            },
+            {
+              "path": "tmp/veritas-command-center.last-good.html",
+              "severity": "info",
+              "issue": "last-known-good dashboard fallback generated by finance chain",
+              "recommended_action": "retain while run_finance_refresh_chain.py references it as fallback"
+            }
+          ]
+        },
+        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-05-10T01:46:52Z\",\n  \"canonical_truth_note\": \"This report is a boundary-audit aid only. Source files and governance notes remain authoritative.\",\n  \"counts\": {\n    \"findings\": 11,\n    \"warnings\": 7,\n    \"info\": 4\n  },\n  \"findings\": [\n    {\n      \"path\": \"backups/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"tmp/dump_bands.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_band_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_disallowed_model_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_disallowed_openclaw_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_model_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/market_close_quick.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"scripts/__pycache__/\",\n      \"severity\": \"info\",\n      \"issue\": \"Python runtime cache; non-canonical debris\",\n      \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n    },\n    {\n      \"path\": \"scripts/operators/__pycache__/\",\n      \"severity\": \"info\",\n      \"issue\": \"Python runtime cache; non-canonical debris\",\n      \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n    },\n    {\n      \"path\": \"tmp/workspace-index.sqlite\",\n      \"severity\": \"info\",\n      \"issue\": \"generated SQLite retrieval cache\",\n      \"recommended_action\": \"retain ignored; source Markdown remains canonical\"\n    },\n    {\n      \"path\": \"tmp/veritas-command-center.last-good.html\",\n      \"severity\": \"info\",\n      \"issue\": \"last-known-good dashboard fallback generated by finance chain\",\n      \"recommended_action\": \"retain while run_finance_refresh_chain.py references it as fallback\"\n    }\n  ]\n}\n",
+        "stderr_excerpt": ""
+      }
+    },
+    {
+      "id": "dashboard_truth_lint",
+      "status": "info",
+      "details": {
+        "returncode": 0,
+        "payload": {
+          "status": "ok",
+          "generated_at_utc": "2026-05-10T01:46:52Z",
+          "canonical_truth_note": "Dashboards summarize and route; canonical investment state remains in owner notes.",
+          "canonical_owners": {
+            "deployment_state": "03. Portfolio/Deployment Trigger Sheet.md",
+            "portfolio_posture": "03. Portfolio/Portfolio Snapshot.md",
+            "technical_discipline": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+            "macro_regime": "02. Markets/Macro Regime Dashboard.md",
+            "weekly_operating_stance": "05. Intelligence/Weekly Positioning Review.md",
+            "risk_doctrine": "07. Risk/Risk Rules.md"
+          },
+          "counts": {
+            "findings": 0,
+            "warnings": 0,
+            "info": 0
+          },
+          "findings": []
+        },
+        "stdout_excerpt": "{\n  \"status\": \"ok\",\n  \"generated_at_utc\": \"2026-05-10T01:46:52Z\",\n  \"canonical_truth_note\": \"Dashboards summarize and route; canonical investment state remains in owner notes.\",\n  \"canonical_owners\": {\n    \"deployment_state\": \"03. Portfolio/Deployment Trigger Sheet.md\",\n    \"portfolio_posture\": \"03. Portfolio/Portfolio Snapshot.md\",\n    \"technical_discipline\": \"03. Portfolio/Technical Entry and Invalidation Sheet.md\",\n    \"macro_regime\": \"02. Markets/Macro Regime Dashboard.md\",\n    \"weekly_operating_stance\": \"05. Intelligence/Weekly Positioning Review.md\",\n    \"risk_doctrine\": \"07. Risk/Risk Rules.md\"\n  },\n  \"counts\": {\n    \"findings\": 0,\n    \"warnings\": 0,\n    \"info\": 0\n  },\n  \"findings\": []\n}\n",
+        "stderr_excerpt": ""
+      }
+    },
+    {
+      "id": "workspace_governance_truth_check",
+      "status": "warning",
+      "details": {
+        "returncode": 0,
+        "payload": {
+          "status": "warning",
+          "generated_at_utc": "2026-05-10T01:46:54Z",
+          "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
+          "canonical_truth_note": "This validator detects governance drift only. Source notes and approved config remain authoritative.",
+          "counts": {
+            "findings": 3,
+            "critical": 0,
+            "warnings": 3,
+            "info": 0
+          },
+          "findings": [
+            {
+              "check_id": "telegram_channel_setup_pending",
+              "severity": "warning",
+              "issue": "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven",
+              "recommendation": "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.",
+              "evidence": {
+                "channel": "telegram"
+              }
+            },
+            {
+              "check_id": "telegram_plugin_setup_pending",
+              "severity": "warning",
+              "issue": "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven",
+              "recommendation": "Verify Telegram delivery before relying on it for scheduled automation reports."
+            },
+            {
+              "check_id": "owner_allow_config_unavailable",
+              "severity": "warning",
+              "issue": "Could not read OpenClaw commands.ownerAllowFrom config snippet",
+              "recommendation": "Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.",
+              "evidence": {
+                "error": "openclaw config get commands.ownerAllowFrom returned rc=1"
+              }
+            }
+          ]
+        },
+        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-05-10T01:46:54Z\",\n  \"workspace_root\": \"C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\",\n  \"canonical_truth_note\": \"This validator detects governance drift only. Source notes and approved config remain authoritative.\",\n  \"counts\": {\n    \"findings\": 3,\n    \"critical\": 0,\n    \"warnings\": 3,\n    \"info\": 0\n  },\n  \"findings\": [\n    {\n      \"check_id\": \"telegram_channel_setup_pending\",\n      \"severity\": \"warning\",\n      \"issue\": \"Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven\",\n      \"recommendation\": \"Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.\",\n      \"evidence\": {\n        \"channel\": \"telegram\"\n      }\n    },\n    {\n      \"check_id\": \"telegram_plugin_setup_pending\",\n      \"severity\": \"warning\",\n      \"issue\": \"Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven\",\n      \"recommendation\": \"Verify Telegram delivery before relying on it for scheduled automation reports.\"\n    },\n    {\n      \"check_id\": \"owner_allow_config_unavailable\",\n      \"severity\": \"warning\",\n      \"issue\": \"Could not read OpenClaw commands.ownerAllowFrom config snippet\",\n      \"recommendation\": \"Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.\",\n      \"evidence\": {\n        \"error\": \"openclaw config get commands.ownerAllowFrom returned rc=1\"\n      }\n    }\n  ]\n}\n",
+        "stderr_excerpt": ""
+      }
+    },
+    {
+      "id": "windows_firewall",
+      "status": "info",
+      "details": {
+        "profiles": [
+          {
+            "Name": "Domain",
+            "Enabled": 1,
+            "DefaultInboundAction": 0,
+            "DefaultOutboundAction": 0
+          },
+          {
+            "Name": "Private",
+            "Enabled": 1,
+            "DefaultInboundAction": 0,
+            "DefaultOutboundAction": 0
+          },
+          {
+            "Name": "Public",
+            "Enabled": 1,
+            "DefaultInboundAction": 0,
+            "DefaultOutboundAction": 0
+          }
+        ],
+        "returncode": 0,
+        "stderr_excerpt": ""
+      }
+    },
+    {
+      "id": "windows_antivirus",
+      "status": "info",
+      "details": {
+        "defender": {
+          "AMServiceEnabled": false,
+          "AntispywareEnabled": false,
+          "AntivirusEnabled": false,
+          "BehaviorMonitorEnabled": false,
+          "IoavProtectionEnabled": false,
+          "NISEnabled": false,
+          "RealTimeProtectionEnabled": false,
+          "AntivirusSignatureLastUpdated": null,
+          "QuickScanAge": 4294967295
+        },
+        "products": [
+          {
+            "displayName": "Windows Defender",
+            "pathToSignedProductExe": "windowsdefender://",
+            "productState": 397568,
+            "timestamp": "Sat, 09 May 2026 06:36:47 GMT"
+          },
+          {
+            "displayName": "McAfee",
+            "pathToSignedProductExe": "\\\\?\\C:\\Program Files\\McAfee\\wps\\1.38.166.1\\mc-fw-host.exe",
+            "productState": 266240,
+            "timestamp": "Sat, 09 May 2026 06:39:21 GMT"
+          }
+        ],
+        "defender_stderr_excerpt": "",
+        "products_stderr_excerpt": ""
+      }
+    }
+  ],
+  "findings": [
+    {
+      "severity": "warning",
+      "source": "config.channels",
+      "message": "Chat channels are enabled; intended posture is local Control UI only.",
+      "remediation": "Keep `channels` empty unless channel expansion is intentional.",
+      "evidence": [
+        "telegram"
+      ]
+    },
+    {
+      "severity": "warning",
+      "source": "config.commands.ownerAllowFrom",
+      "message": "Local Control UI sender allowlist is incomplete.",
+      "remediation": "Restore the expected local sender identifiers.",
+      "evidence": [
+        "openclaw-control-ui",
+        "webchat:openclaw-control-ui"
+      ]
+    },
+    {
+      "severity": "info",
+      "source": "config.browser",
+      "message": "Browser plugin is disabled and excluded from the allowlist."
+    },
+    {
+      "severity": "warning",
+      "source": "config.model_runtime",
+      "message": "Default OpenAI model still routes through PI instead of the native Codex runtime.",
+      "remediation": "If native Codex execution is intended, use `openai/<model>` plus `agents.defaults.agentRuntime.id = \"codex\"`.",
+      "evidence": {
+        "model": "openai-codex/gpt-5.5",
+        "agentRuntime.id": null
+      }
+    },
+    {
+      "severity": "info",
+      "source": "config.gateway",
+      "message": "Gateway bind remains loopback with no reverse-proxy requirement.",
+      "evidence": {
+        "bind": "loopback"
+      }
+    },
+    {
+      "severity": "info",
+      "source": "exec_approvals",
+      "message": "Main-agent exec approvals remain narrow exact-command entries.",
+      "evidence": {
+        "allowlist_count": 0
+      }
+    },
+    {
+      "severity": "info",
+      "source": "openclaw_security_audit_basic",
+      "message": "Attack surface summary",
+      "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway"
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_basic",
+      "message": "Reverse proxy headers are not trusted",
+      "remediation": "Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.",
+      "evidence": "gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed."
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_basic",
+      "message": "Potential multi-user setup detected (personal-assistant model warning)",
+      "remediation": "If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\"all\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.",
+      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway."
+    },
+    {
+      "severity": "info",
+      "source": "openclaw_security_audit_deep",
+      "message": "Attack surface summary",
+      "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway"
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_deep",
+      "message": "Reverse proxy headers are not trusted",
+      "remediation": "Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.",
+      "evidence": "gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed."
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_deep",
+      "message": "Potential multi-user setup detected (personal-assistant model warning)",
+      "remediation": "If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\"all\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.",
+      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway."
+    },
+    {
+      "severity": "info",
+      "source": "skills_check",
+      "message": "Skill inventory check completed.",
+      "evidence": {
+        "total": 78,
+        "eligible": 34,
+        "modelVisible": 34,
+        "commandVisible": 33,
+        "disabled": 44,
+        "blocked": 0,
+        "agentFiltered": 0,
+        "notInjected": 0,
+        "missingRequirements": 0
+      }
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_doctor",
+      "message": "Doctor did not exit cleanly inside the timeout window.",
+      "remediation": "Treat the partial output as advisory and rerun manually if runtime health is in doubt."
+    },
+    {
+      "severity": "warning",
+      "source": "workspace_boundary_check",
+      "message": "workspace_boundary_check returned warning-grade output.",
+      "remediation": "Review the listed findings and decide whether cleanup or documentation is needed.",
+      "evidence": [
+        {
+          "path": "backups/",
+          "severity": "warning",
+          "issue": "root directory has no documented active entitlement",
+          "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "tmp/dump_bands.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/find_band_refs.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/find_disallowed_model_refs.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/find_disallowed_openclaw_refs.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/find_model_refs.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/market_close_quick.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "scripts/__pycache__/",
+          "severity": "info",
+          "issue": "Python runtime cache; non-canonical debris",
+          "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
+        },
+        {
+          "path": "scripts/operators/__pycache__/",
+          "severity": "info",
+          "issue": "Python runtime cache; non-canonical debris",
+          "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
+        },
+        {
+          "path": "tmp/workspace-index.sqlite",
+          "severity": "info",
+          "issue": "generated SQLite retrieval cache",
+          "recommended_action": "retain ignored; source Markdown remains canonical"
+        },
+        {
+          "path": "tmp/veritas-command-center.last-good.html",
+          "severity": "info",
+          "issue": "last-known-good dashboard fallback generated by finance chain",
+          "recommended_action": "retain while run_finance_refresh_chain.py references it as fallback"
+        }
+      ]
+    },
+    {
+      "severity": "info",
+      "source": "dashboard_truth_lint",
+      "message": "dashboard_truth_lint passed cleanly.",
+      "evidence": {
+        "findings": 0,
+        "warnings": 0,
+        "info": 0
+      }
+    },
+    {
+      "severity": "warning",
+      "source": "workspace_governance_truth_check",
+      "message": "workspace_governance_truth_check returned warning-grade output.",
+      "remediation": "Review the listed findings and decide whether cleanup or documentation is needed.",
+      "evidence": [
+        {
+          "check_id": "telegram_channel_setup_pending",
+          "severity": "warning",
+          "issue": "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven",
+          "recommendation": "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.",
+          "evidence": {
+            "channel": "telegram"
+          }
+        },
+        {
+          "check_id": "telegram_plugin_setup_pending",
+          "severity": "warning",
+          "issue": "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven",
+          "recommendation": "Verify Telegram delivery before relying on it for scheduled automation reports."
+        },
+        {
+          "check_id": "owner_allow_config_unavailable",
+          "severity": "warning",
+          "issue": "Could not read OpenClaw commands.ownerAllowFrom config snippet",
+          "recommendation": "Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.",
+          "evidence": {
+            "error": "openclaw config get commands.ownerAllowFrom returned rc=1"
+          }
+        }
+      ]
+    },
+    {
+      "severity": "info",
+      "source": "windows_firewall",
+      "message": "All Windows Firewall profiles are enabled.",
+      "evidence": [
+        {
+          "Name": "Domain",
+          "Enabled": 1,
+          "DefaultInboundAction": 0,
+          "DefaultOutboundAction": 0
+        },
+        {
+          "Name": "Private",
+          "Enabled": 1,
+          "DefaultInboundAction": 0,
+          "DefaultOutboundAction": 0
+        },
+        {
+          "Name": "Public",
+          "Enabled": 1,
+          "DefaultInboundAction": 0,
+          "DefaultOutboundAction": 0
+        }
+      ]
+    },
+    {
+      "severity": "info",
+      "source": "windows_antivirus",
+      "message": "A third-party antivirus product is registered while Defender realtime protection is off.",
+      "evidence": {
+        "products": [
+          "Windows Defender",
+          "McAfee"
+        ]
+      }
+    }
+  ]
+}

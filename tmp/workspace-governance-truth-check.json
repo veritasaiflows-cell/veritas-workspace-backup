@@ -1,0 +1,38 @@
+{
+  "status": "warning",
+  "generated_at_utc": "2026-05-10T05:25:59Z",
+  "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
+  "canonical_truth_note": "This validator detects governance drift only. Source notes and approved config remain authoritative.",
+  "counts": {
+    "findings": 3,
+    "critical": 0,
+    "warnings": 3,
+    "info": 0
+  },
+  "findings": [
+    {
+      "check_id": "telegram_channel_setup_pending",
+      "severity": "warning",
+      "issue": "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven",
+      "recommendation": "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.",
+      "evidence": {
+        "channel": "telegram"
+      }
+    },
+    {
+      "check_id": "telegram_plugin_setup_pending",
+      "severity": "warning",
+      "issue": "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven",
+      "recommendation": "Verify Telegram delivery before relying on it for scheduled automation reports."
+    },
+    {
+      "check_id": "owner_allow_config_unavailable",
+      "severity": "warning",
+      "issue": "Could not read OpenClaw commands.ownerAllowFrom config snippet",
+      "recommendation": "Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.",
+      "evidence": {
+        "error": "openclaw config get commands.ownerAllowFrom returned rc=1"
+      }
+    }
+  ]
+}

@@ -9,6 +9,7 @@ const tabs = [
   ['macro','Macro'],
   ['risk','Risk & Rules'],
   ['triggers','Trigger Sheet'],
+  ['decisionqueue','Decision Queue'],
   ['postearnings','Post-Earnings'],
   ['entrybands','Entry Bands'],
 ];
@@ -31,6 +32,7 @@ function stateTone(state) {
   if (!state) return 'info';
   const s = state.toUpperCase();
   if (s === 'DEPLOYABLE') return 'ok';
+  if (s === 'REVIEW' || s === 'PROMOTION REVIEW') return 'warn';
   if (s === 'ALMOST') return 'warn';
   if (s === 'BLOCKED' || s === 'BELOW STOP') return 'bad';
   return 'info';

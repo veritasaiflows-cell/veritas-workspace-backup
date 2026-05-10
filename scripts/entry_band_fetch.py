@@ -55,6 +55,7 @@ HTML_DIR = WORKSPACE / "tmp" / "entry-band-reports"
 JSX_PATH = WORKSPACE / "scripts" / "entry_band_viewer.jsx"
 PORTFOLIO_CONFIG_PATH = WORKSPACE / "tmp" / "portfolio-config.json"
 TECH_REFRESH_PATH = WORKSPACE / "tmp" / "technical-refresh.json"
+BAND_PROPOSALS_PATH = WORKSPACE / "tmp" / "band-proposals.json"
 
 
 # Macro regime catalogue. Edit when the regime read changes.
@@ -224,6 +225,35 @@ def load_current_quote(ticker: str) -> dict[str, Any] | None:
     return None
 
 
+def load_latest_band_proposal(ticker: str) -> dict[str, Any] | None:
+    """Return the latest review-only band-engine proposal for a ticker."""
+    if not BAND_PROPOSALS_PATH.exists():
+        return None
+    try:
+        data = json.loads(BAND_PROPOSALS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    for rec in (data.get("proposals") or []):
+        if rec.get("ticker", "").upper() == ticker.upper():
+            return {
+                "engine_version": rec.get("engine_version"),
+                "method": rec.get("entry_band_method"),
+                "type": rec.get("entry_band_type"),
+                "status": rec.get("band_status"),
+                "trend_stack": rec.get("trend_stack"),
+                "suggested_low": rec.get("suggested_band_low"),
+                "suggested_high": rec.get("suggested_band_high"),
+                "suggested_stop": rec.get("suggested_stop"),
+                "sma_envelope_low": rec.get("sma_envelope_low"),
+                "sma_envelope_high": rec.get("sma_envelope_high"),
+                "earnings_state": rec.get("earnings_state"),
+                "band_confidence": rec.get("band_confidence"),
+                "needs_review": rec.get("needs_review"),
+                "canonical_apply_eligible": rec.get("canonical_apply_eligible"),
+            }
+    return None
+
+
 def build_bundle(ticker: str, years: int, interval: str, start: str | None) -> dict[str, Any]:
     bars, meta = fetch_ohlc(ticker, years, interval, start)
     bundle: dict[str, Any] = {
@@ -237,6 +267,7 @@ def build_bundle(ticker: str, years: int, interval: str, start: str | None) -> d
         "macro_regimes": MACRO_REGIMES,
         "preferred_band": load_preferred_band(ticker.upper()),
         "current_quote": load_current_quote(ticker.upper()),
+        "band_engine_proposal": load_latest_band_proposal(ticker.upper()),
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     if interval == "1wk":

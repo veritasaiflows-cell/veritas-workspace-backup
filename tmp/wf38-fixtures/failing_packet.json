@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-06T23:35:00Z",
+  "ticker": "LLY",
+  "source_surface": "watchlist",
+  "thesis_evidence_source": "research_note_layer",
+  "canonical_trigger_source": "03. Portfolio/Deployment Trigger Sheet.md",
+  "canonical_portfolio_source": "03. Portfolio/Portfolio Snapshot.md",
+  "regime_score_total": 7.1,
+  "regime_score_rank": 5,
+  "current_watch_state": "WATCH",
+  "current_trigger_state": "WATCH / RESEARCH NEEDED",
+  "entry_band_defined": false,
+  "invalidation_defined": false,
+  "sizing_tier_defined": true,
+  "catalyst_window_status": "blocked",
+  "sector": "Healthcare",
+  "correlated_sleeve": "healthcare",
+  "candidate_weight_pct": 6,
+  "sector_cap_check": {
+    "status": "warning",
+    "projected_sector": "Healthcare",
+    "max_allowed_pct": 35,
+    "projected_sector_weight_pct": 6
+  },
+  "five_gate_status": {
+    "thesis_gate": "pass",
+    "macro_and_regime_gate": "pass",
+    "technical_gate": "missing",
+    "catalyst_gate": "failed",
+    "risk_and_sizing_gate": "warning"
+  },
+  "missing_gates": [
+    "technical_gate",
+    "catalyst_gate",
+    "risk_and_sizing_gate"
+  ],
+  "promotion_blockers": [
+    "entry band missing",
+    "catalyst window blocked"
+  ],
+  "promotion_candidate": true,
+  "promotion_review_required": true,
+  "notes": [
+    "Intentionally failing fixture.",
+    "No canonical mutation allowed."
+  ],
+  "queue_entry_required": true,
+  "queue_entry_present": false,
+  "proposed_action_state": "DEPLOYABLE NOW",
+  "proposed_lane": "execution",
+  "thesis_exists": true,
+  "levels_exist": false,
+  "timing_posture": "blocked",
+  "portfolio_competition_assessed": false,
+  "sector_cap_checked": false,
+  "correlated_sleeve_checked": false
+}

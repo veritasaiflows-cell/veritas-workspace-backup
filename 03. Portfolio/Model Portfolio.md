@@ -23,7 +23,7 @@ This is the model, not a broker-connected execution system.
 
 - Normal max single position: 15%
 - Stretch max single position: 20% to 25% only for exceptional high-conviction cases and only with explicit review
-- Max single sector: 25% to 35%
+- Max single sector: 25%
 - Use caution before exceeding normal cash deployment during unstable macro conditions
 
 ## Portfolio design rules
@@ -43,4 +43,4 @@ This is the model, not a broker-connected execution system.
 
 ## Last updated
 
-- 2026-04-19
+- 2026-05-07

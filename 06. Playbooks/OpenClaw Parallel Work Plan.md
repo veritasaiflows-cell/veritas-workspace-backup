@@ -16,18 +16,18 @@ without creating ownership drift, fake green states, or reconciliation debt.
 ## Current verified resource posture
 
 ### Keep stable
-- OpenClaw main session on `openai-codex/gpt-5.4`
-- OpenClaw spawned subagent default on `openai-codex/gpt-5.4`
-- OpenClaw app/runtime pinned at `2026.4.22` for now because Randall judges it more stable on this machine
+- OpenClaw main session posture: live truth surface, workspace-file truth interpreter, orchestrator, QC owner, and final integrator
+- OpenClaw spawned subagent default for substantial workspace work: use the approved `openai-codex/*` model set with role-based thinking rather than blanket high effort
+- OpenClaw app/runtime pinned at `2026.5.4` because Randall accepted `2026.5.4` as the current stable runtime on this machine
 
 ### Lower-complexity helper posture
-- No lower-complexity Veritas-routed Codex helper is currently on the approved live model list.
-- For bounded cheap helper work, prefer tighter scope, smaller contracts, or manual external evidence review rather than routing through a removed model.
+- Lower-complexity helper work should usually use tighter scope and lower thinking, not a lower-trust model.
+- Keep Veritas-routed helper work inside the approved `openai-codex/*` model set unless Randall intentionally changes runtime policy.
 
 `openai-codex/gpt-5.3-codex` and `openai-codex/gpt-5.3-codex-spark` are removed from Veritas-routed workflow use. Randall may still use lighter external tools manually and report findings back as evidence for review.
 
 ### Available local lanes
-- **Main OpenClaw session** -> orchestration, integration, final judgment, file-grounded execution
+- **Main OpenClaw session** -> orchestration, handoff packets, QC, final judgment, verified quick fixes, final integration
 - **Spawned OpenClaw subagents** -> bounded detached workspace tasks with explicit contracts
 - **Claude CLI** -> judgment-heavy review, contract definition, cross-artifact synthesis, high-coherence cleanup
 - **Gemini Flash** -> cheap bounded audit, contradiction checks, narrow mechanical diagnosis
@@ -79,12 +79,13 @@ If category or posture is unclear, default back to serial until the contract is 
 Default to **sequential orchestration**:
 - Veritas acts as product owner/manager (PoM), orchestrator, auditor/QA owner, and executive integrator
 - spawned lanes do bounded execution against an explicit contract
+- meaningful workflow completion should usually include both a spawned worker lane and a fresh independent audit lane before closeout
 - Veritas reviews the result before opening the next lane
 - only open a second active lane when it clearly beats the merge cost
 
 Default worker posture:
-- `openai-codex/gpt-5.4` = main-session orchestration and highest-trust integrator lane
-- `openai-codex/gpt-5.4` = first-choice high-trust spawned worker lane
+- Veritas main session = live truth surface, workspace-file truth interpreter, orchestration, QC, and final integration
+- spawned OpenClaw helper = file-grounded bounded lane with thinking selected by role: low for routine research/read-only audit, medium for implementation, high for hard debugging or high-stakes trust adjudication
 - Claude = standby escalation or second-opinion judgment lane, not default labor
 - Gemini Flash / cheaper lanes = standby bounded audit or contradiction helpers only
 
@@ -100,12 +101,14 @@ Owns:
 - continuity updates
 - approvals
 - cross-lane reconciliation
+- verified quick fixes after worker/auditor evidence
 - final integration and next-step decisions
 
 Never delegate away:
 - trust adjudication
 - canonical conflict resolution
 - final portfolio or OS judgment
+- final closeout decision
 
 ### Lane 1 — OpenClaw subagent implementation lane
 Best use:
@@ -120,6 +123,7 @@ Guardrails:
 - no silent canonical note rewrites
 - prefer read/inspect first, patch second
 - use when the main session should stay clean
+- default thinking medium for implementation; escalate to high only for hard debugging, repeated failures, or ambiguous shared-contract drift
 
 ### Lane 2 — Claude judgment lane
 Best use:
@@ -224,19 +228,18 @@ If the project is too small to justify that structure, it is probably small enou
 
 ## Required handoff packet for spawned lanes
 
-Before any non-trivial spawned lane begins, pass a compact file-grounded packet that includes:
-- active workflow or project
-- objective
-- current truth
-- last meaningful progress
-- blocker or trust gap
-- next acceptance target
-- exact files to read first
-- what not to touch
-- any live environment constraint that changes execution behavior
+Before any non-trivial spawned lane begins, pass a compact file-grounded packet.
+
+Canonical rule source:
+- `06. Playbooks/Spawn and Closeout Governance Matrix.md` owns spawn classification, runtime-budget, artifact-first, early-checkpoint, and closeout authority rules.
+- `06. Playbooks/Subagent Spawn Handoff Template.md` owns the copyable packet structure.
+
+This work plan should not duplicate the full checklist; use it only to remind the operator that spawned lanes must start from files, not hidden chat reconstruction.
 
 Do not assume the child can reconstruct critical state from memory recall or vague chat history.
 If the project already has a continuity note, use it as the anchor.
+
+Do not launch broad inventory/audit work under the implicit default timeout. Either split the task or set a deliberate runtime budget before spawning.
 
 ## Resume-keyword fallback for continuity lanes
 
@@ -347,18 +350,18 @@ This keeps the queue stable enough to trust while still allowing evidence-driven
 For the daily queue/orchestration control plane:
 - low-effort control-plane fixes stay in the main session
 - medium-effort detached work should use an approved live default model with a tighter scope rather than a removed cheap helper model
-- high-effort detached work uses `openai-codex/gpt-5.4` after preflight review clears the contract
+- substantial or high-effort detached work uses `openai-codex/gpt-5.5` with high-thinking posture after preflight review clears the contract
 - default detached posture is one worker at a time, bounded task, no silent canonical finance note mutation, and no auth/config/network escalation without approval
 - if the blocker is judgment rather than labor, stop and record the blocker instead of spawning theater
 
 ## Next concrete moves
 
-1. keep the main session as orchestrator and final integrator
-2. start using spawned OpenClaw subagents for bounded workspace work immediately
+1. keep the main session as live truth surface, orchestrator, QC owner, and final integrator
+2. use spawned `openai-codex/gpt-5.5` high-thinking subagents for substantial bounded workspace work when available
 3. reserve Claude for contract/judgment-heavy reviews
 4. use Gemini Flash only as a cheap bounded audit helper
 5. keep active serious parallel load capped at two substantive lanes plus one helper lane
-6. treat `Workflow 4 — Sequential chain protocol` as the next active queue item after the completed 1-3C trust-spine passes
+6. follow the live active queue in `06. Playbooks/OpenClaw Parallel Pilot Queue.md`; current post-WF39 baseline is WF38 active/resumed, WF37 paused follow-up, then SOP / automation optimization backlog only when approved
 7. use the orchestration control-plane cron only for queue/registry/continuity stewardship, preflight QA, next-step adjudication, and hardening insertion when the queue item is not truthfully automation-ready — not for silent canonical finance note rewrites
 8. if a split pattern repeats cleanly, promote it into a skill or playbook update
 

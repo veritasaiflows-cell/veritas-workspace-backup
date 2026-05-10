@@ -25,6 +25,7 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 TECH_REFRESH_PATH = TMP / "technical-refresh.json"
 CONFIG_PATH = TMP / "portfolio-config.json"
+BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
 HTML_REPORTS_DIR = WORKSPACE / "tmp" / "entry-band-reports"
 OUT_PATH = TMP / "entry-band-status.html"
 
@@ -100,6 +101,7 @@ COLOR_CSS = {
 
 WORKFLOW_COLOR = {
     "ALMOST": "#10b981",
+    "PROMOTION REVIEW": "#f59e0b",
     "WATCH": "#3b82f6",
     "BLOCKED": "#ef4444",
     "REPAIR": "#f59e0b",
@@ -112,12 +114,20 @@ def build_rows(tech: dict, config: dict) -> list[dict]:
     entry_bands = config.get("entry_bands") or {}
     universe = config.get("tracked_universe") or {}
     records = {r["ticker"]: r for r in (tech.get("records") or [])}
+    proposals: dict[str, dict[str, Any]] = {}
+    if BAND_PROPOSALS_PATH.exists():
+        try:
+            proposal_data = json.loads(BAND_PROPOSALS_PATH.read_text(encoding="utf-8"))
+            proposals = {p.get("ticker"): p for p in (proposal_data.get("proposals") or []) if p.get("ticker")}
+        except (OSError, json.JSONDecodeError):
+            proposals = {}
 
     rows = []
     for ticker, rec in records.items():
         close = rec.get("close")
         band = entry_bands.get(ticker) or {}
         meta = universe.get(ticker) or {}
+        proposal = proposals.get(ticker) or {}
 
         low = band.get("low")
         high = band.get("high")
@@ -147,6 +157,11 @@ def build_rows(tech: dict, config: dict) -> list[dict]:
             "band_stop": stop,
             "band_last_set": band.get("band_last_set") or "—",
             "status": status,
+            "engine_method": proposal.get("entry_band_method") or "—",
+            "engine_status": proposal.get("band_status") or "—",
+            "engine_type": proposal.get("entry_band_type") or "—",
+            "engine_confidence": proposal.get("band_confidence"),
+            "needs_review": proposal.get("needs_review"),
             "color_key": color_key,
             "dist_pct": dist_pct,
             "data_date": rec.get("data_date") or "—",
@@ -159,7 +174,7 @@ def build_rows(tech: dict, config: dict) -> list[dict]:
 
 
 def render_badge(label: str, color_key: str) -> str:
-    color = COLOR_CSS.get(color_key, "#6b7280")
+    color = COLOR_CSS.get(color_key, color_key if isinstance(color_key, str) and color_key.startswith("#") else "#6b7280")
     return (
         f'<span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;'
         f'background:{color}20;color:{color};letter-spacing:.5px">{label}</span>'
@@ -170,7 +185,7 @@ def render_row(r: dict) -> str:
     status_badge = render_badge(r["status"], r["color_key"])
     wf = r["workflow_state"]
     wf_color = WORKFLOW_COLOR.get(wf, "#6b7280")
-    wf_badge = render_badge(wf, next((k for k, v in WORKFLOW_COLOR.items() if k == wf), "muted"))
+    wf_badge = render_badge(wf, wf_color)
 
     ticker_cell = (
         f'<a href="{r["html_path"]}" target="_blank" '
@@ -201,6 +216,7 @@ def render_row(r: dict) -> str:
     <td style="padding:12px 14px;text-align:center">{status_badge}</td>
     <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:{dist_color}">{dist_str}</td>
     <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">{band_str}<div style="color:#6b7280;font-size:11px;margin-top:2px">stop {stop_str} · set {r["band_last_set"]}</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">{r["engine_method"]}<div style="color:#6b7280;margin-top:2px">{r["engine_status"]} · {r["engine_type"]}</div></td>
     <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">{r["ma_posture"]}</td>
     <td style="padding:12px 14px;text-align:center">{wf_badge}</td>
     <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">{r["data_date"]}</td>
@@ -268,6 +284,7 @@ def render_html(rows: list[dict], generated_at: str, tech_asof: str) -> str:
               <th style="padding:10px 14px;text-align:center;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Band Status</th>
               <th style="padding:10px 14px;text-align:right;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Dist to High</th>
               <th style="padding:10px 14px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Vault Band · Stop</th>
+              <th style="padding:10px 14px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Band Engine</th>
               <th style="padding:10px 14px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">MA Posture</th>
               <th style="padding:10px 14px;text-align:center;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">State</th>
               <th style="padding:10px 14px;text-align:right;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">As Of</th>
@@ -285,6 +302,7 @@ def render_html(rows: list[dict], generated_at: str, tech_asof: str) -> str:
       BELOW BAND: close below band low but above stop.
       BELOW STOP: close below stop level.
       Dist to High: % distance of close from band high (negative = inside or below band).
+      Band Engine: latest review-only proposal from `band_refresh.py`; it is not canonical until human-gated publication.
       Ticker links open the full per-ticker entry band analysis report.
       <strong style="color:#f59e0b"> Decision support, not financial advice.</strong>
     </div>

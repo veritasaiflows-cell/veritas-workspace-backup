@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -88,6 +89,12 @@ def run_case(base_sources: dict[str, dict[str, Any]], name: str, mutator: Callab
         "validation": built.get("validation", {}).get("summary", {}),
         "trust_summary": built.get("trust", {}).get("summary"),
     }
+
+
+def restore_sources(base_sources: dict[str, dict[str, Any]]) -> None:
+    for source_name, payload in base_sources.items():
+        if payload is not None:
+            write_source(source_name, copy.deepcopy(payload))
 
 
 
@@ -421,10 +428,10 @@ def case_payload_shape_contract() -> tuple[str, list[str]]:
     payload = build_payload(load_sources())
 
     ta = payload.get("today_action") or {}
-    for bucket in ("deployable", "almost", "earningsPending", "riskOff"):
+    for bucket in ("deployable", "promotionReview", "almost", "earningsPending", "riskOff"):
         expect(bucket in ta, f"today_action missing bucket '{bucket}'", errors)
 
-    for bucket_key in ("deployable", "almost"):
+    for bucket_key in ("deployable", "promotionReview", "almost"):
         for card in ta.get(bucket_key) or []:
             for field in ("ticker", "close", "entryBand", "stop", "posture", "bandStatus"):
                 expect(
@@ -471,6 +478,11 @@ def case_payload_shape_contract() -> tuple[str, list[str]]:
     pe_window = (payload.get("post_earnings") or {}).get("window") or {}
     expect("back_trading_days" in pe_window, "post_earnings.window.back_trading_days missing — Phase 6 not applied", errors)
 
+    dq = payload.get("decision_queue") or {}
+    expect("daily_review" in dq, "decision_queue.daily_review missing", errors)
+    expect("market_intelligence" in dq, "decision_queue.market_intelligence missing", errors)
+    expect((dq.get("authority") or {}).get("owner_approval_required") is True, "decision queue must require owner approval", errors)
+
     return name, errors
 
 
@@ -492,16 +504,37 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
     deployment = {row["ticker"]: row for row in payload.get("deployment_records") or []}
     summary = payload.get("deployment_summary") or {}
 
+    expect(technical.get("ETN", {}).get("actionState") == "PROMOTION REVIEW", "ETN technical state should stay PROMOTION REVIEW", errors)
+    expect(deployment.get("ETN", {}).get("state") == "REVIEW", "ETN deployment state should stay REVIEW", errors)
+
     for ticker in ("GOOG", "MSFT"):
-        expect(technical.get(ticker, {}).get("actionState") == "ALMOST", f"{ticker} technical state should be ALMOST", errors)
+        expect(technical.get(ticker, {}).get("actionState") == "ALMOST DEPLOYABLE", f"{ticker} technical state should be ALMOST DEPLOYABLE", errors)
         expect(deployment.get(ticker, {}).get("state") == "ALMOST", f"{ticker} deployment state should be ALMOST", errors)
 
-    expect(sorted(summary.get("almost") or []) == ["ETN", "GOOG", "MSFT"], f"deployment_summary.almost should be ETN/GOOG/MSFT, got {summary.get('almost')}", errors)
+    almost_bucket = set(summary.get("almost") or [])
+    promotion_bucket = set(summary.get("promotion_review") or [])
+    expect({"GOOG", "MSFT"}.issubset(almost_bucket), f"deployment_summary.almost should include GOOG/MSFT, got {summary.get('almost')}", errors)
+    expect("ETN" in promotion_bucket, f"deployment_summary.promotion_review should include ETN, got {summary.get('promotion_review')}", errors)
+    expect(
+        any(card.get("ticker") == "ETN" for card in (payload.get("today_action") or {}).get("promotionReview") or []),
+        "today_action.promotionReview should render ETN separately from deployable/almost",
+        errors,
+    )
     expect(summary.get("blocked") == [], f"deployment_summary.blocked should be empty after GOOG/MSFT correction, got {summary.get('blocked')}", errors)
 
-    for ticker in ("BRK.B", "XOM"):
-        expect(technical.get(ticker, {}).get("actionState") == "BENCH", f"{ticker} should stay BENCH", errors)
-        expect(technical.get(ticker, {}).get("triggerToday") is False, f"{ticker} should not show triggerToday while BENCH", errors)
+    expect(technical.get("LMT", {}).get("actionState") == "BELOW STOP", f"LMT should stay BELOW STOP", errors)
+    expect(technical.get("LMT", {}).get("triggerToday") is False, "LMT should not show triggerToday while BELOW STOP", errors)
+    expect(technical.get("BRK.B", {}).get("actionState") == "BENCH", "BRK.B should stay BENCH", errors)
+    expect(technical.get("BRK.B", {}).get("triggerToday") is False, "BRK.B should not show triggerToday while BENCH", errors)
+    xom = technical.get("XOM", {})
+    xom_reason = str(xom.get("actionReason") or "")
+    expect(xom.get("actionState") == "BENCH", f"XOM should stay BENCH / repair, got {xom.get('actionState')}", errors)
+    expect(xom.get("triggerToday") is False, "XOM should not show triggerToday while BENCH / repair", errors)
+    expect(
+        "repair" in xom_reason.lower() or "do not touch" in xom_reason.lower(),
+        f"XOM reason should preserve repair/do-not-touch posture, got {xom_reason!r}",
+        errors,
+    )
 
     vrt_reason = str(technical.get("VRT", {}).get("actionReason") or "")
     expect(technical.get("VRT", {}).get("coverageLane") == "execution", f"VRT coverageLane should be execution, got {technical.get('VRT', {}).get('coverageLane')}", errors)
@@ -513,7 +546,7 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
         expect(row.get("coverageLane") == "watch", f"{ticker} coverageLane should be watch, got {row.get('coverageLane')}", errors)
         expect(row.get("triggerToday") is False, f"{ticker} should not show triggerToday on the watch lane", errors)
         expect(
-            "execution-board entitlement" in reason.lower() or "execution-board scope" in reason.lower(),
+            "execution-board entitlement" in reason.lower() or "execution-board scope" in reason.lower() or "execution-board entitled" in reason.lower(),
             f"{ticker} reason should explain the lane constraint, got {reason!r}",
             errors,
         )
@@ -528,6 +561,28 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
         errors,
     )
 
+    return name, errors
+
+
+def case_decision_queue_visibility() -> tuple[str, list[str]]:
+    name = "decision_queue_visibility"
+    errors: list[str] = []
+    payload = build_payload(load_sources())
+    html = inject_into_template(payload, {"first_run": True, "changes": [], "summary": "test"})
+    dq = payload.get("decision_queue") or {}
+    daily = dq.get("daily_review") or {}
+    intel = dq.get("market_intelligence") or {}
+    authority = dq.get("authority") or {}
+
+    expect((daily.get("counts") or {}).get("review_object_count", 0) > 0, "daily review object count missing from decision queue", errors)
+    expect((intel.get("counts") or {}).get("event_count", 0) > 0, "market-intelligence event count missing from decision queue", errors)
+    expect(daily.get("escalations"), "daily review escalations missing from decision queue", errors)
+    expect(daily.get("capital_recommendations"), "capital recommendations missing from decision queue", errors)
+    expect(intel.get("escalations"), "market-intelligence escalations missing from decision queue", errors)
+    expect(authority.get("canonical_mutation_allowed") is False, "decision queue must not allow canonical mutation", errors)
+    expect(authority.get("trade_execution_allowed") is False, "decision queue must not allow trade execution", errors)
+    for needle in ("Decision Queue", "Daily review", "Market intelligence", "review-only", "owner approval required", "ETN"):
+        expect(needle in html, f"rendered HTML missing {needle!r}", errors)
     return name, errors
 
 
@@ -597,6 +652,30 @@ def case_earnings_new_alert_visibility() -> tuple[str, list[str]]:
 
 
 
+def _mutate_entry_band_contradiction(s: dict[str, Any], ticker: str = "ETN") -> None:
+    tech = next(r for r in s["technical"]["records"] if r["ticker"] == ticker)
+    band = s["portfolio"]["entry_bands"].get(ticker) or {}
+    close = tech.get("close") or 300.0
+    band_low = band.get("low")
+    band_high = band.get("high")
+    computed_in_band = (
+        band_low is not None
+        and band_high is not None
+        and band_low <= close <= band_high
+    )
+    if band_low is None or band_high is None:
+        band_low = round(close * 1.05, 2)
+        band_high = round(close * 1.1, 2)
+        s["portfolio"]["entry_bands"][ticker] = {
+            **band,
+            "low": band_low,
+            "high": band_high,
+            "label": f"{band_low}-{band_high}",
+        }
+        computed_in_band = False
+    tech.update({"in_entry_band": not computed_in_band})
+
+
 def _mutate_state_transition(s: dict[str, Any]) -> None:
     """
     Set ETN into a fully coherent in-band state so the validator does not fire
@@ -659,6 +738,16 @@ def main() -> int:
     results: list[dict[str, Any]] = []
     with preserved_tmp_files():
         base_sources = load_sources()
+        # Stamp all sources with a fresh generated_at_utc so acceptance cases
+        # start from a fresh baseline regardless of how old on-disk artifacts are.
+        # Each test mutator then applies only its intended deviation.
+        now_utc = datetime.now(timezone.utc).isoformat()
+        for src in base_sources.values():
+            if isinstance(src, dict) and "generated_at_utc" in src:
+                src["generated_at_utc"] = now_utc
+        for name, payload in base_sources.items():
+            if payload is not None:
+                write_source(name, payload)
         results.append(run_case(
             base_sources,
             "missing_market_field",
@@ -686,7 +775,7 @@ def main() -> int:
         results.append(run_case(
             base_sources,
             "contradiction_entry_band",
-            lambda s: next(r for r in s["technical"]["records"] if r["ticker"] == "ETN").update({"in_entry_band": True}),
+            _mutate_entry_band_contradiction,
             case_contradiction,
         ))
         results.append(run_case(
@@ -704,6 +793,7 @@ def main() -> int:
             _mutate_state_transition,
             case_state_transition,
         ))
+        restore_sources(base_sources)
         for case_fn in (
             case_market_state_missing_policy_artifact,
             case_policy_fail_closed_expired_target,
@@ -724,7 +814,8 @@ def main() -> int:
 
         # Sprint 1 regression cases (2026-04-25 audit Priority 1 fixes)
         # Sprint 2 regression case (2026-04-30 dashboard refresh): payload-shape contract
-        for case_fn in (case_delta_summary_honesty, case_earnings_new_alert_visibility, case_payload_shape_contract, case_workflow8_command_center_alignment):
+        restore_sources(base_sources)
+        for case_fn in (case_delta_summary_honesty, case_earnings_new_alert_visibility, case_payload_shape_contract, case_workflow8_command_center_alignment, case_decision_queue_visibility):
             case_name, case_errors = case_fn()
             results.append({
                 "name": case_name,

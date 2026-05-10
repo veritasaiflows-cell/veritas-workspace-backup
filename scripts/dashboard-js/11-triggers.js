@@ -4,6 +4,7 @@ function triggerCardClass(state) {
   if (!state) return 'donottouch';
   const s = state.toUpperCase();
   if (s.includes('DEPLOYABLE NOW')) return 'deployable';
+  if (s.includes('PROMOTION REVIEW')) return 'almost';
   if (s.includes('ALMOST')) return 'almost';
   if (s === 'BLOCKED') return 'blocked';
   if (s.includes('WATCH') || s.includes('RESEARCH')) return 'watch';
@@ -14,6 +15,7 @@ function triggerStateTone(state) {
   if (!state) return 'info';
   const s = state.toUpperCase();
   if (s.includes('DEPLOYABLE NOW')) return 'ok';
+  if (s.includes('PROMOTION REVIEW')) return 'warn';
   if (s.includes('ALMOST')) return 'warn';
   if (s === 'BLOCKED') return 'bad';
   if (s.includes('WATCH') || s.includes('RESEARCH')) return 'info';
@@ -56,6 +58,7 @@ function renderTriggerSheet() {
   const sum = ts.summary || {};
   const summaryParts = [
     sum.deployable_now?.length && `${pill(`${sum.deployable_now.length} deployable`,'ok')}`,
+    sum.promotion_review?.length && `${pill(`${sum.promotion_review.length} promotion review`,'warn')}`,
     sum.almost_deployable?.length && `${pill(`${sum.almost_deployable.length} almost`,'warn')}`,
     sum.blocked?.length && `${pill(`${sum.blocked.length} blocked`,'bad')}`,
     sum.do_not_touch?.length && `${pill(`${sum.do_not_touch.length} do not touch`,'info')}`,

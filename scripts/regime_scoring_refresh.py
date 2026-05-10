@@ -2,7 +2,12 @@
 
 Auto-score every tracked name in the active universe on four dimensions,
 produce a ranked priority list, write tmp/regime-scores.json, and update
-02. Markets/Regime Scoring Matrix.md.
+bounded scoring/ranking blocks in 02. Markets/Regime Scoring Matrix.md.
+
+Authority boundary: Regime Scoring Matrix.md is a controlled machine-companion
+ranking note, not final canonical deployment truth. Final action authority stays
+with the Deployment Trigger Sheet, Portfolio Snapshot, Risk Rules, and explicit
+owner approval.
 
 Scoring dimensions (each 1–5, total out of 20):
   Regime Fit         — how well the name fits the current macro regime
@@ -18,13 +23,15 @@ Inputs (all from tmp/):
 
 Output:
   tmp/regime-scores.json
-  02. Markets/Regime Scoring Matrix.md  (scoring table + priority ranking updated)
+  02. Markets/Regime Scoring Matrix.md  (bounded scoring/ranking/freshness blocks updated)
 
 Usage:
     python scripts/regime_scoring_refresh.py
 
-The markdown update is in-place: it replaces the scored table block and the
-priority-ranking block while leaving all other sections untouched.
+The markdown update is in-place: it replaces the scored table block, the
+priority-ranking block, and freshness lines while leaving all other sections
+untouched. It must not imply portfolio mutation, deployment-state mutation,
+trade execution, or owner approval.
 """
 
 from __future__ import annotations
@@ -51,6 +58,27 @@ OUT_JSON          = WORKSPACE / "tmp" / "regime-scores.json"
 REGIME_MATRIX_MD  = WORKSPACE / "02. Markets" / "Regime Scoring Matrix.md"
 
 STALE_AFTER_HOURS = 36
+
+REGIME_MATRIX_AUTHORITY: dict[str, Any] = {
+    "surface": "controlled_machine_companion_ranking_note",
+    "canonical_deployment_truth": False,
+    "canonical_note_mutation_allowed": True,
+    "allowed_markdown_sections": [
+        "Current scoring",
+        "Priority ranking (current)",
+        "Freshness and refresh policy",
+    ],
+    "final_authority_surfaces": [
+        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Portfolio Snapshot.md",
+        "07. Risk/Risk Rules.md",
+        "explicit owner approval",
+    ],
+    "portfolio_mutation_allowed": False,
+    "deployment_state_mutation_allowed": False,
+    "trade_execution_allowed": False,
+    "owner_approval_granted": False,
+}
 
 # ---------------------------------------------------------------------------
 # Regime Fit scoring: base scores by sector.
@@ -370,6 +398,7 @@ def main() -> None:
         "macro_regime":       macro_regime_summary,
         "names_scored":       len(scored),
         "records":            scored,
+        "authority":          REGIME_MATRIX_AUTHORITY,
     }
     OUT_JSON.write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(f"  Wrote → tmp/regime-scores.json  ({len(scored)} names)")
@@ -503,11 +532,16 @@ def update_regime_matrix(scored: list[dict], last_trading_day: str | None) -> No
         flags=re.DOTALL,
     )
 
-    # Update freshness line at bottom
+    # Update freshness lines at bottom
     today_str = datetime.now().strftime("%Y-%m-%d")
     content = re.sub(
         r"- Last updated:.*",
         f"- Last updated: {today_str} — auto-scored by regime_scoring_refresh.py",
+        content,
+    )
+    content = re.sub(
+        r"- Data as of:.*",
+        f"- Data as of: {last_trading_day or 'unknown'} close",
         content,
     )
 

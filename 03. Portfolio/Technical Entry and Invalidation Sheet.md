@@ -6,6 +6,8 @@ Convert the model portfolio from abstract holdings into execution-aware candidat
 
 This is not a live order sheet. It is the technical discipline layer.
 
+Any deployable-state wording here is subordinate technical shorthand, not final action authority. The canonical deployable-now decision surface lives in [[03. Portfolio/Deployment Trigger Sheet]].
+
 Script-backed prep path:
 - default to `python scripts/run_finance_refresh_chain.py morning` for weekday session-readiness refreshes
 - use `python scripts/technical_refresh.py` directly only for narrow technical validation or debugging
@@ -27,80 +29,80 @@ Script-backed prep path:
 ---
 
 ### ETN
-- Close: **425.55** *(targeted trust-hardening sync; 2026-05-01 close)*
-- 20 / 50 / 200-day: **404.99 / 378.77 / 361.32**
-- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Still the cleanest chart in the sheet.
-- Support: **405** (20-day), then **379** (50-day)
-- Resistance: **425–426** (recent high / current extension zone)
-- Preferred entry band: **395.59 to 420.31** (refreshed band)
+- Close: **401.51** *(entry-band refresh; 2026-05-08 close)*
+- 20 / 50 / 200-day: **411.67 / 382.83 / 362.25**
+- MA posture: **above the 50-day and 200-day but below the 20-day**. Long-term structure remains constructive, but this is a pullback-in-band setup rather than clean momentum continuation.
+- Support: **395.59–400** (lower half of the preferred band / current pullback zone), then **382.83–383.23** (50-day / explicit stop cluster)
+- Resistance: **411.67** (20-day), then **420.31** (top of preferred band)
+- Preferred entry band: **395.59 to 420.31** (vault preferred band set 2026-04-30)
 - Explicit stop: **383.23**
-- Invalidation logic: loses the 20-day cluster and breaks back below 383.23.
-- Stance: **Almost deployable**. Best chart in the universe, but still above the preferred zone.
-- Entry-distance context: **+$5.24 / +1.25% above the top of the preferred band**.
-- **Recent history:** the band update improved the entry asymmetry materially, but price is still extended into a May 5 earnings window. This is no longer mainly a pullback-optimization question; it is now an event-risk decision.
-- ⚠️ **EARNINGS — May 5.** Default posture should be stand aside into the print unless an explicit event-risk exception is chosen. If price dips into band before the report, that alone is still not enough to justify normal pre-event sizing.
+- Invalidation logic: loses 383.23 and fails the 50-day / refreshed-band support cluster.
+- Stance: **Deployable now / owner-promoted conditional add**. Randall approved promotion on 2026-05-09 after the fresh entry-band check confirmed ETN remained in band at 401.51. This is still a Tier 2 manual-only setup: no chase above 420.31, no automatic execution, and sizing stays governed by the broader AI-power/correlation warnings.
+- Entry-distance context: **inside the preferred band, near the lower half**.
+- **Recent history:** the May 5 report has been interpreted as constructive; the 2026-05-08 entry-band refresh moved ETN from slightly above-band patience into an in-band promotion-review setup, and Randall promoted it on 2026-05-09 after the rerun confirmed the band remained valid.
+- **POST-EARNINGS FOLLOW-UP.** The pre-print blocker has passed and owner promotion has landed, but this remains manual-only Tier 2 deployment authority; no automatic execution and no chase above the written band.
 
 ---
 
 ### JPM
-- Close: **312.47** *(targeted trust-hardening sync; 2026-05-01 close)*
-- 20 / 50 / 200-day: **309.65 / 298.64 / 302.25**
+- Close: **314.90** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **311.21 / 299.26 / 302.61**
 - MA posture: **above all three MAs**. Constructive trend, now inside the refreshed entry zone.
-- Support: **309** (20-day), then **302** (200-day)
+- Support: **311** (20-day), then **303** (200-day)
 - Resistance: **318** (top of refreshed band), then **325**
 - Preferred entry band: **306.82 to 318.12** (refreshed band)
 - Explicit stop: **301.17**
 - Invalidation logic: loses 301.17 and the 200-day / higher-low structure together.
-- Stance: **Deployable now**, but still cleaner on support than on forced size.
+- Stance: **Deployable now**. In band, explicit owner approval landed on 2026-05-07, and the setup is now promoted in the owner layer. Keep normal size discipline and do not treat this as automatic execution.
 - Entry-distance context: **inside the preferred band**.
-- **Recent history:** the refreshed band moved JPM from pullback-only into live in-band status without changing the underlying judgment that this is a high-quality, discipline-first setup.
+- **Recent history:** the refreshed band moved JPM from pullback-only into live in-band status, and explicit owner approval on 2026-05-07 converted that approved setup from promotion review to deployable-now in the owner layer.
 - Earnings: **July 14 (Q2 2026)** — no near-term earnings risk.
 
 ---
 
 ### NVDA
-- Close: **198.45** *(targeted trust-hardening sync; 2026-05-01 close)*
-- 20 / 50 / 200-day: **197.22 / 187.15 / 183.84**
+- Close: **215.20** *(entry-band refresh; 2026-05-08 close)*
+- 20 / 50 / 200-day: **203.18 / 188.65 / 184.72**
 - MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. AI leadership intact, but crowding still matters.
-- Support: **197** (20-day), then **187–184** (50-day / 200-day cluster)
-- Resistance: **199.28** (top of band), then the recent higher-high zone
-- Preferred entry band: **188.03 to 199.28**
-- Explicit stop: **182.40**
-- Invalidation logic: loses 182.40 and the MA cluster, then slips back under the breakout zone.
-- Stance: **Deployable now**, but only with disciplined size and no momentum-chase framing.
-- Entry-distance context: **inside the preferred band**.
-- **Recent history:** the latest pullback brought NVDA back into the written band after the earlier extension. That improves entry location, but not enough to ignore crowding or concentration rules.
+- Support: **200** (20-day), then **188–184** (50-day / 200-day cluster)
+- Resistance: **210.84** (top of refreshed band), then the recent higher-high zone
+- Preferred entry band: **197.01 to 210.84**
+- Explicit stop: **190.10**
+- Invalidation logic: loses 190.10 and the MA cluster, then slips back under the breakout zone.
+- Stance: **Wait / no chase**; the 2026-05-09 entry-band rerun moved NVDA back above the written band while the May 20 catalyst path remains timing-sensitive.
+- Entry-distance context: **+$4.36 / +2.1% above the top of the preferred band**.
+- **Recent history:** the latest rerun shows NVDA no longer inside the written band. Business quality remains intact, but price, crowding, concentration, and earnings timing argue for patience rather than promotion.
 - Earnings: **May 20 (DATE CHANGED — vault had May 27, yfinance now shows May 20).** Verify against NVIDIA IR before treating timing as confirmed. If a clean primary confirmation still has not landed by the first post-close chain on **2026-05-13**, keep the date explicitly tagged unconfirmed and do not let downstream notes speak as if it were primary-confirmed.
 
 ---
 
 ### GOOG
-- Close: **383.22** *(targeted post-earnings sync; 2026-05-01 close)*
-- 20 / 50 / 200-day: **334.85 / 314.17 / 281.03**
+- Close: **395.14** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **346.99 / 318.62 / 284.02**
 - MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Trend strengthened after the print.
-- Support: **349** (top of the written band / post-print hold zone), then **335** (20-day)
-- Resistance: **384**, then fresh post-print highs
-- Preferred entry band: **330.01 to 349.37** (post-print working band from the live trigger layer)
-- Explicit stop: **320.33**
+- Support: **362** (top of the refreshed band / first disciplined pullback zone), then **347** (20-day)
+- Resistance: **395**, then fresh post-print highs
+- Preferred entry band: **341.96 to 362.08**
+- Explicit stop: **331.90**
 - Invalidation logic: loses the post-print breakout shelf and falls back under the 20-day / band support zone.
 - Stance: **Almost deployable**, but only on pullback / revalidation into the written band.
-- Entry-distance context: **+$33.85 / +9.7% above the top of the preferred band** — materially extended.
+- Entry-distance context: **+$33.06 / +9.1% above the top of the preferred band** — materially extended.
 - **Post-earnings read:** Alphabet's Apr 29 report was thesis-confirming. Search stayed strong and Google Cloud accelerated to **+63%**, but the stock already moved about **10%** above the pre-print close by the May 1 close. Better business read, worse entry location.
 - **What matters now:** this is no longer an earnings-block case. It is an entry-discipline case. Do not chase strength far above the written band.
 
 ---
 
 ### MSFT
-- Close: **414.44** *(targeted post-earnings sync; 2026-05-01 close)*
-- 20 / 50 / 200-day: **405.57 / 396.11 / 466.64**
+- Close: **413.96** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **411.55 / 397.48 / 465.22**
 - MA posture: **above the 20-day and 50-day, still below the 200-day**. Recovery intact, long-term repair still incomplete.
-- Support: **406–396** (20/50 cluster), then **378**
-- Resistance: **414–415** (current area), then **467** (200-day)
+- Support: **412–397** (20/50 cluster), then **378**
+- Resistance: **414–415** (current area), then **465** (200-day)
 - Preferred entry band: **389.64 to 412.56** (still the working post-print band)
 - Explicit stop: **378.18**
 - Invalidation logic: loses the recovery structure and fails back through the 50-day / band zone.
 - Stance: **Almost deployable**, but still needs either a cleaner pullback into band or stronger repair through the 200-day.
-- Entry-distance context: **+$1.88 / +0.5% above the top of the preferred band** — only mildly extended, but not quite ideal.
+- Entry-distance context: **+$1.40 / +0.3% above the top of the preferred band** — only mildly extended, but not quite ideal.
 - **Post-earnings read:** Microsoft's Apr 29 report was operationally strong. Azure grew **40%** and management said the AI business surpassed a **$37B annual revenue run rate**, but the stock's first reaction was weaker than GOOG's and the 200-day remains a real structural overhang.
 - **What matters now:** the earnings blocker is gone. The remaining issue is technical repair quality, not unresolved catalyst risk.
 
@@ -124,49 +126,66 @@ Script-backed prep path:
 ---
 
 ### VRT
-- Close: **328.31** *(band-sync refresh; 2026-05-01 close)*
-- 20 / 50 / 200-day: **303.28 / 275.80 / 191.93**
+- Close: **358.92** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **314.72 / 281.57 / 195.15**
 - MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Clean leadership structure.
-- Support: **303** (20-day), then **276** (50-day)
+- Support: **315** (20-day), then **282** (50-day)
 - Resistance: confirm via chart
-- Preferred entry band: **295.49 to 326.63** (band updated 2026-05-01)
-- Explicit stop: **279.92**
+- Preferred entry band: **306.85 to 338.33**
+- Explicit stop: **291.11**
 - Invalidation logic: loses the 20-day and breaks the uptrend structure.
-- Stance: **Almost deployable** — thesis confirmed by Apr 22 beat-and-raise, but extended above newly-defined band.
-- Entry-distance context: **+$1.68 / +0.5% above the top of the preferred band**.
+- Stance: **Watch / research needed** — thesis confirmed by Apr 22 beat-and-raise, but the name remains watch-lane until intentionally promoted.
+- Entry-distance context: **+$20.59 / +6.1% above the top of the preferred band**.
 - **Recent history:** Reported Q1 2026 on Apr 22 — beat-and-raise confirmed AI power-demand thesis. The refreshed band has nearly caught up to price, but ETN remains the priority first and VRT is still the secondary AI-power name.
 - Earnings: **July 29 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
 
 ---
 
 ### CAT
-- Close: **889.67** *(band-sync refresh; 2026-05-01 close)*
-- 20 / 50 / 200-day: **800.70 / 749.23 / 588.79**
+- Close: **895.69** *(WF38 review-prep sync; 2026-05-07 close)*
+- 20 / 50 / 200-day: **830.87 / 760.37 / 598.58**
 - MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**.
-- Support: **801** (20-day), then **749** (50-day)
+- Support: **831** (20-day), then **760** (50-day)
 - Resistance: prior high
-- Preferred entry band: **787.41 to 840.59** (band updated 2026-05-01)
-- Explicit stop: **760.82**
+- Preferred entry band: **811.65 to 866.48** (band updated 2026-05-01)
+- Explicit stop: **784.25**
 - Invalidation logic: loses the 50-day and breaks the uptrend.
 - Stance: **Watch-only / post-print monitor**. The industrial read-through is useful, but ETN remains the primary execution name for this sleeve.
-- Entry-distance context: **+$49.08 / +5.8% above the top of the preferred band**.
-- **Recent history:** Newly added to the tracked universe with a refreshed band after the Apr 30 print. Industrial-demand read-through still matters for the ETN/industrials sleeve, but the current setup remains extended enough that patience is still the cleaner posture.
+- Entry-distance context: **+$29.21 / +3.4% above the top of the preferred band**.
+- **Recent history:** Industrial-demand read-through still matters for the ETN/industrials sleeve, but the refreshed watch-lane band now sits materially higher after the post-print recalibration. The setup is still extended enough that patience is cleaner than promotion.
 - **Lane note:** CAT keeps technical visibility for post-print follow-through and sector read-through, but it no longer earns weekday execution-board ownership.
-- Earnings: **April 30 (reported; next date has not rolled forward cleanly yet).**
+- Earnings: **August 4 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
+
+---
+
+### LLY
+- Close: **974.96** *(WF38 review-prep sync; 2026-05-07 close)*
+- 20 / 50 / 200-day: **924.19 / 943.25 / 913.91**
+- MA posture: **above all three MAs**, but the **20-day still sits below the 50-day**, so this is not a clean 20 > 50 > 200 trend-stack breakout.
+- Support: **970** (top of the written band), then **943** (50-day)
+- Resistance: prior high / confirm via chart
+- Preferred entry band: **907.64 to 969.88** (band updated 2026-05-06)
+- Explicit stop: **876.52**
+- Invalidation logic: loses the written stop and fails the current healthcare watch-lane base.
+- Stance: **Watch-only / sector-expansion candidate**. Defined levels now exist in the owner layer, but the name remains watch-lane only until explicit promotion and sizing review.
+- Entry-distance context: **+$5.08 / +0.5% above the top of the preferred band**.
+- **Recent history:** LLY remains the cleanest current healthcare diversification candidate under WF38, but it is still slightly above the written band and is not execution-board-entitled just because the band now exists.
+- **Lane note:** LLY now has explicit owner-layer technical levels for review-only competition against other diversification candidates, not deployable authority.
+- Earnings: **August 5 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
 
 ---
 
 ### GS
-- Close: **923.71** *(targeted GS sync; 2026-05-01 close)*
-- 20 / 50 / 200-day: **912.61 / 869.99 / 825.50**
+- Close: **937.35** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **918.78 / 871.13 / 828.86**
 - MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**.
-- Support: **913** (20-day), then **870** (50-day)
-- Resistance: **926.76** (top of preferred band), then prior high
+- Support: **919** (20-day), then **871** (50-day)
+- Resistance: current extension zone; prior written band top is **926.76**
 - Preferred entry band: **878.71 to 926.76**
 - Explicit stop: **854.68**
 - Invalidation logic: loses the 50-day and breaks the uptrend.
-- Stance: **Deployable now**, but only as a disciplined tactical secondary versus JPM rather than a default primary bank add.
-- Entry-distance context: **inside the preferred band**.
+- Stance: **Almost deployable**; close is above the preferred band, and latest deployment-readiness surface still requires explicit promotion. If promoted later, treat only as a disciplined tactical secondary versus JPM rather than a default primary bank add.
+- Entry-distance context: **+$10.59 / +1.1% above the top of the preferred band**.
 - **Recent history:** the band and stop are now explicit, which clears the old WATCH-state mismatch. That improves execution ownership enough for decision-grade status, but not enough to outrank JPM or justify chasing strength above the written zone.
 - Earnings: **July 14 (Q2 2026)** — no near-term earnings risk. Date is newly added to vault calendar; cross-check before treating as confirmed.
 
@@ -205,16 +224,16 @@ Script-backed prep path:
 ---
 
 ### LMT
-- Close: **512.77** *(band-sync refresh; 2026-05-01 close)*
-- 20 / 50 / 200-day: **574.59 / 614.54 / 520.01**
+- Close: **514.26** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **556.95 / 605.91 / 520.89**
 - MA posture: **below all three MAs**. The chart is broken — price is below every major MA.
 - Support: confirm fresh support only after a new base forms
-- Resistance: **520** (200-day), then **575** (20-day)
-- Preferred entry band: **566.46 to 598.98** (band updated 2026-05-01; mechanical reference only, not a live setup)
-- Explicit stop: **550.20** (the prior band's stop, kept as a reference for the level price must reclaim)
+- Resistance: **521** (200-day), then **557** (20-day)
+- Preferred entry band: **548.51 to 582.27** (mechanical reference only, not a live setup)
+- Explicit stop: **531.63**
 - Invalidation logic: prior setup already failed; no new long thesis trigger until price rebuilds support and reclaims key MAs.
 - Stance: **Repair mode / do not touch**.
-- Entry-distance context: **-$53.69 / -9.5% below the bottom of the reference band** and still below the refreshed stop.
+- Entry-distance context: **-$34.25 / -6.2% below the bottom of the reference band** and still below the refreshed stop.
 - **Recent history:** Q1 2026 print on April 23 dropped price roughly 14% in a single session. A refreshed reference band exists now, but it is still only a measurement aid — a real long setup still requires 4–6 weeks of stabilization and multiple MA reclaims. **Earnings date:** yfinance now shows **July 21** for Q2 2026.
 
 ---
@@ -266,8 +285,8 @@ Script-backed prep path:
 - Invalidation logic: loses 132.68 and fails the current rebound attempt.
 - Stance: **Watch-only / bench**. Price is inside the preferred band, but the setup is still below the 50-day and 200-day and remains a higher-risk narrative name.
 - Entry-distance context: **inside the preferred band**.
-- **Lane note:** do not treat in-band status as deployment permission. This is a watch-lane name and a May 4 earnings monitor.
-- ⚠️ **EARNINGS — May 4.**
+- **Lane note:** do not treat in-band status as deployment permission. This is a watch-lane name and post-May 4 earnings monitor.
+- **Post-earnings status:** reported May 4; use it as read-through evidence only unless a later owner review promotes the setup.
 
 ---
 
@@ -282,8 +301,8 @@ Script-backed prep path:
 - Invalidation logic: loses the pullback zone and breaks back through 257.98 after the earnings window.
 - Stance: **Watch-only / do not chase**. The MA stack is strong, but this remains a non-daily watch-lane name and price is too extended for a disciplined fresh entry.
 - Entry-distance context: **+$48.74 / +15.6% above the top of the preferred band**.
-- **Lane note:** treat this as an earnings-sensitive tactical monitor that informs the AI sleeve, not as a quiet execution-board promotion.
-- ⚠️ **EARNINGS — May 5.**
+- **Lane note:** treat this as a post-earnings tactical monitor that informs the AI sleeve, not as a quiet execution-board promotion.
+- **Post-earnings status:** reported May 5; use the scorecard / read-through layer for interpretation and do not promote from watch-lane without owner review.
 
 ---
 
@@ -305,28 +324,29 @@ Script-backed prep path:
 
 ## Freshness and refresh policy
 
-- Last updated: **2026-05-03** — post-chain audit follow-up explicitly moved BRK.B into post-print bench language and tightened ETN pre-print event-risk wording; prior targeted trust-hardening sync for ETN, JPM, NVDA, XOM, GOOG, and MSFT plus approved band-sync refreshes for BRK.B, AMZN, VRT, CAT, LMT, and RTX after the May 1 close still stand. Unless otherwise stated, the rest of the sheet still reflects the 2026-04-27 precision pass recorded on 2026-04-28.
-- Data as of: **2026-05-01 close for ETN, JPM, NVDA, XOM, GOOG, MSFT, BRK.B, AMZN, VRT, CAT, LMT, RTX, CVX, PLTR, AMD, and LNG**; unchanged sections still reflect the earlier **2026-04-27 close** precision pass.
+- Last updated: **2026-05-09** — ETN was promoted to deployable-now / conditional add after fresh entry-band proof; NVDA was refreshed to wait / no-chase after moving above band.
+- Data as of: **2026-05-08 close for ETN and NVDA entry-band reruns; 2026-05-06 close for the prior artifact-confirmed updates in JPM, GOOG, MSFT, VRT, GS, and LMT**; other sections remain as labeled and should not be assumed refreshed unless their section says so.
 - Refresh cadence: each weekday for tracked names, plus extra refreshes before key earnings, after material breaks of support or resistance, or after moves large enough to change entry quality
-- Next refresh due: before the May 5 ETN print if the pre-event stance changes, otherwise immediately after the ETN / AMD / LNG / SMCI cluster begins, or earlier if another band/state transition changes the live board materially
+- Next refresh due: after LNG / NFP follow-up, after ETN / AMD / SMCI follow-through materially changes the setup, or earlier if another band/state transition changes the live board materially
 - Refresh policy: refresh tracked-name close, moving averages, posture, and entry-distance context each weekday. Only rewrite support, resistance, stance, or invalidation language when evidence materially changed, so the sheet stays current without turning noisy.
 
 ## Current ranking after precision pass
 
-1. **JPM** — in band, high-quality, no near-term earnings block
-2. **NVDA** — in band, but still crowded and Tier 2 only
-3. **ETN** — best pullback-only chart, but May 5 earnings caps pre-print aggression
-4. **GS** — deployable on paper, but still secondary to JPM
-5. **BRK.B** — in band, but repair mode overrides location
-6. **GOOG** — almost deployable on pullback only after the strong post-print gap
-7. **MSFT** — almost deployable, but still needs either a better pullback or cleaner 200-day repair
-8. **VRT** — constructive and still execution-entitled, but ETN remains the primary AI-power name
-9. **XOM** — in band, but still benched until the 50-day reclaim and follow-through improve
-10. **LMT** — far below stop — repair mode
+1. **JPM** — in band and deployable now in the owner layer; high-quality, no near-term earnings block, but size discipline still applies
+2. **ETN** — in band and owner-promoted as a Tier 2 conditional add; no chase above 420.31 and stop awareness at 383.23
+3. **NVDA** — above band and wait / no-chase; crowded, Tier 2 only, and timing-sensitive into May 20
+4. **GOOG** — almost deployable on pullback only after the strong post-print gap
+5. **MSFT** — almost deployable, but still slightly above band and below the 200-day
+6. **GS** — almost deployable, but now above band and still secondary to JPM
+7. **VRT** — constructive, but watch / research needed until intentionally promoted
+8. **BRK.B** — repair mode overrides location
+9. **XOM** — below band and still benched until the 50-day reclaim and follow-through improve
+10. **LMT** — below stop / repair mode
 
 Watch-lane technical carryovers with maintained bands:
 - **AMZN** — post-earnings follow-through monitor, not execution-board-entitled
 - **CAT** — post-print industrial read-through, not execution-board-entitled
+- **LLY** — healthcare diversification watch-lane candidate with review-only owner levels
 - **RTX** — repair-mode defense read-through, not execution-board-entitled
 
 ## Data-quality note
@@ -335,18 +355,16 @@ Watch-lane technical carryovers with maintained bands:
 - This sheet is based on the latest available closing data in the refresh chain. It is precise at the daily level, not intraday.
 - Support and resistance were left unchanged unless prior levels appeared materially breached or clearly superseded by new structure.
 - Bands updated 2026-04-28 are MA20-anchored mechanical proposals. They confirm the existing structural framing rather than chase price — the largest single-band shift was 4 dollars.
-- **Confidence remains usable-with-caution, not clean-deployable.** The old `GS` state-vs-band conflict is gone and dashboard validation is clean again, but remaining caution should center on the unresolved NVDA timing path, directional-only macro interpretation, crowding, and normal size discipline.
+- **Confidence remains usable-with-caution, not clean-deployable.** Dashboard validation is warning-grade: LNG is the only blocking band-review item, while 16 other band reviews are monitor-only. Remaining caution also centers on the unresolved NVDA timing path, directional-only macro interpretation, crowding, and normal size discipline.
 - **Market-state context is fresh, but it still carries approximation and mixed-date caveats:** policy probabilities are simplified rather than full FedWatch, pre-market tape is weak, and some rates series are not perfectly aligned to the same trading day.
-- **Deployable now** in this sheet means the gates line up on paper. It does **not** cancel residual timing-confirmation work, crowding risk, or normal size discipline.
+- **In-band is not deployable-now by default.** JPM is the current exception because explicit owner approval promoted it to deployable-now on 2026-05-07. NVDA remains in PROMOTION REVIEW, and GS remains almost deployable and above its written band.
 - **BRK.B** has symbol-format caveats on some public sites. Cross-site screenshots may still show symbol formatting inconsistently.
 
 ## Bottom line
 
-- **Live in-band names now:** JPM and NVDA
-- **Best chart, still earnings-capped:** ETN (above band, May 5 earnings)
-- **Post-print, not yet clean enough to force:** GOOG and MSFT
-- **Benched despite improved location:** BRK.B and XOM
-- **Need patience before aggressive sizing:** GS (deployable on paper, but still secondary to JPM), VRT on the execution board, and AMZN and CAT in the watch lane
-- **Repair mode — do not touch:** LMT (below stop, broken structure), RTX (watch-lane repair monitor), BRK.B (at band but MAs broken), XOM (in band, but still benched until the 50-day reclaim and post-print follow-through improve)
-- **Confidence:** usable with caution — 5 active dashboard warnings, all known and documented
-- **Operating directive:** No new entries in the open without a pre-set limit at a defined band level. JPM and NVDA are live on paper, but the warning stack, crowding, and near-term catalyst calendar still require discipline.
+- **Live board leaders now:** JPM (**deployable now**) and NVDA (**promotion review**); ETN remains the closest owner-layer almost-deployable follow-up case pending post-earnings confirmation.
+- **Almost deployable but not in band:** ETN, GOOG, GS, and MSFT
+- **Watch-lane with maintained levels:** VRT, AMZN, CAT, LLY, and other watch-lane names
+- **Repair / do not touch:** BRK.B, LMT, XOM, and RTX
+- **Confidence:** usable with caution — 1 active dashboard warning (LNG blocking band review) plus 16 monitor-only band-review items
+- **Operating directive:** No new entries in the open without a pre-set limit at a defined band level. JPM is the lone deployable-now name; NVDA remains live promotion-review only; warning-grade validation, crowding, catalyst timing, and normal size discipline still require respect.

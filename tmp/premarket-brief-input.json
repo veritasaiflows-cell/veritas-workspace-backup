@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "workflow": "WF37",
+  "generated_at_utc": "2026-05-08T13:01:06Z",
+  "window": "morning",
+  "review_window": "pre-market",
+  "review_output_path": "01. Dashboards/Review-Only Briefs/Pre-Market/2026-05-08.md",
+  "target_note": "01. Dashboards/Pre-Market Brief/2026-05-08.md",
+  "target_posture": "commercial_review_brief",
+  "consumer_posture": "review_only",
+  "canonical_mutation_allowed": false,
+  "market_data_as_of": "2026-05-08",
+  "note_date": "2026-05-08",
+  "owner_layers": [
+    "03. Portfolio/Portfolio Snapshot.md",
+    "03. Portfolio/Deployment Trigger Sheet.md",
+    "05. Intelligence/Weekly Positioning Review.md",
+    "05. Intelligence/Event Calendar.md"
+  ],
+  "source_artifacts": {
+    "required": {
+      "premarket_snapshot": {
+        "path": "tmp/premarket-snapshot.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T13:01:05.915803+00:00",
+        "status": "ok"
+      },
+      "dashboard_validation": {
+        "path": "tmp/dashboard-validation.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T13:01:05.736661+00:00",
+        "status": "ok"
+      },
+      "market_state": {
+        "path": "tmp/market-state.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T13:00:50.962576+00:00",
+        "status": "ok"
+      },
+      "trigger_sheet": {
+        "path": "tmp/trigger-sheet.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T13:01:04.600185+00:00",
+        "status": "ok"
+      },
+      "earnings_calendar": {
+        "path": "tmp/earnings-calendar.json",
+        "required": true,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T13:00:27.454213+00:00",
+        "status": "ok"
+      }
+    },
+    "optional": {
+      "dashboard_delta": {
+        "path": "tmp/dashboard-delta.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-05-08 13:01 UTC",
+        "status": "ok"
+      },
+      "deployment_check": {
+        "path": "tmp/deployment-check.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-05-08T13:01:04.552294+00:00",
+        "status": "ok"
+      }
+    }
+  },
+  "trust": {
+    "consumer_posture": "review_only",
+    "trust_level": "review_required",
+    "trust_gate_blocked": false,
+    "validation": {
+      "overall": "warning",
+      "critical": 0,
+      "warning": 2,
+      "info": 0,
+      "warning_messages": [
+        "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+        "Policy expectations still rely on manual target-range constants and require explicit review."
+      ]
+    },
+    "trust_reason": "dashboard validation has 2 warning(s)"
+  },
+  "state_summary": {
+    "deployable_now": [],
+    "almost_deployable": [
+      "GOOG",
+      "JPM",
+      "MSFT",
+      "NVDA"
+    ],
+    "blocked": []
+  },
+  "unresolved_truths": [
+    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+    "Policy expectations still rely on manual target-range constants and require explicit review.",
+    "Do not publish deployable-now state from the packet alone; owner notes remain authoritative.",
+    "dashboard validation has 2 warning(s)"
+  ],
+  "focus_questions": [
+    "What actually matters before the open, and what only looks urgent?",
+    "Which catalysts or unresolved truths materially limit confidence this morning?",
+    "Which owner notes must be read before any name is treated as actionable?"
+  ],
+  "narrative_goal": "Produce a commercial-grade pre-market brief that highlights trust, catalysts, setup discipline, and owner-first routing without publishing deployable-now state.",
+  "allowed_claims": [
+    "freshness and review availability",
+    "owner-first routing",
+    "unresolved-truth warnings",
+    "bounded orientation summary"
+  ],
+  "forbidden_claims": [
+    "deployable-now publication from the brief alone",
+    "owner-blocker clearance without owner-note confirmation",
+    "silent conflict smoothing between owner notes",
+    "portfolio-authority language or direct trade instruction"
+  ],
+  "required_citations": [
+    "03. Portfolio/Portfolio Snapshot.md",
+    "03. Portfolio/Deployment Trigger Sheet.md",
+    "05. Intelligence/Weekly Positioning Review.md",
+    "05. Intelligence/Event Calendar.md"
+  ],
+  "delivery_readiness": {
+    "mode": "internal_review_only",
+    "agent_write_ready": true,
+    "cron_promotion_ready": false,
+    "promotion_rule": "Require repeated clean review-only runs before any scheduled autonomous writer promotion."
+  }
+}

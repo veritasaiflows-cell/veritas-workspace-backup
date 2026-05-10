@@ -1,22 +1,39 @@
 {
-  "generated_at_utc": "2026-05-05T00:50:07.371116+00:00",
-  "brief_date": "2026-05-04",
-  "market_data_as_of": "2026-05-04",
-  "confidence_grade": "high",
-  "canonical_mutation_allowed": true,
-  "trust_reason": "dashboard validation clean",
-  "trust_gate_blocked": false,
-  "deployable_now": [
+  "generated_at_utc": "2026-05-10T03:38:40.512328+00:00",
+  "brief_date": "2026-05-09",
+  "market_data_as_of": "2026-05-08",
+  "confidence_grade": "reduced",
+  "consumer_posture": "generated_dashboard_archive",
+  "generated_archive_write_allowed": false,
+  "canonical_mutation_allowed": false,
+  "presentation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "deployment_state_mutation_allowed": false,
+  "trade_execution_allowed": false,
+  "owner_approval_granted": false,
+  "authority_reason": "generated dashboard/archive write only; scheduled post-close canonical mutation remains fail-closed",
+  "trust_reason": "dashboard validation has 4 warning(s)",
+  "trust_gate_blocked": true,
+  "deployable_now": [],
+  "almost_deployable": [
+    "GOOG",
     "GS",
     "JPM",
+    "MSFT",
     "NVDA"
   ],
-  "almost_deployable": [
-    "ETN",
-    "GOOG",
-    "MSFT"
-  ],
   "blocked": [],
+  "bench": [
+    "BRK.B",
+    "XOM"
+  ],
+  "below_stop": [
+    "CVX",
+    "LMT",
+    "LNG",
+    "RTX"
+  ],
+  "deploy_check_source": "2026-05-10T03:38:38.939263+00:00",
   "deferred_to_machine": false,
-  "wrote_to": "01. Dashboards\\Daily Executive Summary\\2026-05-04.md"
+  "wrote_to": "01. Dashboards\\Daily Executive Summary\\2026-05-09-machine.md"
 }

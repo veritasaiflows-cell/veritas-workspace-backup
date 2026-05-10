@@ -35,6 +35,7 @@ function init() {
   renderMacro();
   renderRisk();
   renderTriggerSheet();
+  renderDecisionQueue();
   renderPostEarnings();
   renderEntryBands();
 

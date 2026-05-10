@@ -1,18 +1,37 @@
 {
-  "generated_at_utc": "2026-05-04T22:28:46.737428+00:00",
-  "snapshot_date": "2026-05-04",
-  "market_data_as_of": "2026-05-04",
-  "trust_label": "clean",
-  "deployable_now": [
-    "GS",
+  "generated_at_utc": "2026-05-08T13:01:05.915803+00:00",
+  "snapshot_date": "2026-05-08",
+  "market_data_as_of": "2026-05-08",
+  "trust_label": "degraded",
+  "canonical_mutation_allowed": false,
+  "trust_reason": "dashboard validation has 2 warning(s)",
+  "trust_gate_blocked": true,
+  "deployable_now": [],
+  "almost_deployable": [
+    "GOOG",
     "JPM",
+    "MSFT",
     "NVDA"
   ],
-  "almost_deployable": [
+  "blocked": [],
+  "wrote_to": "01. Dashboards\\Pre-Market Snapshot\\2026-05-08-machine.md",
+  "actionable_table_tickers": [
     "ETN",
     "GOOG",
-    "MSFT"
+    "GS",
+    "JPM",
+    "MSFT",
+    "NVDA"
   ],
-  "blocked": [],
-  "wrote_to": "01. Dashboards\\Pre-Market Snapshot\\2026-05-04.md"
+  "actionable_quote_tickers": [
+    "ETN",
+    "GOOG",
+    "GS",
+    "JPM",
+    "MSFT",
+    "NVDA"
+  ],
+  "actionable_quote_coverage_gap": [],
+  "actionable_contract_source": "trigger_sheet_review_states",
+  "actionable_contract_target_count": 6
 }

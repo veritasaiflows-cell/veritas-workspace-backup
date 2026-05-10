@@ -63,7 +63,8 @@ COVERAGE: dict[str, str] = {
     "GS": "GS",
     "BRK.B": "BRK-B",
     "AMZN": "AMZN",
-    "CAT": "CAT"
+    "CAT": "CAT",
+    "LLY": "LLY"
 }
 
 # Keep this focused on live timing-sensitive names where date drift can still

@@ -36,13 +36,16 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from market_data_utils import atomic_write_json, atomic_write_text
+from board_state_contract import record_state, review_records
+from dashboard_delta_render import format_delta_change
+from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate
 
 WORKSPACE        = Path(__file__).resolve().parents[1]
 MARKET_STATE     = WORKSPACE / "tmp" / "market-state.json"
 TRIGGER_SHEET    = WORKSPACE / "tmp" / "trigger-sheet.json"
 VALIDATION       = WORKSPACE / "tmp" / "dashboard-validation.json"
 EARNINGS_CAL     = WORKSPACE / "tmp" / "earnings-calendar.json"
+POST_PREP        = WORKSPACE / "tmp" / "post-earnings-prep.json"
 DELTA            = WORKSPACE / "tmp" / "dashboard-delta.json"
 OUT_DIR          = WORKSPACE / "01. Dashboards" / "Pre-Market Snapshot"
 OUT_JSON         = WORKSPACE / "tmp" / "premarket-snapshot.json"
@@ -180,21 +183,7 @@ def build_actionable_table(trigger: dict, ms: dict) -> str:
     rows.append("| Ticker | State | Last Close | Pre-Mkt | Entry Band | Gap to Band |")
     rows.append("|---|---|---|---|---|---|")
 
-    # Sort: deployable first, then almost, then blocked, then below-stop
-    state_order = {
-        "DEPLOYABLE": 0,
-        "ALMOST DEPLOYABLE": 1,
-        "BLOCKED": 2,
-        "BELOW STOP": 3,
-        "DO NOT TOUCH": 4,
-    }
-    actionable_states = {"DEPLOYABLE", "ALMOST DEPLOYABLE"}
-    interesting_states = actionable_states | {"BLOCKED"}
-
-    sorted_recs = sorted(
-        [r for r in records if (r.get("action_state") or "").upper() in interesting_states],
-        key=lambda r: state_order.get((r.get("action_state") or "").upper(), 99),
-    )
+    sorted_recs = review_records([record for record in records if isinstance(record, dict)])
 
     if not sorted_recs:
         rows.append("| _none_ | — | — | — | — | — |")
@@ -202,20 +191,66 @@ def build_actionable_table(trigger: dict, ms: dict) -> str:
 
     for r in sorted_recs:
         tk = r.get("ticker", "")
-        state = r.get("action_state", "")
+        state = record_state(r)
         close = r.get("close")
         eb = r.get("entry_band") or {}
         band_label = eb.get("label", "no band")
         # Pre-market: yfinance generally returns null in this environment, but
         # if a real pre-market value is present in actionable block, show it.
         ab = actionable_block.get(tk, {}) if isinstance(actionable_block, dict) else {}
-        pre = ab.get("pre_market_price") or ab.get("last_price")
+        pre = ab.get("pre_market_price")
+        if pre is None:
+            pre = ab.get("last_price")
         gap_d, gap_p = gap_to_band(close, eb)
         rows.append(
-            f"| {tk} | {state} | {fmt(close)} | {fmt(pre) if pre else '—'} | "
+            f"| {tk} | {state} | {fmt(close)} | {fmt(pre) if pre is not None else '—'} | "
             f"{band_label} | {gap_d} / {gap_p} |"
         )
     return "\n".join(rows)
+
+
+def actionable_quote_audit(trigger: dict, ms: dict) -> dict[str, Any]:
+    records = trigger.get("records", []) if trigger else []
+    actionable_block = (ms or {}).get("data", {}).get("actionable", {}) or {}
+    contract = (ms or {}).get("data", {}).get("actionable_contract", {}) or {}
+
+    table_records = review_records([record for record in records if isinstance(record, dict)])
+    table_tickers = [str(record.get("ticker")) for record in table_records if record.get("ticker")]
+    quote_tickers = sorted(str(ticker) for ticker in actionable_block.keys()) if isinstance(actionable_block, dict) else []
+    coverage_gap = [ticker for ticker in table_tickers if ticker not in quote_tickers]
+
+    return {
+        "actionable_table_tickers": table_tickers,
+        "actionable_quote_tickers": quote_tickers,
+        "actionable_quote_coverage_gap": coverage_gap,
+        "actionable_contract_source": contract.get("source"),
+        "actionable_contract_target_count": contract.get("target_count"),
+    }
+
+
+def build_overnight_earnings(post_prep: dict | None) -> str:
+    lines = ["## Overnight Earnings / Review Queue\n"]
+    packets = (post_prep or {}).get("packets", []) or []
+    reported = [p for p in packets if p.get("phase") == "post_earnings"]
+
+    if not reported:
+        lines.append("- No tracked names are currently staged as reported-but-needing-review.")
+        return "\n".join(lines)
+
+    def sort_key(packet: dict) -> tuple[int, str]:
+        priority_rank = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+        return (priority_rank.get(str(packet.get("priority", "")).lower(), 9), str(packet.get("ticker", "")))
+
+    for packet in sorted(reported, key=sort_key):
+        ticker = packet.get("ticker", "?")
+        priority = str(packet.get("priority", "")).upper() or "UNSPECIFIED"
+        stage = packet.get("stage") or "reported"
+        trigger = (packet.get("trigger_context") or {}).get("action_state") or "review pending"
+        watch_items = packet.get("watch_items") or []
+        watch_text = ", ".join(watch_items[:3]) if watch_items else "review packet needed"
+        lines.append(f"- **{ticker}** ({priority}) — {stage}; current trigger posture: {trigger}. Watch: {watch_text}.")
+
+    return "\n".join(lines)
 
 
 def build_today_catalysts(earnings: dict, ms: dict, today: date) -> str:
@@ -253,7 +288,7 @@ def build_today_catalysts(earnings: dict, ms: dict, today: date) -> str:
 
 
 def build_yesterday_changes(delta: dict | None) -> str:
-    lines = ["## What Changed Since Yesterday\n"]
+    lines = ["## What Changed Since the Prior Dashboard Run\n"]
     if not delta:
         lines.append("- No delta artifact available.")
         return "\n".join(lines)
@@ -265,20 +300,7 @@ def build_yesterday_changes(delta: dict | None) -> str:
         lines.append("- No tracked-name state changes vs. prior dashboard run.")
         return "\n".join(lines)
     for ch in changes:
-        t = ch.get("type", "")
-        tk = ch.get("ticker", "")
-        if t == "action_state_change":
-            lines.append(f"- **{tk}** — action state {ch.get('from','?')} → {ch.get('to','?')}")
-        elif t == "below_stop_entered":
-            lines.append(f"- **{tk}** — entered below-stop")
-        elif t == "below_stop_recovered":
-            lines.append(f"- **{tk}** — recovered above stop")
-        elif t == "exited_band":
-            lines.append(f"- **{tk}** — exited prior entry band")
-        elif t == "entered_band":
-            lines.append(f"- **{tk}** — entered entry band")
-        else:
-            lines.append(f"- **{tk}** — {t}")
+        lines.append(f"- {format_delta_change(ch)}")
     return "\n".join(lines)
 
 
@@ -291,7 +313,7 @@ def build_open_protocol() -> str:
 - Re-check only if price actually reaches a written trigger zone with macro context intact."""
 
 
-def render_markdown(today: date, ms: dict, trigger: dict, validation: dict, earnings: dict, delta: dict | None) -> str:
+def render_markdown(today: date, ms: dict, trigger: dict, validation: dict, earnings: dict, post_prep: dict | None, delta: dict | None) -> str:
     label, reason = trust_label(validation)
     last_td = ms.get("last_trading_day", "unknown") if ms else "unknown"
     gen_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -305,6 +327,8 @@ def render_markdown(today: date, ms: dict, trigger: dict, validation: dict, earn
     parts.append("## Actionable Names\n")
     parts.append(build_actionable_table(trigger, ms))
     parts.append("")
+    parts.append(build_overnight_earnings(post_prep))
+    parts.append("")
     parts.append(build_today_catalysts(earnings, ms, today))
     parts.append("")
     parts.append(build_yesterday_changes(delta))
@@ -314,7 +338,7 @@ def render_markdown(today: date, ms: dict, trigger: dict, validation: dict, earn
     parts.append("---\n")
     parts.append(f"*Auto-generated by `scripts/premarket_snapshot.py`. "
                  f"Inputs: market-state.json (as of {last_td}), trigger-sheet.json, "
-                 f"earnings-calendar.json, dashboard-validation.json, dashboard-delta.json.*")
+                 f"earnings-calendar.json, post-earnings-prep.json, dashboard-validation.json, dashboard-delta.json.*")
 
     return "\n".join(parts)
 
@@ -329,25 +353,24 @@ def main() -> int:
     trigger   = load_json(TRIGGER_SHEET) or {}
     validation = load_json(VALIDATION) or {}
     earnings  = load_json(EARNINGS_CAL) or {}
+    post_prep = load_json(POST_PREP) or {}
     delta     = load_json(DELTA)
 
-    md = render_markdown(today, ms, trigger, validation, earnings, delta)
+    md = render_markdown(today, ms, trigger, validation, earnings, post_prep, delta)
 
     canonical = OUT_DIR / f"{today.isoformat()}.md"
     machine   = OUT_DIR / f"{today.isoformat()}-machine.md"
 
-    # If a session-written file exists, write to the machine sidecar so the
-    # human/agent version takes precedence.
-    if canonical.exists():
-        # Detect: if the canonical was written by this same script, we own it
-        # and should overwrite. Otherwise, write a sidecar.
+    canonical_allowed, trust_reason = canonical_note_mutation_gate(validation)
+
+    if canonical_allowed and canonical.exists():
         existing = canonical.read_text(encoding="utf-8", errors="replace")
         if "Auto-generated by `scripts/premarket_snapshot.py`" in existing:
             target = canonical
         else:
             target = machine
     else:
-        target = canonical
+        target = canonical if canonical_allowed else machine
 
     atomic_write_text(target, md, encoding="utf-8")
 
@@ -357,11 +380,15 @@ def main() -> int:
         "snapshot_date":    today.isoformat(),
         "market_data_as_of": ms.get("last_trading_day"),
         "trust_label":      trust_label(validation)[0],
+        "canonical_mutation_allowed": canonical_allowed,
+        "trust_reason":     trust_reason,
+        "trust_gate_blocked": not canonical_allowed,
         "deployable_now":   (trigger.get("summary", {}) or {}).get("deployable_now", []),
         "almost_deployable": (trigger.get("summary", {}) or {}).get("almost_deployable", []),
         "blocked":          (trigger.get("summary", {}) or {}).get("blocked", []),
         "wrote_to":         str(target.relative_to(WORKSPACE)),
     }
+    summary.update(actionable_quote_audit(trigger, ms))
     atomic_write_json(OUT_JSON, summary, indent=2, ensure_ascii=True)
 
     sep = "=" * 60
@@ -372,6 +399,8 @@ def main() -> int:
     print(f"  Deployable now:    {len(summary['deployable_now'])}")
     print(f"  Almost deployable: {len(summary['almost_deployable'])}")
     print(f"  Blocked:           {len(summary['blocked'])}")
+    if not canonical_allowed:
+        print(f"  [!] Trust gate blocked canonical write; wrote machine sidecar instead.")
     print(f"  Wrote -> {summary['wrote_to']}")
     print(f"  Saved -> tmp/premarket-snapshot.json")
     print(sep + "\n")

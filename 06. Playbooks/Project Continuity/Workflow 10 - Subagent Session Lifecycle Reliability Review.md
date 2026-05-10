@@ -56,9 +56,23 @@
 - Observable consequence: successful cleanup sometimes depends on a two-step proof standard: verify the worktree is no longer active in git, then clear the filesystem residue explicitly if the runtime tool cannot remove it.
 - Resulting hardening implication: a prune failure is not automatically a live-worktree risk, but it also is not safe to ignore. Workflow 10 should codify the verify-then-clear rule instead of leaving it as operator folklore.
 
+### Incident 7 - 2026-05-06 subagent completion auto-announce delivery gap
+- Context: WF39 used spawned helper lanes correctly under the new `openai-codex/gpt-5.5` high-thinking posture.
+- What happened: the completion result reached the main session as an inter-session completion payload and was integrated, but the user-facing Control UI path did not auto-announce it as a normal assistant-visible update; Randall observed the event metadata as `subagent_announce isUser=false`.
+- Observable consequence: helper-lane completion can be real and integrated while the user-facing delivery surface still fails to present the expected announcement cleanly.
+- Resulting hardening implication: spawned-lane closeout still needs explicit main-session acknowledgement and artifact/control-surface verification; runtime auto-announce delivery is advisory, not proof that the user was cleanly updated.
+
+### Incident 8 - 2026-05-09 subagent lost active execution context despite proven write/exec access
+- Context: a bounded `sqlite-artifact-index-phase1` implementation helper was launched to add a derived SQLite retrieval index and query helper.
+- What happened: the helper failed after roughly four minutes with `subagent run lost active execution context`. It returned useful schema-inspection output but did not write `scripts/artifact_index.py` or `tmp/veritas-artifact-index.sqlite`.
+- Access proof: a follow-up isolated probe wrote and read `tmp/subagent-access-probe.txt` and ran `python --version` successfully (`Python 3.13.13`), proving spawned helpers have workspace write access and exec access in this environment.
+- Observable consequence: implementation-lane failure can be caused by runtime/session-context loss even when permissions are fine; lack of written output is not automatically evidence of denied write access.
+- Resulting hardening implication: the governing spawn rule now lives in `06. Playbooks/Spawn and Closeout Governance Matrix.md` and the copyable checkpoint language lives in `06. Playbooks/Subagent Spawn Handoff Template.md`; this continuity note keeps only the incident evidence and reopen trigger.
+
 ## Outstanding
 - Commit the Workflow 10 change set after queue/registry/continuity sync is included.
 - Decide later whether the memory indexing / embedding-credential problem deserves its own follow-on runtime workflow.
+- Track whether `subagent run lost active execution context` repeats on future implementation lanes; if it repeats, open a dedicated runtime/config investigation rather than treating each case as isolated.
 
 ## Blockers / Trust Gaps
 - Runtime/session state is still not fully boring or proven.

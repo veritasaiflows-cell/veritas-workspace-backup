@@ -38,6 +38,8 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from board_state_contract import canonical_action_state
+
 WORKSPACE = Path(__file__).resolve().parents[1]
 MARKET_STATE    = WORKSPACE / "tmp" / "market-state.json"
 TRIGGER_SHEET   = WORKSPACE / "tmp" / "trigger-sheet.json"
@@ -139,7 +141,7 @@ def build_section3_deployment(trigger: dict, scores: dict | None) -> str:
 
     # Group by action state
     groups: dict[str, list[dict]] = {
-        "DEPLOYABLE": [],
+        "DEPLOYABLE NOW": [],
         "ALMOST DEPLOYABLE": [],
         "BLOCKED": [],
         "DO NOT TOUCH": [],
@@ -148,10 +150,10 @@ def build_section3_deployment(trigger: dict, scores: dict | None) -> str:
         "OTHER": [],
     }
     for r in records:
-        state = (r.get("action_state") or "").upper()
+        state = canonical_action_state(r.get("action_state") or r.get("deployment_state") or "")
         if state in groups:
             groups[state].append(r)
-        elif "DEPLOYABLE" in state:
+        elif state == "ALMOST DEPLOYABLE":
             groups["ALMOST DEPLOYABLE"].append(r)
         elif "BLOCK" in state:
             groups["BLOCKED"].append(r)
@@ -184,9 +186,9 @@ def build_section3_deployment(trigger: dict, scores: dict | None) -> str:
         earn_str = f" | earnings in {dte}d" if dte is not None and 0 <= dte <= 30 else ""
         return f"  - **{tk}** — close {fmt(cl, 2)}, band {band_str}{stop_str}{score_str}{earn_str}"
 
-    if groups["DEPLOYABLE"]:
-        lines.append(f"**Deployable now ({len(groups['DEPLOYABLE'])}):**")
-        for r in groups["DEPLOYABLE"]:
+    if groups["DEPLOYABLE NOW"]:
+        lines.append(f"**Deployable now ({len(groups['DEPLOYABLE NOW'])}):**")
+        for r in groups["DEPLOYABLE NOW"]:
             lines.append(ticker_line(r))
 
     if groups["ALMOST DEPLOYABLE"]:
@@ -286,14 +288,16 @@ def build_section5_sectors(trigger: dict, config: dict) -> str:
             continue
         sector_weights.setdefault(sector, []).append(ticker)
 
+    max_sector = ((config or {}).get("risk_thresholds") or {}).get("max_sector_pct", 35)
+
     lines = ["### 5) Sector allocation and risk flags\n"]
     lines.append("*Draft sector groupings from trigger sheet. Weights are model targets, not live deployed positions.*\n")
     lines.append("| Sector | Names | Risk Cap | Note |")
     lines.append("|---|---|---|---|")
     for sector, tickers in sorted(sector_weights.items()):
-        lines.append(f"| {sector} | {', '.join(tickers)} | 35% max | — |")
+        lines.append(f"| {sector} | {', '.join(tickers)} | {max_sector}% max | — |")
 
-    lines.append(f"\n- **Concentration check (judgment):** _[Fill: is any sector approaching the 35% cap at current draft weights? What sequencing constraint does that impose?]_")
+    lines.append(f"\n- **Concentration check (judgment):** _[Fill: is any sector approaching the {max_sector}% cap at current draft weights? What sequencing constraint does that impose?]_")
     lines.append(f"- **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_")
     lines.append(f"- **Risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_")
     return "\n".join(lines)
@@ -323,6 +327,7 @@ def main() -> None:
     week_start, week_end = week_bounds(today)
     week_label = f"{week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}"
     week_heading = f"## Week of {week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}"
+    curated_week_heading = f"## Current operating map — Week of {week_start.strftime('%Y-%m-%d')} to {week_end.strftime('%Y-%m-%d')}"
 
     print(f"Weekly Review Skeleton — {week_label}")
     print("Loading artifacts...")
@@ -340,7 +345,7 @@ def main() -> None:
     if REVIEW_MD.exists():
         review_content = REVIEW_MD.read_text(encoding="utf-8")
 
-    week_exists = week_heading in review_content
+    week_exists = week_heading in review_content or curated_week_heading in review_content
 
     # -----------------------------------------------------------------------
     # Build skeleton sections

@@ -192,7 +192,8 @@ A job is not real because it was created. It is real after proof.
 ## Effort Routing
 - **Low effort** -> handle in the main cron run
 - **Medium effort** -> spawn one bounded detached worker only with an approved live model and a tighter scope; do not assume a removed cheap helper model exists
-- **High effort** -> require preflight review first, then spawn one bounded detached worker with `openai-codex/gpt-5.4` only if the contract is clear enough
+- **High effort** -> require preflight review first, then spawn one bounded detached worker with `openai-codex/gpt-5.5` high-thinking posture when available, only if the contract is clear enough
+- **Fallback rule** -> if `openai-codex/gpt-5.5` is unavailable, keep the same bounded contract and record the fallback rather than silently using a weaker lane
 
 ## Secure Spawn Default
 When spawn is allowed:

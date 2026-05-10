@@ -6,6 +6,14 @@
 - Prove that freshness patching can support the daily and weekly operating chain without becoming an autonomous rewrite lane.
 
 ## Current State
+- closed with follow-up on 2026-05-06 after a bounded dry run and manual apply proof
+- WF26 handed forward a bounded input posture only: mechanical/alignment freshness candidates emerging from the WF21/WF26 intake path, plus explicit owner-surface mapping
+- early QA challenge found one real scope bug before Phase 2: **ETN is not a safe normal patch candidate yet** because primary-source capture stayed incomplete and the packet itself flagged thesis-drift risk
+- ETN may still be used in Phase 2 only as a **higher-review contradiction/alignment dry run** against stale pre-print wording on approved owner surfaces; it is not a normal safe candidate
+- NVDA timing and oil / Hormuz remain valid only as fail-closed rejection examples, not normal patch candidates
+- JPM may be used only on approved owner surfaces like brief/dashboard notes named in the contract, not portfolio/manual-truth surfaces
+- Phase 1 inventory is now captured in `06. Playbooks/WF22 Phase 1 Pilot Stale-Claim Inventory and Owner-Surface Map - 2026-05-06.md`
+- Phase 2 dry run and Phase 3 manual apply proof are now captured in `06. Playbooks/WF22 Freshness Patch Pilot Dry Run and Manual Apply Proof - 2026-05-06.md`
 - The canonical patch contract already exists: `06. Playbooks/Research Automation Canonical Freshness Patch Contract.md`.
 - The exact v1 patch-proposal input shape now exists: `06. Playbooks/Research Automation Freshness Candidate Input Contract.md`.
 - `scripts/canonical_freshness_patch.py` now exists as a review-only prototype for freshness candidate preparation.
@@ -40,7 +48,7 @@ Required outputs:
 - owner-surface map for each candidate
 
 Status:
-- queued
+- completed
 
 ### Phase 2 - Patch-candidate dry run
 Purpose:
@@ -53,7 +61,7 @@ Required outputs:
 - rejection examples for anything that behaves like thesis rewrite
 
 Status:
-- queued
+- completed
 
 ### Phase 3 - Manual apply proof
 Purpose:
@@ -66,7 +74,7 @@ Required outputs:
 - downstream surface-sync record
 
 Status:
-- queued
+- completed
 
 ### Phase 4 - Keep / widen / stop decision
 Purpose:
@@ -78,7 +86,7 @@ Required outputs:
 - explicit no-auto-apply posture or approved narrow next step
 
 Status:
-- queued
+- completed
 
 ## Daily / Weekly chain insertion
 - **Post-close / post-earnings**: patch candidates may be prepared only after refresh artifacts and packet review exist.
@@ -111,8 +119,18 @@ Workflow 22 should not close unless all are true:
 5. no autonomous canonical mutation or hidden judgment drift occurs
 6. the pilot produces a clear keep / widen / stop decision
 
+## Phase 2 admission rule
+- Only candidates that are still clearly mechanical/alignment-only may enter the dry run as normal proposals.
+- Demote to rejection-only or stop-line examples when primary capture is incomplete, source quality is unresolved, or the packet itself flags thesis drift.
+- Current bounded posture:
+  - keep `GOOG / MSFT` post-earnings wording cleanup as likely normal candidates if the patch stays entry-neutral
+  - keep `NVDA timing path` as rejection-only / stop-line proof unless primary confirmation becomes clean
+  - keep `oil / Hormuz sleeve` as verification-only rejection proof
+  - keep `JPM` only on approved owner surfaces, never portfolio/manual-truth surfaces
+  - remove `ETN` from the normal Phase 2 target set; allow it only as a higher-review contradiction/alignment dry run if the stale sentence is exact and the replacement text stays limited to reported/interpreted status plus explicit primary-capture incompleteness
+
 ## Next Action
-- Select the pilot stale-claim set from the already named high-signal surfaces: NVDA timing path, JPM, ETN, GOOG / MSFT post-earnings freshness, and the oil / Hormuz sleeve.
+- Hand the queue to the bounded WF36 follow-up. Keep SQL/retrieval work subordinate to source files and artifacts, and do not let the retrieval layer become a second judgment or queue-advancement surface.
 
 ## Key Files
 - `06. Playbooks/Research Automation Canonical Freshness Patch Contract.md`
@@ -122,3 +140,5 @@ Workflow 22 should not close unless all are true:
 - `06. Playbooks/Cron Job Protocol.md`
 - `scripts/canonical_freshness_patch.py`
 - `06. Playbooks/Project Continuity/Workflow 16 - Research Automation and Canonical Freshness Hardening.md`
+- `06. Playbooks/WF22 Phase 1 Pilot Stale-Claim Inventory and Owner-Surface Map - 2026-05-06.md`
+- `06. Playbooks/WF22 Freshness Patch Pilot Dry Run and Manual Apply Proof - 2026-05-06.md`

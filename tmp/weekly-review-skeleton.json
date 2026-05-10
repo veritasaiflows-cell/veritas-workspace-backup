@@ -1,31 +1,33 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:17.922096+00:00",
-  "week_start": "2026-04-27",
-  "week_end": "2026-05-01",
-  "week_label": "2026-04-27 to 2026-05-01",
+  "generated_at_utc": "2026-05-07T19:48:05.892751+00:00",
+  "week_start": "2026-05-04",
+  "week_end": "2026-05-08",
+  "week_label": "2026-05-04 to 2026-05-08",
   "week_exists_in_md": true,
   "macro_snapshot": {
-    "last_trading_day": "2026-05-01",
-    "vix": 16.99,
-    "spx": 7230.1201,
-    "y2": 3.88,
-    "y10": 4.378,
-    "2s10s": 49.8,
-    "dxy": 98.21,
-    "brent": 108.17,
-    "wti": 101.94,
+    "last_trading_day": "2026-05-07",
+    "vix": 17.17,
+    "spx": 7370.0098,
+    "y2": 3.93,
+    "y10": 4.334,
+    "2s10s": 40.4,
+    "dxy": 97.886,
+    "brent": 96.45,
+    "wti": 90.46,
     "cut_prob": 0.0
   },
   "deployment_summary": {
     "deployable_now": [
-      "GS",
-      "JPM",
-      "NVDA"
+      "JPM"
+    ],
+    "promotion_review": [
+      "ETN"
     ],
     "almost_deployable": [
-      "ETN",
       "GOOG",
-      "MSFT"
+      "GS",
+      "MSFT",
+      "NVDA"
     ],
     "blocked": [],
     "do_not_touch": [
@@ -42,7 +44,7 @@
     {
       "ticker": "JPM",
       "total": 19,
-      "stance": "DEPLOYABLE NOW"
+      "stance": "PROMOTION REVIEW"
     },
     {
       "ticker": "GOOG",
@@ -55,20 +57,24 @@
       "stance": "Almost deployable"
     },
     {
-      "ticker": "GS",
+      "ticker": "ETN",
       "total": 18,
-      "stance": "DEPLOYABLE NOW"
+      "stance": "PROMOTION REVIEW"
     },
     {
-      "ticker": "NVDA",
-      "total": 18,
-      "stance": "DEPLOYABLE NOW"
+      "ticker": "GS",
+      "total": 17,
+      "stance": "Almost deployable"
     }
   ],
   "this_week_earnings": [
     {
-      "ticker": "COP",
-      "date": "2026-04-30"
+      "ticker": "LNG",
+      "date": "2026-05-07"
+    },
+    {
+      "ticker": "EOG",
+      "date": "2026-05-05"
     }
   ]
 }

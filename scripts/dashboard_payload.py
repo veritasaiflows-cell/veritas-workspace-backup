@@ -16,6 +16,7 @@ from dashboard_core import (
     assess_source,
     build_provenance,
     get_vault_freshness,
+    summarize_source_freshness,
     status_worse,
     status_badge,
     fmt_num,
@@ -34,7 +35,7 @@ NEAR_BAND_THRESHOLD_PCT = 5.0
 # Any time these are renamed in the payload assembler, update here too or the
 # dashboard fails silent. Validation runs at the end of build_payload and
 # emits warnings into the existing validation block.
-REQUIRED_TODAY_ACTION_KEYS = ("deployable", "almost", "blocked", "earningsPending", "riskOff")
+REQUIRED_TODAY_ACTION_KEYS = ("deployable", "promotionReview", "almost", "blocked", "earningsPending", "riskOff")
 REQUIRED_ACTION_CARD_KEYS = ("ticker", "close", "entryBand", "stop", "posture")
 REQUIRED_DEPLOYMENT_RECORD_KEYS = (
     "ticker", "state", "close", "bandLabel", "bandLow", "bandHigh",
@@ -68,7 +69,7 @@ def _validate_payload_shape(
                 "today_action_missing_bucket", "critical", "shape",
                 f"today_action missing required bucket '{key}' — the Overview action card will not render this section.",
             )
-    for bucket_key in ("deployable", "almost", "blocked"):
+    for bucket_key in ("deployable", "promotionReview", "almost", "blocked"):
         for idx, card in enumerate(today_action.get(bucket_key) or []):
             for field in REQUIRED_ACTION_CARD_KEYS:
                 if field not in card:
@@ -183,18 +184,21 @@ def update_history(payload: dict[str, Any]) -> list[dict[str, Any]]:
             history = []
 
     history.append({
-        "generated_at": payload["generated_at"],
+        "generated_at_utc": payload.get("generated_at_utc") or payload.get("generated_at", ""),
+        "schema_version": 2,
         "technical": [
             {
                 "ticker": t["ticker"],
-                "actionState": t["actionState"],
+                "action_state": t.get("actionState"),
                 "close": t["close"],
-                "inBand": t.get("inBand"),
+                "in_band": t.get("inBand"),
                 "blocked": t.get("blocked"),
-                "belowStop": t.get("belowStop"),
+                "below_stop": t.get("belowStop"),
+                "band_gap_dollar": t.get("bandGapDollar"),
+                "earnings_date": t.get("earningsDate"),
             }
             for t in payload.get("technical", [])
-        ]
+        ],
     })
 
     if len(history) > 50:
@@ -294,6 +298,97 @@ def compute_delta(current: dict[str, Any], previous: dict[str, Any] | None) -> d
         "first_run": False,
         "changes": changes,
         "summary": "; ".join(parts),
+    }
+
+
+def _latest_window_artifact(prefix: str, window: str = "post-close") -> tuple[dict[str, Any], str | None]:
+    """Load the current dashboard-window artifact without making it canonical."""
+    preferred = TMP / f"{prefix}-{window}.json"
+    if preferred.exists():
+        return load_json(preferred) or {}, preferred.as_posix()
+    matches = sorted(TMP.glob(f"{prefix}-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if matches:
+        return load_json(matches[0]) or {}, matches[0].as_posix()
+    return {}, None
+
+
+def _authority_boundary(*artifacts: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "consumer_posture": "review_only",
+        "owner_approval_required": True,
+        "owner_approval_granted": False,
+        "canonical_mutation_allowed": all(a.get("canonical_mutation_allowed") is True for a in artifacts) if artifacts else False,
+        "portfolio_mutation_allowed": False,
+        "deployment_state_mutation_allowed": all(a.get("deployment_state_mutation_allowed") is True for a in artifacts) if artifacts else False,
+        "trade_execution_allowed": all(a.get("trade_execution_allowed") is True for a in artifacts) if artifacts else False,
+        "language": "Review-only queue. Owner approval is required before any canonical note, portfolio, deployment-state, or trade action.",
+    }
+
+
+def _build_decision_queue(window: str = "post-close") -> dict[str, Any]:
+    daily, daily_path = _latest_window_artifact("daily-review-objects", window)
+    intel, intel_path = _latest_window_artifact("market-intelligence-events", window)
+    daily_summary = daily.get("summary") if isinstance(daily.get("summary"), dict) else {}
+    intel_summary = intel.get("summary") if isinstance(intel.get("summary"), dict) else {}
+    review_objects = daily.get("review_objects") if isinstance(daily.get("review_objects"), list) else []
+    intel_events = intel.get("events") if isinstance(intel.get("events"), list) else []
+    explicit_daily_escalations = daily.get("escalations") if isinstance(daily.get("escalations"), list) else []
+    daily_escalations = explicit_daily_escalations or [obj for obj in review_objects if str(obj.get("surface_state") or "").upper() == "REVIEW REQUIRED"]
+    capital_recommendations = daily.get("capital_deployment_recommendations") if isinstance(daily.get("capital_deployment_recommendations"), list) else []
+    if not capital_recommendations:
+        capital_recommendations = [obj for obj in review_objects if obj.get("object_type") == "capital_recommendation"]
+    if not capital_recommendations:
+        capital_recommendations = [obj for obj in review_objects if obj.get("recommended_action") and obj.get("owner_approval_required") is True]
+    market_escalations = [event for event in intel_events if event.get("owner_review_required") or (event.get("rank") or 99) <= 5]
+
+    def _review_item(obj: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": obj.get("id") or obj.get("event_id") or (f"capital:{obj.get('ticker')}" if obj.get("recommended_action") and obj.get("ticker") else None),
+            "ticker": obj.get("ticker") or obj.get("ticker_or_macro_sleeve") or "SYSTEM",
+            "type": obj.get("object_type") or obj.get("event_type") or ("capital_recommendation" if obj.get("recommended_action") else "review_object"),
+            "title": obj.get("why_now") or obj.get("event_title") or obj.get("recommended_action") or obj.get("category") or "Review object",
+            "route": obj.get("recommended_route") or obj.get("route") or "owner_review",
+            "urgency": obj.get("urgency") or "review",
+            "score": obj.get("signal_score") or obj.get("materiality_score"),
+            "owner_question": obj.get("owner_question") or "Owner approval required before action.",
+            "next_step": obj.get("recommended_next_step") or obj.get("guidance") or obj.get("blocked_reason") or obj.get("reason") or "Review before changing canonical state or capital posture.",
+            "evidence": (obj.get("evidence") or obj.get("risk_invalidation") or [])[:2] if isinstance(obj.get("evidence") or obj.get("risk_invalidation"), list) else [],
+            "owner_review_required": obj.get("owner_review_required", True),
+            "rank": obj.get("rank"),
+        }
+
+    daily_counts = {
+        "review_object_count": daily_summary.get("review_object_count", len(review_objects)),
+        "escalated_count": daily_summary.get("escalated_count", len(daily_escalations)),
+        "capital_recommendation_count": daily_summary.get("capital_recommendation_count", len(capital_recommendations)),
+    }
+    intel_counts = {
+        "event_count": intel_summary.get("event_count", len(intel_events)),
+        "escalated_count": intel_summary.get("escalated_count", len(market_escalations)),
+        "top_routes": intel_summary.get("top_routes") or [],
+        "top_tickers_or_sleeves": intel_summary.get("top_tickers_or_sleeves") or [],
+    }
+
+    return {
+        "window": window,
+        "status": "ok" if daily_path or intel_path else "missing",
+        "daily_review": {
+            "source_path": daily_path,
+            "generated_at_utc": daily.get("generated_at_utc"),
+            "consumer_posture": daily.get("consumer_posture") or "review_only",
+            "counts": daily_counts,
+            "escalations": [_review_item(obj) for obj in daily_escalations[:6]],
+            "capital_recommendations": [_review_item(obj) for obj in capital_recommendations[:3]],
+            "portfolio_call": daily_summary.get("portfolio_call") or {},
+        },
+        "market_intelligence": {
+            "source_path": intel_path,
+            "generated_at_utc": intel.get("generated_at_utc"),
+            "consumer_posture": intel.get("consumer_posture") or "review_only",
+            "counts": intel_counts,
+            "escalations": [_review_item(obj) for obj in market_escalations[:8]],
+        },
+        "authority": _authority_boundary(daily, intel),
     }
 
 
@@ -433,6 +528,7 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
 
     exec_freshness = overall_status
     provenance = build_provenance(source_status)
+    source_freshness = summarize_source_freshness([info["source_state"] for info in source_status.values()])
 
     entry_bands = pf_raw.get("entry_bands", {}) if isinstance(pf_raw.get("entry_bands"), dict) else {}
     posture_labels = pf_raw.get("posture_labels", {}) if isinstance(pf_raw.get("posture_labels"), dict) else {}
@@ -490,7 +586,7 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
             and band_gap_dollar <= 0
             and not earnings_blocked
             and not record.get("below_stop")
-            and action_state in {"DEPLOYABLE", "ALMOST"}
+            and action_state in {"DEPLOYABLE", "ALMOST", "DEPLOYABLE NOW", "PROMOTION REVIEW", "ALMOST DEPLOYABLE"}
         )
 
         band_status, band_dist_pct = _compute_band_status(
@@ -635,28 +731,44 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
     trigger_by_ticker = {r["ticker"]: r for r in trigger_records}
     trigger_summary_raw = trigger_sheet_raw.get("summary") if isinstance(trigger_sheet_raw.get("summary"), dict) else {}
 
-    trigger_do_not_touch = list(trigger_summary_raw.get("do_not_touch", []) or [])
-    trigger_watch = list(trigger_summary_raw.get("watch", []) or [])
-    below_stop_tickers = [
-        ticker for ticker in [*trigger_do_not_touch, *trigger_watch]
-        if tech_by_ticker.get(ticker, {}).get("belowStop")
-    ]
-    bench_tickers = [ticker for ticker in trigger_do_not_touch if ticker not in below_stop_tickers]
-    watch_tickers = [ticker for ticker in trigger_watch if ticker not in below_stop_tickers]
-
     deployment_summary = {
-        "deployable": list(trigger_summary_raw.get("deployable_now", []) or []),
-        "almost": list(trigger_summary_raw.get("almost_deployable", []) or []),
-        "blocked": list(trigger_summary_raw.get("blocked", []) or []),
-        "below_stop": below_stop_tickers,
-        "bench": bench_tickers,
-        "watch": watch_tickers,
-        "error": list(trigger_summary_raw.get("error", []) or []),
+        "deployable": [],
+        "promotion_review": [],
+        "almost": [],
+        "blocked": [],
+        "below_stop": [],
+        "bench": [],
+        "watch": [],
+        "error": [],
     }
+    state_to_bucket = {
+        # Canonical state keys (WF32 normalization)
+        "DEPLOYABLE NOW": "deployable",
+        "PROMOTION REVIEW": "promotion_review",
+        "ALMOST DEPLOYABLE": "almost",
+        "ALMOST / NEAR-EARNINGS CAUTION": "almost",
+        "POST-EARNINGS REVIEW": "almost",
+        "BLOCKED": "blocked",
+        "BELOW STOP": "below_stop",
+        "BENCH": "bench",
+        "DO NOT TOUCH": "bench",
+        "SYSTEM HOLD": "bench",
+        "WATCH / RESEARCH NEEDED": "watch",
+        "ERROR": "error",
+        # Legacy short-form aliases for stale deployment-check.json artifacts
+        "DEPLOYABLE": "deployable",
+        "ALMOST": "almost",
+        "WATCH": "watch",
+    }
+    for row in technical:
+        bucket = state_to_bucket.get(str(row.get("actionState") or "").upper())
+        if bucket:
+            deployment_summary[bucket].append(row["ticker"])
 
     priority_buckets = {
         "deployable": 1,
-        "almost": 2,
+        "promotion_review": 2,
+        "almost": 3,
         "blocked": 3,
         "below_stop": 4,
         "bench": 5,
@@ -670,12 +782,23 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
     def _dashboard_state_for_ticker(ticker: str) -> str:
         trigger = trigger_by_ticker.get(ticker, {})
         tech_row = tech_by_ticker.get(ticker, {})
+        meta = tracked_universe.get(ticker, {}) if isinstance(tracked_universe.get(ticker), dict) else {}
+        action_state = str(tech_row.get("actionState") or trigger.get("action_state") or "").upper()
+        repair_mode = str(meta.get("workflow_state") or "").upper() == "REPAIR" or bool(meta.get("repair_mode"))
+        force_below_stop = bool(meta.get("force_do_not_touch_if_below_stop"))
+
+        # Owner-layer repair/bench state should remain visible even when the
+        # price is below stop. The below-stop fact still appears in band/risk
+        # fields; only explicitly forced names render as BELOW STOP here.
+        if action_state in {"DO NOT TOUCH", "BENCH"} and repair_mode and not (tech_row.get("belowStop") and force_below_stop):
+            return "BENCH"
         if tech_row.get("belowStop"):
             return "BELOW STOP"
 
-        action_state = str(trigger.get("action_state") or "").upper()
         if "DEPLOYABLE" in action_state and "ALMOST" not in action_state:
             return "DEPLOYABLE"
+        if action_state == "PROMOTION REVIEW":
+            return "REVIEW"
         if "ALMOST" in action_state:
             return "ALMOST"
         if action_state == "BLOCKED":
@@ -686,7 +809,8 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
             return "BENCH"
 
         deployment_state = str(trigger.get("deployment_state") or "").upper()
-        if deployment_state in {"DEPLOYABLE", "ALMOST", "BLOCKED", "WATCH", "BENCH"}:
+        if deployment_state in {"DEPLOYABLE", "ALMOST", "BLOCKED", "WATCH", "BENCH",
+                                "DEPLOYABLE NOW", "ALMOST DEPLOYABLE", "WATCH / RESEARCH NEEDED"}:
             return deployment_state
         return "WATCH"
 
@@ -724,6 +848,11 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
         for ticker in deployment_summary["almost"][:3]
         if ticker in tech_by_ticker
     ]
+    review_cards = [
+        _action_card(tech_by_ticker[ticker], state_override="REVIEW")
+        for ticker in deployment_summary["promotion_review"][:3]
+        if ticker in tech_by_ticker
+    ]
     blocked_cards = [
         _action_card(
             tech_by_ticker[ticker],
@@ -759,12 +888,13 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
         "enabled": exec_freshness in {"fresh", "usable_with_caution"},
         "status": exec_freshness,
         "deployable": deployable_cards,
+        "promotionReview": review_cards,
         "almost": almost_cards,
         "blocked": blocked_cards,
         "earningsPending": earnings_pending,
         "riskOff": risk_off,
         # Backward-compatible aliases for any consumers reading the prior shape.
-        "actionable": deployable_cards + almost_cards,
+        "actionable": deployable_cards + review_cards + almost_cards,
         "blockedLegacy": [{"ticker": x["ticker"], "detail": x.get("earnings") or x.get("reason")} for x in earnings_pending],
         "belowStop": [{"ticker": x["ticker"], "detail": x["reason"]} for x in risk_off],
         "message": describe_overall_status(exec_freshness),
@@ -772,7 +902,7 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
 
     deployment_records = []
     ordered_tickers: list[str] = []
-    for bucket_name in ("deployable", "almost", "blocked", "below_stop", "bench", "watch"):
+    for bucket_name in ("deployable", "promotion_review", "almost", "blocked", "below_stop", "bench", "watch"):
         for ticker in deployment_summary.get(bucket_name, []):
             if ticker not in ordered_tickers:
                 ordered_tickers.append(ticker)
@@ -814,7 +944,7 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
             "priority": f"P{priority_map.get(ticker, 9)}",
         })
 
-    history = update_history({"generated_at": now.strftime("%Y-%m-%d %H:%M UTC"), "technical": technical})
+    history = update_history({"generated_at_utc": now.isoformat(), "technical": technical})
 
     earnings = sorted(
         [{"ticker": r.get("ticker"), "date": r.get("next_earnings_date")} for r in earnings_records if r.get("ticker") and r.get("next_earnings_date")],
@@ -891,11 +1021,13 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
     generated_at = now.strftime("%Y-%m-%d %H:%M UTC")
 
     consistency_raw = load_json(TMP / "universe-consistency.json") or {}
+    decision_queue = _build_decision_queue("post-close")
 
     payload = {
         "generated_at": generated_at,
         "last_trade_date": last_trade,
         "exec_freshness": exec_freshness,
+        "source_freshness": source_freshness,
         "market_session": market_session,
         "vault_freshness": vault_freshness,
         "history": history,
@@ -915,6 +1047,7 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
             "overall_status": exec_freshness,
             "overall_label": status_badge(exec_freshness)["label"],
             "summary": describe_overall_status(exec_freshness),
+            "source_freshness": source_freshness,
             "sources": trust_sources,
             "manual_dependencies": manual_dependencies,
             "consistency": consistency_raw,
@@ -937,6 +1070,9 @@ def build_payload(sources: dict[str, dict | None]) -> dict[str, Any]:
         "regime_indicators": regime_indicators,
         "risk_thresholds": risk_thresholds,
         "today_action": today_action,
+        "decision_queue": decision_queue,
+        "daily_review": decision_queue["daily_review"],
+        "market_intelligence": decision_queue["market_intelligence"],
         "sector_weights": sector_weights,
         "ui": {
             "alerts": alerts,

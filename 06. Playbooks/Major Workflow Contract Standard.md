@@ -79,6 +79,12 @@ Acceptance should name the smallest meaningful proof available, such as:
 
 If no meaningful proof can run, say why.
 
+If a workflow changes shared schema, state vocabulary, JSON shape, truth-owner semantics, or execution order, acceptance must include:
+- regenerating the dependent contract-bearing artifacts, summaries, or sidecars that embody that change
+- rerunning the smallest downstream acceptance gate that consumes the changed contract
+
+Do not treat code-only landing as sufficient closure when downstream proof still reflects the old contract.
+
 For meaningful workflow closeout, default expectation is:
 - a **fresh independent audit pass** spawned in a new session
 - the auditor is not the implementation lane that just did the work
@@ -97,6 +103,8 @@ Before closing a major workflow, confirm:
 6. the next pass is explicit
 7. 1-2 bounded adjacent workflow candidates are named when useful
 8. an independent spawned audit was completed or an explicit honest exception is recorded
+9. if later live checks overturned an earlier blocker or diagnosis, the closeout marks the earlier claim stale or superseded and points to the new truth source
+10. if the workflow changed a shared contract, regenerated downstream proof artifacts and the smallest consuming acceptance gate are included in the acceptance evidence
 
 ## Checkpoint Decision
 

@@ -4,6 +4,7 @@ let activeTechFilter = 'all';
 const techFilters = [
   ['all',       'All'],
   ['deployable','Deployable'],
+  ['review',    'Review'],
   ['almost',    'Almost'],
   ['blocked',   'Blocked / Stop'],
   ['watch',     'Watch / Bench'],
@@ -13,6 +14,7 @@ function techFilterMatch(state, filter) {
   if (filter === 'all') return true;
   const s = (state||'').toUpperCase();
   if (filter === 'deployable') return s === 'DEPLOYABLE';
+  if (filter === 'review') return s === 'PROMOTION REVIEW' || s === 'REVIEW';
   if (filter === 'almost') return s === 'ALMOST';
   if (filter === 'blocked') return s === 'BLOCKED' || s === 'BELOW STOP';
   if (filter === 'watch') return s === 'WATCH' || s === 'BENCH';

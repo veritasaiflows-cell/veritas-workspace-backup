@@ -62,7 +62,8 @@ If that packet is vague, the spawn contract is not ready.
 ### Effort routing
 - low effort -> main session direct
 - medium effort -> detached subagent only if it keeps the control plane cleaner; use an approved live default model with tighter scope rather than a removed cheap helper model
-- high effort -> detached subagent only after preflight clears the contract; prefer `openai-codex/gpt-5.4`
+- high effort -> detached subagent only after preflight clears the contract; prefer `openai-codex/gpt-5.5` high-thinking posture when available
+- fallback -> if `openai-codex/gpt-5.5` is unavailable, keep the same bounded contract and record the fallback explicitly
 
 ### Secure detached-worker rule
 - one active worker at a time for this lane unless a bounded read-only swarm is explicitly justified

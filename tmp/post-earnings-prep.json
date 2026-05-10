@@ -1,39 +1,39 @@
 {
-  "generated_at_utc": "2026-05-05T00:50:06.043007+00:00",
+  "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
   "status": "partial",
   "stale_after_hours": 24,
   "expected_update_window": "Run after trigger_sheet_refresh.py and before post-earnings note targeting or post-earnings vault edits.",
-  "last_trading_day": "2026-05-04",
+  "last_trading_day": "2026-05-08",
   "source_last_trading_day": {
-    "trigger": "2026-05-04",
-    "technical": "2026-05-04",
-    "deployment": "2026-05-04",
-    "market_state": "2026-05-04",
+    "trigger": "2026-05-08",
+    "technical": "2026-05-08",
+    "deployment": "2026-05-08",
+    "market_state": "2026-05-08",
     "earnings": null
   },
   "freshness": {
     "trigger_file": {
       "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\trigger-sheet.json",
-      "generated_at_utc": "2026-05-05T00:50:05.911099+00:00",
+      "generated_at_utc": "2026-05-10T03:38:38.994425+00:00",
       "age_hours": 0.0,
       "age_label": "0m old",
       "is_stale": false
     },
     "earnings_file": {
       "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\earnings-calendar.json",
-      "generated_at_utc": "2026-05-05T00:49:38.809351+00:00",
+      "generated_at_utc": "2026-05-10T03:38:12.276624+00:00",
       "age_hours": 0.01,
       "age_label": "0m old",
       "is_stale": false
     }
   },
   "macro_context": {
-    "status": "ok",
-    "spx": 7200.75,
-    "vix": 18.29,
-    "brent": 113.94,
-    "wti": 104.95,
-    "summary": "S&P 500 7200.75, VIX 18.29, Brent 113.94, WTI 104.95"
+    "status": "partial",
+    "spx": 7398.9302,
+    "vix": 17.19,
+    "brent": 101.29,
+    "wti": 95.42,
+    "summary": "S&P 500 7398.9302, VIX 17.19, Brent 101.29, WTI 95.42"
   },
   "window": {
     "back_days": 11,
@@ -41,57 +41,13 @@
     "forward_days": 14
   },
   "warnings": [
+    "2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
+    "Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
+    "Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
+    "Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
+    "Only 7/8 live fields populated.",
     "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
-    "Market-state sources are not aligned on one trading day: 2y",
     "Non-blocking watchlist/date mismatches remain outside the active timing window."
   ],
-  "packets": [
-    {
-      "ticker": "ETN",
-      "priority": "critical",
-      "stage": "imminent",
-      "phase": "pre_earnings",
-      "days_to_or_from_earnings": 1,
-      "next_earnings_date": "2026-05-05",
-      "watch_items": [
-        "grid and electrification demand",
-        "AI power infrastructure commentary",
-        "guidance quality",
-        "timing/date-confirmation confidence"
-      ],
-      "sector_read_through": "Core read-through for the power-enabler sleeve.",
-      "note_targets": [
-        "05. Intelligence/Event Calendar.md",
-        "05. Intelligence/Weekly Intelligence Brief.md",
-        "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-        "03. Portfolio/Deployment Trigger Sheet.md",
-        "03. Portfolio/Portfolio Snapshot.md"
-      ],
-      "technical_context": {
-        "close": 422.44,
-        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
-        "in_entry_band": false,
-        "below_stop": false,
-        "data_date": "2026-05-04"
-      },
-      "deployment_context": {
-        "action_state": "ALMOST",
-        "reason": "close 422.44 -- posture constructive but not yet in band"
-      },
-      "trigger_context": {
-        "action_state": "ALMOST DEPLOYABLE",
-        "technical_trigger": "Pullback into 388 to 396 with support holding, or disciplined continuation that does not become a chase",
-        "catalyst_blocker": "Next earnings 2026-05-05 in 0d -- treat as timing-sensitive",
-        "why": "Best chart in the sheet, but current price is extended versus the preferred zone",
-        "invalidation": 383.23,
-        "size_tier": "Tier 2"
-      },
-      "interpretation_slots": {
-        "what_happened": null,
-        "what_it_means": null,
-        "what_we_do_now": null,
-        "evidence_status": "pending post-earnings evidence"
-      }
-    }
-  ]
+  "packets": []
 }

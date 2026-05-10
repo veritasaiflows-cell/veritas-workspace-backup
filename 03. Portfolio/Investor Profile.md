@@ -75,8 +75,8 @@ Use multiple sleeves within one integrated framework:
 - Force full review threshold: 6% to 8% drawdown
 - Volatility tolerance if thesis is intact: medium-high
 - Comfortable with concentrated bets within risk limits
-- Max single-position comfort: 20% to 25%
-- Max sector concentration comfort: 25% to 35%
+- Max single-position comfort: 15% normally; go above that only by explicit stretch-size review
+- Max sector concentration comfort: 25%
 
 ## Instruments in scope
 

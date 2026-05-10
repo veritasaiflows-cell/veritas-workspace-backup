@@ -43,6 +43,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from board_state_contract import actionable_records, filter_records_by_states
+from dashboard_delta_render import format_delta_change
 from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate
 
 WORKSPACE        = Path(__file__).resolve().parents[1]
@@ -170,9 +172,9 @@ def section2_execution_context(ms: dict, validation: dict) -> str:
                  f"WTI ${fmt(en.get('wti'))}.")
 
     if es.get("last_price"):
-        lines.append(f"- **Directional open read:** ES futures {fmt(es.get('last_price'))} "
+        lines.append(f"- **Overnight futures context:** ES futures {fmt(es.get('last_price'))} "
                      f"({signed_pct(es.get('change_pct'))}), NQ futures {fmt(nq.get('last_price'))} "
-                     f"({signed_pct(nq.get('change_pct'))}). Treat as directional context, not full pre-market tape.")
+                     f"({signed_pct(nq.get('change_pct'))}). Treat as directional context for the next session, not full pre-market tape.")
 
     target_lo = fed.get("target_low")
     target_hi = fed.get("target_high")
@@ -188,7 +190,7 @@ def section2_execution_context(ms: dict, validation: dict) -> str:
 
 
 def section3_what_changed(delta: dict | None) -> str:
-    lines = ["## 3) What changed since yesterday\n"]
+    lines = ["## 3) What changed since the prior dashboard run\n"]
     if not delta:
         lines.append("- No delta artifact available.")
         return "\n".join(lines)
@@ -200,20 +202,7 @@ def section3_what_changed(delta: dict | None) -> str:
         lines.append("- No tracked-name state changes since the last dashboard run.")
         return "\n".join(lines)
     for ch in changes:
-        t = ch.get("type", "")
-        tk = ch.get("ticker", "")
-        if t == "action_state_change":
-            lines.append(f"- **{tk}** — action state {ch.get('from','?')} → {ch.get('to','?')}.")
-        elif t == "below_stop_entered":
-            lines.append(f"- **{tk}** — entered below-stop.")
-        elif t == "below_stop_recovered":
-            lines.append(f"- **{tk}** — recovered above stop.")
-        elif t == "exited_band":
-            lines.append(f"- **{tk}** — exited prior entry band.")
-        elif t == "entered_band":
-            lines.append(f"- **{tk}** — entered entry band.")
-        else:
-            lines.append(f"- **{tk}** — {t}.")
+        lines.append(f"- {format_delta_change(ch)}.")
     if delta.get("summary"):
         lines.append(f"\nDelta summary: {delta['summary']}")
     return "\n".join(lines)
@@ -254,11 +243,12 @@ def section4_todays_catalysts(earnings: dict, ms: dict, today: date) -> str:
     return "\n".join(lines)
 
 
-def section5_closest_actionable(trigger: dict) -> str:
+def section5_closest_actionable(trigger: dict, deploy_check: dict) -> str:
     records = trigger.get("records", []) if trigger else []
-    actionable = [r for r in records if (r.get("action_state") or "").upper() in {"DEPLOYABLE", "ALMOST DEPLOYABLE"}]
-    blocked    = [r for r in records if (r.get("action_state") or "").upper() == "BLOCKED"]
-    do_not     = [r for r in records if (r.get("action_state") or "").upper() in {"DO NOT TOUCH", "BELOW STOP"}]
+    normalized_records = [record for record in records if isinstance(record, dict)]
+    actionable = actionable_records(normalized_records)
+    blocked    = filter_records_by_states(normalized_records, {"BLOCKED"})
+    do_not     = filter_records_by_states(normalized_records, {"DO NOT TOUCH"})
 
     lines = ["## 5) Closest actionable names\n"]
 
@@ -303,12 +293,28 @@ def section5_closest_actionable(trigger: dict) -> str:
         for r in do_not:
             lines.append(f"- **{r['ticker']}** — {r.get('why', r.get('deployment_reason','impaired'))}.")
 
+    # Deployment-check enrichment: surface BENCH and BELOW STOP from the deployment
+    # layer even when the trigger sheet does not carry those names in review states.
+    deploy_records = (deploy_check or {}).get("records", []) or []
+    bench_records = [r for r in deploy_records if r.get("action_state") == "BENCH"]
+    below_stop_records = [r for r in deploy_records if r.get("action_state") == "BELOW STOP"]
+
+    if below_stop_records:
+        lines.append(f"\n**Below stop (deployment-check):**")
+        for r in below_stop_records[:5]:
+            lines.append(f"- **{r['ticker']}** — {r.get('reason', 'below stop, do not deploy')}.")
+
+    if bench_records:
+        lines.append(f"\n**Bench / chart-weak (deployment-check):**")
+        for r in bench_records[:5]:
+            lines.append(f"- **{r['ticker']}** — {r.get('reason', 'chart structure weak, wait for posture to improve')}.")
+
     return "\n".join(lines)
 
 
 def section6_trigger_conditions(trigger: dict) -> str:
     records = trigger.get("records", []) if trigger else []
-    actionable = [r for r in records if (r.get("action_state") or "").upper() in {"DEPLOYABLE", "ALMOST DEPLOYABLE"}]
+    actionable = actionable_records([record for record in records if isinstance(record, dict)])
 
     lines = ["## 6) Trigger conditions\n"]
     if not actionable:
@@ -375,7 +381,8 @@ def section7_recommended_actions(trigger: dict, post_prep: dict, validation: dic
 
 def render_markdown(today: date,
                     ms: dict, trigger: dict, validation: dict,
-                    delta: dict | None, earnings: dict, post_prep: dict) -> str:
+                    delta: dict | None, earnings: dict, post_prep: dict,
+                    deploy_check: dict) -> str:
     last_td = ms.get("last_trading_day", "unknown") if ms else "unknown"
     gen_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -390,7 +397,7 @@ def render_markdown(today: date,
     parts.append("")
     parts.append(section4_todays_catalysts(earnings, ms, today))
     parts.append("")
-    parts.append(section5_closest_actionable(trigger))
+    parts.append(section5_closest_actionable(trigger, deploy_check))
     parts.append("")
     parts.append(section6_trigger_conditions(trigger))
     parts.append("")
@@ -412,22 +419,25 @@ def main() -> int:
 
     today = date.today()
 
-    ms        = load_json(MARKET_STATE) or {}
-    trigger   = load_json(TRIGGER_SHEET) or {}
-    validation = load_json(VALIDATION) or {}
-    delta     = load_json(DELTA)
-    earnings  = load_json(EARNINGS_CAL) or {}
-    post_prep = load_json(POST_PREP) or {}
+    ms           = load_json(MARKET_STATE) or {}
+    trigger      = load_json(TRIGGER_SHEET) or {}
+    validation   = load_json(VALIDATION) or {}
+    delta        = load_json(DELTA)
+    earnings     = load_json(EARNINGS_CAL) or {}
+    post_prep    = load_json(POST_PREP) or {}
+    deploy_check = load_json(DEPLOYMENT) or {}
 
-    md = render_markdown(today, ms, trigger, validation, delta, earnings, post_prep)
+    md = render_markdown(today, ms, trigger, validation, delta, earnings, post_prep, deploy_check)
 
     canonical = OUT_DIR / f"{today.isoformat()}.md"
     machine   = OUT_DIR / f"{today.isoformat()}-machine.md"
-    canonical_allowed, trust_reason = canonical_note_mutation_gate(validation)
+    archive_write_allowed, trust_reason = canonical_note_mutation_gate(validation)
 
-    target = canonical if canonical_allowed else machine
+    # WF47 authority vocabulary: these dashboard dated writes are generated
+    # archive/review surfaces, not canonical finance-note mutation authority.
+    target = canonical if archive_write_allowed else machine
     skipped_session = False
-    if canonical_allowed and canonical.exists():
+    if archive_write_allowed and canonical.exists():
         existing = canonical.read_text(encoding="utf-8", errors="replace")
         if "Auto-generated by `scripts/daily_executive_brief.py`" not in existing:
             target = machine
@@ -435,17 +445,29 @@ def main() -> int:
 
     atomic_write_text(target, md, encoding="utf-8")
 
+    deploy_records = deploy_check.get("records", []) or []
     summary = {
         "generated_at_utc":   utc_now(),
         "brief_date":         today.isoformat(),
         "market_data_as_of":  ms.get("last_trading_day"),
         "confidence_grade":   confidence_grade(validation)[0],
-        "canonical_mutation_allowed": canonical_allowed,
+        "consumer_posture": "generated_dashboard_archive",
+        "generated_archive_write_allowed": archive_write_allowed,
+        "canonical_mutation_allowed": False,
+        "presentation_allowed": False,
+        "portfolio_mutation_allowed": False,
+        "deployment_state_mutation_allowed": False,
+        "trade_execution_allowed": False,
+        "owner_approval_granted": False,
+        "authority_reason": "generated dashboard/archive write only; scheduled post-close canonical mutation remains fail-closed",
         "trust_reason":       trust_reason,
-        "trust_gate_blocked": not canonical_allowed,
+        "trust_gate_blocked": not archive_write_allowed,
         "deployable_now":     (trigger.get("summary", {}) or {}).get("deployable_now", []),
         "almost_deployable":  (trigger.get("summary", {}) or {}).get("almost_deployable", []),
         "blocked":            (trigger.get("summary", {}) or {}).get("blocked", []),
+        "bench":              [r["ticker"] for r in deploy_records if r.get("action_state") == "BENCH"],
+        "below_stop":         [r["ticker"] for r in deploy_records if r.get("action_state") == "BELOW STOP"],
+        "deploy_check_source": deploy_check.get("generated_at_utc"),
         "deferred_to_machine": skipped_session,
         "wrote_to":           str(target.relative_to(WORKSPACE)),
     }
@@ -459,8 +481,8 @@ def main() -> int:
     print(f"  Deployable now:    {len(summary['deployable_now'])}")
     print(f"  Almost deployable: {len(summary['almost_deployable'])}")
     print(f"  Blocked:           {len(summary['blocked'])}")
-    if not canonical_allowed:
-        print(f"  [!] Trust gate blocked canonical write; wrote machine sidecar instead.")
+    if not archive_write_allowed:
+        print(f"  [!] Trust gate blocked generated archive write; wrote machine sidecar instead.")
     elif skipped_session:
         print(f"  [!] Session-written brief detected at {canonical.name}; wrote machine sidecar instead.")
     print(f"  Wrote -> {summary['wrote_to']}")

@@ -1,2 +1,1 @@
 ticker,company,quarter,report_date,earnings_state,ir_confirmed,scorecard_created,interpreted,board_synced,follow_up_open,next_required_action,owner_note,deployment_impact,technical_impact,unresolved_issue,export_generated_at_utc
-ETN,Eaton,Q2 2026,2026-05-05,Upcoming,,FALSE,FALSE,FALSE,TRUE,"Wait for report, then run post-earnings sync.",,ALMOST,above all MAs -- bullish 20>50>200 stack,"True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",2026-05-05T00:50:07.183892+00:00

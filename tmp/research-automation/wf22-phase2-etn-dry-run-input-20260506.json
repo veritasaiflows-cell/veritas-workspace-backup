@@ -1,0 +1,43 @@
+[
+  {
+    "target_note": "01. Dashboards/Executive Brief.md",
+    "stale_claim": "The Executive Brief still says ETN remains an event-risk decision into May 5 earnings even though ETN has already reported and the workspace now treats the case as interpreted post-earnings with incomplete primary capture.",
+    "why_stale": "Event Calendar and Weekly Intelligence already moved ETN out of pre-print status. Leaving pre-print wording in Executive Brief creates a stale contradiction against approved owner surfaces.",
+    "new_evidence": [
+      {
+        "title": "Event Calendar ETN reported/interpreted status",
+        "source": "05. Intelligence/Event Calendar.md",
+        "source_quality": "tier_1_primary",
+        "published_at": "2026-05-05",
+        "excerpt": "ETN Q1 2026 Earnings — Reported / Interpreted ... direct Eaton primary fetch did not produce a clean release."
+      },
+      {
+        "title": "Weekly Intelligence ETN post-print status",
+        "source": "05. Intelligence/Weekly Intelligence Brief.md",
+        "source_quality": "tier_2_trusted",
+        "published_at": "2026-05-05",
+        "excerpt": "ETN — Q1 2026 interpreted from secondary evidence after direct primary-source fetch did not land cleanly."
+      }
+    ],
+    "source_quality": "tier_2_trusted",
+    "freshness_class": "cross_surface_contradiction",
+    "patch_scope": "single-sentence orientation-surface wording cleanup only",
+    "proposed_replacement": "The live action list is narrow. JPM, NVDA, and GS are the names currently in band. GS is now a confirmed tactical secondary to JPM at Tier 2 sizing. ETN is no longer a pre-print decision; it has already reported and remains a post-earnings review item with incomplete primary-source capture, so no promotion language is authorized from this lane.",
+    "judgment_impact": "possible",
+    "affected_surfaces": [
+      "01. Dashboards/Executive Brief.md",
+      "01. Dashboards/This Week.md",
+      "01. Dashboards/Next Actions.md"
+    ],
+    "required_downstream_sync": [
+      "Check This Week for stale ETN pre-print wording.",
+      "Check Next Actions for stale ETN pre-print wording.",
+      "Do not mutate portfolio/manual-truth surfaces from this lane."
+    ],
+    "rollback_note": "Restore the original Executive Brief sentence if the ETN post-print interpretation source set is later found to be misread.",
+    "verifier_signoff": "Pending main-session review",
+    "main_approval_required": true,
+    "linked_packet_id": "rip_5c8731e804bd7464",
+    "notes": "Deliberately framed as a higher-review contradiction/alignment dry run, not a normal safe post-catalyst patch candidate."
+  }
+]

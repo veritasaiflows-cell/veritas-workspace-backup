@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-07T01:49:51Z",
+  "ticker": "LLY",
+  "proposed_lane": "execution",
+  "source_surface": "tmp/positioning-ranking.json",
+  "thesis_evidence_source": "research_note_layer",
+  "canonical_trigger_source": "03. Portfolio/Deployment Trigger Sheet.md",
+  "canonical_portfolio_source": "03. Portfolio/Portfolio Snapshot.md",
+  "thesis_exists": true,
+  "levels_exist": true,
+  "timing_posture": "clean",
+  "portfolio_competition_assessed": true,
+  "sector_cap_checked": true,
+  "correlated_sleeve_checked": true,
+  "regime_score_total": 14,
+  "regime_score_rank": 15,
+  "current_watch_state": "WATCH",
+  "current_trigger_state": "WATCH / RESEARCH NEEDED",
+  "entry_band_defined": true,
+  "invalidation_defined": true,
+  "sizing_tier_defined": true,
+  "catalyst_window_status": "clear",
+  "sector": "Healthcare",
+  "correlated_sleeve": "healthcare",
+  "candidate_weight_pct": 6,
+  "sector_cap_check": {
+    "status": "pass",
+    "projected_sector": "Healthcare",
+    "max_allowed_pct": 35,
+    "projected_sector_weight_pct": 6
+  },
+  "five_gate_status": {
+    "thesis_gate": "pass",
+    "macro_and_regime_gate": "warning",
+    "technical_gate": "warning",
+    "catalyst_gate": "pass",
+    "risk_and_sizing_gate": "warning"
+  },
+  "missing_gates": [
+    "macro_and_regime_gate",
+    "technical_gate",
+    "risk_and_sizing_gate"
+  ],
+  "promotion_blockers": [
+    "LLY has a machine-config band/stop, but the Technical Entry and Invalidation Sheet still has no LLY owner-layer section; canonical owner approval is absent.",
+    "Owner-layer sizing and promotion judgment still required.",
+    "Macro/regime fit remains warning-level rather than a clean promotion pass."
+  ],
+  "promotion_candidate": false,
+  "promotion_review_required": true,
+  "notes": [
+    "LLY is the cleanest current healthcare diversification candidate.",
+    "Machine config now carries review levels of 907.64 to 969.88 with stop 876.52, but this is not deployable-now authority and still needs owner-layer technical-sheet review."
+  ],
+  "queue_entry_required": false,
+  "queue_entry_present": true,
+  "proposed_action_state": "WATCH"
+}

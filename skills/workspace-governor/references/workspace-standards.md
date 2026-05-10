@@ -25,10 +25,15 @@ Current allowed non-numbered active root folders:
 - `scripts/` for repeatable tooling
 - `skills/` for installed or local AgentSkills
 - `tmp/` for generated machine artifacts and staged render outputs
+- `data/` for approved durable append-only derived state/history datasets only; each subfolder needs a README and must not store credentials or canonical portfolio authority
 - `migration-backups/` for reversible local backup checkpoints
 - `.obsidian/`, `.openclaw/`, `.clawhub/`, `.git/` for tool or repo infrastructure
 
 `templates/` is not a permanent root entitlement. Recreate it only when active finance-first templates actually exist.
+
+Current documented root exceptions:
+- `attachments/` while `.obsidian/app.json` still points `attachmentFolderPath` there, even if the folder is currently empty
+- `migration-review.md` while it still has active review or retrieval value
 
 Do not create a new top-level folder unless all of the following are true:
 - it represents a durable domain rather than a one-off task
@@ -41,6 +46,7 @@ Avoid in root:
 - empty scaffolding
 - one-off diagnostics
 - generated outputs placed in root when `tmp/` or a governed domain is a better fit
+- undocumented backup folders such as `backups/`; use `migration-backups/` for active reversible checkpoints or `09. Archive/` for retired backup sets
 - duplicate domains with slightly different names
 
 ## Root classification model
@@ -77,6 +83,17 @@ Examples now considered archival rather than active root surfaces:
 - prior consulting-era domain folders already preserved in `09. Archive/`
 - old review folders like `Evening Review - Archived/`
 - retired template sets like `Templates - Archived/`
+
+## Durable derived data handling
+
+`data/` is allowed only for durable append-only derived state/history datasets that need to survive beyond `tmp/` but still are not canonical finance notes.
+
+Rules:
+- each subfolder needs a README with authority, producer, proof, and retention posture
+- no credentials, tokens, auth material, or runtime config
+- no portfolio mutation, deployment-state mutation, trade execution, or owner-approval inference
+- SQL or JSONL hits must route back to source Markdown/JSON before judgment
+- current approved subfolder: `data/state-history/`
 
 ## Generated artifact handling
 
@@ -174,7 +191,7 @@ Generated artifacts only, not long-lived notes or durable scripts.
 ## Cleanup checklist
 
 1. Root sanity
-- verify every root surface is canonical active, archival, generated, or explicitly being cleaned up
+- verify every root surface is canonical active, archival, generated, durable-derived, or explicitly being cleaned up
 - remove empty dead weight
 - block accidental new top-level folders
 
@@ -197,6 +214,19 @@ Generated artifacts only, not long-lived notes or durable scripts.
 - keep daily logs in `memory/YYYY-MM-DD.md`
 - promote durable truths into `MEMORY.md` or operating files
 - do not let raw logs become substitute doctrine
+
+6. Retrieval metadata hygiene
+- new major audits, workflow continuity notes, research notes, and procedures should use the lightweight `## Retrieval Notes` standard when status, owner, next action, archive posture, or key entities matter
+- metadata is an index aid only; it must not overrule the note body, canonical finance ownership, or owner approval boundaries
+
+## Full-workspace audit add-on for data-heavy operating systems
+
+When scripts, dashboards, or retrieval depend on folder truth, recurring audits should also:
+1. verify policy text matches the live root exceptions and owned surfaces
+2. run `python scripts/workspace_boundary_check.py` and `python scripts/dashboard_truth_lint.py` when available
+3. inspect `scripts/`, `tmp/`, `skills/`, `08. Audits/`, and root together instead of auditing only the root listing
+4. flag inconsistencies between structure docs, recent audits, and the live filesystem before recommending moves
+5. prefer doc-first fixes when the live exception is real but underdocumented
 
 ## Current enforcement notes
 
