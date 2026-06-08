@@ -1,99 +1,99 @@
-# TOOLS.md - Local Notes
+# TOOLS.md - Local Runtime And Route Map
 
-Keep this file for environment facts and global tool rules only.
-Procedures belong in skills.
+Keep only environment facts, global tool rules, and first-hop routes here. Procedures live in skills/playbooks; detailed command catalogs live in `scripts/README.md`; history lives in `memory/`.
 
-## Local setup
+## Local Setup
 
-- Workspace root: `C:\Users\Veritas\.openclaw\workspace`
-- OpenClaw config: `~/.openclaw/openclaw.json`
-- Daily notes folder: `memory/`
-- Long-term memory note: `MEMORY.md`
-- Home note: `Home.md`
-- Obsidian vault should point at the workspace root, not `.obsidian/` itself
-- Obsidian CLI on this Windows host is provided by `notesmd-cli.exe` v0.3.6 with local `obsidian-cli` / `obsidian` compatibility wrappers in `C:\Users\Veritas\AppData\Roaming\npm`; the default vault is `workspace` -> `C:\Users\Veritas\.openclaw\workspace`
-- SQLite CLI is installed via Winget (`SQLite.SQLite`) with `sqlite3.cmd` wrapper in `C:\Users\Veritas\AppData\Roaming\npm` because the live OpenClaw process may not inherit Winget PATH changes until restart.
-- `rg` and `jq` are installed via Winget (`BurntSushi.ripgrep.MSVC`, `jqlang.jq`). Because the live OpenClaw process may not inherit Winget PATH changes until restart, local wrappers live in `C:\Users\Veritas\AppData\Roaming\npm\rg.cmd` and `jq.cmd`, matching the existing OpenClaw/npm command path.
-- Git for Windows is installed at `C:\Users\Veritas\AppData\Local\Programs\Git\cmd\git.exe`; the current OpenClaw process may not inherit the new PATH until restart, so use the full path if plain `git` is unavailable.
-- Active runtime posture: native Windows
-- Plugin skill publication on this Windows host depends on directory symlink privilege. After an OpenClaw update or reinstall changes plugin target paths, `~/.openclaw/plugin-skills` may need fresh symlinks; if the runtime logs `EPERM` / `WinError 1314` while creating plugin-skill links, fix Windows symlink privilege first (prefer Developer Mode) instead of assuming the skill itself is missing.
-- Current intentionally approved stable OpenClaw pin on this machine: `2026.5.4`. Randall accepted `2026.5.4` as the new stable runtime on 2026-05-05 after reinstall drift from the previous `2026.4.22` pin. Do not update OpenClaw again unless that stability judgment is intentionally revisited.
-- `web_search` is currently unusable on this host because the SearXNG base URL is not configured. Until that is fixed, use native `openclaw skills search <term>` for ClawHub discovery and `web_fetch` for direct-page fallback instead of pretending a normal web-search pass happened.
+- Root: `C:\Users\Veritas\.openclaw\workspace`
+- Config: `~/.openclaw/openclaw.json`; daily notes: `memory/`; durable memory: `MEMORY.md`.
+- Runtime: native Windows / PowerShell; do not assume Bash/WSL semantics.
+- OpenClaw runtime: `2026.6.1`; post-update validation passed on 2026-06-05 with known doctor/security warnings in `migration-review.md`.
+- SQLite/rg/jq wrappers: `C:\Users\Veritas\AppData\Roaming\npm`; Git fallback: `C:\Users\Veritas\AppData\Local\Programs\Git\cmd\git.exe`.
+- Go validator freshness: `python scripts\go_binary_freshness_guard.py --write --validate`; rebuild all Go validators from `scripts\go` when source is newer than `bin\*.exe`.
+- ClawHub CLI shims: `C:\Users\Veritas\.openclaw\tools\node\npm`.
+- Codex route: main/new sessions default to `openai/gpt-5.5`; bounded helper lanes use `openai/gpt-5.4` (`gpt54`) unless the task justifies otherwise. Spark (`codex/gpt-5.3-codex-spark`) is for bounded canary/proof/QA/pre-work with `xhigh` thinking until repeated proof says otherwise.
 
-## Model routing
+## Fast Routing
 
-- Primary posture for the main agent / new top-level sessions: automatically generate decision-grade review objects every day, rank what matters, escalate only the highest-signal items, and prepare capital-deployment recommendations that still require owner approval.. Live truth surface, workspace-file truth interpreter, orchestration, QC, and final integration
-- Primary model family for spawned sub-sessions: stay inside the allowed `openai-codex/*` set and select thinking by role rather than defaulting every substantial task to high.
-- 2026-05-06 config change requested by Randall: keep the allowed model set constrained to `openai-codex/gpt-5.5`, `openai-codex/gpt-5.4`, and `openai-codex/gpt-5.3-codex`, with `agents.defaults.model.primary` on `openai-codex/gpt-5.5`
-- Use OpenAI Codex OAuth-backed routing by default
-- Verify live route availability before relying on `openai-codex/gpt-5.5`
-- Gemini Pro CLI (`gemini -m gemini-3.1-pro-preview`) is the preferred IC lane for implementation, script/code, and broad research passes when available
-- Claude CLI is the hard-judgment lane for trust/contract adjudication and high-stakes review; increase effort (`--effort high` or above) when the task risk justifies it
-- Gemini CLI in this environment does not expose a direct effort flag; scale effort via model choice, prompt depth, and bounded scope
-- Veritas remains the orchestrator, auditor, and product owner/manager for queue movement and final integration
-- Default workspace execution posture: use a bounded spawned subagent for work likely to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA; select thinking by role: low for routine research/read-only audit, medium for implementation, high for hard debugging or high-stakes trust/contract adjudication. Keep the main session for orchestration, QC, final integration, and quick bounded fixes.
-- Do not route outside the allowed `openai-codex/*` model set unless Randall explicitly changes the runtime policy
+Use route/index/capsule surfaces first, then exact owner artifacts. Generated SQL/JSON/capsules are proof/routing surfaces only; they are not canon, approval, portfolio, trade, account, paper, or live authority.
 
-## Skill posture
+- Workflow lookup: `python scripts\workflow_router.py WF## --answer summary|next|blockers|helper|all`.
+- Future-session startup packet: `python scripts\future_session_enhancement_packet.py --write --write-md --validate`; open this first after compaction/new-session handoff to route PM, cron, WF74, workflow, memory, and stop-line state without broad scans.
+- Workflow capsules: `python scripts\workflow_router.py --all --write-capsules --validate` writes `state\workflows\*.json`.
+- Pause/resume: `python scripts\workflow_control_override.py hold <workflow_key> --reason "..." --validate`; `resume <workflow_key> --validate`.
+- PM control: `python scripts\pm_control_packet.py --write --write-db --validate`; legacy sidecars require explicit `--write-compat`.
+- PM sidecar guard: `python scripts\pm_sidecar_retirement_guard.py --write --validate`.
+- Cron control: `python scripts\cron_control_packet.py --write --validate`; drill into components only when this packet reports attention/stale/noisy signals.
+- OTEL ops: `python scripts\otel_ops_control.py --write --write-db --validate`; local operational digest only.
+- WF74 model-quality collection: `python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate --include-harness`; scheduled by `Ops - OTEL Local Digest` at 07:40, 15:40, and 21:40 America/Phoenix. Review-only evidence; no model ranking, WF55 outcome grading, portfolio/canon mutation, or execution authority.
+- WF74 cron duplication audit: `python scripts\wf74_cron_duplication_audit.py --write --validate`; confirms WF74 component ledgers are not scheduled outside the single owner job.
+- Training/eval candidate review: `python scripts\training_dataset_candidate_builder.py --write --write-md --validate`; local metadata-only candidate index for future eval/fine-tune review. No raw prompt/chat export, no upload, no training call, no model-weight mutation.
+- Skill local git checkpoint: `python scripts\skill_git_checkpoint.py --write --validate`; use `--commit --message "..." --tag-name ...` only for explicit local skill-layer checkpoints. Stages only `skills/`, Skills Governance Index, and today's memory file; no external push.
+- Validation routing/timing: `python scripts\changed_file_validator_router.py --write --validate`; `python scripts\validator_timing_ledger.py --profile normal --write --validate`.
+- Artifact lookup: `python scripts\artifact_index.py ...`; SQL proof mirror is `tmp\veritas-artifact-index.sqlite`.
+- Fast QA: `python scripts\truth_surface_inventory.py --write --validate`; `python scripts\fast_path_qa.py --write --validate`.
+- Integration closeout: `python scripts\control_closeout_bundle.py --validation-budget shared --write --validate`; use `major` only for broad control-plane closeout.
+- PM execution dry-run: `python scripts\pm_execution_loop.py --write --validate`; `--execute` only runs guarded review-only proof commands from PM jobs.
+- DB lifecycle: `python scripts\db_lifecycle_manifest.py --write --validate`; archive/delete only through explicit owner-approved lifecycle apply paths.
+- Workspace search/index: `python scripts\workspace_index.py`; proof/search support only.
 
-- Bundled skills must stay on an explicit allowlist
-- Current bundled allowlist: `github`, `healthcheck`, `node-connect`, `skill-creator`, `taskflow`, `taskflow-inbox-triage`, `weather`
-- Workspace skills are the primary custom operating layer
-- Existing finance spine (OpenClaw): `veritas-fundamental-pass`, `veritas-technical-pass`, `veritas-macro-pass`, `veritas-positioning-pass`, `veritas-investment-deck`, `veritas-pdf-brief`, `veritas-self-improvement`, `workspace-governor`
-- Operator skills now own repeatable OpenClaw procedures: `openclaw-operator`, `openclaw-troubleshooter`, `memory-continuity-manager`, `cron-automation-manager`, `operating-procedure-repository-manager`
-- Local coding spine (2026-05-05): `disciplined-implementation` for acceptance-contract implementation passes, `code-review-auditor` for high-signal diff/contract review, and `safe-refactor-planner` for low-risk structural cleanup with parity gates
-- Retrieval skills restored/installed after the 2026-05-09 restart: `obsidian` for fast vault note search/printing through `obsidian-cli`, and `SQLite` for local SQLite inspection/query design.
-- `09. Archive/temp-skill-inspect - Archived/` holds scratch skill-inspection material; it is preserved for reference but is not an active skill root
+## Finance Front Doors
 
-## Cowork skills (Claude layer)
+- Ticker Q&A: `python scripts\finance_intelligence_state.py ticker <TICKER> --pretty`.
+- Ticker cards/answer packets: `python scripts\artifact_index.py ticker-card|answer-packet <TICKER>`.
+- Paper position visibility only: `python scripts\alpaca_paper_position_sql_refresh.py refresh --create-kill-switch --expires-minutes 90`, then `python scripts\finance_intelligence_state.py paper-positions`.
+- Retail truth routing: `retail_truth_routing_contract.py`, `retail_answer_harness.py`, `retail_automation_control_plane.py`.
+- WF78 front door: `workflow_router.py WF78 --answer all`, then WF78 phase/freshness/decision-factory artifacts as needed.
+- Macro inputs: `macro_metrics_ingest.py`, `macro_energy_supply_ingest.py`, `macro_geopolitical_sweep.py`, then `macro_judgment_draft.py`; review-only evidence, no forecast/capital/execution authority.
+- Entry-band maintenance: `band_refresh.py` proposes; `auto_apply_entry_band_maintenance.py --dry-run|--apply` may apply only approved posture-preserving `entry_band` rows marked eligible by the gate.
 
-Installed via Cowork. These are separate from OpenClaw skills and run in Claude sessions, not OpenClaw agents.
+Finance detail lives in `scripts/README.md`, workflow capsules, WF77/WF78 continuity, and exact owner artifacts. Source-open exact artifacts before material recommendation/action claims.
 
-| Skill | Trigger | Owns |
-|---|---|---|
-| `veritas-weekly-brief` | "run the weekly brief", "weekly sweep", "market sweep" | End-to-end WIB: scripts → research → write → log |
-| `veritas-portfolio-update` | "update the portfolio", "portfolio sweep", "update entry bands" | Portfolio Snapshot, Trigger Sheet, Watchlist sync |
-| `veritas-deep-dive` | "deep dive on [ticker]", "research [name]", "build a thesis" | Investment Thesis Template, Coverage Universe, evidence standard |
+## Current Workflow Routes
 
-Skill packages (`.skill` files) are in `scripts/skills/`. Install via Cowork skill manager.
+- P0 Retail/WF75: `workflow_router.py WF75 --answer all`; customer/public/account/advice remains blocked.
+- SMB Workflow Clarity: owner-paused; verify with `workflow_router.py WF79-SMB --answer all`; do not advance unless Randall explicitly resumes it.
+- WF78 scaleout/promotion: route through WF78 front doors, not ad hoc component scripts.
+- Product scaleout WF80-WF83: hold/resume-later; customer/public launch, spend, outreach, legal/compliance/security claims, and finance execution authority remain gated.
+- PM cockpit: `apps\pm-control-cockpit`, `state\pm-cockpit-source-registry.json`, local `http://127.0.0.1:8765`; read-only.
+- Cron awareness: read `tmp\cron-control-packet.json` first, then cron freshness/scorecard/escalation only when needed.
 
-Document-layer skills also installed: `docx`, `pdf`, `xlsx`, `pptx`, `schedule`, `skill-creator`.
+## Model / Skill Layer
 
-## Config posture
+- Main posture: live truth surface, orchestrator, QC owner, final integrator.
+- Workspace skills are primary: `veritas-*`, SMB, WF67, cron, SQLite, Windows, implementation/review/refactor/governor/QA.
+- Use `cron-automation-manager` when designing/rebuilding scheduled workflows.
+- Use `disciplined-implementation` when changing scripts, validators, manifests, workflow code, or boot/control surfaces.
+- After adding/removing/materially changing skills, update `06. Playbooks\Skills Governance Index.md`, then run `openclaw skills check`.
 
-- Remove stale or ineffective `gateway.nodes.denyCommands` entries rather than trusting them
-- Keep the Control UI local-only unless trusted proxy configuration is intentionally added
-- For OpenClaw config changes, inspect the active config file, schema, and current value before editing; do not guess config paths or assume similar names mean the same thing
-- Prefer `openclaw config set <path> "<value>"` over manual JSON edits when the CLI path supports it
-- Validate config after edits with `openclaw config validate`
-- Restart the gateway after important runtime-sensitive config changes, then verify with `openclaw config get <path>` plus `openclaw status`
-- If runtime behavior does not match a default setting, inspect override surfaces with `openclaw config get agents.list --json`
-- Never expose tokens, OAuth credentials, API keys, or gateway secrets in logs or chat
-- Treat gateway-token rotation as a multi-file cleanup problem, not just a single-config edit: check `openclaw.json`, `.bak`, `.last-good`, migration backups, and session transcript artifacts for stale copies after any rotation.
-- Exec approvals are a two-layer surface here: `tools.exec` policy in config plus host-local durable approvals in `~/.openclaw/exec-approvals.json`. On this Windows host, interpreter-launched scheduled chains like `python scripts\\run_finance_refresh_chain.py <window>` should use narrow exact-command durable approvals rather than broad interpreter safe-bins or guessed path allowlists.
-- Ask before changing auth, network exposure, permissions, or destructive settings
-- Ask before editing any config, credential, startup, service, plugin, or runtime file outside `C:\Users\Veritas\.openclaw\workspace`; inspection is allowed, mutation is approval-gated even when local and reversible
-- Validate skill state after skill changes with `openclaw skills check`
+## Windows / PowerShell
 
-## Tool safety rules
+- Do not use Bash-style `&&` or `||`; use `; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE };`.
+- Do not wrap commands in `cmd /c`, nested `powershell -Command`, `&`, or WSL unless explicitly asked.
+- Use backslashes and quote paths with spaces.
+- For multiline Python, prefer a single-quoted here-string piped to Python.
+- Avoid PowerShell redirection for JSON/UTF-8 artifacts; use Python or existing writers.
+- If a binary appears missing, check known wrappers/full paths before concluding it is unavailable.
 
-- Inspect before editing
-- Back up core files and config before modifying them
-- Prefer reversible changes and explicit validation
-- Do not claim a binary, plugin, or service is ready until it works live
-- Do not install unaudited third-party finance skills without Randall's approval
-- When skills or tool posture change, update `TOOLS.md` in the same workstream
+## Config And Security
 
-## Operating notes
+- Prefer first-class Gateway/config tools; inspect active config/schema/value before editing.
+- Ask before changing auth, credentials, network exposure, permissions, channels, startup, service, plugin, or runtime files outside the workspace.
+- Control UI local-only unless trusted proxy is deliberately approved.
+- Telegram is enabled for Randall with narrow owner allowlisting and mention-gating; Discord/other chat remains disabled unless separately approved.
+- Never expose tokens, OAuth credentials, API keys, or gateway secrets in logs or chat.
 
-- Use `memory/` for chronological logs; do not create a parallel daily-memory system unless Randall explicitly changes the convention
-- On this host's PowerShell, do not chain commands with `&&` or `||`; use `; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }` when a later step must stop on failure
-- Scripts and long runbooks belong in `scripts/README.md` or skills, not here
-- `CLAUDE.md` is retained for external-process compatibility only; it is not part of the active OpenClaw constitutional hierarchy
-- If browser availability matters, verify live browser state instead of assuming it from prior notes
-- In local webchat / Control UI work, prefer session-bound cron jobs for follow-up work over chat-channel fallback assumptions; delivery previews can look fail-closed even when the bound session target is the real route.
-- Current channel hardening posture (updated 2026-05-09): local Control UI remains the trusted operating surface, but Randall has explicitly enabled Telegram as a setup-pending exception. Treat Telegram/channel exposure as intentional-but-not-yet-proven until live bot/token/allowlist/owner-route behavior is verified. Discord remains disabled. Do not assume Telegram delivery is reliable until a test message or cron delivery proof succeeds. Before any broader Telegram, Discord, guild, group, or channel expansion, reverse this deliberately from `openclaw.json` rather than assuming defaults: restore the intended channel, `groupPolicy`, explicit allowlists, mention behavior, and owner allowlist so authority does not widen accidentally.
-- Keep queue movement category-driven and trust-gated: classify major work by category and parallel posture before opening helper lanes, rather than treating every open item as parallel by default.
-- In this local webchat / Control UI posture, do not assume thread-bound persistent subagent sessions are available. If `mode="session"` / `thread=true` subagent spawning is unavailable, use a continuity note plus a resume keyword that launches a fresh bounded subagent run against the file-based project context instead of pretending a live resumable worker exists.
-- When spawning subagents in this environment, pass file-grounded context explicitly; do not rely on memory search or hidden session continuity to reconstruct critical project state.
-- Do not remove the OpenClaw Startup-folder launcher unless persistence is re-verified live; status can imply Scheduled Task coverage while the Startup item still matters operationally.
+## Finance Boundary
+
+- Generated packets never imply owner approval, allocation, execution entitlement, trade/account authority, or external approval.
+- Automated non-capital research/routing/tier state is allowed through validated derived artifacts.
+- Portfolio/canon maintenance needs the exact approved gate, proposal, preview/diff, validator proof, backup/rollback, and audit trail.
+- Live trading, live credentials/endpoints, brokerage/account changes, money movement, and inferred approval remain blocked.
+- Paper submit/cancel/sell requires WF63/WF67 paper-only guardrails, fresh kill switch, exact scoped artifact, notification, and Randall exact approval.
+
+## Operating Notes
+
+- Use `memory/` for chronological logs; do not create a parallel daily-memory system.
+- `CLAUDE.md` is retained for external-process compatibility only and is not active doctrine.
+- Helper lanes need context, deliverable, proof, stop lines, and boundaries.
+- Do not remove the OpenClaw Startup-folder launcher unless persistence is re-verified live.
