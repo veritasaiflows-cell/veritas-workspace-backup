@@ -1,0 +1,4 @@
+interface:
+  display_name: "SMB Workflow Automation"
+  short_description: "SMB service-run automation patterns"
+  default_prompt: "Use $smb-workflow-automation-operator to build SMB workflow service packets and automation blueprints."

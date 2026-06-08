@@ -1,0 +1,4 @@
+interface:
+  display_name: "SEC"
+  short_description: "Official SEC filing evidence"
+  default_prompt: "Use $sec to retrieve and reason from official SEC filing evidence."

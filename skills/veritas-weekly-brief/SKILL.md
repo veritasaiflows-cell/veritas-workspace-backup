@@ -12,6 +12,7 @@ Use:
 - `veritas-macro-pass` for regime judgment
 - `veritas-technical-pass` for actionability and extension discipline
 - `veritas-positioning-pass` when the weekly board needs explicit capital-priority ranking
+- `veritas-financial-planning-pass` when the weekly output becomes holistic advisor/planner guidance across goals, liquidity, drawdown tolerance, concentration, cash, or sleeve constraints
 
 Core rule:
 - scripts stage the weekly evidence set
@@ -52,9 +53,9 @@ Before writing or syncing, read the live weekly note layer:
 - `05. Intelligence/Weekly Intelligence Brief.md`
 - `02. Markets/Macro Regime Dashboard.md`
 - `05. Intelligence/Weekly Positioning Review.md`
-- `01. Dashboards/This Week.md`
+- `01. Dashboards/This Week.md` only as a retired pointer/stub, not as a weekly outcome owner
 - `01. Dashboards/Executive Brief.md`
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `03. Portfolio/Portfolio Snapshot.md`
 - `07. Risk/Risk Rules.md`
 
@@ -67,10 +68,10 @@ Primary weekly outputs:
 - `05. Intelligence/Weekly Intelligence Brief.md`
 - `02. Markets/Weekly Macro Snapshot/<ISO-week>.md` via the script layer
 - `05. Intelligence/Weekly Positioning Review.md`
-- `01. Dashboards/This Week.md`
 
-Secondary orientation output when materially needed:
+Pointer/orientation outputs when materially needed:
 - `01. Dashboards/Executive Brief.md`
+- `01. Dashboards/This Week.md` remains a retired pointer/stub and should not be repopulated as an independent weekly outcome map
 
 Important vault rule:
 - do **not** update `01. Dashboards/Monday Game Plan.md`
@@ -139,14 +140,14 @@ Use this order:
 
 1. `05. Intelligence/Weekly Intelligence Brief.md`
 2. `05. Intelligence/Weekly Positioning Review.md`
-3. `01. Dashboards/This Week.md`
-4. `02. Markets/Macro Regime Dashboard.md` — only if regime framing materially changed
-5. `01. Dashboards/Executive Brief.md` — only if what matters now or trust posture materially changed
-6. `02. Markets/Watchlist.md` — only if active-universe membership, coverage tier, or high-level state labels changed materially
+3. `02. Markets/Macro Regime Dashboard.md` — only if regime framing materially changed
+4. `01. Dashboards/Executive Brief.md` — only if what matters now or trust posture materially changed
+5. `01. Dashboards/This Week.md` — keep as a pointer/stub only; do not restore independent weekly outcomes
+6. `04. Research/Coverage and Watchlist.md` — only if active-universe membership, coverage tier, or high-level state labels changed materially
 
 Important vault rule:
-- `Watchlist.md` remains a navigation index, not a full weekly thesis board
-- do not dump weekly commentary or duplicate trigger detail into it
+- `04. Research/Coverage and Watchlist.md` remains a consolidated research/index surface, not a full weekly commentary board
+- do not dump weekly commentary or duplicate Execution Board trigger detail into it
 
 ### 6. Weekly judgment standards
 
@@ -162,6 +163,8 @@ Every major weekly section should end with a practical implication for:
 - deployment patience or offense
 - catalyst risk
 - watchlist triage
+
+Advisor boundary: weekly implications are recommendations and review priorities only. They do not grant owner approval, trade/account action, sizing execution, tax/legal advice, or ungated workspace portfolio/canon mutation.
 
 ## Trust and contradiction rules
 
@@ -200,8 +203,8 @@ When Randall asks for the weekly review or Sunday refresh:
 
 A production-grade weekly refresh should leave behind:
 - one coherent weekly intelligence brief
-- a synchronized weekly positioning map
-- a `This Week` note that reflects actual catalysts and intended outcomes
+- a synchronized lean weekly positioning map
+- retired dashboard stubs that continue pointing to the weekly and daily owners without becoming fresh truth layers again
 - no invented surfaces that do not exist in the vault
 - explicit trust language when the machine layer is degraded
 

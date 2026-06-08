@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cron Automation"
+  short_description: "Safe scheduled workflow design"
+  default_prompt: "Use $cron-automation-manager to design or audit scheduled workflows with overlap and boundary checks."

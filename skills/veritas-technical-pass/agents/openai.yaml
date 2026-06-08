@@ -1,0 +1,4 @@
+interface:
+  display_name: "Technical Pass"
+  short_description: "Veritas technical timing workflow"
+  default_prompt: "Use $veritas-technical-pass to run the Veritas technical timing workflow for finance evidence."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "WF67 Paper Trading"
+  short_description: "Paper-only execution guardrails"
+  default_prompt: "Use $wf67-paper-trading-operator to prepare paper-trading guard proof without implying execution approval."

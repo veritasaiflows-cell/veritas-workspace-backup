@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workspace Governor"
+  short_description: "Workspace structure governance"
+  default_prompt: "Use $workspace-governor to govern workspace structure and note placement without creating sprawl."

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Technical Chart Pass"
+  short_description: "Deprecated generic chart fallback"
+  default_prompt: "Use $technical-chart-pass to use the deprecated generic chart fallback only when the Veritas technical pass is not the owner."
+policy:
+  allow_implicit_invocation: false

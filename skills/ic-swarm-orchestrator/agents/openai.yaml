@@ -1,0 +1,4 @@
+interface:
+  display_name: "IC Swarm Orchestrator"
+  short_description: "Bounded helper-lane orchestration"
+  default_prompt: "Use $ic-swarm-orchestrator to plan bounded helper lanes with deliverables, stop lines, and verification."

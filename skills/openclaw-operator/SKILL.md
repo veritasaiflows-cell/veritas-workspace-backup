@@ -45,12 +45,14 @@ Check live state before claiming anything about runtime:
 
 1. Inspect before editing.
 2. Separate constitutional rules from procedures.
-3. Keep core files short and durable.
+3. Keep core files short and durable: preserve identity, hierarchy, hard boundaries, startup/routing contracts, and user preferences; route procedures/history/tool minutiae to skills, owner notes, or memory.
 4. Move repeatable workflows into focused skills.
 5. Prefer references or scripts inside skills over bloated core files.
 6. Back up every file before modifying it.
-7. Validate config and skill state after changes.
-8. Record major architecture changes in the current daily note.
+7. For boot/core slimming, run `scripts/openclaw_cache_efficiency_scorecard.py --write` before/after when practical and report char/token delta; do not weaken finance, paper/live, account, config/auth, or external-action stop lines.
+8. Use `windows-powershell-workspace` when the pass depends on native Windows, PowerShell syntax, wrappers, encoding, approvals, startup, or scheduled-chain behavior.
+9. Validate config and skill state after changes.
+10. Record major architecture changes in the current daily note.
 
 For major protocol or skill-governance changes, also make the checkpoint decision explicit before calling the pass closed.
 
@@ -61,6 +63,21 @@ When external skill scouting matters:
 - if normal web search is unavailable, use direct page fetches only as supporting evidence and say the web-search gap plainly
 - treat external skills as idea sources for local hardening, not as doctrine to import blindly over the workspace's existing rules
 - when recurring automation clearly belongs to one local skill, tighten the local skill and the cron packet before considering a new external dependency
+
+Current Veritas harness scouting themes:
+- harness/eval/regression skills are useful as idea sources for scenario suites, scorecards, baseline-vs-candidate comparison, and failure classification
+- SQLite skills are useful as idea sources for WAL/concurrency/query hygiene, but the local WF75 control-plane boundary still wins
+- stock/evaluator skills may inspire rubric shape, but they must not override Veritas finance authority, owner approval, paper/live, or source-freshness rules
+- install nothing from ClawHub during scouting unless Randall explicitly approves the exact skill and dependency posture
+
+For reported OpenClaw/tool banners, use:
+
+```powershell
+python scripts\veritas_harness_failure_classifier.py --text "<reported command failure>" --write
+```
+
+Then decide whether it is harmless shell noise, warning-only readiness debt,
+real breakage, stale evidence, or an authority regression.
 
 ## Post-update / post-reinstall recovery protocol
 
@@ -151,3 +168,4 @@ Report in this order:
 - log major workspace or config changes in `memory/YYYY-MM-DD.md`
 - promote durable operator policy to `TOOLS.md` or `MEMORY.md`
 - if a workflow becomes repeatable, create or improve a skill instead of bloating a core file
+- if an operator pass exposes a reusable Windows/PowerShell lesson, update `windows-powershell-workspace` in the same closeout pass

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenClaw Troubleshooter"
+  short_description: "Diagnose OpenClaw runtime issues"
+  default_prompt: "Use $openclaw-troubleshooter to diagnose OpenClaw runtime, tool, and configuration problems."

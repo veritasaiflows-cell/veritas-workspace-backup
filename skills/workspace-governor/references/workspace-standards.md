@@ -26,14 +26,21 @@ Current allowed non-numbered active root folders:
 - `skills/` for installed or local AgentSkills
 - `tmp/` for generated machine artifacts and staged render outputs
 - `data/` for approved durable append-only derived state/history datasets only; each subfolder needs a README and must not store credentials or canonical portfolio authority
+- `state/` for approved durable machine state such as PM cockpit registry and finance SQL canon candidate surfaces; these remain derived/proof or gated machine-canon candidates, not portfolio/trade/approval authority unless an exact gate says otherwise
+- `apps/` for local application surfaces such as `apps/pm-control-cockpit`; apps remain local/review-only unless a separate exposure gate is approved
+- `training/` for internal WF75 Academy/training assets; internal only, no public/customer delivery authority
 - `migration-backups/` for reversible local backup checkpoints
 - `.obsidian/`, `.openclaw/`, `.clawhub/`, `.git/` for tool or repo infrastructure
+- `.claude/` as a runtime/tool-settings compatibility surface; do not move, archive, or clean it without exact runtime/config approval
 
 `templates/` is not a permanent root entitlement. Recreate it only when active finance-first templates actually exist.
 
 Current documented root exceptions:
 - `attachments/` while `.obsidian/app.json` still points `attachmentFolderPath` there, even if the folder is currently empty
 - `migration-review.md` while it still has active review or retrieval value
+- `GEMINI.md` as an external-process compatibility surface parallel to `CLAUDE.md`; keep route-only and do not treat it as active Veritas doctrine
+- `.backups/` as a temporary rollback/provenance surface with `README.md`; do not move whole folder, and do not move config/runtime-sensitive subtrees without exact approval
+- `backups/` as a temporary rollback/provenance surface with `README.md`; do not move whole folder, and archive only retired individual backup sets after fresh proof
 
 Do not create a new top-level folder unless all of the following are true:
 - it represents a durable domain rather than a one-off task
@@ -91,9 +98,9 @@ Examples now considered archival rather than active root surfaces:
 Rules:
 - each subfolder needs a README with authority, producer, proof, and retention posture
 - no credentials, tokens, auth material, or runtime config
-- no portfolio mutation, deployment-state mutation, trade execution, or owner-approval inference
+- no ungated portfolio mutation, ungated deployment-state mutation, trade execution, or owner-approval inference
 - SQL or JSONL hits must route back to source Markdown/JSON before judgment
-- current approved subfolder: `data/state-history/`
+- current approved subfolders: `data/state-history/`, `data/fundamentals/`
 
 ## Generated artifact handling
 
@@ -107,6 +114,9 @@ Examples:
 
 Rules:
 - generated files do not outrank canonical notes
+- `tmp/` may contain Markdown sidecars only when they are generated explanations, helper-lane scratch reports, patch previews, or short human-readable companions to machine artifacts
+- final audits, durable research notes, and workflow truth must be promoted out of `tmp/` to `08. Audits/`, `04. Research/`, or `06. Playbooks/Project Continuity/` as appropriate
+- when a final Markdown report is promoted, keep any machine-consumed JSON/CSV/SQLite companion in `tmp/` and update durable references to the promoted note
 - keep helper scripts out of `tmp/` when they are durable tooling and belong in `scripts/`
 - remove or relocate stale scratch artifacts once they stop supporting an active workflow or audit trail
 - entry-band HTML reports belong under `tmp/entry-band-reports/`; do not recreate a root-level `generated documents/` exception for them
@@ -186,7 +196,7 @@ Daily notes and continuity support only.
 Durable automation and helper tooling only.
 
 ### `tmp/`
-Generated artifacts only, not long-lived notes or durable scripts.
+Generated artifacts and staged Markdown sidecars only, not final audits, long-lived research notes, workflow truth, or durable scripts.
 
 ## Cleanup checklist
 

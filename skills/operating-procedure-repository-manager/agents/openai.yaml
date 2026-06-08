@@ -1,0 +1,4 @@
+interface:
+  display_name: "Procedure Repository"
+  short_description: "Operator procedure governance"
+  default_prompt: "Use $operating-procedure-repository-manager to manage operating procedures without scattering durable workflow rules."

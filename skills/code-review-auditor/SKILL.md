@@ -62,6 +62,14 @@ Check these in order:
    - acceptable residue
 6. Recommend the smallest next repair.
 
+## Boundaries
+
+- Review only unless Randall explicitly asks for implementation.
+- Do not mutate files, config, auth, runtime, finance authority surfaces, or portfolio/canon artifacts as part of the review pass.
+- Do not broaden scope into redesign unless the inspected change creates a blocking correctness or contract risk.
+- Ground every finding in a concrete file, line, artifact, validator, or observed behavior.
+- If proof is missing, stale, or only compile-level where runtime proof is needed, say that plainly instead of inferring success.
+
 ## Output Format
 
 Return in this order:

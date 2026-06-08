@@ -13,9 +13,9 @@ Use it when the output needs to be decision-grade, risk-aware, explicit about da
 ## Before starting
 
 Read the relevant local note stack first when it matters:
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Deployment Trigger Sheet.md` if deployment timing matters
+- `03. Portfolio/Execution Board.md` if deployment timing matters
 - `05. Intelligence/Weekly Positioning Review.md`
 - `07. Risk/Risk Rules.md`
 - any ticker-specific or sector-specific research note if it exists
@@ -40,6 +40,17 @@ For each ticker:
    - tactical only
    - avoid for now
 
+## Official evidence bridge
+
+When WF65/WF66 artifacts exist, use them before relying on generic aggregator values:
+- `tmp/fundamental-ir-reconciliation-packets.json`
+- `tmp/fundamental-ir-reconciliation-validation.json`
+- `tmp/official-earnings-bridge.json`
+- `tmp/official-earnings-bridge-validation.json`
+- `tmp/bank-native-sec-concept-probe.json` for banks/financials
+
+If official fields are marked manual-required, partial, stale, or conflicting, keep the data-quality cap visible and do not convert that field into a portfolio or deployment conclusion.
+
 ## Source hierarchy
 
 Use sources in this order:
@@ -59,8 +70,9 @@ Use sources in this order:
 
 Rules:
 - cross-check anomalous core metrics against another source
+- prefer official SEC/IR evidence for decision-critical line items when available
 - never fabricate missing metrics
-- label stale, partial, conflicting, or approximate data clearly
+- label stale, partial, conflicting, manual-required, or approximate data clearly
 - if the data is too weak for conviction, say so and downgrade confidence
 
 ## Required workflow
@@ -217,6 +229,7 @@ Add this section:
 - Prefer explicit uncertainty over fake precision.
 - If the company is near earnings and the catalyst risk matters, say so.
 - If the output is being used with the portfolio workflow, coordinate with the technical and deployment layers instead of pretending fundamentals alone settle timing.
+- If the output becomes holistic financial-planning or allocation advice, route through `veritas-financial-planning-pass` and preserve owner gates, planning constraints, and no-trade authority.
 
 ## What not to do
 
@@ -240,5 +253,6 @@ Use this skill for prompts like:
 ## Relationship to other skills
 
 - Use `veritas-technical-pass` when timing, support/resistance, and entry discipline matter more than business quality in the Veritas workflow.
+- Use `veritas-financial-planning-pass` when a fundamental conclusion must be translated into holistic portfolio/advisor guidance across goals, liquidity, drawdown tolerance, concentration, cash, or sleeve constraints.
 - Use this skill first when deciding whether a name deserves serious coverage at all.
-- In the Veritas workflow, fundamentals decide whether the business belongs in the serious board. Technicals decide whether the timing is good enough to act.
+- In the Veritas workflow, fundamentals decide whether the business belongs in the serious board. Technicals decide whether the timing is good enough to act. Planning decides whether a recommendation fits Randall's broader constraints.

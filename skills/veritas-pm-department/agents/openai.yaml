@@ -1,0 +1,4 @@
+interface:
+  display_name: "PM Department"
+  short_description: "Project roadmap and readiness tracking"
+  default_prompt: "Use $veritas-pm-department to frame roadmap, readiness, and queue priorities across product lanes."

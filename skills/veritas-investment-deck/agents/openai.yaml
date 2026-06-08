@@ -1,0 +1,4 @@
+interface:
+  display_name: "Investment Deck"
+  short_description: "Finance-first deck planning"
+  default_prompt: "Use $veritas-investment-deck to plan a finance-first investment deck with evidence and risk framing."

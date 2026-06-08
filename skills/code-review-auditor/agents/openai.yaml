@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Review Auditor"
+  short_description: "High-signal code and contract review"
+  default_prompt: "Use $code-review-auditor to review a code change for correctness, contract drift, and proof quality."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenClaw Operator"
+  short_description: "OpenClaw workspace operations"
+  default_prompt: "Use $openclaw-operator to operate the OpenClaw workspace with config, skill, and runtime caution."

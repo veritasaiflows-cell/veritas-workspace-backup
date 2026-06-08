@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workspace QA Pass"
+  short_description: "High-signal workspace QA audit"
+  default_prompt: "Use $workspace-qa-pass to run a high-signal workspace QA pass after meaningful changes."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Safe Refactor Planner"
+  short_description: "Low-risk refactor planning"
+  default_prompt: "Use $safe-refactor-planner to plan a behavior-preserving refactor with proof and rollback boundaries."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "PDF Brief"
+  short_description: "Fixed-layout Veritas brief workflow"
+  default_prompt: "Use $veritas-pdf-brief to create or audit a fixed-layout Veritas PDF brief workflow."

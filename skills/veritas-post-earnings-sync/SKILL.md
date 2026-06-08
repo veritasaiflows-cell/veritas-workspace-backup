@@ -12,6 +12,7 @@ Use:
 - `veritas-fundamental-pass` for thesis / business / valuation judgment
 - `veritas-technical-pass` for band / stop / state judgment
 - `veritas-positioning-pass` when the print materially changes portfolio priority or action state
+- `veritas-financial-planning-pass` when the print changes holistic portfolio fit, concentration, liquidity, drawdown, or sleeve advice
 
 Core rule:
 - scripts prepare evidence
@@ -27,6 +28,8 @@ Use when:
 - an earnings blocker should be removed, extended, or replaced with a new post-print stance
 
 Do not use this for general research unrelated to a fresh report.
+
+Advisor boundary: a post-earnings stance is review support, not owner approval, trade/account action, tax/legal advice, or sizing execution. Any workspace portfolio/canon update must still pass its exact gated apply path.
 
 ## Primary inputs
 
@@ -104,15 +107,15 @@ Only update the notes that actually own the changed information.
 Default sync order:
 
 1. `05. Intelligence/Earnings/<Ticker> <Quarter> Post-Earnings Scorecard.md`
-2. `03. Portfolio/Technical Entry and Invalidation Sheet.md` — only if levels, support, resistance, entry band, stop, or repair-mode framing changed
-3. `03. Portfolio/Deployment Trigger Sheet.md` — remove or replace the earnings block; update state if the setup changed
+2. `03. Portfolio/Execution Board.md` — only if levels, support, resistance, entry band, stop, repair-mode framing, earnings block, or action state changed
 4. `03. Portfolio/Portfolio Snapshot.md` — only if current stance, draft role, or portfolio-level implication changed materially
 5. `05. Intelligence/Event Calendar.md` — roll the event forward and update closure visibility
 6. `05. Intelligence/Weekly Positioning Review.md` or `01. Dashboards/Executive Brief.md` — only if the print materially changes the operating board
-7. `02. Markets/Watchlist.md` — only if universe membership, coverage tier, canonical source pointer, or material deployment-state label changed
+7. `04. Research/Coverage and Watchlist.md` — only if universe membership, coverage tier, thesis status, key risk, or act-when logic changed
 
 Important vault rule:
-- `02. Markets/Watchlist.md` is a navigation index, not a live catalyst commentary board
+- `04. Research/Coverage and Watchlist.md` is the consolidated research/index surface, not a live catalyst commentary board
+- deployment/action state, execution bands, blockers, stops, and technical posture belong in `03. Portfolio/Execution Board.md`
 - do **not** add freeform post-earnings commentary or duplicate scorecard content there
 
 ### 4. Judgment precedence rules
@@ -133,15 +136,12 @@ Do not claim full closure if contradiction or trust warnings remain relevant.
 
 ## Minimum board-sync logic by note type
 
-### Technical Entry and Invalidation Sheet
+### Execution Board
 Owns:
 - entry bands
 - support / resistance
 - stops / invalidation
 - repair-mode technical framing
-
-### Deployment Trigger Sheet
-Owns:
 - blocked / unblocked state
 - deployable vs not deployable state
 - post-print readiness judgment in operational terms
@@ -158,7 +158,7 @@ Owns:
 - roll-forward to next expected quarter when appropriate
 - explicit closure visibility for material tracked earnings
 
-### Watchlist
+### Coverage and Watchlist
 Owns only:
 - active tracking universe membership
 - coverage tier
@@ -190,7 +190,7 @@ When Randall asks to sync a ticker's earnings:
 A production-grade post-earnings sync should leave behind:
 - one canonical scorecard
 - no stale upcoming earnings framing for the processed event
-- no silent mismatch between scorecard, trigger sheet, technical sheet, and portfolio posture
+- no silent mismatch between scorecard, Execution Board, Coverage and Watchlist, and portfolio posture
 - explicit unresolved items when closure is partial
 
 The goal is not just to record the quarter.

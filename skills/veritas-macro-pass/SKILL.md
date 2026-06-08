@@ -17,7 +17,7 @@ Read the relevant workspace stack first when it matters:
 - `05. Intelligence/Weekly Positioning Review.md`
 - `05. Intelligence/Weekly Intelligence Brief.md` if present
 - `03. Portfolio/Portfolio Snapshot.md`
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `07. Risk/Risk Rules.md`
 - `tmp/market-state.json` when using the scripted macro evidence layer
 - `tmp/dashboard-validation.json` when trust status matters
@@ -209,6 +209,10 @@ Use **Low** when:
 - If policy inputs are manual, the user should feel that uncertainty in the wording.
 - Do not smuggle in conviction that the evidence does not support.
 - Macro calls should end with portfolio consequences, not just narration.
+
+## Advisor boundary
+
+Macro conclusions can shape portfolio posture, cash patience, sector emphasis, and watchlist triage, but they are not standalone financial advice, owner approval, trade/account authority, or portfolio/canon mutation authority. When macro context becomes holistic allocation guidance, hand off to `veritas-financial-planning-pass` and preserve planning constraints, WF55 language limits, and owner gates.
 
 ## What not to do
 

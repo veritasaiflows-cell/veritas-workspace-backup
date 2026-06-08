@@ -1,0 +1,4 @@
+interface:
+  display_name: "Financial Planning Pass"
+  short_description: "Owner-gated portfolio guidance"
+  default_prompt: "Use $veritas-financial-planning-pass to synthesize financial planning guidance with owner-gated action boundaries."

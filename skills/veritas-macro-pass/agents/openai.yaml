@@ -1,0 +1,4 @@
+interface:
+  display_name: "Macro Pass"
+  short_description: "Macro regime and market context"
+  default_prompt: "Use $veritas-macro-pass to analyze macro regime context and market implications."

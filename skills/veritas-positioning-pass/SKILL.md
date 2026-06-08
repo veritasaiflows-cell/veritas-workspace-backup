@@ -14,10 +14,9 @@ Use it when the question is: what should the portfolio do next, under current ma
 
 Read the current workspace stack first:
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `tmp/deployment-readiness-surface.json`
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `05. Intelligence/Weekly Positioning Review.md`
 - `02. Markets/Macro Regime Dashboard.md`
 - `07. Risk/Risk Rules.md`
@@ -50,6 +49,24 @@ Default to these action buckets:
 
 Keep actions conditional when confidence or timing is not clean.
 Do not issue absolute trade commands.
+
+## Planner/advisor constraint block
+
+Before giving capital-deployment guidance, state known and unknown planning constraints:
+- time horizon
+- liquidity or cash needs
+- income needs
+- drawdown tolerance
+- concentration limits
+- tax/liquidity constraints when known
+- sleeve boundaries: core, tactical, speculative, income, hedge
+- current cash/dry-powder context if known
+
+If a material constraint is unknown, do not invent it. Keep the action conditional and say what assumption limits the recommendation.
+
+## WF55 probability / regression boundary
+
+Do not use win probability, expected return, percent likelihood, calibrated readiness score, model-ranked deployment, or regression-backed confidence unless WF55 retained-outcome validators explicitly allow it. Until then, use only heuristic, uncalibrated, scenario-weighted, or evidence-depth language.
 
 ## Required workflow
 
@@ -189,7 +206,12 @@ Use this skill for prompts like:
 
 ## Relationship to other skills
 
+- `veritas-financial-planning-pass` owns holistic goals/constraints/advisory synthesis when Randall asks for planner-style guidance.
 - `veritas-macro-pass` sets the backdrop.
 - `veritas-fundamental-pass` decides whether the business belongs in the serious board.
 - `veritas-technical-pass` decides whether timing is disciplined enough.
 - This skill converts those three layers into actual portfolio positioning logic.
+
+## Automation authority boundary
+
+Positioning passes may recommend portfolio posture, sizing, sleeve, sector, or candidate changes, but autonomous workspace apply routing belongs to `veritas-bounded-portfolio-agent`. Positioning output is decision evidence; it is not trade/account authority.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Response Contract"
+  short_description: "Concise proof/risk response shape"
+  default_prompt: "Use $veritas-response-contract to shape a concise response with conclusion, evidence, risk, and next action."

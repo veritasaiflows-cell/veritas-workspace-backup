@@ -90,7 +90,16 @@ Treat reinstall recovery as incomplete until binaries, skills, retrieval tools, 
    - compaction/checkpoint counts can be persisted history and are not by themselves proof that the current session context is still bloated
    - distinguish gateway feature/channel plugins from model-provider plugin inventory; verbose provider registration noise does not mean those providers are being called or burning tokens
    - when removing plugin load noise, prefer an explicit `plugins.allow` plus `plugins.bundledDiscovery="allowlist"` after confirming required providers remain available
-14. For reinstall/restart recovery, reconstruct the minimum return-to-service sequence in order:
+14. For Codex app-server idle timeouts:
+   - exact symptom: `codex app-server turn idle timed out waiting for turn/completed`
+   - first run `python scripts\codex_app_server_timeout_diagnostics.py --write --validate`
+   - inspect the generated `tmp/codex-app-server-timeout-diagnostics.json`; do not guess OAuth or model failure before checking trajectory evidence
+   - if events show `yieldDetected=false`, treat it as a Codex app-server progress/completion idle-guard problem, often amplified by long context, upstream latency, broad tool output, or missing appServer timeout overrides
+   - check current config with `openclaw config get plugins.entries.codex --json`
+   - check schema/manifest for `appServer.requestTimeoutMs`, `appServer.turnCompletionIdleTimeoutMs`, and `appServer.postToolRawAssistantCompletionIdleTimeoutMs`
+   - changing those values is runtime/plugin config mutation; get owner approval before applying it
+   - after any approved change, validate with `openclaw config validate`, restart/reload the gateway if required, rerun `openclaw status`, and confirm a long Codex turn no longer creates new `turn_completion_idle_timeout` events
+15. For reinstall/restart recovery, reconstruct the minimum return-to-service sequence in order:
    - runtime and model route sanity
    - Python / package dependencies
    - retrieval tools: Obsidian CLI, SQLite, `rg`, `jq`
@@ -98,7 +107,7 @@ Treat reinstall recovery as incomplete until binaries, skills, retrieval tools, 
    - cron/scheduled job survival and next-run proof
    - finance-chain smoke proof before acting on stale artifacts
    - continuity/control-surface updates for any changed job IDs, tool paths, or trust limits
-15. Record the real lesson in the correct file.
+16. Record the real lesson in the correct file.
 
 When the issue has a safe non-destructive forward fix:
 - take that step before ending at diagnosis

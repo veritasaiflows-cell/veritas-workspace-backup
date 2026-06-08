@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Continuity"
+  short_description: "Compact project pickup notes"
+  default_prompt: "Use $project-continuity-manager to create or refresh project pickup notes and continuity handoffs."

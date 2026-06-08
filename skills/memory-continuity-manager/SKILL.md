@@ -104,3 +104,16 @@ Use this structure when reporting memory work:
 
 This skill owns the routing decision.
 Always prefer a small accurate note over a bloated durable file or bloated daily log.
+## Memory-to-dataset boundary
+
+Daily memory and durable memory may be used to route candidate discovery, but they are not automatically training data.
+
+Rules:
+
+- Use memory files as metadata-only references for candidate discovery unless a separate redaction process is approved.
+- Do not export raw daily-memory text, durable-memory text, user chat, account details, finance execution context, or private identifiers into training/eval files by default.
+- Mark memory-derived candidates as `redaction_review` or `needs_redaction` until a human-gated review confirms safe use.
+- Prefer proof artifacts, validators, and structured RSI observations over raw prose when building eval candidates.
+- If a lesson is durable, promote it through the normal memory/skill/procedure route; do not create a parallel training-memory tree.
+
+Memory can identify where good examples live. It does not grant permission to use that text for model training.

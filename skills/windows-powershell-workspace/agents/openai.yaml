@@ -1,0 +1,4 @@
+interface:
+  display_name: "Windows PowerShell Workspace"
+  short_description: "Native Windows workspace commands"
+  default_prompt: "Use $windows-powershell-workspace to use native PowerShell commands safely in the Windows workspace."

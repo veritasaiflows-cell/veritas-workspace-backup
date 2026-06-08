@@ -1,0 +1,4 @@
+interface:
+  display_name: "Automation Hardening"
+  short_description: "Safer automation and trust gates"
+  default_prompt: "Use $automation-hardening-manager to harden an automation path with trust gates and stop lines."

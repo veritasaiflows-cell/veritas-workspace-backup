@@ -1,0 +1,4 @@
+interface:
+  display_name: "Self Improvement"
+  short_description: "Doctrine-aligned improvement loop"
+  default_prompt: "Use $veritas-self-improvement to capture a doctrine-aligned self-improvement correction loop."

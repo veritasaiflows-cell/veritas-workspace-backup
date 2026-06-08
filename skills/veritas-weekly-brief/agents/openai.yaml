@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weekly Brief"
+  short_description: "Weekly intelligence rebuild workflow"
+  default_prompt: "Use $veritas-weekly-brief to rebuild the weekly intelligence brief from current workspace evidence."

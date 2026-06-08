@@ -1,0 +1,4 @@
+interface:
+  display_name: "Post Earnings Sync"
+  short_description: "Post-earnings closure workflow"
+  default_prompt: "Use $veritas-post-earnings-sync to close post-earnings state with evidence-backed note synchronization."

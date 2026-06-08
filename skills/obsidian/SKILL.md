@@ -9,6 +9,14 @@ metadata: {"clawdbot":{"emoji":"💎","requires":{"bins":["obsidian-cli"]},"inst
 
 Obsidian vault = a normal folder on disk.
 
+## Workspace Boundary
+
+- In this OpenClaw workspace, the intended Obsidian vault root is `C:\Users\Veritas\.openclaw\workspace`.
+- Native runtime is Windows/PowerShell. Treat macOS paths in this skill as generic Obsidian reference material, not workspace truth.
+- Do not edit `.obsidian/`, plugin settings, attachments, or hidden folders unless Randall explicitly asks and the change has a rollback path.
+- Do not delete, move, or rename notes without explicit approval; moving notes can rewrite links across the vault.
+- Prefer direct Markdown file edits inside the workspace when the requested note operation does not require Obsidian-specific link maintenance.
+
 Vault structure (typical)
 - Notes: `*.md` (plain text Markdown; edit with any editor)
 - Config: `.obsidian/` (workspace + plugin settings; usually don’t touch from scripts)

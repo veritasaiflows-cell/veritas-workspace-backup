@@ -244,6 +244,25 @@ Use this loop when stepping back from a workstream:
 
 Prefer the smallest abstraction that reliably removes the failure.
 
+
+## WF74 reflection-to-proposal pipeline
+
+For RSI / compounding-improvement work, use the WF74 pipeline artifacts as the current operating contract:
+- `tmp/wf74-rsi-research-brief.json/.md` - bounded RSI research basis
+- `tmp/wf74-clawhub-rsi-inspection-queue.json/.md` - evaluator-first ClawHub inspection queue; no installs by default
+- `tmp/wf74-reflection-to-proposal-pipeline.json/.md` - capture -> classify -> evidence-bind -> propose -> evaluate -> apply/defer -> monitor
+- `tmp/wf74-rsi-trend-report.json/.md` - review-only lesson/correction trend report
+- `tmp/wf74-rsi-evaluation-harness.json/.md` - evaluation dimensions and seed fixtures
+- `tmp/wf74-rsi-validation.json/.md` - local validation proof
+
+RSI improvement proposals must include problem, evidence, lesson type, destination, proposed change, files affected, risks, validation, rollback, QA requirement, and authority boundary.
+
+Before applying skill, script, control-surface, or workflow changes from RSI:
+1. run the local WF74 validation harness or equivalent targeted proof
+2. use independent QA for any non-trivial change
+3. keep changes file-backed, test-backed where practical, and reversible
+4. preserve the hard boundary: no base-model self-modification, no autonomous authority expansion, no second memory tree, no config/auth/channel/service mutation without explicit approval, and no portfolio/trade/account/paper/live authority
+
 ## Skill creation trigger
 
 Recommend creating or improving a skill when all are true:
@@ -296,3 +315,62 @@ Before ending an improvement pass, check:
 - Did I avoid creating duplicate memory or doctrine drift?
 - Should this have become a skill, validator, or script change?
 - Did I improve future execution rather than just document the past?
+## WF74 Quality Collection Route
+
+When meaningful implementation, finance recommendation work, model canary work, cron proof work, or evaluation/QA work completes, use the WF74 collection route before claiming measurement readiness.
+
+Default command sequence:
+
+```powershell
+python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate --include-harness
+python scripts\wf74_rsi.py --validate-only
+```
+
+Artifacts to inspect:
+- `tmp/wf74-model-quality-collection-cron-runner.json`
+- `tmp/model-run-ledger-current.json`
+- `tmp/finance-recommendation-correctness-ledger-current.json`
+- `tmp/model-quality-scorecard.json`
+- `tmp/cron-control-packet.json`
+
+Interpretation rules:
+- Treat `model_run_ledger` as operational/run evidence only.
+- Treat `finance_recommendation_correctness_ledger` as ex-ante rule and boundary correctness only.
+- Treat WF55 later outcome grades as blocked until assigned by the WF55 gated outcome process.
+- Do not claim model ranking unless repeated samples, model attribution, session attribution, and later outcome-grade history all support it.
+- Do not infer investment correctness from OTEL metrics, runtime speed, validator success, or canary completion.
+
+Boundary:
+- Review-only measurement.
+- No base-model self-modification.
+- No authority expansion.
+- No raw prompt/content capture.
+- No runtime/config mutation from the collection route.
+- No canon/portfolio mutation.
+- No capital deployment approval.
+- No paper/live/account action.
+- No owner approval inference.
+
+Cron note:
+- The scheduled owner path is `Ops - OTEL Local Digest`, which runs the WF74 collection runner. Cron may refresh proof artifacts and WF74 scorecards only; it may not apply decisions, grade outcomes, execute trades, mutate portfolio/canon state, or promote model rankings.
+## RSI to dataset candidate to skill proposal loop
+
+Use this path when WF74/RSI observations suggest Veritas can improve future behavior:
+
+1. Capture tiny RSI observations in existing JSON artifacts.
+2. Run `python scripts\training_dataset_candidate_builder.py --write --write-md --validate` to classify local metadata-only examples.
+3. Treat candidate rows as review objects, not training data.
+4. Escalate to a skill proposal only when a pattern is repeated, safety-relevant, or clearly reusable across sessions.
+5. Keep finance examples eval-only unless a future gated process explicitly approves another use.
+6. Require redaction review before any raw memory/chat/prose becomes an eval or training example.
+7. Never use RSI, candidate counts, validator success, or cron success to claim base-model retraining, model ranking, investment correctness, or authority expansion.
+
+Recommended destinations:
+
+- Repeated response-quality pattern -> `veritas-response-contract` proposal.
+- Repeated implementation/validator pattern -> `disciplined-implementation` or validator patch.
+- Repeated cron/duplication pattern -> `cron-automation-manager` or duplication audit patch.
+- Repeated memory routing pattern -> `memory-continuity-manager` proposal.
+- One-off observation -> daily memory only.
+
+The goal is controlled learning: evidence first, candidate classification second, skill proposal third, apply only after explicit approval.

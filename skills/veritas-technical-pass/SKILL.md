@@ -13,10 +13,9 @@ Use it when the output needs exact levels, clear setup status, deployment discip
 ## Before starting
 
 Read the relevant workspace files first when they matter:
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `05. Intelligence/Weekly Positioning Review.md`
 - `07. Risk/Risk Rules.md`
 - any ticker-specific or sector-specific note that already exists
@@ -156,6 +155,18 @@ When used for a board or sheet:
 - if levels are missing, do not fake decision-grade readiness
 - underdefined names should stay benched even if they are compelling themes, because undefined levels are a real decision-quality gap, not a cosmetic omission
 
+## Promotion band-propagation closure
+
+When a watch/research ticker is promoted to portfolio-review, execution review, or any higher operating state, the technical pass is not complete until the numeric band and stop propagate through every consumer:
+
+1. `tmp/portfolio-config.json -> entry_bands[TICKER]` has numeric `low`, `high`, and `stop`.
+2. Display labels are numeric or dashboard code derives numeric labels from the numeric fields; sentinel labels like `WATCH_DEFINED_INITIAL`, `WATCH_PULLBACK_INITIAL`, and `TBD` are not acceptable promoted-state output.
+3. `python scripts\validate_portfolio_config.py --strict` passes.
+4. `python scripts\deployment_check.py` keeps portfolio-review names in `PROMOTION REVIEW`, not `DEPLOYABLE NOW`, unless a separate owner-approved deployment/model gate exists.
+5. `python scripts\generate_dashboard.py` and `python scripts\validate_dashboard_state.py --write` pass and the rendered dashboard shows numeric band/stop values.
+
+If any item fails, say the promotion is technically incomplete. Do not call bands “fully applied” just because low/high/stop exist in one artifact.
+
 ## Judgment rules
 
 - A good company with a bad chart is not deployable.
@@ -165,6 +176,7 @@ When used for a board or sheet:
 - Distinguish repair mode from simple earnings blocking.
 - Macro-linked assets must include macro dependency in the note.
 - If the technical output is being used with the portfolio workflow, coordinate with the fundamental and deployment layers instead of pretending the chart alone settles the decision.
+- Technical readiness is not financial advice, owner approval, sizing execution, or trade/account authority; planner-style implications belong in `veritas-financial-planning-pass`.
 
 ## What not to do
 
@@ -179,7 +191,7 @@ Do not:
 
 Use this skill for prompts like:
 - "give me the technical pass"
-- "refresh the technical sheet"
+- "refresh the Execution Board technical layer"
 - "which of these names are technically ready"
 - "define entry bands and invalidation"
 - "is this blocked or in repair mode"

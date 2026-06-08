@@ -1,0 +1,6 @@
+interface:
+  display_name: "Bash Compatibility"
+  short_description: "Bash/WSL compatibility in Windows"
+  default_prompt: "Use $bash-compatibility to evaluate Bash-specific commands without breaking the Windows workspace."
+policy:
+  allow_implicit_invocation: false

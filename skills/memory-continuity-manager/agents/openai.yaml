@@ -1,0 +1,4 @@
+interface:
+  display_name: "Memory Continuity"
+  short_description: "Daily and durable memory routing"
+  default_prompt: "Use $memory-continuity-manager to route memory between daily notes and durable continuity without duplication."

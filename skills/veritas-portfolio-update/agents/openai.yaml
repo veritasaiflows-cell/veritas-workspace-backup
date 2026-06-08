@@ -1,0 +1,4 @@
+interface:
+  display_name: "Portfolio Update"
+  short_description: "Portfolio board synchronization"
+  default_prompt: "Use $veritas-portfolio-update to synchronize portfolio board state while preserving owner-gated boundaries."

@@ -23,10 +23,10 @@ Convert research into a slide sequence that answers:
 ## Before starting
 
 Read the relevant workspace stack first when it matters:
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
+- `03. Portfolio/Execution Board.md`
 - `tmp/deployment-readiness-surface.json` when the deck touches current actionability or board posture
 - `tmp/dashboard-validation.json` when trust grade or stale/manual caveats could affect the output
 - `05. Intelligence/Weekly Positioning Review.md`
@@ -121,6 +121,10 @@ Use this structure unless there is a strong reason not to:
 - no generic consulting language
 - no fake certainty
 
+## Advisor and authority boundary
+
+Investment decks are presentation and decision-support artifacts. They may recommend owner review, show scenario implications, and summarize portfolio fit, but they do not authorize trades, account actions, owner approval, sizing execution, or workspace canon mutation. Tax, legal, retirement-account, insurance, estate, debt, employment-income, and outside-account issues should be labeled as constraints/referral items, not professional advice.
+
 ## Trust and disclosure rules
 
 Every decision-grade deck should make the trust state visible.
@@ -130,6 +134,7 @@ At minimum, include or clearly state:
 - trust grade or confidence framing
 - stale/manual/partial dependency caveats when they matter
 - whether the deck reflects note-layer judgment, machine scaffolding, or both
+- whether recommendations are heuristic/review-only, owner-gated, and constrained by WF55 probability-readiness limits
 
 If the underlying research or board state is warning-heavy, degraded, or provisional, do not polish that away with cleaner slide language.
 The deck must preserve uncertainty instead of laundering it.

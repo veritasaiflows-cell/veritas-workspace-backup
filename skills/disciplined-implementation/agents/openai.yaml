@@ -1,0 +1,4 @@
+interface:
+  display_name: "Disciplined Implementation"
+  short_description: "System-aware implementation guardrails"
+  default_prompt: "Use $disciplined-implementation to make a scoped implementation with adjacent-consumer checks and proof."

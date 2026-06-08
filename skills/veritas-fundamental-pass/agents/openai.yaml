@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fundamental Pass"
+  short_description: "Decision-grade equity fundamentals"
+  default_prompt: "Use $veritas-fundamental-pass to build a decision-grade equity fundamentals pass from source-backed evidence."

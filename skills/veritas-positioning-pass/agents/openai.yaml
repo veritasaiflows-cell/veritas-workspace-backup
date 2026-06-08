@@ -1,0 +1,4 @@
+interface:
+  display_name: "Positioning Pass"
+  short_description: "Portfolio positioning synthesis"
+  default_prompt: "Use $veritas-positioning-pass to synthesize portfolio positioning from macro, fundamental, and technical evidence."

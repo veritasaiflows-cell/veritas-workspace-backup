@@ -80,6 +80,30 @@ Default outputs are an audit note, a bounded fix list, or a skill/workspace reco
    - If the audited change touched shared vocab, freshness fields, or output contracts, rerun at least one adjacent consumer/acceptance path and confirm the proof artifact is fresh enough to mean anything.
    - If no validator exists, say that plainly.
 
+
+## PM proof-budget fit
+
+When QA reviews work that came through the PM queue, inspect `validation_budget` and `closeout_mode` before deciding whether the proof was enough.
+
+Default interpretation:
+- `micro`: QA focuses on local behavior and obvious stop-line violations.
+- `narrow`: QA verifies the named targeted proof is enough.
+- `shared`: QA inspects producer/consumer contract propagation.
+- `major`: QA expects full integration proof and honest closeout.
+
+If the budget is too small for the actual blast radius, report that as a finding instead of manually broadening every pass by habit.
+
+## WF75 Evaluation Lens
+
+When QA targets WF75, Generic Intelligence SaaS, or SMB Workflow Clarity, include these checks:
+- PM queue: selected action is review-only, has owner, source artifacts, stop lines, and no inline execution authority
+- product readiness: offer, buyer pain, deliverables, activation/time-to-value hypothesis, exclusions, and pilot gate are explicit
+- service-run lifecycle: status transitions do not imply customer/public readiness
+- renderer/evaluation: clean scenarios pass and unsafe seeded claims fail
+- authority: no customer data, credential access, external delivery, outbound messaging, customer-system implementation, guaranteed ROI, public launch, canon/portfolio mutation, paper/live/account action, config/auth/runtime mutation, or owner approval inference
+- ClawHub pattern intake: useful external patterns are copied into Veritas-owned skills/scripts; generic skills are not installed without a dedicated review
+- workflow automation blueprint: every proposed automation has trigger, input contract, dedup key, idempotency, retry/backoff, audit logging, human review queue, dry-run activation state, and no customer/credential/outbound/writeback authority
+
 ## Evidence standard
 
 Do not write generic advice.

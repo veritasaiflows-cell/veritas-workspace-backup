@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian"
+  short_description: "Obsidian vault note operations"
+  default_prompt: "Use $obsidian to work with Obsidian markdown notes while respecting vault boundaries."

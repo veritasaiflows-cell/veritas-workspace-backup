@@ -1,0 +1,4 @@
+interface:
+  display_name: "SQLite"
+  short_description: "SQLite concurrency and query guidance"
+  default_prompt: "Use $sqlite to handle SQLite queries, concurrency, and derived database proof safely."

@@ -1,6 +1,6 @@
 ---
 name: veritas-pdf-brief
-description: Build a Veritas finance-first PDF deliverable from the live note layer, report assets, or staged artifacts. Use when the output should become a printable, shareable, fixed-layout decision document such as a Weekly Intelligence PDF, Post-Earnings PDF, Equity Research / Thesis PDF, or Portfolio Positioning PDF.
+description: Build a Veritas finance-first or product-readiness PDF deliverable from the live note layer, report assets, or staged artifacts. Use when the output should become a printable, shareable, fixed-layout decision document such as a Weekly Intelligence PDF, Post-Earnings PDF, Equity Research / Thesis PDF, Portfolio Positioning PDF, PM Weekly Update, WF75 Readiness PDF, or roadmap/timeline presentation packet.
 ---
 
 # Veritas PDF Brief
@@ -24,6 +24,9 @@ Use when Randall wants:
 - a post-earnings PDF
 - a single-name thesis or research PDF
 - a portfolio positioning PDF
+- a weekly PM department update
+- a WF75 readiness or timeline PDF
+- an upcoming-enhancements roadmap PDF or presentation packet
 - a shareable fixed-layout output instead of a raw note, JSON, Word file, or deck
 
 Do not use this as the first drafting surface.
@@ -53,6 +56,55 @@ Use for:
 - capital-priority order
 - risk and concentration framing
 - what changed in portfolio stance
+
+### 5. Composite Regime and Sector Positioning PDF
+Use for:
+- weekly in-depth macro regime packaging
+- current composite regime read
+- sector leadership / underexposure translation
+- review-only sector tilt or sector-weight proposals
+- promotion-review candidate framing by sector
+
+Standard weekly visual shell:
+- use `scripts/render_composite_regime_sector_pdf.py`
+- default command: `python scripts\render_composite_regime_sector_pdf.py --report-date YYYY-MM-DD --variant "Visual Review Candidate"`
+- output path: `06. Playbooks/Weekly Intelligence PDF/Weekly Composite Regime and Sector Positioning - YYYY-MM-DD Visual Review Candidate.pdf`
+- renderer uses script-generated HTML/CSS, inline SVG charts, and optional pandas data shaping; do not require matplotlib/plotly/seaborn unless explicitly approved later
+
+Hard boundary:
+- sector weights, sleeve changes, promotions, demotions, sizing, and execution entitlement are review-only proposals unless an exact validator-backed gated apply explicitly authorizes the named portfolio note/model mutation. Trade/account actions remain blocked.
+
+### 6. PM / Product Readiness PDF or Presentation Packet
+
+Use for:
+- weekly PM department updates
+- WF75 readiness and 6-10 week timeline packaging
+- upcoming enhancement roadmaps
+- project milestone and blocker packets
+- internal/service-led SaaS readiness presentations
+
+Read first:
+- `veritas-pm-department`
+- `06. Playbooks/Active Workflows.md`
+- `tmp/wf75-service-led-saas-readiness-plan.json`
+- `tmp/operator-packets/retail-saas-wf75.json`
+- `tmp/workflow-automation-autonomy-review.json`
+- `tmp/heartbeat-continuation-candidates.json`
+- `06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md`
+- latest `memory/YYYY-MM-DD.md`
+
+Required structure:
+1. headline status
+2. readiness target and current phase
+3. timeline and milestones
+4. completed work
+5. upcoming enhancements
+6. blockers and owner decisions
+7. proof artifacts and trust disclosures
+8. next safe action
+
+Hard boundary:
+- PM/product-readiness documents are internal and review-only. They do not imply public launch readiness, customer-data readiness, external delivery approval, legal/compliance clearance, source-licensing clearance, SQL import, portfolio/canon mutation, paper/live/account action, or owner approval.
 
 ## Before starting
 
@@ -110,8 +162,8 @@ Read first:
   - `veritas-fundamental-pass`
   - `veritas-technical-pass`
   - `veritas-positioning-pass` when relevant
-- `03. Portfolio/Deployment Trigger Sheet.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
+- `03. Portfolio/Execution Board.md`
 - visual assets from `python scripts/equity_visual_report.py <TICKER>` when available
 
 ### Portfolio Positioning PDF
@@ -121,6 +173,47 @@ Read first:
 - `07. Risk/Risk Rules.md`
 - `tmp/trigger-sheet.json`
 - `tmp/dashboard-validation.json`
+
+### Composite Regime and Sector Positioning PDF
+Read first:
+- `06. Playbooks/Composite Regime and Sector Positioning PDF Candidate.md`
+- `06. Playbooks/Weekly Intelligence PDF/Composite Regime and Sector Positioning - Phase 1 Visual Design Spec.md`
+- `05. Intelligence/Weekly Positioning Review.md`
+- `02. Markets/Macro Regime Dashboard.md`
+- `03. Portfolio/Portfolio Snapshot.md`
+- `07. Risk/Risk Rules.md`
+- `tmp/market-state.json`
+- `tmp/sector-expansion-board.json`
+- `tmp/deployment-readiness-surface.json`
+- `tmp/dashboard-validation.json`
+
+Only package sector weights as `proposal_for_review`, not applied allocation state.
+
+Required standard visuals:
+- leadership / underexposure heatmap
+- strict deployment-surface distribution chart
+- sector exposure-vs-cap chart
+
+### PM / Product Readiness PDF or Presentation Packet
+
+Read first through `veritas-pm-department`, then package the PM output.
+
+Required source stack:
+- `06. Playbooks/Active Workflows.md`
+- `tmp/wf75-service-led-saas-readiness-plan.json`
+- `tmp/operator-packets/retail-saas-wf75.json`
+- `tmp/workflow-automation-autonomy-review.json`
+- `tmp/heartbeat-continuation-candidates.json`
+- WF75 continuity note
+- latest daily memory note
+
+Only package readiness as internal/service-led readiness unless a separate exact approval artifact clears public/customer/external use.
+
+Useful PM visuals:
+- readiness timeline
+- milestone table
+- blocker/decision matrix
+- enhancement roadmap
 
 ## Standard PDF structure
 
@@ -220,6 +313,25 @@ Recommended structure:
 
 Do not turn this into a holdings dump.
 
+### PM / Product Readiness PDF or Presentation Packet
+
+Must separate:
+- internal/service-led readiness
+- public launch readiness
+- legal/compliance/source readiness
+- external delivery readiness
+
+Recommended structure:
+1. current product-readiness verdict
+2. 6-10 week timeline
+3. milestones completed
+4. next enhancements
+5. blockers and decisions
+6. validation/proof status
+7. next sprint focus
+
+Do not turn this into a launch announcement or customer-facing claim.
+
 ## Layout rules
 
 - lead with the conclusion, not the setup
@@ -282,6 +394,7 @@ Workflow skills own judgment and reconciliation first:
 - `veritas-positioning-pass`
 - `veritas-fundamental-pass`
 - `veritas-technical-pass`
+- `veritas-pm-department`
 
 Presentation/rendering tools own export mechanics:
 - `python scripts/equity_visual_report.py <TICKER>`
@@ -296,7 +409,7 @@ The script should handle rendering.
 
 When Randall asks for a PDF brief:
 1. identify which PDF product type is needed
-2. verify the relevant note layer is coherent
+2. verify the relevant note layer or PM truth layer is coherent
 3. gather the minimum necessary sources and visuals
 4. package the PDF around conclusion -> status -> evidence -> risk -> action
 5. preserve visible trust and disclosure

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bounded Portfolio Agent"
+  short_description: "Workspace portfolio maintenance gates"
+  default_prompt: "Use $veritas-bounded-portfolio-agent to prepare bounded portfolio maintenance proposals inside approved gates."
