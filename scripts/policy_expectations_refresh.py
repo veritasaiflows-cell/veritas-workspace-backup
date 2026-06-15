@@ -20,15 +20,18 @@ Writes:
 from __future__ import annotations
 
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-from market_data_utils import atomic_write_json, build_single_step_fomc_distribution, fetch_adjacent_fomc_dates, fetch_fedwatch_implied_rate, fetch_fred_latest, zq_ticker_for_meeting_date
+from market_data_utils import atomic_write_json, build_single_step_fomc_distribution, fetch_adjacent_fomc_dates, fetch_fedwatch_implied_rate, fetch_fred_latest, load_json_artifact, zq_ticker_for_meeting_date
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 OUT_PATH = WORKSPACE / "tmp" / "policy-expectations.json"
@@ -45,6 +48,7 @@ CURRENT_TARGET_CONFIRMED = True
 CURRENT_TARGET_AUTO_SOURCE = True
 CURRENT_TARGET_LOW_SERIES = "DFEDTARL"
 CURRENT_TARGET_HIGH_SERIES = "DFEDTARU"
+FED_PRESS_RELEASE_BASE_URL = "https://www.federalreserve.gov/newsevents/pressreleases"
 NEXT_FOMC_DATE_OVERRIDE: str | None = None
 NEXT_FOMC_ZQ_TICKER_OVERRIDE: str | None = None
 
@@ -79,6 +83,98 @@ def coerce_float(value: Any) -> float | None:
         return float(value)
     except Exception:
         return None
+
+
+def _parse_policy_rate_token(token: str) -> float | None:
+    cleaned = token.strip().replace("‑", "-").replace("–", "-").replace("—", "-")
+    if "/" in cleaned:
+        whole = 0.0
+        fraction = cleaned
+        if "-" in cleaned:
+            whole_text, fraction = cleaned.split("-", 1)
+            try:
+                whole = float(whole_text)
+            except Exception:
+                return None
+        try:
+            numerator, denominator = fraction.split("/", 1)
+            return whole + (float(numerator) / float(denominator))
+        except Exception:
+            return None
+    try:
+        return float(cleaned)
+    except Exception:
+        return None
+
+
+def fetch_fed_statement_target_range(previous_fomc_date: str | None, timeout: int = 20) -> tuple[float | None, float | None, str | None, str | None]:
+    if not previous_fomc_date:
+        return None, None, None, "previous FOMC date unavailable"
+    compact_date = previous_fomc_date.replace("-", "")
+    url = f"{FED_PRESS_RELEASE_BASE_URL}/monetary{compact_date}a.htm"
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        html = urlopen(req, timeout=timeout).read().decode("utf-8", errors="ignore")
+    except HTTPError as exc:
+        return None, None, None, f"Fed statement HTTP error {exc.code}"
+    except URLError as exc:
+        return None, None, None, f"Fed statement URL error: {exc.reason}"
+    except Exception as exc:
+        return None, None, None, f"Fed statement fetch error: {exc}"
+
+    text = re.sub(r"<[^>]+>", " ", html)
+    text = re.sub(r"\s+", " ", text)
+    match = re.search(
+        r"target range for the federal funds rate at\s+([0-9]+(?:[\-‑–][0-9]+/[0-9]+)?|[0-9]+(?:\.[0-9]+)?)\s+to\s+([0-9]+(?:[\-‑–][0-9]+/[0-9]+)?|[0-9]+(?:\.[0-9]+)?)\s+percent",
+        text,
+        flags=re.I,
+    )
+    if not match:
+        return None, None, None, "Fed statement target-range phrase not found"
+    low = _parse_policy_rate_token(match.group(1))
+    high = _parse_policy_rate_token(match.group(2))
+    if low is None or high is None:
+        return None, None, None, "Fed statement target-range parse failed"
+    return round(low, 4), round(high, 4), url, None
+
+
+def _prior_policy_artifact() -> dict[str, Any] | None:
+    prior = load_json_artifact(OUT_PATH) if OUT_PATH.exists() else None
+    return prior if isinstance(prior, dict) else None
+
+
+def _target_from_prior_artifact(prior: dict[str, Any] | None) -> dict[str, Any] | None:
+    target = (((prior or {}).get("data") or {}).get("current_target_range") or {})
+    if not isinstance(target, dict):
+        return None
+    low = coerce_float(target.get("low"))
+    high = coerce_float(target.get("high"))
+    as_of = target.get("as_of")
+    if low is None or high is None or not as_of:
+        return None
+    return {
+        "low": low,
+        "high": high,
+        "as_of": str(as_of),
+        "confirmed": bool(target.get("confirmed")),
+        "source": f"cached previous policy artifact ({target.get('source') or 'unknown source'})",
+        "invalid_reason": None,
+    }
+
+
+def resolve_fomc_dates(today_str: str, prior: dict[str, Any] | None = None) -> tuple[str | None, str | None, str | None, str]:
+    previous_fomc_date, fetched_next_fomc_date, next_fomc_date_error = fetch_adjacent_fomc_dates(reference_date=today_str)
+    if fetched_next_fomc_date:
+        return previous_fomc_date, fetched_next_fomc_date, next_fomc_date_error, "official Fed calendar"
+
+    prior_next = (((prior or {}).get("data") or {}).get("next_fomc") or {}).get("meeting_date")
+    prior_target_as_of = (((prior or {}).get("data") or {}).get("current_target_range") or {}).get("as_of")
+    today_date = parse_iso_date(today_str)
+    prior_next_date = parse_iso_date(prior_next)
+    if prior_next and today_date and prior_next_date and prior_next_date > today_date:
+        return str(prior_target_as_of) if prior_target_as_of else None, str(prior_next), next_fomc_date_error, "cached previous official calendar result"
+
+    return previous_fomc_date, None, next_fomc_date_error, "unresolved"
 
 
 def validate_current_target_range(
@@ -175,11 +271,109 @@ def build_manual_dependencies(manual_current_target_range: bool, manual_next_fom
     return deps
 
 
+def build_policy_freshness_contract(
+    *,
+    status: str,
+    current_target_range: dict[str, Any],
+    next_fomc_date: str | None,
+    next_fomc_zq_ticker: str | None,
+    distribution_block: dict[str, Any] | None,
+    implied_rate_source_mode: str,
+    manual_dependencies: list[dict[str, str]],
+    warnings: list[str],
+) -> dict[str, Any]:
+    """Structured policy freshness / safety contract for downstream consumers.
+
+    Keep the legacy string warnings for compatibility, but make the live routing
+    semantics explicit: warning-only, degraded, blocked, remediation target, and
+    whether macro-regime/dashboard summaries may consume the artifact.
+    """
+    invalid_reason = current_target_range.get("invalid_reason")
+    has_target = current_target_range.get("low") is not None and current_target_range.get("high") is not None
+    has_distribution = bool((distribution_block or {}).get("distribution"))
+    categories: list[str] = []
+    action = "No action required; policy artifact is current enough for dashboard and macro-regime use."
+    policy_status = "current"
+    freshness_status = "fresh"
+    safe_for_macro_regime = True
+    safe_for_dashboard_summary = True
+
+    if invalid_reason or not has_target:
+        policy_status = "target_range_blocked"
+        freshness_status = "blocked"
+        categories.append("expired_or_invalid_target_range")
+        safe_for_macro_regime = False
+        safe_for_dashboard_summary = False
+        action = "Refresh scripts/policy_expectations_refresh.py target-range source, then rerun policy, market-state, macro-regime, dashboard validation, and run-summary refresh."
+    elif not has_distribution:
+        policy_status = "probability_distribution_blocked"
+        freshness_status = "degraded"
+        categories.append("missing_or_failed_futures_distribution")
+        safe_for_macro_regime = False
+        safe_for_dashboard_summary = False
+        action = "Repair the next-FOMC futures quote path or contract mapping in scripts/policy_expectations_refresh.py, then rerun downstream macro/dashboard producers."
+    elif manual_dependencies:
+        policy_status = "manual_review_required"
+        freshness_status = "usable_with_caution"
+        categories.append("manual_dependency")
+        action = "Review listed manual policy dependencies before macro-sensitive publication; no execution authority is implied."
+    elif implied_rate_source_mode == "fallback_proxy":
+        policy_status = "proxy_source_usable_with_caution"
+        freshness_status = "usable_with_caution"
+        categories.append("provider_degraded")
+        action = "Prefer contract-specific Fed Funds futures quote; keep dashboard usable with caution until primary quote returns."
+    elif status not in {"ok"}:
+        freshness_status = "usable_with_caution"
+        categories.append(f"upstream_status_{status}")
+        action = "Review policy artifact warnings before macro-sensitive publication."
+
+    if warnings and not categories:
+        freshness_status = "usable_with_caution"
+        categories.append("warning_notes")
+        action = "Review policy warning notes before macro-sensitive publication."
+
+    return {
+        "schema_version": 1,
+        "policy_status": policy_status,
+        "freshness_status": freshness_status,
+        "categories": categories,
+        "safe_for_macro_regime": safe_for_macro_regime,
+        "safe_for_dashboard_summary": safe_for_dashboard_summary,
+        "hard_fail_closed": not safe_for_macro_regime,
+        "remediation": {
+            "owner": "policy_expectations_refresh.py",
+            "command": "python scripts\\policy_expectations_refresh.py",
+            "follow_on_commands": [
+                "python scripts\\market_state_refresh.py",
+                "python scripts\\macro_regime_refresh.py",
+                "python scripts\\generate_dashboard.py",
+                "python scripts\\validate_dashboard_state.py --write",
+            ],
+            "action": action,
+        },
+        "source": {
+            "target_range_as_of": current_target_range.get("as_of"),
+            "target_range_source": current_target_range.get("source"),
+            "next_fomc_date": next_fomc_date,
+            "next_fomc_zq_ticker": next_fomc_zq_ticker,
+            "implied_rate_source_mode": implied_rate_source_mode,
+        },
+        "authority": {
+            "review_only": True,
+            "portfolio_mutation_allowed": False,
+            "canonical_note_mutation_allowed": False,
+            "trade_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
 def resolve_current_target_range(
     *,
     today_str: str,
     previous_fomc_date: str | None,
     next_fomc_date: str | None,
+    prior: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[str], str | None, bool]:
     warnings: list[str] = []
 
@@ -211,9 +405,41 @@ def resolve_current_target_range(
         if high_error:
             fallback_note.append(f"{CURRENT_TARGET_HIGH_SERIES}: {high_error}")
         warnings.append(
-            "Automatic FRED target-range fetch failed; falling back to manual constants."
+            "Automatic FRED target-range fetch failed; trying official Fed statement fallback."
             + (f" {'; '.join(fallback_note)}" if fallback_note else "")
         )
+
+    fed_low, fed_high, fed_statement_url, fed_statement_error = fetch_fed_statement_target_range(previous_fomc_date)
+    if fed_low is not None and fed_high is not None:
+        current_target_range, target_range_warnings, invalid_reason = validate_current_target_range(
+            target_low=fed_low,
+            target_high=fed_high,
+            target_as_of=previous_fomc_date,
+            target_confirmed=True,
+            target_source=f"official Fed statement ({fed_statement_url})",
+            today_str=today_str,
+            previous_fomc_date=previous_fomc_date,
+            next_fomc_date=next_fomc_date,
+        )
+        if not invalid_reason:
+            return current_target_range, target_range_warnings, invalid_reason, False
+    if fed_statement_error:
+        warnings.append(f"Official Fed statement target-range fallback failed: {fed_statement_error}")
+
+    prior_target = _target_from_prior_artifact(prior)
+    if prior_target is not None:
+        current_target_range, target_range_warnings, invalid_reason = validate_current_target_range(
+            target_low=prior_target.get("low"),
+            target_high=prior_target.get("high"),
+            target_as_of=prior_target.get("as_of"),
+            target_confirmed=bool(prior_target.get("confirmed")),
+            target_source=str(prior_target.get("source")),
+            today_str=today_str,
+            previous_fomc_date=previous_fomc_date,
+            next_fomc_date=next_fomc_date,
+        )
+        if not invalid_reason:
+            return current_target_range, [], invalid_reason, False
 
     current_target_range, target_range_warnings, invalid_reason = validate_current_target_range(
         target_low=CURRENT_TARGET_LOW,
@@ -234,7 +460,8 @@ def main() -> None:
 
     now = datetime.now(timezone.utc)
     today_str = now.date().isoformat()
-    previous_fomc_date, fetched_next_fomc_date, next_fomc_date_error = fetch_adjacent_fomc_dates(reference_date=today_str)
+    prior_policy = _prior_policy_artifact()
+    previous_fomc_date, fetched_next_fomc_date, next_fomc_date_error, next_fomc_date_source = resolve_fomc_dates(today_str, prior=prior_policy)
     next_fomc_date = NEXT_FOMC_DATE_OVERRIDE or fetched_next_fomc_date
     manual_next_fomc_date = NEXT_FOMC_DATE_OVERRIDE is not None
     derived_zq_ticker = zq_ticker_for_meeting_date(next_fomc_date) if next_fomc_date else None
@@ -244,25 +471,42 @@ def main() -> None:
         today_str=today_str,
         previous_fomc_date=previous_fomc_date,
         next_fomc_date=next_fomc_date,
+        prior=prior_policy,
     )
+    static_target_validated = bool(
+        manual_current_target_range
+        and current_target_range.get("confirmed")
+        and previous_fomc_date
+        and current_target_range.get("as_of") == previous_fomc_date
+    )
+    manual_target_dependency = manual_current_target_range and not static_target_validated
+    if static_target_validated:
+        target_range_warnings = [
+            warning for warning in target_range_warnings
+            if not str(warning).startswith("Automatic FRED target-range fetch failed")
+        ]
     manual_dependencies = build_manual_dependencies(
-        manual_current_target_range=manual_current_target_range,
+        manual_current_target_range=manual_target_dependency,
         manual_next_fomc_date=manual_next_fomc_date,
         manual_contract_override=NEXT_FOMC_ZQ_TICKER_OVERRIDE is not None,
     )
     warnings.extend(target_range_warnings)
+    target_source_text = str(current_target_range.get("source") or "")
     freshness_notes: list[str] = [
+        "validated_static_target_range" if static_target_validated else
+        "cached_validated_target_range" if target_source_text.startswith("cached previous policy artifact") else
+        "official_statement_target_range" if target_source_text.startswith("official Fed statement") else
         "manual_target_range" if manual_current_target_range and current_target_range.get("confirmed") else
         "manual_target_range_invalid" if manual_current_target_range else
         "fred_target_range"
     ]
-    if target_range_invalid_reason and manual_current_target_range and manual_dependencies:
+    if target_range_invalid_reason and manual_target_dependency and manual_dependencies:
         manual_dependencies[0]["detail"] = target_range_invalid_reason
 
     if manual_next_fomc_date:
         freshness_notes.append("manual_next_fomc_date")
     elif next_fomc_date:
-        freshness_notes.append("official_next_fomc_date")
+        freshness_notes.append("official_next_fomc_date" if next_fomc_date_source == "official Fed calendar" else "cached_official_next_fomc_date")
     else:
         freshness_notes.append("next_fomc_date_unresolved")
         warnings.append(
@@ -306,8 +550,8 @@ def main() -> None:
             f"Policy-futures implied-rate fetch failed for {next_fomc_zq_ticker}. {fetch_note}"
         )
 
-    status = "manual" if manual_current_target_range else "ok"
-    source_mode = "mixed" if manual_current_target_range else "primary"
+    status = "ok" if static_target_validated else ("manual" if manual_current_target_range else "ok")
+    source_mode = "validated_static" if static_target_validated else ("mixed" if manual_current_target_range else "primary")
     if not current_target_range.get("confirmed"):
         status = "partial"
         source_mode = "degraded"
@@ -332,9 +576,29 @@ def main() -> None:
         None,
     )
 
+    freshness_contract = build_policy_freshness_contract(
+        status=status,
+        current_target_range=current_target_range,
+        next_fomc_date=next_fomc_date,
+        next_fomc_zq_ticker=next_fomc_zq_ticker,
+        distribution_block=distribution_block,
+        implied_rate_source_mode=implied_rate_source_mode,
+        manual_dependencies=manual_dependencies,
+        warnings=list(dict.fromkeys(warnings)),
+    )
+
     payload = {
         "generated_at_utc": utc_now(),
         "status": status,
+        "policy_status": freshness_contract["policy_status"],
+        "freshness_status": freshness_contract["freshness_status"],
+        "remediation": freshness_contract["remediation"],
+        "safety": {
+            "safe_for_macro_regime": freshness_contract["safe_for_macro_regime"],
+            "safe_for_dashboard_summary": freshness_contract["safe_for_dashboard_summary"],
+            "hard_fail_closed": freshness_contract["hard_fail_closed"],
+        },
+        "freshness_contract": freshness_contract,
         "stale_after_hours": STALE_AFTER_HOURS,
         "expected_update_window": EXPECTED_UPDATE_WINDOW,
         "last_trading_day": today_str,
@@ -354,7 +618,7 @@ def main() -> None:
                 "days_until": days_until(next_fomc_date),
                 "zq_ticker": next_fomc_zq_ticker,
                 "contract_source": "manual override" if NEXT_FOMC_ZQ_TICKER_OVERRIDE else "derived from resolved next FOMC date",
-                "date_source": "manual override" if NEXT_FOMC_DATE_OVERRIDE else ("official Fed calendar" if fetched_next_fomc_date else None),
+                "date_source": "manual override" if NEXT_FOMC_DATE_OVERRIDE else (next_fomc_date_source if fetched_next_fomc_date else None),
                 "distribution": next_fomc_distribution,
                 "most_likely_outcome": most_likely_outcome,
                 "implied_rate": distribution_block["implied_rate"] if distribution_block else None,
@@ -366,7 +630,7 @@ def main() -> None:
             "next_two_meetings": [
                 {
                     "meeting_date": next_fomc_date,
-                    "date_source": "manual override" if NEXT_FOMC_DATE_OVERRIDE else ("official Fed calendar" if fetched_next_fomc_date else None),
+                    "date_source": "manual override" if NEXT_FOMC_DATE_OVERRIDE else (next_fomc_date_source if fetched_next_fomc_date else None),
                     "most_likely_outcome": most_likely_outcome,
                     "cut_probability": cut_probability,
                     "hold_probability": hold_probability,

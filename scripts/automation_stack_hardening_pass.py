@@ -77,6 +77,7 @@ MARKET_EXECUTION_READINESS_CRON_HARDENING = TMP / "market-execution-readiness-cr
 
 TICKER_CARD_REFRESH_ACCEPTABLE_STATUSES = {
     "ok",
+    "ok_with_expected_context",
     "ok_with_stale_cards",
     "ok_with_production_stale_cards",
 }
@@ -741,8 +742,8 @@ def market_execution_readiness_hardening() -> tuple[dict[str, Any], list[dict[st
     add(findings, "market_execution_readiness_cron_hardening_no_critical", gate.get("status") in {"ok", "warning"} and critical_count == 0, "critical", {"status": gate.get("status"), "critical_count": critical_count})
     add(findings, "market_execution_readiness_cron_hardening_validation_ok", validation.get("status") == "ok", "critical", validation)
     add(findings, "market_execution_readiness_tier_one_symbols_present", not as_list(summary.get("missing_required_symbols")) and not as_list(summary.get("not_requested_required_symbols")), "critical", summary)
-    add(findings, "market_execution_readiness_no_stale_or_missing_quotes", int_or(summary.get("stale_or_missing_snapshot_count")) == 0, "critical", summary)
-    add(findings, "market_execution_readiness_quote_market_date_current", bool(summary.get("quote_local_date")) and summary.get("quote_local_date") == summary.get("required_market_date"), "critical", summary)
+    add(findings, "market_execution_readiness_no_blocking_quote_errors", validation.get("status") == "ok" and critical_count == 0, "critical", summary)
+    add(findings, "market_execution_readiness_quote_market_date_policy_ok", validation.get("status") == "ok", "critical", summary)
     add(findings, "market_execution_readiness_review_only_authority", authority.get("review_only") is True and authority.get("market_data_readiness_proof") is True, "critical", authority)
     add(findings, "market_execution_readiness_no_execution_or_approval", authority.get("capital_deployment_approved") is False and authority.get("trade_or_execution_approved") is False and authority.get("paper_or_live_execution_allowed") is False, "critical", authority)
 

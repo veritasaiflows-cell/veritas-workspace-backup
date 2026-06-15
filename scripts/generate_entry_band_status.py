@@ -12,6 +12,7 @@ Usage:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import sys
 from datetime import datetime, timezone
@@ -145,7 +146,7 @@ def build_rows(tech: dict, config: dict) -> list[dict]:
             "sector": meta.get("sector") or "—",
             "portfolio_role": meta.get("portfolio_role") or "—",
             "sizing_tier": meta.get("sizing_tier") or "—",
-            "workflow_state": meta.get("workflow_state") or "—",
+            "workflow_state": legacy_state(meta, "workflow_state") or "—",
             "earnings_blocked": rec.get("earnings_blocked", False),
             "close": close,
             "ma20": rec.get("ma20"),
@@ -183,7 +184,7 @@ def render_badge(label: str, color_key: str) -> str:
 
 def render_row(r: dict) -> str:
     status_badge = render_badge(r["status"], r["color_key"])
-    wf = r["workflow_state"]
+    wf = legacy_state(r, "workflow_state")
     wf_color = WORKFLOW_COLOR.get(wf, "#6b7280")
     wf_badge = render_badge(wf, wf_color)
 

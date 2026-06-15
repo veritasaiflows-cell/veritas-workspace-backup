@@ -3,13 +3,15 @@ from __future__ import annotations
 import json
 import os
 import re
+import csv
+import io
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
 MONTH_CODES = {
@@ -55,6 +57,7 @@ MONTH_NAME_TO_NUM = {
 }
 
 FED_FOMC_CALENDAR_URL = "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+FISCALDATA_AUCTIONS_URL = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/auctions_query"
 
 
 @contextmanager
@@ -141,6 +144,61 @@ def load_json_artifact(path: str | Path) -> Any | None:
             return obj
         except Exception:
             return None
+
+
+def fetch_treasury_auctions(start_date: str, end_date: str, *, timeout: int = 15) -> dict[str, Any]:
+    """Fetch Treasury auction schedule rows from the official FiscalData API.
+
+    This is a week-ahead intelligence input only. Failure returns an explicit
+    unavailable object instead of raising, so weekly reports can degrade without
+    blocking unrelated market-state refreshes.
+    """
+    params = urlencode({
+        "filter": f"auction_date:gte:{start_date},auction_date:lte:{end_date}",
+        "fields": "security_type,security_term,auction_date,issue_date,maturity_date,offering_amt",
+        "sort": "auction_date,security_type,security_term",
+        "page[size]": "100",
+    })
+    url = f"{FISCALDATA_AUCTIONS_URL}?{params}"
+    try:
+        req = Request(url, headers={"User-Agent": "Veritas OpenClaw Research veritasaiflows@gmail.com"})
+        with urlopen(req, timeout=timeout) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+        rows = payload.get("data") if isinstance(payload, dict) else []
+        if not isinstance(rows, list):
+            rows = []
+        clean_rows: list[dict[str, Any]] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            clean_rows.append({
+                "security_type": row.get("security_type"),
+                "security_term": row.get("security_term"),
+                "auction_date": row.get("auction_date"),
+                "issue_date": row.get("issue_date"),
+                "maturity_date": row.get("maturity_date"),
+                "offering_amt": row.get("offering_amt"),
+            })
+        return {
+            "status": "ok",
+            "source": FISCALDATA_AUCTIONS_URL,
+            "retrieved_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "week_start": start_date,
+            "week_end": end_date,
+            "auction_count": len(clean_rows),
+            "auctions": clean_rows,
+        }
+    except Exception as exc:
+        return {
+            "status": "unavailable",
+            "source": FISCALDATA_AUCTIONS_URL,
+            "retrieved_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "week_start": start_date,
+            "week_end": end_date,
+            "auction_count": 0,
+            "auctions": [],
+            "warning": f"Treasury auction API unavailable: {exc}",
+        }
 
 
 def canonical_note_mutation_gate(validation: dict[str, Any] | None) -> tuple[bool, str]:
@@ -235,10 +293,50 @@ def get_fred_api_key() -> str | None:
     return None
 
 
+def fetch_fred_csv_observations(series_id: str, timeout: int = 20, limit: int = 30) -> tuple[list[dict[str, Any]], str | None]:
+    """Fetch public FRED graph CSV observations without requiring an API key.
+
+    The FRED API key is still preferred when present, but the public CSV endpoint
+    is good enough for the workspace's read-only macro/rates artifacts and keeps
+    scheduled chains from degrading solely because the runtime did not inherit a
+    local secret.
+    """
+    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={quote(series_id)}"
+    try:
+        with urlopen(url, timeout=timeout) as response:
+            text = response.read().decode("utf-8")
+    except HTTPError as exc:
+        return [], f"FRED CSV HTTP error {exc.code}"
+    except URLError as exc:
+        return [], f"FRED CSV URL error: {exc.reason}"
+    except Exception as exc:
+        return [], f"FRED CSV fetch error: {exc}"
+
+    try:
+        reader = csv.DictReader(io.StringIO(text))
+        cleaned: list[dict[str, Any]] = []
+        for row in reader:
+            date_str = row.get("observation_date") or row.get("DATE") or row.get("date")
+            value = row.get(series_id) or row.get(series_id.upper()) or row.get(series_id.lower())
+            if value in (None, ".", "") or not date_str:
+                continue
+            try:
+                cleaned.append({"date": str(date_str), "value": round(float(value), 4)})
+            except Exception:
+                continue
+    except Exception as exc:
+        return [], f"FRED CSV parse error: {exc}"
+
+    if not cleaned:
+        return [], "FRED CSV returned no usable observations"
+
+    return list(reversed(cleaned))[: max(1, int(limit))], None
+
+
 def fetch_fred_observations(series_id: str, api_key: str | None = None, timeout: int = 20, limit: int = 30) -> tuple[list[dict[str, Any]], str | None]:
     api_key = api_key or get_fred_api_key()
     if not api_key:
-        return [], "FRED_API_KEY not set"
+        return fetch_fred_csv_observations(series_id, timeout=timeout, limit=limit)
 
     params = urlencode(
         {
@@ -255,11 +353,20 @@ def fetch_fred_observations(series_id: str, api_key: str | None = None, timeout:
         with urlopen(url, timeout=timeout) as response:
             payload = json.loads(response.read().decode("utf-8"))
     except HTTPError as exc:
-        return [], f"FRED HTTP error {exc.code}"
+        csv_observations, csv_error = fetch_fred_csv_observations(series_id, timeout=timeout, limit=limit)
+        if csv_observations:
+            return csv_observations, None
+        return [], f"FRED HTTP error {exc.code}; CSV fallback failed: {csv_error}"
     except URLError as exc:
-        return [], f"FRED URL error: {exc.reason}"
+        csv_observations, csv_error = fetch_fred_csv_observations(series_id, timeout=timeout, limit=limit)
+        if csv_observations:
+            return csv_observations, None
+        return [], f"FRED URL error: {exc.reason}; CSV fallback failed: {csv_error}"
     except Exception as exc:
-        return [], f"FRED fetch error: {exc}"
+        csv_observations, csv_error = fetch_fred_csv_observations(series_id, timeout=timeout, limit=limit)
+        if csv_observations:
+            return csv_observations, None
+        return [], f"FRED fetch error: {exc}; CSV fallback failed: {csv_error}"
 
     cleaned: list[dict[str, Any]] = []
     for obs in payload.get("observations", []):

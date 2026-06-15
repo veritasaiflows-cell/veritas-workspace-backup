@@ -31,6 +31,7 @@
 
   <!-- TAB: Overview -->
   <section class="tab active" id="tab-overview">
+    <div id="workflowFocusRibbon" style="margin-bottom:10px"></div>
     <div id="deploymentStrip"></div>
     <div class="card" style="margin-bottom:14px;border-color:rgba(56,189,248,.2)">
       <h3>Today's Action Card</h3>
@@ -65,6 +66,7 @@
         <div id="manualDependencies"></div>
       </div>
     </div>
+    <div id="workflowFocusDetail" style="margin-top:14px"></div>
   </section>
 
   <!-- TAB: Deployment Board -->
@@ -131,6 +133,32 @@
     </div>
   </section>
 
+  <!-- TAB: Fundamentals -->
+  <section class="tab" id="tab-fundamentals">
+    <div class="grid cols-3" id="fundamentalSummary" style="margin-bottom:14px"></div>
+    <div class="card table-wrap">
+      <h3>Fundamental Trend Panel</h3>
+      <div class="small" style="margin-bottom:10px">Review-only growth/quality evidence. This panel does not grant deployment, sizing, sleeve, cash, account, brokerage, paper/live order, or trade authority.</div>
+      <table class="table">
+        <thead><tr>
+          <th onclick="sortTable('fundamentalTable',0)">Ticker</th>
+          <th>Quality</th>
+          <th>SEC</th>
+          <th>IR</th>
+          <th>Period</th>
+          <th onclick="sortTable('fundamentalTable',5)">EPS YoY</th>
+          <th onclick="sortTable('fundamentalTable',6)">Shares / buyback</th>
+          <th onclick="sortTable('fundamentalTable',7)">FCF/share / SBC</th>
+          <th onclick="sortTable('fundamentalTable',8)">Rev YoY</th>
+          <th onclick="sortTable('fundamentalTable',9)">NI YoY</th>
+          <th onclick="sortTable('fundamentalTable',10)">Op margin / capital allocation</th>
+          <th>Notes</th>
+        </tr></thead>
+        <tbody id="fundamentalTable"></tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- TAB: Earnings -->
   <section class="tab" id="tab-earnings">
     <div class="grid cols-2">
@@ -181,7 +209,7 @@
     </div>
   </section>
 
-  <!-- TAB: Trigger Sheet -->
+  <!-- TAB: Execution Board -->
   <section class="tab" id="tab-triggers">
     <div id="triggerHeader" style="margin-bottom:14px"></div>
     <div class="trigger-grid" id="triggerGrid"></div>

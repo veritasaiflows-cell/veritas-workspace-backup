@@ -210,6 +210,67 @@ def _string_or_none(value: Any) -> str | None:
     return None
 
 
+def _policy_freshness_component(policy: dict[str, Any]) -> dict[str, Any]:
+    contract = policy.get("freshness_contract") if isinstance(policy.get("freshness_contract"), dict) else {}
+    categories = contract.get("categories") if isinstance(contract.get("categories"), list) else []
+    status = contract.get("freshness_status") or policy.get("freshness_status") or policy.get("status") or "missing"
+    return {
+        "component": "policy",
+        "status": status,
+        "category": categories[0] if categories else ("ok" if status in {"ok", "fresh", "current"} else str(status)),
+        "safe_for_macro_regime": bool(contract.get("safe_for_macro_regime", status not in {"blocked", "error", "missing"})),
+        "hard_fail_closed": bool(contract.get("hard_fail_closed", False)),
+        "remediation": contract.get("remediation") or {
+            "owner": "policy_expectations_refresh.py",
+            "command": "python scripts\\policy_expectations_refresh.py",
+            "action": "Refresh or repair the policy expectations artifact before macro-sensitive use.",
+        },
+    }
+
+
+def _macro_freshness_contract(
+    *,
+    policy_component: dict[str, Any],
+    credit_key: str,
+    breadth_key: str,
+    invalid_shape_pillars: list[str],
+    missing_pillars: list[str],
+) -> dict[str, Any]:
+    components = [
+        policy_component,
+        {
+            "component": "credit",
+            "status": "unknown" if credit_key == "unknown" else "ok",
+            "category": "missing_or_invalid" if credit_key == "unknown" else "ok",
+            "safe_for_macro_regime": credit_key != "unknown",
+            "remediation": {"owner": "credit_spread_refresh.py", "command": "python scripts\\credit_spread_refresh.py", "action": "Refresh credit spread artifact if credit pillar is unknown."},
+        },
+        {
+            "component": "breadth",
+            "status": "unknown" if breadth_key == "unknown" else "ok",
+            "category": "missing_or_invalid" if breadth_key == "unknown" else "ok",
+            "safe_for_macro_regime": breadth_key != "unknown",
+            "remediation": {"owner": "breadth_refresh.py", "command": "python scripts\\breadth_refresh.py", "action": "Refresh breadth artifact if breadth pillar is unknown."},
+        },
+    ]
+    hard_blocked = bool(policy_component.get("hard_fail_closed") or invalid_shape_pillars)
+    warning_only = bool(missing_pillars or any(c.get("status") not in {"ok", "fresh", "current"} for c in components))
+    status = "blocked" if hard_blocked else ("warning" if warning_only else "ok")
+    return {
+        "schema_version": 1,
+        "status": status,
+        "summary": "Macro pillar has fail-closed input; regime label is conservative fallback." if hard_blocked else ("Macro usable with caution; degraded/missing pillars are routed to component repair." if warning_only else "Macro inputs are current enough for regime use."),
+        "components": components,
+        "blocked_pillars": sorted(set(invalid_shape_pillars + [p for p in missing_pillars if p == "policy" and policy_component.get("hard_fail_closed")])) ,
+        "degraded_pillars": sorted(set(missing_pillars + [c["component"] for c in components if c.get("status") not in {"ok", "fresh", "current"}])),
+        "routing": {
+            "deployment_surface_blocked": False,
+            "regime_confidence": "low" if hard_blocked or len(missing_pillars) >= 2 else ("medium" if warning_only else "normal"),
+            "owner_action_required": hard_blocked or warning_only,
+        },
+    }
+
+
 def _sanitize_policy_view(policy: dict[str, Any], warnings: list[str]) -> tuple[dict[str, Any], bool]:
     invalid = False
     data, bad = guard_dict_or_empty(policy.get("data"), warnings, "policy-expectations.data")
@@ -599,6 +660,14 @@ def main() -> None:
     credit_view, credit_shape_invalid = _sanitize_credit_view(credit, warnings)
     breadth_view, breadth_shape_invalid = _sanitize_breadth_view(breadth, warnings)
 
+    policy_component = _policy_freshness_component(policy)
+    if not policy_component.get("safe_for_macro_regime"):
+        warnings.append(
+            "policy-expectations freshness contract is not safe for macro-regime use; policy pillar is fail-closed to unknown and routed to policy remediation."
+        )
+        policy_view = {}
+        policy_shape_invalid = True
+
     # Check artifact staleness
     for name, artifact, path in [
         ("policy-expectations", policy, IN_POLICY),
@@ -650,6 +719,14 @@ def main() -> None:
     else:
         status = "ok"
 
+    freshness_contract = _macro_freshness_contract(
+        policy_component=policy_component,
+        credit_key=credit_key,
+        breadth_key=breadth_key,
+        invalid_shape_pillars=invalid_shape_pillars,
+        missing_pillars=missing_pillars,
+    )
+
     # Collect last_trading_day across all three artifacts
     dates = [
         get_path(policy, "last_trading_day"),
@@ -671,6 +748,7 @@ def main() -> None:
         "expected_update_window": EXPECTED_UPDATE_WINDOW,
         "last_trading_day": last_trading_day,
         "warnings": list(dict.fromkeys(warnings)),
+        "freshness_contract": freshness_contract,
         "regime": {
             "key": regime_key,
             "label": regime_label,
@@ -681,6 +759,10 @@ def main() -> None:
                 "key": policy_key,
                 "label": policy_label,
                 "source_status": policy.get("status"),
+                "freshness_status": policy_component.get("status"),
+                "freshness_category": policy_component.get("category"),
+                "safe_for_macro_regime": policy_component.get("safe_for_macro_regime"),
+                "remediation": policy_component.get("remediation"),
                 "implied_rate": policy_view.get("implied_rate"),
                 "hold_probability": policy_view.get("distribution_map", {}).get("hold"),
                 "cut_probability": policy_view.get("distribution_map", {}).get("cut_25bp"),

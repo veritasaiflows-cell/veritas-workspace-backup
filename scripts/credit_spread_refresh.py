@@ -180,7 +180,7 @@ def main() -> None:
     needs_proxy = any(value is None for value in (ig_latest, hy_latest, ig_5d, ig_20d, hy_5d, hy_20d))
     if needs_proxy:
         source_mode = "mixed" if (ig_latest is not None or hy_latest is not None) else "fallback"
-        warnings.append("Direct OAS coverage is incomplete; using proxy basket to preserve directional context.")
+        direct_gap_notes: list[str] = ["direct_oas_coverage_incomplete_proxy_basket_used"]
 
         proxy_errors: list[str] = []
         proxy_changes: dict[str, dict[str, float | None]] = {}
@@ -252,6 +252,17 @@ def main() -> None:
         proxy_score_parts = [x for x in (hyg_lqd_5d, hyg_lqd_20d, jnk_lqd_5d, jnk_lqd_20d, lqd_5d, lqd_20d) if x is not None]
         if proxy_score_parts:
             proxy_score = round(sum(proxy_score_parts) / len(proxy_score_parts), 4)
+        if fallback_proxies and not proxy_errors:
+            freshness_notes.extend(direct_gap_notes)
+            warnings = [
+                warning for warning in warnings
+                if not (
+                    str(warning).startswith("IG OAS fetch failed")
+                    or str(warning).startswith("HY OAS fetch failed")
+                )
+            ]
+        else:
+            warnings.append("Direct OAS coverage is incomplete; using proxy basket to preserve directional context.")
 
     stress_regime = infer_stress_regime(ig_latest, hy_latest, hy_minus_ig, proxy_score=proxy_score)
 
@@ -259,12 +270,12 @@ def main() -> None:
     if ig_latest is None and hy_latest is None and not fallback_proxies:
         status = "error"
         warnings.append("No trustworthy direct or proxy credit read is available.")
-    elif ig_latest is None or hy_latest is None:
-        status = "partial"
+    elif (ig_latest is None or hy_latest is None) and fallback_proxies:
+        status = "ok"
     elif any(value is None for value in (ig_5d, ig_20d, hy_5d, hy_20d)):
         status = "partial"
     elif source_mode != "primary":
-        status = "partial"
+        status = "ok"
 
     source_last_trading_day = {
         "ig_oas": ig_as_of,

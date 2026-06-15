@@ -63,7 +63,7 @@ ENGINE_VERSION = "keltner-ma-v1"
 EXPECTED_UPDATE_WINDOW = (
     "Run after technical_refresh.py. Review proposals and approve via "
     "apply_band_update.py before updating portfolio-config.json or the "
-    "Technical Entry and Invalidation Sheet."
+    "Execution Board."
 )
 
 
@@ -105,6 +105,8 @@ class BandProposal:
     sma_envelope_high: float | None = None
     earnings_state: str | None = None
     days_to_earnings: int | None = None
+    earnings_date_source_class: str | None = None
+    earnings_primary_confirmed: bool | None = None
     band_confidence: int | None = None
     canonical_apply_eligible: bool = True
     calculation_warnings: list[str] = field(default_factory=list)
@@ -262,14 +264,54 @@ def classify_band_status(close: float | None, low: float | None, high: float | N
     return "BELOW_BAND", round((close - low) / low * 100, 2) if low else None
 
 
-def earnings_state(ticker: str, earnings_records: dict[str, dict[str, Any]], as_of_date: str | None) -> tuple[str, int | None]:
+def earnings_source_metadata(ticker: str, earnings_records: dict[str, dict[str, Any]]) -> tuple[str | None, bool | None]:
+    record = earnings_records.get(ticker) or {}
+    source_class = record.get("date_source_class")
+    primary_confirmed = record.get("primary_confirmed")
+    return (
+        str(source_class) if source_class is not None else None,
+        bool(primary_confirmed) if primary_confirmed is not None else None,
+    )
+
+
+def parse_date(value: str | None) -> date | None:
+    if not value:
+        return None
+    try:
+        return date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def post_earnings_review_clears_freeze(meta: dict[str, Any], earnings_date: date | None) -> bool:
+    """Return True when a same-day/past earnings freeze has a captured review.
+
+    Provider calendars can keep reporting today's earnings date after the print is
+    already captured. Once the portfolio config records that the earnings date
+    and a post-earnings review date are both at or after that event date, the
+    band engine may leave the binary-event freeze and produce normal review
+    levels. This only clears the freeze for band review; it does not grant
+    deployment, sizing, owner approval, or trade/account authority.
+    """
+    if earnings_date is None:
+        return False
+    last_earnings = parse_date(meta.get("last_earnings_date"))
+    review_date = parse_date(meta.get("post_earnings_review_date"))
+    return bool(last_earnings and review_date and last_earnings >= earnings_date and review_date >= earnings_date)
+
+
+def earnings_state(ticker: str, earnings_records: dict[str, dict[str, Any]], as_of_date: str | None, meta: dict[str, Any] | None = None) -> tuple[str, int | None]:
     record = earnings_records.get(ticker)
+    meta = meta or {}
     if not record or not record.get("next_earnings_date") or not as_of_date:
         return "UNKNOWN", None
-    try:
-        days = (date.fromisoformat(record["next_earnings_date"]) - date.fromisoformat(as_of_date)).days
-    except (TypeError, ValueError):
+    earnings_date = parse_date(record.get("next_earnings_date"))
+    as_of = parse_date(as_of_date)
+    if earnings_date is None or as_of is None:
         return "UNKNOWN", None
+    days = (earnings_date - as_of).days
+    if days <= EARNINGS_FREEZE_DAYS and post_earnings_review_clears_freeze(meta, earnings_date):
+        return "CLEAR", days
     if days < 0:
         return "CLEAR", days
     if days <= EARNINGS_FREEZE_DAYS:
@@ -445,7 +487,8 @@ def build_proposal(
     ma50 = tech_rec.get("ma50")
     ma200 = tech_rec.get("ma200")
     engine_inputs = fetch_engine_inputs(yf_ticker)
-    earnings, days_to_earnings = earnings_state(ticker, earnings_records, earnings_as_of)
+    earnings, days_to_earnings = earnings_state(ticker, earnings_records, earnings_as_of, meta)
+    earnings_date_source_class, earnings_primary_confirmed = earnings_source_metadata(ticker, earnings_records)
     calc = calculate_entry_band(
         close=close,
         ema20=engine_inputs.get("ema20"),
@@ -578,6 +621,8 @@ def build_proposal(
         sma_envelope_high=calc.get("sma_high"),
         earnings_state=earnings,
         days_to_earnings=days_to_earnings,
+        earnings_date_source_class=earnings_date_source_class,
+        earnings_primary_confirmed=earnings_primary_confirmed,
         band_confidence=calc.get("confidence"),
         canonical_apply_eligible=not apply_blockers,
         calculation_warnings=list(calc.get("warnings") or []),
@@ -587,15 +632,49 @@ def build_proposal(
         data_date=data_date,
     )
 
+def is_accepted_repair_mode_blocker(proposal: BandProposal) -> bool:
+    """Return True for deliberate repair-mode wait states that should not be dashboard blockers."""
+    if not proposal.needs_review or proposal.skip_reason is not None:
+        return False
+    return (
+        proposal.entry_policy == "repair_mode"
+        and proposal.workflow_state == "REPAIR"
+        and proposal.canonical_apply_eligible is False
+    )
+
+
+def is_accepted_review_only_wait_state(proposal: BandProposal) -> bool:
+    """Return True for review-only band proposals that cannot be safely applied.
+
+    These should stay visible in ``tmp/band-proposals.json`` as manual context,
+    but they should not become dashboard-level stale-band debt because the
+    applier is intentionally forbidden from resolving them. Earnings-frozen
+    proposals remain blocking because they represent an event-risk stop line,
+    not a normal wait/no-chase or non-decision-lane state.
+    """
+    if not proposal.needs_review or proposal.skip_reason is not None:
+        return False
+    if proposal.canonical_apply_eligible is not False:
+        return False
+    if proposal.entry_band_method == "EARNINGS_FROZEN":
+        return False
+    return True
+
+
 def is_blocking_review(proposal: BandProposal) -> bool:
     """Return True when a review item should remain a dashboard-level blocker.
 
     Price-only extension above or below the existing midpoint is still useful to
     surface in the proposal artifact, but it is not by itself a trust blocker.
     A blocker should reflect structural drift, stale calibration, or missing
-    numeric setup rather than deliberate no-chase posture.
+    numeric setup rather than deliberate no-chase posture. Explicit repair-mode
+    wait states stay visible in the proposal artifact but are accepted manual
+    blockers, not stale-band debt.
     """
     if not proposal.needs_review or proposal.skip_reason is not None:
+        return False
+
+    if is_accepted_repair_mode_blocker(proposal) or is_accepted_review_only_wait_state(proposal):
         return False
 
     if proposal.current_band_low is None or proposal.current_band_high is None or proposal.current_stop is None:
@@ -714,6 +793,7 @@ def main() -> None:
 
     needs_review_count = sum(1 for p in proposals if p.needs_review)
     blocking_review_tickers = [p.ticker for p in proposals if is_blocking_review(p)]
+    accepted_repair_mode_blocker_tickers = [p.ticker for p in proposals if is_accepted_repair_mode_blocker(p)]
     monitor_only_review_tickers = [
         p.ticker for p in proposals
         if p.needs_review and not p.skip_reason and p.ticker not in blocking_review_tickers
@@ -742,6 +822,7 @@ def main() -> None:
             "skipped_no_band": skipped_count,
             "needs_review_tickers": [p.ticker for p in proposals if p.needs_review],
             "blocking_review_tickers": blocking_review_tickers,
+            "accepted_repair_mode_blockers": accepted_repair_mode_blocker_tickers,
             "monitor_only_review_tickers": monitor_only_review_tickers,
             "within_tolerance_tickers": [p.ticker for p in proposals if not p.needs_review and not p.skip_reason],
             "skipped_tickers": [p.ticker for p in proposals if p.skip_reason],

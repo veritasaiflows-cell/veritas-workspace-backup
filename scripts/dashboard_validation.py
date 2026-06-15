@@ -16,13 +16,20 @@ from dashboard_core import (
 import universe
 
 BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
+AUTO_BAND_APPLY_PATH = TMP / "auto-band-apply.json"
+BAND_HYGIENE_FRESHNESS_PATH = TMP / "band-hygiene-freshness-controller.json"
 WORKSPACE = TMP.parent
-WATCHLIST_PATH = WORKSPACE / "02. Markets" / "Watchlist.md"
+COVERAGE_WATCHLIST_PATH = WORKSPACE / "04. Research" / "Coverage and Watchlist.md"
+COVERAGE_WATCHLIST_HEADERS = (
+    "| Ticker | Sector | Coverage Tier | Thesis pointer | Deployment/action pointer | Source lineage |",
+    # Backward-compatible read only: old snapshots used this label for the same lineage column.
+    "| Ticker | Sector | Coverage Tier | Thesis pointer | Deployment/action pointer | Prior canonical source |",
+)
 POLICY_MANUAL_NOTE_PATHS = [
     WORKSPACE / "01. Dashboards" / "Executive Brief.md",
     WORKSPACE / "01. Dashboards" / "Next Actions.md",
     WORKSPACE / "02. Markets" / "Macro Regime Dashboard.md",
-    WORKSPACE / "03. Portfolio" / "Technical Entry and Invalidation Sheet.md",
+    WORKSPACE / "03. Portfolio" / "Execution Board.md",
     WORKSPACE / "05. Intelligence" / "Weekly Positioning Review.md",
 ]
 POLICY_MANUAL_STALE_PHRASES = [
@@ -41,6 +48,35 @@ def _read_note_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="ignore")
 
 
+def _split_markdown_row(row_line: str) -> list[str]:
+    """Split a Markdown table row while preserving Obsidian wikilink display pipes."""
+    stripped = row_line.strip().strip("|")
+    cells: list[str] = []
+    current: list[str] = []
+    wikilink_depth = 0
+    idx = 0
+    while idx < len(stripped):
+        if stripped.startswith("[[", idx):
+            wikilink_depth += 1
+            current.append("[[")
+            idx += 2
+            continue
+        if wikilink_depth and stripped.startswith("]]", idx):
+            wikilink_depth = max(0, wikilink_depth - 1)
+            current.append("]]")
+            idx += 2
+            continue
+        char = stripped[idx]
+        if char == "|" and wikilink_depth == 0:
+            cells.append("".join(current).strip())
+            current = []
+        else:
+            current.append(char)
+        idx += 1
+    cells.append("".join(current).strip())
+    return cells
+
+
 def _extract_table_rows(text: str, header: str) -> list[list[str]]:
     lines = text.splitlines()
     for idx, line in enumerate(lines):
@@ -51,26 +87,29 @@ def _extract_table_rows(text: str, header: str) -> list[list[str]]:
             stripped = row_line.strip()
             if not stripped.startswith("|"):
                 break
-            cells = [cell.strip() for cell in stripped.strip("|").split("|")]
-            rows.append(cells)
+            rows.append(_split_markdown_row(stripped))
         return rows
     return []
 
 
 def _parse_watchlist_rows() -> dict[str, dict[str, str]]:
-    rows = _extract_table_rows(
-        _read_note_text(WATCHLIST_PATH),
-        "| Ticker | Sector | Coverage Tier | Current Deployment State | Canonical Source |",
-    )
+    text = _read_note_text(COVERAGE_WATCHLIST_PATH)
+    rows: list[list[str]] = []
+    for header in COVERAGE_WATCHLIST_HEADERS:
+        rows = _extract_table_rows(text, header)
+        if rows:
+            break
+
     out: dict[str, dict[str, str]] = {}
     for cells in rows:
-        if len(cells) < 5:
+        if len(cells) < 6:
             continue
         out[cells[0]] = {
             "sector": cells[1],
             "coverage_tier": cells[2],
-            "current_state": cells[3],
-            "canonical_source": cells[4],
+            "thesis_pointer": cells[3],
+            "execution_pointer": cells[4],
+            "source_lineage": cells[5],
         }
     return out
 
@@ -83,6 +122,7 @@ def build_validation(
     last_trade_dt: datetime,
 ) -> dict[str, Any]:
     policy_raw = sources["policy"] or {}
+    market_raw = sources.get("market") or {}
     credit_raw = sources.get("credit") or {}
     breadth_raw = sources.get("breadth") or {}
     tech_raw = sources["technical"] or {}
@@ -109,7 +149,19 @@ def build_validation(
         if not proposal.get("needs_review") or proposal.get("skip_reason"):
             return False
 
+        if (
+            proposal.get("canonical_apply_eligible") is False
+            and proposal.get("entry_band_method") != "EARNINGS_FROZEN"
+        ):
+            return False
+
         entry_policy = proposal.get("entry_policy")
+        if (
+            entry_policy == "repair_mode"
+            and proposal.get("workflow_state") == "REPAIR"
+            and proposal.get("canonical_apply_eligible") is False
+        ):
+            return False
 
         if any(proposal.get(field) is None for field in ("current_band_low", "current_band_high", "current_stop")):
             return entry_policy == "band_defined"
@@ -296,6 +348,21 @@ def build_validation(
         if earnings_date and earnings_dt and earnings_dt.date() < (last_trade_dt.date() - timedelta(days=1)):
             action_state_upper = str(action_state).upper() if action_state else ""
             if action_state_upper not in {"WATCH", "WATCH / RESEARCH NEEDED"}:
+                if row.get("postEarningsReviewConfirmed"):
+                    add_warning(
+                        "earnings_lifecycle_closeout_needed",
+                        "warning",
+                        "earnings",
+                        f"{ticker} post-earnings review is confirmed, but elapsed earnings date {earnings_date} still appears in the active dashboard path; run earnings_calendar_enrichment.py to close/roll the timing-sensitive watchlist entry.",
+                        ticker,
+                        {
+                            "earningsDate": earnings_date,
+                            "lastEarningsDate": row.get("lastEarningsDate"),
+                            "postEarningsReviewDate": row.get("postEarningsReviewDate"),
+                            "remediation": "python scripts\\earnings_calendar_enrichment.py; python scripts\\trigger_sheet_refresh.py; python scripts\\generate_dashboard.py; python scripts\\validate_dashboard_state.py --write",
+                        },
+                    )
+                    continue
                 add_warning(
                     "earnings_date_in_past",
                     "warning",
@@ -345,14 +412,28 @@ def build_validation(
     sleeves = portfolio.get("core", []) + portfolio.get("tactical", []) + portfolio.get("speculative", [])
     invested = round(sum((p.get("weight") or 0) for p in sleeves), 2)
     cash = round(float(portfolio.get("cash") or 0), 2)
-    total = round(invested + cash, 2)
-    if abs(total - 100.0) > 0.25:
+    suspended = round(sum(
+        (p.get("suspended_legacy_weight") or 0)
+        for p in sleeves
+        if (p.get("weight") or 0) == 0 and "suspended" in str(p.get("weight_status") or "").lower()
+    ), 2)
+    active_total = round(invested + cash, 2)
+    accounted_total = round(active_total + suspended, 2)
+    if abs(accounted_total - 100.0) <= 0.25 and suspended:
+        add_warning(
+            "portfolio_suspended_weight_gap",
+            "warning",
+            "portfolio",
+            f"Active portfolio weights plus cash sum to {active_total}%; {suspended}% is explicitly suspended legacy model weight and not active exposure.",
+            details={"invested": invested, "cash": cash, "suspended_legacy_weight": suspended, "accounted_total": accounted_total},
+        )
+    elif abs(active_total - 100.0) > 0.25:
         add_warning(
             "portfolio_total_not_100",
             "critical",
             "portfolio",
-            f"Portfolio weights plus cash sum to {total}%, not 100%",
-            details={"invested": invested, "cash": cash},
+            f"Portfolio weights plus cash sum to {active_total}%, not 100%",
+            details={"invested": invested, "cash": cash, "suspended_legacy_weight": suspended, "accounted_total": accounted_total},
         )
 
     max_single_normal = risk_thresholds.get("max_single_position_normal")
@@ -391,11 +472,20 @@ def build_validation(
         )
     market_status = source_status.get("market", {})
     if "macro_manual_dependency" in market_status.get("tags", []):
+        market_freshness = get_path(market_raw, "macro_freshness") or {}
+        components = market_freshness.get("components") if isinstance(market_freshness, dict) else []
+        policy_component = next((c for c in components if isinstance(c, dict) and c.get("component") == "policy_expectations"), {}) if isinstance(components, list) else {}
         add_warning(
             "macro_manual_dependency",
             "warning",
             "macro",
-            "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
+            "Macro payload has a policy freshness dependency; route to the named policy remediation path instead of treating this as a generic dashboard failure.",
+            details={
+                "freshness_status": policy_component.get("status"),
+                "category": policy_component.get("category"),
+                "remediation": policy_component.get("remediation"),
+                "deployment_surface_blocked": get_path(market_freshness, "routing.deployment_surface_blocked"),
+            },
         )
     policy_status = source_status.get("policy", {})
     if policy_status.get("status") == "missing":
@@ -414,19 +504,33 @@ def build_validation(
         )
 
     if policy_status.get("raw_status") == "partial":
+        contract = policy_raw.get("freshness_contract") if isinstance(policy_raw.get("freshness_contract"), dict) else {}
         add_warning(
             "policy_expectations_partial",
             "warning",
             "policy",
-            "Policy expectations artifact is partial and should not be treated as decision-grade.",
+            "Policy expectations artifact is partial; probability/target fields are fail-closed until the specific policy remediation path is complete.",
+            details={
+                "freshness_status": contract.get("freshness_status") or policy_raw.get("freshness_status"),
+                "categories": contract.get("categories") or [],
+                "safe_for_macro_regime": get_path(policy_raw, "safety.safe_for_macro_regime"),
+                "safe_for_dashboard_summary": get_path(policy_raw, "safety.safe_for_dashboard_summary"),
+                "remediation": contract.get("remediation") or policy_raw.get("remediation"),
+            },
         )
 
     if "policy_manual_dependency" in policy_status.get("tags", []) or policy_status.get("raw_status") == "manual":
+        contract = policy_raw.get("freshness_contract") if isinstance(policy_raw.get("freshness_contract"), dict) else {}
         add_warning(
             "policy_expectations_manual_dependency",
             "warning",
             "policy",
-            "Policy expectations still rely on manual target-range constants and require explicit review.",
+            "Policy expectations still carry manual/review-required policy dependencies; dashboard remains review-only and owner-gated.",
+            details={
+                "freshness_status": contract.get("freshness_status") or policy_raw.get("freshness_status"),
+                "categories": contract.get("categories") or [],
+                "remediation": contract.get("remediation") or policy_raw.get("remediation"),
+            },
         )
 
     policy_warnings = policy_raw.get("warnings", []) if isinstance(policy_raw.get("warnings"), list) else []
@@ -506,8 +610,9 @@ def build_validation(
     # to avoid polluting the source_status loop (assess_source requires SOURCE_SPECS entry)
     band_proposals_raw = load_json(BAND_PROPOSALS_PATH) or {}
     band_summary = band_proposals_raw.get("summary") or {}
-    blocking_review_tickers = band_summary.get("blocking_review_tickers") or []
-    if not blocking_review_tickers:
+    if "blocking_review_tickers" in band_summary:
+        blocking_review_tickers = band_summary.get("blocking_review_tickers") or []
+    else:
         price_drift_threshold = band_proposals_raw.get("price_drift_threshold_pct", 5.0)
         blocking_review_tickers = [
             proposal.get("ticker")
@@ -520,28 +625,85 @@ def build_validation(
             for proposal in band_proposals_raw.get("proposals", []) or []
             if isinstance(proposal, dict) and proposal.get("ticker")
         }
+        auto_apply_raw = load_json(AUTO_BAND_APPLY_PATH) or {}
+        auto_applied_tickers: set[str] = set()
+        if auto_apply_raw.get("mode") == "apply" and auto_apply_raw.get("status") == "ok":
+            auto_apply_date = auto_apply_raw.get("applied_date")
+            for item in auto_apply_raw.get("applied", []) or []:
+                if not isinstance(item, dict) or not item.get("ticker"):
+                    continue
+                proposal = proposals_by_ticker.get(item.get("ticker")) or {}
+                if proposal.get("data_date") == auto_apply_date:
+                    auto_applied_tickers.add(item.get("ticker"))
+        band_hygiene_raw = load_json(BAND_HYGIENE_FRESHNESS_PATH) or {}
+        post_apply_review_tickers: set[str] = set()
+        for row in band_hygiene_raw.get("rows", []) or []:
+            if not isinstance(row, dict) or not row.get("ticker"):
+                continue
+            auto_apply = row.get("auto_apply") or {}
+            if row.get("state") == "post_apply_review_still_open" and auto_apply.get("applied") is True:
+                post_apply_review_tickers.add(row.get("ticker"))
         non_applyable_blockers = [
             ticker for ticker in blocking_review_tickers
             if (proposals_by_ticker.get(ticker) or {}).get("canonical_apply_eligible") is False
         ]
-        applyable_blockers = [ticker for ticker in blocking_review_tickers if ticker not in non_applyable_blockers]
-        if applyable_blockers and non_applyable_blockers:
-            remediation = (
-                f"Review/apply eligible proposals for {', '.join(applyable_blockers)} via apply_band_update.py; "
-                f"keep non-applyable event-risk proposals under manual review/wait state: {', '.join(non_applyable_blockers)}."
+        post_apply_review_blockers = [
+            ticker for ticker in blocking_review_tickers
+            if ticker in post_apply_review_tickers and ticker not in non_applyable_blockers
+        ]
+        pending_applyable_blockers = [
+            ticker for ticker in blocking_review_tickers
+            if ticker not in non_applyable_blockers
+            and ticker not in auto_applied_tickers
+            and ticker not in post_apply_review_tickers
+        ]
+        visible_blockers = non_applyable_blockers + pending_applyable_blockers + post_apply_review_blockers
+        if visible_blockers:
+            event_risk_blockers = [
+                ticker for ticker in non_applyable_blockers
+                if (proposals_by_ticker.get(ticker) or {}).get("entry_band_method") == "EARNINGS_FROZEN"
+                or (proposals_by_ticker.get(ticker) or {}).get("band_status") == "EARNINGS_IMMINENT"
+                or (proposals_by_ticker.get(ticker) or {}).get("earnings_state") in {"IMMINENT", "TIMING_WINDOW"}
+            ]
+            details = {
+                "blocking_review_tickers": visible_blockers,
+                "pending_applyable_blockers": pending_applyable_blockers,
+                "non_applyable_blockers": non_applyable_blockers,
+                "post_apply_review_blockers": post_apply_review_blockers,
+                "event_risk_blockers": event_risk_blockers,
+            }
+            if pending_applyable_blockers and non_applyable_blockers:
+                remediation = (
+                    f"Run auto_apply_entry_band_maintenance.py --apply for eligible proposals: {', '.join(pending_applyable_blockers)}; "
+                    f"keep non-applyable/event-risk proposals under manual review or wait-state: {', '.join(non_applyable_blockers)}."
+                )
+                message_prefix = f"{len(visible_blockers)} entry band(s) still have blocking review debt: {', '.join(visible_blockers)}."
+            elif pending_applyable_blockers:
+                remediation = f"Run auto_apply_entry_band_maintenance.py --apply for eligible proposed levels: {', '.join(pending_applyable_blockers)}."
+                message_prefix = f"{len(visible_blockers)} entry band(s) still have applyable review debt: {', '.join(visible_blockers)}."
+            elif post_apply_review_blockers and not non_applyable_blockers:
+                remediation = (
+                    "Auto-apply already ran for these eligible levels; keep manual/post-apply review active "
+                    f"until the next band hygiene pass clears or owner review resolves them: {', '.join(post_apply_review_blockers)}."
+                )
+                message_prefix = f"{len(visible_blockers)} post-apply band review item(s) remain: {', '.join(visible_blockers)}."
+            elif event_risk_blockers and sorted(event_risk_blockers) == sorted(non_applyable_blockers):
+                remediation = (
+                    "This is intentionally review-only / non-applyable through the catalyst window; "
+                    f"keep manual review or wait-state active: {', '.join(non_applyable_blockers)}."
+                )
+                message_prefix = f"{len(visible_blockers)} event-risk band freeze remains: {', '.join(visible_blockers)}."
+            else:
+                manual_items = non_applyable_blockers + post_apply_review_blockers
+                remediation = f"These proposal(s) are review-only, non-applyable, or post-apply review-open; keep manual review or wait-state active: {', '.join(manual_items)}."
+                message_prefix = f"{len(visible_blockers)} entry band(s) still have non-applyable review debt: {', '.join(visible_blockers)}."
+            add_warning(
+                "band_staleness",
+                "warning",
+                "bands",
+                f"{message_prefix} {remediation}",
+                details=details,
             )
-        elif applyable_blockers:
-            remediation = f"Run apply_band_update.py to review and apply eligible proposed levels for {', '.join(applyable_blockers)}."
-        else:
-            remediation = f"These proposal(s) are review-only / non-applyable; keep manual review or wait-state active: {', '.join(non_applyable_blockers)}."
-        add_warning(
-            "band_staleness",
-            "warning",
-            "bands",
-            f"{len(blocking_review_tickers)} entry band(s) still have blocking review debt: "
-            f"{', '.join(blocking_review_tickers)}. "
-            f"{remediation}",
-        )
     elif band_proposals_raw and band_proposals_raw.get("status") == "ok":
         pass
     elif not band_proposals_raw:
@@ -562,22 +724,12 @@ def build_validation(
         watch_row = watchlist_rows.get(ticker)
         if lane == "execution" and not watch_row:
             add_warning(
-                "watchlist_execution_missing",
+                "coverage_watchlist_execution_missing",
                 "warning",
                 "notes",
-                f"{ticker} is execution-lane in config but missing from the Watchlist mirror table.",
+                f"{ticker} is execution-lane in config but missing from the Coverage and Watchlist universe table.",
                 ticker,
             )
-        elif watch_row and action_state == "DEPLOYABLE NOW":
-            state_text = watch_row.get("current_state", "").lower()
-            if "not intentionally promoted yet" in state_text:
-                add_warning(
-                    "watchlist_stale_intent_phrase",
-                    "warning",
-                    "notes",
-                    f"{ticker} still reads as an unpromoted watch name in Watchlist despite deployable-now trigger state.",
-                    ticker,
-                )
 
     policy_manual_dependencies = get_path(policy_raw, "data.manual_dependencies") or []
     policy_is_non_manual = (

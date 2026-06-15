@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -92,7 +93,7 @@ def main() -> int:
         base_total = float(r.get("total", 0) or 0)
         bonus, reasons = score_bonus(t, d, r)
         score = round(base_total + bonus, 2)
-        priority_bucket = bucket_from_action_state(t.get("action_state"), t.get("deployment_state"), bool(t.get("below_stop")), bool(t.get("earnings_blocked")))
+        priority_bucket = bucket_from_action_state(legacy_state(t, "action_state"), t.get("deployment_state"), bool(t.get("below_stop")), bool(t.get("earnings_blocked")))
         rows.append(
             {
                 "ticker": ticker,
@@ -104,8 +105,8 @@ def main() -> int:
                 "technical_posture_score": r.get("technical_posture"),
                 "catalyst_risk_score": r.get("catalyst_risk"),
                 "fundamental_conviction_score": r.get("fundamental_conviction"),
-                "stance": r.get("stance") or t.get("action_state") or d.get("action_state"),
-                "action_state": t.get("action_state") or d.get("action_state", ""),
+                "stance": r.get("stance") or legacy_state(t, "action_state") or legacy_state(d, "action_state"),
+                "action_state": legacy_state(t, "action_state") or legacy_state(d, "action_state", ""),
                 "deployment_priority": d.get("priority", ""),
                 "days_to_earnings": t.get("days_to_earnings"),
                 "in_entry_band": t.get("in_entry_band"),

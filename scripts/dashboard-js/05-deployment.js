@@ -13,6 +13,7 @@ const deployFilters = [
 function stateRowClass(state) {
   if (!state) return '';
   const s = state.toUpperCase();
+  if (s === 'AUTHORITY CONFLICT') return 'state-almost';
   if (s === 'REVIEW') return 'state-almost';
   if (s === 'ALMOST') return 'state-almost';
   if (s === 'BLOCKED') return 'state-blocked';
@@ -24,7 +25,7 @@ function stateFilterMatch(state, filter) {
   if (filter === 'all') return true;
   const s = (state||'').toUpperCase();
   if (filter === 'deployable') return s === 'DEPLOYABLE';
-  if (filter === 'review')     return s === 'REVIEW' || s === 'PROMOTION REVIEW';
+  if (filter === 'review')     return s === 'REVIEW' || s === 'PROMOTION REVIEW' || s === 'AUTHORITY CONFLICT';
   if (filter === 'almost')     return s === 'ALMOST';
   if (filter === 'blocked')    return s === 'BLOCKED' || s === 'BELOW STOP';
   if (filter === 'watch')      return s === 'WATCH' || s === 'BENCH';
@@ -45,6 +46,9 @@ function renderDeployFilterBar() {
 }
 
 function bandPositionWidget(r) {
+  if (r.bandVisualSuppressed || r.repairOverride) {
+    return `<div class="band-widget band-widget-override muted"><div class="band-widget-label tone-warn">${esc(r.repairOverrideLabel || 'REPAIR OVERRIDE / band position irrelevant')}</div></div>`;
+  }
   if (r.bandLow == null || r.bandHigh == null || r.closeRaw == null) {
     return `<span class="small muted">${esc(r.bandStatus || '—')}</span>`;
   }
@@ -70,7 +74,8 @@ function earningsCell(r) {
   const d = r.daysToEarnings;
   const tone = d != null && d <= 7 ? 'tone-bad' : d != null && d <= 14 ? 'tone-warn' : 'tone-info';
   const dayLabel = d == null ? '' : d === 0 ? 'today' : d > 0 ? `${d}d` : `${Math.abs(d)}d ago`;
-  return `<div class="mono small">${esc(r.earningsDate)}</div><div class="small ${tone}">${esc(dayLabel)}</div>`;
+  const unconfirmed = r.earningsDateConfirmed === false ? `<div>${pill('UNCONFIRMED DATE','warn')}</div>` : '';
+  return `<div class="mono small">${esc(r.earningsDate)}</div><div class="small ${tone}">${esc(dayLabel)}</div>${unconfirmed}`;
 }
 
 function stopDistCell(r) {
@@ -81,8 +86,9 @@ function stopDistCell(r) {
 
 function renderDeploymentTable() {
   const records = (DATA.deployment_records||[]).filter(r => stateFilterMatch(r.state, activeDeployFilter));
-  $('deploymentTable').innerHTML = records.map(r =>
-    `<tr class="${stateRowClass(r.state)}">
+  $('deploymentTable').innerHTML = records.map(r => {
+    const proof = `<div class="small muted">Proof: ${esc(r.sourceArtifactPath || 'artifact unavailable')}${r.sourceGeneratedAtUtc ? ` · ${esc(r.sourceGeneratedAtUtc)}` : ''}${r.bandStale ? ' · BAND STALE' : ''}${r.overrideRule ? ` · override ${esc(r.overrideRule)}` : ''}</div>`;
+    return `<tr class="${stateRowClass(r.state)}">
       <td class="mono"><strong>${esc(r.ticker)}</strong><div class="small muted">${esc(r.posture||'')}</div></td>
       <td>${pill(r.state, stateTone(r.state))}</td>
       <td class="mono">${esc(r.close)}</td>
@@ -91,8 +97,8 @@ function renderDeploymentTable() {
       <td class="mono">${esc(r.stop)}</td>
       <td>${stopDistCell(r)}</td>
       <td>${earningsCell(r)}</td>
-      <td class="small">${esc(r.reason)}</td>
+      <td class="small">${r.displaySubState ? `<div class="tone-warn"><strong>${esc(r.displaySubState)}</strong></div>` : ''}${r.proseConflict ? `<div class="tone-warn">${esc(r.conflictProseState || 'Authority conflict')}</div>` : ''}${r.reviewOnlyNoApplyArtifact ? `<div class="tone-warn">REVIEW ONLY — NO APPLY ARTIFACT</div>` : ''}${esc(r.reason)}${proof}</td>
       <td>${esc(r.priority)}</td>
-    </tr>`
-  ).join('') || '<tr><td colspan="10" class="muted" style="padding:16px;text-align:center">No records match this filter.</td></tr>';
+    </tr>`;
+  }).join('') || '<tr><td colspan="10" class="muted" style="padding:16px;text-align:center">No records match this filter.</td></tr>';
 }

@@ -27,10 +27,12 @@ DEFAULT_REPORT = ROOT / "tmp" / "workspace-index-report.json"
 SCHEMA_VERSION = 3
 
 EXCLUDED_DIRS = {
+    ".backups",
     ".git",
     ".obsidian",
     ".openclaw",
     ".clawhub",
+    "backups",
     "tmp",
     "migration-backups",
     "__pycache__",
@@ -41,8 +43,10 @@ MDLINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$", re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 WORKFLOW_RE = re.compile(r"Workflow\s+(\d+)", re.IGNORECASE)
+FTS_TOKEN_RE = re.compile(r"[\w]+", re.UNICODE)
 
 ARTIFACT_GLOBS = (
+    "data/finance/*.json",
     "tmp/*.json",
     "tmp/*.html",
     "tmp/*.csv",
@@ -60,13 +64,12 @@ OWNER_MAP = {
     "Home.md": ("01. Dashboards/Executive Brief.md", "orientation", "routes operator to current read stack", False),
     "01. Dashboards/Executive Brief.md": ("03. Portfolio/Portfolio Snapshot.md", "dashboard-summary", "orientation and summary only", False),
     "01. Dashboards/This Week.md": ("05. Intelligence/Weekly Positioning Review.md", "dashboard-summary", "weekly operating summary", False),
-    "01. Dashboards/Next Actions.md": ("03. Portfolio/Deployment Trigger Sheet.md", "dashboard-summary", "next-action routing only", False),
+    "01. Dashboards/Next Actions.md": ("03. Portfolio/Execution Board.md", "dashboard-summary", "next-action routing only", False),
     "05. Intelligence/Weekly Positioning Review.md": ("05. Intelligence/Weekly Positioning Review.md", "canonical", "weekly operating stance", True),
     "02. Markets/Macro Regime Dashboard.md": ("02. Markets/Macro Regime Dashboard.md", "canonical", "macro regime truth", True),
-    "02. Markets/Watchlist.md": ("02. Markets/Watchlist.md", "canonical-index", "market universe / mirror, not thesis canon", True),
+    "04. Research/Coverage and Watchlist.md": ("04. Research/Coverage and Watchlist.md", "canonical-index", "research universe, coverage tier, thesis, key risk, and act-when logic", True),
     "03. Portfolio/Portfolio Snapshot.md": ("03. Portfolio/Portfolio Snapshot.md", "canonical", "portfolio posture and allocation", True),
-    "03. Portfolio/Deployment Trigger Sheet.md": ("03. Portfolio/Deployment Trigger Sheet.md", "canonical", "deployment state and entry decision truth", True),
-    "03. Portfolio/Technical Entry and Invalidation Sheet.md": ("03. Portfolio/Technical Entry and Invalidation Sheet.md", "canonical", "technical discipline; final deployment state remains trigger-sheet-owned", True),
+    "03. Portfolio/Execution Board.md": ("03. Portfolio/Execution Board.md", "canonical", "action state, execution bands, stops, blockers, and technical discipline", True),
     "07. Risk/Risk Rules.md": ("07. Risk/Risk Rules.md", "canonical", "risk doctrine", True),
 }
 
@@ -167,8 +170,10 @@ def connect(db_path: Path) -> sqlite3.Connection:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=5000")
     conn.execute("PRAGMA synchronous=NORMAL")
     conn.execute("PRAGMA foreign_keys=ON")
+    conn.execute("PRAGMA temp_store=MEMORY")
     return conn
 
 
@@ -552,35 +557,119 @@ def build_index(root: Path, db_path: Path, report_path: Path) -> dict:
     return report
 
 
+def fts_quote(value: str) -> str:
+    """Return a safely quoted FTS5 phrase/term fragment."""
+    return '"' + value.replace('"', '""') + '"'
+
+
+def fts_query_variants(query: str) -> list[tuple[str, str]]:
+    """Return raw-plus-safe FTS5 query variants for human search strings.
+
+    FTS5 treats punctuation such as hyphen as query syntax, so a plain human
+    query like ``note-drift`` can raise ``no such column: drift`` instead of
+    matching the tokenized text.  Preserve existing advanced FTS behavior by
+    trying the caller's raw query first, then fall back to parser-safe quoted
+    phrase and token-AND forms built only from extracted word tokens.
+    """
+    stripped = query.strip()
+    variants: list[tuple[str, str]] = []
+    seen: set[str] = set()
+
+    def add(label: str, value: str) -> None:
+        if value and value not in seen:
+            seen.add(value)
+            variants.append((label, value))
+
+    add("raw", stripped)
+    tokens = FTS_TOKEN_RE.findall(stripped)
+    if tokens:
+        normalized_phrase = " ".join(tokens)
+        add("normalized_phrase", fts_quote(normalized_phrase))
+        add("token_and", " AND ".join(fts_quote(token) for token in tokens))
+    return variants
+
+
+def alias_hits(conn: sqlite3.Connection, query: str, limit: int) -> list[sqlite3.Row]:
+    """Return exact alias matches as retrieval hints before body-search hits."""
+    return conn.execute(
+        """
+        SELECT d.path,
+               d.title,
+               d.note_type,
+               'Alias match: ' || a.alias || ' -> ' || a.target_path AS snippet
+        FROM aliases a
+        JOIN documents d ON d.path = a.target_path
+        WHERE lower(a.alias) = lower(?)
+        ORDER BY CASE a.confidence WHEN 'high' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END,
+                 d.path
+        LIMIT ?
+        """,
+        (query.strip(), limit),
+    ).fetchall()
+
+
+def dedupe_rows(rows: Iterable[sqlite3.Row], limit: int) -> list[dict]:
+    deduped: list[dict] = []
+    seen: set[str] = set()
+    for row in rows:
+        item = dict(row)
+        key = str(item.get("path", ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+        if len(deduped) >= limit:
+            break
+    return deduped
+
+
 def search(db_path: Path, query: str, limit: int) -> list[dict]:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     try:
         fts = conn.execute("SELECT value FROM meta WHERE key='fts_enabled'").fetchone()
+        rows: list[sqlite3.Row] = alias_hits(conn, query, limit)
         if fts and fts[0] == "true":
-            rows = conn.execute(
-                """
-                SELECT d.path, d.title, d.note_type, snippet(documents_fts, 2, '[', ']', ' ... ', 12) AS snippet
-                FROM documents_fts
-                JOIN documents d ON d.id = documents_fts.rowid
-                WHERE documents_fts MATCH ?
-                ORDER BY rank
-                LIMIT ?
-                """,
-                (query, limit),
-            ).fetchall()
+            remaining = max(limit - len(rows), 0)
+            for _label, fts_query in fts_query_variants(query):
+                if remaining <= 0:
+                    break
+                try:
+                    rows.extend(
+                        conn.execute(
+                            """
+                            SELECT d.path, d.title, d.note_type, snippet(documents_fts, 2, '[', ']', ' ... ', 12) AS snippet
+                            FROM documents_fts
+                            JOIN documents d ON d.id = documents_fts.rowid
+                            WHERE documents_fts MATCH ?
+                            ORDER BY rank
+                            LIMIT ?
+                            """,
+                            (fts_query, remaining),
+                        ).fetchall()
+                    )
+                except sqlite3.OperationalError:
+                    continue
+                deduped = dedupe_rows(rows, limit)
+                remaining = max(limit - len(deduped), 0)
+                if deduped:
+                    break
         else:
             like = f"%{query}%"
-            rows = conn.execute(
-                """
-                SELECT path, title, note_type, substr(body, 1, 240) AS snippet
-                FROM documents
-                WHERE title LIKE ? OR body LIKE ?
-                LIMIT ?
-                """,
-                (like, like, limit),
-            ).fetchall()
-        return [dict(row) for row in rows]
+            remaining = max(limit - len(rows), 0)
+            if remaining > 0:
+                rows.extend(
+                    conn.execute(
+                        """
+                        SELECT path, title, note_type, substr(body, 1, 240) AS snippet
+                        FROM documents
+                        WHERE title LIKE ? OR body LIKE ?
+                        LIMIT ?
+                        """,
+                        (like, like, remaining),
+                    ).fetchall()
+                )
+        return dedupe_rows(rows, limit)
     finally:
         conn.close()
 

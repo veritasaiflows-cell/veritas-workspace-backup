@@ -15,7 +15,7 @@ WORKFLOW = "WF37"
 
 OWNER_LAYERS = [
     "03. Portfolio/Portfolio Snapshot.md",
-    "03. Portfolio/Deployment Trigger Sheet.md",
+    "03. Portfolio/Execution Board.md",
     "05. Intelligence/Weekly Positioning Review.md",
     "05. Intelligence/Event Calendar.md",
 ]
@@ -37,6 +37,9 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "optional": {
             "dashboard_delta": TMP / "dashboard-delta.json",
             "deployment_check": TMP / "deployment-check.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
         "focus_questions": [
             "What actually matters before the open, and what only looks urgent?",
@@ -62,6 +65,9 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "optional": {
             "dashboard_delta": TMP / "dashboard-delta.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
         "focus_questions": [
             "What changed materially versus the prior dashboard run?",
@@ -155,6 +161,11 @@ def state_summary(window: str, primary: dict[str, Any] | None, secondary: dict[s
     if window == "post-close":
         summary["bench"] = list((secondary or {}).get("bench") or [])
         summary["below_stop"] = list((secondary or {}).get("below_stop") or [])
+        summary["qualified_band_behavior"] = list(
+            (secondary or {}).get("qualified_band_behavior")
+            or (primary or {}).get("qualified_band_behavior")
+            or []
+        )
     return summary
 
 
@@ -172,6 +183,32 @@ def unresolved_truths(window: str, validation: dict[str, Any] | None, primary: d
     return items
 
 
+def fundamental_context(fundamentals: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(fundamentals, dict):
+        return {"status": "missing", "review_only": True, "summary": "WF65 fundamentals artifact missing."}
+    rows = [row for row in fundamentals.get("rows") or [] if isinstance(row, dict) and row.get("instrument_type") == "equity"]
+    caution = [str(row.get("ticker")) for row in rows if row.get("capital_allocation_quality") in {"caution", "manual_review_required"}]
+    bank_manual_review = [str(row.get("ticker")) for row in rows if row.get("capital_allocation_quality") == "bank_manual_review"]
+    sec_conflicts = [str(row.get("ticker")) for row in rows if ((row.get("sec_reconciliation") or {}).get("status") == "conflict")]
+    fcf_deterioration = [
+        str(row.get("ticker")) for row in rows
+        if row.get("fcf_interpretation") != "bank_structural" and isinstance(row.get("fcf_per_share_yoy_pct"), (int, float)) and row.get("fcf_per_share_yoy_pct") < -20
+    ]
+    summary = fundamentals.get("summary") or {}
+    return {
+        "status": "available_review_only",
+        "generated_at_utc": fundamentals.get("generated_at_utc"),
+        "summary": summary,
+        "capital_allocation_caution_tickers": caution[:10],
+        "bank_manual_review_tickers": bank_manual_review[:10],
+        "sec_conflict_tickers": sec_conflicts,
+        "fcf_per_share_deterioration_tickers": fcf_deterioration[:10],
+        "review_only": True,
+        "capital_action_allowed": False,
+        "forbidden_claim": "Fundamental strength, buyback yield, or per-share quality does not imply deployability, owner approval, sizing, sleeve, cash, account, or trade authority.",
+    }
+
+
 
 def build_packet(window: str) -> dict[str, Any]:
     spec = WINDOW_SPECS[window]
@@ -183,6 +220,7 @@ def build_packet(window: str) -> dict[str, Any]:
     daily_brief = load_json(spec["required"].get("daily_executive_brief", Path("missing"))) if window == "post-close" else None
     validation = load_json(spec["required"]["dashboard_validation"])
     market_state = load_json(spec["required"]["market_state"])
+    fundamentals = load_json(spec["optional"].get("fundamental_metrics", Path("missing")))
 
     note_date = (
         (primary or {}).get("snapshot_date")
@@ -216,6 +254,7 @@ def build_packet(window: str) -> dict[str, Any]:
         },
         "trust": trust_block(window, validation, daily_brief if window == "post-close" else primary),
         "state_summary": state_summary(window, primary, daily_brief),
+        "fundamental_context": fundamental_context(fundamentals),
         "unresolved_truths": unresolved_truths(window, validation, daily_brief if window == "post-close" else primary),
         "focus_questions": list(spec["focus_questions"]),
         "narrative_goal": spec["narrative_goal"],
@@ -230,6 +269,7 @@ def build_packet(window: str) -> dict[str, Any]:
             "owner-blocker clearance without owner-note confirmation",
             "silent conflict smoothing between owner notes",
             "portfolio-authority language or direct trade instruction",
+            "fundamental strength, buybacks, FCF/share, or ROIC language implying deployment authority or owner approval",
         ],
         "required_citations": OWNER_LAYERS,
         "delivery_readiness": {

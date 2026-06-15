@@ -1,6 +1,6 @@
 """earnings_calendar_enrichment.py
 
-Pulls next confirmed earnings dates from yfinance for all Coverage Universe
+Pulls next confirmed earnings dates from yfinance for all Coverage and Watchlist
 equity names. Compares against the standing timing-sensitive Event Calendar
 watchlist and flags newly confirmable entries or date changes.
 
@@ -63,26 +63,29 @@ COVERAGE: dict[str, str] = {
     "GS": "GS",
     "BRK.B": "BRK-B",
     "AMZN": "AMZN",
+    "BKNG": "BKNG",
     "CAT": "CAT",
-    "LLY": "LLY"
+    "LLY": "LLY",
+    # 2026-05-15 sector-expansion machine-tracked equities. ETFs/funds do
+    # not belong here because this artifact is an earnings-catalyst surface,
+    # not a distribution/ex-dividend calendar.
+    "LIN": "LIN",
+    "ECL": "ECL",
+    "VMC": "VMC",
+    "META": "META",
+    "NFLX": "NFLX",
+    "TMUS": "TMUS",
+    "PH": "PH",
+    "GE": "GE",
+    "CME": "CME",
 }
 
-# Keep this focused on live timing-sensitive names where date drift can still
-# change near-term operator behavior. Broad quarter-ahead comparisons belong in
-# the note layer, not as a standing machine-warning source.
-#
-# Dates here are operating comparison dates, not a claim of primary-source
-# confirmation. A note-layer item can still remain explicitly unconfirmed even
-# when this watchlist carries the current working estimate to avoid stale-noise
-# churn in every chain run.
-WATCHLIST: dict[str, str | None] = {
-    "BRK.B": "2026-05-02",
-    "ETN": "2026-05-05",
-    "NVDA": "2026-05-20",
-    "PLTR": "2026-05-04",
-    "AMD": "2026-05-05",
-    "SMCI": "2026-05-05",
-}
+# Keep comparison baselines out of code. The script can fetch fresh provider
+# dates for the full coverage list, but only operator-selected timing-sensitive
+# baselines should produce DATE CHANGED alerts. Configure those under
+# tmp/portfolio-config.json -> earnings_date_watchlist.
+WATCHLIST_CONFIG_FIELD = "earnings_date_watchlist"
+WATCHLIST_CLOSEOUT_BACKUP_DIR = WORKSPACE / "tmp" / "portfolio-config-backups"
 
 # Explicit post-earnings holds are allowed only when a just-reported name is
 # still carrying the elapsed print as its next upcoming date. This avoids
@@ -108,6 +111,8 @@ def fetch_earnings_date(display_ticker: str, yf_ticker: str) -> dict[str, Any]:
         "ticker": display_ticker,
         "next_earnings_date": None,
         "source": "yfinance",
+        "date_source_class": "provider_estimate",
+        "primary_confirmed": False,
         "fetched_at_utc": datetime.now(timezone.utc).isoformat(),
         "error": None,
     }
@@ -159,6 +164,234 @@ def fetch_earnings_date(display_ticker: str, yf_ticker: str) -> dict[str, Any]:
     return record
 
 
+def load_portfolio_config() -> dict[str, Any]:
+    try:
+        raw = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return raw if isinstance(raw, dict) else {}
+
+
+def load_earnings_date_watchlist(config: dict[str, Any]) -> dict[str, str | None]:
+    """Return configured timing-sensitive comparison baselines.
+
+    Shape accepted:
+      "earnings_date_watchlist": {
+        "NVDA": {"date": "2026-05-20", ...},
+        "TICKER": "2026-05-20"
+      }
+
+    This field is deliberately narrow: it is for live dates whose drift would
+    change near-term operator behavior, not for every quarter-ahead yfinance
+    estimate or already-reported event.
+    """
+    raw = config.get(WATCHLIST_CONFIG_FIELD)
+    if not isinstance(raw, dict):
+        return {}
+
+    out: dict[str, str | None] = {}
+    for ticker, value in raw.items():
+        if not isinstance(ticker, str) or not ticker.strip():
+            continue
+        clean_ticker = ticker.strip().upper()
+        if value is None or isinstance(value, str):
+            out[clean_ticker] = value
+        elif isinstance(value, dict):
+            if str(value.get("status") or "active").lower() in {"closed", "inactive", "resolved"}:
+                continue
+            date_value = value.get("date")
+            out[clean_ticker] = date_value if isinstance(date_value, str) else None
+    return out
+
+
+def parse_iso_date(date_str: str | None) -> date | None:
+    if not date_str:
+        return None
+    try:
+        return date.fromisoformat(str(date_str)[:10])
+    except Exception:
+        return None
+
+
+def _is_on_or_after(left: str | None, right: str | None) -> bool:
+    left_dt = parse_iso_date(left)
+    right_dt = parse_iso_date(right)
+    return bool(left_dt and right_dt and left_dt >= right_dt)
+
+
+def build_watchlist_lifecycle_closeouts(
+    *,
+    config: dict[str, Any],
+    records: list[dict[str, Any]],
+    today: date,
+) -> list[dict[str, Any]]:
+    """Return safe active-watchlist closeouts for already-reviewed prints.
+
+    The active watchlist is for timing-sensitive upcoming/just-arrived dates.
+    Once the event date is past and tracked_universe records a post-earnings
+    review at/after that event, the watch item should stop feeding dashboard
+    past-date warnings. This is machine-config maintenance only; it does not
+    imply portfolio/canon/trade/account authority.
+    """
+    raw_watchlist = config.get(WATCHLIST_CONFIG_FIELD) if isinstance(config.get(WATCHLIST_CONFIG_FIELD), dict) else {}
+    tracked = config.get("tracked_universe") if isinstance(config.get("tracked_universe"), dict) else {}
+    records_by_ticker = {str(rec.get("ticker") or "").upper(): rec for rec in records}
+    closeouts: list[dict[str, Any]] = []
+
+    for ticker, entry in raw_watchlist.items():
+        clean_ticker = str(ticker or "").strip().upper()
+        if not clean_ticker:
+            continue
+        if isinstance(entry, dict) and str(entry.get("status") or "active").lower() in {"closed", "inactive", "resolved"}:
+            continue
+        watch_date = entry if isinstance(entry, str) else entry.get("date") if isinstance(entry, dict) else None
+        watch_dt = parse_iso_date(watch_date)
+        if not watch_dt or watch_dt >= today:
+            continue
+
+        meta = tracked.get(clean_ticker) if isinstance(tracked.get(clean_ticker), dict) else {}
+        post_review_confirmed = bool(meta.get("post_earnings_review_confirmed"))
+        last_earnings_ok = _is_on_or_after(meta.get("last_earnings_date"), str(watch_date))
+        review_date_ok = _is_on_or_after(meta.get("post_earnings_review_date"), str(watch_date))
+        if not (post_review_confirmed and last_earnings_ok and review_date_ok):
+            continue
+
+        rec = records_by_ticker.get(clean_ticker, {})
+        closeouts.append({
+            "ticker": clean_ticker,
+            "watchlist_date": watch_date,
+            "provider_date_before_closeout": rec.get("next_earnings_date"),
+            "status": "watchlist_cleanup_eligible",
+            "reason": "event date elapsed and tracked_universe confirms post-earnings review at/after the event",
+            "evidence": {
+                "last_earnings_date": meta.get("last_earnings_date"),
+                "post_earnings_review_date": meta.get("post_earnings_review_date"),
+                "post_earnings_review_confirmed": post_review_confirmed,
+            },
+            "authority": {
+                "review_only": True,
+                "portfolio_mutation_allowed": False,
+                "canonical_note_mutation_allowed": False,
+                "trade_or_account_action_allowed": False,
+                "owner_approval_inferred": False,
+            },
+        })
+    return closeouts
+
+
+def build_existing_watchlist_lifecycle_holds(
+    *,
+    config: dict[str, Any],
+    records: list[dict[str, Any]],
+    today: date,
+) -> list[dict[str, Any]]:
+    """Return already-closed watchlist entries that should still suppress stale provider dates."""
+    raw_watchlist = config.get(WATCHLIST_CONFIG_FIELD) if isinstance(config.get(WATCHLIST_CONFIG_FIELD), dict) else {}
+    tracked = config.get("tracked_universe") if isinstance(config.get("tracked_universe"), dict) else {}
+    records_by_ticker = {str(rec.get("ticker") or "").upper(): rec for rec in records}
+    holds: list[dict[str, Any]] = []
+
+    for ticker, entry in raw_watchlist.items():
+        clean_ticker = str(ticker or "").strip().upper()
+        if not clean_ticker or not isinstance(entry, dict):
+            continue
+        if str(entry.get("status") or "active").lower() not in {"closed", "inactive", "resolved"}:
+            continue
+        watch_date = entry.get("date")
+        watch_dt = parse_iso_date(watch_date)
+        if not watch_dt or watch_dt >= today:
+            continue
+        meta = tracked.get(clean_ticker) if isinstance(tracked.get(clean_ticker), dict) else {}
+        if not (
+            bool(meta.get("post_earnings_review_confirmed"))
+            and _is_on_or_after(meta.get("last_earnings_date"), str(watch_date))
+            and _is_on_or_after(meta.get("post_earnings_review_date"), str(watch_date))
+        ):
+            continue
+        rec = records_by_ticker.get(clean_ticker, {})
+        holds.append({
+            "ticker": clean_ticker,
+            "watchlist_date": watch_date,
+            "provider_date_before_closeout": rec.get("next_earnings_date"),
+            "status": "watchlist_already_closed",
+            "reason": entry.get("closeout_reason") or "event watchlist entry already closed after confirmed post-earnings review",
+            "evidence": {
+                "last_earnings_date": meta.get("last_earnings_date"),
+                "post_earnings_review_date": meta.get("post_earnings_review_date"),
+                "post_earnings_review_confirmed": bool(meta.get("post_earnings_review_confirmed")),
+                "closed_at_utc": entry.get("closed_at_utc"),
+            },
+            "authority": {
+                "review_only": True,
+                "portfolio_mutation_allowed": False,
+                "canonical_note_mutation_allowed": False,
+                "trade_or_account_action_allowed": False,
+                "owner_approval_inferred": False,
+            },
+        })
+    return holds
+
+
+def apply_watchlist_lifecycle_closeouts(config: dict[str, Any], closeouts: list[dict[str, Any]]) -> dict[str, Any]:
+    if not closeouts:
+        return {"applied": False, "count": 0, "tickers": []}
+    raw_watchlist = config.get(WATCHLIST_CONFIG_FIELD)
+    if not isinstance(raw_watchlist, dict):
+        return {"applied": False, "count": 0, "tickers": [], "error": "watchlist field missing or not object"}
+
+    timestamp = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    WATCHLIST_CLOSEOUT_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    backup_path = WATCHLIST_CLOSEOUT_BACKUP_DIR / ("portfolio-config-before-earnings-closeout-" + timestamp.replace(":", "") + ".json")
+    backup_path.write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    applied: list[str] = []
+    by_ticker = {item["ticker"]: item for item in closeouts}
+    for ticker, closeout in by_ticker.items():
+        current = raw_watchlist.get(ticker)
+        if current is None:
+            continue
+        if isinstance(current, dict):
+            updated = dict(current)
+        else:
+            updated = {"date": current}
+        updated.update({
+            "status": "closed",
+            "closed_at_utc": timestamp,
+            "closed_by": "scripts/earnings_calendar_enrichment.py",
+            "closeout_reason": closeout["reason"],
+            "next_watch_status": "inactive_until_next_confirmed_or_timing_sensitive_catalyst",
+        })
+        raw_watchlist[ticker] = updated
+        applied.append(ticker)
+
+    if applied:
+        config["generated_at_utc"] = timestamp
+        config["last_updated_by"] = "scripts/earnings_calendar_enrichment.py earnings watchlist lifecycle closeout"
+        CONFIG_PATH.write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    return {"applied": bool(applied), "count": len(applied), "tickers": sorted(applied), "backup_path": str(backup_path.relative_to(WORKSPACE))}
+
+
+def apply_closeout_hold_to_records(records: list[dict[str, Any]], closeouts: list[dict[str, Any]]) -> None:
+    closeout_by_ticker = {item["ticker"]: item for item in closeouts}
+    for rec in records:
+        ticker = str(rec.get("ticker") or "").upper()
+        closeout = closeout_by_ticker.get(ticker)
+        if not closeout:
+            continue
+        rec["next_earnings_date"] = None
+        rec["source"] = "post_earnings_lifecycle_closeout"
+        rec["date_source_class"] = "post_earnings_lifecycle_closeout"
+        rec["primary_confirmed"] = False
+        rec["lifecycle"] = {
+            "status": "post_event_review_confirmed_next_date_pending",
+            "closed_watchlist_date": closeout.get("watchlist_date"),
+            "provider_date_before_closeout": closeout.get("provider_date_before_closeout"),
+            "reason": closeout.get("reason"),
+            "evidence": closeout.get("evidence"),
+        }
+
+
 def apply_post_earnings_manual_hold(record: dict[str, Any]) -> dict[str, Any]:
     hold = POST_EARNINGS_MANUAL_HOLDS.get(str(record.get("ticker") or ""))
     if not hold:
@@ -170,6 +403,8 @@ def apply_post_earnings_manual_hold(record: dict[str, Any]) -> dict[str, Any]:
 
     record["next_earnings_date"] = None
     record["source"] = "manual_post_earnings_hold"
+    record["date_source_class"] = "manual_post_earnings_hold"
+    record["primary_confirmed"] = False
     record["manual_hold"] = {
         "held_prior_date": stale_date,
         "reason": hold.get("reason") or "manual post-earnings hold",
@@ -195,15 +430,16 @@ def compare_to_watchlist(record: dict[str, Any], watchlist_date: str | None) -> 
     if fetched_date is None:
         return "no date from yfinance"
     if watchlist_date is None:
-        return "NEW -- not in vault watchlist: " + fetched_date
+        return "NEW -- no configured baseline: " + fetched_date
     if fetched_date == watchlist_date:
-        return "confirmed -- matches vault"
+        return "confirmed -- matches configured baseline"
     ticker = str(record.get("ticker") or "unknown")
-    return "DATE CHANGED -- vault has " + watchlist_date + ", yfinance shows " + fetched_date
+    return "DATE CHANGED -- baseline has " + watchlist_date + ", yfinance shows " + fetched_date
 
 
 def main() -> None:
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    config = load_portfolio_config()
 
     today = date.today()
     sep = "=" * 74
@@ -233,17 +469,33 @@ def main() -> None:
             else:
                 print(rec["next_earnings_date"])
 
+    lifecycle_closeouts = build_watchlist_lifecycle_closeouts(config=config, records=records, today=today)
+    lifecycle_holds = lifecycle_closeouts + build_existing_watchlist_lifecycle_holds(config=config, records=records, today=today)
+    apply_closeout_hold_to_records(records, lifecycle_holds)
+    lifecycle_apply = apply_watchlist_lifecycle_closeouts(config, lifecycle_closeouts)
+    watchlist = load_earnings_date_watchlist(config)
+
+    if lifecycle_holds:
+        print("")
+        print("  EARNINGS LIFECYCLE CLOSEOUTS")
+        print("  " + "-" * 60)
+        for closeout in lifecycle_holds:
+            label = "CLOSED" if closeout.get("status") == "watchlist_cleanup_eligible" else "HELD"
+            print("  [" + label + "] " + closeout["ticker"] + " " + str(closeout.get("watchlist_date")) + " -- " + closeout["reason"])
+
     print("")
-    print("  WATCHLIST COMPARISON")
+    print("  CONFIG WATCHLIST COMPARISON")
     print("  " + "-" * 60)
+    if not watchlist:
+        print("  none configured")
 
     alerts: list[str] = []
     timing_sensitive_alerts: list[str] = []
     for rec in records:
         ticker = rec["ticker"]
-        if ticker not in WATCHLIST:
+        if ticker not in watchlist:
             continue
-        watchlisted = WATCHLIST[ticker]
+        watchlisted = watchlist[ticker]
         flag = compare_to_watchlist(rec, watchlisted)
         status_char = "OK" if flag.startswith("confirmed") else "!!"
         print("  [" + status_char + "] " + "{:<8}".format(ticker) + "  " + flag)
@@ -310,6 +562,21 @@ def main() -> None:
         "upcoming_window_days": UPCOMING_WINDOW_DAYS,
         "records": records,
         "watchlist_alerts": alerts,
+        "watchlist_source": str(CONFIG_PATH.relative_to(WORKSPACE)) + ":" + WATCHLIST_CONFIG_FIELD,
+        "watchlist_tickers": sorted(watchlist.keys()),
+        "earnings_lifecycle": {
+            "schema_version": 1,
+            "closeouts": lifecycle_closeouts,
+            "active_holds": lifecycle_holds,
+            "config_apply": lifecycle_apply,
+            "authority": {
+                "review_only": True,
+                "portfolio_mutation_allowed": False,
+                "canonical_note_mutation_allowed": False,
+                "trade_or_account_action_allowed": False,
+                "owner_approval_inferred": False,
+            },
+        },
         "timing_sensitive_alerts": timing_sensitive_alerts,
         "timing_sensitive_alert_window_days": TIMING_SENSITIVE_ALERT_WINDOW_DAYS,
         "fetch_errors": errors,

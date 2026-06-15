@@ -27,6 +27,7 @@ Outputs:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import sys
 from datetime import date, datetime, timezone
@@ -63,8 +64,7 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "03. Portfolio/Execution Board.md",
             "03. Portfolio/Portfolio Snapshot.md",
         ],
     },
@@ -106,8 +106,8 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "02. Markets/Watchlist.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "04. Research/Coverage and Watchlist.md",
+            "03. Portfolio/Execution Board.md",
         ],
     },
     "LRCX": {
@@ -120,7 +120,7 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "sector_read_through": "Read-through for NVDA, ETN, and AI infrastructure demand.",
         "note_targets": [
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "02. Markets/Watchlist.md",
+            "04. Research/Coverage and Watchlist.md",
         ],
     },
     "MSFT": {
@@ -135,8 +135,7 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "03. Portfolio/Execution Board.md",
             "03. Portfolio/Portfolio Snapshot.md",
         ],
     },
@@ -152,8 +151,7 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "03. Portfolio/Execution Board.md",
             "03. Portfolio/Portfolio Snapshot.md",
         ],
     },
@@ -168,8 +166,7 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "03. Portfolio/Execution Board.md",
         ],
     },
     "ETN": {
@@ -184,8 +181,7 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "03. Portfolio/Execution Board.md",
             "03. Portfolio/Portfolio Snapshot.md",
         ],
     },
@@ -201,13 +197,55 @@ INTERPRETATION_CONFIG: dict[str, dict[str, Any]] = {
         "note_targets": [
             "05. Intelligence/Event Calendar.md",
             "05. Intelligence/Weekly Intelligence Brief.md",
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
+            "03. Portfolio/Execution Board.md",
             "03. Portfolio/Portfolio Snapshot.md",
-            "02. Markets/Watchlist.md",
+            "04. Research/Coverage and Watchlist.md",
+        ],
+    },
+    "NVDA": {
+        "priority": "critical",
+        "watch_items": [
+            "Data Center revenue growth and backlog/demand durability",
+            "Blackwell/Rubin platform demand and supply commentary",
+            "gross margin resilience",
+            "forward revenue guide and China/export-control assumptions",
+            "AI infrastructure read-through for ETN, VRT, GE, MSFT, GOOG, AMD, and AI-power names",
+            "whether post-print price action creates a revised band or remains no-chase",
+        ],
+        "sector_read_through": "Core AI infrastructure bellwether; read through to AI-power, hyperscaler capex, semiconductor, and data-center supply chain names without converting the print into automatic deployment authority.",
+        "note_targets": [
+            "05. Intelligence/Event Calendar.md",
+            "05. Intelligence/Weekly Intelligence Brief.md",
+            "03. Portfolio/Execution Board.md",
+            "03. Portfolio/Portfolio Snapshot.md",
+            "04. Research/Coverage and Watchlist.md",
         ],
     },
 }
+
+GENERIC_NOTE_TARGETS = [
+    "05. Intelligence/Event Calendar.md",
+    "05. Intelligence/Weekly Intelligence Brief.md",
+    "03. Portfolio/Execution Board.md",
+]
+
+GENERIC_WATCH_ITEMS = [
+    "revenue and EPS versus expectations",
+    "guidance change and management tone",
+    "margin quality and cash-flow implications",
+    "price reaction versus written band/stop",
+    "sector or portfolio read-through",
+]
+
+
+def generic_config_for(ticker: str) -> dict[str, Any]:
+    return {
+        "priority": "monitor",
+        "watch_items": GENERIC_WATCH_ITEMS,
+        "sector_read_through": f"Generic tracked-name earnings packet for {ticker}; agent must interpret source evidence before any conclusion.",
+        "note_targets": GENERIC_NOTE_TARGETS,
+        "generated_from_fallback": True,
+    }
 
 
 def load_json(path: Path, required: bool = True) -> dict[str, Any] | None:
@@ -313,10 +351,23 @@ def main() -> None:
     deploy_map = {rec["ticker"]: rec for rec in deploy.get("records", []) or []}
     trigger_map = {rec["ticker"]: rec for rec in trigger.get("records", []) or []}
     earnings_map = {rec["ticker"]: rec for rec in earnings.get("records", []) or []}
+    earnings_lifecycle = earnings.get("earnings_lifecycle") if isinstance(earnings.get("earnings_lifecycle"), dict) else {}
+    lifecycle_closeouts = earnings_lifecycle.get("closeouts") if isinstance(earnings_lifecycle.get("closeouts"), list) else []
 
     packets: list[dict[str, Any]] = []
 
-    for ticker, cfg in INTERPRETATION_CONFIG.items():
+    candidate_tickers = set(INTERPRETATION_CONFIG)
+    candidate_tickers.update(earnings_map)
+    candidate_tickers.update(trigger_map)
+    candidate_tickers.update(deploy_map)
+    candidate_tickers.update(tech_map)
+
+    fallback_tickers: list[str] = []
+
+    for ticker in sorted(candidate_tickers):
+        cfg = INTERPRETATION_CONFIG.get(ticker) or generic_config_for(ticker)
+        if cfg.get("generated_from_fallback"):
+            fallback_tickers.append(ticker)
         earnings_rec = earnings_map.get(ticker, {})
         next_earnings = earnings_rec.get("next_earnings_date")
         days_to = days_from_today(next_earnings)
@@ -335,6 +386,10 @@ def main() -> None:
             "phase": infer_phase(days_to),
             "days_to_or_from_earnings": days_to,
             "next_earnings_date": next_earnings,
+            "source_class": earnings_rec.get("date_source_class"),
+            "primary_confirmed": earnings_rec.get("primary_confirmed"),
+            "earnings_lifecycle": earnings_rec.get("lifecycle") or {},
+            "fallback_config": bool(cfg.get("generated_from_fallback")),
             "watch_items": cfg.get("watch_items", []),
             "sector_read_through": cfg.get("sector_read_through"),
             "note_targets": cfg.get("note_targets", []),
@@ -346,11 +401,11 @@ def main() -> None:
                 "data_date": tech_rec.get("data_date"),
             },
             "deployment_context": {
-                "action_state": deploy_rec.get("action_state"),
+                "action_state": legacy_state(deploy_rec, "action_state"),
                 "reason": deploy_rec.get("reason"),
             },
             "trigger_context": {
-                "action_state": trigger_rec.get("action_state"),
+                "action_state": legacy_state(trigger_rec, "action_state"),
                 "technical_trigger": trigger_rec.get("technical_trigger"),
                 "catalyst_blocker": trigger_rec.get("catalyst_blocker"),
                 "why": trigger_rec.get("why"),
@@ -374,6 +429,9 @@ def main() -> None:
         warnings.extend(trigger.get("warnings", []))
     if earnings.get("warnings"):
         warnings.extend(earnings.get("warnings", []))
+    near_fallbacks = sorted([p["ticker"] for p in packets if p.get("fallback_config")])
+    if near_fallbacks:
+        warnings.append("Generic fallback post-earnings config used for: " + ", ".join(near_fallbacks) + ". Add ticker-specific watch items if this is a material tracked name.")
     warnings = list(dict.fromkeys(warnings))
 
     trigger_age = age_hours(trigger.get("generated_at_utc"))
@@ -423,6 +481,18 @@ def main() -> None:
             "forward_days": WINDOW_FORWARD_DAYS,
         },
         "warnings": warnings,
+        "earnings_lifecycle": {
+            "source": "tmp/earnings-calendar.json",
+            "closeouts": lifecycle_closeouts,
+            "authority": {
+                "review_only": True,
+                "portfolio_mutation_allowed": False,
+                "canonical_note_mutation_allowed": False,
+                "trade_or_account_action_allowed": False,
+                "owner_approval_inferred": False,
+            },
+        },
+        "fallback_config_tickers": near_fallbacks,
         "packets": packets,
     }
 
@@ -441,7 +511,7 @@ def main() -> None:
             packet["ticker"],
             packet["priority"],
             packet["stage"],
-            packet["trigger_context"].get("action_state") or "--",
+            legacy_state(packet["trigger_context"], "action_state") or "--",
             packet.get("next_earnings_date") or "--",
         ))
 

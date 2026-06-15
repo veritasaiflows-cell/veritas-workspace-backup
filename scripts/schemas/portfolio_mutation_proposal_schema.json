@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "description": "Portfolio mutation proposal packet contract. Individual packets remain non-self-applying and per-packet authority flags stay false unless a separate exact apply artifact is introduced; the aggregate WF58 bundle carries the broader approved note/model mutation posture. This static reference is enforced by scripts/portfolio_mutation_proposal_schema_validator.py without requiring external jsonschema dependencies.",
+  "mutation_types": [
+    "sleeve_change",
+    "rebalance",
+    "cash_target_change",
+    "ticker_lane_change",
+    "canonical_status_move"
+  ],
+  "required_authority_flags": {
+    "owner_decision_required": true,
+    "owner_approval_granted": false,
+    "apply_allowed": false,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false
+  },
+  "artifact_home": "tmp/portfolio-mutation-proposals/",
+  "audit_home": "08. Audits/"
+}

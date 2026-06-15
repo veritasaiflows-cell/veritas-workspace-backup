@@ -32,6 +32,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from board_state_contract import legacy_state
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -106,7 +109,7 @@ def build_scorecard(
     in_band    = tech_ctx.get("in_entry_band", False)
     below_stop = tech_ctx.get("below_stop", False)
 
-    action_state  = deploy_ctx.get("action_state") or (trig or {}).get("action_state", "")
+    action_state  = legacy_state(deploy_ctx, "action_state") or legacy_state((trig or {}), "action_state", "")
     action_reason = deploy_ctx.get("reason") or (trig or {}).get("why", "")
     band_label    = ((trig or {}).get("entry_band") or {}).get("label", "not defined")
     invalidation  = trig_ctx.get("invalidation") or (trig or {}).get("invalidation")
@@ -229,12 +232,12 @@ def build_scorecard(
         for target in note_targets:
             lines.append(f"- [ ] `{target}`")
     else:
-        lines.append("- [ ] `03. Portfolio/Deployment Trigger Sheet.md`")
+        lines.append("- [ ] `03. Portfolio/Execution Board.md`")
         lines.append("- [ ] `03. Portfolio/Portfolio Snapshot.md`")
         lines.append("- [ ] `02. Markets/Regime Scoring Matrix.md`")
         lines.append("- [ ] `04. Research/Call Log.md`")
-    lines.append(f"- [ ] `04. Research/Coverage Universe.md` — update thesis status if changed")
-    lines.append(f"- [ ] `02. Markets/Watchlist.md` — update deployment state if changed")
+    lines.append(f"- [ ] `04. Research/Coverage and Watchlist.md` — update thesis / coverage status if changed")
+    lines.append(f"- [ ] `03. Portfolio/Execution Board.md` — update execution state, blocker, band, or stop if changed")
     lines.append(f"- [ ] `tmp/portfolio-config.json` — update workflow_state, thesis_status, repair_mode if changed\n")
 
     lines.append("---\n")

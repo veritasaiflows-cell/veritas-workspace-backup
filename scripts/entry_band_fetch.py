@@ -36,7 +36,7 @@ import math
 import re
 import sys
 import webbrowser
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -104,9 +104,13 @@ def _years_ago(n: int) -> date:
 def fetch_ohlc(ticker: str, years: int, interval: str, start: str | None):
     """Fetch OHLC from yfinance. Returns (bars, meta)."""
     start_date = start or _years_ago(years).isoformat()
-    end_date = date.today().isoformat()
+    asof_date = date.today()
+    # yfinance treats `end` as exclusive. Use tomorrow as the fetch boundary so
+    # same-day/post-close refreshes do not silently drop the latest trading day
+    # while still labeling the bundle with today's as-of date.
+    fetch_end_date = (asof_date + timedelta(days=1)).isoformat()
     yf_ticker = yf.Ticker(ticker.replace(".", "-"))
-    hist = yf_ticker.history(start=start_date, end=end_date, interval=interval, auto_adjust=False)
+    hist = yf_ticker.history(start=start_date, end=fetch_end_date, interval=interval, auto_adjust=False)
     if hist is None or hist.empty:
         raise RuntimeError(f"yfinance returned no history for {ticker} ({interval}, since {start_date})")
 
@@ -139,7 +143,7 @@ def fetch_ohlc(ticker: str, years: int, interval: str, start: str | None):
         "name": name,
         "currency": currency,
         "interval": interval,
-        "asof": end_date,
+        "asof": asof_date.isoformat(),
         "period": {"start": bars[0]["d"] if bars else "", "end": bars[-1]["d"] if bars else ""},
     }
     return bars, meta
@@ -247,6 +251,8 @@ def load_latest_band_proposal(ticker: str) -> dict[str, Any] | None:
                 "sma_envelope_low": rec.get("sma_envelope_low"),
                 "sma_envelope_high": rec.get("sma_envelope_high"),
                 "earnings_state": rec.get("earnings_state"),
+                "earnings_date_source_class": rec.get("earnings_date_source_class"),
+                "earnings_primary_confirmed": rec.get("earnings_primary_confirmed"),
                 "band_confidence": rec.get("band_confidence"),
                 "needs_review": rec.get("needs_review"),
                 "canonical_apply_eligible": rec.get("canonical_apply_eligible"),

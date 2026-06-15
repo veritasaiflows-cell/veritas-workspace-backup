@@ -29,6 +29,7 @@ Usage:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import sys
 
@@ -150,7 +151,7 @@ def build_section3_deployment(trigger: dict, scores: dict | None) -> str:
         "OTHER": [],
     }
     for r in records:
-        state = canonical_action_state(r.get("action_state") or r.get("deployment_state") or "")
+        state = canonical_action_state(legacy_state(r, "action_state") or r.get("deployment_state") or "")
         if state in groups:
             groups[state].append(r)
         elif state == "ALMOST DEPLOYABLE":
@@ -283,7 +284,7 @@ def build_section5_sectors(trigger: dict, config: dict) -> str:
         role = cfg.get("portfolio_role", "")
         sz = cfg.get("sizing_tier", "")
         # Only include names that have some deployment intent (not purely watch/bench)
-        state = (r.get("action_state") or "").upper()
+        state = (legacy_state(r, "action_state") or "").upper()
         if "WATCH" in state and role not in ("core", "tactical"):
             continue
         sector_weights.setdefault(sector, []).append(ticker)

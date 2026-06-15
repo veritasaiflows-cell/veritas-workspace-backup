@@ -19,8 +19,10 @@ function renderTrust() {
   const conIssues = con.warnings?.length ? `<div class="small tone-bad" style="margin-top:6px">${con.warnings.map(esc).join('<br>')}</div>` : '';
   const conCounts = con.counts ? `<div class="small mono" style="margin-top:6px">Tracked: ${con.counts.tracked} | Tech: ${con.counts.expected_tech} | Triggers: ${con.counts.expected_trig}</div>` : '';
   const conCard = `<div class="card" style="padding:12px; margin-bottom:10px; border-left:3px solid var(--${conTone})"><div class="row"><div><strong>Universe Consistency Gate</strong></div><div style="text-align:right">${pill(conLabel, conTone)}</div></div>${conCounts}${conIssues}</div>`;
+  const handoffs = DATA.trust.handoff_proof_state || [];
+  const handoffCard = handoffs.length ? `<div class="card" style="padding:12px; margin-bottom:10px; border-left:3px solid var(--warn)"><div><strong>Handoff Proof State</strong></div><div class="small" style="margin-top:4px">First-proof gates stay pending until a live artifact proves the lane.</div><div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">${handoffs.map(h => `<div class="row"><div><strong>${esc(h.label)}</strong><div class="small mono">${esc(h.source_path || '—')}</div></div><div style="text-align:right">${pill(h.state || 'PENDING_FIRST_PROOF', h.tone || 'warn')}<div class="small mono">${esc(h.generated_at_utc || 'no proof artifact')}</div></div></div>`).join('')}</div></div>` : '';
 
-  $('trustSources').innerHTML = conCard + DATA.trust.sources.map(s => {
+  $('trustSources').innerHTML = conCard + handoffCard + DATA.trust.sources.map(s => {
     const issues = s.issues?.length ? `<div class="small" style="margin-top:6px">${s.issues.map(esc).join(' · ')}</div>` : '';
     const tags = s.tags?.length ? `<div style="margin-top:6px">${s.tags.map(t => pill(t.replaceAll('_',' '), toneMap[s.status]||'info')).join(' ')}</div>` : '';
     return `<div class="card" style="padding:12px"><div class="row"><div><strong>${esc(s.label)}</strong><div class="small mono">${esc(s.generatedLabel)}</div></div><div style="text-align:right">${pill(s.statusLabel, toneMap[s.status])}<div class="small">Age ${esc(s.ageLabel)}</div></div></div>${tags}${issues}</div>`;
@@ -49,15 +51,21 @@ function renderValidation() {
 
 function actionCard(item, accent) {
   const earningsLine = item.daysToEarnings != null
-    ? `${esc(item.earnings)}${item.daysToEarnings <= 7 ? ' <span class="pill warn" style="margin-left:6px">≤7d</span>' : ''}`
+    ? `${esc(item.earnings)}${item.daysToEarnings <= 7 ? ' <span class="pill warn" style="margin-left:6px">≤7d</span>' : ''}${item.earningsDateConfirmed === false ? ' <span class="pill warn" style="margin-left:6px">UNCONFIRMED DATE</span>' : ''}`
     : esc(item.earnings || '—');
   const bandGapLine = item.bandGap
     ? `${esc(item.bandGap)}${item.bandGapPct && item.bandGapPct !== '—' ? ` (${esc(item.bandGapPct)})` : ''}`
     : '—';
+  const stateLabel = item.state || (accent==='earnings'?'EARNINGS PENDING':accent==='risk'?'BELOW STOP':accent.toUpperCase());
+  const stateTone = item.proseConflict ? 'warn' : (accent==='deployable'?'ok':accent==='almost'||accent==='review'?'warn':accent==='earnings'?'info':'bad');
+  const substateLine = item.displaySubState ? `<div class="action-card-foot tone-warn">${esc(item.displaySubState)}</div>` : '';
+  const reviewOnlyLine = item.reviewOnlyNoApplyArtifact ? `<div class="action-card-foot tone-warn">REVIEW ONLY — NO APPLY ARTIFACT</div>` : '';
+  const conflictLine = item.proseConflict ? `<div class="action-card-foot tone-warn">${esc(item.conflictProseState || 'Authority conflict')} · source: ${esc(item.proseConflictSource || 'prose')}</div>` : '';
+  const proofLine = `<div class="action-card-foot small muted">Proof: ${esc(item.sourceArtifactPath || 'artifact unavailable')}${item.sourceGeneratedAtUtc ? ` · ${esc(item.sourceGeneratedAtUtc)}` : ''}${item.bandStale ? ' · BAND STALE' : ''}${item.overrideRule ? ` · override ${esc(item.overrideRule)}` : ''}</div>`;
   return `<div class="action-card action-${accent}">
     <div class="action-card-head">
       <div><span class="mono" style="font-size:16px;font-weight:700">${esc(item.ticker)}</span></div>
-      <div>${pill(item.state || (accent==='earnings'?'EARNINGS PENDING':accent==='risk'?'BELOW STOP':accent.toUpperCase()), accent==='deployable'?'ok':accent==='almost'||accent==='review'?'warn':accent==='earnings'?'info':'bad')}</div>
+      <div>${pill(stateLabel, stateTone)}</div>
     </div>
     <div class="kv">
       <div>Close</div><div class="mono">${esc(item.close)}</div>
@@ -71,6 +79,7 @@ function actionCard(item, accent) {
     </div>
     ${item.triggerLabel ? `<div class="action-card-foot">${esc(item.triggerLabel)}</div>` : ''}
     ${item.reason ? `<div class="action-card-foot">${esc(item.reason)}</div>` : ''}
+    ${substateLine}${reviewOnlyLine}${conflictLine}${proofLine}
   </div>`;
 }
 

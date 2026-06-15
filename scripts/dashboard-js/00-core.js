@@ -5,10 +5,11 @@ const tabs = [
   ['deployment','Deployment Board'],
   ['technicals','Technical Analysis'],
   ['portfolio','Portfolio'],
+  ['fundamentals','Fundamentals'],
   ['earnings','Earnings'],
   ['macro','Macro'],
   ['risk','Risk & Rules'],
-  ['triggers','Trigger Sheet'],
+  ['triggers','Execution Board'],
   ['decisionqueue','Decision Queue'],
   ['postearnings','Post-Earnings'],
   ['entrybands','Entry Bands'],
@@ -32,7 +33,7 @@ function stateTone(state) {
   if (!state) return 'info';
   const s = state.toUpperCase();
   if (s === 'DEPLOYABLE') return 'ok';
-  if (s === 'REVIEW' || s === 'PROMOTION REVIEW') return 'warn';
+  if (s === 'REVIEW' || s === 'PROMOTION REVIEW' || s === 'AUTHORITY CONFLICT') return 'warn';
   if (s === 'ALMOST') return 'warn';
   if (s === 'BLOCKED' || s === 'BELOW STOP') return 'bad';
   return 'info';

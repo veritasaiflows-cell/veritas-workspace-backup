@@ -20,11 +20,14 @@ MARKET_CLOSE = time(16, 0)
 
 VAULT_NOTES = {
     "macro_regime": "02. Markets/Macro Regime Dashboard.md",
-    "watchlist": "02. Markets/Watchlist.md",
+    "coverage_watchlist": "04. Research/Coverage and Watchlist.md",
     "portfolio_snapshot": "03. Portfolio/Portfolio Snapshot.md",
-    "technical_entry": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-    "trigger_sheet": "03. Portfolio/Deployment Trigger Sheet.md",
-    "coverage_universe": "04. Research/Coverage Universe.md",
+    "execution_board": "03. Portfolio/Execution Board.md",
+    # Compatibility aliases for downstream clients during the canon-consolidation transition.
+    "watchlist": "04. Research/Coverage and Watchlist.md",
+    "technical_entry": "03. Portfolio/Execution Board.md",
+    "trigger_sheet": "03. Portfolio/Execution Board.md",
+    "coverage_universe": "04. Research/Coverage and Watchlist.md",
     "event_calendar": "05. Intelligence/Event Calendar.md",
     "weekly_brief": "05. Intelligence/Weekly Intelligence Brief.md",
     "risk_rules": "07. Risk/Risk Rules.md",
@@ -110,6 +113,26 @@ SOURCE_SPECS: dict[str, dict[str, Any]] = {
             ("portfolio", "Portfolio block"),
             ("entry_bands", "Entry bands"),
             ("risk_thresholds", "Risk thresholds"),
+        ],
+    },
+    "fundamentals": {
+        "label": "Fundamental metrics",
+        "path": "tmp/fundamental-metrics-current.json",
+        "critical": False,
+        "required_paths": [
+            ("rows", "Fundamental metric rows"),
+            ("summary", "Fundamental metrics summary"),
+            ("authority", "Review-only authority block"),
+        ],
+    },
+    "fundamental_ir": {
+        "label": "Fundamental IR packets",
+        "path": "tmp/fundamental-ir-reconciliation-packets.json",
+        "critical": False,
+        "required_paths": [
+            ("packets", "IR reconciliation packets"),
+            ("summary", "IR reconciliation summary"),
+            ("authority", "Review-only authority block"),
         ],
     },
 }
@@ -258,6 +281,8 @@ def load_sources() -> dict[str, dict | None]:
         "deployment": load_json(TMP / "deployment-check.json"),
         "earnings": load_json(TMP / "earnings-calendar.json"),
         "portfolio": load_json(TMP / "portfolio-config.json"),
+        "fundamentals": load_json(TMP / "fundamental-metrics-current.json"),
+        "fundamental_ir": load_json(TMP / "fundamental-ir-reconciliation-packets.json"),
         # band_proposals is loaded directly in build_validation — not a dashboard display source
         # and must not be included here or assess_source() will KeyError on SOURCE_SPECS lookup
     }
@@ -343,6 +368,12 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
             status = "usable_with_caution"
     elif name == "market":
         fed = get_path(src, "data.fed") or {}
+        macro_freshness = src.get("macro_freshness") if isinstance(src.get("macro_freshness"), dict) else {}
+        if macro_freshness:
+            routing = macro_freshness.get("routing") if isinstance(macro_freshness.get("routing"), dict) else {}
+            issues.append(f"macro freshness: {macro_freshness.get('summary') or macro_freshness.get('status')}")
+            if macro_freshness.get("status") in {"warning", "blocked"} and status == "fresh":
+                status = "usable_with_caution" if not routing.get("macro_regime_safe") is False else "partial"
         if fed.get("manual_update_required"):
             tags.extend(["manual", "macro_manual_dependency"])
             manual_fields.append("fed_target_range")
@@ -355,13 +386,25 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
             issues.append("FedWatch cut probability is not wired and remains null")
             if status == "fresh":
                 status = "usable_with_caution"
-        if src.get("freshness_notes"):
-            tags.append("mixed_dates")
-            issues.extend([f"freshness note: {note}" for note in src.get("freshness_notes", [])])
+        freshness_notes = src.get("freshness_notes") or []
+        if freshness_notes:
+            if "mixed_source_dates" in freshness_notes:
+                tags.append("mixed_dates")
+            issues.extend([f"freshness note: {note}" for note in freshness_notes])
             if status == "fresh":
                 status = "usable_with_caution"
     elif name == "policy":
         policy_data = src.get("data", {}) if isinstance(src.get("data"), dict) else {}
+        contract = src.get("freshness_contract") if isinstance(src.get("freshness_contract"), dict) else {}
+        if contract:
+            freshness_status = contract.get("freshness_status")
+            if freshness_status and freshness_status not in {"fresh", "current", "ok"}:
+                tags.append(f"policy_{freshness_status}")
+                issues.append(f"policy freshness: {contract.get('policy_status') or freshness_status}")
+                if contract.get("hard_fail_closed"):
+                    status = status_worse(status, "partial")
+                elif status == "fresh":
+                    status = "usable_with_caution"
         manual_deps = policy_data.get("manual_dependencies", []) if isinstance(policy_data.get("manual_dependencies"), list) else []
         if manual_deps:
             tags.extend(["manual", "policy_manual_dependency"])
@@ -373,9 +416,11 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
                     issues.append(f"manual dependency: {detail}")
             if status == "fresh":
                 status = "usable_with_caution"
-        if src.get("freshness_notes"):
-            tags.append("mixed_dates")
-            issues.extend([f"freshness note: {note}" for note in src.get("freshness_notes", [])])
+        freshness_notes = src.get("freshness_notes") or []
+        if freshness_notes:
+            if "mixed_source_dates" in freshness_notes:
+                tags.append("mixed_dates")
+            issues.extend([f"freshness note: {note}" for note in freshness_notes])
             if status == "fresh":
                 status = "usable_with_caution"
         if src.get("warnings"):
@@ -432,6 +477,14 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
         value = get_path(src, dotted_path)
         if is_missing_value(value):
             missing_required.append(label)
+    if name == "credit" and missing_required:
+        credit_data = src.get("data", {}) if isinstance(src.get("data"), dict) else {}
+        if credit_data.get("source_mode") in {"mixed", "fallback"} and credit_data.get("stress_regime") and credit_data.get("fallback_proxies"):
+            issues.append("direct credit fields missing but proxy basket preserved stress-regime context: " + ", ".join(missing_required))
+            missing_required = []
+            if status == "fresh":
+                status = "usable_with_caution"
+
     if missing_required:
         status = status_worse(status, "partial")
         tags.append("missing_fields")

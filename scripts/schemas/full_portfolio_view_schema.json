@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Veritas Full Portfolio View",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at_utc",
+    "window",
+    "market_data_as_of",
+    "source_artifacts",
+    "authority",
+    "summary",
+    "records",
+    "rendered_outputs"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "generated_at_utc": {"type": "string"},
+    "window": {"type": "string"},
+    "market_data_as_of": {"type": ["string", "null"]},
+    "source_artifacts": {"type": "array"},
+    "authority": {
+      "type": "object",
+      "required": [
+        "canonical_mutation_allowed",
+        "portfolio_mutation_allowed",
+        "deployment_state_mutation_allowed",
+        "owner_approval_granted",
+        "sizing_or_weight_change_allowed",
+        "trade_execution_allowed",
+        "generated_report_is_canonical"
+      ],
+      "properties": {
+        "canonical_mutation_allowed": {"const": false},
+        "portfolio_mutation_allowed": {"const": false},
+        "deployment_state_mutation_allowed": {"const": false},
+        "owner_approval_granted": {"const": false},
+        "sizing_or_weight_change_allowed": {"const": false},
+        "trade_execution_allowed": {"const": false},
+        "generated_report_is_canonical": {"const": false}
+      }
+    },
+    "summary": {"type": "object"},
+    "records": {"type": "array"},
+    "rendered_outputs": {"type": "object"}
+  }
+}

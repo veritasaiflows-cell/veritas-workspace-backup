@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "formatter_id": "full_portfolio_view",
+  "trigger_phrases": [
+    "full portfolio view",
+    "full read on portfolio",
+    "portfolio dashboard",
+    "portfolio with graphics and tables"
+  ],
+  "source_stack": [
+    "tmp/full-portfolio-view.json",
+    "tmp/daily-executive-brief.json",
+    "tmp/deployment-check.json",
+    "tmp/trigger-sheet.json",
+    "tmp/regime-scores.json",
+    "tmp/board-canon-guardrail.json",
+    "03. Portfolio/Portfolio Snapshot.md",
+    "07. Risk/Risk Rules.md"
+  ],
+  "required_sections": [
+    "Executive portfolio verdict",
+    "Market regime and current investment theme",
+    "Portfolio dashboard",
+    "Sector exposure graphic/table",
+    "Name-level readiness table",
+    "Capital priority order",
+    "Risk and stop/band watchlist",
+    "Owner-gated next actions"
+  ],
+  "tone": "direct, evidence-first, concise but decision-grade, Randall-specific",
+  "authority_boundary": {
+    "review_only": true,
+    "no_trade_execution": true,
+    "no_portfolio_mutation_without_owner_approval": true,
+    "no_inferred_owner_approval": true,
+    "generated_report_is_not_canonical": true
+  },
+  "graphics": [
+    "sector exposure bar chart",
+    "deployment readiness heatmap/table",
+    "stop/band risk table",
+    "capital priority ladder",
+    "theme exposure map"
+  ],
+  "fresh_research_rule": "Before presenting market views or investment theme as current, verify that market/macro artifacts are fresh for the requested window; use web/primary sources when the workspace evidence is stale, partial, or decision-critical.",
+  "default_command": "python scripts/full_portfolio_view.py --window post-close --write"
+}

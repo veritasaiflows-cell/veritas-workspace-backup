@@ -91,6 +91,12 @@ def map_action_state(deploy_state: str, ticker: str, rec: dict[str, Any], meta: 
     mapped = DEPLOY_STATE_MAP.get(deploy_state, "WATCH / RESEARCH NEEDED")
     workflow_state = (meta.get("workflow_state") or "").upper()
 
+    # A hard stop breach is an override, not an ordinary watch-state nuance.
+    # Owner approval, watch-lane status, or workflow labels must not soften it
+    # into "almost deployable" / "watch" on generated trigger surfaces.
+    if rec.get("below_stop") or (deploy_state or "").upper() == "BELOW STOP":
+        return "DO NOT TOUCH"
+
     # Workflow-state gates take precedence over raw machine deployment state.
     # This prevents false promotions where price touches an entry band before the
     # setup is actually decision-grade in the canonical workflow layer.
@@ -171,7 +177,9 @@ def post_earnings_review_confirmed(last_earnings_date: str | None, review_date: 
     review_dt = parse_iso_date(review_date)
     if not last_dt or not review_dt:
         return False
-    return review_dt.date() > last_dt.date()
+    # Same-day post-print reviews are valid after the official release is captured.
+    # This confirms catalyst review state only; it does not grant execution authority.
+    return review_dt.date() >= last_dt.date()
 
 
 def derive_catalyst_blocker(*, ticker: str, earnings_blocked: bool, next_earnings_date: str | None,
@@ -260,6 +268,86 @@ def override_looks_stale(override_text: str, *, next_earnings_date: str | None,
     return False
 
 
+def _fmt_price(value: Any) -> str:
+    try:
+        return f"{float(value):.2f}"
+    except (TypeError, ValueError):
+        return "—"
+
+
+def _trigger_range_is_current(trigger_text: str | None, band: dict[str, Any]) -> bool:
+    """Return True when trigger prose appears aligned with the current band.
+
+    Trigger prose is owner-readable text, but stale hard-coded ranges create a
+    dangerous dashboard contradiction: the card's ENTRY BAND can be current
+    while the TRIGGER box still points to an older band. If the prose contains
+    numeric ranges and they do not include the current band endpoints, replace
+    it with generated current-band guidance.
+    """
+    if not trigger_text:
+        return False
+    low = band.get("low")
+    high = band.get("high")
+    if low is None or high is None:
+        return True
+    nums: list[float] = []
+    for raw in re.findall(r"\b\d+(?:\.\d+)?\b", trigger_text):
+        try:
+            nums.append(float(raw))
+        except ValueError:
+            continue
+    # No numeric range in the prose: there is no band contradiction to detect.
+    if len(nums) < 2:
+        return True
+
+    def has_value(target: Any) -> bool:
+        try:
+            value = float(target)
+        except (TypeError, ValueError):
+            return False
+        return any(abs(value - num) <= 0.05 for num in nums)
+
+    return has_value(low) and has_value(high)
+
+
+def build_technical_trigger(meta: dict[str, Any], deploy_rec: dict[str, Any], band: dict[str, Any], action_state: str) -> tuple[str, str]:
+    original = str(meta.get("trigger_condition") or deploy_rec.get("reason") or "").strip()
+    if _trigger_range_is_current(original, band):
+        return original, "owner_config"
+
+    low = _fmt_price(band.get("low"))
+    high = _fmt_price(band.get("high"))
+    stop = _fmt_price(band.get("stop"))
+    state = (action_state or "").upper()
+
+    if state == "DEPLOYABLE NOW":
+        text = (
+            f"Current gated execution band is {low} to {high}; manual execution only; "
+            f"do not chase above {high}; explicit stop {stop}."
+        )
+    elif state == "PROMOTION REVIEW":
+        text = (
+            f"Promotion review only inside/reclaiming the current gated execution band {low} to {high}; "
+            f"owner approval is required before deployable-now status; explicit stop {stop}."
+        )
+    elif "ALMOST" in state:
+        text = (
+            f"Almost-deployable review around current gated execution band {low} to {high}; "
+            f"no deployable-now status without explicit owner promotion; explicit stop {stop}."
+        )
+    elif state in {"DO NOT TOUCH", "BENCH", "BLOCKED"}:
+        text = (
+            f"No deployment from current gated execution band {low} to {high}; "
+            f"repair/review required before re-engagement; explicit stop {stop}."
+        )
+    else:
+        text = (
+            f"Current gated execution band is {low} to {high}; reference only until the workflow state grants "
+            f"execution-board entitlement; explicit stop {stop}."
+        )
+    return text, "generated_current_band_due_to_stale_config_range"
+
+
 def main() -> None:
     tech = load_json(TECH_PATH, required=True)
     deploy = load_json(DEPLOY_PATH, required=True)
@@ -330,6 +418,7 @@ def main() -> None:
         action_state = map_action_state(deploy_rec.get("action_state", "WATCH"), ticker, tech_rec, meta)
 
         next_date = earnings_rec.get("earnings_date") or earnings_rec.get("next_earnings_date")
+        earnings_lifecycle = earnings_rec.get("lifecycle") if isinstance(earnings_rec.get("lifecycle"), dict) else {}
         days_to_earn = days_until(next_date)
         watchlist_alert = alert_map.get(ticker)
         derived_blocker, derived_source = derive_catalyst_blocker(
@@ -355,6 +444,12 @@ def main() -> None:
                     f"{ticker} catalyst_blocker_override appears stale relative to next_earnings_date {next_date}; "
                     f"derived text is being used. Override: {override_text!r}"
                 )
+        if earnings_lifecycle.get("status") == "post_event_review_confirmed_next_date_pending" and (
+            not catalyst_blocker or catalyst_blocker == "No immediate hard catalyst block from cached earnings data"
+        ):
+            closed_date = earnings_lifecycle.get("closed_watchlist_date")
+            catalyst_blocker = f"Last earnings reported {closed_date}; post-earnings review confirmed; next print not yet on calendar"
+            catalyst_blocker_source = "post_earnings_lifecycle"
 
         why = deploy_rec.get("reason") or "No reason available"
         workflow_state = (meta.get("workflow_state") or "").upper()
@@ -366,7 +461,14 @@ def main() -> None:
         earnings_date_ir_confirmed_date = meta.get("earnings_date_ir_confirmed_date")
         if current_tech_ts and deploy_tech_ts and current_tech_ts != deploy_tech_ts:
             why = "Deployment reasoning is stale relative to current technical refresh; rerun deployment_check.py before trusting this state"
-        if meta.get("repair_mode"):
+        if tech_rec.get("below_stop") or deploy_rec.get("below_stop") or deploy_rec.get("action_state") == "BELOW STOP":
+            stop = band.get("stop")
+            close = tech_rec.get("close") if tech_rec.get("close") is not None else deploy_rec.get("close")
+            if stop is not None and close is not None:
+                why = f"close {round(float(close), 2)} is below stop {round(float(stop), 2)} -- do not deploy"
+            else:
+                why = "below explicit stop -- do not deploy"
+        elif meta.get("repair_mode"):
             why = "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again"
         elif workflow_state == "WATCH":
             if tech_rec.get("in_entry_band") is None and entry_policy == "underdefined":
@@ -388,13 +490,16 @@ def main() -> None:
         elif ticker == "ETN" and "ALMOST" in (deploy_rec.get("action_state") or ""):
             why = "Best chart in the sheet, but current price is extended versus the preferred zone"
 
+        technical_trigger, technical_trigger_source = build_technical_trigger(meta, deploy_rec, band, action_state)
+
         record = {
             "ticker": ticker,
             "coverage_tier": meta.get("coverage_tier"),
             "portfolio_role": meta.get("portfolio_role"),
             "thesis_status": meta.get("thesis_status", "review needed"),
             "macro_fit": meta.get("macro_fit", "review needed"),
-            "technical_trigger": meta.get("trigger_condition", deploy_rec.get("reason")),
+            "technical_trigger": technical_trigger,
+            "technical_trigger_source": technical_trigger_source,
             "entry_band": {"low": band.get("low"), "high": band.get("high"), "label": band.get("label")},
             "invalidation": band.get("stop"),
             "size_tier": meta.get("sizing_tier", "review needed"),
@@ -413,6 +518,7 @@ def main() -> None:
             "deployment_state": deploy_rec.get("action_state"),
             "deployment_reason": deploy_rec.get("reason"),
             "next_earnings_date": next_date,
+            "earnings_lifecycle": earnings_lifecycle,
             "last_earnings_date": last_earnings_date,
             "post_earnings_review_date": post_earnings_review_date,
             "post_earnings_review_confirmed": post_earnings_review_confirmed(last_earnings_date, post_earnings_review_date),

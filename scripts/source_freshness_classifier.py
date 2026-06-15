@@ -15,6 +15,8 @@ CLASSIFICATION_ORDER = {
 
 REVIEW_ALLOWED = {"fresh", "current", "manual_dependency", "partial", "stale"}
 PRESENTATION_ALLOWED = {"fresh", "current"}
+PRESENTATION_MANUAL_SOURCE_ALLOWLIST = {"portfolio"}
+READINESS_ALLOWED = {"fresh", "current"}
 
 
 def utc_now() -> datetime:
@@ -176,7 +178,7 @@ def classify_dashboard_source(info: dict[str, Any]) -> dict[str, Any]:
         "fresh": "fresh",
         "usable_with_caution": "manual_dependency" if (
             info.get("manual_fields") or any(tag in {"manual", "macro_manual_dependency", "policy_manual_dependency", "unconfirmed"} for tag in info.get("tags", []))
-        ) else "partial",
+        ) else "current",
         "partial": "partial",
         "stale": "stale",
         "missing": "missing",
@@ -198,6 +200,70 @@ def classify_dashboard_source(info: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+def _source_blocks_presentation(source: dict[str, Any]) -> str | None:
+    classification = str(source.get("classification") or "missing")
+    source_key = str(source.get("source_key") or "")
+    if bool(source.get("stop_line")):
+        return f"{source_key}: stop_line"
+    if classification in READINESS_ALLOWED:
+        return None
+    if classification == "manual_dependency" and source_key in PRESENTATION_MANUAL_SOURCE_ALLOWLIST:
+        return None
+    return f"{source_key}: {classification}"
+
+
+def _source_blocks_capital_recommendation(source: dict[str, Any]) -> str | None:
+    classification = str(source.get("classification") or "missing")
+    source_key = str(source.get("source_key") or "")
+    if bool(source.get("stop_line")):
+        return f"{source_key}: stop_line"
+    if classification in READINESS_ALLOWED:
+        return None
+    if classification == "manual_dependency" and source_key in PRESENTATION_MANUAL_SOURCE_ALLOWLIST:
+        return None
+    return f"{source_key}: {classification}"
+
+
+def _readiness_gate(allowed: bool, *, reason: str, blockers: list[str] | None = None) -> dict[str, Any]:
+    return {
+        "allowed": bool(allowed),
+        "reason": reason,
+        "blockers": list(dict.fromkeys(blockers or [])),
+    }
+
+
+def build_readiness_gates(sources: list[dict[str, Any]], *, stop_line: bool) -> dict[str, dict[str, Any]]:
+    presentation_blockers = [_source_blocks_presentation(source) for source in sources]
+    presentation_blockers = [blocker for blocker in presentation_blockers if blocker]
+    capital_recommendation_blockers = [_source_blocks_capital_recommendation(source) for source in sources]
+    capital_recommendation_blockers = [blocker for blocker in capital_recommendation_blockers if blocker]
+    if stop_line:
+        presentation_blockers.append("source_freshness_stop_line")
+        capital_recommendation_blockers.append("source_freshness_stop_line")
+    return {
+        "review_only": _readiness_gate(True, reason="diagnostic/review use only"),
+        "presentation_ready": _readiness_gate(
+            not presentation_blockers,
+            reason="fresh/current required sources; portfolio manual dependency is allowed only as an explicit owner-maintained input",
+            blockers=presentation_blockers,
+        ),
+        "canonical_sync_review_ready": _readiness_gate(
+            not presentation_blockers,
+            reason="source layer is fresh enough for bounded main-session canonical-sync review; guardrails and patch proposals must still pass before any note edit",
+            blockers=presentation_blockers,
+        ),
+        "capital_recommendation_ready": _readiness_gate(
+            not capital_recommendation_blockers,
+            reason="fresh enough to generate owner-gated recommendation packets; does not grant capital action or owner approval",
+            blockers=capital_recommendation_blockers,
+        ),
+        "capital_action_allowed": _readiness_gate(
+            False,
+            reason="source freshness can never grant owner approval, trade/account authority, sizing, sleeve/cash/risk-rule changes, or execution entitlement",
+        ),
+    }
+
+
 def summarize_source_freshness(sources: list[dict[str, Any]]) -> dict[str, Any]:
     overall = "fresh"
     stop_line = False
@@ -215,14 +281,19 @@ def summarize_source_freshness(sources: list[dict[str, Any]]) -> dict[str, Any]:
     elif overall != "fresh":
         trust_level = "review_required"
 
+    readiness_gates = build_readiness_gates(sources, stop_line=stop_line)
+
     return {
         "overall_classification": overall,
         "trust_level": trust_level,
         "stop_line": stop_line,
-        "presentation_allowed": overall in PRESENTATION_ALLOWED and not stop_line,
+        "presentation_allowed": readiness_gates["presentation_ready"]["allowed"],
         "canonical_note_mutation_allowed": False,
+        "canonical_sync_review_ready": readiness_gates["canonical_sync_review_ready"]["allowed"],
+        "capital_recommendation_ready": readiness_gates["capital_recommendation_ready"]["allowed"],
         "capital_action_allowed": False,
         "owner_review_required": trust_level != "clean",
+        "readiness_gates": readiness_gates,
         "sources": sources,
         "operator_actions": list(dict.fromkeys(operator_actions)),
     }

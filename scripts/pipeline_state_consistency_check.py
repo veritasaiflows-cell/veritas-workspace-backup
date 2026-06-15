@@ -6,10 +6,9 @@ Reads:
     tmp/trigger-sheet.json          -- trigger-layer action states
     tmp/deployment-check.json       -- deployment-check action states
     tmp/daily-executive-brief.json  -- brief summary (deployable/almost/blocked/bench/below_stop)
-    tmp/premarket-snapshot.json     -- snapshot summary (deployable_now/almost_deployable/blocked)
-    tmp/run-summary-post-close.json -- post-close authority ceiling
-    tmp/postclose-brief-input.json  -- review-only post-close packet
-    tmp/postmarket-snapshot.json    -- post-close generated dashboard archive summary
+    tmp/premarket-snapshot.json     -- morning snapshot summary
+    tmp/postmarket-snapshot.json    -- post-close / Sunday generated dashboard archive summary
+    current-window review artifacts -- review-only packets / generated archive summaries
 
 Reports contradictions where the same ticker lands in materially different buckets
 across surfaces without an expected explanation (e.g., DEPLOYABLE in trigger sheet
@@ -19,18 +18,25 @@ Writes:
     tmp/pipeline-state-consistency.json
 
 Usage:
-    python scripts/pipeline_state_consistency_check.py
+    python scripts/pipeline_state_consistency_check.py --window morning
+    python scripts/pipeline_state_consistency_check.py --window post-close
+    python scripts/pipeline_state_consistency_check.py --window sunday
+
+    --window auto is manual/debug-only. Scheduled chains must pass an
+    explicit workflow window so stale cross-window artifacts cannot create
+    false contradictions.
 """
 
 from __future__ import annotations
 
 import json
 import sys
+import argparse
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -43,14 +49,61 @@ TRIGGER_PATH    = WORKSPACE / "tmp" / "trigger-sheet.json"
 DEPLOY_PATH     = WORKSPACE / "tmp" / "deployment-check.json"
 BRIEF_PATH      = WORKSPACE / "tmp" / "daily-executive-brief.json"
 PREMARKET_PATH  = WORKSPACE / "tmp" / "premarket-snapshot.json"
-RUN_SUMMARY_POST_CLOSE = WORKSPACE / "tmp" / "run-summary-post-close.json"
-POSTCLOSE_BRIEF_INPUT = WORKSPACE / "tmp" / "postclose-brief-input.json"
 POSTMARKET_PATH = WORKSPACE / "tmp" / "postmarket-snapshot.json"
+PREMARKET_BRIEF_INPUT = WORKSPACE / "tmp" / "premarket-brief-input.json"
+PREMARKET_REVIEW_BRIEF = WORKSPACE / "tmp" / "reports" / "premarket-review-brief-latest.json"
+POSTCLOSE_BRIEF_INPUT = WORKSPACE / "tmp" / "postclose-brief-input.json"
+WEEKLY_PRINTABLE_BRIEF = WORKSPACE / "tmp" / "reports" / "weekly-intelligence-brief-printable-latest.json"
 OUT_PATH        = WORKSPACE / "tmp" / "pipeline-state-consistency.json"
+CURRENT_SURFACE_TOLERANCE = timedelta(minutes=5)
+WINDOW_SURFACES = {
+    "auto": {"trigger_sheet", "deployment_check", "daily_brief", "premarket_snapshot", "postmarket_snapshot"},
+    "morning": {"trigger_sheet", "deployment_check", "premarket_snapshot"},
+    "post-close": {"trigger_sheet", "deployment_check", "daily_brief", "postmarket_snapshot"},
+    "sunday": {"trigger_sheet", "deployment_check", "daily_brief", "postmarket_snapshot"},
+}
+AUTHORITY_SURFACE_PATHS = {
+    "auto": {
+        "postclose_brief_input": POSTCLOSE_BRIEF_INPUT,
+        "postmarket_snapshot": POSTMARKET_PATH,
+        "daily_executive_brief": BRIEF_PATH,
+    },
+    "morning": {
+        "premarket_brief_input": PREMARKET_BRIEF_INPUT,
+        "premarket_review_brief": PREMARKET_REVIEW_BRIEF,
+    },
+    "post-close": {
+        "postclose_brief_input": POSTCLOSE_BRIEF_INPUT,
+        "postmarket_snapshot": POSTMARKET_PATH,
+        "daily_executive_brief": BRIEF_PATH,
+    },
+    "sunday": {
+        "weekly_printable_brief": WEEKLY_PRINTABLE_BRIEF,
+        "postmarket_snapshot": POSTMARKET_PATH,
+        "daily_executive_brief": BRIEF_PATH,
+    },
+}
+EXPECTED_CONSUMER_POSTURES = {
+    "daily_executive_brief": {"generated_dashboard_archive"},
+    "postmarket_snapshot": {"generated_dashboard_archive"},
+    "postclose_brief_input": {"review_only"},
+    "premarket_brief_input": {"review_only"},
+    "premarket_review_brief": {"review_only"},
+    "weekly_printable_brief": {"review_only"},
+}
+FAIL_CLOSED_AUTHORITY_CEILING = {
+    "canonical_mutation_allowed": False,
+    "presentation_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "deployment_state_mutation_allowed": False,
+    "trade_execution_allowed": False,
+    "owner_approval_granted": False,
+}
+AUTHORITY_CEILING_SOURCE = "static_fail_closed_window_policy"
 
 # Bucket families: if a ticker appears in one of these families in one surface
 # and a different family in another surface, flag it as a contradiction.
-POSITIVE_BUCKETS  = {"deployable", "deployable_now", "almost", "almost_deployable", "almost_deployable"}
+POSITIVE_BUCKETS  = {"deployable", "deployable_now", "almost", "almost_deployable"}
 NEGATIVE_BUCKETS  = {"bench", "do_not_touch", "error"}
 NEUTRAL_BUCKETS   = {"blocked", "watch", "watch_research_needed"}
 
@@ -115,15 +168,71 @@ def _brief_states(raw: dict) -> dict[str, str]:
     return states
 
 
-def _premarket_states(raw: dict) -> dict[str, str]:
+def _snapshot_states(raw: dict) -> dict[str, str]:
     states: dict[str, str] = {}
     for ticker in (raw.get("deployable_now") or []):
         states[ticker] = "deployable"
+    for ticker in (raw.get("promotion_review") or []):
+        states.setdefault(ticker, "almost")
     for ticker in (raw.get("almost_deployable") or []):
         states.setdefault(ticker, "almost")
     for ticker in (raw.get("blocked") or []):
         states.setdefault(ticker, "blocked")
+    for ticker in (raw.get("do_not_touch") or []):
+        states.setdefault(ticker, "do_not_touch")
+    for ticker in (raw.get("watch") or []):
+        states.setdefault(ticker, "watch")
+    for ticker in (raw.get("error") or []):
+        states.setdefault(ticker, "error")
     return states
+
+
+def _premarket_states(raw: dict) -> dict[str, str]:
+    return _snapshot_states(raw)
+
+
+def _postmarket_states(raw: dict) -> dict[str, str]:
+    return _snapshot_states(raw)
+
+
+def _parse_generated_at(raw: dict[str, Any] | None) -> datetime | None:
+    if not isinstance(raw, dict):
+        return None
+    value = raw.get("generated_at_utc")
+    if not value:
+        return None
+    try:
+        text = str(value).replace("Z", "+00:00")
+        parsed = datetime.fromisoformat(text)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
+def _baseline_generated_at(*raws: dict[str, Any] | None) -> datetime | None:
+    timestamps = [ts for ts in (_parse_generated_at(raw) for raw in raws) if ts is not None]
+    if not timestamps:
+        return None
+    return max(timestamps)
+
+
+def _surface_is_current(raw: dict[str, Any] | None, baseline: datetime | None) -> bool:
+    if not isinstance(raw, dict):
+        return False
+    if baseline is None:
+        return True
+    generated_at = _parse_generated_at(raw)
+    if generated_at is None:
+        return True
+    return generated_at + CURRENT_SURFACE_TOLERANCE >= baseline
+
+
+def _surface_metadata(raw: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(raw, dict):
+        return {"generated_at_utc": None}
+    return {"generated_at_utc": raw.get("generated_at_utc")}
 
 
 def _family(bucket: str) -> str:
@@ -153,48 +262,43 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _bool_field(raw: dict[str, Any] | None, key: str, default: bool = False) -> bool:
+def _authority_block(raw: dict[str, Any] | None) -> dict[str, Any]:
     if not isinstance(raw, dict):
-        return default
-    return bool(raw.get(key, default))
+        return {}
+    block = raw.get("authority")
+    return block if isinstance(block, dict) else {}
 
 
-def _run_summary_authority(raw: dict[str, Any] | None) -> dict[str, bool]:
-    downstream = (raw or {}).get("downstream") or {}
-    return {
-        "canonical_mutation_allowed": bool(downstream.get("canonical_note_mutation_allowed", False)),
-        "presentation_allowed": bool(downstream.get("presentation_allowed", False)),
-        "portfolio_mutation_allowed": False,
-        "deployment_state_mutation_allowed": False,
-        "trade_execution_allowed": False,
-        "owner_approval_granted": False,
-    }
+def _authority_bool(raw: dict[str, Any] | None, *keys: str) -> bool:
+    if not isinstance(raw, dict):
+        return False
+    block = _authority_block(raw)
+    return any(bool(raw.get(key, False)) or bool(block.get(key, False)) for key in keys)
+
+
+def _consumer_posture(raw: dict[str, Any] | None) -> str:
+    if not isinstance(raw, dict):
+        return ""
+    block = _authority_block(raw)
+    return str(raw.get("consumer_posture") or block.get("consumer_posture") or "").strip().lower()
 
 
 def _artifact_authority(raw: dict[str, Any] | None) -> dict[str, bool]:
     return {
-        "canonical_mutation_allowed": _bool_field(raw, "canonical_mutation_allowed"),
-        "presentation_allowed": _bool_field(raw, "presentation_allowed"),
-        "portfolio_mutation_allowed": _bool_field(raw, "portfolio_mutation_allowed"),
-        "deployment_state_mutation_allowed": _bool_field(raw, "deployment_state_mutation_allowed"),
-        "trade_execution_allowed": _bool_field(raw, "trade_execution_allowed"),
+        "canonical_mutation_allowed": _authority_bool(raw, "canonical_mutation_allowed", "canonical_note_mutation_allowed"),
+        "presentation_allowed": _authority_bool(raw, "presentation_allowed"),
+        "portfolio_mutation_allowed": _authority_bool(raw, "portfolio_mutation_allowed"),
+        "deployment_state_mutation_allowed": _authority_bool(raw, "deployment_state_mutation_allowed"),
+        "trade_execution_allowed": _authority_bool(raw, "trade_execution_allowed"),
         "owner_approval_granted": any(
-            _bool_field(raw, key)
+            _authority_bool(raw, key)
             for key in ("owner_approval_granted", "owner_approval_inferred", "owner_approved")
         ),
     }
 
 
-def _authority_findings(run_summary: dict[str, Any] | None, artifacts: dict[str, dict[str, Any] | None]) -> list[dict[str, Any]]:
-    if not run_summary:
-        return [{
-            "surface": "run_summary_post_close",
-            "field": "missing",
-            "severity": "critical",
-            "message": "Post-close run summary is missing; cannot validate downstream authority ceiling.",
-        }]
-
-    ceiling = _run_summary_authority(run_summary)
+def _authority_findings(window: str, artifacts: dict[str, dict[str, Any] | None]) -> list[dict[str, Any]]:
+    ceiling = FAIL_CLOSED_AUTHORITY_CEILING
     findings: list[dict[str, Any]] = []
     for surface, raw in artifacts.items():
         if raw is None:
@@ -212,36 +316,82 @@ def _authority_findings(run_summary: dict[str, Any] | None, artifacts: dict[str,
                     "surface": surface,
                     "field": field,
                     "severity": "critical",
-                    "message": f"{surface} claims {field}=true wider than post-close run-summary authority ceiling.",
+                    "message": f"{surface} claims {field}=true wider than {window} fail-closed authority policy.",
                 })
 
-        posture = str(raw.get("consumer_posture") or "").strip().lower()
-        if surface in {"postmarket_snapshot", "daily_executive_brief"} and posture not in {"generated_dashboard_archive", "review_only"}:
+        posture = _consumer_posture(raw)
+        expected_postures = EXPECTED_CONSUMER_POSTURES.get(surface)
+        if expected_postures and posture not in expected_postures:
             findings.append({
                 "surface": surface,
                 "field": "consumer_posture",
                 "severity": "warning",
-                "message": f"{surface} should declare generated_dashboard_archive or review_only posture, got {posture or 'missing'}.",
+                "message": f"{surface} should declare {'/'.join(sorted(expected_postures))} posture, got {posture or 'missing'}.",
             })
 
     return findings
 
 
-def main() -> int:
+def _authority_artifacts_for_window(window: str) -> dict[str, dict[str, Any] | None]:
+    return {surface: load_json(path) for surface, path in AUTHORITY_SURFACE_PATHS[window].items()}
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Validate finance pipeline state consistency across current-window surfaces.")
+    parser.add_argument(
+        "--window",
+        choices=sorted(WINDOW_SURFACES),
+        required=True,
+        help="Required workflow window whose summary surfaces should be compared. Use explicit scheduled windows for automation; 'auto' is manual/debug-only.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    expected_surfaces = WINDOW_SURFACES[args.window]
+
     trigger_raw  = load_json(TRIGGER_PATH)
     deploy_raw   = load_json(DEPLOY_PATH)
     brief_raw    = load_json(BRIEF_PATH)
     premarket_raw = load_json(PREMARKET_PATH)
-    run_summary_post_close = load_json(RUN_SUMMARY_POST_CLOSE)
-    postclose_brief_input = load_json(POSTCLOSE_BRIEF_INPUT)
     postmarket_raw = load_json(POSTMARKET_PATH)
+    authority_artifacts = _authority_artifacts_for_window(args.window)
 
-    sources: dict[str, dict[str, str] | None] = {
-        "trigger_sheet":     _trigger_states(trigger_raw) if trigger_raw else None,
-        "deployment_check":  _deploy_states(deploy_raw) if deploy_raw else None,
-        "daily_brief":       _brief_states(brief_raw) if brief_raw else None,
-        "premarket_snapshot": _premarket_states(premarket_raw) if premarket_raw else None,
+    baseline = _baseline_generated_at(trigger_raw, deploy_raw)
+    raw_sources: dict[str, tuple[dict[str, Any] | None, dict[str, str] | None]] = {
+        "trigger_sheet": (trigger_raw, _trigger_states(trigger_raw) if trigger_raw else None),
+        "deployment_check": (deploy_raw, _deploy_states(deploy_raw) if deploy_raw else None),
+        "daily_brief": (brief_raw, _brief_states(brief_raw) if brief_raw else None),
+        "premarket_snapshot": (premarket_raw, _premarket_states(premarket_raw) if premarket_raw else None),
+        "postmarket_snapshot": (postmarket_raw, _postmarket_states(postmarket_raw) if postmarket_raw else None),
     }
+
+    sources: dict[str, dict[str, str] | None] = {}
+    skipped_sources: list[dict[str, Any]] = []
+    ignored_sources: list[dict[str, Any]] = []
+    for name, (raw, states) in raw_sources.items():
+        if name not in expected_surfaces:
+            if states is not None:
+                ignored_sources.append({
+                    "surface": name,
+                    "reason": "not_expected_for_window",
+                    "window": args.window,
+                    **_surface_metadata(raw),
+                })
+            continue
+        if states is None:
+            sources[name] = None
+            continue
+        if name in {"daily_brief", "premarket_snapshot", "postmarket_snapshot"} and not _surface_is_current(raw, baseline):
+            skipped_sources.append({
+                "surface": name,
+                "reason": "stale_relative_to_current_trigger_or_deployment_check",
+                "generated_at_utc": raw.get("generated_at_utc") if isinstance(raw, dict) else None,
+                "baseline_generated_at_utc": baseline.isoformat() if baseline else None,
+            })
+            continue
+        sources[name] = states
 
     missing_sources = [name for name, states in sources.items() if states is None]
     available = {name: states for name, states in sources.items() if states is not None}
@@ -277,14 +427,7 @@ def main() -> int:
     for ticker in sorted(all_tickers):
         ticker_map[ticker] = {src: states.get(ticker) for src, states in available.items()}
 
-    authority_findings = _authority_findings(
-        run_summary_post_close,
-        {
-            "postclose_brief_input": postclose_brief_input,
-            "postmarket_snapshot": postmarket_raw,
-            "daily_executive_brief": brief_raw,
-        },
-    )
+    authority_findings = _authority_findings(args.window, authority_artifacts)
     authority_critical = any(finding["severity"] == "critical" for finding in authority_findings)
     authority_warning = any(finding["severity"] == "warning" for finding in authority_findings)
 
@@ -296,10 +439,17 @@ def main() -> int:
 
     report: dict[str, Any] = {
         "generated_at_utc": utc_now(),
+        "window": args.window,
         "status": status,
         "contradictions_count": len(contradictions),
         "authority_findings_count": len(authority_findings),
+        "authority_ceiling_source": AUTHORITY_CEILING_SOURCE,
+        "authority_ceiling": FAIL_CLOSED_AUTHORITY_CEILING,
+        "authority_surfaces_checked": list(authority_artifacts.keys()),
+        "expected_sources": sorted(expected_surfaces),
         "missing_sources": missing_sources,
+        "skipped_sources": skipped_sources,
+        "ignored_sources": ignored_sources,
         "sources_checked": list(available.keys()),
         "contradictions": contradictions,
         "authority_findings": authority_findings,
@@ -314,10 +464,15 @@ def main() -> int:
     print(f"  PIPELINE STATE CONSISTENCY  --  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(sep)
     print(f"  Status: {status}")
+    print(f"  Window: {args.window}")
     print(f"  Contradictions: {len(contradictions)}")
     print(f"  Authority findings: {len(authority_findings)}")
     if missing_sources:
         print(f"  Missing sources: {', '.join(missing_sources)}")
+    if skipped_sources:
+        print("  Skipped stale surfaces: " + ", ".join(src["surface"] for src in skipped_sources))
+    if ignored_sources:
+        print("  Ignored non-window surfaces: " + ", ".join(src["surface"] for src in ignored_sources))
     if contradictions:
         print(f"\n  CONTRADICTIONS")
         for c in contradictions:
@@ -329,10 +484,10 @@ def main() -> int:
         for finding in authority_findings:
             print(f"    [{finding['severity'].upper()}] {finding['message']}")
     else:
-        print(f"  No post-close authority contradictions detected.")
+        print(f"  No {args.window} authority contradictions detected.")
     print(f"\n  Saved -> tmp/pipeline-state-consistency.json")
     print(sep + "\n")
-    return 1 if contradictions else 0
+    return 1 if contradictions or authority_critical else 0
 
 
 if __name__ == "__main__":

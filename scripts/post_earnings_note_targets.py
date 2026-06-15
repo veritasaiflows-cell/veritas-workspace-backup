@@ -20,6 +20,7 @@ Outputs:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import sys
 from datetime import datetime, timezone
@@ -41,25 +42,17 @@ TARGET_RULES: dict[str, dict[str, Any]] = {
         "when": "when the report changes company thesis, sector read-through, or near-term positioning",
         "intent": "update earnings radar and recommended-actions sections with decision-grade interpretation",
     },
-    "03. Portfolio/Technical Entry and Invalidation Sheet.md": {
-        "when": "when price structure, blocker status, or invalidation logic changed materially after the report",
-        "intent": "rebuild entry zone, stop, and stance only if the earnings reaction materially changed the setup",
-    },
-    "03. Portfolio/Deployment Trigger Sheet.md": {
-        "when": "when action state, blocker status, or trigger logic changed",
-        "intent": "promote, demote, unblock, or keep blocked with explicit why",
+    "03. Portfolio/Execution Board.md": {
+        "when": "when price structure, blocker status, invalidation logic, action state, or trigger logic changed materially after the report",
+        "intent": "rebuild entry zone, stop, and stance only when the earnings reaction materially changed the setup; promote, demote, unblock, or keep blocked with explicit why",
     },
     "03. Portfolio/Portfolio Snapshot.md": {
         "when": "when the report changes whether a draft holding remains justified, suspended, or under review",
         "intent": "update posture, status line, and review action rather than churning the whole snapshot",
     },
-    "02. Markets/Watchlist.md": {
-        "when": "when conviction, ranking, or status label changed",
-        "intent": "promote, demote, or reframe the watch status and ranking implications",
-    },
-    "04. Research/Coverage Universe.md": {
-        "when": "only when the report changes durable thesis language, key risk, or act-when conditions",
-        "intent": "update permanent research framing, not short-term noise",
+    "04. Research/Coverage and Watchlist.md": {
+        "when": "when conviction, ranking, status label, durable thesis language, key risk, or act-when conditions changed",
+        "intent": "promote, demote, reframe watch status, or update permanent research framing; do not churn short-term noise",
     },
 }
 
@@ -76,23 +69,27 @@ def build_candidate_updates(packet: dict[str, Any]) -> list[dict[str, Any]]:
     ticker = packet.get("ticker")
     priority = packet.get("priority")
     stage = packet.get("stage")
-    trigger_state = packet.get("trigger_context", {}).get("action_state")
-    deployment_state = packet.get("deployment_context", {}).get("action_state")
+    trigger_state = legacy_state(packet.get("trigger_context", {}), "action_state")
+    deployment_state = legacy_state(packet.get("deployment_context", {}), "action_state")
 
+    seen_targets: set[str] = set()
     for target in packet.get("note_targets", []):
+        if target in seen_targets:
+            continue
+        seen_targets.add(target)
         rule = TARGET_RULES.get(target, {})
         urgency = "normal"
         if priority == "critical":
             urgency = "high"
         if stage in ("reports today", "imminent", "just reported or elapsed") and priority in ("critical", "high"):
             urgency = "high"
-        if target == "04. Research/Coverage Universe.md":
+        if target == "04. Research/Coverage and Watchlist.md":
             urgency = "low"
-        if target == "03. Portfolio/Technical Entry and Invalidation Sheet.md" and trigger_state in ("DO NOT TOUCH", "BLOCKED") and deployment_state in ("BELOW STOP", "BLOCKED", "BENCH"):
+        if target == "03. Portfolio/Execution Board.md" and trigger_state in ("DO NOT TOUCH", "BLOCKED") and deployment_state in ("BELOW STOP", "BLOCKED", "BENCH"):
             rationale = f"{ticker}: only update if the earnings reaction materially changes the current blocked or broken setup"
         elif target == "03. Portfolio/Portfolio Snapshot.md":
             rationale = f"{ticker}: update only if the report changes whether the draft slot remains justified, suspended, or under review"
-        elif target == "04. Research/Coverage Universe.md":
+        elif target == "04. Research/Coverage and Watchlist.md":
             rationale = f"{ticker}: durable thesis file, so update only on true thesis, key-risk, or act-when change"
         else:
             rationale = f"{ticker}: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
@@ -110,6 +107,7 @@ def build_candidate_updates(packet: dict[str, Any]) -> list[dict[str, Any]]:
 def main() -> None:
     prep = load_json(PREP_PATH)
     packets = prep.get("packets", []) or []
+    earnings_lifecycle = prep.get("earnings_lifecycle") if isinstance(prep.get("earnings_lifecycle"), dict) else {}
 
     workflows: list[dict[str, Any]] = []
     impacted_notes: dict[str, list[str]] = {}
@@ -122,7 +120,7 @@ def main() -> None:
             "priority": packet.get("priority"),
             "stage": packet.get("stage"),
             "next_earnings_date": packet.get("next_earnings_date"),
-            "action_state": packet.get("trigger_context", {}).get("action_state"),
+            "action_state": legacy_state(packet.get("trigger_context", {}), "action_state"),
             "candidate_updates": candidate_updates,
         })
         for update in candidate_updates:
@@ -151,6 +149,7 @@ def main() -> None:
             "status": prep.get("status"),
         },
         "warnings": prep.get("warnings", []),
+        "earnings_lifecycle": earnings_lifecycle,
         "impacted_notes": impacted_notes,
         "workflows": workflows,
     }
@@ -168,7 +167,7 @@ def main() -> None:
             workflow.get("ticker") or "--",
             workflow.get("priority") or "--",
             workflow.get("stage") or "--",
-            workflow.get("action_state") or "--",
+            legacy_state(workflow, "action_state") or "--",
         ))
 
     print("\n  IMPACTED NOTES")

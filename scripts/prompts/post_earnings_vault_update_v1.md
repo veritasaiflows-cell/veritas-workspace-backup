@@ -184,14 +184,14 @@ Update when:
 
 Do not rewrite the whole brief for a minor report.
 
-### `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+### `03. Portfolio/Execution Board.md`
 Update only when:
 - the earnings reaction materially changed structure
 - the entry band is no longer valid
 - the stop or invalidation logic changed
 - the stance category changed
 
-### `03. Portfolio/Deployment Trigger Sheet.md`
+### `03. Portfolio/Execution Board.md`
 Update when:
 - action state changed
 - blocker status changed
@@ -205,7 +205,7 @@ Update only when:
 - status moved between active, suspended, under review, or damaged
 - risk framing materially changed
 
-### `02. Markets/Watchlist.md`
+### `04. Research/Coverage and Watchlist.md`
 Update only when:
 - conviction changed
 - tier changed
@@ -213,7 +213,7 @@ Update only when:
 - trigger changed
 - key risk changed
 
-### `04. Research/Coverage Universe.md`
+### `04. Research/Coverage and Watchlist.md`
 Update only when:
 - durable thesis language changed
 - key risk changed

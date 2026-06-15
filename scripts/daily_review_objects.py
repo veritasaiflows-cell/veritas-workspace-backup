@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import argparse
 import json
 import re
@@ -14,7 +15,7 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 SCHEMA_VERSION = 1
 OWNER_LAYERS = [
-    "03. Portfolio/Deployment Trigger Sheet.md",
+    "03. Portfolio/Execution Board.md",
     "03. Portfolio/Portfolio Snapshot.md",
     "05. Intelligence/Weekly Positioning Review.md",
     "07. Risk/Risk Rules.md",
@@ -34,9 +35,15 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
             "primary_summary": TMP / "premarket-snapshot.json",
         },
         "optional": {
+            "portfolio_config": TMP / "portfolio-config.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
             "market_intelligence_events": TMP / "market-intelligence-events-morning.json",
+            "sector_correlation_check": TMP / "sector-correlation-check.json",
+            "sector_expansion_board": TMP / "sector-expansion-board.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
     "post-close": {
@@ -54,8 +61,14 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
             "post_earnings_prep": TMP / "post-earnings-prep.json",
         },
         "optional": {
+            "portfolio_config": TMP / "portfolio-config.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
             "market_intelligence_events": TMP / "market-intelligence-events-post-close.json",
+            "sector_correlation_check": TMP / "sector-correlation-check.json",
+            "sector_expansion_board": TMP / "sector-expansion-board.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
     "post-earnings": {
@@ -70,10 +83,16 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
             "post_earnings_prep": TMP / "post-earnings-prep.json",
         },
         "optional": {
+            "portfolio_config": TMP / "portfolio-config.json",
             "market_state": TMP / "market-state.json",
             "primary_summary": TMP / "daily-executive-brief.json",
             "snapshot": TMP / "postmarket-snapshot.json",
             "market_intelligence_events": TMP / "market-intelligence-events-post-earnings.json",
+            "sector_correlation_check": TMP / "sector-correlation-check.json",
+            "sector_expansion_board": TMP / "sector-expansion-board.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
     "sunday": {
@@ -91,8 +110,14 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
             "post_earnings_prep": TMP / "post-earnings-prep.json",
         },
         "optional": {
+            "portfolio_config": TMP / "portfolio-config.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
             "market_intelligence_events": TMP / "market-intelligence-events-sunday.json",
+            "sector_correlation_check": TMP / "sector-correlation-check.json",
+            "sector_expansion_board": TMP / "sector-expansion-board.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
 }
@@ -287,6 +312,7 @@ def build_system_review_object(system: dict[str, Any]) -> dict[str, Any] | None:
         "object_type": "system",
         "category": "trust_ceiling",
         "signal_score": score,
+        "signal_score_basis": "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
         "surface_state": "SYSTEM HOLD" if system["stop_line"] else "REVIEW REQUIRED",
         "escalation_reason": "Trust posture directly limits what can be treated as decision-grade today.",
         "why_now": "; ".join(system["trust_ceiling_reasons"]) or "trust posture requires review",
@@ -305,8 +331,72 @@ def build_system_review_object(system: dict[str, Any]) -> dict[str, Any] | None:
 
 
 
+def normalize_band_status(
+    proposal: dict[str, Any] | None,
+    deployment_record: dict[str, Any] | None,
+) -> str | None:
+    """Disambiguate proposal/reclaim stop weakness from a live stop breach.
+
+    `band-proposals.json` can emit BELOW_STOP for a suggested reclaim/vault stop.
+    Downstream capital packets must only expose literal BELOW_STOP when the
+    authoritative deployment record says the live stop is actually breached.
+    """
+    if not proposal:
+        return None
+    raw = proposal.get("band_status")
+    status = str(raw or "").strip()
+    if status == "BELOW_STOP" and bool((deployment_record or {}).get("below_stop")) is not True:
+        return "BELOW_RECLAIM_STOP"
+    return status or None
+
+
+def band_status_note(raw_status: str | None, normalized_status: str | None, deployment_record: dict[str, Any] | None) -> str | None:
+    if raw_status == "BELOW_STOP" and normalized_status == "BELOW_RECLAIM_STOP":
+        return "Band proposal is below a proposed reclaim/vault stop; authoritative deployment below_stop is false, so this is not a live stop breach."
+    return None
+
+
+def live_entry_band_status(surface_record: dict[str, Any], deployment_record: dict[str, Any] | None, proposal: dict[str, Any] | None) -> str | None:
+    """Classify the live/current written-band posture, not the proposed-band posture.
+
+    Band proposals may emit statuses for suggested reclaim/vault bands. Capital
+    and advisor packets need the current entry state against the written band so
+    they do not say "wait for band"/"below reclaim stop" while the live surface
+    says in-band or above-band/no-chase.
+    """
+    if bool((deployment_record or {}).get("below_stop")):
+        return "BELOW_STOP"
+    if bool((deployment_record or {}).get("in_entry_band")):
+        return "IN_BAND"
+
+    band_position = str(surface_record.get("band_position") or "").strip().lower()
+    if "above band" in band_position:
+        return "ABOVE_BAND_WAIT"
+    if "below band" in band_position:
+        return "BELOW_BAND"
+    if "in band" in band_position:
+        return "IN_BAND"
+
+    return normalize_band_status(proposal, deployment_record)
+
+
+def combined_band_status_note(
+    raw_status: str | None,
+    proposal_status: str | None,
+    live_status: str | None,
+    deployment_record: dict[str, Any] | None,
+) -> str | None:
+    notes = []
+    normalized_note = band_status_note(raw_status, proposal_status, deployment_record)
+    if normalized_note:
+        notes.append(normalized_note)
+    if proposal_status and live_status and proposal_status != live_status:
+        notes.append(f"Live written-band status is {live_status}; proposed-band/reclaim status is {proposal_status}.")
+    return " ".join(notes) or None
+
+
 def category_for(surface_record: dict[str, Any], deployment_record: dict[str, Any] | None, proposal: dict[str, Any] | None) -> str:
-    state = str(surface_record.get("surface_state") or "")
+    state = str(legacy_state(surface_record, "surface_state") or "")
     days = surface_record.get("days_to_earnings")
     band_stale = bool(surface_record.get("band_stale"))
     below_stop = bool((deployment_record or {}).get("below_stop"))
@@ -353,7 +443,7 @@ def signal_score(
     proposal: dict[str, Any] | None,
     system: dict[str, Any],
 ) -> int:
-    state = str(surface_record.get("surface_state") or "")
+    state = str(legacy_state(surface_record, "surface_state") or "")
     category = category_for(surface_record, deployment_record, proposal)
     score = STATE_BASE_SCORES.get(state, 20)
 
@@ -433,7 +523,8 @@ def owner_question(ticker: str, category: str) -> str:
 
 
 
-def recommended_next_step(ticker: str, rec_class: str) -> str:
+def recommended_next_step(ticker: str, rec_class: str, *, band_status: str | None = None) -> str:
+    normalized_band = str(band_status or "").upper().replace(" ", "_")
     mapping = {
         "review_for_possible_add": f"Read the owner layers for {ticker} and decide whether to open an owner-gated capital-deployment review.",
         "conditional_pullback_review": f"Keep {ticker} on the short list and only approve on a disciplined pullback / band interaction.",
@@ -445,8 +536,9 @@ def recommended_next_step(ticker: str, rec_class: str) -> str:
         "no_new_approval": f"Do not treat {ticker} as approvable while the workflow stop line or critical trust issue is active.",
         "monitor_only": f"Leave {ticker} in monitor-only posture.",
     }
+    if rec_class == "conditional_pullback_review" and normalized_band == "IN_BAND":
+        return f"{ticker} is inside the written band; prepare an owner-gated review/decision packet rather than waiting for another band interaction."
     return mapping.get(rec_class, f"Continue bounded review for {ticker}.")
-
 
 
 def supporting_artifacts(window: str, ticker: str) -> list[str]:
@@ -515,7 +607,7 @@ def blocker_lines(surface_record: dict[str, Any], proposal: dict[str, Any] | Non
 
 
 def should_include_record(surface_record: dict[str, Any], deployment_record: dict[str, Any] | None, proposal: dict[str, Any] | None) -> bool:
-    state = str(surface_record.get("surface_state") or "")
+    state = str(legacy_state(surface_record, "surface_state") or "")
     if state in {
         "PROMOTION REVIEW",
         "ALMOST DEPLOYABLE",
@@ -569,10 +661,14 @@ def ticker_review_objects(
             category = category_for(surface_record, deployment_record, proposal)
             rec_class = recommendation_class(surface_record, deployment_record, proposal, system)
             score = signal_score(surface_record, deployment_record, proposal, system)
+            raw_band_status = str(proposal.get("band_status") or "").strip() if proposal else None
+            proposal_band_status = normalize_band_status(proposal, deployment_record)
+            live_band_status = live_entry_band_status(surface_record, deployment_record, proposal)
+            normalized_band_note = combined_band_status_note(raw_band_status, proposal_band_status, live_band_status, deployment_record)
             owner_reads = list(OWNER_LAYERS)
             if category in {"review_debt", "risk_hold"}:
                 owner_reads = [
-                    "03. Portfolio/Deployment Trigger Sheet.md",
+                    "03. Portfolio/Execution Board.md",
                     "03. Portfolio/Portfolio Snapshot.md",
                     "07. Risk/Risk Rules.md",
                 ]
@@ -582,13 +678,17 @@ def ticker_review_objects(
                 "object_type": "ticker",
                 "ticker": ticker,
                 "category": category,
-                "surface_state": surface_record.get("surface_state"),
-                "machine_state": surface_record.get("machine_state"),
-                "workflow_state": surface_record.get("workflow_state"),
+                "surface_state": legacy_state(surface_record, "surface_state"),
+                "machine_state": legacy_state(surface_record, "machine_state"),
+                "workflow_state": legacy_state(surface_record, "workflow_state"),
                 "signal_score": score,
+                "signal_score_basis": "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
                 "days_to_earnings": surface_record.get("days_to_earnings"),
                 "band_position": surface_record.get("band_position"),
-                "band_status": proposal.get("band_status") if proposal else None,
+                "band_status": live_band_status,
+                "proposal_band_status": proposal_band_status,
+                "raw_band_status": raw_band_status,
+                "band_status_note": normalized_band_note,
                 "band_stale": bool(surface_record.get("band_stale")),
                 "canonical_apply_eligible": bool(proposal.get("canonical_apply_eligible")) if proposal else False,
                 "macro_gate": surface_record.get("macro_gate") or system.get("macro_gate"),
@@ -597,7 +697,7 @@ def ticker_review_objects(
                 "evidence": evidence_lines(surface_record, deployment_record, proposal),
                 "blockers": blocker_lines(surface_record, proposal, system),
                 "owner_question": owner_question(ticker, category),
-                "recommended_next_step": recommended_next_step(ticker, rec_class),
+                "recommended_next_step": recommended_next_step(ticker, rec_class, band_status=live_band_status),
                 "owner_reads": owner_reads,
                 "supporting_artifacts": supporting_artifacts(window, ticker),
                 "owner_review_required": True,
@@ -637,13 +737,14 @@ def contradiction_objects(
             "object_type": "system",
             "category": "surface_contradiction",
             "signal_score": 86,
+            "signal_score_basis": "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
             "surface_state": "REVIEW REQUIRED",
             "escalation_reason": "Primary summary and deployment surface disagree on deployable-now state.",
             "why_now": f"deployment surface={surface_deployable or ['<none>']} vs primary summary={summary_deployable or ['<none>']}",
             "recommended_next_step": "Review the summary surface before treating deployable-now language as authoritative.",
             "owner_question": "Is this a stale summary surface, a trust downgrade, or a deeper state contradiction?",
             "owner_reads": [
-                "03. Portfolio/Deployment Trigger Sheet.md",
+                "03. Portfolio/Execution Board.md",
                 "03. Portfolio/Portfolio Snapshot.md",
             ],
             "supporting_artifacts": [
@@ -659,13 +760,14 @@ def contradiction_objects(
             "object_type": "system",
             "category": "surface_contradiction",
             "signal_score": 78,
+            "signal_score_basis": "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
             "surface_state": "REVIEW REQUIRED",
             "escalation_reason": "Primary summary and deployment surface disagree on almost-deployable names.",
             "why_now": f"deployment surface={surface_almost or ['<none>']} vs primary summary={summary_almost or ['<none>']}",
             "recommended_next_step": "Review the summary surface before treating almost-deployable language as current.",
             "owner_question": "Did a trust gate, stale brief, or stale state summary create this mismatch?",
             "owner_reads": [
-                "03. Portfolio/Deployment Trigger Sheet.md",
+                "03. Portfolio/Execution Board.md",
                 "03. Portfolio/Portfolio Snapshot.md",
             ],
             "supporting_artifacts": [
@@ -702,6 +804,7 @@ def market_intelligence_review_objects(window: str, market_intelligence_events: 
             "ticker": None if sleeve in {"SYSTEM", "MACRO", "CREDIT", "BREADTH", "EARNINGS"} else sleeve,
             "category": "fresh_intelligence",
             "signal_score": max(0, min(99, score)),
+            "signal_score_basis": "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
             "surface_state": "REVIEW REQUIRED",
             "event_type": event.get("event_type"),
             "recommended_route": route,
@@ -734,12 +837,102 @@ def fresh_intelligence_status_for(ticker: str, market_intelligence_events: dict[
     return f"{top.get('recommended_route')}:{top.get('urgency')}:materiality_{top.get('materiality_score')}"
 
 
+def artifact_is_fresh_enough(doc: dict[str, Any] | None, max_age_hours: int = 30) -> bool:
+    if not isinstance(doc, dict):
+        return False
+    if doc.get("status") == "blocked":
+        return False
+    raw = doc.get("generated_at_utc") or doc.get("generated_at")
+    if not isinstance(raw, str) or not raw.strip():
+        return False
+    try:
+        generated = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        if generated.tzinfo is None:
+            generated = generated.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return False
+    age_hours = (datetime.now(timezone.utc) - generated.astimezone(timezone.utc)).total_seconds() / 3600
+    return age_hours <= max_age_hours
+
+
+def sector_context_for_ticker(
+    ticker: str,
+    sector_board: dict[str, Any] | None,
+    sector_correlation: dict[str, Any] | None,
+) -> dict[str, Any]:
+    ticker_upper = ticker.upper()
+    board_fresh = artifact_is_fresh_enough(sector_board)
+    corr_fresh = artifact_is_fresh_enough(sector_correlation)
+    if not board_fresh and not corr_fresh:
+        return {
+            "status": "missing_or_stale_manual_fallback_required",
+            "fresh_artifacts": [],
+            "summary": "Sector/correlation context is not fresh enough for this packet; manual position-impact review required.",
+        }
+
+    fresh_artifacts: list[str] = []
+    if board_fresh:
+        fresh_artifacts.append("tmp/sector-expansion-board.json")
+    if corr_fresh:
+        fresh_artifacts.append("tmp/sector-correlation-check.json")
+
+    fresh_sector_board = sector_board if board_fresh and isinstance(sector_board, dict) else None
+    fresh_sector_correlation = sector_correlation if corr_fresh and isinstance(sector_correlation, dict) else None
+
+    board_sector: dict[str, Any] | None = None
+    if isinstance(fresh_sector_board, dict):
+        for sector in fresh_sector_board.get("sectors") or []:
+            if not isinstance(sector, dict):
+                continue
+            tickers = {str(t).upper() for t in ((sector.get("portfolio_exposure") or {}).get("tickers") or [])}
+            tickers.update(str(c.get("ticker", "")).upper() for c in sector.get("tracked_universe_candidates") or [] if isinstance(c, dict))
+            tickers.update(str(p.get("candidate", "")).upper() for p in sector.get("promotion_review_status") or [] if isinstance(p, dict))
+            if ticker_upper in tickers:
+                board_sector = sector
+                break
+
+    corr_context: dict[str, Any] | None = None
+    if isinstance(fresh_sector_correlation, dict):
+        for item in fresh_sector_correlation.get("promotion_impact_checks") or []:
+            if isinstance(item, dict) and str(item.get("ticker") or "").upper() == ticker_upper:
+                corr_context = item
+                break
+        if corr_context is None:
+            for item in fresh_sector_correlation.get("tracked_universe_context") or []:
+                if isinstance(item, dict) and str(item.get("ticker") or "").upper() == ticker_upper:
+                    corr_context = item
+                    break
+
+    sector_name = (board_sector or {}).get("sector") or (corr_context or {}).get("candidate_sector") or (corr_context or {}).get("sector")
+    warnings = []
+    if board_sector:
+        warnings.extend(str(w) for w in board_sector.get("warnings") or [])
+    if corr_context:
+        warnings.extend(str(w) for w in corr_context.get("warnings") or [])
+    exposure = (board_sector or {}).get("portfolio_exposure") or {}
+    return {
+        "status": "available_review_only",
+        "fresh_artifacts": fresh_artifacts,
+        "sector": sector_name,
+        "sector_etf": (board_sector or {}).get("ticker"),
+        "leadership_status": (board_sector or {}).get("leadership_status"),
+        "underexposed": (board_sector or {}).get("underexposed"),
+        "sector_weight_pct": exposure.get("draft_weight_pct") or (corr_context or {}).get("current_sector_weight_pct"),
+        "sector_cap_status": exposure.get("status") or (corr_context or {}).get("cap_status_after"),
+        "promotion_review_status": (board_sector or {}).get("promotion_review_status") or [],
+        "warnings": warnings[:4],
+        "summary": f"{sector_name or 'Sector'} context available from fresh review-only sector artifacts; owner approval and sizing authority remain false.",
+    }
+
+
 def action_family_for(recommended_action: str) -> str:
     """Map existing recommendation classes into the WF42 deploy/wait/reject/review vocabulary."""
     if recommended_action == "deploy_candidate":
         return "deploy"
     if recommended_action in {"wait_for_band", "wait_for_catalyst_clearance"}:
         return "wait"
+    if recommended_action in {"owner_decision_required", "owner_gated_band_review", "manual_review_required"}:
+        return "review"
     if recommended_action in {"no_new_approval", "risk_hold"}:
         return "reject"
     return "review"
@@ -788,15 +981,316 @@ def source_freshness_for_capital_packet(source_freshness: dict[str, Any] | None)
     }
 
 
-def missing_evidence_for_capital_packet(item: dict[str, Any], market_intelligence_events: dict[str, Any] | None) -> list[str]:
+def missing_evidence_for_capital_packet(
+    item: dict[str, Any],
+    market_intelligence_events: dict[str, Any] | None,
+    sector_context: dict[str, Any] | None = None,
+    fundamental_context: dict[str, Any] | None = None,
+    official_earnings_bridge: dict[str, Any] | None = None,
+) -> list[str]:
     missing = [
-        "sector/correlation check artifact is not wired; treat as manual fallback before position-impact judgment",
         "state-history / owner-outcome retention is not wired; no predictive outcome score is available",
     ]
+    if not sector_context or sector_context.get("status") != "available_review_only":
+        missing.insert(0, "sector/correlation check artifact is missing or stale; treat as manual fallback before position-impact judgment")
+    if not fundamental_context or fundamental_context.get("status") != "available_review_only":
+        missing.insert(0, "WF65 full-picture fundamental/per-share context is missing; manual fundamental review required before capital judgment")
+    elif fundamental_context.get("fundamental_data_quality") not in {"clean", "partial"}:
+        missing.append(f"WF65 fundamental data quality is {fundamental_context.get('fundamental_data_quality')}; treat as manual review input only")
+    if not official_earnings_bridge or official_earnings_bridge.get("status") != "available_review_only":
+        missing.insert(0, "official earnings bridge / IR reconciliation context is missing; manual earnings-quality review required before capital judgment")
+    elif official_earnings_bridge.get("manual_review_required") is True:
+        missing.append("official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review")
     ticker = str(item.get("ticker") or "")
     if fresh_intelligence_status_for(ticker, market_intelligence_events) == "not_wired_yet":
         missing.append("fresh-intelligence event packet unavailable for this window")
     return missing
+
+
+def tracked_config_for_ticker(ticker: str, portfolio_config: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(portfolio_config, dict):
+        return {}
+    ticker_upper = ticker.upper()
+    tracked = portfolio_config.get("tracked_universe") or {}
+    if isinstance(tracked, dict) and isinstance(tracked.get(ticker_upper), dict):
+        return dict(tracked[ticker_upper])
+    return {}
+
+
+def entry_band_for_ticker(ticker: str, portfolio_config: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(portfolio_config, dict):
+        return {}
+    bands = portfolio_config.get("entry_bands") or {}
+    band = bands.get(ticker.upper()) if isinstance(bands, dict) else None
+    return dict(band) if isinstance(band, dict) else {}
+
+
+def fundamental_context_for_ticker(ticker: str, fundamental_metrics: dict[str, Any] | None) -> dict[str, Any]:
+    ticker_upper = ticker.upper()
+    if not isinstance(fundamental_metrics, dict):
+        return {
+            "status": "missing_artifact_manual_fallback_required",
+            "summary": "WF65 fundamental metrics artifact is missing; manual full-picture review required before any capital decision.",
+            "capital_action_allowed": False,
+        }
+    for row in fundamental_metrics.get("rows") or []:
+        if not isinstance(row, dict) or str(row.get("ticker") or "").upper() != ticker_upper:
+            continue
+        sec = row.get("sec_reconciliation") or {}
+        ir = row.get("company_ir_reconciliation") or {}
+        return {
+            "status": "available_review_only",
+            "source_artifact": "tmp/fundamental-metrics-current.json",
+            "fundamental_data_quality": row.get("data_quality"),
+            "sec_reconciliation_status": sec.get("status") if isinstance(sec, dict) else None,
+            "company_ir_reconciliation_status": ir.get("status") if isinstance(ir, dict) else None,
+            "eps_yoy_pct": row.get("eps_yoy_pct"),
+            "revenue_yoy_pct": row.get("revenue_yoy_pct"),
+            "net_income_yoy_pct": row.get("net_income_yoy_pct"),
+            "fcf_per_share": row.get("fcf_per_share"),
+            "fcf_per_share_yoy_pct": row.get("fcf_per_share_yoy_pct"),
+            "diluted_shares_yoy_pct": row.get("diluted_shares_yoy_pct"),
+            "buyback_yield_pct": row.get("buyback_yield_pct"),
+            "sbc_pct_of_revenue": row.get("sbc_pct_of_revenue"),
+            "sbc_pct_of_fcf": row.get("sbc_pct_of_fcf"),
+            "capital_return_to_fcf_pct": row.get("capital_return_to_fcf_pct"),
+            "net_debt_issued": row.get("net_debt_issued"),
+            "shareholder_yield_pct": row.get("shareholder_yield_pct"),
+            "fcf_yield_pct": row.get("fcf_yield_pct"),
+            "roic_proxy_pct": row.get("roic_proxy_pct"),
+            "valuation_context": row.get("valuation_context"),
+            "capital_allocation_quality": row.get("capital_allocation_quality"),
+            "capital_allocation_notes": row.get("capital_allocation_notes") or [],
+            "capital_allocation_anomalies": row.get("capital_allocation_anomalies") or [],
+            "summary": "WF65 full-picture fundamental/per-share/capital-allocation context available as review-only evidence; no deployment or trade authority.",
+            "capital_action_allowed": False,
+        }
+    return {
+        "status": "missing_ticker_manual_fallback_required",
+        "source_artifact": "tmp/fundamental-metrics-current.json",
+        "summary": f"{ticker_upper} is missing from WF65 metrics; manual full-picture review required.",
+        "capital_action_allowed": False,
+    }
+
+
+def official_earnings_bridge_for_ticker(ticker: str, fundamental_ir_packets: dict[str, Any] | None) -> dict[str, Any]:
+    ticker_upper = ticker.upper()
+    guards = {
+        "capital_action_allowed": False,
+        "deployment_authority_allowed": False,
+        "portfolio_mutation_allowed": False,
+        "trade_or_account_action_allowed": False,
+        "owner_approval_inferred": False,
+    }
+    if not isinstance(fundamental_ir_packets, dict):
+        return {
+            "status": "missing_artifact_manual_fallback_required",
+            "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+            "ticker": ticker_upper,
+            "manual_review_required": True,
+            "summary": "Official earnings/IR reconciliation artifact is missing; manual official-source review required before capital judgment.",
+            **guards,
+        }
+    for packet in fundamental_ir_packets.get("packets") or []:
+        if not isinstance(packet, dict) or str(packet.get("ticker") or "").upper() != ticker_upper:
+            continue
+        bridge = packet.get("official_earnings_bridge") or {}
+        adjusted = bridge.get("adjusted_eps") if isinstance(bridge, dict) else {}
+        guidance = bridge.get("guidance") if isinstance(bridge, dict) else {}
+        return {
+            "status": "available_review_only",
+            "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+            "ticker": ticker_upper,
+            "period_end": packet.get("period_end"),
+            "comparison_period_end": packet.get("comparison_period_end"),
+            "source_urls": packet.get("source_urls") or {},
+            "official_evidence_status": bridge.get("official_evidence_status") if isinstance(bridge, dict) else "manual_required",
+            "official_evidence_posture": bridge.get("official_evidence_posture") if isinstance(bridge, dict) else "review_only",
+            "source_authority_level": bridge.get("source_authority_level") if isinstance(bridge, dict) else "official_company_ir_metadata_only",
+            "source_freshness": bridge.get("source_freshness") if isinstance(bridge, dict) else {},
+            "evidence_claims": bridge.get("evidence_claims") if isinstance(bridge, dict) else [],
+            "unresolved_official_fields": bridge.get("unresolved_official_fields") if isinstance(bridge, dict) else [],
+            "bank_native_metrics": bridge.get("bank_native_metrics") if isinstance(bridge, dict) else None,
+            "sec_reconciliation_status": packet.get("sec_reconciliation_status"),
+            "sec_conflicts": packet.get("sec_conflicts") or [],
+            "bridge_status": bridge.get("status") if isinstance(bridge, dict) else "missing",
+            "adjusted_eps_status": (adjusted or {}).get("status") or (packet.get("adjusted_eps_reconciliation") or {}).get("status") or "manual_required",
+            "guidance_status": (guidance or {}).get("status") or (packet.get("guidance_reconciliation") or {}).get("status") or "manual_required",
+            "growth_bridge": (bridge.get("growth_bridge") if isinstance(bridge, dict) else {}) or {},
+            "segment_margins": (bridge.get("segment_margins") if isinstance(bridge, dict) else []) or [],
+            "management_explanation": (bridge.get("management_explanation") if isinstance(bridge, dict) else {}) or {},
+            "acquisition_debt_notes": (bridge.get("acquisition_debt_notes") if isinstance(bridge, dict) else {}) or {},
+            "manual_review_required": True,
+            "blockers": packet.get("blockers") or [],
+            "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture.",
+            "authority": packet.get("authority") or {},
+            **guards,
+        }
+    return {
+        "status": "missing_ticker_manual_fallback_required",
+        "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+        "ticker": ticker_upper,
+        "manual_review_required": True,
+        "summary": f"{ticker_upper} is missing from official earnings/IR reconciliation packets; manual official-source review required.",
+        **guards,
+    }
+
+
+def holding_thesis_for_ticker(ticker: str, portfolio_config: dict[str, Any] | None) -> str:
+    if not isinstance(portfolio_config, dict):
+        return ""
+    ticker_upper = ticker.upper()
+    portfolio = portfolio_config.get("portfolio") or {}
+    if not isinstance(portfolio, dict):
+        return ""
+    for sleeve in ("core", "tactical", "speculative"):
+        rows = portfolio.get(sleeve) or []
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            if isinstance(row, dict) and str(row.get("ticker") or "").upper() == ticker_upper:
+                thesis = str(row.get("thesis") or "").strip()
+                if thesis:
+                    return thesis
+    return ""
+
+
+def thesis_text(ticker: str, tracked: dict[str, Any], portfolio_config: dict[str, Any] | None) -> str:
+    thesis = str(tracked.get("thesis_status") or "").strip() or holding_thesis_for_ticker(ticker, portfolio_config)
+    if thesis:
+        return thesis
+    return "Thesis not available in portfolio-config; manual thesis review required before any capital decision."
+
+
+def setup_summary_text(item: dict[str, Any], tracked: dict[str, Any], band: dict[str, Any], guidance: str) -> str:
+    band_label = str(band.get("label") or item.get("band_status") or item.get("band_position") or "entry band not defined").strip()
+    trigger = str(tracked.get("trigger_condition") or guidance or "owner review required").strip()
+    return (
+        f"Current state: {legacy_state(item, "surface_state") or 'unknown'}. "
+        f"Entry posture: {item.get('band_status') or item.get('band_position') or 'unknown'}; configured band: {band_label}. "
+        f"Review trigger/guidance: {trigger}"
+    )
+
+
+def catalyst_risk_text(item: dict[str, Any], tracked: dict[str, Any], blockers: list[str]) -> str:
+    days = item.get("days_to_earnings")
+    earnings_policy = str(tracked.get("earnings_policy") or "").strip()
+    catalyst_override = str(tracked.get("catalyst_blocker_override") or "").strip()
+    if catalyst_override:
+        return f"Catalyst blocker from portfolio-config: {catalyst_override}"
+    if blockers:
+        return "; ".join(str(blocker) for blocker in blockers[:3])
+    if isinstance(days, int):
+        if 0 <= days <= 21:
+            return f"Earnings/catalyst window is close ({days} day(s)); keep review gated until timing risk clears."
+        return f"No near-term earnings blocker surfaced in the artifact stack ({days} day(s) to earnings); manual catalyst review still required."
+    if earnings_policy:
+        return f"Earnings policy is {earnings_policy}; no current catalyst date was cleanly surfaced, so manual catalyst review is required."
+    return "Manual catalyst review required; no clean catalyst-risk artifact was available for this packet."
+
+
+def sizing_policy_context_for_tier(sizing_tier: str, portfolio_config: dict[str, Any] | None) -> str:
+    """Return non-actionable sizing-policy context without per-name ranges or maxes."""
+    if not isinstance(portfolio_config, dict):
+        return "Portfolio-config sizing policy unavailable; owner must consult canonical risk rules before any sizing decision."
+    rules = portfolio_config.get("sizing_rules") or []
+    if not isinstance(rules, list):
+        return "Portfolio-config sizing rules are not readable; owner must consult canonical risk rules before any sizing decision."
+    tier_head = sizing_tier.split()[0:2]
+    tier_key = " ".join(tier_head).strip().lower()
+    for rule in rules:
+        if not isinstance(rule, dict):
+            continue
+        rule_tier = str(rule.get("tier") or "").strip()
+        if tier_key and tier_key in rule_tier.lower():
+            return f"{rule_tier} sizing policy exists; owner must consult canonical risk rules before any sizing decision."
+    return "No matching sizing policy label found; manual sizing review required before any capital decision."
+
+
+def why_stack_for_capital_packet(
+    item: dict[str, Any],
+    *,
+    tracked: dict[str, Any],
+    band: dict[str, Any],
+    thesis: str,
+    setup_summary: str,
+    catalyst_risk: str,
+    fundamental_context: dict[str, Any],
+    official_earnings_bridge: dict[str, Any],
+    sector_context: dict[str, Any],
+    missing_evidence: list[str],
+) -> dict[str, Any]:
+    ticker = str(item.get("ticker") or "UNKNOWN")
+    band_label = band.get("label") or item.get("band_status") or item.get("band_position") or "manual band review required"
+    fundamental_status = fundamental_context.get("status") or "missing_manual_review_required"
+    official_status = official_earnings_bridge.get("status") or "missing_manual_review_required"
+    official_evidence_status = official_earnings_bridge.get("official_evidence_status") or "manual_required"
+    official_evidence_posture = official_earnings_bridge.get("official_evidence_posture") or "review_only"
+    guidance_status = official_earnings_bridge.get("guidance_status") or "manual_required"
+    adjusted_status = official_earnings_bridge.get("adjusted_eps_status") or "manual_required"
+    unresolved_fields = official_earnings_bridge.get("unresolved_official_fields") or []
+    unresolved_text = ", ".join(str(field) for field in unresolved_fields[:7]) if isinstance(unresolved_fields, list) else "manual-required official fields"
+    sector_status = sector_context.get("status") or "manual_review_required"
+    blocker = "; ".join(str(x) for x in (item.get("blockers") or [])[:3]) or "No ticker-specific blocker surfaced; owner must still verify stop/invalidation layers."
+    missing = "; ".join(str(x) for x in missing_evidence[:3]) or "No major missing-evidence line surfaced; owner review remains required."
+    return {
+        "setup_reason": f"{ticker} surfaced from ranked daily review because current state is {legacy_state(item, "surface_state") or 'unknown'} and recommendation class is {item.get('recommendation_class') or 'unknown'}.",
+        "entry_reason": f"Entry context is {item.get('band_status') or item.get('band_position') or 'unknown'} against configured band {band_label}; this is setup context, not approval.",
+        "fundamental_reason": f"WF65 fundamental context status is {fundamental_status}; thesis context: {thesis[:220]}",
+        "official_earnings_reason": f"Official earnings bridge status is {official_status}; official evidence={official_evidence_status}/{official_evidence_posture}; adjusted EPS={adjusted_status}, guidance={guidance_status}; unresolved official fields remain manual-required: {unresolved_text}.",
+        "sector_macro_reason": f"Sector/macro context is {sector_status}; macro gate is {item.get('macro_gate') or 'manual review required'}.",
+        "risk_blocker_reason": f"Risk/catalyst blocker context: {catalyst_risk}; blockers: {blocker}",
+        "missing_evidence_reason": missing,
+        "authority_boundary": "Review-only rationale; no owner approval, portfolio mutation, deployment-state mutation, external financial, account, cash, or execution authority is granted.",
+        "source_summary": setup_summary,
+    }
+
+
+def sizing_risk_envelope(
+    item: dict[str, Any],
+    tracked: dict[str, Any],
+    band: dict[str, Any],
+    portfolio_config: dict[str, Any] | None,
+) -> dict[str, Any]:
+    sizing_tier = str(tracked.get("sizing_tier") or "manual sizing review required").strip()
+    risk_thresholds = (portfolio_config or {}).get("risk_thresholds") if isinstance(portfolio_config, dict) else {}
+    if not isinstance(risk_thresholds, dict):
+        risk_thresholds = {}
+    sizing_policy_context = sizing_policy_context_for_tier(sizing_tier, portfolio_config)
+    stop_label = str(band.get("stop_label") or band.get("stop") or "manual stop/invalidation review required").strip()
+    return {
+        "portfolio_role": tracked.get("portfolio_role") or "manual role review required",
+        "sizing_tier": sizing_tier,
+        "sizing_policy_context": sizing_policy_context,
+        "risk_thresholds": {
+            "max_single_position_normal_pct": risk_thresholds.get("max_single_position_normal"),
+            "max_single_position_stretch_pct": risk_thresholds.get("max_single_position_stretch"),
+            "max_sector_pct": risk_thresholds.get("max_sector_pct"),
+            "min_cash_pct": risk_thresholds.get("min_cash_pct"),
+            "drawdown_review_trigger_pct": risk_thresholds.get("drawdown_review_trigger_pct"),
+        },
+        "entry_band": band.get("label") or item.get("band_status") or item.get("band_position") or "manual band review required",
+        "stop_or_invalidation": stop_label,
+        "review_boundary": "Owner-gated risk envelope only; no dollar/share amount, portfolio mutation, deployment-state mutation, or trade execution authority.",
+    }
+
+
+def scenario_texts(
+    item: dict[str, Any],
+    tracked: dict[str, Any],
+    thesis: str,
+    catalyst_risk: str,
+    guidance: str,
+    band: dict[str, Any],
+) -> dict[str, str]:
+    macro_fit = str(tracked.get("macro_fit") or item.get("macro_gate") or "macro fit requires review").strip()
+    trigger = str(tracked.get("trigger_condition") or guidance or "owner review required").strip()
+    stop = str(band.get("stop_label") or band.get("stop") or "written invalidation layer").strip()
+    return {
+        "base_case": f"Base case: {thesis}; setup stays review-worthy only if current state and macro fit remain intact ({macro_fit}) and the owner-gated trigger is respected: {trigger}",
+        "bull_case": f"Bull case: setup improves if price/structure confirms the written trigger without chasing, macro fit remains supportive, and catalyst risk clears: {catalyst_risk}",
+        "bear_case": f"Bear case: defer or reject if the setup violates the stop/invalidation layer ({stop}), catalyst risk worsens, macro fit deteriorates, or blockers remain unresolved.",
+    }
 
 def ranked_escalations(review_objects: list[dict[str, Any]], system: dict[str, Any]) -> list[dict[str, Any]]:
     budget = 2 if system["stop_line"] else 3 if system["trust_level"] != "clean" else 4
@@ -832,6 +1326,11 @@ def capital_recommendations(
     system: dict[str, Any],
     market_intelligence_events: dict[str, Any] | None = None,
     source_freshness: dict[str, Any] | None = None,
+    sector_board: dict[str, Any] | None = None,
+    sector_correlation: dict[str, Any] | None = None,
+    portfolio_config: dict[str, Any] | None = None,
+    fundamental_metrics: dict[str, Any] | None = None,
+    fundamental_ir_packets: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     recommendations: list[dict[str, Any]] = []
     for item in review_objects:
@@ -842,7 +1341,7 @@ def capital_recommendations(
         rec_class = str(item.get("recommendation_class") or "")
         action = rec_class
         if rec_class == "conditional_pullback_review":
-            action = "wait_for_band"
+            action = "owner_decision_required" if item.get("band_status") == "IN_BAND" else "wait_for_band"
         elif rec_class == "review_for_possible_add":
             action = "deploy_candidate"
         elif rec_class == "hold_promotion_review":
@@ -859,14 +1358,51 @@ def capital_recommendations(
             guidance = f"Trust ceiling applies: {guidance}"
 
         risk_invalidation = item.get("blockers") or []
-        missing_evidence = missing_evidence_for_capital_packet(item, market_intelligence_events)
+        sector_context = sector_context_for_ticker(str(item.get("ticker") or ""), sector_board, sector_correlation)
+        ticker = str(item.get("ticker") or "")
+        fundamental_context = fundamental_context_for_ticker(ticker, fundamental_metrics)
+        official_earnings_bridge = official_earnings_bridge_for_ticker(ticker, fundamental_ir_packets)
+        missing_evidence = missing_evidence_for_capital_packet(item, market_intelligence_events, sector_context, fundamental_context, official_earnings_bridge)
+        tracked = tracked_config_for_ticker(ticker, portfolio_config)
+        band = entry_band_for_ticker(ticker, portfolio_config)
+        thesis = thesis_text(ticker, tracked, portfolio_config)
+        setup_summary = setup_summary_text(item, tracked, band, str(guidance))
+        catalyst_risk = catalyst_risk_text(item, tracked, risk_invalidation)
+        scenarios = scenario_texts(item, tracked, thesis, catalyst_risk, str(guidance), band)
+        why_stack = why_stack_for_capital_packet(
+            item,
+            tracked=tracked,
+            band=band,
+            thesis=thesis,
+            setup_summary=setup_summary,
+            catalyst_risk=catalyst_risk,
+            fundamental_context=fundamental_context,
+            official_earnings_bridge=official_earnings_bridge,
+            sector_context=sector_context,
+            missing_evidence=missing_evidence,
+        )
         recommendations.append({
             "ticker": item.get("ticker"),
-            "current_state": item.get("surface_state"),
+            "current_state": legacy_state(item, "surface_state"),
             "entry_band_status": item.get("band_status") or item.get("band_position"),
+            "proposal_band_status": item.get("proposal_band_status"),
+            "raw_band_status": item.get("raw_band_status"),
+            "band_status_note": item.get("band_status_note"),
             "macro_regime_check": item.get("macro_gate"),
+            "thesis": thesis,
+            "setup_summary": setup_summary,
+            "decision_rationale": why_stack,
+            "why_stack": why_stack,
+            "catalyst_risk": catalyst_risk,
+            "sizing_risk_envelope": sizing_risk_envelope(item, tracked, band, portfolio_config),
+            "base_case": scenarios["base_case"],
+            "bull_case": scenarios["bull_case"],
+            "bear_case": scenarios["bear_case"],
             "fresh_intelligence_status": fresh_intelligence_status_for(str(item.get("ticker") or ""), market_intelligence_events),
-            "sector_correlation_check": "missing_artifact_manual_fallback_required",
+            "fundamental_context": fundamental_context,
+            "official_earnings_bridge": official_earnings_bridge,
+            "sector_correlation_check": sector_context.get("status"),
+            "sector_context": sector_context,
             "state_history_status": "missing_artifact_manual_fallback_required",
             "risk_invalidation": risk_invalidation,
             "risk_invalidation_summary": "; ".join(str(x) for x in risk_invalidation) or "No ticker-specific blocker surfaced; owner must still verify stop/invalidation layers.",
@@ -875,6 +1411,8 @@ def capital_recommendations(
             "recommendation_action": action_family_for(action),
             "action_vocabulary": "WF42 deploy/wait/reject/review; existing recommended_action retained for compatibility.",
             "confidence": "moderate" if item.get("signal_score", 0) >= 75 else "guarded",
+            "confidence_basis": "Heuristic-only qualitative confidence; uncalibrated, non-predictive, and not_probability.",
+            "signal_score_basis": item.get("signal_score_basis") or "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
             "trust_level": system.get("trust_level"),
             "source_freshness": source_freshness_for_capital_packet(source_freshness),
             "evidence": item.get("evidence") or [],
@@ -928,9 +1466,10 @@ def capital_recommendations(
 def known_gaps() -> list[str]:
     return [
         "Fresh-intelligence routing is now artifact-derived v1 only; it does not perform freeform web/news crawling or autonomous thesis updates.",
-        "Sector/correlation checks are not yet exposed as a stable machine-readable artifact for this packet.",
+        "Sector/correlation checks are consumed when fresh enough; if absent, stale, or blocked they stay a manual fallback.",
+        "Official earnings bridge / IR reconciliation context is review-only and manual where unresolved; it does not grant capital, deployment, note-mutation, or trade authority.",
         "State-history / owner-outcome retention is not yet wired, so this layer does not score realized outcomes or predictive labels.",
-        "Canonical note mutation stays blocked; this packet is recommendation-only / review-only.",
+        "Generated recommendation packets stay non-self-applying; exact validator-backed portfolio note/model writes require an approved gated apply artifact.",
     ]
 
 
@@ -969,7 +1508,17 @@ def build_packet(window: str) -> dict[str, Any]:
         item["rank"] = idx
 
     escalations = ranked_escalations(review_objects, system)
-    capital_packets, portfolio_call = capital_recommendations(review_objects, system, market_intelligence_events, source_freshness)
+    capital_packets, portfolio_call = capital_recommendations(
+        review_objects,
+        system,
+        market_intelligence_events,
+        source_freshness,
+        optional.get("sector_expansion_board"),
+        optional.get("sector_correlation_check"),
+        optional.get("portfolio_config"),
+        optional.get("fundamental_metrics"),
+        optional.get("fundamental_ir_packets"),
+    )
 
     top_tickers = [item.get("ticker") for item in escalations if item.get("ticker")]
     market_state = required.get("market_state") or optional.get("market_state") or {}

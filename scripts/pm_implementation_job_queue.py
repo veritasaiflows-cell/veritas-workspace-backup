@@ -33,6 +33,7 @@ DEFAULT_CRON_CANDIDATES = TMP / "cron-retire-merge-candidates.json"
 DEFAULT_HELPER_PACKETS = TMP / "helper-spawn-packets.json"
 DEFAULT_OUT = TMP / "pm-implementation-job-queue.json"
 DEFAULT_DB = TMP / "pm-implementation-job-queue.sqlite"
+DEFAULT_CONTROL_PACKET = TMP / "pm-control-packet.json"
 
 SCHEMA = "veritas.pm_implementation_job_queue.v1"
 
@@ -65,6 +66,9 @@ GLOBAL_STOP_LINES = [
     "no paper/live/brokerage/account action",
 ]
 
+PM_CONTROL_WRITE_DB_COMMAND = "python scripts\\pm_control_packet.py --write --write-db --validate"
+PM_CONTROL_WRITE_COMMAND = "python scripts\\pm_control_packet.py --write --validate"
+
 LANE_TEMPLATES: dict[str, dict[str, Any]] = {
     "retail_truth_routing": {
         "owner_surface": "P0 Retail Finance / PM cockpit Retail tab",
@@ -95,6 +99,10 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
             "scripts/wf75_closeout_refresh.py",
             "tmp/wf75-smb-automation-blueprints.json",
             "tmp/wf75-smb-customer-preview-validation.json",
+            "tmp/wf79-smb-offer-icp-packet.json",
+            "tmp/wf79-smb-demo-packets-validation.json",
+            "tmp/wf79-smb-marketing-ops-blueprints-validation.json",
+            "tmp/wf79-smb-phase-closeout.json",
         ],
         "proof_commands": [
             "python scripts\\generic_intelligence_saas_pivot.py --write --write-db --validate",
@@ -194,17 +202,22 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
         "collision_group": "pm_handoff_packets",
     },
     "finance_engine": {
-        "owner_surface": "Finance engine proof lane",
-        "job_title": "Refresh finance coverage proof without capital authority",
+        "owner_surface": "WF84/WF85 finance route proof lane",
+        "job_title": "Refresh unified finance route proof without capital authority",
         "implementation_class": "finance_validation_pass",
         "target_files": [
             "scripts/finance_data_coverage.py",
             "scripts/runtime_performance_scorecard.py",
             "scripts/artifact_index.py",
+            "scripts/finance_intelligence_state.py",
+            "tmp/canonical-finance-data-plane.json",
+            "tmp/trade-grade-full-answer-assembler.json",
         ],
         "proof_commands": [
             "python scripts\\finance_data_coverage.py --validate --write-contract",
             "python scripts\\runtime_performance_scorecard.py --write --write-md --validate",
+            "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+            "python scripts\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate",
             "python scripts\\artifact_index.py validate",
         ],
         "helper_role": "Finance proof helper",
@@ -222,7 +235,7 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
             "tmp/finance-intelligence-state-stale-tickers.json",
         ],
         "proof_commands": [
-            "python scripts\\finance_ticker_card_refresh_gate.py --write --validate",
+            "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode changed",
             "python scripts\\automation_stack_hardening_pass.py --write --validate",
             "python scripts\\pm_control_packet.py --write --write-db --validate",
         ],
@@ -255,7 +268,7 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
             "tmp/wf78-500-ticker-reputation-gate.json",
         ],
         "proof_commands": [
-            "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh",
+            "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode never",
             "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
             "python scripts\\wf78_capital_review_queue.py --write --write-db --validate",
             "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
@@ -291,8 +304,8 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
         "collision_group": "sql_support_mode",
     },
     "wf78_scaleout": {
-        "owner_surface": "WF72/WF78 SQL support-mode scaleout lane",
-        "job_title": "Advance 500-ticker scaleout through the reputation gate",
+        "owner_surface": "WF78 non-capital feeder for WF84/WF85 finance route",
+        "job_title": "Advance 500-ticker feeder scaleout through the reputation gate",
         "implementation_class": "wf78_reputation_scaleout_gate",
         "target_files": [
             "scripts/wf78_phase_runner.py",
@@ -312,8 +325,66 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
             "python scripts\\automation_stack_hardening_pass.py --write --validate",
             "python scripts\\pm_control_packet.py --write --write-db --validate",
         ],
-        "helper_role": "WF78 scaleout reputation helper",
-        "collision_group": "wf72_wf78_sql_scaleout",
+        "helper_role": "WF78 scaleout feeder reputation helper",
+        "collision_group": "wf78_wf84_wf85_feeder_scaleout",
+    },
+    "finance_os_data_model": {
+        "owner_surface": "WF84 canonical finance data-plane contract",
+        "job_title": "Maintain WF84 internal finance data-plane consumer/parity proof",
+        "implementation_class": "canonical_finance_data_plane",
+        "target_files": [
+            "scripts/canonical_finance_data_plane_contract.py",
+            "scripts/canonical_finance_data_plane.py",
+            "tmp/canonical-finance-data-plane-contract.json",
+            "tmp/canonical-finance-data-plane.json",
+            "tmp/canonical-finance-data-plane-validation.json",
+            "tmp/canonical-finance-data-plane.sqlite",
+            "tmp/canonical-finance-data-plane-phase6-10.json",
+            "tmp/canonical-finance-data-plane-retirement-readiness.json",
+        ],
+        "proof_commands": [
+            "python scripts\\canonical_finance_data_plane_contract.py --write --validate",
+            "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+            "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+            "python scripts\\canonical_finance_data_plane_retirement_readiness.py --write --validate",
+            "python scripts\\workflow_router.py WF84 --answer all --validate",
+            "python scripts\\pm_control_packet.py --write --write-db --validate",
+        ],
+        "helper_role": "WF84 canonical finance data-plane implementation helper",
+        "collision_group": "finance_os_data_model",
+    },
+    "trade_grade_decision_os": {
+        "owner_surface": "WF85 Personal Trade-Grade Decision OS contract and Phase 1 card builder",
+        "job_title": "Advance WF85 Personal Trade-Grade Decision OS",
+        "implementation_class": "trade_grade_decision_os",
+        "target_files": [
+            "scripts/trade_grade_decision_os_contract.py",
+            "scripts/trade_grade_decision_cards.py",
+            "scripts/trade_grade_repair_conveyor.py",
+            "scripts/trade_grade_os_freshness_cron_runner.py",
+            "tmp/trade-grade-decision-os-contract.json",
+            "tmp/trade-grade-source-freshness-gate.json",
+            "tmp/trade-grade-decision-cards.json",
+            "tmp/trade-grade-decision-card-authority-validation.json",
+            "tmp/trade-grade-approval-card-gate.json",
+            "tmp/trade-grade-risk-sizing-overlay.json",
+            "tmp/trade-grade-repair-conveyor.json",
+            "tmp/trade-grade-os-freshness-cron-runner.json",
+            "tmp/post-close-final-quote-ledger.json",
+            "tmp/wf78-tier-weighted-freshness-resolution.json",
+            "tmp/canonical-finance-data-plane.json",
+            "tmp/canonical-finance-data-plane-phase6-10.json",
+            "tmp/wf78-capital-review-queue.json",
+            "tmp/finance-decision-sync-spine.json",
+        ],
+        "proof_commands": [
+            "python scripts\\trade_grade_decision_os_contract.py --write --validate",
+            "python scripts\\trade_grade_os_freshness_cron_runner.py --component daily_core --full-answer-mode changed --write --validate",
+            "python scripts\\workflow_router.py WF85 --answer all --validate",
+            "python scripts\\pm_control_packet.py --write --write-db --validate",
+        ],
+        "helper_role": "WF85 trade-grade decision OS implementation helper",
+        "collision_group": "trade_grade_decision_os",
     },
 }
 
@@ -348,6 +419,29 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def control_pm_program_state() -> dict[str, Any]:
+    packet = load_json(DEFAULT_CONTROL_PACKET)
+    sections = as_dict(packet.get("sections"))
+    program = as_dict(sections.get("pm_program_state"))
+    if program.get("status") == "ok" and as_list(program.get("next_actions")):
+        return program
+    return {}
+
+
+def path_is_default(value: str | None, default: Path) -> bool:
+    return workspace_path(value, default) == default
+
+
+def actions_from_program_state(program: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schema": program.get("schema"),
+        "status": program.get("status"),
+        "generated_at_utc": program.get("generated_at_utc"),
+        "next_actions": program.get("next_actions", []),
+        "source": "tmp/pm-control-packet.json#sections.pm_program_state",
+    }
+
+
 def workspace_path(value: str | None, default: Path) -> Path:
     if not value:
         return default
@@ -369,6 +463,17 @@ def action_template(action: dict[str, Any]) -> dict[str, Any]:
             "collision_group": lane_id,
         },
     )
+
+
+def proof_commands_for_template(template: dict[str, Any]) -> list[str]:
+    commands = [str(command) for command in as_list(template.get("proof_commands"))]
+    if len(commands) <= 1:
+        return commands
+    pm_control_commands = {PM_CONTROL_WRITE_DB_COMMAND, PM_CONTROL_WRITE_COMMAND}
+    # PM execution runs the budgeted closeout command after proof. Keeping the
+    # same PM packet command inside every proof list creates duplicate work and
+    # inflates the declared proof budget.
+    return [command for command in commands if command not in pm_control_commands]
 
 
 def acceptance_criteria(job: dict[str, Any]) -> list[dict[str, Any]]:
@@ -457,7 +562,7 @@ def build_pm_job(action: dict[str, Any], rank: int) -> dict[str, Any]:
             "no active helper lane may share the same collision group",
             "main session remains final integrator",
         ],
-        "proof_commands": template["proof_commands"],
+        "proof_commands": proof_commands_for_template(template),
         "acceptance_criteria": [],
         "scope_split": [],
         "helper_role": template["helper_role"],
@@ -591,8 +696,13 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     pm_actions_path = workspace_path(args.pm_actions, DEFAULT_PM_ACTIONS)
     cron_candidates_path = workspace_path(args.cron_candidates, DEFAULT_CRON_CANDIDATES)
     helper_packets_path = workspace_path(args.helper_packets, DEFAULT_HELPER_PACKETS)
-    pm_state = getattr(args, "pm_state_payload", None) or load_json(pm_state_path)
-    pm_actions = getattr(args, "pm_actions_payload", None) or load_json(pm_actions_path)
+    control_program = (
+        control_pm_program_state()
+        if path_is_default(args.pm_state, DEFAULT_PM_STATE) and path_is_default(args.pm_actions, DEFAULT_PM_ACTIONS)
+        else {}
+    )
+    pm_state = getattr(args, "pm_state_payload", None) or control_program or load_json(pm_state_path)
+    pm_actions = getattr(args, "pm_actions_payload", None) or (actions_from_program_state(control_program) if control_program else load_json(pm_actions_path))
     cron_candidates = getattr(args, "cron_candidates_payload", None) or load_json(cron_candidates_path)
     helper_packets = getattr(args, "helper_packets_payload", None) or load_json(helper_packets_path)
 
@@ -627,6 +737,12 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "pm_next_actions_status": pm_actions.get("status"),
             "cron_candidates_status": cron_candidates.get("status"),
             "helper_spawn_packets_status": helper_packets.get("status"),
+            "pm_program_state_effective_source": (
+                "tmp/pm-control-packet.json#sections.pm_program_state" if control_program else rel(pm_state_path)
+            ),
+            "pm_next_actions_effective_source": (
+                "tmp/pm-control-packet.json#sections.pm_program_state.next_actions" if control_program else rel(pm_actions_path)
+            ),
         },
         "summary": {
             "job_count": len(jobs),

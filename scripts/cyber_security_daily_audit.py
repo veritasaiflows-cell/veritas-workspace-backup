@@ -18,6 +18,8 @@ DEFAULT_JSON_OUT = TMP / "cyber-security-daily-audit.json"
 DEFAULT_MD_OUT = TMP / "cyber-security-daily-audit.md"
 OPENCLAW_CLI = shutil.which("openclaw.cmd") or shutil.which("openclaw") or str(Path.home() / "AppData" / "Roaming" / "npm" / "openclaw.cmd")
 EXPECTED_LOCAL_SENDERS = {"webchat:openclaw-control-ui", "openclaw-control-ui"}
+APPROVED_CHAT_CHANNELS = {"telegram"}
+APPROVED_NONLOCAL_OWNER_SENDERS = {"telegram:8650152206"}
 REQUIRED_SKILLS = {
     "automation-hardening-manager",
     "cron-automation-manager",
@@ -175,15 +177,20 @@ def build_config_check(global_findings: list[dict[str, Any]]) -> dict[str, Any]:
     runtime_id = (((defaults.get("agentRuntime") or {}).get("id")) or "")
 
     local: list[dict[str, Any]] = []
-    if channels:
-        append_finding(local, "warning", "config.channels", "Chat channels are enabled; intended posture is local Control UI only.", "Keep `channels` empty unless channel expansion is intentional.", sorted(channels.keys()))
+    channel_names = set(channels.keys()) if isinstance(channels, dict) else set()
+    unexpected_channels = sorted(channel_names - APPROVED_CHAT_CHANNELS)
+    if unexpected_channels:
+        append_finding(local, "warning", "config.channels", "Unexpected chat channels are enabled.", "Keep only explicitly approved channels enabled.", unexpected_channels)
+    elif channel_names:
+        append_finding(local, "info", "config.channels", "Approved chat channel posture is active.", evidence=sorted(channel_names))
     else:
         append_finding(local, "info", "config.channels", "Channel surface is local-only: channels={}")
 
-    extra_senders = sorted(owner_allow_from - EXPECTED_LOCAL_SENDERS)
+    expected_owner_senders = EXPECTED_LOCAL_SENDERS | APPROVED_NONLOCAL_OWNER_SENDERS
+    extra_senders = sorted(owner_allow_from - expected_owner_senders)
     missing_senders = sorted(EXPECTED_LOCAL_SENDERS - owner_allow_from)
     if extra_senders:
-        append_finding(local, "warning", "config.commands.ownerAllowFrom", "Owner allowlist includes non-local sender identifiers.", "Keep `ownerAllowFrom` limited to the local Control UI identifiers unless expansion is intentional.", extra_senders)
+        append_finding(local, "warning", "config.commands.ownerAllowFrom", "Owner allowlist includes unapproved sender identifiers.", "Keep `ownerAllowFrom` limited to the local Control UI identifiers plus approved Telegram owner entry.", extra_senders)
     if missing_senders:
         append_finding(local, "warning", "config.commands.ownerAllowFrom", "Local Control UI sender allowlist is incomplete.", "Restore the expected local sender identifiers.", missing_senders)
 
@@ -311,7 +318,7 @@ def build_skills_check(global_findings: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def build_doctor_check(global_findings: list[dict[str, Any]]) -> dict[str, Any]:
-    result = run_command([OPENCLAW_CLI, "doctor"], 20)
+    result = run_command([OPENCLAW_CLI, "doctor"], 60)
     info = parse_doctor_output(result.get("stdout") or "")
     local: list[dict[str, Any]] = []
     if result.get("error") and not result.get("timed_out"):

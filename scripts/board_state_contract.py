@@ -108,6 +108,172 @@ def execution_priority_quote_targets(portfolio_config: dict[str, Any] | None) ->
     return [target for _, _, target in candidates]
 
 
+# --- Canonical deployment-state contract -------------------------------------
+#
+# One normalizer that collapses the three scattered legacy fields
+# (workflow_state, machine_state/deployment_state, action_state) plus already
+# resolved surface_state into a single canonical decision object. Legacy fields
+# stay as compatibility aliases; this is the additive layer that lets readers
+# migrate without losing trace context.
+#
+# Resolution precedence: surface_state and base_surface_state are already fully
+# resolved by deployment_readiness_surface.surface_state_for() (override rules
+# applied), so they outrank the raw action_state/machine_state/workflow_state
+# inputs. We read the most-resolved field available rather than re-deriving the
+# override rules here, which keeps this contract from diverging from the writer.
+
+DEPLOYMENT_STATUS_ENUM = frozenset(
+    {
+        "DEPLOYABLE_NOW",
+        "ALMOST_DEPLOYABLE",
+        "PROMOTION_REVIEW",
+        "POST_EARNINGS_REVIEW",
+        "NO_CHASE",
+        "BELOW_STOP",
+        "DO_NOT_TOUCH",
+        "BENCH",
+        "BLOCKED",
+        "AUTHORITY_CONFLICT",
+        "SYSTEM_HOLD",
+        "WATCH",
+        "ERROR",
+    }
+)
+
+# raw human label (post canonical_action_state space, plus a few raw passthroughs)
+# -> (deployment_status, status_reason, display_label)
+_CANONICAL_STATUS_MAP: dict[str, tuple[str, str, str]] = {
+    "DEPLOYABLE NOW": ("DEPLOYABLE_NOW", "in_band_ready", "deployable now"),
+    "DEPLOYABLE": ("DEPLOYABLE_NOW", "in_band_ready", "deployable now"),
+    "DEPLOYED": ("DEPLOYABLE_NOW", "in_band_ready", "deployable now"),
+    "ALMOST DEPLOYABLE": ("ALMOST_DEPLOYABLE", "almost_ready", "almost deployable"),
+    "ALMOST": ("ALMOST_DEPLOYABLE", "almost_ready", "almost deployable"),
+    "ALMOST / NEAR-EARNINGS CAUTION": ("ALMOST_DEPLOYABLE", "near_earnings_caution", "almost — near-earnings caution"),
+    "PROMOTION REVIEW": ("PROMOTION_REVIEW", "promotion_review_pending", "promotion review"),
+    "POST-EARNINGS REVIEW": ("POST_EARNINGS_REVIEW", "post_earnings_review", "post-earnings review"),
+    "BELOW STOP": ("BELOW_STOP", "below_stop", "below stop — exit/repair"),
+    "DO NOT TOUCH": ("DO_NOT_TOUCH", "repair_mode_active", "do not touch — repair/stop"),
+    "REPAIR": ("DO_NOT_TOUCH", "repair_mode_active", "do not touch — repair/stop"),
+    "BENCH": ("BENCH", "bench_setup_not_ready", "bench — monitor, not ready"),
+    "BLOCKED": ("BLOCKED", "blocked", "blocked"),
+    "AUTHORITY CONFLICT": ("AUTHORITY_CONFLICT", "authority_conflict", "authority conflict — review"),
+    "SYSTEM HOLD": ("SYSTEM_HOLD", "system_hold", "system hold"),
+    "WATCH / RESEARCH NEEDED": ("WATCH", "watch_research_needed", "watch / research needed"),
+    "WATCH": ("WATCH", "watch_research_needed", "watch / research needed"),
+    "MACRO": ("WATCH", "watch_research_needed", "watch / research needed"),
+    "ERROR": ("ERROR", "error", "error"),
+}
+
+_RESOLVED_STATE_KEYS = (
+    "surface_state",
+    "base_surface_state",
+    "action_state",
+    "deployment_state",
+    "machine_state",
+    "workflow_state",
+)
+
+_ABOVE_BAND_VALUES = frozenset({"ABOVE_BAND", "ABOVE BAND"})
+
+
+def deployment_raw_context(record: dict[str, Any] | None) -> dict[str, Any]:
+    """Return the canonical raw_context when present, otherwise the record itself."""
+    if not isinstance(record, dict):
+        return {}
+    if isinstance(record.get("raw_context"), dict):
+        return record["raw_context"]
+    contract = record.get("deployment_contract")
+    if isinstance(contract, dict) and isinstance(contract.get("raw_context"), dict):
+        return contract["raw_context"]
+    return record
+
+
+def legacy_state(record: dict[str, Any] | None, field: str, default: Any = None) -> Any:
+    """Compatibility accessor for legacy state fields.
+
+    Readers should use canonical deployment_status when they can. When they need
+    the legacy vocabulary for scoring, history, or compatibility output, read it
+    through raw_context first so generated top-level aliases can later be removed.
+    """
+    if field not in {*_RESOLVED_STATE_KEYS, "band_status", "below_stop"}:
+        raise KeyError(f"unsupported legacy deployment-state field: {field}")
+    context = deployment_raw_context(record)
+    value = context.get(field)
+    if value is None and field == "machine_state":
+        value = context.get("deployment_state")
+    return default if value is None else value
+
+
+def _clean_label(value: Any) -> str:
+    return " ".join(str(value or "").strip().upper().split())
+
+
+def _effective_raw_label(record: dict[str, Any]) -> str:
+    for key in _RESOLVED_STATE_KEYS:
+        label = _clean_label(record.get(key))
+        if label:
+            return label
+    return ""
+
+
+def deployment_contract(record: dict[str, Any]) -> dict[str, Any]:
+    """Normalize any deployment/trigger/portfolio record into the canonical
+    deployment-state contract. Pure function; never mutates the input."""
+    raw_label = _effective_raw_label(record)
+    band_status = _clean_label(record.get("band_status"))
+    below_stop = bool(record.get("below_stop"))
+
+    if raw_label in _CANONICAL_STATUS_MAP:
+        status, reason, display = _CANONICAL_STATUS_MAP[raw_label]
+    else:
+        # Fall back through the existing action-state collapse for unknowns.
+        collapsed = canonical_action_state(raw_label) if raw_label else "WATCH / RESEARCH NEEDED"
+        status, reason, display = _CANONICAL_STATUS_MAP.get(
+            collapsed, ("WATCH", "watch_research_needed", "watch / research needed")
+        )
+
+    # Stop-breach outranks softer states (Execution Board doctrine).
+    if below_stop:
+        status, reason, display = "BELOW_STOP", "below_stop", "below stop — exit/repair"
+
+    # A healthy/ready setup trading above its entry band is a distinct decision:
+    # do not chase here, but the name is not broken. Only applies to ready-ish
+    # states, never to stop/repair/blocked.
+    if status in {"DEPLOYABLE_NOW", "ALMOST_DEPLOYABLE"} and band_status in _ABOVE_BAND_VALUES:
+        status, reason, display = "NO_CHASE", "no_chase_above_band", "in band setup but extended — no chase"
+
+    record_authority = record.get("authority") if isinstance(record.get("authority"), dict) else {}
+    authority = {
+        **record_authority,
+        "review_only": True,
+        "paper_order_execution_allowed": False,
+        "capital_deployment_approved": False,
+        "trade_or_execution_approved": False,
+    }
+
+    return {
+        "deployment_status": status,
+        "status_reason": reason,
+        "display_label": display,
+        "raw_context": {
+            "workflow_state": record.get("workflow_state"),
+            "machine_state": record.get("machine_state") or record.get("deployment_state"),
+            "action_state": record.get("action_state"),
+            "surface_state": record.get("surface_state"),
+            "base_surface_state": record.get("base_surface_state"),
+            "band_status": record.get("band_status"),
+            "below_stop": below_stop,
+        },
+        "authority": authority,
+    }
+
+
+def format_user_state(record: dict[str, Any]) -> str:
+    """Compact user-facing rendering: `DEPLOYMENT_STATUS / status_reason / display_label`."""
+    contract = deployment_contract(record)
+    return f"{contract['deployment_status']} / {contract['status_reason']} / {contract['display_label']}"
+
+
 def resolve_market_snapshot_targets(
     trigger_hint: dict[str, Any] | None,
     portfolio_config: dict[str, Any] | None,

@@ -800,7 +800,7 @@ export default function EntryBandViewer({ data: dataProp }) {
           Forward returns are measured at the configured horizons from the entry bar. Drawdown measures the worst intra-period low relative to entry.
           The macro regime filter isolates periods with comparable monetary policy, volatility, and growth dynamics.
           Price data is from yfinance via <code>scripts/entry_band_fetch.py</code>; macro regime tags are workspace-defined and editable in that script.
-          {preferred && <> Vault preferred band/stop overlay reflects the current entries in the Technical Entry and Invalidation Sheet (set {preferred.set || "—"}).</>}
+          {preferred && <> Vault preferred band/stop overlay reflects the current entries in the Execution Board (set {preferred.set || "—"}).</>}
           {" "}<strong style={{ color: "var(--amber)" }}>Decision support, not financial advice.</strong>
         </div>
       </div>

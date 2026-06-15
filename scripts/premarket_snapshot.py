@@ -36,7 +36,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from board_state_contract import record_state, review_records
+from board_state_contract import legacy_state, record_state, review_records
 from dashboard_delta_render import format_delta_change
 from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate
 
@@ -245,7 +245,7 @@ def build_overnight_earnings(post_prep: dict | None) -> str:
         ticker = packet.get("ticker", "?")
         priority = str(packet.get("priority", "")).upper() or "UNSPECIFIED"
         stage = packet.get("stage") or "reported"
-        trigger = (packet.get("trigger_context") or {}).get("action_state") or "review pending"
+        trigger = legacy_state(packet.get("trigger_context") or {}, "action_state", "review pending")
         watch_items = packet.get("watch_items") or []
         watch_text = ", ".join(watch_items[:3]) if watch_items else "review packet needed"
         lines.append(f"- **{ticker}** ({priority}) — {stage}; current trigger posture: {trigger}. Watch: {watch_text}.")
@@ -384,8 +384,12 @@ def main() -> int:
         "trust_reason":     trust_reason,
         "trust_gate_blocked": not canonical_allowed,
         "deployable_now":   (trigger.get("summary", {}) or {}).get("deployable_now", []),
+        "promotion_review": (trigger.get("summary", {}) or {}).get("promotion_review", []),
         "almost_deployable": (trigger.get("summary", {}) or {}).get("almost_deployable", []),
         "blocked":          (trigger.get("summary", {}) or {}).get("blocked", []),
+        "do_not_touch":     (trigger.get("summary", {}) or {}).get("do_not_touch", []),
+        "watch":            (trigger.get("summary", {}) or {}).get("watch", []),
+        "error":            (trigger.get("summary", {}) or {}).get("error", []),
         "wrote_to":         str(target.relative_to(WORKSPACE)),
     }
     summary.update(actionable_quote_audit(trigger, ms))

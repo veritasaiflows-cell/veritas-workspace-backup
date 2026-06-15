@@ -45,7 +45,11 @@ function renderDecisionQueue() {
     renderCountRow('Review objects', dailyCounts.review_object_count, 'info'),
     renderCountRow('Escalations', dailyCounts.escalated_count, dailyCounts.escalated_count ? 'warn' : 'ok'),
     renderCountRow('Capital recommendations', dailyCounts.capital_recommendation_count, dailyCounts.capital_recommendation_count ? 'warn' : 'info'),
-  ].join('') + `<div class="dq-list">${(daily.escalations || []).map(renderQueueItem).join('') || '<div class="small muted">No daily review escalations surfaced.</div>'}</div>`;
+  ].join('') +
+    `<div class="dq-subhead">Capital recommendations</div>` +
+    `<div class="dq-list">${(daily.capital_recommendations || []).map(renderQueueItem).join('') || '<div class="small muted">No capital recommendations surfaced.</div>'}</div>` +
+    `<div class="dq-subhead">Escalations</div>` +
+    `<div class="dq-list">${(daily.escalations || []).map(renderQueueItem).join('') || '<div class="small muted">No daily review escalations surfaced.</div>'}</div>`;
 
   $('marketIntelligenceQueue').innerHTML = [
     renderCountRow('Events', intelCounts.event_count, 'info'),

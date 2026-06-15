@@ -6,7 +6,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from artifact_index import DEFAULT_DB as ARTIFACT_INDEX_DB, validate_index as validate_artifact_index
 from market_data_utils import atomic_write_json, load_json_artifact
+import official_capture_period_registry as _registry
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
@@ -39,6 +41,11 @@ WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
         "workbook_exports": {"path": TMP / "workbook-export-manifest.json", "kind": "json"},
         "premarket_snapshot": {"path": TMP / "premarket-snapshot.json", "kind": "json"},
         "premarket_brief_input": {"path": TMP / "premarket-brief-input.json", "kind": "json"},
+        "premarket_review_brief": {"path": TMP / "reports" / "premarket-review-brief-latest.json", "kind": "json"},
+        "fundamental_metrics_current": {"path": TMP / "fundamental-metrics-current.json", "kind": "json"},
+        "fundamental_metrics_validation": {"path": TMP / "fundamental-metrics-validation.json", "kind": "json"},
+        "fundamental_ir_reconciliation_packets": {"path": TMP / "fundamental-ir-reconciliation-packets.json", "kind": "json"},
+        "fundamental_ir_reconciliation_validation": {"path": TMP / "fundamental-ir-reconciliation-validation.json", "kind": "json"},
     },
     "post-close": {
         "command_center": {"path": TMP / "veritas-command-center.html", "kind": "file"},
@@ -50,6 +57,10 @@ WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
         "postmarket_snapshot": {"path": TMP / "postmarket-snapshot.json", "kind": "json"},
         "daily_executive_brief": {"path": TMP / "daily-executive-brief.json", "kind": "json"},
         "postclose_brief_input": {"path": TMP / "postclose-brief-input.json", "kind": "json"},
+        "fundamental_metrics_current": {"path": TMP / "fundamental-metrics-current.json", "kind": "json"},
+        "fundamental_metrics_validation": {"path": TMP / "fundamental-metrics-validation.json", "kind": "json"},
+        "fundamental_ir_reconciliation_packets": {"path": TMP / "fundamental-ir-reconciliation-packets.json", "kind": "json"},
+        "fundamental_ir_reconciliation_validation": {"path": TMP / "fundamental-ir-reconciliation-validation.json", "kind": "json"},
     },
     "post-earnings": {
         "command_center": {"path": TMP / "veritas-command-center.html", "kind": "file"},
@@ -58,6 +69,10 @@ WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
         "workbook_exports": {"path": TMP / "workbook-export-manifest.json", "kind": "json"},
         "post_earnings_prep": {"path": TMP / "post-earnings-prep.json", "kind": "json"},
         "post_earnings_note_targets": {"path": TMP / "post-earnings-note-targets.json", "kind": "json"},
+        "fundamental_metrics_current": {"path": TMP / "fundamental-metrics-current.json", "kind": "json"},
+        "fundamental_metrics_validation": {"path": TMP / "fundamental-metrics-validation.json", "kind": "json"},
+        "fundamental_ir_reconciliation_packets": {"path": TMP / "fundamental-ir-reconciliation-packets.json", "kind": "json"},
+        "fundamental_ir_reconciliation_validation": {"path": TMP / "fundamental-ir-reconciliation-validation.json", "kind": "json"},
     },
     "sunday": {
         "command_center": {"path": TMP / "veritas-command-center.html", "kind": "file"},
@@ -66,10 +81,32 @@ WINDOW_REQUIRED_OUTPUTS: dict[str, dict[str, dict[str, Any]]] = {
         "workbook_exports": {"path": TMP / "workbook-export-manifest.json", "kind": "json"},
         "weekly_macro_snapshot": {"path": TMP / "weekly-macro-snapshot.json", "kind": "json"},
         "weekly_intelligence_brief": {"path": TMP / "weekly-intelligence-brief.json", "kind": "json"},
+        "weekly_printable_brief": {"path": TMP / "reports" / "weekly-intelligence-brief-printable-latest.json", "kind": "json"},
         "postmarket_snapshot": {"path": TMP / "postmarket-snapshot.json", "kind": "json"},
         "daily_executive_brief": {"path": TMP / "daily-executive-brief.json", "kind": "json"},
+        "fundamental_metrics_current": {"path": TMP / "fundamental-metrics-current.json", "kind": "json"},
+        "fundamental_metrics_validation": {"path": TMP / "fundamental-metrics-validation.json", "kind": "json"},
+        "fundamental_ir_reconciliation_packets": {"path": TMP / "fundamental-ir-reconciliation-packets.json", "kind": "json"},
+        "fundamental_ir_reconciliation_validation": {"path": TMP / "fundamental-ir-reconciliation-validation.json", "kind": "json"},
     },
 }
+
+# Official IR capture required outputs are populated from the period registry so
+# future-quarter rollforward is a registry edit, not a path-string edit here.
+# Long-tail tickers are tracked via chain_manifest expected_outputs but are
+# intentionally not surfaced as required run-summary outputs.
+_RUN_SUMMARY_ALIAS_TICKERS = {
+    "GOOG", "ETN", "VRT", "AMZN", "MSFT", "NVDA",
+    "JPM", "GS", "XOM", "LMT", "RTX", "BRK.B",
+    "AMD", "CAT", "CVX", "PLTR", "GE", "LLY", "META", "PH",
+}
+for _window_outputs in WINDOW_REQUIRED_OUTPUTS.values():
+    for _entry in _registry.all_periods():
+        if _entry.ticker not in _RUN_SUMMARY_ALIAS_TICKERS:
+            continue
+        _window_outputs[_entry.alias_base] = {"path": _entry.json_path, "kind": "json"}
+        _window_outputs[f"{_entry.alias_base}_validation"] = {"path": _entry.validation_path, "kind": "json"}
+del _window_outputs, _entry
 
 
 def parse_args() -> argparse.Namespace:
@@ -149,6 +186,70 @@ def current_exec_freshness() -> str:
     return freshness if freshness in FRESHNESS_ORDER else "missing"
 
 
+def sql_artifact_index_status() -> dict[str, Any]:
+    db_path = ARTIFACT_INDEX_DB
+    rel_path = str(db_path.relative_to(WORKSPACE)).replace("\\", "/") if db_path.is_absolute() else str(db_path)
+    base = {
+        "enabled": True,
+        "db_path": rel_path,
+        "authority_boundary": "derived_review_only_index_not_canon_not_apply",
+        "operator_action_required": False,
+        "operator_next_action": "",
+    }
+    if not db_path.exists():
+        return {
+            **base,
+            "status": "missing",
+            "checks": {"checks": 0, "failed": 1},
+            "failed_checks": ["artifact_index_db_missing"],
+            "operator_action_required": True,
+            "operator_next_action": "Rebuild the derived SQLite artifact index with python scripts/artifact_index.py rebuild before using SQL cockpit outputs as the primary proof lookup route.",
+        }
+    try:
+        report = validate_artifact_index(db_path)
+    except Exception as exc:
+        return {
+            **base,
+            "status": "error",
+            "db_mtime_utc": file_generated_at(db_path),
+            "checks": {"checks": 0, "failed": 1},
+            "failed_checks": [f"artifact_index_validate_error: {exc}"],
+            "operator_action_required": True,
+            "operator_next_action": "Inspect scripts/artifact_index.py validate before using SQL cockpit outputs as the primary proof lookup route.",
+        }
+
+    failed_checks = [str(check.get("name") or "unknown") for check in report.get("checks", []) if not check.get("ok")]
+    status = str(report.get("status") or "unknown")
+    return {
+        **base,
+        "status": status,
+        "schema_version": report.get("schema_version"),
+        "generated_at_utc": report.get("generated_at_utc"),
+        "db_mtime_utc": file_generated_at(db_path),
+        "last_rebuilt_at_utc": (report.get("meta") or {}).get("last_rebuilt_at_utc", ""),
+        "last_incremental_rebuilt_at_utc": (report.get("meta") or {}).get("last_incremental_rebuilt_at_utc", ""),
+        "source_file_count": int((report.get("meta") or {}).get("source_file_count", 0) or 0),
+        "checks": report.get("summary") or {},
+        "safety_counts": report.get("safety_counts") or {},
+        "key_counts": {
+            key: (report.get("counts") or {}).get(key, 0)
+            for key in (
+                "artifact_runs",
+                "artifact_file_state",
+                "market_events",
+                "daily_review_objects",
+                "official_ir_capture_runs",
+                "source_field_lineage",
+                "canon_proposal_staging",
+            )
+        },
+        "drift_fingerprint_tables": len(report.get("drift_fingerprints") or {}),
+        "failed_checks": failed_checks,
+        "operator_action_required": status != "ok",
+        "operator_next_action": "Run python scripts/artifact_index.py incremental, then python scripts/artifact_index.py validate, before relying on the SQL cockpit as the primary proof lookup route." if status != "ok" else "",
+    }
+
+
 def detect_fallbacks(validation: dict[str, Any] | None) -> list[str]:
     if not validation:
         return []
@@ -201,8 +302,33 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
         allowed_pending_tail = {
             "dashboard_run_summary_consumer.py",
             "deployment_readiness_surface.py",
+            "daily_price_trend_signals.py",
             "market_intelligence_event_router.py",
+            "sector_correlation_check.py",
+            "sector_expansion_board.py",
+            "watchlist_promotion_radar.py",
             "daily_review_objects.py",
+            "portfolio_mutation_proposal_generator.py",
+            "capital_deployment_recommendation_report.py",
+            "capital_deployment_recommendation_validator.py",
+            "probability_readiness_report.py",
+            "probability_readiness_validator.py",
+            "board_canon_guardrail.py",
+            "stale_intelligence_guardrail.py",
+            "canonical_note_patch_proposal.py",
+            "full_portfolio_view.py",
+            "full_portfolio_view_validate.py",
+            "portfolio_snapshot_patch_proposal.py",
+            "finance_discrepancy_resolver.py",
+            "proposal_patch_scope_validator.py",
+            "canonical_status_invariant_validator.py",
+            "portfolio_pro_forma_risk_validator.py",
+            "authority_vocabulary_consistency_check.py",
+            "post_apply_validation_chain.py",
+            "state_history_capture.py",
+            "archive_suggester.py",
+            "current_window_artifact_index.py",
+            "artifact_index.py",
             "tmp_cleanup.py",
         }
         if pending_scripts and not pending_scripts.issubset(allowed_pending_tail):
@@ -304,6 +430,7 @@ def operator_action_block(
     fallback_reasons: list[str],
     chain_execution: dict[str, Any] | None,
     review_only_brief: dict[str, Any],
+    artifact_index: dict[str, Any],
 ) -> tuple[list[str], str]:
     recovery = (chain_execution or {}).get("recovery") or {}
     failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
@@ -313,6 +440,8 @@ def operator_action_block(
     next_action = f"Consume the {window} window outputs normally; no immediate repair action is required."
 
     if status in {"blocked", "error"}:
+        if artifact_index.get("operator_action_required"):
+            actions.append(str(artifact_index.get("operator_next_action") or "Restore derived SQL artifact-index health before using SQL cockpit outputs."))
         if failed_step:
             script = str(failed_step.get("script") or "the failed step")
             exit_code = failed_step.get("exit_code")
@@ -332,6 +461,8 @@ def operator_action_block(
         elif stale_or_failed_outputs:
             next_action = f"Refresh the blocked {window} outputs now marked stale or missing before using this window."
     elif status == "warning":
+        if artifact_index.get("operator_action_required"):
+            actions.append(str(artifact_index.get("operator_next_action") or "Restore derived SQL artifact-index health before using SQL cockpit outputs."))
         if fallback_reasons:
             actions.append("Review fallback/manual dependencies before treating the window as presentation-ready.")
         if warnings:
@@ -377,6 +508,14 @@ def build_run_summary(window: str) -> dict[str, Any]:
     warnings = [w.get("message", "") for w in (validation or {}).get("warnings", []) if w.get("message")]
     fallback_reasons = detect_fallbacks(validation)
     chain_status, chain_status_reason, chain_status_normalized = normalized_chain_status(chain_execution)
+    artifact_index = sql_artifact_index_status()
+    if artifact_index.get("status") != "ok":
+        warnings.append(
+            "Derived SQLite artifact-index health is not ok; "
+            f"status={artifact_index.get('status')}."
+        )
+        if status == "ok":
+            status = "warning"
     terminal_chain_statuses = {"ok", "failed", "completed_with_recovery"}
     execution_state_ambiguous = chain_status not in terminal_chain_statuses or not chain_status_normalized
     if execution_state_ambiguous:
@@ -422,9 +561,15 @@ def build_run_summary(window: str) -> dict[str, Any]:
         fallback_reasons,
         chain_execution,
         review_only_brief,
+        artifact_index,
     )
 
     presentation_allowed = False
+
+    report_outputs = {
+        name: meta for name, meta in outputs.items()
+        if name in {"premarket_review_brief", "weekly_printable_brief"}
+    }
 
     return {
         "window": window,
@@ -461,6 +606,7 @@ def build_run_summary(window: str) -> dict[str, Any]:
             "info": int(validation_summary.get("info", 0) or 0),
             "exec_freshness": current_exec_freshness(),
         },
+        "artifact_index": artifact_index,
         "outputs": outputs,
         "warnings": warnings,
         "blockers": blockers,
@@ -471,6 +617,11 @@ def build_run_summary(window: str) -> dict[str, Any]:
             "reason": "; ".join(fallback_reasons),
         },
         "review_only_brief": review_only_brief,
+        "generated_reports": {
+            "enabled": bool(report_outputs),
+            "outputs": report_outputs,
+            "pdf_generation": "print-ready HTML/Markdown only unless a PDF renderer is separately approved and proven",
+        },
         "downstream": {
             "command_center_badge": downstream_badge,
             "workbook_trust_grade": workbook_status,

@@ -29,6 +29,7 @@ TECH_PATH   = WORKSPACE / "tmp" / "technical-refresh.json"
 STATE_PATH  = WORKSPACE / "tmp" / "market-state.json"
 CONFIG_PATH = WORKSPACE / "tmp" / "portfolio-config.json"
 EARNINGS_PATH = WORKSPACE / "tmp" / "earnings-calendar.json"
+BAND_PROPOSALS_PATH = WORKSPACE / "tmp" / "band-proposals.json"
 OUT_PATH    = WORKSPACE / "tmp" / "deployment-check.json"
 STALE_HOURS = 24
 SCHEMA_VERSION = 1
@@ -45,6 +46,24 @@ PRIORITY: dict[str, int] = {
 }
 
 
+def _formal_reclaim_debt_active(rec: dict[str, Any], meta: dict[str, Any]) -> bool:
+    proposal = meta.get("_band_proposal")
+    if not isinstance(proposal, dict):
+        return False
+    if proposal.get("canonical_apply_eligible") is True:
+        return False
+    if str(proposal.get("band_status") or "").upper() not in {"RECLAIM_ONLY", "BELOW_STOP"}:
+        return False
+    suggested_low = proposal.get("suggested_band_low")
+    suggested_stop = proposal.get("suggested_stop")
+    close = rec.get("close")
+    if close is None or suggested_low is None:
+        return False
+    if suggested_stop is not None and close < suggested_stop:
+        return False
+    return close < suggested_low
+
+
 def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[str, str]:
     close = rec.get("close")
     in_band = rec.get("in_entry_band")
@@ -53,6 +72,19 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
     coverage_lane = (meta.get("coverage_lane") or "").lower()
     entry_policy = (meta.get("entry_policy") or "").lower()
     workflow_state = (meta.get("workflow_state") or "").upper()
+    owner_text = " ".join(
+        str(meta.get(key) or "")
+        for key in ("thesis_status", "trigger_condition", "authority_conflict")
+    ).lower()
+    approval_recorded_trigger_not_live = (
+        bool(meta.get("owner_approval_date"))
+        and ("trigger not live" in owner_text or "trigger is not live" in owner_text)
+        and (
+            "no automatic execution" in owner_text
+            or "not deployable" in owner_text
+            or "wait/no-chase" in owner_text
+        )
+    )
     repair_mode = workflow_state == "REPAIR" or bool(meta.get("repair_mode"))
     force_below_stop = bool(meta.get("force_do_not_touch_if_below_stop"))
 
@@ -78,6 +110,13 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
             return "BLOCKED", f"in entry band at {round(close, 2)} but earnings block active"
         return "BLOCKED", "earnings block active -- wait for print"
 
+    if workflow_state == "DEPLOYED":
+        if in_band:
+            return "DEPLOYABLE NOW", f"owner-approved setup remains in entry band at {round(close, 2)}"
+        if in_band is None:
+            return "WATCH / RESEARCH NEEDED", "owner-approved setup is missing decision-grade entry-band data -- refresh levels before relying on it"
+        return "ALMOST DEPLOYABLE", "owner-approved setup, but current close is outside the live entry band -- wait for reclaim or approved band update"
+
     if workflow_state == "WATCH":
         if in_band is None and entry_policy == "underdefined":
             if coverage_lane and coverage_lane != "execution":
@@ -91,7 +130,18 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
             return "WATCH / RESEARCH NEEDED", "in band, but this execution setup remains watch-only until it is intentionally promoted"
         return "WATCH / RESEARCH NEEDED", "levels are defined, but this execution setup remains watch-only until it is intentionally promoted"
 
+    if workflow_state == "PROMOTION REVIEW":
+        if in_band:
+            return "PROMOTION REVIEW", f"in band at {round(close, 2)} -- portfolio-review only; separate owner model/sleeve/deployment decision required"
+        if in_band is None:
+            return "PROMOTION REVIEW", "portfolio-review only, but decision-grade numeric entry-band/stop data is missing -- refresh levels before review"
+        return "PROMOTION REVIEW", "portfolio-review only -- wait for band reclaim or explicit owner model/sleeve/deployment decision"
+
     if workflow_state == "ALMOST":
+        if _formal_reclaim_debt_active(rec, meta):
+            return "ALMOST DEPLOYABLE", "formal reclaim band is not live -- wait for reclaim or explicit approved review"
+        if approval_recorded_trigger_not_live:
+            return "ALMOST DEPLOYABLE", "approval recorded, but trigger is not live -- wait for reclaim or explicit approved review"
         if in_band:
             return "PROMOTION REVIEW", f"in band at {round(close, 2)} -- explicit owner promotion review required before deployable-now status"
         return "ALMOST DEPLOYABLE", "workflow state is ALMOST -- constructive but not yet promoted"
@@ -228,6 +278,18 @@ def main() -> None:
         except Exception:
             pass
 
+    band_proposals_by_ticker: dict[str, dict[str, Any]] = {}
+    if BAND_PROPOSALS_PATH.exists():
+        try:
+            band_proposals = json.loads(BAND_PROPOSALS_PATH.read_text(encoding="utf-8"))
+            band_proposals_by_ticker = {
+                proposal["ticker"]: proposal
+                for proposal in (band_proposals.get("proposals") or [])
+                if isinstance(proposal, dict) and proposal.get("ticker")
+            }
+        except Exception:
+            band_proposals_by_ticker = {}
+
     earnings = {}
     if EARNINGS_PATH.exists():
         try:
@@ -260,7 +322,9 @@ def main() -> None:
     for rec in records:
         ticker = rec.get("ticker")
         blocked = ticker in blocked_tickers
-        meta = config.get("tracked_universe", {}).get(ticker, {})
+        meta = dict(config.get("tracked_universe", {}).get(ticker, {}))
+        if ticker in band_proposals_by_ticker:
+            meta["_band_proposal"] = band_proposals_by_ticker[ticker]
         label, reason = classify(rec, blocked, meta)
         enriched = dict(rec)
         enriched["earnings_blocked"] = blocked

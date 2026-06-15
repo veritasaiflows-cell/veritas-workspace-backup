@@ -3,19 +3,24 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 
 from market_data_utils import atomic_write_json, atomic_write_text
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 TMP = WORKSPACE / "tmp"
 CONFIG_PATH = TMP / "portfolio-config.json"
-NOTE_PATH = WORKSPACE / "03. Portfolio" / "Technical Entry and Invalidation Sheet.md"
-OUT_PATH = TMP / "band-note-sync.md"
+NOTE_PATH = WORKSPACE / "03. Portfolio" / "Execution Board.md"
 OUT_JSON_PATH = TMP / "band-note-sync.json"
+OUT_PATH = OUT_JSON_PATH.with_suffix(".md")
 
 SECTION_RE = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
 BAND_RE = re.compile(r"^- Preferred entry band: \*\*(.+?)\*\*(.*)$")
@@ -36,9 +41,9 @@ class BandMismatch:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Compare machine entry bands against the canonical technical note and emit exact sync actions.",
+        description="Compare machine entry bands against the canonical Execution Board and emit exact sync actions.",
     )
-    parser.add_argument("--out", default=str(OUT_PATH), help="Output markdown report path.")
+    parser.add_argument("--out", default=None, help="Optional Markdown report path.")
     parser.add_argument("--json-out", default=str(OUT_JSON_PATH), help="Output JSON report path.")
     return parser.parse_args()
 
@@ -178,7 +183,7 @@ def build_report(mismatches: list[BandMismatch]) -> str:
         f"Generated at: {generated_at}",
         f"Canonical note: `{NOTE_PATH.relative_to(WORKSPACE)}`",
         "",
-        "This report does not edit the note. It shows exact band/stop lines that should be synced manually or via a later gated helper.",
+        "This report does not edit the Execution Board. It shows exact band/stop lines that should be synced manually or via a later gated helper.",
         "",
         f"Names reviewed: {len(mismatches)}",
         f"Names needing sync or review: {len(needs_sync)}",
@@ -260,11 +265,13 @@ def main() -> int:
         mismatches.append(compare_ticker(ticker, band, sections.get(ticker)))
 
     report = build_report(mismatches)
-    out_path = Path(args.out)
+    out_path = Path(args.out) if args.out else None
     out_json_path = Path(args.json_out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
+    if out_path:
+        out_path.parent.mkdir(parents=True, exist_ok=True)
     out_json_path.parent.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(out_path, report, encoding="utf-8")
+    if out_path:
+        atomic_write_text(out_path, report, encoding="utf-8")
     atomic_write_json(out_json_path, build_json_report(mismatches), indent=2)
     needs_sync = sum(1 for m in mismatches if m.changed or m.note_status != "already aligned")
     print({

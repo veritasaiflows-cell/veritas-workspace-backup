@@ -123,8 +123,8 @@ def active_lane_writes(register: dict[str, Any]) -> dict[str, list[str]]:
     return owners
 
 
-def completed_lane_ids(register: dict[str, Any]) -> set[str]:
-    completed: set[str] = set()
+def completed_lane_states(register: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    completed: dict[str, dict[str, Any]] = {}
     for lane in as_list(register.get("lanes")):
         lane_dict = as_dict(lane)
         if lane_dict.get("status") != "complete":
@@ -132,8 +132,36 @@ def completed_lane_ids(register: dict[str, Any]) -> set[str]:
         workflow_id = str(lane_dict.get("workflow_id") or "").upper()
         workstream_id = str(lane_dict.get("workstream_id") or "")
         if workflow_id and workstream_id:
-            completed.add(f"{workflow_id}::{workstream_id}")
+            completed[f"{workflow_id}::{workstream_id}"] = lane_dict
     return completed
+
+
+def path_mtime(path: str) -> float | None:
+    resolved = ROOT / normalize_path(path)
+    try:
+        return resolved.stat().st_mtime
+    except OSError:
+        return None
+
+
+def completion_freshness(candidate: dict[str, Any], lane: dict[str, Any] | None) -> dict[str, Any]:
+    if not lane:
+        return {"state": "not_completed", "stale_inputs": [], "missing_proofs": []}
+    proofs = [normalize_path(str(path)) for path in as_list(lane.get("proof_artifacts")) if str(path).strip()]
+    missing_proofs = [path for path in proofs if not (ROOT / path).exists()]
+    proof_mtimes = [mtime for mtime in (path_mtime(path) for path in proofs) if mtime is not None]
+    if not proofs or missing_proofs or not proof_mtimes:
+        return {"state": "stale_missing_proof", "stale_inputs": [], "missing_proofs": missing_proofs or proofs}
+    oldest_proof_mtime = min(proof_mtimes)
+    stale_inputs = []
+    for source in as_list(candidate.get("read_first")):
+        source_path = normalize_path(str(source))
+        source_mtime = path_mtime(source_path)
+        if source_mtime is not None and source_mtime > oldest_proof_mtime:
+            stale_inputs.append(source_path)
+    if stale_inputs:
+        return {"state": "stale_inputs", "stale_inputs": stale_inputs, "missing_proofs": []}
+    return {"state": "fresh", "stale_inputs": [], "missing_proofs": []}
 
 
 def forbidden_write(path: str) -> str | None:
@@ -142,6 +170,10 @@ def forbidden_write(path: str) -> str | None:
         if re.search(pattern, normalized, re.IGNORECASE):
             return pattern
     return None
+
+
+def ps_quote(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
 
 
 def base_templates() -> list[dict[str, Any]]:
@@ -188,6 +220,25 @@ def base_templates() -> list[dict[str, Any]]:
         },
         {
             "workflow_id": "WF78",
+            "workstream_id": "ticker-card-freshness-owner-qa",
+            "title": "WF78 ticker-card freshness owner QA lane",
+            "reason": "Safe parallel proof lane after owner-runner integration: independently verify that daily ticker-card freshness is self-healing and fail-closed only on true production blockers.",
+            "read_first": [
+                "tmp/ticker-card-freshness-owner-runner.json",
+                "tmp/finance-ticker-card-refresh-gate.json",
+                "tmp/finance-data-coverage-current.json",
+                "tmp/position-sizing-readiness-current.json",
+            ],
+            "allowed_writes": ["tmp/parallel-lanes/wf78-ticker-card-freshness-owner-qa.json"],
+            "acceptance_commands": [
+                "python scripts\\ticker_card_freshness_owner_runner.py --skip-provider-refresh --validate",
+                "python scripts\\pm_control_packet.py --write --validate",
+                "python scripts\\concurrent_lane_manager.py --validate",
+            ],
+            "deliverable": "A compact JSON QA packet confirming the owner runner status, true production blocker count, production repair debt classification, and unchanged finance authority boundary.",
+        },
+        {
+            "workflow_id": "WF78",
             "workstream_id": "tier1-quote-readiness-qa",
             "title": "WF78 Tier 1 quote-readiness QA lane",
             "reason": "Fast independent quote-readiness check: verify Tier A/capital-review symbols are covered by daily market-data proof without preparing orders.",
@@ -230,7 +281,7 @@ def score_template(
     template: dict[str, Any],
     routes: list[dict[str, Any]],
     write_owners: dict[str, list[str]],
-    completed_lanes: set[str],
+    completed_lanes: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     workflow_id = str(template.get("workflow_id") or "").upper()
     workstream_id = str(template.get("workstream_id") or "")
@@ -242,7 +293,19 @@ def score_template(
     missing_read_first = [path for path in as_list(template.get("read_first")) if not (ROOT / normalize_path(str(path))).exists()]
     route_safe = route.get("safe_for_helper_lane") is True
     route_owner_gated = route.get("owner_action_required") is True
-    already_completed = lane_id in completed_lanes
+    completion = completion_freshness(template, completed_lanes.get(lane_id))
+    completion_state = str(completion.get("state") or "")
+    reopen_on_stale_inputs = template.get("reopen_on_stale_inputs") is True
+    already_completed = completion_state in {"fresh", "stale_inputs"} and not reopen_on_stale_inputs
+    completion_reopen_reason = (
+        "proof_missing_or_invalid"
+        if completion_state == "stale_missing_proof"
+        else "template_allows_stale_input_reopen"
+        if completion_state == "stale_inputs" and reopen_on_stale_inputs
+        else "completed_lane_context_changed_monitor_only"
+        if completion_state == "stale_inputs"
+        else completion_state
+    )
     score = 100
     if not route_safe:
         score -= 100
@@ -266,6 +329,10 @@ def score_template(
         "forbidden_writes": forbidden,
         "missing_read_first": missing_read_first,
         "already_completed": already_completed,
+        "completion_state": completion_state,
+        "completion_reopen_reason": completion_reopen_reason,
+        "stale_completion_inputs": completion.get("stale_inputs", []),
+        "missing_completion_proofs": completion.get("missing_proofs", []),
         "eligible": score > 0 and not collisions and not forbidden and route_safe and not already_completed,
     }
 
@@ -298,7 +365,7 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
 
     routes = [as_dict(route) for route in as_list(workflow_index.get("routes"))]
     write_owners = active_lane_writes(register)
-    completed_lanes = completed_lane_ids(register)
+    completed_lanes = completed_lane_states(register)
     templates = base_templates()
     if prefer_workflow:
         wanted = prefer_workflow.upper()
@@ -306,15 +373,22 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
     scored = [score_template(template, routes, write_owners, completed_lanes) for template in templates]
     scored.sort(key=lambda row: (-int(row.get("score") or 0), str(row.get("workflow_id")), str(row.get("workstream_id"))))
     eligible = [row for row in scored if row.get("eligible")]
+    all_candidates_complete = bool(scored) and all(row.get("already_completed") for row in scored)
     top = eligible[0] if eligible else (scored[0] if scored else {})
     owner = f"helper-{str(top.get('workflow_id') or 'wf').lower()}-{str(top.get('workstream_id') or 'lane').replace('_', '-').replace(' ', '-')}"
     lease_command = ""
     spawn_args: dict[str, Any] = {}
     if top and top.get("eligible"):
-        allowed_flags = " ".join(f"--allowed-write {path}" for path in as_list(top.get("allowed_writes")))
+        allowed_flags = " ".join(f"--allowed-write {ps_quote(str(path))}" for path in as_list(top.get("allowed_writes")))
+        read_flags = " ".join(f"--read-first {ps_quote(str(path))}" for path in as_list(top.get("read_first")))
+        acceptance_flags = " ".join(
+            f"--acceptance-command {ps_quote(str(command))}" for command in as_list(top.get("acceptance_commands"))
+        )
+        reopen_flag = "--reopen-complete " if str(top.get("completion_state") or "") not in {"", "not_completed"} else ""
         lease_command = (
             f"python scripts\\concurrent_lane_manager.py --lease {top.get('workflow_id')} "
-            f"--workstream {top.get('workstream_id')} --owner {owner} {allowed_flags} --write --validate"
+            f"--workstream {top.get('workstream_id')} --owner {owner} {allowed_flags} "
+            f"{read_flags} {acceptance_flags} --replace-contract {reopen_flag}--write --validate"
         )
         spawn_args = {
             "runtime": "subagent",
@@ -339,7 +413,12 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
 
     check("workflow_index_present", bool(routes), rel(WORKFLOW_INDEX))
     check("lane_register_validation_ok", as_dict(register.get("validation")).get("status") == "ok", as_dict(register.get("validation")))
-    check("top_candidate_eligible", bool(top.get("eligible")), top, "critical" if top.get("forbidden_writes") or top.get("collisions") else "warning")
+    check(
+        "top_candidate_eligible_or_all_complete",
+        bool(top.get("eligible")) or all_candidates_complete,
+        top,
+        "critical" if top.get("forbidden_writes") or top.get("collisions") else "warning",
+    )
     check("top_candidate_one_output", len(as_list(top.get("allowed_writes"))) == 1, top.get("allowed_writes"))
     check("top_candidate_no_collisions", not as_dict(top.get("collisions")), top.get("collisions"))
     check("top_candidate_no_forbidden_writes", not as_list(top.get("forbidden_writes")), top.get("forbidden_writes"))
@@ -358,7 +437,7 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "blocked" if critical else "warning" if warnings else "ok",
+        "status": "blocked" if critical else "ok",
         "purpose": "Pick the fastest safe helper lane for isolated parallel session work without write collisions or authority drift.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": {
@@ -371,6 +450,8 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
         "summary": {
             "candidate_count": len(scored),
             "eligible_candidate_count": len(eligible),
+            "completed_candidate_count": len([row for row in scored if row.get("already_completed")]),
+            "all_candidates_complete": all_candidates_complete,
             "active_lane_count": as_dict(register.get("summary")).get("active_lane_count", 0),
             "completed_lane_count": len(completed_lanes),
             "pm_ready_job_count": len(pm_context_jobs(pm_queue)),

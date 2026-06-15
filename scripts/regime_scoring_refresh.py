@@ -6,7 +6,7 @@ bounded scoring/ranking blocks in 02. Markets/Regime Scoring Matrix.md.
 
 Authority boundary: Regime Scoring Matrix.md is a controlled machine-companion
 ranking note, not final canonical deployment truth. Final action authority stays
-with the Deployment Trigger Sheet, Portfolio Snapshot, Risk Rules, and explicit
+with the Execution Board, Portfolio Snapshot, Risk Rules, and explicit
 owner approval.
 
 Scoring dimensions (each 1–5, total out of 20):
@@ -36,6 +36,7 @@ trade execution, or owner approval.
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import re
 import sys
@@ -69,7 +70,7 @@ REGIME_MATRIX_AUTHORITY: dict[str, Any] = {
         "Freshness and refresh policy",
     ],
     "final_authority_surfaces": [
-        "03. Portfolio/Deployment Trigger Sheet.md",
+        "03. Portfolio/Execution Board.md",
         "03. Portfolio/Portfolio Snapshot.md",
         "07. Risk/Risk Rules.md",
         "explicit owner approval",
@@ -163,15 +164,18 @@ def score_technical_posture(
     )
     constructive = bullish_stack or "above" in posture_lower
 
-    # No band defined — score on MA posture alone
+    # No band defined — score on MA posture alone, but keep it non-actionable.
     if entry_band is None or entry_band.get("high") is None:
         if bullish_stack:
             return 3
         if constructive:
             return 2
-        return 2  # no levels = not actionable regardless of MA
+        return 2
 
-    band_high = float(entry_band["high"])
+    try:
+        band_high = float(entry_band["high"])
+    except (TypeError, ValueError):
+        return 2
 
     if in_entry_band:
         return 5 if bullish_stack else 4
@@ -182,7 +186,7 @@ def score_technical_posture(
     pct_above = ((close - band_high) / band_high) * 100 if band_high > 0 else 0
 
     if pct_above <= 0:
-        # Below band (but not at stop) — unusual; treat as almost in band
+        # Below band (but not at stop) — unusual; treat as almost in band.
         return 4 if bullish_stack else 3
     if pct_above <= 5:
         return 4 if bullish_stack else 3
@@ -190,6 +194,71 @@ def score_technical_posture(
         return 3 if bullish_stack else 2
     # > 10% extended
     return 2 if bullish_stack else 1
+
+
+def fmt_money(value: float | int | None) -> str:
+    if value is None:
+        return "N/A"
+    try:
+        return f"{float(value):.2f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def build_stop_band_note(*, close: float | None, entry_band: dict | None, stop: float | None, below_stop: bool) -> str:
+    """Return a concise risk note for the scoring table.
+
+    Stop state must outrank ordinary band-distance language. A name that has
+    breached its stop, or is sitting just above it, should not read like a
+    routine below-band watch item in the owner-facing matrix.
+    """
+    if close is None:
+        return ""
+
+    band_low = None
+    band_high = None
+    if entry_band:
+        try:
+            band_low = float(entry_band.get("low")) if entry_band.get("low") is not None else None
+            band_high = float(entry_band.get("high")) if entry_band.get("high") is not None else None
+        except (TypeError, ValueError):
+            band_low = None
+            band_high = None
+
+    stop_val = None
+    try:
+        stop_val = float(stop) if stop is not None else None
+    except (TypeError, ValueError):
+        stop_val = None
+
+    c = float(close)
+    band_distance = ""
+    if band_low is not None and c < band_low:
+        pct = ((band_low - c) / band_low) * 100 if band_low else 0
+        band_distance = f"; {pct:.1f}% below band low {fmt_money(band_low)}"
+    elif band_high is not None and c > band_high:
+        pct = ((c - band_high) / band_high) * 100 if band_high else 0
+        band_distance = f"; {pct:.1f}% above band {fmt_money(band_high)}"
+    elif band_low is not None and band_high is not None:
+        band_distance = "; in band"
+
+    if stop_val is not None:
+        if below_stop or c < stop_val:
+            return f"stop breached: close {fmt_money(c)} is {fmt_money(stop_val - c)} below stop {fmt_money(stop_val)}{band_distance}"
+        stop_margin_pct = ((c - stop_val) / stop_val) * 100 if stop_val else None
+        if stop_margin_pct is not None and stop_margin_pct <= 1.0:
+            return f"near stop: close {fmt_money(c)} is {fmt_money(c - stop_val)} above stop {fmt_money(stop_val)}{band_distance}"
+
+    if band_low is not None and band_high is not None:
+        if c > band_high:
+            pct = ((c - band_high) / band_high) * 100 if band_high else 0
+            return f"{pct:.1f}% above band"
+        if c < band_low:
+            pct = ((band_low - c) / band_low) * 100 if band_low else 0
+            return f"{pct:.1f}% below band low"
+        return "in band"
+
+    return ""
 
 
 # ---------------------------------------------------------------------------
@@ -261,6 +330,7 @@ def main() -> None:
         print(f"  macro-regime:     NOT FOUND — using static sector fit scores")
 
     tracked = config.get("tracked_universe", {})
+    entry_bands = config.get("entry_bands", {}) if isinstance(config.get("entry_bands"), dict) else {}
     trigger_records = {r["ticker"]: r for r in trigger.get("records", [])}
     tech_records    = {r["ticker"]: r for r in technical.get("records", [])}
     earnings_records = {
@@ -290,12 +360,18 @@ def main() -> None:
         role         = cfg.get("portfolio_role", "tactical")
         repair_mode  = bool(cfg.get("repair_mode", False))
         thesis_status = cfg.get("thesis_status", "intact")
-        workflow     = cfg.get("workflow_state", "WATCH")
+        workflow     = legacy_state(cfg, "workflow_state", "WATCH")
 
         close        = tr.get("close") or te.get("close")
-        entry_band   = tr.get("entry_band")  # dict with low/high/label or None
+        entry_band   = tr.get("entry_band") or entry_bands.get(ticker)  # dict with low/high/label or None
         in_band      = bool(tr.get("in_entry_band") or te.get("in_entry_band"))
         below_stop   = bool(tr.get("below_stop") or te.get("below_stop"))
+        stop_val     = tr.get("invalidation") or (entry_band or {}).get("stop")
+        try:
+            if close is not None and stop_val is not None and float(close) < float(stop_val):
+                below_stop = True
+        except (TypeError, ValueError):
+            pass
         ma_posture   = tr.get("ma_posture") or te.get("ma_posture") or ""
         earnings_blocked = bool(tr.get("earnings_blocked") or te.get("earnings_blocked"))
 
@@ -326,7 +402,7 @@ def main() -> None:
         total = rf + tp + cr + fc
 
         # Build human-readable stance label
-        action = tr.get("action_state") or workflow
+        action = legacy_state(tr, "action_state") or workflow
         stance_map = {
             "DEPLOYABLE":       "Deployable",
             "ALMOST DEPLOYABLE": "Almost deployable",
@@ -339,20 +415,11 @@ def main() -> None:
             "MACRO":            "Watch",
         }
         stance = stance_map.get((action or "").upper(), action or "Watch")
+        if below_stop:
+            stance = "Do not touch"
 
         # Compute pct above/below band for notes
-        band_note = ""
-        if entry_band and entry_band.get("high") and close:
-            bh = float(entry_band["high"])
-            bl = float(entry_band.get("low", bh))
-            if close > bh:
-                pct = ((close - bh) / bh) * 100
-                band_note = f"{pct:.1f}% above band"
-            elif close < bl:
-                pct = ((bl - close) / bl) * 100
-                band_note = f"{pct:.1f}% below band low"
-            else:
-                band_note = "in band"
+        band_note = build_stop_band_note(close=close, entry_band=entry_band, stop=stop_val, below_stop=below_stop)
 
         scored.append({
             "ticker":          ticker,
@@ -367,6 +434,7 @@ def main() -> None:
             "close":           close,
             "days_to_earnings": days_to_earn,
             "band_note":       band_note,
+            "below_stop":      below_stop,
             "ma_posture":      ma_posture,
             "repair_mode":     repair_mode,
             "thesis_status":   thesis_status,

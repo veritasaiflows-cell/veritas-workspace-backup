@@ -33,6 +33,7 @@ Usage:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import sys
 
@@ -43,6 +44,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from band_behavior import band_behavior_by_ticker, format_band_behavior, qualified_band_behavior
 from board_state_contract import actionable_records, filter_records_by_states
 from dashboard_delta_render import format_delta_change
 from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate
@@ -57,6 +59,8 @@ DEPLOYMENT       = WORKSPACE / "tmp" / "deployment-check.json"
 EARNINGS_CAL     = WORKSPACE / "tmp" / "earnings-calendar.json"
 DELTA            = WORKSPACE / "tmp" / "dashboard-delta.json"
 BAND_PROPOSALS   = WORKSPACE / "tmp" / "band-proposals.json"
+FUNDAMENTALS     = WORKSPACE / "tmp" / "fundamental-metrics-current.json"
+FUND_VALIDATION  = WORKSPACE / "tmp" / "fundamental-metrics-validation.json"
 OUT_DIR          = WORKSPACE / "01. Dashboards" / "Daily Executive Summary"
 OUT_JSON         = WORKSPACE / "tmp" / "daily-executive-brief.json"
 
@@ -243,12 +247,14 @@ def section4_todays_catalysts(earnings: dict, ms: dict, today: date) -> str:
     return "\n".join(lines)
 
 
-def section5_closest_actionable(trigger: dict, deploy_check: dict) -> str:
+def section5_closest_actionable(trigger: dict, deploy_check: dict, ms: dict) -> str:
     records = trigger.get("records", []) if trigger else []
     normalized_records = [record for record in records if isinstance(record, dict)]
     actionable = actionable_records(normalized_records)
     blocked    = filter_records_by_states(normalized_records, {"BLOCKED"})
     do_not     = filter_records_by_states(normalized_records, {"DO NOT TOUCH"})
+
+    behavior_by_ticker = band_behavior_by_ticker(trigger, ms)
 
     lines = ["## 5) Closest actionable names\n"]
 
@@ -261,7 +267,7 @@ def section5_closest_actionable(trigger: dict, deploy_check: dict) -> str:
             eb = r.get("entry_band") or {}
             lo, hi = eb.get("low"), eb.get("high")
             band_label = eb.get("label", "no band")
-            state = r.get("action_state", "")
+            state = legacy_state(r, "action_state", "")
 
             if lo is not None and hi is not None and close is not None:
                 try:
@@ -281,7 +287,8 @@ def section5_closest_actionable(trigger: dict, deploy_check: dict) -> str:
             else:
                 gap_str = "no band"
 
-            lines.append(f"- **{tk}** — {state}. Close {fmt(close)}, band {band_label}. Gap: {gap_str}.")
+            behavior = format_band_behavior(behavior_by_ticker.get(str(tk)))
+            lines.append(f"- **{tk}** — {state}. Close {fmt(close)}, band {band_label}. Gap: {gap_str}. Tape: {behavior}.")
 
     if blocked:
         lines.append(f"\n**Blocked / not actionable now:**")
@@ -296,8 +303,8 @@ def section5_closest_actionable(trigger: dict, deploy_check: dict) -> str:
     # Deployment-check enrichment: surface BENCH and BELOW STOP from the deployment
     # layer even when the trigger sheet does not carry those names in review states.
     deploy_records = (deploy_check or {}).get("records", []) or []
-    bench_records = [r for r in deploy_records if r.get("action_state") == "BENCH"]
-    below_stop_records = [r for r in deploy_records if r.get("action_state") == "BELOW STOP"]
+    bench_records = [r for r in deploy_records if legacy_state(r, "action_state") == "BENCH"]
+    below_stop_records = [r for r in deploy_records if legacy_state(r, "action_state") == "BELOW STOP"]
 
     if below_stop_records:
         lines.append(f"\n**Below stop (deployment-check):**")
@@ -375,6 +382,30 @@ def section7_recommended_actions(trigger: dict, post_prep: dict, validation: dic
     return "\n".join(lines)
 
 
+def section8_fundamental_watch(fundamentals: dict, fund_validation: dict) -> str:
+    rows = [row for row in (fundamentals or {}).get("rows", []) if isinstance(row, dict) and row.get("instrument_type") == "equity"]
+    summary = (fundamentals or {}).get("summary") or {}
+    validation_summary = (fund_validation or {}).get("summary") or {}
+    caution = [row for row in rows if row.get("capital_allocation_quality") in {"caution", "manual_review_required"}]
+    bank_manual = [row for row in rows if row.get("capital_allocation_quality") == "bank_manual_review"]
+    sec_conflicts = [row for row in rows if ((row.get("sec_reconciliation") or {}).get("status") == "conflict")]
+    fcf_down = [row for row in rows if row.get("fcf_interpretation") != "bank_structural" and isinstance(row.get("fcf_per_share_yoy_pct"), (int, float)) and row.get("fcf_per_share_yoy_pct") < -20]
+    lines = ["## 8) Fundamental / per-share watch\n"]
+    lines.append(f"- WF65 status: {summary.get('equity_tickers', len(rows))} equity rows; capital-allocation quality counts {summary.get('capital_allocation_quality_counts', {})}; validator warnings {validation_summary.get('warning', 0)} / critical {validation_summary.get('critical', 0)}.")
+    if caution:
+        lines.append("- Capital-allocation caution: " + ", ".join(str(row.get("ticker")) for row in caution[:10]) + ".")
+    if bank_manual:
+        lines.append("- Bank manual review: " + ", ".join(str(row.get("ticker")) for row in bank_manual[:10]) + " require CET1/ROTCE/NIM/deposit/credit-quality review; industrial FCF/debt gates are suppressed.")
+    if sec_conflicts:
+        lines.append("- SEC reconciliation conflicts requiring manual review: " + ", ".join(str(row.get("ticker")) for row in sec_conflicts) + ".")
+    if fcf_down:
+        lines.append("- FCF/share deterioration watch: " + ", ".join(str(row.get("ticker")) for row in fcf_down[:10]) + ".")
+    if not caution and not bank_manual and not sec_conflicts and not fcf_down:
+        lines.append("- No material WF65 per-share/capital-allocation watch item surfaced from the current artifact.")
+    lines.append("- Review-only boundary: fundamentals, buybacks, FCF/share, ROIC proxy, and valuation context do not grant deployment, owner approval, sizing, account, or trade authority.")
+    return "\n".join(lines)
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -382,7 +413,7 @@ def section7_recommended_actions(trigger: dict, post_prep: dict, validation: dic
 def render_markdown(today: date,
                     ms: dict, trigger: dict, validation: dict,
                     delta: dict | None, earnings: dict, post_prep: dict,
-                    deploy_check: dict) -> str:
+                    deploy_check: dict, fundamentals: dict, fund_validation: dict) -> str:
     last_td = ms.get("last_trading_day", "unknown") if ms else "unknown"
     gen_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -397,11 +428,13 @@ def render_markdown(today: date,
     parts.append("")
     parts.append(section4_todays_catalysts(earnings, ms, today))
     parts.append("")
-    parts.append(section5_closest_actionable(trigger, deploy_check))
+    parts.append(section5_closest_actionable(trigger, deploy_check, ms))
     parts.append("")
     parts.append(section6_trigger_conditions(trigger))
     parts.append("")
     parts.append(section7_recommended_actions(trigger, post_prep, validation))
+    parts.append("")
+    parts.append(section8_fundamental_watch(fundamentals, fund_validation))
     parts.append("")
     parts.append("---\n")
     parts.append(f"*Auto-generated by `scripts/daily_executive_brief.py`. "
@@ -426,8 +459,10 @@ def main() -> int:
     earnings     = load_json(EARNINGS_CAL) or {}
     post_prep    = load_json(POST_PREP) or {}
     deploy_check = load_json(DEPLOYMENT) or {}
+    fundamentals = load_json(FUNDAMENTALS) or {}
+    fund_validation = load_json(FUND_VALIDATION) or {}
 
-    md = render_markdown(today, ms, trigger, validation, delta, earnings, post_prep, deploy_check)
+    md = render_markdown(today, ms, trigger, validation, delta, earnings, post_prep, deploy_check, fundamentals, fund_validation)
 
     canonical = OUT_DIR / f"{today.isoformat()}.md"
     machine   = OUT_DIR / f"{today.isoformat()}-machine.md"
@@ -465,8 +500,16 @@ def main() -> int:
         "deployable_now":     (trigger.get("summary", {}) or {}).get("deployable_now", []),
         "almost_deployable":  (trigger.get("summary", {}) or {}).get("almost_deployable", []),
         "blocked":            (trigger.get("summary", {}) or {}).get("blocked", []),
-        "bench":              [r["ticker"] for r in deploy_records if r.get("action_state") == "BENCH"],
-        "below_stop":         [r["ticker"] for r in deploy_records if r.get("action_state") == "BELOW STOP"],
+        "bench":              [r["ticker"] for r in deploy_records if legacy_state(r, "action_state") == "BENCH"],
+        "below_stop":         [r["ticker"] for r in deploy_records if legacy_state(r, "action_state") == "BELOW STOP"],
+        "qualified_band_behavior": qualified_band_behavior(trigger, ms),
+        "fundamental_watch": {
+            "generated_at_utc": fundamentals.get("generated_at_utc"),
+            "summary": fundamentals.get("summary", {}),
+            "validation_summary": fund_validation.get("summary", {}),
+            "review_only": True,
+            "capital_action_allowed": False,
+        },
         "deploy_check_source": deploy_check.get("generated_at_utc"),
         "deferred_to_machine": skipped_session,
         "wrote_to":           str(target.relative_to(WORKSPACE)),

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "purpose": "Personalized Veritas response formatter registry for recurring finance requests.",
+  "authority_boundary": "All formatter outputs are decision support only. No formatter grants owner approval, portfolio mutation, execution entitlement, trade action, sizing, sleeve, cash, or account authority.",
+  "formatters": [
+    {
+      "formatter_id": "full_portfolio_view",
+      "use_when": "Randall asks for a full portfolio view, portfolio read, portfolio dashboard, or portfolio graphics/tables.",
+      "primary_artifact": "tmp/full-portfolio-view.json",
+      "response_shape": ["verdict", "market regime/theme", "dashboard", "tables/graphics", "capital priority", "risks", "owner-gated next actions"]
+    },
+    {
+      "formatter_id": "quick_market_view",
+      "use_when": "Randall asks what the market looks like now or requests a quick market read.",
+      "primary_artifacts": ["tmp/market-state.json", "tmp/daily-executive-brief.json", "02. Markets/Macro Regime Dashboard.md"],
+      "response_shape": ["regime verdict", "what changed", "risk-on/off posture", "theme", "portfolio implication", "next check"]
+    },
+    {
+      "formatter_id": "single_stock_read",
+      "use_when": "Randall asks for one ticker or a thesis/entry read on a specific name.",
+      "primary_artifacts": ["tmp/technical-refresh.json", "tmp/deployment-check.json", "tmp/regime-scores.json", "04. Research/Coverage and Watchlist.md"],
+      "response_shape": ["business quality", "technical state", "catalyst state", "entry/stop", "risk", "portfolio action bucket"]
+    },
+    {
+      "formatter_id": "deployment_readiness_check",
+      "use_when": "Randall asks what can be bought/added/deployed now or what is ready.",
+      "primary_artifacts": ["tmp/trigger-sheet.json", "tmp/deployment-check.json", "tmp/board-canon-guardrail.json"],
+      "response_shape": ["deployable-now review-only", "prepare/wait", "blocked/below-stop", "band behavior", "owner decision needed"]
+    },
+    {
+      "formatter_id": "earnings_postmortem",
+      "use_when": "Randall asks after earnings or asks if a report changed the thesis.",
+      "primary_artifacts": ["tmp/post-earnings-prep.json", "tmp/post-earnings-note-targets.json", "05. Intelligence/Earnings/"],
+      "response_shape": ["print verdict", "thesis change", "numbers quality", "entry impact", "portfolio implication", "follow-up"]
+    },
+    {
+      "formatter_id": "watchlist_promotion_review",
+      "use_when": "Randall asks which names deserve promotion review or where sector leadership is improving.",
+      "primary_artifacts": ["tmp/sector-expansion-board.json", "tmp/sector-correlation-check.json", "04. Research/Coverage and Watchlist.md"],
+      "response_shape": ["sector leadership", "underexposure", "promotion candidates", "required research", "owner-gated proposal"]
+    }
+  ]
+}

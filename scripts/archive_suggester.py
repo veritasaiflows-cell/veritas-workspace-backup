@@ -18,7 +18,7 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 JSON_REPORT = TMP / "archive-suggestions.json"
-MD_REPORT = TMP / "archive-suggestions.md"
+MD_REPORT = JSON_REPORT.with_suffix(".md")
 
 EXCLUDED_SCAN_DIRS = {
     ".clawhub",
@@ -91,6 +91,9 @@ def sha256_file(path: Path) -> str | None:
     return digest.hexdigest()
 
 
+_TEXT_CORPUS: list[tuple[Path, str]] | None = None
+
+
 def iter_text_files() -> Iterable[Path]:
     for path in ROOT.rglob("*"):
         rel_parts = path.relative_to(ROOT).parts
@@ -98,6 +101,25 @@ def iter_text_files() -> Iterable[Path]:
             continue
         if path.is_file() and path.suffix.lower() in TEXT_EXTENSIONS:
             yield path
+
+
+def text_corpus() -> list[tuple[Path, str]]:
+    """Cache text-file contents for one archive-suggester run.
+
+    Full tmp Markdown scans can ask for many reference counts. Reading the whole
+    workspace once keeps the guard complete without turning cleanup checks into
+    a slow repeated IO loop.
+    """
+    global _TEXT_CORPUS
+    if _TEXT_CORPUS is None:
+        corpus: list[tuple[Path, str]] = []
+        for path in iter_text_files():
+            try:
+                corpus.append((path, path.read_text(encoding="utf-8", errors="ignore")))
+            except OSError:
+                continue
+        _TEXT_CORPUS = corpus
+    return _TEXT_CORPUS
 
 
 def reference_count(candidate: Path) -> int:
@@ -110,12 +132,8 @@ def reference_count(candidate: Path) -> int:
     basename = candidate.name
     needles = {rel_path, rel_path.replace("/", "\\\\"), basename}
     count = 0
-    for path in iter_text_files():
+    for path, text in text_corpus():
         if path == candidate:
-            continue
-        try:
-            text = path.read_text(encoding="utf-8", errors="ignore")
-        except OSError:
             continue
         if any(needle in text for needle in needles):
             count += 1
@@ -126,22 +144,30 @@ def root_backups_suggestion() -> list[Suggestion]:
     path = ROOT / "backups"
     if not path.exists():
         return []
+    readme = path / "README.md"
+    if readme.exists():
+        try:
+            text = readme.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            text = ""
+        if "Temporary active rollback/proof backups" in text and "Archive only individual retired backup sets" in text:
+            return []
     refs = reference_count(path)
-    blockers = ["root `backups/` is not documented as an active root entitlement"]
+    blockers = ["root `backups/` lacks the documented temporary rollback/provenance README contract"]
     if refs:
         blockers.append("inbound references found; inspect before moving")
     return [
         Suggestion(
             path="backups/",
             kind="undocumented_root_backup_surface",
-            recommendation="classify as active migration backup, archive under `09. Archive/`, or remove only after owner approval and reference check",
+            recommendation="add the approved README contract, classify as active migration backup, archive individual retired backup sets under `09. Archive/`, or remove only after owner approval and reference check",
             proposed_destination="09. Archive/backups - Archived/",
             confidence="medium" if refs == 0 else "low",
             owner_approval_required=True,
             apply_allowed=False,
             reference_count=refs,
             blockers=blockers,
-            evidence=["workspace boundary audit reports root `backups/` as undocumented"],
+            evidence=["workspace boundary policy requires root backup surfaces to be explicitly documented"],
         )
     ]
 
@@ -196,16 +222,43 @@ def cache_suggestions() -> list[Suggestion]:
     return suggestions
 
 
-def tmp_markdown_report_suggestions(limit: int = 50) -> list[Suggestion]:
+def reviewed_tmp_markdown_hashes() -> dict[str, str]:
+    """Return reviewed tmp Markdown path -> sha256 values that are no longer suggestions.
+
+    WF72 producer-contract cleanup classifies actively referenced tmp Markdown sidecars.
+    If a reviewed sidecar changes, the hash mismatch makes it visible again.
+    """
+    reviewed_path = TMP / "wf72-active-tmp-md-cleanup-2026-05-25.json"
+    if not reviewed_path.exists():
+        return {}
+    try:
+        data = json.loads(reviewed_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    reviewed: dict[str, str] = {}
+    for row in data.get("rows", []):
+        path = row.get("path")
+        digest = row.get("sha256")
+        if isinstance(path, str) and path.startswith("tmp/") and isinstance(digest, str):
+            reviewed[path] = digest
+    return reviewed
+
+
+def tmp_markdown_report_suggestions(limit: int | None = None) -> list[Suggestion]:
     if not TMP.exists():
         return []
     suggestions: list[Suggestion] = []
-    for path in sorted(TMP.glob("*.md"))[:limit]:
+    reviewed = reviewed_tmp_markdown_hashes()
+    for path in sorted(TMP.glob("*.md")):
+        path_rel = rel(path)
+        digest = sha256_file(path)
         refs = reference_count(path)
+        if reviewed.get(path_rel) == digest and refs > 0:
+            continue
         recommendation = "if decision-grade, promote to 08. Audits/; if proof-only residue, archive after owner approval"
         suggestions.append(
             Suggestion(
-                path=rel(path),
+                path=path_rel,
                 kind="tmp_markdown_report",
                 recommendation=recommendation,
                 proposed_destination=f"09. Archive/tmp-reports - Archived/{path.name}",
@@ -215,9 +268,11 @@ def tmp_markdown_report_suggestions(limit: int = 50) -> list[Suggestion]:
                 reference_count=refs,
                 blockers=["tmp Markdown reports may still be live handoff/proof artifacts", "manual classification required"],
                 evidence=["audit recommended classifying tmp reports before any broad archival"],
-                sha256=sha256_file(path),
+                sha256=digest,
             )
         )
+        if limit is not None and len(suggestions) >= limit:
+            break
     return suggestions
 
 
@@ -228,6 +283,7 @@ def build_report(include_tmp_md: bool = False) -> dict:
     by_kind: dict[str, int] = {}
     for suggestion in suggestions:
         by_kind[suggestion.kind] = by_kind.get(suggestion.kind, 0) + 1
+    tmp_md_suggestions = [suggestion for suggestion in suggestions if suggestion.kind == "tmp_markdown_report"]
     return {
         "status": "review_required" if suggestions else "ok",
         "generated_at_utc": utc_now(),
@@ -241,6 +297,9 @@ def build_report(include_tmp_md: bool = False) -> dict:
             "suggestions": len(suggestions),
             "by_kind": by_kind,
             "with_inbound_references": sum(1 for suggestion in suggestions if suggestion.reference_count > 0),
+            "tmp_markdown_scan_limited": False,
+            "zero_reference_tmp_markdown_suggestions": sum(1 for suggestion in tmp_md_suggestions if suggestion.reference_count == 0),
+            "active_reference_tmp_markdown_suggestions": sum(1 for suggestion in tmp_md_suggestions if suggestion.reference_count > 0),
         },
         "suggestions": [asdict(suggestion) for suggestion in suggestions],
     }
@@ -285,11 +344,13 @@ def write_markdown(report: dict) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Write read-only archive suggestions for workspace cleanup.")
     parser.add_argument("--include-tmp-md", action="store_true", help="Also classify tmp/*.md reports as manual review suggestions.")
+    parser.add_argument("--write-md", action="store_true", help="Also write optional Markdown digest beside the JSON report.")
     args = parser.parse_args()
     report = build_report(include_tmp_md=args.include_tmp_md)
     TMP.mkdir(parents=True, exist_ok=True)
     JSON_REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    write_markdown(report)
+    if args.write_md:
+        write_markdown(report)
     print(json.dumps(report, indent=2))
     return 0
 

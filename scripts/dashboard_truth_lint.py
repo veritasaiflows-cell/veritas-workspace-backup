@@ -15,9 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "tmp" / "dashboard-truth-lint.json"
 
 CANONICAL_OWNERS = {
-    "deployment_state": "03. Portfolio/Deployment Trigger Sheet.md",
+    "deployment_state": "03. Portfolio/Execution Board.md",
     "portfolio_posture": "03. Portfolio/Portfolio Snapshot.md",
-    "technical_discipline": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+    "technical_discipline": "03. Portfolio/Execution Board.md",
     "macro_regime": "02. Markets/Macro Regime Dashboard.md",
     "weekly_operating_stance": "05. Intelligence/Weekly Positioning Review.md",
     "risk_doctrine": "07. Risk/Risk Rules.md",
@@ -81,13 +81,13 @@ def lint() -> dict:
         text = read_rel(rel)
         if not text:
             continue
-        if DEPLOYABLE_RE.search(text) and "Deployment Trigger Sheet" not in text:
+        if DEPLOYABLE_RE.search(text) and "Execution Board" not in text:
             add(
                 findings,
                 rel,
                 "warning",
                 "dashboard/read-stack surface uses deployable-now language without routing to the canonical deployment owner",
-                "state that deployment truth lives in `03. Portfolio/Deployment Trigger Sheet.md`",
+                "state that deployment truth lives in `03. Portfolio/Execution Board.md`",
             )
 
     for path in collect_markdown_dirs(DASHBOARD_DIRS):
@@ -98,7 +98,7 @@ def lint() -> dict:
                 path,
                 "warning",
                 "dated dashboard/history surface may conflict with current canonical deployment state",
-                "treat as historical packet and route current deployment truth to Deployment Trigger Sheet",
+                "treat as historical packet and route current deployment truth to Execution Board",
             )
 
     for path in collect_markdown_dirs(MACHINE_DIRS):
@@ -135,7 +135,7 @@ def lint() -> dict:
                 tech,
                 "info",
                 "technical sheet uses deployable-state language and could overlap deployment authority",
-                "clarify that final deployment state is owned by Deployment Trigger Sheet",
+                "clarify that final deployment state is owned by Execution Board",
             )
 
     status = "warning" if any(f["severity"] == "warning" for f in findings) else "ok"

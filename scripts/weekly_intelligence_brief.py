@@ -5,9 +5,11 @@ Append a structured, machine-populated section to the Weekly Intelligence Brief.
 Reads:
     tmp/market-state.json
     tmp/trigger-sheet.json
+    tmp/deployment-check.json
     tmp/earnings-calendar.json
     tmp/post-earnings-prep.json
     tmp/technical-refresh.json
+    tmp/portfolio-config.json
     tmp/regime-scores.json
     tmp/band-proposals.json (optional)
     tmp/weekly-review-skeleton.json (optional, for cross-link)
@@ -32,6 +34,7 @@ Usage:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import sys
 
@@ -42,18 +45,22 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate
+from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate, fetch_treasury_auctions
 
 WORKSPACE        = Path(__file__).resolve().parents[1]
 MARKET_STATE     = WORKSPACE / "tmp" / "market-state.json"
 TRIGGER_SHEET    = WORKSPACE / "tmp" / "trigger-sheet.json"
+DEPLOYMENT       = WORKSPACE / "tmp" / "deployment-check.json"
 EARNINGS_CAL     = WORKSPACE / "tmp" / "earnings-calendar.json"
 POST_PREP        = WORKSPACE / "tmp" / "post-earnings-prep.json"
 TECHNICAL        = WORKSPACE / "tmp" / "technical-refresh.json"
+PORTFOLIO_CONFIG = WORKSPACE / "tmp" / "portfolio-config.json"
 REGIME_SCORES    = WORKSPACE / "tmp" / "regime-scores.json"
 BAND_PROPOSALS   = WORKSPACE / "tmp" / "band-proposals.json"
 SKELETON         = WORKSPACE / "tmp" / "weekly-review-skeleton.json"
 VALIDATION       = WORKSPACE / "tmp" / "dashboard-validation.json"
+FUNDAMENTALS     = WORKSPACE / "tmp" / "fundamental-metrics-current.json"
+FUND_VALIDATION  = WORKSPACE / "tmp" / "fundamental-metrics-validation.json"
 BRIEF_MD         = WORKSPACE / "05. Intelligence" / "Weekly Intelligence Brief.md"
 BRIEF_MACHINE_MD = WORKSPACE / "05. Intelligence" / "Weekly Intelligence Brief - machine.md"
 OUT_JSON         = WORKSPACE / "tmp" / "weekly-intelligence-brief.json"
@@ -82,6 +89,52 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def source_age_note(as_of: Any, reference: Any, label: str) -> str | None:
+    if not as_of or not reference:
+        return f"{label} timestamp missing; treat as stale until refreshed."
+    try:
+        source_date = datetime.strptime(str(as_of), "%Y-%m-%d").date()
+        ref_date = datetime.strptime(str(reference), "%Y-%m-%d").date()
+    except Exception:
+        return f"{label} timestamp not parseable; treat as stale until refreshed."
+    if source_date < ref_date:
+        return f"{label} stale vs market-state date ({source_date.isoformat()} vs {ref_date.isoformat()})."
+    return None
+
+
+def fetch_nvda_implied_move() -> dict[str, Any]:
+    try:
+        import math
+        import yfinance as yf
+
+        ticker = yf.Ticker("NVDA")
+        expiries = list(ticker.options or [])
+        if not expiries:
+            return {"status": "unavailable", "warning": "no NVDA option expiries returned"}
+        expiry = expiries[0]
+        chain = ticker.option_chain(expiry)
+        spot = None
+        try:
+            spot = float((ticker.fast_info or {}).get("last_price"))
+        except Exception:
+            spot = None
+        calls = getattr(chain, "calls", None)
+        puts = getattr(chain, "puts", None)
+        if spot is None or calls is None or puts is None or calls.empty or puts.empty:
+            return {"status": "unavailable", "expiry": expiry, "warning": "missing spot or option chain rows"}
+        calls = calls.assign(_dist=(calls["strike"] - spot).abs()).sort_values("_dist")
+        puts = puts.assign(_dist=(puts["strike"] - spot).abs()).sort_values("_dist")
+        call_iv = float(calls.iloc[0].get("impliedVolatility"))
+        put_iv = float(puts.iloc[0].get("impliedVolatility"))
+        atm_iv = (call_iv + put_iv) / 2.0
+        expiry_date = datetime.strptime(expiry, "%Y-%m-%d").date()
+        days = max((expiry_date - date.today()).days, 1)
+        implied_move_pct = atm_iv * math.sqrt(days / 365.0) * 100.0
+        return {"status": "ok", "expiry": expiry, "spot": round(spot, 2), "atm_iv": round(atm_iv, 4), "implied_move_pct": round(implied_move_pct, 2), "source": "yfinance option chain best-effort"}
+    except Exception as exc:
+        return {"status": "unavailable", "warning": f"NVDA implied move unavailable: {exc}"}
+
+
 def week_bounds(today: date) -> tuple[date, date]:
     monday = today - timedelta(days=today.weekday())
     friday = monday + timedelta(days=4)
@@ -108,6 +161,7 @@ def build_macro_pulse(ms: dict) -> str:
     vol = data.get("volatility", {}) or {}
     eq = data.get("equities", {}) or {}
     fx = data.get("fx", {}) or {}
+    credit = data.get("credit", {}) or {}
     en = data.get("energy", {}) or {}
 
     cut_prob = fed.get("cut_probability_next_meeting")
@@ -127,6 +181,7 @@ def build_macro_pulse(ms: dict) -> str:
     lines.append(f"- **Inflation (judgment):** _[Fill: latest CPI/PCE prints, MoM and YoY]_.")
     lines.append(f"- **Growth (judgment):** _[Fill: latest GDP estimate, jobless claims, payrolls]_.")
     lines.append(f"- **Dollar:** DXY {fmt(fx.get('dxy'))} as of {fx.get('as_of','n/a')}.")
+    lines.append(f"- **Credit:** HY OAS {fmt(credit.get('high_yield_oas'))}%, IG OAS {fmt(credit.get('investment_grade_oas'))}% ({credit.get('stress_regime', 'n/a')}; status {credit.get('status', 'n/a')}).")
     lines.append(f"\n**Regime read (judgment):** _[Fill: 2-3 sentence synthesis tying the above into a regime read for the week]_.")
     return "\n".join(lines)
 
@@ -135,9 +190,14 @@ def build_energy_sweep(ms: dict) -> str:
     data = (ms or {}).get("data", {}) or {}
     en = data.get("energy", {}) or {}
 
+    reference_date = (ms or {}).get("last_trading_day")
+    brent_note = source_age_note(en.get("brent_as_of"), reference_date, "Brent")
+    wti_note = source_age_note(en.get("wti_as_of"), reference_date, "WTI")
     lines = ["### 2. Energy sweep\n"]
     lines.append(f"- **Brent crude:** ${fmt(en.get('brent'))} as of {en.get('brent_as_of', 'n/a')} ({en.get('brent_source','')}).")
     lines.append(f"- **WTI crude:** ${fmt(en.get('wti'))} as of {en.get('wti_as_of', 'n/a')} ({en.get('wti_source','')}).")
+    if brent_note or wti_note:
+        lines.append(f"- **Oil freshness caveat:** {'; '.join(note for note in (brent_note, wti_note) if note)}")
     try:
         spread = float(en.get("brent")) - float(en.get("wti"))
         lines.append(f"- **Brent/WTI spread:** ${spread:,.2f}.")
@@ -151,6 +211,7 @@ def build_energy_sweep(ms: dict) -> str:
 
 def build_geopolitical() -> str:
     return ("### 3. Geopolitical scan\n\n"
+            "- **Tariff/trade risk flag:** manual review required after U.S.-China / tariff-policy headlines; do not mark trade-risk clear without sourced evidence.\n"
             "- **Hot items (judgment):** _[Fill: Iran/Hormuz, Russia/Ukraine, China/Taiwan, sanctions, election cycles]_.\n"
             "- **Defense / energy implication (judgment):** _[Fill: which tracked names get tailwind or headwind from current geopolitics?]_\n"
             "- **Key watch:** _[Fill: 1-2 specific developments that would shift conviction this week]_.")
@@ -218,6 +279,24 @@ def build_earnings_radar(earnings: dict, post_prep: dict, monday: date, friday: 
     else:
         lines.append("- None on calendar.")
 
+    auctions = fetch_treasury_auctions(next_monday.isoformat(), next_sunday.isoformat())
+    lines.append("\n**Treasury auctions next week (official FiscalData):**")
+    if auctions.get("status") == "ok" and auctions.get("auctions"):
+        for row in auctions.get("auctions", [])[:12]:
+            amount = row.get("offering_amt") or "amount n/a"
+            lines.append(f"- {row.get('auction_date')} — {row.get('security_term')} {row.get('security_type')} ({amount}).")
+    elif auctions.get("status") == "ok":
+        lines.append("- No Treasury auctions returned for the next-week window.")
+    else:
+        lines.append(f"- Manual review required: {auctions.get('warning') or 'Treasury auction feed unavailable'}")
+
+    nvda = fetch_nvda_implied_move()
+    lines.append("\n**NVDA options/implied-move read:**")
+    if nvda.get("status") == "ok":
+        lines.append(f"- Best-effort options read: spot ${fmt(nvda.get('spot'))}, expiry {nvda.get('expiry')}, ATM IV {fmt((nvda.get('atm_iv') or 0) * 100, 1, '%')}, implied move ~{fmt(nvda.get('implied_move_pct'), 1, '%')} ({nvda.get('source')}).")
+    else:
+        lines.append(f"- Manual review required: {nvda.get('warning') or 'NVDA implied move unavailable'}")
+
     return "\n".join(lines)
 
 
@@ -228,11 +307,14 @@ def build_analyst_flow() -> str:
             "- **Insider activity (judgment):** _[Fill: notable Form 4 prints]_.")
 
 
-def build_technical_check(technical: dict, trigger: dict) -> str:
+def build_technical_check(technical: dict, trigger: dict, deployment: dict, portfolio_config: dict) -> str:
     tech_records = (technical or {}).get("records", []) or []
     trig_records = (trigger or {}).get("records", []) or []
+    deploy_records = (deployment or {}).get("records", []) or []
+    entry_bands = (portfolio_config or {}).get("entry_bands", {}) or {}
 
     trig_lookup = {r["ticker"]: r for r in trig_records}
+    deploy_lookup = {r["ticker"]: r for r in deploy_records}
 
     lines = ["### 6. Technical check\n"]
     lines.append("*Data: tmp/technical-refresh.json + tmp/trigger-sheet.json.*\n")
@@ -242,26 +324,41 @@ def build_technical_check(technical: dict, trigger: dict) -> str:
     for tr in tech_records:
         tk = tr.get("ticker", "")
         tg = trig_lookup.get(tk, {})
-        state = tg.get("action_state", "")
-        eb = tg.get("entry_band") or {}
+        deploy = deploy_lookup.get(tk, {})
+        state = legacy_state(tg, "action_state") or legacy_state(deploy, "action_state") or ""
+        eb = tg.get("entry_band") or entry_bands.get(tk) or {}
         lo, hi = eb.get("low"), eb.get("high")
         close = tr.get("close")
         note = ""
-        if lo is not None and hi is not None and close is not None:
+        stop = tg.get("invalidation") or eb.get("stop")
+        if stop is not None and close is not None:
             try:
                 c = float(close)
-                if c > float(hi):
-                    pct = ((c - float(hi)) / float(hi)) * 100.0 if hi else 0.0
-                    note = f"+{pct:,.1f}% above band top ({fmt(hi)})"
-                elif c < float(lo):
-                    pct = ((float(lo) - c) / float(lo)) * 100.0 if lo else 0.0
-                    note = f"-{pct:,.1f}% below band bot ({fmt(lo)})"
-                else:
-                    note = "in band"
+                s = float(stop)
+                if tr.get("below_stop") or c < s:
+                    stop_gap = s - c
+                    note = f"STOP BREACHED: {fmt(stop_gap)} below stop {fmt(s)}"
+                elif s > 0 and ((c - s) / s) <= 0.01:
+                    stop_gap = c - s
+                    note = f"near stop: {fmt(stop_gap)} above stop {fmt(s)}"
             except Exception:
-                note = "—"
-        else:
-            note = eb.get("label", "no band")
+                note = ""
+        if not note:
+            if lo is not None and hi is not None and close is not None:
+                try:
+                    c = float(close)
+                    if c > float(hi):
+                        pct = ((c - float(hi)) / float(hi)) * 100.0 if hi else 0.0
+                        note = f"+{pct:,.1f}% above band top ({fmt(hi)})"
+                    elif c < float(lo):
+                        pct = ((float(lo) - c) / float(lo)) * 100.0 if lo else 0.0
+                        note = f"-{pct:,.1f}% below band bot ({fmt(lo)})"
+                    else:
+                        note = "in band"
+                except Exception:
+                    note = "—"
+            else:
+                note = eb.get("label", "no band")
 
         lines.append(
             f"| {tk} | {fmt(close)} | {fmt(tr.get('ma20'))} | {fmt(tr.get('ma50'))} | "
@@ -325,13 +422,35 @@ def build_recommended_actions(trigger: dict, post_prep: dict) -> str:
     return "\n".join(lines)
 
 
+def build_fundamental_quality_tracker(fundamentals: dict, fund_validation: dict) -> str:
+    rows = [row for row in (fundamentals or {}).get("rows", []) or [] if isinstance(row, dict) and row.get("instrument_type") == "equity"]
+    summary = (fundamentals or {}).get("summary") or {}
+    validation_summary = (fund_validation or {}).get("summary") or {}
+    caution = [row for row in rows if row.get("capital_allocation_quality") in {"caution", "manual_review_required"}]
+    bank_manual = [row for row in rows if row.get("capital_allocation_quality") == "bank_manual_review"]
+    anomaly_rows = [row for row in rows if row.get("capital_allocation_anomalies")]
+    sec_conflicts = [row for row in rows if ((row.get("sec_reconciliation") or {}).get("status") == "conflict")]
+    lines = ["### 9. Fundamental quality and capital-allocation tracker\n"]
+    lines.append(f"- **WF65 coverage:** {summary.get('equity_tickers', len(rows))} equity rows; capital-allocation counts {summary.get('capital_allocation_quality_counts', {})}; anomaly counts {summary.get('capital_allocation_anomaly_counts', {})}.")
+    lines.append(f"- **Validation:** critical {validation_summary.get('critical', 0)}, warning {validation_summary.get('warning', 0)}; SEC conflicts: {', '.join(str(row.get('ticker')) for row in sec_conflicts) if sec_conflicts else 'none surfaced'}.")
+    if caution:
+        lines.append("- **Capital-allocation caution queue:** " + ", ".join(str(row.get("ticker")) for row in caution[:12]) + ".")
+    if bank_manual:
+        lines.append("- **Bank manual-review queue:** " + ", ".join(str(row.get("ticker")) for row in bank_manual[:12]) + " require CET1/ROTCE/NIM/deposit/credit-quality review; industrial FCF/debt gates are suppressed.")
+    if anomaly_rows:
+        lines.append("- **Structured anomaly queue:** " + ", ".join(str(row.get("ticker")) for row in anomaly_rows[:12]) + ".")
+    lines.append("- **Boundary:** buybacks, share-count improvements, FCF/share growth, ROIC proxy, and valuation context are evidence only; they do not create deployability, owner approval, sizing, sleeve, account, or trade authority.")
+    return "\n".join(lines)
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 def render_section(today: date,
                    ms: dict, trigger: dict, earnings: dict, post_prep: dict,
-                   technical: dict, scores: dict) -> str:
+                   technical: dict, scores: dict, deployment: dict, portfolio_config: dict,
+                   fundamentals: dict, fund_validation: dict) -> str:
     monday, friday = week_bounds(today)
     last_td = ms.get("last_trading_day", "unknown") if ms else "unknown"
     heading = week_heading(monday, friday)
@@ -342,7 +461,8 @@ def render_section(today: date,
     parts.append(f"*Auto-generated by `scripts/weekly_intelligence_brief.py` on {gen_ts}. "
                  f"Data as of {last_td} close. "
                  f"Sources: tmp/market-state.json, tmp/trigger-sheet.json, tmp/earnings-calendar.json, "
-                 f"tmp/post-earnings-prep.json, tmp/technical-refresh.json, tmp/regime-scores.json. "
+                 f"tmp/post-earnings-prep.json, tmp/technical-refresh.json, tmp/deployment-check.json, "
+                 f"tmp/portfolio-config.json, tmp/regime-scores.json. "
                  f"Sections marked _judgment_ require human/AI completion.*\n")
     parts.append("---\n")
     parts.append(build_macro_pulse(ms))
@@ -355,11 +475,13 @@ def render_section(today: date,
     parts.append("\n---\n")
     parts.append(build_analyst_flow())
     parts.append("\n---\n")
-    parts.append(build_technical_check(technical, trigger))
+    parts.append(build_technical_check(technical, trigger, deployment, portfolio_config))
     parts.append("\n---\n")
     parts.append(build_sentiment(ms))
     parts.append("\n---\n")
     parts.append(build_recommended_actions(trigger, post_prep))
+    parts.append("\n---\n")
+    parts.append(build_fundamental_quality_tracker(fundamentals, fund_validation))
     parts.append("")
 
     return "\n".join(parts)
@@ -377,10 +499,14 @@ def main() -> int:
     earnings  = load_json(EARNINGS_CAL) or {}
     post_prep = load_json(POST_PREP) or {}
     technical = load_json(TECHNICAL) or {}
+    deployment = load_json(DEPLOYMENT) or {}
+    portfolio_config = load_json(PORTFOLIO_CONFIG) or {}
     scores    = load_json(REGIME_SCORES) or {}
     validation = load_json(VALIDATION) or {}
+    fundamentals = load_json(FUNDAMENTALS) or {}
+    fund_validation = load_json(FUND_VALIDATION) or {}
 
-    section_md = render_section(today, ms, trigger, earnings, post_prep, technical, scores)
+    section_md = render_section(today, ms, trigger, earnings, post_prep, technical, scores, deployment, portfolio_config, fundamentals, fund_validation)
     canonical_allowed, trust_reason = canonical_note_mutation_gate(validation)
     target_brief = BRIEF_MD if canonical_allowed else BRIEF_MACHINE_MD
 
@@ -425,6 +551,15 @@ def main() -> int:
         "deployable_now":    (trigger.get("summary", {}) or {}).get("deployable_now", []),
         "almost_deployable": (trigger.get("summary", {}) or {}).get("almost_deployable", []),
         "blocked":           (trigger.get("summary", {}) or {}).get("blocked", []),
+        "do_not_touch":      (trigger.get("summary", {}) or {}).get("do_not_touch", []),
+        "below_stop":        (deployment.get("summary", {}) or {}).get("below_stop", []),
+        "fundamental_quality_tracker": {
+            "generated_at_utc": fundamentals.get("generated_at_utc"),
+            "summary": fundamentals.get("summary", {}),
+            "validation_summary": fund_validation.get("summary", {}),
+            "review_only": True,
+            "capital_action_allowed": False,
+        },
     }
     atomic_write_json(OUT_JSON, summary, indent=2)
 

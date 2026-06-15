@@ -21,6 +21,7 @@ function init() {
   renderTrust();
   renderVaultFreshness();
   renderValidation();
+  renderWorkflowFocus();
   renderDeploymentStrip();
   renderTodayAction();
   renderOverviewCards();
@@ -31,6 +32,7 @@ function init() {
   renderTechnicalFilterBar();
   renderTechnicalTable();
   renderPortfolio();
+  renderFundamentals();
   renderEarnings();
   renderMacro();
   renderRisk();

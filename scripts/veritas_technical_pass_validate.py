@@ -14,10 +14,9 @@ SKILL_PATH = WORKSPACE / "skills" / "veritas-technical-pass" / "SKILL.md"
 DEFAULT_OUT = WORKSPACE / "tmp" / "veritas-technical-pass-validation.json"
 
 REQUIRED_REFERENCES = [
-    "02. Markets/Watchlist.md",
+    "04. Research/Coverage and Watchlist.md",
     "03. Portfolio/Portfolio Snapshot.md",
-    "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-    "03. Portfolio/Deployment Trigger Sheet.md",
+    "03. Portfolio/Execution Board.md",
     "05. Intelligence/Weekly Positioning Review.md",
     "07. Risk/Risk Rules.md",
 ]

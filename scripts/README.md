@@ -48,13 +48,38 @@ Purpose:
 Boundary:
 - internal control only; no public launch, real customer data, external delivery, SQL import, canon/portfolio mutation, cleanup move/delete/archive, paper/live/account action, config/auth/runtime mutation, or owner approval inference
 
-## Truth-surface inventory and fast-path QA
+## Local audio transcription
 
-`truth_surface_inventory.py` and `fast_path_qa.py` are WF73/WF72 report-only efficiency controls.
+`local_audio_transcriber.py` is the repeatable local route for Telegram/OpenClaw voice notes. It resolves either an explicit path, `media://inbound/<file>`, or the newest file under `~\.openclaw\media\inbound`, then uses the local Node/Whisper helper to write one transcript JSON.
 
 Run:
 ```powershell
+python scripts\local_audio_transcriber.py --write --pretty --validate
+python scripts\local_audio_transcriber.py media://inbound/<file>.ogg --write --pretty --validate
+python scripts\test_local_audio_transcriber.py
+```
+
+Current proof:
+- `tmp/audio-transcripts/latest-audio-transcript.json`
+
+Purpose:
+- avoid broad filesystem searches for voice-note media
+- avoid manually choosing ffmpeg/Whisper commands each time
+- keep audio transcription local by default
+- cache Node dependencies and model files under `tmp\audio-tools` so repeat runs are faster
+
+Boundary:
+- local transcription only; no external transcription upload, Telegram send, config/auth/runtime mutation, canon/portfolio mutation, paper/live/account action, or owner approval inference
+
+## Truth-surface inventory and fast-path QA
+
+`wf73_control_plane_audit.py`, `truth_surface_inventory.py`, and `fast_path_qa.py` are WF73/WF72 report-only efficiency controls.
+
+Run:
+```powershell
+python scripts\wf73_control_plane_audit.py --write --validate
 python scripts\truth_surface_inventory.py --write --validate
+python scripts\startup_brief_packet.py --write --validate
 python scripts\future_session_enhancement_packet.py --write --write-md --validate
 python scripts\fast_path_qa.py --write --validate
 python scripts\changed_file_validator_router.py --write --validate
@@ -63,7 +88,9 @@ python scripts\otel_ops_control.py --write --write-db --validate
 ```
 
 Current proof:
+- `tmp/wf73-control-plane-audit.json`
 - `tmp/truth-surface-inventory.json`
+- `tmp/startup-brief-packet.json`
 - `tmp/future-session-enhancement-packet.json`
 - `tmp/route-efficiency-scorecard.json`
 - `tmp/fast-path-qa.json`
@@ -73,7 +100,9 @@ Current proof:
 - `tmp/otel-ops.sqlite`
 
 Purpose:
+- run the full WF73 control-plane audit in producer-before-consumer order
 - classify major surfaces as authority, router, proof, dashboard, legacy, or archive-candidate
+- build a fast direct-session startup/status packet from existing PM/cron/future-session packets without regenerating them
 - build a thin future-session startup packet for PM, cron, WF74, workflow, memory, and stop-line routing
 - define the compact "open first" route before broad scans
 - measure route SQL and PM cockpit latency
@@ -81,11 +110,25 @@ Purpose:
 - map changed files to the smallest honest validator budget
 - record elapsed validator timing by normal/shared/major profile
 - turn local OTEL collector summaries into queryable operational evidence and action candidates
+- prevent false WF73 blockers caused by running route-index writers and fast-path/artifact-index consumers in parallel
 
 Boundary:
 - classification and QA only; no move/delete/archive, SQL-canon promotion, canon/portfolio mutation, customer/public output, config/runtime mutation, paper/live/account action, or owner approval inference
 
 ## Future session enhancement packet
+
+`startup_brief_packet.py` builds the fastest read-only direct-session greeting/status packet from existing route packets. Use it when a simple hello or shallow status check does not require full PM/cron/future-session regeneration.
+
+Run:
+```powershell
+python scripts\startup_brief_packet.py --write --validate
+```
+
+Current proof:
+- `tmp/startup-brief-packet.json`
+
+Boundary:
+- routing/proof only; reads existing generated packets and does not refresh control packets, mutate canon/portfolio, approve capital, execute paper/live actions, change config/runtime, deliver externally, or infer owner approval.
 
 `future_session_enhancement_packet.py` builds the compact open-first packet for future Veritas sessions and post-compaction recovery.
 
@@ -102,6 +145,7 @@ Purpose:
 - summarize core boot surfaces, today's/yesterday's memory files, PM state, cron state, WF74 model-quality collection state, selected workflow capsules, and route commands
 - make new sessions faster and less dependent on broad scans or chat reconstruction
 - keep model-quality and finance-correctness claims bounded to review-only evidence
+- carry the verified serious-work challenger model policy: WF84/WF85-class gates should use `claude-cli/claude-opus-4-8` as the Opus challenger and verify the actual spawned model path before counting Opus proof
 
 Boundary:
 - routing/proof only; no canon/portfolio mutation, capital deployment, paper/live/account action, config/auth/runtime mutation, customer/external delivery, owner approval inference, model ranking, or WF55 outcome grading.
@@ -148,6 +192,38 @@ Purpose:
 Boundary:
 - local git only; no external push, no whole-workspace staging, no live skill-content mutation, no portfolio/canon mutation, no paper/live/account action, and no owner approval inference.
 
+## Implementation completion ledger
+
+`implementation_completion_ledger.py` records completed implementation/PM proof jobs into a local hash-chained JSONL ledger. Each row stores the previous row hash, the row hash, source proof artifact hashes, command-result digests, git HEAD/dirty metadata, changed-file-router snapshot, and explicit no-authority flags.
+
+Run:
+```powershell
+python scripts\implementation_completion_ledger.py --source tmp\pm-execution-loop.json --record --write --validate
+python scripts\implementation_completion_ledger.py --write --validate
+python scripts\test_implementation_completion_ledger.py
+```
+
+Manual/backfill source artifacts may provide `completed_jobs[]` rows with job id,
+title, summary, completed timestamp, owner surface, implementation class, and
+target files. Successful PM execution-loop runs append automatically unless
+`--skip-completion-ledger` is set. Successful non-PM closeout bundles can append
+with:
+```powershell
+python scripts\control_closeout_bundle.py --write --validate --record-completion --completion-job-id <job_id> --completion-title "<title>" --completion-summary "<summary>"
+```
+
+Current proof:
+- `state/implementation-completion-ledger.jsonl`
+- `tmp/implementation-completion-ledger-current.json`
+
+Purpose:
+- make completed implementation jobs reconstructable from a durable tamper-evident ledger instead of chat or daily-memory reconstruction alone
+- tie each completed job to source proof hashes, validation state, changed-file routing, and git dirty-state metadata
+- give PM closeout a future audit spine without turning generated artifacts into approval or canon
+
+Boundary:
+- local proof metadata only; no external notarization, canon/portfolio mutation, SQL import/promotion, archive/delete/apply, config/auth/runtime mutation, customer output, capital approval, paper/live/account action, or owner approval inference
+
 ## OTEL operations control
 
 `otel_ops_control.py` is the local-only OTEL digest path. It reads the official collector debug log and legacy receipt ledger when present, then writes a compact JSON packet, JSONL event stream, and SQLite database.
@@ -170,6 +246,48 @@ Purpose:
 
 Boundary:
 - local operational evidence only; no external export, runtime/config mutation, content capture expansion, prompt/tool/system-content logging, finance correctness scoring, portfolio/canon mutation, customer output, paper/live/account action, or owner approval inference
+
+## Model learning capture approval packet
+
+`model_learning_capture_approval_packet.py` builds the approval-ready packet for the next WF74 learning layer: metadata-only capture/scoring for model runs, tool use, failures, and coding outcomes. After Randall's approval, `model_learning_metadata_ledger.py` is the bounded implementation layer: it derives model/tool/failure/coding metadata rows from existing local proof artifacts and feeds `model_quality_scorecard.py`.
+
+`otel_runtime_metadata_probe.py` is the Phase 2 local runtime proof gate. It parses the local collector debug log for approved OpenClaw runtime metadata field names and blocks the pilot if raw prompt/response/tool payload/system-prompt, secret, credential, or header markers appear. It is paired with `tools\otelcol\openclaw-local-otel-runtime-metadata.yaml`, which keeps OTLP metrics/traces local on `127.0.0.1:4318`, uses the debug exporter for detailed local inspection, and does not enable logs or content capture.
+
+`coding_runtime_kpi_probe.py` is the metadata-only coding-runtime KPI layer. It consumes changed-file routing, validator timing, closeout, WF74, and learning-ledger artifacts to report diff/path counts, validator budget, elapsed validator time, first-pass clean state, rework state, failure buckets, and learning-row coverage. It never captures raw diffs or file contents.
+
+Run:
+```powershell
+python scripts\model_learning_capture_approval_packet.py --write --write-md --validate
+python scripts\test_model_learning_capture_approval_packet.py
+python scripts\otel_runtime_metadata_probe.py --write --write-md --validate
+python scripts\test_otel_runtime_metadata_probe.py
+python scripts\coding_runtime_kpi_probe.py --write --write-md --validate
+python scripts\test_coding_runtime_kpi_probe.py
+python scripts\model_learning_metadata_ledger.py --write --write-md --validate
+python scripts\test_model_learning_metadata_ledger.py
+```
+
+Current proof:
+- `tmp/model-learning-capture-approval-packet.json`
+- `tmp/model-learning-capture-approval-packet.md`
+- `tmp/otel-runtime-metadata-probe.json`
+- `tmp/otel-runtime-metadata-probe.md`
+- `tmp/coding-runtime-kpi-probe.json`
+- `tmp/coding-runtime-kpi-probe.md`
+- `tmp/model-learning-metadata-ledger.json`
+- `tmp/model-learning-metadata-ledger.md`
+
+Purpose:
+- define approved-after-owner-approval metadata fields for model, tool, failure, and coding capture
+- prove direct local runtime OTEL metadata is privacy-clean before using it for learning/scoring
+- implement the approved metadata-only ledger with local artifact-derived rows, runtime OTEL metadata rows, and coding-runtime KPI rows when the probes are clean
+- expose PM-visible KPIs for first-pass clean state, rework, failure buckets, validator elapsed time, and learning-row coverage
+- preserve raw prompt/response/tool payload/system prompt/secrets/content capture blocks
+- preserve raw diff/file-content capture blocks
+- route scoring into WF74 model-quality surfaces without implying model ranking, investment correctness, base-model self-modification, or finance/execution authority
+
+Boundary:
+- approval packet plus local metadata ledger and local runtime metadata probe only; no external export, no raw content capture, no finance/canon/portfolio mutation, no paper/live/account action, and no owner approval inference. Collector start/stop or config/runtime mutation remains explicit-owner-approved runtime work.
 
 ## Spark cron canary monitor
 
@@ -223,6 +341,7 @@ Boundary:
 Run:
 ```powershell
 python scripts\finance_ticker_card_refresh_gate.py --write --validate
+python scripts\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode never
 ```
 
 Current proof:
@@ -235,10 +354,27 @@ Purpose:
 - rebuild review-only ticker-card artifacts from coverage
 - validate the finance intelligence state after rebuild
 - classify stale card families so PM can create repair jobs before Tier B/Tier A promotion
+- keep normal ticker-card proof fast by rebuilding WF85 full answers only when `--full-answer-mode changed` detects a semantic source change; use `always` for full WF84/WF85 closeout and `never` for card-only proof
 - provide a repeatable prerequisite before WF78 500-ticker scaleout moves beyond review-monitor posture
 
 Boundary:
 - review/report only; no ticker import/apply, production promotion, SQL-first answer route, canon/portfolio mutation, customer/external output, paper/live/account action, or owner approval inference
+
+## WF78 small/mid-cap scaleout candidate pass
+
+`wf78_small_mid_cap_scaleout_candidate_pass.py` is the review-only pass for a rate-stabilization small/mid-cap next-batch theme. It scores liquid operating-company candidates outside the active finance universe and emits migration-ready thin-monitor stubs for a future owner-gated WF78 import path. It also embeds the current-regime analog scenario panel as thesis context only; the analog panel cannot promote, rank for deployment, size, approve, import, or execute.
+
+Run:
+```powershell
+python scripts\wf78_small_mid_cap_scaleout_candidate_pass.py --write --validate
+```
+
+Current proof:
+- `tmp/wf78-small-mid-cap-scaleout-candidate-pass.json`
+- `tmp/wf78-small-mid-cap-scaleout-candidate-pass.md`
+
+Boundary:
+- candidate packet only; no ticker import/apply, no Tier B/A promotion, no production answer-path change, no SQL/canon expansion, no portfolio mutation, no capital approval, no paper/live/account action, and no owner approval inference.
 
 ## WF78 tier promotion review gate
 
@@ -310,6 +446,127 @@ Current proof:
 Boundary:
 - capacity policy/proof only; no import/apply, no Tier B/A promotion, no capital deployment, no production answer-path change, no canon/portfolio mutation, no customer/external output, no paper/live/account action, and no owner approval inference.
 
+## WF78 legacy 42 tier migration planner
+
+`wf78_legacy_42_tier_migration_planner.py` is the shadow migration and dependency gate for folding the legacy `production_current_42` ticker set into Randall's 25 Tier A / 50 Tier B operating model. It writes a derived shadow Tier A/B database, identifies current auto-router alignment gaps, and classifies legacy references as active migration blockers, compatibility exceptions, or nonblocking governance/history. It blocks legacy 42-row database retirement until active consumers are clean and a separate explicit archive/delete approval exists.
+
+Run:
+```powershell
+python scripts\wf78_legacy_42_tier_migration_planner.py --write --write-db --validate
+```
+
+Current proof:
+- `tmp/wf78-legacy-42-tier-migration-planner.json`
+- `tmp/wf78-legacy-42-tier-state-shadow.sqlite`
+
+Consumer migration helper:
+- `wf78_legacy_42_tier_state.py` is the shared read-only reader for migrated legacy-42 Tier A/B state. It prefers `tmp/wf78-legacy-42-tier-state-shadow.sqlite` and falls back to `data/finance/universe-v1.json`.
+- Use it in active consumers that need the effective production/tier set instead of re-reading `production_current_42` directly.
+- It grants no router mutation, universe/canon/portfolio mutation, SQL-canon promotion, archive/delete, capital, paper/live, account, customer/public, or owner-approval authority.
+
+Deprecation classification:
+- Do not delete every `production_current_42`, `42 production`, `252`, or `265` reference just to clear the scan.
+- Active readers should migrate to `wf78_legacy_42_tier_state.py` or the WF78 auto-router.
+- WF72 252/265 row-count checks are compatibility guardrails unless their approved SQL/cache contract changes.
+- Archive/delete/lifecycle references are governance history until a separate exact retirement approval exists.
+
+Archive-readiness preview:
+- `wf78_legacy_42_archive_readiness_packet.py` writes `tmp/wf78-legacy-42-archive-readiness-packet.json`.
+- It is preview-only: no archive, move, delete, checkpoint, vacuum, rewrite, SQL promotion, or authority expansion.
+- Current expected policy: `tmp/wf78-production-tier-adjudication.json` and `.sqlite` are archive candidates only after exact approval; `tmp/go-sql-consumer-authority-guard.json` and `tmp/veritas-canon-cache.sqlite` are retained as WF72/shared SQL guardrails.
+- Run after planner and DB lifecycle validation:
+
+```powershell
+python scripts\wf78_legacy_42_archive_readiness_packet.py --write --validate
+```
+
+Boundary:
+- shadow migration/dependency proof only; no live router mutation, no universe/canon/portfolio mutation, no SQL-canon promotion, no legacy database archive/delete, no capital deployment, no customer/external output, no paper/live/account action, and no owner approval inference.
+
+## WF84 canonical finance data-plane
+
+`canonical_finance_data_plane_contract.py` is the Phase 0 contract for the internal trade-grade personal finance OS data model. `canonical_finance_data_plane.py` is the Phase 1/2 writer: it builds the validated read-only JSON packet and then loads the derived SQLite lookup companion from that packet only. `canonical_finance_data_plane_phase6_10.py` proves the read-only consumer expansion, parity, source drillback, priority queue, and retirement-gate posture after the packet is refreshed.
+`trade_grade_full_answer_assembler.py` builds the WF85 full-answer route from WF84/WF85 state and ticker evidence. Its `catalyst_news_macro` and `risk_invalidation` sections consume the review-only macro metrics/judgment artifacts, including CPI release decomposition for energy/gasoline/shelter/rent/OER context, as evidence-burden and no-chase/rate-sensitivity context only. It does not approve capital, sizing, paper/live execution, account action, portfolio/canon mutation, or owner approval.
+`full_intelligence_answer_parity.py` is the WF84/WF85 full-answer value-parity harness. It compares the old rich answer packet/card stack against the WF84/WF85 assembled route and writes section-level proof for duplicate-surface retirement planning. Pilot mode is for quick diagnosis; duplicate-surface retirement planning requires `--all` coverage across the full WF84 ticker population. It is report-only and fail-closed: archive/delete/apply remain false when parity is blocked.
+`finance_response_quality_slice.py` is the internal answer-quality service slice for finance Q&A. It reuses the WF75 service-slice pattern only as an internal rubric, scores whether WF84/WF85 answers carry freshness/band/stop, macro, 5DMA/20DMA, and authority-boundary warnings, confirms WF72 remains support-only, and owns remediation tracks for visible coverage/freshness gaps.
+
+Run:
+```powershell
+python scripts\canonical_finance_data_plane_contract.py --write --validate
+python scripts\canonical_finance_data_plane.py --write --write-db --validate
+python scripts\full_intelligence_answer_parity.py --all --write --pretty
+python scripts\finance_response_quality_slice.py --write --write-md --validate
+python scripts\canonical_finance_data_plane_phase6_10.py --write --validate
+python scripts\canonical_finance_data_plane_retirement_readiness.py --write --validate
+python scripts\db_lifecycle_manifest.py --write --validate
+```
+
+Current proof:
+- `tmp/canonical-finance-data-plane-contract.json`
+- `tmp/canonical-finance-data-plane.json`
+- `tmp/canonical-finance-data-plane-validation.json`
+- `tmp/canonical-finance-data-plane.sqlite`
+- `tmp/canonical-finance-data-plane-phase6-10.json`
+- `tmp/canonical-finance-data-plane-retirement-readiness.json`
+- `tmp/full-answer-parity/full-answer-parity-rollup.json`
+- `tmp/finance-response-quality-slice.json`
+
+SQLite posture:
+- rebuildable derived lookup only
+- loaded from the validated JSON packet, not ad hoc source reads
+- lifecycle-classified by `db_lifecycle_manifest.py`
+- decision views include `v_current_decision_overview`, `v_owner_action_queue`, `v_decision_grade_os_layer`, and `v_source_lineage_drillback`
+- `finance_intelligence_state.py ticker <TICKER>` prefers WF85/WF84 only when the read-only consumer switch is clean and the entry/stop cache freshness guard confirms the current owner-source hash still matches the WF72 support cache, finance-state, and WF84 rows; stale entry/stop cache state falls back to source-open required instead of silently serving generated answers.
+- `finance_intelligence_state.py` carries an explicit WF72 support-only guard; `test_finance_intelligence_state_wf72_guard.py` proves WF72 cannot be promoted into finance answer ownership by future route drift.
+- PM cockpit reads allowlisted WF84 views for local read-only Finance OS visibility
+- WF85 decision cards and morning paper recommendation cards consume WF84 behind parity/switch gates; generated cards still do not approve execution
+- full ticker-intelligence answers must consult `tmp/full-answer-parity/<TICKER>.json`; if parity is blocked, the front door reports section status/fallback instead of treating duplicate surfaces as retirement-ready
+- finance response quality is measured by `tmp/finance-response-quality-slice.json` and then surfaced through WF74/PM; it does not create customer/public SaaS output or approval authority
+- the weekday `wf78_daily_freshness_loop.py` refreshes the WF84 packet, SQLite companion, phase 6-10 proof, and retirement-readiness proof after the WF78 feeder chain
+- retirement readiness includes an owner-approval archive plan, but archive/delete/apply remain false until a separate lifecycle packet and exact owner approval
+
+Boundary:
+- internal/personal finance infrastructure only; no retail/customer launch, no customer/account/PII/suitability/brokerage schema, no canon/portfolio/cash/risk-rule mutation, no capital deployment, no paper/live/account action, no SQL/capsule/dashboard row as approval, and no owner approval inference.
+
+## WF85 trade-grade decision OS
+
+`trade_grade_decision_os_contract.py` is the Phase 0 contract for the decision and approval-card layer above WF84. It defines the review-only card fields, decision-state vocabulary, implementation lanes, source/freshness gates, risk/sizing overlay posture, and hard false authority flags. `trade_grade_decision_cards.py` is the Phase 1 builder/gate runner. It consumes WF84's validated JSON/SQLite plane and writes fail-closed decision cards, source/freshness gate proof, generated-card authority/vocabulary validation, approval-card draft eligibility, recommendation-only risk/sizing overlay, and compact current-regime analog scenario context. The scenario context is displayed on cards only as review context; it is not a probability, score, deployment rank, sizing recommendation, approval, or execution signal. `trade_grade_repair_conveyor.py` routes fail-closed cards back to WF78/WF84 source, freshness, and band/stop repair lanes and identifies the tiny review-ready pilot queue. Its normal repair rows are finance-domain debt only; monitor-only, below-stop/invalidation, and band/stop context rows must not become PM implementation blockers unless the conveyor itself fails validation. Tier A/B rows require daily decision-grade entry-band/stop coverage for finance review; missing coverage is finance-domain repair debt, and canon/note apply remains limited to the approved `entry_band` maintenance gate. `tier_ab_band_freshness_cron_guard.py` is the cron hardening guard for that policy: it proves complete Tier A/B band rows have current market-date band context, verifies missing-band repair coverage for any still-missing rows, and verifies cron freshness contracts carry the guard artifacts. Phase 1 is explicitly fail-closed: WF84 SQLite/JSON parity, source/freshness, state-precedence, generated-card authority/vocabulary, Tier A/B band freshness, and repair-conveyor gates must run before approval-card drafts.
+
+Run:
+```powershell
+python scripts\trade_grade_decision_os_contract.py --write --validate
+python scripts\trade_grade_decision_cards.py --write --validate
+python scripts\trade_grade_repair_conveyor.py --write --validate
+python scripts\tier_ab_band_freshness_cron_guard.py --write --validate
+python scripts\trade_grade_os_freshness_cron_runner.py --component all --full-answer-mode changed --write --write-md --validate
+python scripts\trade_grade_os_freshness_cron_runner.py --component cards --write --validate
+python scripts\trade_grade_os_freshness_cron_runner.py --component answers --full-answer-mode always --write --validate
+python scripts\workflow_router.py WF85 --answer all --write-capsules --validate
+```
+
+Current proof:
+- `tmp/trade-grade-decision-os-contract.json`
+- `tmp/trade-grade-source-freshness-gate.json`
+- `tmp/trade-grade-decision-cards.json`
+- `tmp/trade-grade-decision-card-authority-validation.json`
+- `tmp/trade-grade-approval-card-gate.json`
+- `tmp/trade-grade-risk-sizing-overlay.json`
+- `tmp/trade-grade-repair-conveyor.json`
+- `tmp/tier-ab-band-freshness-cron-guard.json`
+- `tmp/trade-grade-os-freshness-cron-runner.json`
+- `tmp/wf78-missing-band-context-repair.json`
+
+Planned WF85 artifact:
+- `tmp/trade-grade-decision-os-challenger-review.json`
+
+Boundary:
+- internal/personal decision support only; no customer/account/PII/suitability schema, no external delivery, no canon/portfolio/cash/sizing/risk-rule mutation, no capital deployment approval, no paper/live/account action, no money movement, and no generated card, score, SQL row, or approval-card draft becomes Randall approval.
+
+Cron posture:
+- `trade_grade_os_freshness_cron_runner.py` is the deterministic WF84/WF85 freshness owner command for scheduled proof. It supports targeted `--component` modes (`foundation`, `wf78`, `wf84`, `cards`, `answers`, `parity`, `repair`, `all`) and `--full-answer-mode changed|always|never`. The scheduled/default optimized posture is `--component all --full-answer-mode changed`: it refreshes the broad chain but skips the expensive WF85 full-answer assembler, post-answer WF84 rebuild, and parity proof when the semantic source digest is unchanged. Use `always` for a forced full-answer closeout and narrower `--component` modes for targeted maintenance.
+- `operator_action=NO_REPLY` is normal while `review_ready_count=0` and `approval_card_draft_count=0`, even when the Tier A/B band guard has warning-class finance-domain debt. `MAIN_HANDOFF_REQUIRED` is expected when review-ready cards appear; any review-ready/draft candidates route to main-session review only, and no execution or approval authority is inferred.
+- `wf85_paper_deployment_notification_digest.py`, `wf85_paper_deployment_telegram_notifier.py`, and `wf85_paper_deployment_telegram_cron_runner.py` provide the review-only paper-deployment radar above WF85/WF67. The digest classifies deployment-ready-for-review, near-deployment, watch, and blocked/repair rows; the notifier can deliver that digest to Randall on Telegram; the cron runner executes the manager -> digest -> notifier -> cron-control sequence serially. A deployment-ready row means review/preparation only. Execution-ready stays zero until exact Randall order approval, fresh WF67 guard, fresh short-lived kill switch, paper endpoint/wrapper, redacted audit, and reconciliation proof exist. Telegram supports REVIEW/PREPARE only; APPROVE is not active.
+
 ## WF78 tier funnel contract (Phase 1)
 
 `wf78_tier_funnel_contract.py` is the single machine-readable source for the WF78 D/C/B/A funnel. It encodes the tiers, each transition's gate question and required evidence, the competition rules (C->B 15-per-100-batch nomination + 50 Tier B cap; B->A 25 Tier A cap + +5 challenger margin + owner approval), the state vocabularies, the decay/demotion triggers, the caps, and the authority boundary as data. `06. Playbooks/Coverage Admission and Promotion Protocol.md` is its prose mirror. The future promotion gates import its constants instead of re-deriving the rules, and it cross-checks its caps against `wf78_tier_capacity_policy_gate.py` so the two cannot silently diverge.
@@ -337,7 +594,8 @@ python scripts\wf78_tier_funnel_promotion_gate.py --write --validate
 ```
 
 Current proof:
-- `tmp/wf78-tier-funnel-promotion-gate.json` (schema `veritas.wf78_tier_funnel_promotion_gate.v1`; 41 checks + 11 self-tests green; 100 live Tier C->B leads all `blocked_missing_evidence`, 0 eligible -- the honest live state)
+- default `tmp/wf78-tier-funnel-promotion-gate.json` remains the broad repair-queue proof.
+- request-fed `tmp/wf78-tier-b-research-packet-phase2-eval.json` has 15 C->B candidates and 15 `eligible_for_admission` verdicts from `tmp/wf78-tier-b-research-packet-requests.json`.
 
 Boundary:
 - evaluation/proof only; no admission, promotion, import/apply, production answer-path, canon/portfolio, customer/external, paper/live/account, or owner-approval-inference authority.
@@ -354,7 +612,7 @@ python scripts\wf78_tier_a_competitive_promotion_gate.py --write --validate
 ```
 
 Current proof:
-- `tmp/wf78-tier-a-competitive-promotion-gate.json` (schema `veritas.wf78_tier_a_competitive_promotion_gate.v1`; 43 checks + 11 self-tests green; 0 live candidates because no `B-VALIDATED` names exist yet and all 25 Tier A seats are open but unfilled -- the honest live state)
+- `tmp/wf78-tier-a-competitive-promotion-gate.json` (schema `veritas.wf78_tier_a_competitive_promotion_gate.v1`; 49 checks + 11 self-tests green; live proof has 34 candidates, 2 `eligible_for_auto_tier_a_routing`, 29 `blocked_not_validated`, and 3 `blocked_decay_state`)
 
 Boundary:
 - evaluation/proof only; no import/apply, production answer-path, canon/portfolio, customer/external, paper/live/account, or capital/execution approval authority. `A-DEPLOY` still requires a separate exact order approval before any paper/live action.
@@ -397,7 +655,21 @@ Boundary:
 
 ## WF78 lower-tier funnel promotion doctrine
 
-Status: Phase 1 funnel contract built (`wf78_tier_funnel_contract.py`), Phase 2 report-only `tier_funnel_promotion_gate` built (`wf78_tier_funnel_promotion_gate.py`, Tier D->C / Tier C->B), Phase 3 report-only `tier_a_competitive_promotion_gate` built (`wf78_tier_a_competitive_promotion_gate.py`, Tier B->A), legacy Phase 4 routing packet layer built (`wf78_funnel_owner_decision_packet.py`), current automated non-capital router built (`wf78_auto_tier_router.py`), daily routing delta built (`wf78_routing_delta.py`), `route TICKER` quick packet built (`wf78_route_ticker.py`), owner-gated `A-DEPLOY-CANDIDATE` capital-review queue built (`wf78_capital_review_queue.py`), AI event-triggered rerouting built (`wf78_event_triggered_rerouting.py`), and market execution-readiness cron hardening built (`market_execution_readiness_cron_hardening.py`). Downstream PM/routing-map/cockpit consumer sync is complete for `pm_program_state.py`, `pm_implementation_job_queue.py`, `state/pm-cockpit-source-registry.json`, and `wf78_routing_dashboard.py`; the current operating target is using event rerouting plus daily Tier 1 quote proof to drive targeted evidence repair and non-executing owner-card preparation.
+Status: Phase 1 funnel contract built (`wf78_tier_funnel_contract.py`), Phase 2 report-only `tier_funnel_promotion_gate` built (`wf78_tier_funnel_promotion_gate.py`, Tier D->C / Tier C->B), Phase 3 report-only `tier_a_competitive_promotion_gate` built (`wf78_tier_a_competitive_promotion_gate.py`, Tier B->A), legacy Phase 4 routing packet layer built (`wf78_funnel_owner_decision_packet.py`), current automated non-capital router built (`wf78_auto_tier_router.py`), model-safe clean tier roster built (`wf78_clean_tier_roster.py`), tier semantics guard built (`wf78_tier_semantics_guard.py`), Tier C attention trigger built (`wf78_tier_c_attention_trigger.py`), Tier C hold quote/card recheck built (`wf78_tier_c_hold_recheck.py`), daily routing delta built (`wf78_routing_delta.py`), `route TICKER` quick packet built (`wf78_route_ticker.py`), owner-gated `A-DEPLOY-CANDIDATE` capital-review queue built (`wf78_capital_review_queue.py`), AI event-triggered rerouting built (`wf78_event_triggered_rerouting.py`), and market execution-readiness cron hardening built (`market_execution_readiness_cron_hardening.py`). Downstream PM/routing-map/cockpit consumer sync is complete for `pm_program_state.py`, `pm_implementation_job_queue.py`, `state/pm-cockpit-source-registry.json`, and `wf78_routing_dashboard.py`; the current operating target is using event rerouting plus daily Tier 1 quote proof to drive targeted evidence repair and non-executing owner-card preparation.
+
+`wf78_clean_tier_roster.py` is the model-safe current roster surface for Tier A/B/C questions. It reads `tmp/wf78-auto-tier-routing.json` as the only current tier authority, reads `tmp/wf78-tier-label-sync-preview.json` only as audit/formal-label context, and writes `tmp/wf78-clean-tier-roster.json` with exclusive `true_tier_a`, `true_tier_b`, and `true_tier_c` arrays plus overlap explanation arrays. Use this artifact, or the auto-router directly, when answering "who is Tier A/B/C?" Do not answer current tier membership from the legacy label sync preview.
+
+`wf78_truth_layer_map.py` is the model-safe truth-layer contract for WF78 tier interpretation. It writes `tmp/wf78-truth-layer-map.json` and classifies current authority, repair/readiness, audit-only label sync, legacy/shadow migration, and paper-readiness guardrail layers. Current tier membership may be answered only from `tmp/wf78-clean-tier-roster.json` or `tmp/wf78-auto-tier-routing.json`. `tmp/wf78-tier-promotion-review-gate.json` is a repair/review queue, `tmp/deployment-readiness-surface.json` is actionability/freshness context, `tmp/wf78-tier-label-sync-preview.json` is audit-only, `tmp/wf78-legacy-42-tier-migration-planner.json` is shadow migration/deprecation context, and `tmp/alpaca-paper-readiness/*` is execution guardrail context. None of those non-authority layers may decide current Tier A/B/C membership.
+
+`wf78_tier_semantics_guard.py` validates that the clean roster and label preview preserve the semantics boundary: auto-router wins, label preview is audit-only, exclusive lists match router rows, and capital/trade flags remain false. It writes `tmp/wf78-tier-semantics-guard.json`; current proof has zero tier mismatches and explicit wording guards for promotion-overlap names that must not be called current Tier B.
+
+`wf78_tier_semantics_guard.py` also requires `tmp/wf78-truth-layer-map.json` to stay clean. It fails if any non-authority layer can decide current membership, if paper-readiness guardrails are treated as tier truth, or if tier states such as `A-READY`, `A-CHALLENGED`, `A-REPAIR`, `B-CANDIDATE`, `B-VALIDATED`, or `B-STALE` are confused with tier membership. Treat these as substates inside Tier A or Tier B, never as separate tiers.
+
+`wf78_tier_label_sync_preview.py` is audit/apply-preview only. Its artifact now carries `semantic_contract.not_current_tier_authority=true` and `semantic_contract.current_tier_authority=tmp/wf78-auto-tier-routing.json`. It may show formal/legacy Tier B label context for names currently routed Tier A; those rows are overlap explanation, not current Tier B membership.
+
+`wf78_tier_c_attention_trigger.py` scans active Tier C names for fresh price momentum, initial fundamental strength, valuation/quality warnings, and repair burden. It writes `tmp/wf78-tier-c-attention-trigger.json` / `.sqlite` and marks triggered rows as `C-CANDIDATE`, `C-CANDIDATE-REPAIR`, or `C-THEME-WATCH` for auto-router consumption. This is attention routing only: it does not admit Tier B/A, write universe/canon/portfolio state, approve capital deployment, or authorize paper/live execution.
+
+`wf78_tier_c_hold_recheck.py` refreshes review-only post-close quote overlays and ticker cards for Tier C held/repair candidates, then reruns the Tier C attention trigger and auto-router. It writes `tmp/wf78-tier-c-hold-recheck.json` plus `tmp/wf78-tier-c-hold-recheck-card-summary.json` and is included in the daily `tier_routing` phase before the C-to-B pipeline. It may move names into the attention candidate set, but it does not approve Tier B, capital deployment, or execution.
 
 The lower tiers use the same discipline as Tier A, but with lighter standards and lower authority. Tier D -> C is monitorability admission. Tier C -> B is research-worthiness admission. Neither route creates investability, deployment, production answer-path, portfolio, paper, live, customer, or owner-approval authority.
 
@@ -515,7 +787,7 @@ Hard gates:
 - owner approval
 
 Implemented (Phase 3):
-- `tier_a_competitive_promotion_gate` is built as `wf78_tier_a_competitive_promotion_gate.py`: deterministic, report-only gate that validates the 10 hard evidence families, `B-VALIDATED` state, open-seat admission vs. challenger/incumbent comparison, decay/invalid states, and the 25-name Tier A cap before any Tier A roster admission. Owner approval remains the terminal gate the engine never satisfies; the deepest reachable verdict is `eligible_for_owner_approval`.
+- `tier_a_competitive_promotion_gate` is built as `wf78_tier_a_competitive_promotion_gate.py`: deterministic, review-only gate that validates the 10 hard evidence families, `B-VALIDATED` state, open-seat admission vs. challenger/incumbent comparison, decay/invalid states, and the 25-name Tier A cap. The deepest reachable verdict is `eligible_for_auto_tier_a_routing`, which feeds the auto-router as non-capital routing state only; capital deployment and execution remain separate exact owner gates.
 
 Boundary:
 - report-only validator; no Tier A roster change, no checklist/score auto-promotion, no capital deployment, no production answer-path change, no canon/portfolio mutation, no customer/external output, no paper/live/account action, and no owner approval inference. `A-DEPLOY` means approval-ready packet only; execution still requires separate exact order approval.
@@ -656,16 +928,16 @@ Purpose:
 - independently capture fixture contracts, expected output shapes, semantic/shape parity state, and downstream consumer stability for the remaining 11 demotion candidates
 - independently record controlled Go-first/Python-fallback demotion for parity-green eligible helpers while keeping default routing unchanged and Python fallback retained
 - independently prove repeated controlled Go-primary history stays stable across clean cycles before any default routing change
-- independently record Randall-approved default Go-primary routing policy for only the already controlled-demoted helpers while retaining Python fallback
-- independently collect repeated default Go-primary route history with stable fingerprints, fallback retained, and Python deletion denied
-- independently prove report-only fallback-removal readiness for the promoted helpers while keeping Python fallback active and requiring separate exact approval before removal
-- independently gate full Python helper retirement, requiring explicit retirement approval/default-route promotion/longer live history and denying Python deletion while fallback is retained
+- independently record Randall-approved rollback from default Go-primary to Python owner/default after benchmark proof showed no material Go speed advantage for this path; Go remains validator-only
+- independently collect repeated Python-owner/default route history with stable fingerprints, Go validator-only posture, fallback retained, and Python deletion denied
+- keep fallback-removal readiness not applicable while Python is owner/default, with Python fallback active and separate exact approval required before any future removal attempt
+- independently gate full Python helper retirement, requiring explicit future retirement approval/default-route migration/longer live history and denying Python deletion while fallback is retained
 - independently compare CLI-backed Go SQL helpers against opt-in in-process SQLite driver runs for selected low-risk helpers, including JSON shape, status vocabulary, row counts, authority boundaries, error behavior, read-only enforcement, runtime/harness/PM stability, and compiled-binary readiness
 - independently prove the live WF72 A2 fallback-backed read guard from current live/fixture/router proof so stale prep metadata does not misstate the approved 265-key boundary
 - independently prove retail-grade answer routing Phases 1-4: route contract, source-open SQL gate, fallback-decay gate, and adversarial answer harness, all report-only and wired into the harness scorecard
 - independently harden the automation stack after cron load reductions, skill-routing changes, and WF72 A2 proof changes by checking the JSON cron ledger, key skill ownership surfaces, and SQL consumer-authority readiness in one report-only gate
 - support quick routing by validating existing proof routes first; routing wrappers may call these artifacts but must not create SQL-first, canon, customer, paper/live/account, or approval authority
-- route only the approved selected helpers (`go-sql-inventory-helper`, `go-sql-latency-probe`, and `go-finance-human-notes-sql-check`) through compiled binaries under `tmp/go-binaries/` with `--driver inprocess`; other in-process-capable helpers remain probe-only until separately approved
+- route only approved Go validator/proof helpers through compiled binaries under `tmp/go-binaries/` with `--driver inprocess`; Python remains the owner/default for workflow generators and SQL/cache helper ownership unless separately approved
 - reuse shared Go toolkit packages for report/status writing and read-only SQLite access instead of adding one-off wrappers per validator
 - provide a hard validator edge separate from the Python generators and TypeScript/Node cockpit
 
@@ -696,22 +968,30 @@ Boundary:
 
 ## WF74 model/run and finance correctness ledgers
 
-Use these before refreshing `model_quality_scorecard.py` when measuring model performance, model-quality readiness, or finance recommendation correctness.
+Use these before refreshing `model_quality_scorecard.py` when measuring model performance, model-quality readiness, finance recommendation correctness, or finance response-quality warning coverage.
 
 Run:
 ```bash
 python scripts/wf74_model_quality_collection_cron_runner.py --write --write-md --validate --include-harness
+python scripts/improvement_ledger.py --write --write-md --validate
+python scripts/token_usage_ledger.py --write --write-md --validate
 python scripts/wf74_cron_duplication_audit.py --write --validate
+python scripts/otel_ops_control.py --write --write-db --multi-window --validate
 python scripts/model_run_ledger.py --write --write-md --validate
 python scripts/finance_recommendation_correctness_ledger.py --write --write-md --validate
+python scripts/finance_response_quality_slice.py --write --write-md --validate
 python scripts/model_quality_scorecard.py --write --write-md --validate
 ```
 
 Current proof:
 - `tmp/wf74-model-quality-collection-cron-runner.json`
 - `tmp/wf74-cron-duplication-audit.json`
+- `tmp/otel-ops-control.json`
+- `tmp/otel-ops-window-summary.json`
+- `tmp/otel/control-loop.json` (legacy audit bridge; canonical owner remains `tmp/otel-ops-control.json`)
 - `tmp/model-run-ledger-current.json`
 - `tmp/finance-recommendation-correctness-ledger-current.json`
+- `tmp/finance-response-quality-slice.json`
 - `tmp/model-quality-scorecard.json`
 - `data/state-history/model-run-ledger.jsonl`
 - `data/state-history/finance-recommendation-correctness-ledger.jsonl`
@@ -720,9 +1000,26 @@ Current proof:
 Purpose:
 - keep cron collection behind one stable runner instead of long inline prompt command chains
 - audit that component collectors are not scheduled as duplicate cron jobs outside `Ops - OTEL Local Digest`
+- keep `tmp/otel-ops-control.json` as the default 24h daily health packet while `tmp/otel-ops-window-summary.json` carries 1h, 6h, 24h, 7d, and 30d operational windows for follow-up review
+- keep `tmp/otel/control-loop.json` as a compatibility bridge for older audit language that expected a main OTEL control-loop path; do not treat it as a second owner
 - normalize runtime, OTEL, and Spark canary evidence into one model/run ledger with explicit model/session attribution coverage
 - score current finance recommendation packets against observable ex-ante rule discipline: owner decision required, no approval inferred, no apply/execution authority, band context present, risk/concentration/catalyst gates present, and freshness blockers preserved
+- score finance answer archetypes for WF84/WF85 routing, band/stop/freshness visibility, thin macro and 5DMA/20DMA warnings, and WF72 support-only boundaries
 - let WF74 join performance, model attribution, ex-ante finance correctness, and WF55 later-outcome readiness without claiming model ranking from thin samples
+- expose the current efficiency-loop state for coding validation, model quality, implementation queue, routing, and cron/OTEL operations through `model_quality_scorecard.py` instead of adding a separate peer control packet
+- preserve standing interpretation rules: input drift is not automatically broken work, producers must refresh before consumers, OTEL is operational telemetry rather than coding-skill proof, freshness windows must be named before warning/blocker promotion, and stale source data should be labeled instead of hidden
+- keep multi-window OTEL operational only: intraday is manual/post-change, 24h remains cron/PM control, 7d is trend review, and 30d is baseline review; none of those windows authorizes model ranking, coding-skill inference, finance correctness, capture-depth expansion, or config/runtime mutation
+- carry open improvement recommendations across sessions through `data/state-history/improvement-ledger.jsonl` and the current packet `tmp/improvement-ledger-current.json`; use it before recommending OS/WF74 improvements and do not treat it as auto-apply authority
+- rank token-heavy cron runs and implementation attribution gaps through `data/state-history/token-usage-ledger.jsonl` and `tmp/token-usage-ledger-current.json`; token counts are factual metadata, but dollar-cost fields require a local pricing table before use
+
+Regression:
+```bash
+python scripts/test_otel_ops_control.py
+python scripts/otel_ops_control.py --write --write-db --multi-window --validate
+python scripts/test_full_intelligence_answer_parity.py
+python scripts/test_finance_response_quality_slice.py
+python scripts/test_model_quality_scorecard.py
+```
 
 Cron owner:
 - `Ops - OTEL Local Digest`
@@ -736,7 +1033,7 @@ Boundary:
 
 ### `generic_intelligence_saas_pivot.py`
 
-Status: WF75 generic service-run and SMB Workflow Clarity pivot control packet. SMB Workflow Clarity is currently owner-paused; verify with `python scripts\workflow_router.py WF79-SMB --answer all` before advancing it.
+Status: WF75 generic service-run and SMB Workflow Clarity / Marketing Ops Automation control packet. SMB was resumed by Randall on 2026-06-13 as a P1 monetization lane; verify current status with `python scripts\workflow_router.py WF79-SMB --answer all` before advancing it.
 
 Run:
 ```bash
@@ -868,13 +1165,14 @@ Durable derived registries live under `data/` only when they are reusable inputs
 
 Status: MVP helper-lane lease and anti-collision register.
 
-Builds and validates `tmp/concurrent-lane-register.json`, a JSON lease register for concurrent workflow/helper lanes. It derives read-first and acceptance defaults from `tmp/workflow-routing-index.json`, records planned/leased/running/complete lanes, and fails closed if active lanes collide on write surfaces, write forbidden paths, have stale leases, or complete without proof. It does not spawn helpers, schedule work, or grant authority.
+Builds and validates `tmp/concurrent-lane-register.json`, a JSON lease register for concurrent workflow/helper lanes. It derives read-first and acceptance defaults from `tmp/workflow-routing-index.json`, records planned/leased/running/complete lanes, tags running lanes with `started_at_utc`, tags terminal lanes with `ended_at_utc` / `completed_at_utc`, and can attach OpenClaw `session_key`, `session_id`, `session_label`, and `task_name` metadata after a helper is spawned. It fails closed if active lanes collide on write surfaces, write forbidden paths, have stale leases, or complete without proof. It does not spawn helpers, schedule work, or grant authority.
 
 Run:
 ```bash
 python scripts/concurrent_lane_manager.py --status --write --validate
 python scripts/concurrent_lane_manager.py --plan WF78 --workstream event-rerouting --owner main --write --validate
 python scripts/concurrent_lane_manager.py --lease WF78 --workstream event-rerouting --owner helper-wf78-a --allowed-write scripts\wf78_event_triggered_rerouting.py --allowed-write tmp\wf78-event-triggered-rerouting.json --write --validate
+python scripts/concurrent_lane_manager.py --set-status WF78 --workstream event-rerouting --status-value running --session-key agent:main:example --session-id <session-id> --session-label helper-wf78-a --task-name wf78_event_rerouting --write --validate
 python scripts/concurrent_lane_manager.py --complete WF78 --workstream event-rerouting --proof tmp\wf78-event-triggered-rerouting.json --write --validate
 ```
 
@@ -942,7 +1240,7 @@ Default portfolio communication source:
 - treat `tmp/dashboard-data.json` as UI backend only.
 - cron may generate reports, guardrails, proposals, archive suggestions, scoped eligible entry-band maintenance through `auto_apply_entry_band_maintenance.py --apply`, and the Sunday weekly minimum reference-band note refresh through `reference_band_note_sync.py --apply`; cron must not apply canonical portfolio/intelligence edits outside those approved band-maintenance/reference-visibility paths or perform cleanup moves.
 - `auto_apply_entry_band_maintenance.py --dry-run` preflights the same current Execution Board table/parser-section update path as `--apply`; blocked status means the board cannot be patched safely.
-- `auto_apply_entry_band_maintenance.py --apply` is limited to `canonical_apply_eligible=true` routine `entry_band` proposals, updates `tmp/portfolio-config.json` plus `03. Portfolio/Execution Board.md`, and writes `tmp/auto-band-apply.json`; it grants no capital, sizing, sleeve, cash, risk-rule, paper/live order, brokerage/account, or owner-approval authority.
+- `auto_apply_entry_band_maintenance.py --apply` is limited to `canonical_apply_eligible=true` routine `entry_band` proposals, updates `tmp/portfolio-config.json` plus `03. Portfolio/Execution Board.md`, writes `tmp/auto-band-apply.json`, then serially refreshes the WF72 entry/stop SQL reference cache, `finance-intelligence-state.sqlite`, WF84, WF85 decision cards, changed-ticker WF85 full answers/parity, and `tmp/cache-dependency-manifest.json`; if the post-apply cache/proof refresh fails, the run exits `blocked_needs_sql_reference_refresh`. It grants no capital, sizing, sleeve, cash, risk-rule, paper/live order, brokerage/account, or owner-approval authority.
 
 ## Retail investor SaaS fixture and validator
 
@@ -979,7 +1277,7 @@ Boundary:
 
 ## Governance validators
 
-### `boot_surface_size_guard.py`, `workflow_hygiene_check.py`, `tool_bloat_reduction_guard.py`, `automation_health_dashboard.py`, `major_closeout_delta.py`, `workflow_automation_autonomy_review.py`, `operator_packet.py`, `heartbeat_continuation_candidates.py`, `pm_program_state.py`, `pm_main_session_handoff.py`, `wf75_closeout_refresh.py`, `wf75_service_led_saas_readiness_plan.py`, `wf75_service_state.py`, `wf75_service_state_sqlite.py`, `wf75_operator_console.py`, `veritas_harness_scorecard.py`, `veritas_harness_failure_classifier.py`, `veritas_pm_department_validate.py`, `wf75_pm_weekly_update.py`, `wf75_cron_automation_authority_plan.py`, `cron_operator_ledger.py`, `morning_control_digest.py`, `post_close_control_digest.py`, `cron_notes_flattening_plan.py`, `cron_execution_posture_patch.py`, `authority_matrix.py`, `sql_staging_import_gate.py`, `bounded_canon_mutation_approval_packet.py`, `audit_event_table_design.py`, `sql_retail_grade_validation_bundle.py`, `sql_retail_expansion_phase_gate.py`, `sql_500_ticker_expansion_design_gate.py`, `wf78_100_ticker_candidate_scope_packet.py`, `wf78_100_ticker_import_gate.py`, `sql_pre_phase5_hardening_gate.py`, `sql_hardening_flattening_plan.py`, `sql_source_truth_authority_manifest.py`, `sql_source_truth_parity_validator.py`, `sql_source_truth_drift_validator.py`, `sql_source_truth_ab_consumer_probe.py`, `sql_source_truth_promotion_readiness_gate.py`, `sql_source_truth_field_family_decision_packet.py`, `sql_source_truth_apply_scaffold.py`, `sql_source_truth_exact_apply_packet.py`, `sql_first_consumer_wiring_preflight.py`, and `tmp_helper_residue_cleanup.py`
+### `boot_surface_size_guard.py`, `workflow_hygiene_check.py`, `tool_bloat_reduction_guard.py`, `automation_health_dashboard.py`, `major_closeout_delta.py`, `workflow_automation_autonomy_review.py`, `operator_packet.py`, `heartbeat_continuation_candidates.py`, `pm_program_state.py`, `pm_main_session_handoff.py`, `wf75_closeout_refresh.py`, `wf75_service_led_saas_readiness_plan.py`, `wf75_service_state.py`, `wf75_service_state_sqlite.py`, `wf75_operator_console.py`, `wf75_deliverable_packager.py`, `veritas_harness_scorecard.py`, `veritas_harness_failure_classifier.py`, `veritas_pm_department_validate.py`, `wf75_pm_weekly_update.py`, `wf75_cron_automation_authority_plan.py`, `cron_operator_ledger.py`, `morning_control_digest.py`, `post_close_control_digest.py`, `cron_notes_flattening_plan.py`, `cron_execution_posture_patch.py`, `cron_patch_manager.py`, `cron_contract_validator.py`, `worktree_checkpoint_planner.py`, `validator_bundle_router.py`, `artifact_staleness_explainer.py`, `lane_collision_preflight.py`, `authority_matrix.py`, `sql_staging_import_gate.py`, `bounded_canon_mutation_approval_packet.py`, `audit_event_table_design.py`, `sql_retail_grade_validation_bundle.py`, `sql_retail_expansion_phase_gate.py`, `sql_500_ticker_expansion_design_gate.py`, `wf78_100_ticker_candidate_scope_packet.py`, `wf78_100_ticker_import_gate.py`, `sql_pre_phase5_hardening_gate.py`, `sql_hardening_flattening_plan.py`, `sql_source_truth_authority_manifest.py`, `sql_source_truth_parity_validator.py`, `sql_source_truth_drift_validator.py`, `sql_source_truth_ab_consumer_probe.py`, `sql_source_truth_promotion_readiness_gate.py`, `sql_source_truth_field_family_decision_packet.py`, `sql_source_truth_apply_scaffold.py`, `sql_source_truth_exact_apply_packet.py`, `sql_first_consumer_wiring_preflight.py`, and `tmp_helper_residue_cleanup.py`
 
 Status: WF72 report-only runtime-efficiency, telemetry, and closeout-delta helpers.
 
@@ -1012,6 +1310,12 @@ python scripts/morning_control_digest.py --write --write-md --validate
 python scripts/post_close_control_digest.py --write --write-md --validate
 python scripts/cron_notes_flattening_plan.py --write --write-md --validate
 python scripts/cron_execution_posture_patch.py --validate
+python scripts/cron_patch_manager.py --name "Ops - OTEL Local Digest" --timeout-seconds 901 --write --validate
+python scripts/cron_contract_validator.py --write --validate
+python scripts/worktree_checkpoint_planner.py --write --validate
+python scripts/validator_bundle_router.py --write --validate
+python scripts/artifact_staleness_explainer.py --write --validate
+python scripts/lane_collision_preflight.py --write-path scripts\example.py --write --validate
 python scripts/authority_matrix.py --write --validate
 python scripts/sql_staging_import_gate.py --write --validate
 python scripts/bounded_canon_mutation_approval_packet.py --write --validate
@@ -1108,7 +1412,7 @@ Purpose:
 - use `major_closeout_delta.py` to paste compact trend/tool-bloat/OTEL fields into major workflow closeouts without rereading large artifacts
 - use `workflow_automation_autonomy_review.py` to classify P0/P1/P2/P3/P4 workflows by safe heartbeat, cron, helper-lane, and main-session posture
 - use `operator_packet.py` to refresh standardized recovery packets for the high-risk long-work lanes: SQL/WF78, Retail SaaS/WF75, WF68 alerts, WF67 paper, and bounded portfolio/canon maintenance
-- use `pm_control_packet.py` as the primary PM fast path. `python scripts\pm_control_packet.py --write --write-db --validate` writes `tmp/pm-control-packet.json` and `tmp/pm-control-packet.sqlite`; legacy PM sidecars are opt-in only with `--write-compat` for debugging or repair. It is coordination only: no launch, customer data, external delivery, SQL import, archive/delete, canon/portfolio mutation, paper/live/account action, helper spawn, heartbeat execution, or owner approval inference.
+- use `pm_control_packet.py` as the primary PM fast path. `python scripts\pm_control_packet.py --write --write-db --validate` writes `tmp/pm-control-packet.json` and `.sqlite`; `summary.stale_lane_digest` is the compact PM-yellow drilldown. Legacy PM sidecars are opt-in only with `--write-compat`. Coordination only: no launch, customer data, external delivery, SQL import, archive/delete, canon/portfolio mutation, paper/live/account action, helper spawn, heartbeat execution, or owner approval inference.
 - use `pm_sidecar_retirement_guard.py --write --validate` after PM/cockpit/routing edits to ensure active consumers read `tmp/pm-control-packet.json` instead of legacy PM state, queue, heartbeat, or handoff sidecars.
 - use `cron_control_packet.py --write --validate` as the primary cron fast path. It composes cron freshness, signal scorecard, and escalation state into `tmp/cron-control-packet.json`; drill into `cron_freshness_spine.py`, `cron_signal_scorecard.py`, or `escalation_trigger.py` only when the packet reports attention, blockage, stale/noisy signals, or route-specific detail is needed.
 - use `otel_ops_control.py --write --write-db --validate` as the local OTEL fast path. It turns official collector debug summaries and legacy receipt rows into `tmp/otel-ops-control.json`, `tmp/otel-ops-events.jsonl`, and `tmp/otel-ops.sqlite`; cron control, fast QA, model-quality scorecard, and validator timing consume this packet instead of parsing collector logs independently.
@@ -1120,16 +1424,19 @@ Purpose:
 - use `retail_automation_control_plane.py` as the Phase 4.5-7 automation-first control packet. It reads the retail truth routing contract, answer harness, clean/seeded-bad retail SaaS validator artifacts, WF72 A2 guard, WF78 all-safe packet, and harness scorecard, then writes `tmp/retail-automation-control-plane.json` with route gates, SQL support health, customer-safety gate state, seeded-bad coverage, freshness prompts, internal demo cards, and quiet summary. It is surfaced in the PM cockpit Retail tab and wired into `veritas_harness_scorecard.py`. The enabled review-only cron `P0 Retail Automation Control Plane Guard` runs weekdays at 06:45 and 14:45 America/Phoenix in an isolated/no-delivery session; it refreshes the retail contract, answer harness, retail fixture proof, WF78 all-safe proof, WF78 AI event rerouting, hardening pass, automation control plane, PM state, and cockpit validation. It must not run `cron_operator_ledger.py`; cron inventory/freshness belongs to the dedicated freshness spine, scorecard, and escalation lane. Report-only: no customer/external output, SQL writes/imports, SQL-first promotion, canon/portfolio mutation, paper/live/account action, Python fallback retirement, or owner approval inference.
 - use `wf75_closeout_refresh.py --validation-budget shared` after significant WF75 implementation work to refresh generic SMB pivot artifacts, WF75 service state, SQLite control-plane proof, operator console, PM update, artifact-only handoff, PM readiness brief, operator packet, the consolidated PM control packet, workspace boundary, and artifact index. Reserve `--validation-budget major` for DB lifecycle proof.
 - use `wf75_service_led_saas_readiness_plan.py` to refresh the 6-10 week, 55-65% internal/service-led WF75 infrastructure plan; current work is anonymous-scenario service-state storage, SQLite WAL control plane, operator queue/status, operator console/control cockpit, renderer/export pipeline, QA regression, scenario-template library, artifact-only PM handoff, and weekly PM readiness PDF. It can use real public ticker/company/market evidence when source-labeled and validator-gated, but it cannot grant public launch, real customer data, external delivery, legal/compliance, source-licensing, trading/account, paper execution, or portfolio/canon authority
+- use `wf75_deliverable_packager.py` to keep the WF75 polished-deliverables spine current. It reads WF75 service-state, operator console, scenario library, renderer regression, PM readiness PDF manifest, artifact-only handoff, and WF75 capsule, then writes `tmp/wf75-deliverable-packaging-plan.json/.md`, `tmp/wf75-deliverable-packager.json`, and the internal operator workbook `tmp/wf75-deliverables-workbook.xlsx`. It treats the internal PM PDF and operator Excel as live internal review deliverables while keeping customer-safe PDF/Excel exports planned and gated behind no-leak/no-claim, source/freshness, policy, operator-review, source-licensing, and compliance gates. It is not external delivery, public launch, customer-data authority, legal/compliance readiness, source-licensing clearance, finance canon/portfolio mutation, paper/live/account action, or approval authority.
+- use `finance_delivery_series_orchestrator.py` to keep Randall's recurring finance intelligence delivery series fresh. It reads macro, WF84/WF85, trade-grade, performance, WF87 paper-pilot, PM, cron, and WF75/SaaS artifacts, then writes `tmp/finance-delivery-series.json`, `tmp/finance-delivery-series.xlsx`, and HTML/PDF outputs under `tmp/finance-delivery-series/` for daily market read, weekly market read, weekly investments and performance, monthly investment direction, and monthly market deep dive. Daily/weekly outputs are concise; monthly outputs are deeper and include fundamentals, business outlook, YoY finance, charts, scenario outlook, SaaS/SMB interconnect, KPIs, and improvement signals. It is internal review only: no customer/public delivery, legal/compliance/source-licensing claim, capital deployment, portfolio/canon mutation, paper/live/account action, forecast certainty, or owner approval inference.
 - use `wf77_supplemental_price_evidence.py` before `wf77_price_freshness_bridge.py` when production WF77 coverage needs review-only public price rows for tickers outside `technical_refresh` entitlement; this supplements freshness proof without widening portfolio/deployment scope
 - use `wf75_scenario_template_library.py` and `wf75_renderer_export_regression.py` to refresh the anonymous scenario library and reusable renderer/export regression proof; clean scenarios must pass and seeded-bad cases must fail before PM handoff claims
 - use `wf75_service_state.py` to refresh the Phase C/D JSON service-state, service-run, operator-queue, and movement proof. The current recommended slice is `--scenario-id anon-risk-freshness-edge-cases-v1` for supplemental price, macro/speculative, and below-stop/repair wording coverage. It records anonymous request state, validator state, WF77 freshness blockers, next operator action, and heartbeat pickup. It is JSON v0 only, not a customer DB, customer intake authority, external delivery path, canon/portfolio mutation, SQL import, paper/live/account action, or approval surface.
 - use `wf75_service_state_sqlite.py` to refresh the WF75 SQLite WAL control-plane proof at `tmp/wf75-service-state.sqlite` and `tmp/wf75-service-state-sqlite.json`. It indexes anonymous service request state, artifact refs, queue rows, events, and one-worker claim proof with WAL, `busy_timeout`, and foreign-key validation. It is local control-plane infrastructure only, not finance canon, not a customer DB, not SQL/ticker import, not approval, and not execution/account authority.
 - use `macro_event_calendar.py` to refresh the review-only high-impact macro calendar at `tmp/macro-event-calendar.json/.md`. It tracks CPI, PPI, labor, FOMC, and PCE release timing plus follow-up expectations; it is source-labeled schedule proof, not a forecast/probability surface, portfolio/canon mutation path, or paper/live execution authority.
 - use `artifact_intelligence_action_scorer.py` to refresh the review-only cross-artifact materiality/action queue at `tmp/artifact-intelligence-action-scorer.json`. It reads macro calendar/metrics/judgment, WF78 routing/confidence/event-rerouting, and workflow routing proof to classify changes into safe actions such as refresh artifact, repair evidence, rerun validator, reroute candidate, block readiness, prepare review packet, escalate, or notify-if-material. It writes only its own queue and grants no workflow mutation, canon/portfolio mutation, ticker-card mutation, SQL-canon mutation, customer/external delivery, capital deployment, paper/live execution, brokerage/account action, money movement, or owner approval inference.
-- use `macro_metrics_ingest.py` to refresh the review-only current macro metrics surface at `tmp/macro-metrics-current.json/.md`. It ingests public FRED CSV rows for CPI, PPI, PCE, unemployment, payrolls, claims, and GDP; uses the official ISM manufacturing report/PDF for PMI; and can fall back to `tmp/market-state.json` proxies for Treasury 2Y, Treasury 10Y, and DXY when FRED paths are unavailable. Fetches run in bounded parallel batches (`--max-workers`, default 6) with per-series timeout (`--timeout`, default 6 seconds). If a live fetch fails, a recent previous `ok` metric may be reused as `source_mode=cached_fallback` within `--cache-max-age-hours` while the artifact remains warning-classified. It is metrics proof only, not a forecast/probability surface, portfolio/canon mutation path, or paper/live execution authority.
+- use `macro_metrics_ingest.py` to refresh the review-only current macro metrics surface at `tmp/macro-metrics-current.json/.md` plus derived SQLite companion `tmp/macro-metrics-current.sqlite`. It ingests public FRED CSV rows for CPI, PPI, PCE, unemployment, payrolls, claims, and GDP; parses the official BLS CPI news release into `cpi_release_detail` and `cpi_release_components` DB rows for all-items/core/food/energy/gasoline/shelter/rent/OER decomposition; uses the official ISM manufacturing report/PDF for PMI; and can fall back to `tmp/market-state.json` proxies for Treasury 2Y, Treasury 10Y, and DXY when FRED paths are unavailable. Fetches run in bounded parallel batches (`--max-workers`, default 6) with per-series timeout (`--timeout`, default 6 seconds). If a live fetch fails, a recent previous `ok` metric or CPI release detail may be reused as `source_mode=cached_fallback` within `--cache-max-age-hours` while the artifact remains warning-classified. It is metrics proof only, not a forecast/probability surface, portfolio/canon mutation path, or paper/live execution authority.
+- use `macro_signal_spine.py` to refresh the review-only strategic macro signal spine at `tmp/macro-signal-spine.json`. It adds Sahm Rule plus UNRATE fallback, claims trend, Yale/Shiller CAPE, a clearly labeled FRED/Fed Z.1 Buffett-indicator proxy, NFCI/ANFCI, HY/IG OAS, rates/volatility context, and expanded index/breadth confirmation (SPY, QQQ, IWM, MDY/IJH, RSP, VTV/VUG, VXUS, EFA/EEM, VIX, MOVE). Cadence: daily market-day run for source freshness, with monthly/quarterly/weekly interpretation windows by source. It is evidence/routing support only, not a timing model, forecast/probability surface, portfolio/canon mutation path, capital action, or paper/live execution authority.
 - use `macro_energy_supply_ingest.py` to refresh the review-only official energy-supply artifact at `tmp/macro-energy-supply.json/.md`. It parses the EIA Weekly Petroleum Status Report table 1 CSV for crude, gasoline, distillate, propane/propylene, and total-stock context, then attempts Baker Hughes official rig-count pages with short fail-soft timeouts and cached fallback when available. It is energy-supply evidence only, not a forecast, commodity recommendation, portfolio/canon mutation path, or paper/live execution authority.
 - use `macro_geopolitical_sweep.py` to refresh the review-only official-source geopolitical sweep at `tmp/macro-geopolitical-sweep.json/.md`. It scans configured official RSS/Atom feeds by title/link keyword buckets for energy supply, trade/tariff, defense/conflict, and financial-sanctions review cues. It is routing evidence only, not a news-completeness claim, geopolitical conclusion, portfolio/canon mutation path, or paper/live execution authority.
-- use `macro_judgment_draft.py` to refresh the repeatable review-only macro interpretation layer at `tmp/macro-judgment-draft.json/.md`. It fills weekly macro judgment fields from macro metrics, macro calendar, market state, macro regime, regime scores, deployment posture, EIA/Baker energy supply, and geopolitical sweep artifacts while preserving manual-dependency warnings for unavailable inputs. It is first-draft interpretation only, not final macro doctrine, forecast/probability authority, portfolio/canon mutation, capital action, or paper/live execution authority.
+- use `macro_judgment_draft.py` to refresh the repeatable review-only macro interpretation layer at `tmp/macro-judgment-draft.json/.md`. It fills weekly macro judgment fields from macro metrics, the macro signal spine, macro calendar, market state, macro regime, regime scores, deployment posture, EIA/Baker energy supply, geopolitical sweep artifacts, and the current-regime analog scenario panel while preserving manual-dependency warnings for unavailable inputs. It is first-draft interpretation only, not final macro doctrine, forecast/probability authority, portfolio/canon mutation, capital action, or paper/live execution authority.
 - use `json_sql_promotion_index.py` to refresh the JSON-to-SQL promotion registry and derived SQLite index at `tmp/json-sql-promotion-registry.json/.md`, `tmp/json-sql-promotion-index.json/.md`, and `tmp/json-sql-promotion-index.sqlite`. JSON remains proof/source/rebuildable evidence; SQLite is only a fast derived lookup/control plane over stable macro, WF75, research, and decision-packet JSON contracts. It is not canon, approval, portfolio authority, capital action, customer authority, SQL import authority, or paper/live/account authority.
 - use `wf75_operator_console.py` to refresh the local static WF75 operator console/control cockpit at `tmp/wf75-operator-console.json`; HTML/Markdown sidecars are explicit optional renders. It reads the SQLite WAL DB, service state, queue, renderer/scenario proof, macro-event calendar, WF77 bridge, PM handoff/update/PDF, and cron plan to show artifact health, lifecycle state, next operator action, and blocked authority flags. It is local internal control only, not a public UI, customer portal, approval surface, SQL import, or execution/account authority.
 - use `veritas_harness_scorecard.py` as the unified active-workflow harness gate. It inspects WF75/WF55/WF77 proof artifacts plus the SMB Workflow Clarity contract/scenario/preview/pilot/automation-blueprint artifacts and `tmp/wf75-smb-boundary-lint.json`. Use `--fast` for chat-safe routine command checks (Python compile, artifact-index validation, Node syntax), `--go` for Go/build/SQL-helper checks, and `--full` for all command lanes including OpenClaw skills and slow/product regression. `warning` means review-only readiness debt; hard failures block readiness claims.
@@ -1139,10 +1446,16 @@ Purpose:
 - use `wf75_pm_weekly_update.py` to generate the current WF75 weekly PM update and presentation handoff from live readiness/operator artifacts
 - use `wf75_cron_automation_authority_plan.py` to prove the paired WF75 weekly automation model: isolated cron builds bounded PM artifacts, main-session Veritas reads them and reports intelligence to Randall only when material, stale, blocked, or decision-needed. `--write` is JSON-first; use `--write-md` only for an explicit human rendering.
 - use `cron_operator_ledger.py` as the JSON-first current cron operator inventory route. It reads the live cron store plus run summaries/current-window artifacts and writes `tmp/cron-operator-ledger.json`; the optional Markdown digest is generated from JSON and should stay compact.
-- use `cron_freshness_spine.py --write --validate` as the cron freshness component behind `cron_control_packet.py`. It reads the cron ledger and operating-leverage spine, requires every enabled cron to have an expected-artifact contract, and writes `tmp/cron-freshness-spine.json` with per-job `fresh` / `stale` / `needs_review` / `blocked` state. It is review-only and cannot mutate cron schedules, config/runtime, SQL source tables, canon/portfolio state, customer surfaces, paper/live/account state, or owner approval.
+- use `cron_freshness_spine.py --write --validate` as the cron freshness component behind `cron_control_packet.py`. It writes per-job state plus attention buckets: urgent blocked/owner-decision, main review queue, monitor-only/stale, and quiet success. Review-only; no cron schedule/config/runtime, SQL, canon/portfolio, customer, paper/live/account, or approval authority.
 - use `morning_control_digest.py` as the weekday morning proof gate. It reads morning, sector, current-window, WF68, SQL coverage, cron ledger, PM, and service-state SQL surfaces into `tmp/morning-control-digest.json`; after clean `NO_REPLY` proof, the separate weekday morning main-session handoff is disabled and awareness routes through the digest, cron freshness spine, scorecard, and escalation trigger.
 - use `cron_notes_flattening_plan.py` as the full migration plan from heavy mixed cron Markdown to thin human Markdown plus structured JSON truth. It is plan/proof only and cannot mutate cron schedules, archive/delete files, mutate canon/portfolio state, deliver externally, or authorize paper/live/account action.
 - use `cron_execution_posture_patch.py` to audit or apply the payload-only JSON-first cron posture patch: remove restrictive Python execution settings from enabled producer jobs, replace routine `current-window-artifacts.md` references with JSON, add cron-operator-ledger refreshes to producers, and wire main-session handoffs/watchdogs to read the ledger. It writes a timestamped cron-store backup before applying and does not add/delete jobs or change schedules.
+- use `cron_patch_manager.py` as the Gateway cron patch route before manual live cron edits. Default mode is plan-only: it resolves one job by exact name or id, shows the requested diff, classifies authority impact, and writes `tmp/cron-patch-manager.json`. With explicit `--apply`, it writes a backup under `tmp/cron-patch-manager-backups/`, applies only supported fields (`description`, agent message/model/thinking/timeout/light-context, and failure alert), and can run ordered verification. With `--rollback <backup.json>`, it restores those supported fields from backup. It refuses schedule, delivery, lifecycle, config/runtime, and authority-widening patches by default.
+- use `cron_contract_validator.py` to compare live Gateway cron jobs against local intended-contract JSON under `state\cron-contracts\`. It writes `tmp/cron-contract-validator.json`, reports drift/missing jobs, and performs no live cron mutation. Current priority contracts cover WF78 Daily Freshness, Weekday Morning Review, Weekday Post-Close Review, WF78 Open-Ready Owner Review, Tier A Intraday/Confirmation/Late-Session probes, morning/midday paper deployment recommendation cards, WF85 Paper Deployment Telegram Radar, WF85 Post-Refresh Paper Deployment Telegram Radar, WF87 Market-Hours Fresh Gate Probe, and the weekly OS-improvement radar reminder.
+- use `worktree_checkpoint_planner.py` before local checkpoint/commit work. It groups dirty paths into coherent staging batches, flags sensitive/generated surfaces, and routes the matching validator set without staging, committing, reverting, deleting, or pushing.
+- use `validator_bundle_router.py` as the active wrapper around `changed_file_validator_router.py`. Default mode plans the smallest honest validator bundle; `--execute` runs only guarded `python`/`openclaw` commands without shell metacharacters or apply/submit/promote/import tokens.
+- use `artifact_staleness_explainer.py` when a control surface is stale, missing, or confusing. It maps the artifact to its likely owner, source refs, age, reason, and refresh command without refreshing or mutating anything.
+- use `lane_collision_preflight.py` before starting multi-surface implementation or helper work. It checks intended write paths against active lane leases, forbidden-write policy, and dirty worktree overlap; it does not lease or write the lane register.
 - use `authority_matrix.py` as the general approval-lane spine for SQL/ticker import, SQL reads/writes, bounded canon/portfolio mutation, customer/suitability/account data, credential reference/secret handling, and external delivery. It defines gates only; it does not grant SQL import, canon/portfolio apply, customer data, credential storage, external delivery, account action, or execution authority.
 - use `sql_staging_import_gate.py` after the authority matrix to prepare a fail-closed staging-import review surface. It consumes provider/schema/no-regression/rollback proof and stays blocked until an exact import scope, table list, hashes, post-import validators, and scoped approval artifact exist. It performs no import or SQL write.
 - use `bounded_canon_mutation_approval_packet.py` as the proposal-only approval packet for bounded workspace canon/portfolio categories. It can prepare review, diff, validator, rollback, and audit-event requirements, but it cannot apply changes, infer owner approval, change cash/risk rules/execution entitlement, or touch account/paper/live systems.
@@ -1389,7 +1702,7 @@ Boundary:
 
 Status: WF78 report-only Tier B research/evidence packet route.
 
-Builds the first evidence-depth packet layer between the macro/thesis overlay and the Phase 2 C->B promotion gate. It reads the macro shortlist, ticker-card refresh gate, current coverage artifact, promotion-review gate, and available ticker cards, then writes concrete C->B research packets plus a Phase 2 request file. Current proof is deliberately blocked: 15 macro-shortlist packets, 0 Phase 2 eligible, all still missing technical/price-band context and acceptable evidence-repair-burden proof.
+Builds the first evidence-depth packet layer between the macro/thesis overlay and the Phase 2 C->B promotion gate. It reads the macro shortlist, ticker-card refresh gate, current coverage artifact, promotion-review gate, available ticker cards, and evidence-repair proof, then writes concrete C->B research packets plus a Phase 2 request file. Current request-fed proof: 15 packets, 15 Phase 2 eligible for non-capital C->B routing.
 
 Run:
 ```bash
@@ -1449,7 +1762,7 @@ Boundary:
 
 Status: WF78 automated non-capital tier/routing state generator.
 
-Builds the live derived routing artifact for all active WF78 tickers under Randall's 2026-06-05 posture: Veritas may automate ticker tier/routing states; Randall approval is reserved for capital deployment, trade execution, paper/live/account action, and other explicitly gated mutations. The router consumes the universe registry, Tier A packet, Tier B label-sync preview, the lower-quality Tier B hold packet, production adjudication, and the Tier A confidence gate. It emits current automated `auto_tier` / `auto_state` rows while keeping execution and deployment approvals false.
+Builds the live derived routing artifact for all active WF78 tickers under Randall's 2026-06-05 posture: Veritas may automate ticker tier/routing states; Randall approval is reserved for capital deployment, trade execution, paper/live/account action, and other explicitly gated mutations. The router consumes the universe registry, Tier A packet, Tier B label-sync preview, request-fed Phase 2 C->B gate output, the Phase 3 B->A competitive gate, production adjudication, and the Tier A confidence gate. It emits current automated `auto_tier` / `auto_state` rows while keeping execution and deployment approvals false.
 
 Run:
 ```bash
@@ -1475,10 +1788,11 @@ Next phased build:
 5. Tier A confidence gate is complete: `python scripts/wf78_tier_a_confidence_gate.py --write --validate` writes `tmp/wf78-tier-a-confidence-gate.json`, and the auto-router consumes it so critical data conflicts cannot be `A-READY`
 6. event-triggered rerouting is complete: `python scripts/wf78_event_triggered_rerouting.py --write --write-db --validate` writes `tmp/wf78-event-triggered-rerouting.json` and `tmp/wf78-event-triggered-rerouting.sqlite`
 7. market execution-readiness cron hardening is complete: `python scripts/market_execution_readiness_cron_hardening.py --write --validate` writes `tmp/market-execution-readiness-cron-hardening.json`
+8. weekday WF78 cron now runs request-fed Phase 2 C->B evaluation, Phase 3 B->A competitive evaluation, the post-gate auto-router, and `wf78_routing_delta.py`; `cron_freshness_spine.py` requires those artifacts.
 
 `wf78_capital_review_queue.py` ranks current `A-READY` names for non-executing owner capital-review card preparation. It must keep every row owner-gated with `capital_deployment_approved=false`, `trade_or_execution_approved=false`, and `owner_action_required=true`. A queue row never grants capital deployment, order execution, paper/live action, brokerage/account action, or portfolio/canon mutation authority.
 
-`market_execution_readiness_cron_hardening.py` checks the daily quote-readiness contract around WF68 and P0 cron windows. It requires the WF68 quote snapshot to cover the current WF78 Tier A/capital-review symbol set, confirms the quote artifact is current for the latest market date, checks no stale/missing quote rows exist, and proves no execution/capital authority is granted. During regular market hours it requires intraday-fresh quotes; after close it accepts same-market-day current quotes only as review proof, not execution freshness.
+`market_execution_readiness_cron_hardening.py` checks the daily quote-readiness contract around WF68 and P0 cron windows. It requires the WF68 quote snapshot to cover the current WF78 Tier A/capital-review symbol set, confirms the quote artifact is current for the latest completed market date, separates calendar-aware closed-market quote status from unexpected provider staleness, and proves no execution/capital authority is granted. During regular market hours it requires intraday-fresh quotes; after close, weekends, and holidays it accepts latest-completed-session quotes only as review proof, not execution freshness.
 
 `wf78_event_triggered_rerouting.py` is the AI work-selection layer. It reads the auto-router, routing delta, capital-review queue, and stale-ticker queue, then emits review-only actions for evidence repair, route review, and owner-card preparation. Every action must keep `apply_allowed=false`, `capital_deployment_approved=false`, `trade_or_execution_approved=false`, and `paper_or_live_execution_allowed=false`.
 
@@ -1845,9 +2159,9 @@ Boundary:
 
 ### `finance_intelligence_state.py`
 
-Status: WF78 review-only SQL current-state and compact query packet surface for the current 42-ticker production registry plus separated review-monitor breadth.
+Status: unified review-only ticker front door for the finance_intelligence_state -> WF84 data plane -> WF85 full-answer/card route, with source-open fallback when guard or freshness proof is stale.
 
-Builds `tmp/finance-intelligence-state.sqlite` from the durable universe registry, WF77 coverage registry, ticker cards, bounded canon-cache entry/stop references, and router QA proof. Production SQL rows stay locked to the current 42-ticker answer path; review-100 monitor rows are covered by the coverage/router layer and validate-only card generation, not by production ticker-card SQL. It emits compact JSON packets for routine routing/status/proof questions so main-session answers can start with a small packet and then source-open exact owner notes/artifacts before material claims.
+Builds `tmp/finance-intelligence-state.sqlite` from the durable universe registry, WF77 coverage registry, ticker cards, bounded WF72 support/cache entry-stop references, WF84 data-plane proof, WF85 full-answer/card proof, and router QA proof. It emits compact JSON packets for routine routing/status/proof questions so main-session answers start with one envelope: use WF85 full-answer/card when WF84/WF85 and entry-stop cache guards are clean, use WF84 for normalized read-only decision joins, and source-open exact owner notes/artifacts before material claims when stale or blocked. WF77/WF78 are feeders and repair lanes; WF72 is support/index/cache infrastructure, not the finance-answer front door.
 
 Run:
 ```bash
@@ -1885,11 +2199,27 @@ Writes:
 
 Boundary:
 - read-only routing/current-state/query support
-- review-monitor rows are thin/on-demand scaleout proof rows only and are excluded from production ticker cards/current 42 answers
+- review-monitor rows are thin/on-demand scaleout proof rows only and remain below the WF84/WF85 decision/full-answer route
 - live pilot rows, when present, are isolated SQL/query rows only and remain excluded from production ticker cards/current 42 answers
 - SQL and JSON packets are not canon, approval, apply authority, sizing/cash/risk-rule authority, or paper/live execution authority
 - material finance, readiness, recommendation, or authority claims still require opening the listed exact source artifacts or canonical owner notes
 - no database path migration, `tmp` promotion, full SQL-canon migration, canon/portfolio mutation, owner approval inference, brokerage/account action, paper/live order, or money movement
+
+### `cache_dependency_manifest.py`
+
+Status: review-only dependency guard for the owner-truth plus WF72 support/cache -> finance-state -> WF84 -> WF85 cache chain.
+
+Builds `tmp/cache-dependency-manifest.json` with source hashes, cache paths, affected tickers, and stale-read policy. Use it after entry-band/cache/front-door changes and after bounded band applies. If it reports `stale`, generated WF85 answers must not be treated as current for affected tickers; use source-open fallback and refresh the cache chain.
+
+Run:
+```bash
+python scripts/cache_dependency_manifest.py --write --validate
+python scripts/cache_dependency_manifest.py --tickers ETN,VRT,GS --write --validate --pretty
+```
+
+Boundary:
+- proof/guard surface only
+- no canon/portfolio mutation, owner approval inference, paper/live order, brokerage/account action, cash/sizing/risk-rule change, or money movement
 
 ### `wf78_pilot_contract_gate.py`
 
@@ -2252,7 +2582,7 @@ Boundary:
 
 Status: WF68 Phase 1 read-only market-data proof; review-only and no-authority
 
-Proves or fails closed on a sanitized Alpaca market-data quote/snapshot path using paper-named credentials and GET-only requests. It writes only provider, endpoint classification, symbol, source timestamp, received timestamp, freshness status, price/bid/ask, redaction flags, and hard-false authority flags. It does not persist secrets, raw headers, raw response bodies, or brokerage/account data. Default symbols are now the first 10 tracked universe symbols plus ETN plus the current WF78 Tier A/capital-review tickers, so VRT/GOOG/NVDA-style capital-review candidates cannot silently fall out of quote proof.
+Proves or fails closed on a sanitized Alpaca market-data quote/snapshot path using paper-named credentials and GET-only requests. It writes only provider, endpoint classification, symbol, source timestamp, received timestamp, legacy freshness status, calendar-aware freshness status, price/bid/ask, redaction flags, and hard-false authority flags. `market_calendar_freshness.py` classifies quotes as `fresh_intraday`, `current_last_completed_session`, `market_closed_expected_stale`, `stale_unexpected`, or `provider_missing`, so weekends/holidays/closed-market windows do not create false provider-stale signals. It does not persist secrets, raw headers, raw response bodies, or brokerage/account data. Default symbols are now the first 10 tracked universe symbols plus ETN plus the current WF78 Tier A/capital-review tickers, so VRT/GOOG/NVDA-style capital-review candidates cannot silently fall out of quote proof.
 
 Run:
 ```bash
@@ -2560,7 +2890,7 @@ Writes:
 
 Status: WF61 review-only v1
 
-Builds the small/mid-cap, diversified fund, and commodity-probe regime feed. It compares IWM/SCHA/IJR/VB/AVUV/VBR/IJS, IJH/MDY/VO, SLV/GLD, PDBC/DBC, and USO/CPER/DBA/URA/COPX against SPY and QQQ with trailing relative strength, 20/50/200DMA posture, 52-week drawdown, liquidity warnings, ATR/volatility proxies, and owner-gated next-review language.
+Builds the small/mid-cap, diversified fund, and commodity-probe regime feed. It compares IWM/SCHA/IJR/VB/AVUV/VBR/IJS, IJH/MDY/VO, SLV/GLD, PDBC/DBC, and USO/CPER/DBA/URA/COPX against SPY and QQQ with trailing relative strength, 20/50/200DMA posture, 52-week drawdown, liquidity warnings, ATR/volatility proxies, owner-gated next-review language, and the current-regime analog scenario panel when available.
 
 Run:
 ```bash
@@ -2572,6 +2902,7 @@ Writes:
 
 Notes:
 - review-only evidence surface; all authority flags remain false
+- scenario context is historical analog discipline only; it is not probability, score, ranking, sizing, approval, or execution authority
 
 ### `research_freshness_opportunity_review.py`
 
@@ -2854,6 +3185,7 @@ python scripts/sector_expansion_board.py --window post-close --output tmp/sector
 
 Notes:
 - remains strictly `review_only`
+- emits `short_term_moving_averages` for each sector ETF (`sma_5`, `sma_20`, price-vs-5DMA, price-vs-20DMA, 5DMA-vs-20DMA, and a thin signal warning) so capital recommendations can include timing cautions without implying approval
 - all authority flags stay false; no canonical mutation, watchlist promotion, sizing/allocation recommendation, trade execution, owner approval inference, or probability/modeling authority
 - no SPY or no sector price history blocks; partial sector/provider data degrades rather than faking clean status
 
@@ -3084,6 +3416,61 @@ Authority:
 - no portfolio/deployment/canonical mutation
 - no trade/account action
 - no owner-approval inference
+
+### `historical_regime_event_library.py`
+
+Status: live review-only WF55/WF69 historical analog/base-rate scaffold
+
+Builds `tmp/historical-regime-event-library.json/.md` from a curated event list and public historical daily market data. It includes 1970s/1980s/1990s/2000s+ war, crash, inflation, rate-shock, credit-stress, and bull-market/broadening analogs. The output is for stress context and base-rate review only; older periods degrade honestly when small-cap comparison data is unavailable.
+
+Default outputs:
+- `tmp/historical-regime-event-library.json`
+- `tmp/historical-regime-event-library.md`
+
+Run:
+```bash
+python scripts\historical_regime_event_library.py --write --validate
+python scripts\probability_readiness_report.py --write
+python scripts\probability_readiness_validator.py --write
+```
+
+Proof contract:
+```bash
+python -m py_compile scripts\historical_regime_event_library.py scripts\test_historical_regime_event_library.py
+python scripts\test_historical_regime_event_library.py
+python scripts\historical_regime_event_library.py --write --validate
+python scripts\probability_readiness_report.py --write
+python scripts\probability_readiness_validator.py --write
+```
+
+Authority:
+- analog/base-rate context only
+- no calibrated probability
+- no deployment ranking
+- no return projection claim
+- no capital deployment, portfolio/canon mutation, paper/live/account action, money movement, or owner-approval inference
+
+### `current_regime_analog_matcher.py`
+
+Status: live review-only WF55/WF61/WF78/WF85 scenario-context panel
+
+Builds `tmp/current-regime-analog-match.json/.md` from `tmp/historical-regime-event-library.json` plus the current `tmp/small-mid-cap-regime-feed.json` context. It classifies historical analog rows into primary rate-stabilization/breadth-repair context and stress/caution context for downstream packets. Consumers include macro judgment, WF61 small/mid-cap regime feed, WF78 small/mid-cap candidate review, the finance market deployment loop, and future WF85 decision cards as `scenario_context`, not score.
+
+Run:
+```bash
+python scripts\current_regime_analog_matcher.py --write --validate
+```
+
+Proof contract:
+```bash
+python -m py_compile scripts\current_regime_analog_matcher.py scripts\test_current_regime_analog_matcher.py
+python scripts\test_current_regime_analog_matcher.py
+python scripts\current_regime_analog_matcher.py --write --validate
+```
+
+Authority:
+- scenario/base-rate context only
+- no calibrated probability, predictive score, deployment ranking, sizing/allocation recommendation, capital action, paper/live execution, account action, money movement, or owner-approval inference
 
 ### `wf55_outcome_ledger_v2.py`
 
@@ -3523,7 +3910,7 @@ Depends on:
 
 Band proposal maintenance workflow:
 1. Run `band_refresh.py` - review `tmp/band-proposals.json` for any `needs_review=true` entries and their `entry_band_method`, `band_status`, `trend_stack`, `earnings_state`, and `canonical_apply_eligible` values.
-2. Daily finance chains now run `auto_apply_entry_band_maintenance.py --apply` immediately after `band_refresh.py`. This applies only machine-eligible `canonical_apply_eligible=true` maintenance proposals to `tmp/portfolio-config.json` and `03. Portfolio/Execution Board.md`, with an audit at `tmp/auto-band-apply.json/.md`. The updater supports the current table-format Execution Board and the parser-compatible ticker sections; it updates band/stop/freshness text only and preserves lane/action-state/authority posture.
+2. Daily finance chains now run `auto_apply_entry_band_maintenance.py --apply` immediately after `band_refresh.py`. This applies only machine-eligible `canonical_apply_eligible=true` maintenance proposals to `tmp/portfolio-config.json` and `03. Portfolio/Execution Board.md`, with an audit at `tmp/auto-band-apply.json/.md`. The updater supports the current table-format Execution Board and the parser-compatible ticker sections; it updates band/stop/freshness text only and preserves lane/action-state/authority posture. After any real apply it must refresh WF72 entry/stop SQL reference metadata, rebuild the derived finance state, and rebuild WF84/WF85 before returning `ok`.
 3. The Sunday finance chain runs `reference_band_note_sync.py --apply` after eligible auto-apply and before entry-band/status consumers. This writes fresh calculated reference bands for all complete tracked proposals into the Execution Board with restrictive authority labels and audit proof at `tmp/reference-band-note-sync.json/.md`.
 4. Non-applyable proposals remain review-only/monitor-only. Automatic band maintenance and reference-band refreshes do not create trade, sizing, sleeve, cash, risk-rule, owner-approval, or execution authority.
 5. Use `apply_band_update.py` only for explicit operator/manual override flows.
@@ -3802,6 +4189,35 @@ Writes:
 - `tmp/postmarket-snapshot.json`
 
 Idempotency: same session-precedence rule as `premarket_snapshot.py`.
+
+### `market_today_answer_packet.py`
+
+Status: live local-only market-answer packet
+
+Assembles the workspace's answer surface for "how did the market do today?" without fetching the web. It reads the post-close market/macro/postmarket artifacts, consumes the broad-index close/change table and same-day 2Y Treasury value from `market-state.json`, and includes a source-labeled driver digest that separates observed tape from supported macro/rates context instead of inventing single-cause narratives.
+
+Run:
+```bash
+python scripts/market_today_answer_packet.py --write --validate
+```
+
+Reads:
+- `tmp/market-state.json`
+- `tmp/postmarket-snapshot.json`
+- `tmp/macro-metrics-current.json`
+- `tmp/macro-signal-spine.json`
+- `data/market/price-snapshots/wf77-price-state-current.json`
+
+Writes:
+- `tmp/market-today-answer-packet.json`
+- optional `tmp/market-today-answer-packet.md` with `--write-md`
+
+Contract:
+- `answer_readiness.can_answer_basic_market_day_without_web=true` means the workspace has enough local evidence for a basic post-close read.
+- `answer_readiness.can_answer_full_market_close_recap_without_web=true` requires SPX/Dow/Nasdaq Composite/Russell same-day close/change rows, a normalized broad-index table, same-day 2Y Treasury value, and at least one source-backed market-driver digest row.
+- `normalized_broad_index_daily_change_table` carries SPX, Dow, Nasdaq Composite, Nasdaq 100, Russell 2000, and ETF proxies with close, point change, percent change, source, and as-of date.
+- `source_backed_market_driver_news_digest` is a review aid: each row must include `source_refs` and a `claim_boundary`; it may not convert tape correlation into unsupported causality.
+- Review-only/local-only: no external fetch, news completeness claim, portfolio/canon mutation, ticker-card mutation, capital approval, paper/live/account action, external delivery, or owner approval inference.
 
 ### `daily_executive_brief.py`
 
@@ -4138,6 +4554,7 @@ Renders the current artifact-only WF75 PM readiness brief from the weekly update
 Run:
 ```bash
 python scripts/wf75_pm_readiness_pdf.py --write --validate
+python scripts/wf75_deliverable_packager.py --write --validate
 ```
 
 Writes when `--write` is used:
@@ -4171,7 +4588,7 @@ Current cron pair:
 - `WF75 PM Weekly Artifact Builder`: isolated, Friday 16:30 America/Phoenix, refreshes WF77 supplemental price evidence, bridge freshness, macro-event calendar, macro metrics, macro judgment draft, JSON-to-SQL promotion index, scenario library, renderer regression, service-state JSON, SQLite WAL control plane, operator console/control cockpit, PM validation, operator packet, weekly update, artifact-only handoff, PDF brief, and heartbeat pickup
 - `WF75 PM Weekly Main Intelligence Handoff`: main session, Friday 16:40 America/Phoenix, reads the weekly update, macro-event calendar, macro metrics, macro judgment draft, JSON-to-SQL promotion index, operator console/control cockpit, PDF manifest/PDF, artifact-only handoff, PM validation, operator packet, and heartbeat pickup; Randall-facing intelligence only when material
 - `Finance - Research Freshness and Opportunity Review`: isolated, weekdays 14:05 America/Phoenix, refreshes macro judgment draft and JSON-to-SQL promotion index before/after WF60/WF61 sector, ticker, research freshness, and small/mid-cap feeds so research opportunity cues inherit current macro posture and get fast derived lookup without gaining portfolio/capital/trade/customer/SQL-import authority
-- `Finance - Sunday Research Opportunity Reset`: isolated, Sunday 09:35 America/Phoenix, runs the same macro-judgment-first research reset after the Sunday weekly refresh
+- `Finance - Sunday Research Opportunity Reset`: isolated, Sunday 09:35 America/Phoenix, runs `python scripts\sunday_research_opportunity_reset_cron_runner.py --write --validate` after the Sunday weekly refresh. The runner executes the macro-judgment-first WF60/WF61 reset sequence, writes `tmp/sunday-research-opportunity-reset-cron-runner.json`, and preserves review-only/no-authority boundaries.
 
 Boundary:
 - cron may produce proof, PM weekly updates, operator packets, and heartbeat handoff candidates
@@ -4194,6 +4611,10 @@ Status: JSON-first cron operator ledger, cron freshness spine, retire/merge cand
 
 `cron_notes_flattening_plan.py` reads the latest audit in `08. Audits/` and produces the full migration plan from heavy mixed cron Markdown to thin human Markdown plus structured JSON truth.
 
+`weekday_morning_review_cron_runner.py`, `post_close_review_cron_runner.py`, `retail_automation_control_plane_cron_runner.py`, `wf78_daily_freshness_cron_runner.py`, `tier_a_late_session_opportunity_cron_runner.py`, and `sunday_research_opportunity_reset_cron_runner.py` are stable wrapper commands for formerly noisy isolated cron jobs. The morning and post-close runners execute the existing approved finance chains and classify proof without ad hoc final inspection; the morning runner also has a `--launch-background` mode. The retail runner refreshes dynamic quote proof before market-readiness validation, then classifies the P0 retail control-plane proof. The WF78 runner executes the daily freshness loop, market-readiness proof, decision factory, trade-grade OS runner, and cron-control refresh as one compact proof path. The Tier A late-session runner preserves the existing review/prep notification path while separating notification from execution authority. The Sunday research runner executes the WF60/WF61 opportunity reset and emits one contract artifact with step-level return codes. These wrappers are review-only except for already-approved scoped note-maintenance rails in the finance chains; they do not widen finance, customer, paper/live, account, cron, or runtime authority.
+
+Cron model posture after the 2026-06-14 cron audit: heavy long-chain finance runners should use at least `openai/gpt-5.4` with explicit `thinking=high` and enough timeout headroom. Use `openai/gpt-5.4-mini` for short, deterministic, single-artifact proof jobs; use Mini `high` only when a wrapper still crosses a review/notification boundary. Spark remains bounded canary/proof only with `xhigh`.
+
 Run:
 ```bash
 python scripts/cron_operator_ledger.py --write --write-md --validate
@@ -4202,6 +4623,12 @@ python scripts/cron_retire_merge_candidates.py --write --write-md --validate
 python scripts/morning_control_digest.py --write --write-md --validate
 python scripts/post_close_control_digest.py --write --write-md --validate
 python scripts/cron_notes_flattening_plan.py --write --write-md --validate
+python scripts/weekday_morning_review_cron_runner.py --write --validate
+python scripts/weekday_morning_review_cron_runner.py --launch-background --write --validate
+python scripts/post_close_review_cron_runner.py --write --validate
+python scripts/retail_automation_control_plane_cron_runner.py --write --validate
+python scripts/wf78_daily_freshness_cron_runner.py --write --validate
+python scripts/tier_a_late_session_opportunity_cron_runner.py --send --write --validate
 ```
 
 Writes:
@@ -4213,6 +4640,12 @@ Writes:
 - optional compact digest `tmp/post-close-control-digest.md`
 - `tmp/cron-notes-flattening-plan.json`
 - optional plan rendering `tmp/cron-notes-flattening-plan.md`
+- `tmp/weekday-morning-review-cron-runner.json`
+- `tmp/weekday-morning-review-cron-launcher.json`
+- `tmp/post-close-review-cron-runner.json`
+- `tmp/retail-automation-control-plane-cron-runner.json`
+- `tmp/wf78-daily-freshness-cron-runner.json`
+- `tmp/tier-a-late-session-opportunity-cron-runner.json`
 
 Boundary:
 - read-only planning/status proof
@@ -4333,7 +4766,7 @@ Supported windows:
 2. `post-close` (default)
    - data spine: `earnings_calendar_enrichment.py`, `earnings_date_source_confidence.py`, `event_calendar_rollforward.py`, `market_state_refresh.py`, `technical_refresh.py`, `regime_scoring_refresh.py`, `band_refresh.py`, `entry_band_fetch.py --all-tracked --html`, `generate_entry_band_status.py`, `deployment_check.py`, `trigger_sheet_refresh.py`, `post_earnings_prep.py`, `post_earnings_note_targets.py`
    - dashboard surface: `test_dashboard_acceptance.py`, `generate_dashboard.py`, `validate_dashboard_state.py --write`
-   - intelligence layer: `postmarket_snapshot.py` - writes `01. Dashboards/Post-Market Snapshot/YYYY-MM-DD.md`; `daily_executive_brief.py` - writes `01. Dashboards/Daily Executive Summary/YYYY-MM-DD.md` (machine-sidecar pattern preserves any session-written brief)
+   - intelligence layer: `postmarket_snapshot.py` - writes `01. Dashboards/Post-Market Snapshot/YYYY-MM-DD.md`; `market_today_answer_packet.py --write --validate` - writes `tmp/market-today-answer-packet.json` for local-only market-day Q&A readiness; `daily_executive_brief.py` - writes `01. Dashboards/Daily Executive Summary/YYYY-MM-DD.md` (machine-sidecar pattern preserves any session-written brief)
    - review-only brief packet: `summary_brief_packet.py --window post-close` - writes `tmp/postclose-brief-input.json`
 3. `post-earnings`
    - `earnings_calendar_enrichment.py`
@@ -4448,6 +4881,92 @@ Outputs:
 
 It reuses existing macro, ticker-card refresh, WF78 rerouting/reducer, and WF67 request-generator scripts. It is non-executing and review-only: no capital deployment, paper/live order execution, brokerage/account action, money movement, canon/portfolio mutation, SQL-canon mutation, customer output, or owner approval inference.
 
+### `band_hygiene_freshness_controller.py`
+
+Status: finance band hygiene and quote-freshness controller.
+
+Refreshes quote proof, market execution-readiness hardening, technicals, and `band_refresh.py`, then runs the existing `auto_apply_entry_band_maintenance.py` gate in dry-run mode or bounded apply mode. Apply mode is limited to proposals already marked `canonical_apply_eligible=true`; it reruns `band_refresh.py` after apply so downstream cards and the sync spine do not read stale pre-apply band debt.
+
+```bash
+python scripts/band_hygiene_freshness_controller.py --write --write-md --validate
+python scripts/band_hygiene_freshness_controller.py --apply-eligible --write --write-md --validate
+```
+
+Outputs:
+- `tmp/band-hygiene-freshness-controller.json`
+- `tmp/band-hygiene-freshness-controller.md`
+- refreshed `tmp/intraday-alerts/quote-snapshot-proof.json`
+- refreshed `tmp/market-execution-readiness-cron-hardening.json`
+- refreshed `tmp/technical-refresh.json`
+- refreshed `tmp/band-proposals.json`
+- refreshed `tmp/auto-band-apply.json`
+
+The morning paper recommendation cron consumes this controller before building cards. It is band/quote hygiene only: no capital approval, no paper/live order action, no brokerage/account action, no money movement, no cash/sizing/sleeve/risk-rule mutation, and no owner approval inference.
+
+### `capital_deployment_band_integrity_validator.py`
+
+Status: report-only capital-review band drift validator.
+
+Compares entry bands and stops across the WF78 capital-review queue, finance decision factory, current capital-deployment recommendation proposals, and WF67 owner cards:
+
+```bash
+python scripts/capital_deployment_band_integrity_validator.py --write --write-md --validate
+```
+
+Outputs:
+- `tmp/capital-deployment-band-integrity-validator.json`
+- `tmp/capital-deployment-band-integrity-validator.md`
+
+The validator can report `status=blocked` while `validation.status=ok`; that means the script ran correctly and found domain drift that must be fixed by the owning generator/source before approval-card use. It is review-only: no source-card mutation, WF67 request mutation, canon/portfolio mutation, capital approval, paper/live action, brokerage/account action, cash/sizing mutation, or owner approval inference.
+
+### `morning_paper_deployment_recommendation_builder.py`
+
+Status: weekday morning review-only WF78/WF67 approval-card builder.
+
+Runs the morning paper deployment recommendation path after quote freshness is available. It refreshes or consumes WF68 quote proof, market execution-readiness hardening, the band hygiene/freshness controller, the WF78 capital-review queue, owner-card preparation, WF67 request artifacts, and the decision factory, then writes a single approval-card summary:
+
+```bash
+python scripts/morning_paper_deployment_recommendation_builder.py --write --write-md --validate
+```
+
+Scheduled cron uses the same bounded local-provider path at 07:18 MST and again at 11:55 MST after the 11:50 WF87 command-center refresh:
+
+```bash
+python scripts/morning_paper_deployment_recommendation_builder.py --skip-provider-refresh --write --write-md --validate
+```
+
+The WF85 paper-deployment Telegram radar is split into a post-builder morning touchpoint at 07:28 MST and post-refresh touchpoints at 09:00 and 12:00 MST. The notifier keeps its dedupe state, so unchanged radar state should stay quiet, while first job failures now use cron `failureAlert`.
+
+Outputs:
+- `tmp/morning-paper-deployment-recommendation-cards.json`
+- `tmp/morning-paper-deployment-recommendation-cards.md`
+- `tmp/band-hygiene-freshness-controller.json`
+- `tmp/band-hygiene-freshness-controller.md`
+- `tmp/finance-decision-sync-spine.json`
+- `tmp/finance-decision-sync-spine.md`
+- refreshed `tmp/wf78-capital-review-queue.json`
+- refreshed `tmp/wf78-owner-card-prep-loop.json`
+- refreshed eligible `tmp/alpaca-paper-readiness/main-session-cards/*.owner-card.json`
+- refreshed eligible `tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-*.json`
+
+The runner requires fresh quote snapshots for clean approval cards and blocks candidates with repair posture, band-review-required posture, confidence-gate issues, promotion vetoes, non-IN_BAND prices, missing WF67 request artifacts, or non-false authority flags. It then writes `finance_decision_sync_spine.py` so WF78 routing, WF68 alerts, WF67 requests, band/repair posture, paper positions, and morning cards converge into one derived decision-state surface. It is approval-card preparation only: no paper/live submit, cancel, sell, modify, approval, brokerage/account action, money movement, portfolio/canon mutation, or owner approval inference.
+
+### `finance_decision_sync_spine.py`
+
+Status: finance OS decision-state synchronization spine.
+
+Builds one derived ticker state ledger from morning paper cards, WF78 capital-review queue, WF68 alerts, WF67 request artifacts, promotion/confidence gates, band/repair proposals, paper positions, and the finance decision factory:
+
+```bash
+python scripts/finance_decision_sync_spine.py --write --write-md --validate
+```
+
+Outputs:
+- `tmp/finance-decision-sync-spine.json`
+- `tmp/finance-decision-sync-spine.md`
+
+Primary state labels include `approval_card_clean`, `paper_request_ready_pending_exact_approval`, `in_band_not_clean`, `repair_mode`, `promotion_vetoed`, `below_stop_or_invalidation`, `no_chase`, `wf67_request_blocked`, `blocked_missing_freshness`, `alert_only`, `paper_position_monitor`, and `evidence_repair`. The spine is derived review-only state; it cannot generate orders, mutate WF67 requests, approve capital, mutate portfolio/canon state, touch accounts, or infer owner approval.
+
 ### `repeatable_work_closeout.py`
 
 Status: active closeout wrapper
@@ -4478,11 +4997,12 @@ For closed-market/weekend recommendation work, refresh the final quote overlay f
 
 ```powershell
 python scripts/post_close_final_quote_ledger.py --write --validate
+python scripts/ticker_card_freshness_owner_runner.py --skip-provider-refresh --full-answer-mode changed --write --validate
 python scripts/wf78_capital_review_queue.py --write --write-db --validate
 python scripts/finance_decision_factory.py --ledger-only --write --validate
 ```
 
-The post-close finance chain runs this sequence automatically. `tmp/post-close-final-quote-ledger.json` is review-only quote evidence; it updates recommendation surfaces without mutating ticker cards, canon, portfolio notes, SQL canon, or execution authority.
+The post-close finance chain runs this sequence automatically. `tmp/post-close-final-quote-ledger.json` is review-only quote evidence; after it is written, the chain rebuilds ticker cards through `ticker_card_freshness_owner_runner.py --skip-provider-refresh --full-answer-mode changed` so card prices consume the same closed-market price overlay before downstream recommendation surfaces run. The changed-mode digest runs the slower WF85 full-answer rebuild only when card/source semantics changed. This does not mutate canon, portfolio notes, SQL canon, or execution authority.
 
 Flags: `--ledger-only` (skip the chain, rebuild ledger from current artifacts), `--repair-tier {A,B,C,all}` (default A), `--repair-limit` (default 10; must be greater than 0), `--repair-cursor` (default 0; must be 0 or greater), `--skip-provider-refresh`, `--closeout`, `--recommend-qa-lane` (when explicitly requested, refreshes and surfaces — never spawns — a parallel WF72 A2 read-only QA lease/spawn via `parallel_lane_recommender.py`), `--out`.
 
@@ -4741,9 +5261,38 @@ Repairs current price / band-status context for rows that already have owner ban
 python scripts/wf78_missing_band_context_repair.py --write --validate
 ```
 
-It reads the position-sizing integration proposal, current ticker cards, and yfinance one-year close history, then writes `tmp/wf78-missing-band-context-repair.json`. Latest proof: `KTOS` and `SMCI` are ready for position-sizing repair recheck with current price and fresh band status, without applying card changes.
+It reads current WF85 decision cards, derives Tier A/B rows that are missing decision-grade entry-band/stop coverage or already depend on this repair source, and writes `tmp/wf78-missing-band-context-repair.json`. The active repair rows can persist after the actual missing count reaches zero so WF84/WF85 rebuilds keep review-only technical band/stop context for the same routed Tier B names. Latest proof: actual missing decision-grade band/stop count is 0; 15 active repair-backed context rows remain for `ACN`, `ADI`, `ADP`, `ADSK`, `AKAM`, `ALB`, `ALLE`, `AMAT`, `AMCR`, `AME`, `ANET`, `AOS`, `APH`, `APP`, and `CDNS`. These rows are review-only technical context, not implementation blockers, approval drafts, card/canon mutations, or execution authority.
 
 Review-only: no ticker-card mutation, owner-note mutation, deployment-surface mutation, canon/portfolio mutation, SQL-canon mutation, capital deployment, order execution, account action, money movement, customer output, or approval inference.
+
+### `wf78_tier_c_to_b_auto_promotion_pipeline.py`
+
+Status: active bounded Tier C attention -> Tier B research-bench pipeline
+
+Evaluates explicit Tier C attention candidates through source-open, fundamentals, valuation, analyst/revision, technical band, and red-flag gates, then optionally records only passing rows as owner-approved derived Tier B research-bench labels:
+
+```bash
+python scripts/wf78_tier_c_to_b_auto_promotion_pipeline.py --candidate SCCO --candidate CASY --candidate TXN --candidate ASML --candidate ARES --approve-passing --write --validate
+python scripts/wf78_tier_c_to_b_auto_promotion_pipeline.py --from-attention --max-candidates 10 --write --validate
+```
+
+It writes `tmp/wf78-tier-c-to-b-auto-promotion-pipeline.json` and closeout `tmp/wf78-tier-c-to-b-auto-promotion-pipeline.closeout.json`. The daily WF78 cron loop runs the dynamic `--from-attention` form as report-only proof. With explicit `--approve-passing`, it appends passing labels to `tmp/wf78-tier-label-decision-register.json`, refreshes `tmp/wf78-tier-label-sync-preview.json`, and refreshes `tmp/wf78-auto-tier-routing.json`; do not put `--approve-passing` in cron without a separate standing promotion policy.
+
+Review-only/non-capital: no universe/canon/portfolio/ticker-card/SQL-canon mutation, no production answer-path change, no capital deployment, no order execution, no account action, no money movement, no customer output, and no approval inference. Passing rows are Tier B research bench only.
+
+### `tier_ab_band_freshness_cron_guard.py`
+
+Status: active cron hardening guard for Tier A/B band freshness
+
+Checks the scheduled WF84/WF85 finance chain:
+
+```bash
+python scripts/tier_ab_band_freshness_cron_guard.py --write --validate
+```
+
+It reads WF85 decision cards, the dynamic missing-band repair packet, the WF85 repair conveyor, and `cron_freshness_spine.py` contracts. It fails on stale complete Tier A/B band context, uncovered missing decision-grade band/stop rows, or missing cron expected-artifact contracts. Active repair-backed context rows are allowed when the actual missing count is zero and complete/current Tier A/B coverage is proven.
+
+Review-only: no ticker-card mutation, owner-note mutation, cron schedule mutation, canon/portfolio mutation, SQL-canon mutation, capital deployment, order execution, account action, money movement, customer output, or approval inference.
 
 ### `wf78_repair_debt_scoreboard.py`
 
@@ -4866,13 +5415,81 @@ Runs the daily WF78 freshness spine in the validated order:
 ```bash
 python scripts/wf78_daily_freshness_loop.py --skip-provider-refresh --write --validate
 python scripts/wf78_daily_freshness_loop.py --no-skip-provider-refresh --write --validate
+python scripts/wf78_daily_freshness_loop.py --skip-provider-refresh --full-answer-mode never --write --validate
+python scripts/wf78_daily_freshness_loop.py --phase daily_core --skip-provider-refresh --write --validate
+python scripts/wf78_daily_freshness_loop.py --phase source_capture --write --validate
 ```
 
-Scheduler posture: enabled cron `Finance - WF78 Daily Freshness and Promotion Proof` runs weekdays at 06:55 America/Phoenix with `--no-skip-provider-refresh` so Tier A quote gates are checked during a real market/provider window. Use `--skip-provider-refresh` for manual off-window proof.
+Scheduler posture: enabled cron `Finance - WF78 Daily Freshness and Promotion Proof` now targets `wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate`. That keeps the daily scheduled proof on the time-boxed routing/freshness/repair/ledger path and makes runtime-budget drift fail validation instead of becoming accepted warning noise. Source-capture, owner-review expansion, card materialization, and provider-refresh paths remain on-demand targeted runs.
 
-The loop runs ticker-card refresh, auto-router, event rerouting, evidence drag reducer, family repair, source-open repair executor, work packets, concrete repair reviews, integration proposals, missing-band repair, official-source discovery, registry proposal, registry apply preview, promotion-only owner-lineage queue, contract guard, owner-lineage discovery, owner-lineage proposal, repair debt scoreboard, scaleout policy dry run, PH owner-review packet, Tier A invalidation queue, official source-capture packet, the next-push integration summary, freshness ledger, tier-weighted freshness resolution, and the Finance Decision Factory ledger-only pass. Output: `tmp/wf78-daily-freshness-loop.json`. Default `--skip-provider-refresh` keeps the daily proof loop offline/local unless a provider refresh is explicitly requested.
+The loop now supports `--phase all|daily_core|card_refresh|tier_routing|evidence_repair|source_capture|owner_review|wf84_sync`. `daily_core` runs ticker-card refresh, routing, Tier C hold quote/card recheck, evidence repair, Tier C/band/freshness resolution, Finance Decision Factory ledger-only proof, and WF84 sync. Source-capture/registry/owner-review expansion remains available by exact phase instead of being paid for on every scheduled run. Output: `tmp/wf78-daily-freshness-loop.json`. Default `--skip-provider-refresh` keeps manual proof offline/local unless a provider refresh is explicitly requested. `--full-answer-mode changed` is the default optimization: the first card gate rebuilds WF85 full answers only on semantic card/source changes, while the post-freshness card recheck uses `never` to avoid duplicate full-answer rebuilds in the same loop.
 
 Review-only: no ticker-card/canon/portfolio/SQL-canon mutation beyond existing proof rebuilds, no capital deployment, order execution, account action, money movement, customer output, config/auth/runtime change, or approval inference.
+
+### `wf78_daily_movement_ledger.py`
+
+Status: active review-only Intelligence Routing V2 ledger
+
+Builds the daily operator surface that was missing from the scattered WF78/WF84/WF85 proof chain:
+
+```bash
+python scripts/wf78_daily_movement_ledger.py --write --write-md --validate
+```
+
+It reads the auto-router, routing delta, tier-weighted freshness resolver, Tier C attention trigger, Tier C-to-B promotion gate, autonomous deployment cards, WF85 decision cards, and WF84 data plane. Outputs:
+- `tmp/wf78-daily-movement-ledger.json`
+- `tmp/wf78-daily-movement-ledger.md`
+- `tmp/wf78-repair-priority-queue.json`
+
+The ledger groups the day into moved, blocked, newly hot, stale-but-important, owner-review, no-chase, and invalidation buckets. The repair queue ranks blocked rows by Tier A decision repair first, Tier B promotion repair second, and Tier C thin-monitor repair last.
+
+Review-only: no universe mutation, ticker-card mutation, canon/portfolio mutation, SQL-canon mutation, capital deployment, paper/live execution, brokerage/account action, money movement, customer/external output, or approval inference.
+
+### `wf78_intelligence_routing_v2.py`
+
+Status: active layered daily routing wrapper
+
+Splits the prior daily-core habit into checkpointed layers:
+
+```bash
+python scripts/wf78_intelligence_routing_v2.py --layer daily_core_v2 --write --validate
+python scripts/wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate
+python scripts/wf78_intelligence_routing_v2.py --layer market_probe --write --validate
+python scripts/wf78_intelligence_routing_v2.py --layer evening_ledger --write --validate
+python scripts/wf78_intelligence_routing_v2.py --layer ledger_publish --write --validate
+```
+
+Layer aliases:
+- `daily_core_v2`: preflight, tier routing, freshness, repair scan, ledger publish, postflight artifact-index refresh/validation
+- `market_probe`: tier routing, freshness, ledger publish, postflight artifact-index refresh/validation
+- `evening_ledger`: repair scan, card materialization, ledger publish, postflight artifact-index refresh/validation
+- `all`: every V2 layer
+
+Use `--fail-on-budget-exceeded` for scheduled or promotion proof windows. The old monolithic `daily_core` path and `wf78_daily_freshness_cron_runner.py` remain compatibility surfaces, not the preferred daily review cadence.
+
+Review-only: no cron schedule mutation by itself, no universe mutation, no canon/portfolio mutation, no capital deployment, no paper/live execution, no brokerage/account action, no money movement, and no owner approval inference.
+
+### `wf78_daily_freshness_cron_runner.py`
+
+Status: stable WF78/WF84/WF85 cron-facing wrapper
+
+Runs the daily WF78 loop plus market-readiness, decision-factory, trade-grade OS, workflow index, cron ledger, freshness spine, scorecard, escalation, and control-packet refresh as one compact command:
+
+```bash
+python scripts/wf78_daily_freshness_cron_runner.py --write --validate
+python scripts/wf78_daily_freshness_cron_runner.py --provider-refresh --write --validate
+python scripts/wf78_daily_freshness_cron_runner.py --launch-background --write --validate
+```
+
+Default mode uses the local/offline WF78 daily-core loop (`--phase daily_core --skip-provider-refresh`) and relies on the separate quote snapshot plus market-readiness proof for current market-window execution-readiness checks. Use `--provider-refresh` only when the longer provider-refresh loop is explicitly needed and the caller can tolerate a longer local run. Scheduled cron uses `--launch-background` so the isolated cron agent owns only a short launcher command while the child process writes the full proof artifact.
+
+Writes:
+- `tmp/wf78-daily-freshness-cron-runner.json`
+- `tmp/wf78-daily-freshness-cron-launcher.json` when launched in background mode
+
+Boundary:
+- review-only WF78/WF84/WF85 proof and routing
+- no registry apply, canon/portfolio mutation, capital approval, paper/live execution, brokerage/account action, money movement, customer/external output, cron schedule mutation, runtime config mutation, or owner approval inference
 
 ### `pm_execution_loop.py`
 
@@ -4885,7 +5502,7 @@ python scripts/pm_execution_loop.py --write --validate          # dry-run (defau
 python scripts/pm_execution_loop.py --execute --write --validate # run guarded proof + closeout
 ```
 
-It reads `tmp/pm-control-packet.json`, ranks jobs, and picks the top safe job enforcing one writer per collision group (skipping jobs whose collision group is leased/running in `tmp/concurrent-lane-register.json`). A `FORBIDDEN_TOKENS` guard marks any job whose proof commands contain mutation/execution/import/config tokens (`--execute`, `--apply`, `--promote`, `--import`, `--submit`, shell metacharacters, `paper`, `alpaca`, `gateway`, etc.) as `needs_main_review` so it is never auto-run. Dry-run is the default; `--execute` runs only review-only proof commands then the job's budgeted closeout, now routed through `pm_control_packet.py`. Flags: `--limit` (default 1), `--job <job_id>`, `--out`.
+It reads `tmp/pm-control-packet.json`, ranks jobs, and picks the top safe job enforcing one writer per collision group (skipping jobs whose collision group is leased/running in `tmp/concurrent-lane-register.json`). A `FORBIDDEN_TOKENS` guard marks any job whose proof commands contain mutation/execution/import/config tokens (`--execute`, `--apply`, `--promote`, `--import`, `--submit`, shell metacharacters, `paper`, `alpaca`, `gateway`, etc.) as `needs_main_review` so it is never auto-run. Dry-run is the default; `--execute` runs only review-only proof commands then the job's budgeted closeout, now routed through `pm_control_packet.py`. Identical successful proof commands are reused within one execution batch and proof-level PM packet refreshes are moved to closeout when another proof command exists. Flags: `--limit` (default 1), `--job <job_id>`, `--reuse-proof-cache` / `--no-reuse-proof-cache`, `--out`.
 
 It never executes implementation jobs, spawns helpers, mutates canon/portfolio/SQL, or infers owner approval.
 
@@ -4898,9 +5515,25 @@ One command for the end-of-session cockpit/control refresh:
 ```bash
 python scripts/control_closeout_bundle.py --write --validate
 python scripts/control_closeout_bundle.py --cockpit-validate --write --validate
+python scripts/control_closeout_bundle.py --write --validate --record-completion --completion-job-id <job_id>
 ```
 
 It runs `repeatable_work_closeout.py --write --validate` (900s budget), `pm_control_packet.py --write --write-db --validate`, and `concurrent_lane_manager.py --status --validate` (lane-register health), plus an optional cockpit validation when `--cockpit-validate` is set. If cockpit validation is explicitly requested but `npm` or the cockpit directory is unavailable, the bundle fails closed. `--continue-on-failure` runs all steps regardless of intermediate failures. Output: `tmp/control-closeout-bundle.json`. Review-only proof; no mutation, execution, or approval authority.
+
+### `wf73_control_plane_audit.py`
+
+Status: active ordered WF73 audit runner
+
+```bash
+python scripts/wf73_control_plane_audit.py --write --validate
+python scripts/wf73_control_plane_audit.py --write --validate --skip-memory-status
+```
+
+It serially refreshes the WF73 producer/consumer chain: WF73 route summary, workflow routing JSON/SQLite, lane register, truth-surface inventory, cron freshness, PM control packet, boot-size guard, workflow hygiene, fast-path QA, timing ledger, control closeout, artifact-index incremental refresh, artifact-index validation, and memory-index status. Memory-index provider failure is warning-class unless a critical control-plane validator fails.
+
+Use this for WF73 audits instead of parallel producer/consumer validation batches. It exists to prevent false blockers where a writer is rebuilding `tmp/workflow-routing-index.sqlite` while a consumer reads it.
+
+Review-only: no helper spawn, workflow execution, archive/delete, config/auth/runtime mutation, canon/portfolio mutation, external delivery, paper/live/account action, capital action, or approval inference.
 
 ### `helper_lane_manifest.py`
 

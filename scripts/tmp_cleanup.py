@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 from datetime import datetime, timedelta, timezone
@@ -47,6 +48,7 @@ PROTECTED_FILES = {
     "regime-scores.json",
     "technical-refresh.json",
     "trigger-sheet.json",
+    "tmp-cleanup-report.json",
     "universe-consistency.json",
     "veritas-command-center.html",
     "veritas-command-center.last-good.html",
@@ -70,6 +72,7 @@ PROTECTED_PREFIXES = (
 PROTECTED_DIRS = {
     "entry-band-data",
     "entry-band-reports",
+    "reports",
 }
 
 
@@ -114,12 +117,38 @@ def archive_destination(run_date: str) -> Path:
     return ARCHIVE_ROOT / f"{run_date}-tmp-cleanup"
 
 
-def move_path(src: Path, dest_root: Path) -> str:
+def sha256_path(path: Path) -> str | None:
+    if not path.is_file():
+        return None
+    try:
+        h = hashlib.sha256()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except OSError:
+        return None
+
+
+def manifest_record(path: Path) -> dict[str, Any]:
+    stat = path.stat()
+    return {
+        "path": str(path.relative_to(WORKSPACE)).replace("\\", "/"),
+        "kind": "dir" if path.is_dir() else "file",
+        "bytes": stat.st_size if path.is_file() else None,
+        "newest_mtime_utc": newest_mtime(path).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "sha256": sha256_path(path),
+    }
+
+
+def move_path(src: Path, dest_root: Path) -> dict[str, Any]:
+    before = manifest_record(src)
     rel = src.relative_to(TMP)
     dest = dest_root / rel
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(str(src), str(dest))
-    return str(dest.relative_to(WORKSPACE)).replace("\\", "/")
+    after = manifest_record(dest)
+    return {"source": before, "destination": after}
 
 
 def main() -> int:
@@ -135,11 +164,7 @@ def main() -> int:
     if args.apply and candidates:
         archive_dir.mkdir(parents=True, exist_ok=True)
         for path in candidates:
-            dest = move_path(path, archive_dir)
-            moved.append({
-                "source": str(path.relative_to(WORKSPACE)).replace("\\", "/"),
-                "destination": dest,
-            })
+            moved.append(move_path(path, archive_dir))
 
     output = {
         "generated_at_utc": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
@@ -150,7 +175,7 @@ def main() -> int:
             "eligible_count": len(candidates),
             "moved_count": len(moved),
         },
-        "candidates": [str(path.relative_to(WORKSPACE)).replace("\\", "/") for path in candidates],
+        "candidates": [manifest_record(path) for path in candidates],
         "moved": moved,
     }
     atomic_write_json(OUT_PATH, output)

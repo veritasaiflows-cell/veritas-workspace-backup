@@ -16,6 +16,7 @@ OUT_PATH = TMP / "portfolio-config-validation.json"
 APPROVED_WORKFLOW_STATES = {"ALMOST", "WATCH", "REPAIR", "BLOCKED", "MACRO", "PROMOTION REVIEW", "DEPLOYED"}
 APPROVED_COVERAGE_LANES = {"execution", "watch", "macro", "speculative"}
 APPROVED_COVERAGE_TIERS = {"daily", "event", "macro", "watch"}
+NUMERIC_BAND_REQUIRED_STATES = {"PROMOTION REVIEW", "DEPLOYED", "ALMOST"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,6 +34,10 @@ def add_warning(warnings: list[dict[str, Any]], code: str, message: str, *, tick
     if ticker:
         item["ticker"] = ticker
     warnings.append(item)
+
+
+def is_number(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
 def main() -> int:
@@ -66,10 +71,38 @@ def main() -> int:
             add_warning(warnings, "tracked_universe_entry_invalid_shape", f"{ticker} metadata must be an object.", ticker=ticker)
             continue
 
+        workflow_state = str(meta.get("workflow_state") or "").upper()
+
         if ticker not in entry_bands:
             add_warning(warnings, "entry_band_missing", f"{ticker} exists in tracked_universe but not in entry_bands.", ticker=ticker)
+        else:
+            band = entry_bands.get(ticker) if isinstance(entry_bands.get(ticker), dict) else {}
+            if workflow_state in NUMERIC_BAND_REQUIRED_STATES:
+                missing = [field for field in ("low", "high", "stop") if not is_number(band.get(field))]
+                if missing:
+                    add_warning(
+                        warnings,
+                        "promoted_ticker_numeric_band_missing",
+                        f"{ticker} is {workflow_state} but missing numeric band field(s): {', '.join(missing)}.",
+                        ticker=ticker,
+                    )
+                label = str(band.get("label") or "")
+                stop_label = str(band.get("stop_label") or "")
+                if is_number(band.get("low")) and is_number(band.get("high")) and ("WATCH_" in label or label in {"TBD", "WATCH_DEFINED_INITIAL", "WATCH_PULLBACK_INITIAL"}):
+                    add_warning(
+                        warnings,
+                        "promoted_ticker_sentinel_band_label",
+                        f"{ticker} is {workflow_state} with numeric low/high but sentinel band label '{label}'. Promotion is not complete until the display label is numeric or dashboard derives numeric labels.",
+                        ticker=ticker,
+                    )
+                if is_number(band.get("stop")) and ("WATCH_" in stop_label or stop_label in {"TBD", "WATCH_DEFINED_INITIAL", "WATCH_PULLBACK_INITIAL"}):
+                    add_warning(
+                        warnings,
+                        "promoted_ticker_sentinel_stop_label",
+                        f"{ticker} is {workflow_state} with numeric stop but sentinel stop label '{stop_label}'. Promotion is not complete until the stop label is numeric or dashboard derives numeric labels.",
+                        ticker=ticker,
+                    )
 
-        workflow_state = str(meta.get("workflow_state") or "").upper()
         if workflow_state not in APPROVED_WORKFLOW_STATES:
             add_warning(
                 warnings,

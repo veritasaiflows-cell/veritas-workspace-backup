@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import csv
 import hashlib
 import json
@@ -7,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from board_state_contract import deployment_contract
 from market_data_utils import atomic_open_for_write, atomic_write_json, load_json_artifact
 from universe import members, resolve_lane
 
@@ -14,8 +16,9 @@ from universe import members, resolve_lane
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 EARNINGS_NOTES_DIR = WORKSPACE / "05. Intelligence" / "Earnings"
-TECHNICAL_NOTE_PATH = "03. Portfolio/Technical Entry and Invalidation Sheet.md"
-WATCHLIST_NOTE_PATH = "02. Markets/Watchlist.md"
+TECHNICAL_NOTE_PATH = "03. Portfolio/Execution Board.md"
+WATCHLIST_NOTE_PATH = "04. Research/Coverage and Watchlist.md"
+PORTFOLIO_SNAPSHOT_PATH = "03. Portfolio/Portfolio Snapshot.md"
 BAND_NOTE_SYNC_JSON = "band-note-sync.json"
 FRESH_WARNING_HOURS = 24.0
 FRESH_STALE_HOURS = 48.0
@@ -184,25 +187,41 @@ def data_status_from_grade(grade: str) -> str:
     }.get(grade, "warning")
 
 
+# Workbook display vocabulary keyed off the shared canonical deployment status,
+# so the below_stop/deployable/almost/blocked/watch decision is owned by one
+# normalizer (board_state_contract) instead of a private substring matcher.
+_CONTRACT_TO_WORKBOOK_LABEL = {
+    "DEPLOYABLE_NOW": "Deployable",
+    "NO_CHASE": "Deployable",
+    "ALMOST_DEPLOYABLE": "Almost deployable",
+    # Preserves prior workbook behavior: the old substring matcher did not
+    # recognize a literal PROMOTION REVIEW state and fell through to "Bench".
+    # Changing this to "Almost deployable" would be a deliberate display change.
+    "PROMOTION_REVIEW": "Bench",
+    "BELOW_STOP": "Do not touch",
+    "DO_NOT_TOUCH": "Do not touch",
+    "AUTHORITY_CONFLICT": "Do not touch",
+    "BLOCKED": "Blocked",
+    "BENCH": "Bench",
+    "POST_EARNINGS_REVIEW": "Bench",
+    "WATCH": "Bench",
+    "SYSTEM_HOLD": "Bench",
+    "ERROR": "Bench",
+}
+
+
 def normalize_board_state(raw_state: str | None, raw_deployment_state: str | None = None, below_stop: bool = False) -> str:
     raw = f"{raw_state or ''} {raw_deployment_state or ''}".strip().upper()
+    # Macro and Repair are workbook-only display nuances the canonical enum
+    # intentionally folds (into WATCH and DO_NOT_TOUCH); keep them as local refinements.
     if "MACRO" in raw:
         return "Macro context"
-    if below_stop or "BELOW STOP" in raw or "DO NOT TOUCH" in raw:
-        return "Do not touch"
-    if "REPAIR" in raw:
+    if "REPAIR" in raw and not below_stop and "BELOW STOP" not in raw and "DO NOT TOUCH" not in raw:
         return "Repair"
-    if "BLOCKED" in raw:
-        return "Blocked"
-    if "DEPLOYABLE" in raw and "ALMOST" not in raw:
-        return "Deployable"
-    if "ALMOST" in raw:
-        return "Almost deployable"
-    if "WATCH" in raw or "RESEARCH NEEDED" in raw:
-        return "Bench"
-    if "BENCH" in raw:
-        return "Bench"
-    return "Bench"
+    status = deployment_contract(
+        {"action_state": raw_state, "machine_state": raw_deployment_state, "below_stop": below_stop}
+    )["deployment_status"]
+    return _CONTRACT_TO_WORKBOOK_LABEL.get(status, "Bench")
 
 
 def normalize_review_flag(stale: bool, earnings_blocked: bool, in_entry_band: Any, has_band: bool) -> str:
@@ -270,7 +289,7 @@ def non_execution_board_state(lane: str, technical_rec: dict[str, Any] | None = 
 
 def note_parity_status_for_surface(ticker: str, band_sync: dict[str, Any], technical_entitled: bool) -> tuple[str, str]:
     if not technical_entitled:
-        return "Not entitled", "Macro/speculative lanes do not own a daily technical-note section on this workbook surface."
+        return "Not entitled", "Macro/speculative lanes do not own a daily Execution Board section on this workbook surface."
     return note_parity_status(ticker, band_sync)
 
 
@@ -284,12 +303,7 @@ def sync_status_from_note_targets(ticker: str, note_targets: dict[str, Any]) -> 
         if workflow.get("ticker") != ticker:
             continue
         updates = workflow.get("candidate_updates", []) or []
-        board_paths = {
-            "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-            "03. Portfolio/Deployment Trigger Sheet.md",
-            "03. Portfolio/Portfolio Snapshot.md",
-            "02. Markets/Watchlist.md",
-        }
+        board_paths = {TECHNICAL_NOTE_PATH, PORTFOLIO_SNAPSHOT_PATH, WATCHLIST_NOTE_PATH}
         targeted = {u.get("path") for u in updates if u.get("path")}
         has_board_targets = bool(targeted & board_paths)
         return has_board_targets, len(targeted & board_paths) >= 2
@@ -301,10 +315,17 @@ def parse_band_staleness(validation: dict[str, Any]) -> set[str]:
     for warning in validation.get("warnings", []):
         if warning.get("code") != "band_staleness":
             continue
+        details = warning.get("details") if isinstance(warning.get("details"), dict) else {}
+        detail_tickers = details.get("blocking_review_tickers") or details.get("non_applyable_blockers") or details.get("pending_applyable_blockers")
+        if isinstance(detail_tickers, list):
+            stale.update(str(ticker).strip() for ticker in detail_tickers if str(ticker).strip())
+            continue
         message = warning.get("message", "")
         if ":" in message:
             tickers_part = message.split(":", 1)[1]
             tickers_part = tickers_part.split(". Run", 1)[0]
+            tickers_part = tickers_part.split(". This", 1)[0]
+            tickers_part = tickers_part.split(". These", 1)[0]
             for token in tickers_part.split(","):
                 token = token.strip()
                 if token:
@@ -332,7 +353,7 @@ def note_parity_status(ticker: str, band_sync: dict[str, Any]) -> tuple[str, str
     item = band_sync.get("by_ticker", {}).get(ticker, {})
     status = item.get("note_status", "already aligned")
     if status == "missing section in note":
-        return "Missing section", "Add the missing canonical technical-note section manually; do not auto-create it."
+        return "Missing section", "Add the missing canonical Execution Board section manually; do not auto-create it."
     if status == "missing band/stop line":
         return "Missing band/stop line", "Patch the existing note section manually from the band-sync helper output."
     if status == "sync needed":
@@ -419,7 +440,7 @@ def build_control_panel(trigger: dict[str, Any], validation: dict[str, Any], tec
         )
 
     action_map = {
-        "band_staleness": "Review and apply needed band updates before decision-grade deployment work.",
+        "band_staleness": "Review entry-band debt; auto-apply only eligible proposals and keep non-applyable/event-risk tickers in manual review.",
         "timing_sensitive_earnings_dates": "Directly confirm timing-sensitive earnings dates before updating critical catalyst notes.",
         "macro_manual_dependency": "Review Fed target maintenance and macro dependency warnings before relying on macro posture.",
         "policy_expectations_fallback_source": "Treat policy expectations as fallback-sourced and review before using as strong evidence.",
@@ -447,11 +468,11 @@ def build_control_panel(trigger: dict[str, Any], validation: dict[str, Any], tec
             {
                 "record_type": "warning",
                 "metric_key": "technical_note_missing_sections",
-                "metric_label": "Technical Note Missing Sections",
+                "metric_label": "Execution Board Missing Sections",
                 "metric_value": "",
                 "severity": "warning",
-                "summary": "Technical Entry note is missing sections for: " + ", ".join(missing_sections),
-                "action_needed": "Use tmp/band-note-sync.md to add the missing sections manually. Keep the canonical note human-gated.",
+                "summary": "Execution Board is missing sections for: " + ", ".join(missing_sections),
+                "action_needed": "Use the workbook sync JSON/diff evidence to add missing sections manually. Keep the canonical note human-gated.",
                 "export_generated_at_utc": export_time,
                 "source_last_trading_day": source_last_trading_day,
                 "validation_grade": grade,
@@ -502,12 +523,12 @@ def build_watchlist_board(trigger: dict[str, Any], validation: dict[str, Any], e
         rec = trigger_map.get(ticker, {})
         nearest_catalyst = rec.get("next_earnings_date") or earnings_map.get(ticker, {}).get("next_earnings_date") or ""
         note_status, note_action = note_parity_status_for_surface(ticker, band_sync, ticker in technical_entitled)
-        technical_freshness = "Not entitled" if ticker not in technical_entitled else ("Stale" if ticker in stale_tickers else "None")
+        technical_freshness = "Not entitled" if ticker not in technical_entitled else ("Review debt" if ticker in stale_tickers else "None")
         notes_short = rec.get("why", "") or rec.get("deployment_reason", "")
         if not notes_short:
             notes_short = scope_label_for_lane(lane)
             if note_status == "Missing section":
-                notes_short += " Missing canonical technical-note section remains manual."
+                notes_short += " Missing canonical Execution Board section remains manual."
         rows.append(
             {
                 "ticker": ticker,
@@ -515,8 +536,8 @@ def build_watchlist_board(trigger: dict[str, Any], validation: dict[str, Any], e
                 "coverage_tier": rec.get("coverage_tier") or meta.get("coverage_tier", ""),
                 "coverage_lane": lane,
                 "sleeve": rec.get("portfolio_role") or meta.get("portfolio_role", ""),
-                "board_state": normalize_board_state(rec.get("action_state"), rec.get("deployment_state"), bool(rec.get("below_stop"))) if rec else non_execution_board_state(lane),
-                "deployability_label": rec.get("action_state") or non_execution_deployability_label(lane),
+                "board_state": normalize_board_state(legacy_state(rec, "action_state"), rec.get("deployment_state"), bool(rec.get("below_stop"))) if rec else non_execution_board_state(lane),
+                "deployability_label": legacy_state(rec, "action_state") or non_execution_deployability_label(lane),
                 "surface_scope": scope_label_for_lane(lane),
                 "nearest_catalyst_date": nearest_catalyst,
                 "catalyst_type": "earnings" if nearest_catalyst else "",
@@ -559,7 +580,7 @@ def technical_readiness(rec: dict[str, Any]) -> str:
         return "Blocked"
     if rec.get("in_entry_band") is True:
         return "In band"
-    state = (rec.get("action_state") or "").upper()
+    state = (legacy_state(rec, "action_state") or "").upper()
     if "ALMOST" in state:
         return "Near band"
     return "Extended"
@@ -579,7 +600,7 @@ def build_deployment_ranking(trigger: dict[str, Any]) -> list[dict[str, Any]]:
         rows.append(
             {
                 "ticker": ticker,
-                "board_state": normalize_board_state(rec.get("action_state"), rec.get("deployment_state"), bool(rec.get("below_stop"))),
+                "board_state": normalize_board_state(legacy_state(rec, "action_state"), rec.get("deployment_state"), bool(rec.get("below_stop"))),
                 "distance_to_band_pct": compute_distance_pct(rec.get("close"), low, high),
                 "entry_band_low": low,
                 "entry_band_high": high,
@@ -668,7 +689,7 @@ def build_earnings_tracker(prep: dict[str, Any], note_targets: dict[str, Any], p
                 "follow_up_open": bool(next_required_action or unresolved),
                 "next_required_action": next_required_action,
                 "owner_note": scorecard_path,
-                "deployment_impact": packet.get("deployment_context", {}).get("action_state", ""),
+                "deployment_impact": legacy_state(packet.get("deployment_context", {}), "action_state", ""),
                 "technical_impact": packet.get("technical_context", {}).get("ma_posture", ""),
                 "unresolved_issue": unresolved,
                 "export_generated_at_utc": export_time,

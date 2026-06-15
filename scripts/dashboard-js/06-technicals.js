@@ -14,7 +14,7 @@ function techFilterMatch(state, filter) {
   if (filter === 'all') return true;
   const s = (state||'').toUpperCase();
   if (filter === 'deployable') return s === 'DEPLOYABLE';
-  if (filter === 'review') return s === 'PROMOTION REVIEW' || s === 'REVIEW';
+  if (filter === 'review') return s === 'PROMOTION REVIEW' || s === 'REVIEW' || s === 'AUTHORITY CONFLICT';
   if (filter === 'almost') return s === 'ALMOST';
   if (filter === 'blocked') return s === 'BLOCKED' || s === 'BELOW STOP';
   if (filter === 'watch') return s === 'WATCH' || s === 'BENCH';
@@ -43,6 +43,9 @@ function parseBandLowHigh(entryLabel) {
 }
 
 function techBandWidget(t) {
+  if (t.bandVisualSuppressed || t.repairOverride) {
+    return `<div class="band-widget band-widget-override muted"><div class="band-widget-label tone-warn">${esc(t.repairOverrideLabel || 'REPAIR OVERRIDE / band position irrelevant')}</div></div>`;
+  }
   const [low, high] = parseBandLowHigh(t.entry);
   if (low == null || high == null || t.close == null) {
     return `<span class="small muted">${esc(t.bandStatus || '—')}</span>`;
@@ -76,6 +79,9 @@ function renderTechnicalTable() {
     const dteLabel = dte == null ? '' : dte === 0 ? 'today' : dte > 0 ? `${dte}d` : `${Math.abs(dte)}d ago`;
     const laneLabel = t.coverageLaneLabel || (t.coverageLane ? t.coverageLane.toUpperCase() : '—');
     const laneTone = t.coverageLane === 'execution' ? 'ok' : (t.coverageLane === 'watch' ? 'info' : 'warn');
+    const stateDetail = `${t.displaySubState ? `<div class="small tone-warn">${esc(t.displaySubState)}</div>` : ''}${t.proseConflict ? `<div class="small tone-warn">${esc(t.conflictProseState || 'Authority conflict')}</div>` : ''}`;
+    const proofDetail = `<div class="small muted">${esc(t.sourceArtifactPath || 'artifact unavailable')}${t.sourceGeneratedAtUtc ? ` · ${esc(t.sourceGeneratedAtUtc)}` : ''}${t.bandStale ? ' · BAND STALE' : ''}${t.overrideRule ? ` · override ${esc(t.overrideRule)}` : ''}</div>`;
+    const earningsBadge = t.earningsDateConfirmed === false ? `<div>${pill('UNCONFIRMED DATE','warn')}</div>` : '';
     return `<tr>
       <td class="mono"><strong>${esc(t.ticker)}</strong>${t.triggerToday?` <span class="pill-tiny">LIVE</span>`:''}</td>
       <td>${pill(laneLabel, laneTone)}</td>
@@ -89,9 +95,9 @@ function renderTechnicalTable() {
       <td>${techBandWidget(t)}</td>
       <td class="mono">${esc(t.stop||'—')}</td>
       <td class="mono ${stopTone}">${t.stopDistPct==null?'—':`${esc(t.stopDistPct)}%`}</td>
-      <td><div class="mono small">${esc(t.earningsDate||'Unconfirmed')}</div>${dteLabel?`<div class="small ${earningsTone}">${dteLabel}</div>`:''}</td>
+      <td><div class="mono small">${esc(t.earningsDate||'Unconfirmed')}</div>${dteLabel?`<div class="small ${earningsTone}">${dteLabel}</div>`:''}${earningsBadge}</td>
       <td>${t.triggerToday?pill('Ready','ok'):pill('Wait','info')}</td>
-      <td>${pill(t.actionState, stateTone(t.actionState))}</td>
+      <td>${pill(t.actionState, stateTone(t.actionState))}${stateDetail}${proofDetail}</td>
     </tr>`;
   }).join('') || '<tr><td colspan="15" class="muted" style="padding:16px;text-align:center">No records match this filter.</td></tr>';
 }

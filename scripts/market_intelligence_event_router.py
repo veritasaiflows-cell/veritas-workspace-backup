@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import argparse
 import json
 from datetime import date, datetime, timezone
@@ -25,6 +26,9 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "optional": {
             "earnings_calendar": TMP / "earnings-calendar.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
     "post-close": {
@@ -38,6 +42,9 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "optional": {
             "earnings_calendar": TMP / "earnings-calendar.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
     "post-earnings": {
@@ -51,6 +58,9 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "optional": {
             "market_state": TMP / "market-state.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
     "sunday": {
@@ -64,6 +74,9 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "optional": {
             "earnings_calendar": TMP / "earnings-calendar.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
+            "fundamental_metrics": TMP / "fundamental-metrics-current.json",
+            "fundamental_metrics_validation": TMP / "fundamental-metrics-validation.json",
+            "fundamental_ir_packets": TMP / "fundamental-ir-reconciliation-packets.json",
         },
     },
 }
@@ -422,7 +435,7 @@ def deployment_events(window: str, deployment_surface: dict[str, Any]) -> list[d
     events: list[dict[str, Any]] = []
     for row in iter_surface_records(deployment_surface):
         ticker = str(row.get("ticker") or "").strip()
-        state = str(row.get("surface_state") or "")
+        state = str(legacy_state(row, "surface_state") or "")
         days = row.get("days_to_earnings")
         if state == "PROMOTION REVIEW":
             events.append(make_event(
@@ -533,6 +546,8 @@ def earnings_events(window: str, earnings_calendar: dict[str, Any] | None, ref_d
         days = (earnings_date - ref_date).days
         if -2 <= days <= 14:
             source = str(row.get("source") or "unknown")
+            source_class = str(row.get("date_source_class") or ("provider_estimate" if source.lower() == "yfinance" else "unknown"))
+            primary_confirmed = bool(row.get("primary_confirmed"))
             events.append(make_event(
                 window=window,
                 event_type="earnings",
@@ -544,7 +559,13 @@ def earnings_events(window: str, earnings_calendar: dict[str, Any] | None, ref_d
                 recommended_route="thesis_review" if days < 0 else "deployment_review",
                 urgency="today" if days <= 3 else "this_week",
                 event_title=f"{ticker} earnings catalyst window is active or near",
-                evidence=[f"next_earnings_date={earnings_date.isoformat()}", f"days_to_earnings={days}", f"source={source}"],
+                evidence=[
+                    f"next_earnings_date={earnings_date.isoformat()}",
+                    f"days_to_earnings={days}",
+                    f"source={source}",
+                    f"date_source_class={source_class}",
+                    f"primary_confirmed={primary_confirmed}",
+                ],
                 blocked_reason="Provider-calendar timing is not enough for autonomous thesis or deployment-state mutation; verify against IR when decision-critical.",
                 source_artifacts=["tmp/earnings-calendar.json"],
             ))
@@ -610,6 +631,62 @@ def post_earnings_events(window: str, post_earnings_prep: dict[str, Any] | None)
     return events
 
 
+def fundamental_events(window: str, fundamental_metrics: dict[str, Any] | None) -> list[dict[str, Any]]:
+    if not isinstance(fundamental_metrics, dict):
+        return []
+    events: list[dict[str, Any]] = []
+    for row in fundamental_metrics.get("rows") or []:
+        if not isinstance(row, dict) or row.get("instrument_type") != "equity":
+            continue
+        ticker = str(row.get("ticker") or "").strip()
+        if not ticker:
+            continue
+        sec_status = str(((row.get("sec_reconciliation") or {}).get("status")) or "")
+        ir_status = str(((row.get("company_ir_reconciliation") or {}).get("status")) or "")
+        ca_quality = str(row.get("capital_allocation_quality") or "")
+        anomalies = [item for item in row.get("capital_allocation_anomalies") or [] if isinstance(item, dict)]
+        fcfps_yoy = row.get("fcf_per_share_yoy_pct")
+        shares_yoy = row.get("diluted_shares_yoy_pct")
+        sbc_fcf = row.get("sbc_pct_of_fcf")
+
+        evidence: list[str] = []
+        if sec_status == "conflict":
+            evidence.append("SEC companyfacts conflict requires manual reconciliation")
+        if ir_status in {"manual_required", "configured_manual_review_required"}:
+            evidence.append(f"Company IR reconciliation status={ir_status}")
+        if ca_quality in {"caution", "manual_review_required", "bank_manual_review"}:
+            evidence.append(f"Capital allocation quality={ca_quality}")
+        if row.get("fcf_interpretation") == "bank_structural":
+            evidence.append("Bank sector: industrial FCF/share and debt-funded-return gates suppressed; use CET1/ROTCE/NIM/deposit/credit-quality review.")
+        evidence.extend(str(item.get("message") or item.get("code")) for item in anomalies[:3])
+        if row.get("fcf_interpretation") != "bank_structural" and isinstance(fcfps_yoy, (int, float)) and fcfps_yoy < -20:
+            evidence.append(f"FCF/share YoY deteriorated {fcfps_yoy}%")
+        if isinstance(shares_yoy, (int, float)) and shares_yoy > 3:
+            evidence.append(f"Diluted share count rose {shares_yoy}%")
+        if isinstance(sbc_fcf, (int, float)) and sbc_fcf > 25:
+            evidence.append(f"SBC/FCF is elevated at {sbc_fcf}%")
+        evidence = list(dict.fromkeys([item for item in evidence if item]))
+        if not evidence:
+            continue
+        materiality = 4 if anomalies or sec_status == "conflict" or ca_quality in {"caution", "bank_manual_review"} else 3
+        events.append(make_event(
+            window=window,
+            event_type="fundamental",
+            ticker_or_macro_sleeve=ticker,
+            source_tier="tier_2_aggregator_plus_sec_ir_review_gate",
+            materiality_score=materiality,
+            thesis_field_impacted="fundamental_quality_per_share_capital_allocation",
+            portfolio_surface_impacted="WF65 full-picture ticker context / capital review evidence",
+            recommended_route="thesis_review" if materiality >= 4 else "weekly_review",
+            urgency="today" if materiality >= 4 else "this_week",
+            event_title=f"{ticker} fundamental/per-share quality requires review",
+            evidence=evidence[:5],
+            blocked_reason="WF65 fundamental events are review-only evidence; they do not authorize deployment, portfolio mutation, approval, or trade execution.",
+            source_artifacts=["tmp/fundamental-metrics-current.json", "tmp/fundamental-metrics-validation.json"],
+        ))
+    return events
+
+
 def sort_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
     deduped: dict[str, dict[str, Any]] = {}
     for event in events:
@@ -649,6 +726,7 @@ def build_packet(window: str) -> dict[str, Any]:
     events.extend(band_events(window, required["band_proposals"]))
     events.extend(earnings_events(window, optional.get("earnings_calendar"), ref_date))
     events.extend(post_earnings_events(window, required.get("post_earnings_prep") or optional.get("post_earnings_prep")))
+    events.extend(fundamental_events(window, optional.get("fundamental_metrics")))
     events.extend(unresolved_truth_events(window, source_freshness))
     ranked = sort_events(events)
     if not ranked:

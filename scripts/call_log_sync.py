@@ -19,6 +19,7 @@ Usage:
 
 from __future__ import annotations
 
+from board_state_contract import legacy_state
 import json
 import re
 import sys
@@ -213,7 +214,7 @@ def main() -> None:
             })
             continue
 
-        current_action = (tr.get("action_state") or "").upper()
+        current_action = (legacy_state(tr, "action_state") or "").upper()
         current_simplified = ACTION_STATE_MAP.get(current_action, current_action.lower())
 
         # Skip if log status is "open/incomplete" — those are the live calls
@@ -315,7 +316,7 @@ def main() -> None:
         print(f"\n  + Names in trigger sheet not yet in call log:")
         for tk in new_names:
             tr = trigger_records[tk]
-            print(f"     {tk} — {tr.get('action_state', 'unknown')} | {tr.get('why', '')[:60]}")
+            print(f"     {tk} — {legacy_state(tr, "action_state", 'unknown')} | {tr.get('why', '')[:60]}")
         print("    Consider opening new call log entries for these names.")
 
     if not critical and not material and not minor:

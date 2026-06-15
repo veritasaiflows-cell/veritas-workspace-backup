@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -14,6 +15,40 @@ QUEUE_NOTE = ROOT / "06. Playbooks" / "Promotion Review Queue.md"
 ALLOWED_GATE_VALUES = {"pass", "warning", "failed", "missing", "unknown"}
 ALLOWED_LANES = {"execution", "watch", "macro", "speculative"}
 ALLOWED_TIMING_POSTURES = {"clean", "blocked", "stale", "unknown"}
+TEXT_FIELDS_FOR_AUTHORITY_SCAN = {
+    "source_surface",
+    "thesis_evidence_source",
+    "canonical_trigger_source",
+    "canonical_portfolio_source",
+    "correlated_sleeve",
+    "sector_cap_check",
+    "promotion_blockers",
+    "notes",
+    "owner_conflict_check",
+    "sector_correlation_artifact",
+    "current_canonical_status_tuple",
+    "proposed_canonical_status_tuple",
+}
+FORBIDDEN_AUTHORITY_PATTERNS = {
+    "buy": re.compile(r"\bbuy\b", re.IGNORECASE),
+    "add": re.compile(r"\badd\b", re.IGNORECASE),
+    "trim": re.compile(r"\btrim\b", re.IGNORECASE),
+    "sell": re.compile(r"\bsell\b", re.IGNORECASE),
+    "size": re.compile(r"\bsize\b", re.IGNORECASE),
+    "sizing": re.compile(r"\bsizing\b", re.IGNORECASE),
+    "execute": re.compile(r"\bexecute\b", re.IGNORECASE),
+    "trade": re.compile(r"\btrade\b", re.IGNORECASE),
+    "deployable now": re.compile(r"\bdeployable[-\s]+now\b", re.IGNORECASE),
+    "candidate weight": re.compile(r"\bcandidate\s+weight\b", re.IGNORECASE),
+    "target weight": re.compile(r"\btarget\s+weight\b", re.IGNORECASE),
+    "win probability": re.compile(r"\bwin\s+probability\b", re.IGNORECASE),
+    "deploy probability": re.compile(r"\bdeploy\s+probability\b", re.IGNORECASE),
+    "expected return": re.compile(r"\bexpected\s+return\b", re.IGNORECASE),
+    "green light": re.compile(r"\bgreen\s+light\b", re.IGNORECASE),
+    "clear to deploy": re.compile(r"\bclear\s+to\s+deploy\b", re.IGNORECASE),
+    "tactical add": re.compile(r"\btactical\s+add\b", re.IGNORECASE),
+    "disciplined size": re.compile(r"\bdisciplined\s+size\b", re.IGNORECASE),
+}
 REQUIRED_FIELDS = {
     "schema_version": int,
     "generated_at_utc": str,
@@ -45,6 +80,11 @@ REQUIRED_FIELDS = {
     "promotion_blockers": list,
     "promotion_candidate": bool,
     "promotion_review_required": bool,
+    "owner_conflict_check": dict,
+    "sector_correlation_artifact": dict,
+    "current_canonical_status_tuple": dict,
+    "proposed_canonical_status_tuple": dict,
+    "canonical_status_move_required": bool,
     "notes": list,
 }
 GATE_KEYS = [
@@ -72,7 +112,7 @@ def validate_types(packet: Dict[str, Any], errors: List[str]) -> None:
             continue
         if not isinstance(packet[key], expected):
             errors.append(f"field {key} has wrong type: expected {expected}, got {type(packet[key]).__name__}")
-    extra = sorted(set(packet.keys()) - set(REQUIRED_FIELDS.keys()) - {"queue_entry_required", "queue_entry_present", "proposed_action_state", "candidate_weight_pct"})
+    extra = sorted(set(packet.keys()) - set(REQUIRED_FIELDS.keys()) - {"queue_entry_required", "queue_entry_present", "proposed_action_state"})
     if extra:
         errors.append("unknown fields present: " + ", ".join(extra))
 
@@ -87,6 +127,59 @@ def validate_gate_shape(packet: Dict[str, Any], errors: List[str]) -> None:
     for gate_name, status in gates.items():
         if status not in ALLOWED_GATE_VALUES:
             errors.append(f"gate {gate_name} has unknown status {status!r}")
+
+
+def iter_text_values(value: Any, path: str) -> List[Tuple[str, str]]:
+    if isinstance(value, str):
+        return [(path, value)]
+    if isinstance(value, list):
+        results: List[Tuple[str, str]] = []
+        for index, item in enumerate(value):
+            results.extend(iter_text_values(item, f"{path}[{index}]"))
+        return results
+    if isinstance(value, dict):
+        results = []
+        for key, item in value.items():
+            results.extend(iter_text_values(item, f"{path}.{key}"))
+        return results
+    return []
+
+
+def validate_forbidden_authority_vocabulary(packet: Dict[str, Any], blockers: List[str]) -> None:
+    for field in sorted(TEXT_FIELDS_FOR_AUTHORITY_SCAN):
+        if field not in packet:
+            continue
+        for path, text in iter_text_values(packet[field], field):
+            for label, pattern in FORBIDDEN_AUTHORITY_PATTERNS.items():
+                if pattern.search(text):
+                    blockers.append(f"forbidden authority vocabulary in {path}: {label}")
+
+
+def validate_system_trust_gate(packet: Dict[str, Any], trust_context: Dict[str, Any] | None, blockers: List[str]) -> None:
+    if not trust_context:
+        return
+    source_freshness = trust_context.get("source_freshness", {}) if isinstance(trust_context.get("source_freshness"), dict) else {}
+    overall_classification = trust_context.get("overall_classification") or source_freshness.get("overall_classification")
+    trust_level = trust_context.get("trust_level") or source_freshness.get("trust_level")
+    presentation_allowed = trust_context.get("presentation_allowed")
+    if presentation_allowed is None:
+        presentation_allowed = source_freshness.get("presentation_allowed")
+    capital_action_allowed = trust_context.get("capital_action_allowed")
+    if capital_action_allowed is None:
+        capital_action_allowed = source_freshness.get("capital_action_allowed")
+
+    degraded_reasons = []
+    if overall_classification in {"partial", "stale", "manual_dependency", "missing", "degraded"}:
+        degraded_reasons.append(f"overall_classification={overall_classification}")
+    if trust_level in {"review_required", "manual_dependency", "degraded", "blocked"}:
+        degraded_reasons.append(f"trust_level={trust_level}")
+    if presentation_allowed is False:
+        degraded_reasons.append("presentation_allowed=false")
+    if capital_action_allowed is False:
+        degraded_reasons.append("capital_action_allowed=false")
+
+    if degraded_reasons and packet.get("promotion_candidate") is True:
+        blockers.append("system trust gate degraded while promotion_candidate true: " + ", ".join(degraded_reasons))
 
 
 def load_queue_tickers() -> set[str]:
@@ -117,7 +210,7 @@ def find_earnings_record(data: Dict[str, Any], ticker: str) -> Dict[str, Any] | 
     return None
 
 
-def validate_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
+def validate_packet(packet: Dict[str, Any], trust_context: Dict[str, Any] | None = None) -> Dict[str, Any]:
     errors: List[str] = []
     blockers: List[str] = []
     validate_types(packet, errors)
@@ -135,6 +228,8 @@ def validate_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
         errors.append("promotion_review_required must stay true")
     if packet["source_surface"].strip().lower() == "watchlist":
         blockers.append("watchlist is the only source surface")
+    validate_forbidden_authority_vocabulary(packet, blockers)
+    validate_system_trust_gate(packet, trust_context, blockers)
     if not packet["thesis_exists"]:
         blockers.append("thesis_exists is false")
     if not packet["portfolio_competition_assessed"]:
@@ -143,6 +238,21 @@ def validate_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
         blockers.append("sector cap check was not performed")
     if not packet["correlated_sleeve_checked"]:
         blockers.append("correlated sleeve check was not performed")
+
+    owner_conflict = packet.get("owner_conflict_check") or {}
+    if owner_conflict.get("status") != "pass":
+        blockers.append("owner_conflict_check is not pass")
+    if owner_conflict.get("conflicts"):
+        blockers.append("owner_conflict_check contains conflicts")
+
+    sector_artifact = packet.get("sector_correlation_artifact") or {}
+    if sector_artifact.get("status") not in {"available_review_only", "pass"}:
+        blockers.append("sector_correlation_artifact is missing or not review-only available")
+    if not sector_artifact.get("path"):
+        blockers.append("sector_correlation_artifact path missing")
+
+    if packet.get("canonical_status_move_required") and not packet.get("proposed_action_state"):
+        blockers.append("canonical_status_move_required requires proposed_action_state for review routing")
 
     config = load_json(PORTFOLIO_CONFIG)
     tracked = config.get("tracked_universe", {})
@@ -244,10 +354,12 @@ def validate_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Fail-closed validator for promotion candidate packets.")
     parser.add_argument("packet", help="Path to candidate packet JSON")
+    parser.add_argument("--trust-context", help="Optional dashboard/source trust JSON that can block candidate readiness")
     args = parser.parse_args()
     packet_path = Path(args.packet)
     packet = load_json(packet_path)
-    result = validate_packet(packet)
+    trust_context = load_json(Path(args.trust_context)) if args.trust_context else None
+    result = validate_packet(packet, trust_context=trust_context)
     print(json.dumps(result, indent=2))
     return 0 if result["ok"] else 1
 

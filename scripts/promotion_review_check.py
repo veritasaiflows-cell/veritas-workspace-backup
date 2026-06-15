@@ -15,8 +15,7 @@ TRIGGER_SHEET = TMP / "trigger-sheet.json"
 PORTFOLIO_CONFIG = TMP / "portfolio-config.json"
 EARNINGS_CALENDAR = TMP / "earnings-calendar.json"
 QUEUE_NOTE = ROOT / "06. Playbooks" / "Promotion Review Queue.md"
-TECHNICAL_SHEET = ROOT / "03. Portfolio" / "Technical Entry and Invalidation Sheet.md"
-TRIGGER_NOTE = ROOT / "03. Portfolio" / "Deployment Trigger Sheet.md"
+EXECUTION_BOARD = ROOT / "03. Portfolio" / "Execution Board.md"
 PORTFOLIO_SNAPSHOT = ROOT / "03. Portfolio" / "Portfolio Snapshot.md"
 RISK_RULES = ROOT / "07. Risk" / "Risk Rules.md"
 OUT_DEFAULT = TMP / "promotion-review-check-{ticker}.json"
@@ -24,14 +23,14 @@ SCHEMA_VERSION = 1
 
 BLOCKED_DAYS = 7
 WARNING_DAYS = 14
-AUTO_APPROVAL_GATE_PATTERN = {
+REVIEW_READY_GATE_PATTERN = {
     "thesis": "pass",
     "macro_regime": "pass",
     "technical": "pass",
     "catalyst": "clear",
     "risk_sizing": "warning",
 }
-AUTO_APPROVAL_SCOPE = "workspace deployment-status approval only; no trade execution and no automatic canonical note mutation"
+REVIEW_SCOPE = "review-only promotion readiness check; no deployable-now authorization, owner approval, trade execution, or automatic canonical note mutation"
 
 
 def load_json(path: Path, required: bool = True) -> dict[str, Any]:
@@ -204,18 +203,15 @@ def build_review(ticker: str, packet_path: Path | None = None, require_queue: bo
         blockers.append("Promotion Review Queue row missing")
 
     owner_surfaces = {
-        "technical_sheet": note_contains(TECHNICAL_SHEET, ticker),
-        "trigger_note": note_contains(TRIGGER_NOTE, ticker),
+        "execution_board": note_contains(EXECUTION_BOARD, ticker),
         "portfolio_snapshot": note_contains(PORTFOLIO_SNAPSHOT, ticker),
         "risk_rules": RISK_RULES.exists(),
         "promotion_queue": queue_present,
     }
-    if not owner_surfaces["trigger_note"]:
-        blockers.append("Deployment Trigger Sheet owner surface does not reference ticker")
+    if not owner_surfaces["execution_board"]:
+        blockers.append("Execution Board owner surface does not reference ticker")
     if not owner_surfaces["portfolio_snapshot"]:
         blockers.append("Portfolio Snapshot owner surface does not reference ticker")
-    if not owner_surfaces["technical_sheet"]:
-        blockers.append("Technical Entry and Invalidation Sheet does not reference ticker")
     if not owner_surfaces["risk_rules"]:
         blockers.append("Risk Rules owner surface missing")
 
@@ -249,37 +245,37 @@ def build_review(ticker: str, packet_path: Path | None = None, require_queue: bo
 
     blockers = list(dict.fromkeys(blockers))
     warnings = list(dict.fromkeys(warnings))
-    auto_approval_blockers: list[str] = []
+    review_ready_blockers: list[str] = []
     if action_state != "PROMOTION REVIEW":
-        auto_approval_blockers.append("action_state is not PROMOTION REVIEW")
+        review_ready_blockers.append("action_state is not PROMOTION REVIEW")
     if tracked.get("coverage_lane") != "execution":
-        auto_approval_blockers.append("coverage_lane is not execution")
+        review_ready_blockers.append("coverage_lane is not execution")
     if tracked.get("workflow_state") not in {"ALMOST", "PROMOTION REVIEW"}:
-        auto_approval_blockers.append("workflow_state is not ALMOST/PROMOTION REVIEW")
+        review_ready_blockers.append("workflow_state is not ALMOST/PROMOTION REVIEW")
     if not queue_present:
-        auto_approval_blockers.append("Promotion Review Queue row missing")
+        review_ready_blockers.append("Promotion Review Queue row missing")
     missing_owner_surfaces = [name for name, present in owner_surfaces.items() if not present]
     if missing_owner_surfaces:
-        auto_approval_blockers.append("owner surfaces missing: " + ", ".join(missing_owner_surfaces))
-    for gate_name, expected in AUTO_APPROVAL_GATE_PATTERN.items():
+        review_ready_blockers.append("owner surfaces missing: " + ", ".join(missing_owner_surfaces))
+    for gate_name, expected in REVIEW_READY_GATE_PATTERN.items():
         if gate_status.get(gate_name) != expected:
-            auto_approval_blockers.append(f"{gate_name} gate is {gate_status.get(gate_name)!r}, expected {expected!r}")
+            review_ready_blockers.append(f"{gate_name} gate is {gate_status.get(gate_name)!r}, expected {expected!r}")
     if blockers:
-        auto_approval_blockers.append("readiness blockers are present")
+        review_ready_blockers.append("readiness blockers are present")
 
-    auto_approved = not auto_approval_blockers
+    review_ready = not review_ready_blockers
 
     if blockers:
         status = "blocked"
-    elif auto_approved:
-        status = "auto_approved"
-    else:
+    elif review_ready:
         status = "review_ready"
+    else:
+        status = "needs_manual_review"
 
     if "ticker is not confirmed in entry band" in blockers or "ticker is below stop" in blockers:
         queue_judgment = "reject / return to almost"
-    elif auto_approved:
-        queue_judgment = "approve for deployable-now"
+    elif review_ready:
+        queue_judgment = "ready for explicit owner review"
     else:
         queue_judgment = "hold in promotion review"
 
@@ -289,12 +285,12 @@ def build_review(ticker: str, packet_path: Path | None = None, require_queue: bo
         "ticker": ticker,
         "status": status,
         "ok": not blockers,
-        "authorization_required": not auto_approved,
-        "non_authorizing": False if auto_approved else True,
+        "authorization_required": True,
+        "non_authorizing": True,
         "canonical_mutation_allowed": False,
-        "deployable_now_authorized": auto_approved,
+        "deployable_now_authorized": False,
         "trade_execution_authorized": False,
-        "auto_approval_scope": AUTO_APPROVAL_SCOPE,
+        "review_scope": REVIEW_SCOPE,
         "action_state": action_state or None,
         "coverage_lane": tracked.get("coverage_lane"),
         "workflow_state": tracked.get("workflow_state"),
@@ -322,16 +318,16 @@ def build_review(ticker: str, packet_path: Path | None = None, require_queue: bo
         "shadow_canon": shadow_canon,
         "packet_result": packet_result,
         "automated_queue_judgment": queue_judgment,
-        "auto_approval": {
-            "approved": auto_approved,
-            "criteria": AUTO_APPROVAL_GATE_PATTERN,
-            "scope": AUTO_APPROVAL_SCOPE,
-            "blockers": auto_approval_blockers,
+        "review_readiness": {
+            "ready_for_owner_review": review_ready,
+            "criteria": REVIEW_READY_GATE_PATTERN,
+            "scope": REVIEW_SCOPE,
+            "blockers": review_ready_blockers,
         },
-        "allowed_owner_judgments": ["approve for deployable-now", "hold in promotion review", "reject / return to almost"],
+        "allowed_owner_judgments": ["explicit owner approval after review", "hold in promotion review", "reject / return to almost"],
         "blockers": blockers,
         "warnings": warnings,
-        "next_action": "auto-approved for deployable-now status inside the workspace review layer; no trade execution or canonical note mutation was performed" if auto_approved else ("owner review may proceed, but deployable-now remains unauthorized until explicit approval" if not blockers else "clear blockers before owner promotion review"),
+        "next_action": "owner review may proceed, but deployable-now remains unauthorized until explicit approval" if review_ready and not blockers else ("hold for manual review; no deployable-now authorization is granted" if not blockers else "clear blockers before owner promotion review"),
     }
 
 

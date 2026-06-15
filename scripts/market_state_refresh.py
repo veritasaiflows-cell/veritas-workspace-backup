@@ -12,11 +12,13 @@ Coverage via yfinance (no API key required):
   CL=F   WTI crude
   ES=F   S&P 500 futures snapshot
   NQ=F   Nasdaq 100 futures snapshot
+  ^DJI/^IXIC/^NDX/^RUT plus SPY/QQQ/IWM broad-index close/change table
   XLI/XLF/XLK/XLE  sector posture snapshot
   active-board equity snapshot derived from trigger-sheet / portfolio-config
 
 Optional better macro source via FRED API:
   DGS2   2Y Treasury yield
+  Official Treasury XML daily yield curve is used as a same-day fallback
 
 Also wired:
   Policy expectations  -- ingests tmp/policy-expectations.json when available
@@ -44,7 +46,9 @@ if hasattr(sys.stdout, "reconfigure"):
 from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
+import xml.etree.ElementTree as ET
 
 import yfinance as yf
 
@@ -63,6 +67,7 @@ SCHEMA_VERSION = 1
 EXPECTED_UPDATE_WINDOW = "Refresh before weekly intelligence, weekday executive briefs, deployment review, trigger-sheet generation, and any macro-sensitive portfolio review."
 EASTERN = ZoneInfo("America/New_York")
 PREMARKET_CUTOFF = time(9, 30)
+REGULAR_CLOSE_CUTOFF = time(16, 0)
 
 FIELDS = [
     ("spx", "^GSPC", "S&P 500"),
@@ -79,12 +84,28 @@ FUTURES_FIELDS = [
     ("nasdaq_futures", "NQ=F", "Nasdaq 100 futures"),
 ]
 
+BROAD_INDEX_FIELDS = [
+    ("spx", "^GSPC", "S&P 500"),
+    ("dow", "^DJI", "Dow Jones Industrial Average"),
+    ("nasdaq_composite", "^IXIC", "Nasdaq Composite"),
+    ("nasdaq_100", "^NDX", "Nasdaq 100"),
+    ("russell_2000", "^RUT", "Russell 2000"),
+    ("spy", "SPY", "SPY S&P 500 ETF proxy"),
+    ("qqq", "QQQ", "QQQ Nasdaq 100 ETF proxy"),
+    ("iwm", "IWM", "IWM Russell 2000 ETF proxy"),
+]
+
 SECTOR_FIELDS = [
     ("xli", "XLI", "Industrials"),
     ("xlf", "XLF", "Financials"),
     ("xlk", "XLK", "Technology"),
     ("xle", "XLE", "Energy"),
 ]
+
+TREASURY_YIELD_CURVE_XML = (
+    "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml"
+    "?data=daily_treasury_yield_curve&field_tdr_date_value_month={year_month}"
+)
 
 def get_path(data: Any, dotted_path: str) -> Any:
     cur = data
@@ -107,6 +128,44 @@ def find_distribution_probability(distribution: Any, outcome: str) -> float | No
     return None
 
 
+def policy_contract_view(policy_raw: dict[str, Any] | None) -> dict[str, Any]:
+    """Normalize policy freshness routing for market-state and dashboard consumers."""
+    if not isinstance(policy_raw, dict):
+        return {
+            "component": "policy_expectations",
+            "status": "missing",
+            "severity": "warning",
+            "category": "missing_artifact",
+            "message": "Policy expectations artifact is missing; policy fields are intentionally null.",
+            "safe_for_macro_regime": False,
+            "safe_for_dashboard_summary": False,
+            "hard_fail_closed": True,
+            "remediation": {
+                "owner": "policy_expectations_refresh.py",
+                "command": "python scripts\\policy_expectations_refresh.py",
+                "action": "Regenerate the dedicated policy artifact before trusting macro-sensitive outputs.",
+            },
+        }
+    contract = policy_raw.get("freshness_contract") if isinstance(policy_raw.get("freshness_contract"), dict) else {}
+    status = contract.get("freshness_status") or policy_raw.get("freshness_status") or policy_raw.get("status") or "unknown"
+    categories = contract.get("categories") if isinstance(contract.get("categories"), list) else []
+    return {
+        "component": "policy_expectations",
+        "status": status,
+        "severity": "warning" if status in {"usable_with_caution", "degraded", "partial", "manual"} else ("critical" if status in {"blocked", "error"} else "info"),
+        "category": categories[0] if categories else ("ok" if status in {"fresh", "ok", "current"} else str(status)),
+        "message": (policy_raw.get("warnings") or ["Policy expectations artifact is available."])[0] if policy_raw.get("warnings") else "Policy expectations artifact is available.",
+        "safe_for_macro_regime": bool(contract.get("safe_for_macro_regime", status not in {"blocked", "error"})),
+        "safe_for_dashboard_summary": bool(contract.get("safe_for_dashboard_summary", status not in {"blocked", "error"})),
+        "hard_fail_closed": bool(contract.get("hard_fail_closed", False)),
+        "remediation": contract.get("remediation") or {
+            "owner": "policy_expectations_refresh.py",
+            "command": "python scripts\\policy_expectations_refresh.py",
+            "action": "Review policy artifact status and warnings before macro-sensitive use.",
+        },
+    }
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -118,6 +177,20 @@ def fetch_last_close(yf_ticker: str) -> tuple[float | None, str | None]:
         if raw.empty:
             return None, None
         closes = raw["Close"].dropna()
+        if not closes.empty:
+            now_et = datetime.now(EASTERN)
+            latest_ts = closes.index[-1]
+            try:
+                latest_date = latest_ts.tz_convert(EASTERN).date()
+            except Exception:
+                latest_date = latest_ts.date()
+            # yfinance daily history can expose the current regular-session bar as
+            # today's "Close" before the market has closed. For market-state's
+            # daily macro contract, use the last completed trading day so SPX/VIX/
+            # rates/commodities do not mix live same-day bars with lagged daily
+            # macro series such as FRED DGS2.
+            if latest_date == now_et.date() and now_et.time() < REGULAR_CLOSE_CUTOFF:
+                closes = closes.iloc[:-1]
         if closes.empty:
             return None, None
         value = round(float(closes.iloc[-1]), 4)
@@ -125,6 +198,140 @@ def fetch_last_close(yf_ticker: str) -> tuple[float | None, str | None]:
         return value, data_date
     except Exception:
         return None, None
+
+
+def fetch_daily_close_change(yf_ticker: str) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "close": None,
+        "previous_close": None,
+        "point_change": None,
+        "change_pct": None,
+        "as_of": None,
+        "previous_as_of": None,
+        "source": f"yfinance daily history {yf_ticker}",
+        "available": False,
+        "note": None,
+    }
+    try:
+        t = yf.Ticker(yf_ticker)
+        raw = t.history(period="10d")
+        if raw.empty:
+            row["note"] = "daily history empty"
+            return row
+        closes = raw["Close"].dropna()
+        if not closes.empty:
+            now_et = datetime.now(EASTERN)
+            latest_ts = closes.index[-1]
+            try:
+                latest_date = latest_ts.tz_convert(EASTERN).date()
+            except Exception:
+                latest_date = latest_ts.date()
+            if latest_date == now_et.date() and now_et.time() < REGULAR_CLOSE_CUTOFF:
+                closes = closes.iloc[:-1]
+        if len(closes) < 2:
+            row["note"] = "fewer than two completed daily closes"
+            return row
+        latest = float(closes.iloc[-1])
+        previous = float(closes.iloc[-2])
+        point_change = latest - previous
+        row.update(
+            {
+                "close": round(latest, 4),
+                "previous_close": round(previous, 4),
+                "point_change": round(point_change, 4),
+                "change_pct": round((point_change / previous) * 100, 4) if previous else None,
+                "as_of": closes.index[-1].strftime("%Y-%m-%d"),
+                "previous_as_of": closes.index[-2].strftime("%Y-%m-%d"),
+                "available": True,
+            }
+        )
+        return row
+    except Exception as exc:
+        row["note"] = f"daily close/change fetch error: {exc}"
+        return row
+
+
+def fetch_treasury_curve_2y(reference_date: str | None) -> tuple[float | None, str | None, str | None, str | None]:
+    if not reference_date:
+        return None, None, None, "missing market reference date"
+    try:
+        year_month = reference_date[:7].replace("-", "")
+        url = TREASURY_YIELD_CURVE_XML.format(year_month=year_month)
+        req = Request(url, headers={"User-Agent": "Veritas OpenClaw Research veritasaiflows@gmail.com"})
+        with urlopen(req, timeout=20) as response:
+            text = response.read().decode("utf-8")
+        root = ET.fromstring(text)
+        ns = {
+            "atom": "http://www.w3.org/2005/Atom",
+            "m": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
+        }
+        for entry in root.findall("atom:entry", ns):
+            props = entry.find("atom:content/m:properties", ns)
+            if props is None:
+                continue
+            values = {child.tag.split("}", 1)[-1]: child.text for child in list(props)}
+            date_text = str(values.get("NEW_DATE") or "")[:10]
+            if date_text != reference_date:
+                continue
+            value = values.get("BC_2YEAR")
+            if value in (None, ""):
+                continue
+            return round(float(value), 4), date_text, "official Treasury daily yield curve XML", None
+        return None, None, None, f"official Treasury yield curve has no 2Y row for {reference_date}"
+    except Exception as exc:
+        return None, None, None, f"official Treasury yield curve fetch error: {exc}"
+
+
+def fetch_2y_treasury(reference_date: str | None) -> tuple[float | None, str | None, str | None, str | None, str | None]:
+    """Fetch the 2Y Treasury yield with a same-day market fallback.
+
+    FRED DGS2 is the preferred official daily source, but it can lag the current
+    completed market date. When Yahoo's 2Y yield proxy (`2YY=F`) matches the
+    current completed market date and FRED does not, use the proxy to keep the
+    market-state curve internally date-aligned rather than mixing SPX/10Y with a
+    stale 2Y observation.
+    """
+    fred_value, fred_date, fred_error = fetch_fred_latest("DGS2")
+    source = "FRED DGS2" if fred_value is not None else None
+    note = None
+    if reference_date and fred_date != reference_date:
+        treasury_value, treasury_date, treasury_source, treasury_error = fetch_treasury_curve_2y(reference_date)
+        if treasury_value is not None and treasury_date == reference_date:
+            return treasury_value, treasury_date, None, treasury_source, f"FRED DGS2 lagged at {fred_date or 'missing'}; using same-day official Treasury yield curve."
+        proxy_value, proxy_date = fetch_last_close("2YY=F")
+        if proxy_value is not None and proxy_date == reference_date:
+            return proxy_value, proxy_date, None, "yfinance 2YY=F", f"FRED DGS2 lagged at {fred_date or 'missing'}; using same-day Yahoo 2Y yield proxy."
+        if fred_date and fred_date != reference_date:
+            note = f"FRED DGS2 latest date {fred_date} does not match market reference date {reference_date}."
+        elif treasury_error:
+            note = treasury_error
+    return fred_value, fred_date, fred_error, source, note
+
+
+def is_expected_fred_dgs2_lag(*, source: str | None, source_date: str | None, reference_date: str | None) -> bool:
+    """Treat the normal one-calendar-day FRED DGS2 lag as informational.
+
+    FRED's daily DGS2 observation often posts one business day behind market
+    snapshots. If the 2Y is the only lagging source and it is exactly one
+    calendar day behind the completed market reference date, this should lower
+    precision language but should not create a partial-source warning card.
+    """
+    if source != "FRED DGS2" or not source_date or not reference_date:
+        return False
+    try:
+        lag_days = (
+            datetime.strptime(reference_date, "%Y-%m-%d").date()
+            - datetime.strptime(source_date, "%Y-%m-%d").date()
+        ).days
+    except Exception:
+        return False
+    return lag_days == 1
+
+
+def should_warn_premarket_unavailable(now_et: datetime | None = None) -> bool:
+    """Only warn about missing pre-market fields during the pre-open window."""
+    now = now_et or datetime.now(EASTERN)
+    return now.time() < PREMARKET_CUTOFF
 
 
 def fetch_best_effort_pre_market(t: Any) -> tuple[float | None, float | None, str | None, str | None]:
@@ -291,8 +498,10 @@ def main() -> None:
         results[key] = (val, date)
         print("ok" if val is not None else "FAILED")
 
-    print("  2Y Treasury (FRED DGS2)...", end=" ", flush=True)
-    y2, y2_date, y2_error = fetch_fred_latest("DGS2")
+    market_reference_date = results.get("spx", (None, None))[1]
+
+    print("  2Y Treasury (FRED DGS2 / same-day proxy)...", end=" ", flush=True)
+    y2, y2_date, y2_error, y2_source, y2_note = fetch_2y_treasury(market_reference_date)
     print("ok" if y2 is not None else "FAILED")
 
     policy_raw = load_json_artifact(POLICY_PATH) if POLICY_PATH.exists() else None
@@ -323,6 +532,7 @@ def main() -> None:
     policy_artifact_used = bool(policy_data)
     policy_target_valid = fed_target_low is not None and fed_target_high is not None
     policy_artifact_status = policy_raw.get("status") if isinstance(policy_raw, dict) else None
+    policy_contract = policy_contract_view(policy_raw)
 
     if policy_artifact_used:
         print(f"  Policy expectations ({next_fomc_zq_ticker})...", end=" ", flush=True)
@@ -340,6 +550,14 @@ def main() -> None:
         snapshot = fetch_snapshot(ticker)
         futures[key] = {"ticker": ticker, "label": label, **snapshot}
         print("ok" if snapshot.get("available") else "FAILED")
+
+    broad_indices: dict[str, dict[str, Any]] = {}
+    print("  Broad-index daily close/change table...")
+    for key, ticker, label in BROAD_INDEX_FIELDS:
+        print(f"    {label} ({ticker})...", end=" ", flush=True)
+        daily_change = fetch_daily_close_change(ticker)
+        broad_indices[key] = {"ticker": ticker, "label": label, **daily_change}
+        print("ok" if daily_change.get("available") else "FAILED")
 
     sectors: dict[str, dict[str, Any]] = {}
     print("  Sector snapshots...")
@@ -406,10 +624,26 @@ def main() -> None:
             "2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread."
             + (f" ({y2_error})" if y2_error else "")
         )
+    expected_dgs2_lag = is_expected_fred_dgs2_lag(
+        source=y2_source,
+        source_date=y2_date,
+        reference_date=market_reference_date,
+    )
+    if y2_note:
+        if y2_source == "official Treasury daily yield curve XML":
+            freshness_notes.append("2y_same_day_official_treasury_fallback")
+        elif y2_source == "yfinance 2YY=F":
+            freshness_notes.append("2y_same_day_proxy")
+        else:
+            freshness_notes.append("2y_source_date_lag")
+        if y2_source not in {"yfinance 2YY=F", "official Treasury daily yield curve XML"} and not expected_dgs2_lag:
+            warnings.append(y2_note)
     if y2 is not None and y10 is None:
         warnings.append("2Y populated but 10Y failed, so 2s10s spread could not be derived.")
     if policy_artifact_used:
         freshness_notes.append("policy_artifact_ingested")
+        if policy_contract.get("status") not in {"fresh", "ok", "current"}:
+            freshness_notes.append(f"policy_{policy_contract.get('category')}")
         if fed_manual_update_required:
             warnings.append("Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.")
         if policy_artifact_status == "manual":
@@ -432,8 +666,14 @@ def main() -> None:
         warnings.append(f"Only {populated}/{total} live fields populated.")
     if last_trading_day is None:
         warnings.append("No valid trading day found in market-state output.")
+    missing_broad_indices = sorted(key for key, item in broad_indices.items() if not item.get("available"))
+    if missing_broad_indices:
+        warnings.append("Broad-index close/change table missing: " + ", ".join(missing_broad_indices))
     if all(not item.get("pre_market_price") for item in futures.values()) and all(not item.get("pre_market_price") for item in actionable.values()):
-        warnings.append("True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.")
+        if should_warn_premarket_unavailable():
+            warnings.append("True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.")
+        else:
+            freshness_notes.append("premarket_fields_unavailable_outside_premarket_window")
     if last_trading_day is not None:
         source_dates = {
             "spx": spx_date,
@@ -444,25 +684,20 @@ def main() -> None:
             "brent": brent_date,
             "wti": wti_date,
             "2y": y2_date,
+            "broad_indices": max((str(item.get("as_of")) for item in broad_indices.values() if item.get("as_of")), default=None),
         }
         mismatched_sources = sorted(k for k, v in source_dates.items() if v and v != last_trading_day)
 
         # FRED DGS2 publishes on a 1-business-day lag by design. If "2y" is the only
         # mismatch and its date is exactly 1 calendar day before last_trading_day,
         # reclassify as an expected informational note — not a warning.
-        _2y_expected_lag = False
-        if mismatched_sources == ["2y"] and y2_date is not None:
-            try:
-                _lag_days = (
-                    datetime.strptime(last_trading_day, "%Y-%m-%d").date()
-                    - datetime.strptime(y2_date, "%Y-%m-%d").date()
-                ).days
-                if _lag_days == 1:
-                    _2y_expected_lag = True
-                    freshness_notes.append("fred_dgs2_1day_lag_expected")
-                    mismatched_sources = []  # clear so warning block is not entered
-            except Exception:
-                pass  # date parse failure: fall through to normal warning
+        if mismatched_sources == ["2y"] and is_expected_fred_dgs2_lag(
+            source=y2_source,
+            source_date=y2_date,
+            reference_date=last_trading_day,
+        ):
+            freshness_notes.append("fred_dgs2_1day_lag_expected")
+            mismatched_sources = []  # clear so warning block is not entered
 
         if mismatched_sources:
             warnings.append(
@@ -515,9 +750,22 @@ def main() -> None:
             "policy_expectations": policy_raw.get("last_trading_day") if isinstance(policy_raw, dict) else None,
             "credit_spreads": credit_raw.get("last_trading_day") if isinstance(credit_raw, dict) else None,
             "breadth_state": breadth_raw.get("last_trading_day") if isinstance(breadth_raw, dict) else None,
+            "broad_indices": max((str(item.get("as_of")) for item in broad_indices.values() if item.get("as_of")), default=None),
         },
         "freshness_notes": freshness_notes,
         "warnings": warnings,
+        "macro_freshness": {
+            "schema_version": 1,
+            "status": "blocked" if policy_contract.get("hard_fail_closed") else ("warning" if warnings else "ok"),
+            "summary": "Macro usable with caution; see component statuses." if warnings else "Macro inputs are current enough for dashboard use.",
+            "components": [policy_contract],
+            "routing": {
+                "deployment_surface_blocked": False,
+                "macro_regime_safe": bool(policy_contract.get("safe_for_macro_regime")),
+                "dashboard_summary_safe": bool(policy_contract.get("safe_for_dashboard_summary")),
+                "owner_action_required": bool(policy_contract.get("hard_fail_closed") or policy_contract.get("status") in {"missing", "blocked", "degraded", "partial"}),
+            },
+        },
         "data": {
             "fed": {
                 "target_low": fed_target_low,
@@ -539,13 +787,16 @@ def main() -> None:
                 "next_fomc_zq_ticker": next_fomc_zq_ticker,
                 "source_mode": policy_data.get("source_mode") if policy_data else None,
                 "artifact_status": policy_raw.get("status") if isinstance(policy_raw, dict) else None,
+                "freshness_status": policy_contract.get("status"),
+                "freshness_category": policy_contract.get("category"),
+                "remediation": policy_contract.get("remediation"),
                 "target_invalid_reason": fed_target_invalid_reason,
             },
             "treasuries": {
                 "2y": y2,
                 "2y_as_of": y2_date,
-                "2y_source": "FRED DGS2" if y2 is not None else None,
-                "2y_note": y2_error if y2 is None else None,
+                "2y_source": y2_source if y2 is not None else None,
+                "2y_note": y2_error if y2 is None else y2_note,
                 "10y": y10,
                 "10y_as_of": y10_date,
                 "10y_source": "yfinance ^TNX" if y10 is not None else None,
@@ -553,7 +804,7 @@ def main() -> None:
                 "3m_as_of": y3m_date,
                 "3m_source": "yfinance ^IRX" if y3m is not None else None,
                 "curve_2s10s_bps": curve_2s10s_bps,
-                "curve_2s10s_note": "Derived from FRED DGS2 and yfinance ^TNX" if curve_2s10s_bps is not None else "2s10s unavailable without both 2Y and 10Y",
+                "curve_2s10s_note": f"Derived from {y2_source} and yfinance ^TNX" if curve_2s10s_bps is not None else "2s10s unavailable without both 2Y and 10Y",
                 "curve_3m10y_bps": curve_3m10y_bps,
                 "curve_3m10y_note": "Derived from yfinance ^IRX and ^TNX" if curve_3m10y_bps is not None else "3M-10Y unavailable without both 3M and 10Y",
             },
@@ -600,6 +851,7 @@ def main() -> None:
                 "composite_score": get_path(breadth_raw, "data.major_index_breadth.composite_score"),
             },
             "futures": futures,
+            "broad_indices": broad_indices,
             "sectors": sectors,
             "actionable_contract": {
                 "source": actionable_contract.get("source"),
@@ -640,7 +892,7 @@ def main() -> None:
         print(f"    Breadth      : {get_path(breadth_raw, 'data.major_index_breadth.breadth_regime') or 'unknown'}  (status {breadth_raw.get('status') if isinstance(breadth_raw, dict) else 'missing'}, mode {get_path(breadth_raw, 'data.source_mode') or 'unknown'})")
 
     print("\n  RATES")
-    print("    2Y Treasury  : " + (fmt(y2, 3, suffix="%") + f"  (as of {y2_date}, FRED DGS2)" if y2 is not None else f"FAILED ({y2_error or 'not wired'})"))
+    print("    2Y Treasury  : " + (fmt(y2, 3, suffix="%") + f"  (as of {y2_date}, {y2_source})" if y2 is not None else f"FAILED ({y2_error or 'not wired'})"))
     print("    10Y Treasury : " + (fmt(y10, 3, suffix="%") + f"  (as of {y10_date})" if y10 is not None else "FAILED"))
     print("    3M T-bill    : " + (fmt(y3m, 3, suffix="%") + f"  (as of {y3m_date})" if y3m is not None else "FAILED"))
     if curve_2s10s_bps is not None:

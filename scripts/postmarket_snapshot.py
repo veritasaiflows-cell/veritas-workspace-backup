@@ -35,6 +35,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from band_behavior import band_behavior_by_ticker, format_band_behavior, qualified_band_behavior
 from board_state_contract import actionable_records, record_sort_key, record_state
 from dashboard_delta_render import format_delta_change
 from market_data_utils import atomic_write_json, atomic_write_text, canonical_note_mutation_gate
@@ -123,13 +124,14 @@ def build_day_summary(ms: dict) -> str:
     return "\n".join(lines)
 
 
-def build_tracked_table(trigger: dict) -> str:
+def build_tracked_table(trigger: dict, ms: dict) -> str:
     records = trigger.get("records", []) if trigger else []
-    rows = ["| Ticker | State | Close | vs Entry Band | Stop |",
-            "|---|---|---|---|---|"]
+    behavior_by_ticker = band_behavior_by_ticker(trigger, ms)
+    rows = ["| Ticker | State | Close | vs Entry Band | Band behavior | Stop |",
+            "|---|---|---|---|---|---|"]
 
     if not records:
-        rows.append("| _none_ | — | — | — | — |")
+        rows.append("| _none_ | — | — | — | — | — |")
         return "\n".join(rows)
 
     sorted_recs = sorted([record for record in records if isinstance(record, dict)], key=record_sort_key)
@@ -160,7 +162,8 @@ def build_tracked_table(trigger: dict) -> str:
         else:
             band_note = eb.get("label", "no band")
 
-        rows.append(f"| {tk} | {state} | {fmt(close)} | {band_note} | {fmt(stop)} |")
+        behavior = format_band_behavior(behavior_by_ticker.get(str(tk))) if tk in behavior_by_ticker else "—"
+        rows.append(f"| {tk} | {state} | {fmt(close)} | {band_note} | {behavior} | {fmt(stop)} |")
     return "\n".join(rows)
 
 
@@ -181,8 +184,9 @@ def build_what_changed(delta: dict | None) -> str:
     return "\n".join(lines)
 
 
-def build_open_triggers(trigger: dict) -> str:
+def build_open_triggers(trigger: dict, ms: dict) -> str:
     records = trigger.get("records", []) if trigger else []
+    behavior_by_ticker = band_behavior_by_ticker(trigger, ms)
     actionable = actionable_records([record for record in records if isinstance(record, dict)])
 
     lines = ["## Open Triggers for Tomorrow\n"]
@@ -197,8 +201,9 @@ def build_open_triggers(trigger: dict) -> str:
         band_label = eb.get("label", "no band")
         stop = r.get("invalidation")
         trig = r.get("technical_trigger") or "—"
+        behavior = format_band_behavior(behavior_by_ticker.get(str(tk)))
         lines.append(f"- **{tk}** — close {fmt(close)} vs. band {band_label}, stop {fmt(stop)}. "
-                     f"Trigger: {trig}")
+                     f"Tape: {behavior}. Trigger: {trig}")
     return "\n".join(lines)
 
 
@@ -279,11 +284,11 @@ def render_markdown(today: date, ms: dict, trigger: dict, delta: dict | None,
     parts.append(build_day_summary(ms))
     parts.append("")
     parts.append("## Tracked Names — Day Results\n")
-    parts.append(build_tracked_table(trigger))
+    parts.append(build_tracked_table(trigger, ms))
     parts.append("")
     parts.append(build_what_changed(delta))
     parts.append("")
-    parts.append(build_open_triggers(trigger))
+    parts.append(build_open_triggers(trigger, ms))
     parts.append("")
     parts.append(build_earnings_today(post_prep, today))
     parts.append("")
@@ -346,8 +351,13 @@ def main() -> int:
         "trust_reason":      trust_reason,
         "trust_gate_blocked": not archive_write_allowed,
         "deployable_now":   (trigger.get("summary", {}) or {}).get("deployable_now", []),
+        "promotion_review": (trigger.get("summary", {}) or {}).get("promotion_review", []),
         "almost_deployable": (trigger.get("summary", {}) or {}).get("almost_deployable", []),
         "blocked":          (trigger.get("summary", {}) or {}).get("blocked", []),
+        "do_not_touch":     (trigger.get("summary", {}) or {}).get("do_not_touch", []),
+        "watch":            (trigger.get("summary", {}) or {}).get("watch", []),
+        "error":            (trigger.get("summary", {}) or {}).get("error", []),
+        "qualified_band_behavior": qualified_band_behavior(trigger, ms),
         "delta_summary":    (delta or {}).get("summary"),
         "wrote_to":         str(target.relative_to(WORKSPACE)),
     }

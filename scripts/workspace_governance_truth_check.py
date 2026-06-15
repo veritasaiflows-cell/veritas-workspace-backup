@@ -29,6 +29,11 @@ CORE_FILES = {
     "IC Project Registry": ROOT / "06. Playbooks" / "IC Project Registry.md",
 }
 
+DB_LIFECYCLE_MANIFEST = ROOT / "tmp" / "db-lifecycle-manifest.json"
+DB_LIFECYCLE_SCRIPT = ROOT / "scripts" / "db_lifecycle_manifest.py"
+DB_LIFECYCLE_ARCHIVE_SCRIPT = ROOT / "scripts" / "db_lifecycle_archive_apply.py"
+SQL_LATENCY_BENCHMARK_SCRIPT = ROOT / "scripts" / "sql_latency_benchmark.py"
+
 SENSITIVE_OUTSIDE_WORKSPACE_TERMS = (
     "config",
     "credential",
@@ -70,15 +75,14 @@ MODEL_POLICY_SURFACES = {
 }
 
 DISALLOWED_MODEL_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
-    ("disallowed_provider_model_openai_gpt_5_5", re.compile(r"(?<![\w-])openai/gpt-5\.5(?![\w.-])", re.IGNORECASE)),
+    ("legacy_provider_model_openai_codex_gpt_5_5", re.compile(r"(?<![\w-])openai-codex/gpt-5\.5(?![\w.-])", re.IGNORECASE)),
     ("disallowed_chatgpt_5_5", re.compile(r"(?<![\w-])chatgpt-5\.5(?![\w.-])", re.IGNORECASE)),
-    ("disallowed_agent_runtime_codex_claim", re.compile(r"agentRuntime\.id\s*[:=]\s*[\"']?codex[\"']?", re.IGNORECASE)),
-    ("disallowed_runtime_codex_claim", re.compile(r"\bruntime\s*[:=]\s*[\"']?codex[\"']?", re.IGNORECASE)),
 )
 
 LIVE_DEPLOYMENT_SURFACES = (
     ROOT / "03. Portfolio" / "Portfolio Snapshot.md",
-    ROOT / "02. Markets" / "Watchlist.md",
+    ROOT / "03. Portfolio" / "Execution Board.md",
+    ROOT / "04. Research" / "Coverage and Watchlist.md",
     ROOT / "05. Intelligence" / "Weekly Positioning Review.md",
     ROOT / "05. Intelligence" / "Weekly Intelligence Brief.md",
     ROOT / "01. Dashboards" / "Executive Brief.md",
@@ -107,6 +111,15 @@ def utc_now() -> str:
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
+
+
+def load_json(path: Path) -> tuple[Any | None, str | None]:
+    if not path.exists():
+        return None, "missing"
+    try:
+        return json.loads(path.read_text(encoding="utf-8")), None
+    except Exception as exc:
+        return None, f"{exc.__class__.__name__}: {exc}"
 
 
 def add(findings: list[dict[str, Any]], check_id: str, severity: str, issue: str, recommendation: str, evidence: dict[str, Any] | None = None) -> None:
@@ -140,7 +153,7 @@ def check_approval_gating(findings: list[dict[str, Any]]) -> None:
         lowered = normalize(text)
         missing_terms = [term for term in SENSITIVE_OUTSIDE_WORKSPACE_TERMS if term not in lowered]
         approval_language = any(term in lowered for term in ("ask first", "ask before", "approval-gated", "approval gated"))
-        outside_workspace = "outside" in lowered and has_workspace_path(text)
+        outside_workspace = ("outside the workspace" in lowered) or ("outside" in lowered and has_workspace_path(text))
         if missing_terms or not approval_language or not outside_workspace:
             add(
                 findings,
@@ -190,6 +203,129 @@ def check_structure_protocol(findings: list[dict[str, Any]]) -> None:
         )
 
 
+def check_db_lifecycle_route(findings: list[dict[str, Any]]) -> None:
+    tools_text = read_text(CORE_FILES["TOOLS.md"])
+    lowered_tools = normalize(tools_text)
+    route_terms = (
+        "db lifecycle route",
+        "db_lifecycle_manifest.py",
+        "tmp/db-lifecycle-manifest.json",
+        "db_lifecycle_archive_apply.py",
+        "explicit owner approval",
+        "delete",
+    )
+    missing_route_terms = [term for term in route_terms if normalize(term) not in lowered_tools]
+    if missing_route_terms:
+        add(
+            findings,
+            "db_lifecycle_tools_route_missing",
+            "warning",
+            "TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene",
+            "Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate and preserves owner approval before archive/delete.",
+            {"missing_terms": missing_route_terms},
+        )
+
+    missing_scripts = [
+        path.relative_to(ROOT).as_posix()
+        for path in (DB_LIFECYCLE_SCRIPT, DB_LIFECYCLE_ARCHIVE_SCRIPT, SQL_LATENCY_BENCHMARK_SCRIPT)
+        if not path.exists()
+    ]
+    if missing_scripts:
+        add(
+            findings,
+            "db_lifecycle_support_scripts_missing",
+            "warning",
+            "One or more DB lifecycle support scripts are missing",
+            "Keep the manifest builder, owner-approved archive helper, and manual latency benchmark as routed scripts instead of tmp-only residue.",
+            {"missing_scripts": missing_scripts},
+        )
+
+    manifest, manifest_error = load_json(DB_LIFECYCLE_MANIFEST)
+    if manifest_error:
+        add(
+            findings,
+            "db_lifecycle_manifest_unavailable",
+            "warning",
+            "DB lifecycle manifest is missing or unreadable",
+            "Run python scripts\\db_lifecycle_manifest.py --write --validate before relying on DB hygiene status.",
+            {"error": manifest_error},
+        )
+        return
+
+    if not isinstance(manifest, dict):
+        add(
+            findings,
+            "db_lifecycle_manifest_shape",
+            "warning",
+            "DB lifecycle manifest has an unexpected JSON shape",
+            "Regenerate the manifest and inspect the writer if the shape remains non-object.",
+        )
+        return
+
+    summary = manifest.get("summary") or {}
+    validation_errors = manifest.get("validation_errors") or []
+    bad_counts = {
+        "unknown_count": summary.get("unknown_count"),
+        "integrity_error_count": summary.get("integrity_error_count"),
+        "delete_ready_count": summary.get("delete_ready_count"),
+    }
+    if manifest.get("status") == "validation_error" or validation_errors:
+        add(
+            findings,
+            "db_lifecycle_manifest_validation_error",
+            "critical",
+            "DB lifecycle manifest reports validation errors",
+            "Fix manifest classification/integrity errors before archive or cleanup decisions.",
+            {"validation_errors": validation_errors[:20], "truncated": len(validation_errors) > 20},
+        )
+    if any((value or 0) != 0 for value in bad_counts.values()):
+        add(
+            findings,
+            "db_lifecycle_manifest_bad_counts",
+            "critical",
+            "DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases",
+            "Stop cleanup automation and inspect the manifest before making archive/delete decisions.",
+            bad_counts,
+        )
+    if (summary.get("archive_ready_count") or 0) > 0:
+        add(
+            findings,
+            "db_lifecycle_archive_ready_owner_decision",
+            "warning",
+            "DB lifecycle manifest has archive-ready candidates awaiting owner decision",
+            "Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.",
+            {"archive_ready_count": summary.get("archive_ready_count")},
+        )
+
+    entries = manifest.get("entries") if isinstance(manifest.get("entries"), list) else []
+    snapshot = next((entry for entry in entries if entry.get("path") == "tmp/finance-stack-snapshot.sqlite"), None)
+    if not snapshot:
+        add(
+            findings,
+            "db_lifecycle_finance_snapshot_missing",
+            "warning",
+            "finance-stack-snapshot.sqlite is not represented in the DB lifecycle manifest",
+            "Regenerate the manifest or update lifecycle rules if the snapshot was intentionally archived.",
+        )
+    elif snapshot.get("lifecycle") != "snapshot" or snapshot.get("status") != "conditional_keep":
+        add(
+            findings,
+            "db_lifecycle_finance_snapshot_label_drift",
+            "warning",
+            "finance-stack-snapshot.sqlite no longer carries the expected snapshot/conditional_keep label",
+            "Keep it labeled as a review-only snapshot or archive it with owner approval if superseded.",
+            {"lifecycle": snapshot.get("lifecycle"), "status": snapshot.get("status")},
+        )
+    elif not snapshot.get("rebuild_command") or not snapshot.get("retention_policy"):
+        add(
+            findings,
+            "db_lifecycle_finance_snapshot_retention_missing",
+            "warning",
+            "finance-stack-snapshot.sqlite is labeled but lacks explicit rebuild/retention metadata",
+            "Regenerate the manifest after the snapshot lifecycle rule is updated.",
+        )
+
+
 def section_after_heading(text: str, heading: str) -> str:
     pattern = re.compile(rf"^###\s+{re.escape(heading)}\s*$", re.MULTILINE)
     match = pattern.search(text)
@@ -230,33 +366,52 @@ def check_workflow_alignment(findings: list[dict[str, Any]]) -> None:
     wf38_row = row_containing(registry, "Sector Expansion and Promotion Review Hardening")
     wf37_row = row_containing(registry, "Daily Summary Commercial Brief Hardening")
     wf39_row = row_containing(registry, "Mission Posture and SOP Optimization Hardening")
+    wf40_registry_ok = words_present(wf40_row, ("active", "cron", "audit")) or words_present(
+        wf40_row,
+        ("closed", "scheduled", "confirmation", "audit"),
+    )
+    wf40_residual_exception = (
+        active_workflow not in (None, "40")
+        and wf40_registry_ok
+        and words_present(queue, ("wf40", "residual", "scheduled", "proof"))
+        and words_present(queue, ("ordinary", "scheduled-repeat", "active queue blocker"))
+    )
 
-    if active_workflow != "40":
+    if active_workflow != "40" and not wf40_residual_exception:
         add(
             findings,
             "wf40_active_queue_status",
             "critical",
             "Queue active-workflow section does not identify WF40 as the active workflow",
-            "Reconcile OpenClaw Parallel Pilot Queue before using it as the live control surface.",
+            "Reconcile OpenClaw Parallel Pilot Queue before using it as the live control surface, or document the WF40 residual-proof exception while another workflow is active.",
             {"active_workflow_found": active_workflow},
         )
-    if not words_present(wf40_row, ("active", "cron", "audit")):
+    if not wf40_registry_ok:
         add(
             findings,
             "wf40_registry_status_next_pass",
             "critical",
-            "IC Project Registry does not agree that WF40 is active and waiting on cron-proof / stable-run evidence",
-            "Update the WF40 registry row or queue entry so active status and next pass match.",
-            {"row_found": bool(wf40_row), "coarse_terms_expected": ["active", "cron", "audit"]},
+            "IC Project Registry does not preserve WF40 cron/audit residue as either active watch or closed scheduled-confirmation watch",
+            "Update the WF40 registry row or queue entry so WF40 residual scheduled-proof status is explicit.",
+            {"row_found": bool(wf40_row), "coarse_terms_expected": ["active/cron/audit or closed/scheduled/confirmation/audit"]},
         )
-    if not words_present(next_section, ("wf40", "cron", "stable")):
+    if not words_present(next_section, ("wf40", "cron", "stable")) and not wf40_residual_exception:
         add(
             findings,
             "wf40_queue_next_pass",
             "critical",
             "Queue next approved item does not match the WF40 cron-proof / repeated-stability residue recorded in the registry",
-            "Reconcile the queue next-approved item and registry next-pass text before spawning the next lane.",
+            "Reconcile the queue next-approved item and registry next-pass text before spawning the next lane, or document the WF40 residual-proof exception while another workflow is active.",
             {"coarse_terms_expected": ["wf40", "cron", "stable"]},
+        )
+    if wf40_residual_exception:
+        add(
+            findings,
+            "wf40_residual_proof_exception_active",
+            "info",
+            "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
+            "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
+            {"active_workflow_found": active_workflow, "wf40_registry_row_found": bool(wf40_row)},
         )
     if not words_present(wf38_row, ("closed", "weekly", "lly", "cat")):
         add(
@@ -318,6 +473,7 @@ def bounded_snippet(line: str, limit: int = 180) -> str:
 
 def check_model_routing_policy(findings: list[dict[str, Any]]) -> None:
     hits: list[dict[str, Any]] = []
+    allowed_legacy_context = ("legacy", "old route", "historical", "unless explicitly re-approved")
     for name, path in MODEL_POLICY_SURFACES.items():
         text = read_text(path)
         if not text:
@@ -325,6 +481,8 @@ def check_model_routing_policy(findings: list[dict[str, Any]]) -> None:
         for line_number, line in enumerate(text.splitlines(), 1):
             for label, pattern in DISALLOWED_MODEL_PATTERNS:
                 if pattern.search(line):
+                    if label == "legacy_provider_model_openai_codex_gpt_5_5" and any(term in line.lower() for term in allowed_legacy_context):
+                        continue
                     hits.append({
                         "file": path.relative_to(ROOT).as_posix(),
                         "line": line_number,
@@ -337,13 +495,13 @@ def check_model_routing_policy(findings: list[dict[str, Any]]) -> None:
             "model_routing_policy_drift",
             "critical",
             "Active governance/control surfaces contain disallowed or stale model-routing language",
-            "Replace stale provider/runtime wording with the approved openai-codex model set and current role-based effort posture; keep historical residue out of active control surfaces.",
+            "Replace stale provider/runtime wording with the approved `openai/gpt-5.5` through Codex-runtime posture; keep only explicitly historical legacy-route mentions.",
             {"hits": hits[:25], "truncated": len(hits) > 25, "hit_count": len(hits)},
         )
 
 
 def check_jpm_owner_truth(findings: list[dict[str, Any]]) -> None:
-    trigger = read_text(ROOT / "03. Portfolio" / "Deployment Trigger Sheet.md")
+    trigger = read_text(ROOT / "03. Portfolio" / "Execution Board.md")
     jpm_deployable_now = bool(re.search(r"\|\s*JPM\s*\|.*\*\*Deployable now\*\*", trigger, re.IGNORECASE)) and "sole deployable-now name" in trigger.lower()
     if not jpm_deployable_now:
         return
@@ -357,7 +515,7 @@ def check_jpm_owner_truth(findings: list[dict[str, Any]]) -> None:
                 findings,
                 f"jpm_live_surface_zero_deployable_{path.stem.lower().replace(' ', '_')}",
                 "critical",
-                f"{path.relative_to(ROOT).as_posix()} still says no names are deployable now even though Deployment Trigger Sheet shows JPM deployable now",
+                f"{path.relative_to(ROOT).as_posix()} still says no names are deployable now even though Execution Board shows JPM deployable now",
                 "Update the live surface so JPM's explicit owner approval is reflected consistently.",
             )
         if contains_any(text, JPM_PREAPPROVAL_PATTERNS):
@@ -394,26 +552,45 @@ def parse_jsonish(stdout: str) -> Any:
 
 def config_get(path: str, timeout: int) -> tuple[bool, Any | None, str | None]:
     exe = OPENCLAW_CLI
-    if not exe:
-        return False, None, "openclaw CLI not found on PATH"
+    if exe:
+        try:
+            proc = subprocess.run(
+                [exe, "config", "get", path, "--json"],
+                cwd=ROOT,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            proc = None
+            cli_error = f"openclaw config get {path} unavailable: {exc.__class__.__name__}"
+        else:
+            cli_error = f"openclaw config get {path} returned rc={proc.returncode}" if proc.returncode != 0 else None
+            if proc.returncode == 0:
+                try:
+                    return True, parse_jsonish(proc.stdout), None
+                except ValueError as exc:
+                    return False, None, f"openclaw config get {path} output was not parseable JSON: {exc}"
+    else:
+        cli_error = "openclaw CLI not found on PATH"
+
+    # Missing optional config paths such as channels or commands.ownerAllowFrom
+    # are valid hardening states. Fall back to the local config file so removal
+    # does not look like an unavailable read.
+    config_path = Path.home() / ".openclaw" / "openclaw.json"
     try:
-        proc = subprocess.run(
-            [exe, "config", "get", path, "--json"],
-            cwd=ROOT,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout,
-            check=False,
-        )
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        return False, None, f"openclaw config get {path} unavailable: {exc.__class__.__name__}"
-    if proc.returncode != 0:
-        return False, None, f"openclaw config get {path} returned rc={proc.returncode}"
-    try:
-        return True, parse_jsonish(proc.stdout), None
-    except ValueError as exc:
-        return False, None, f"openclaw config get {path} output was not parseable JSON: {exc}"
+        obj = json.loads(config_path.read_text(encoding="utf-8"))
+        current: Any = obj
+        for part in path.split("."):
+            if isinstance(current, dict) and part in current:
+                current = current[part]
+            else:
+                return True, None, None
+        return True, current, None
+    except Exception as exc:
+        return False, None, f"{cli_error}; local config fallback failed: {exc.__class__.__name__}"
 
 
 def is_truthy_config(value: Any) -> bool:
@@ -487,20 +664,32 @@ def telegram_plugin_enabled(value: Any) -> bool:
 def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> None:
     tools_text = read_text(CORE_FILES["TOOLS.md"])
     lowered_tools = tools_text.lower()
-    telegram_setup_exception = all(term in lowered_tools for term in ("telegram", "setup-pending exception", "not-yet-proven"))
-    local_control_claim_present = "local control ui remains the trusted operating surface" in lowered_tools
-    discord_disabled_claim_present = "discord remains disabled" in lowered_tools
+    telegram_policy_terms = (
+        "telegram",
+        "randall",
+        "owner allowlisting",
+        "mention-gating",
+    )
+    telegram_approved = all(term in lowered_tools for term in telegram_policy_terms) and any(
+        term in lowered_tools for term in ("enabled", "explicitly approved", "approved telegram exception")
+    )
+    local_control_claim_present = "local control ui remains trusted" in lowered_tools or "local control ui remains the trusted operating surface" in lowered_tools
+    discord_disabled_claim_present = (
+        "discord remains disabled" in lowered_tools
+        or "discord/other chat remains disabled" in lowered_tools
+        or "discord and any other chat channel remain disabled" in lowered_tools
+    )
     no_channel_claim_present = words_present(
         tools_text,
         ("all chat channels are intentionally disabled", "channels", "{}", "telegram.enabled=false", "discord.enabled=false", "ownerAllowFrom"),
     )
-    if not (no_channel_claim_present or (telegram_setup_exception and local_control_claim_present and discord_disabled_claim_present)):
+    if not (no_channel_claim_present or (telegram_approved and local_control_claim_present and discord_disabled_claim_present)):
         add(
             findings,
             "tools_channel_hardening_claim",
             "warning",
             "TOOLS.md no longer states the current channel hardening posture clearly enough to verify",
-            "Keep the no-channel posture or the Telegram setup-pending exception explicit before trusting channel expansion.",
+            "Keep the no-channel posture or the approved Telegram exception explicit before trusting channel expansion.",
         )
 
     ok_channels, channels, channel_error = config_get("channels", cli_timeout)
@@ -520,11 +709,13 @@ def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> No
 
     if not ok_channels:
         add(findings, "channels_config_unavailable", "warning", "Could not read OpenClaw channels config snippet", "Verify channel hardening manually or rerun after CLI access is fixed.", {"error": channel_error})
+    elif channels is None:
+        pass  # removed channels config is the desired no-channel posture
     elif isinstance(channels, dict):
         for name, value in channels.items():
             if is_truthy_config(value):
-                if name.lower() == "telegram" and telegram_setup_exception:
-                    add(findings, "telegram_channel_setup_pending", "warning", "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven", "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.", {"channel": name})
+                if name.lower() == "telegram" and telegram_approved:
+                    continue
                 else:
                     add(findings, "chat_channel_enabled", "critical", "An enabled chat channel appears in config without a matching approved exception", "Disable the channel again or update TOOLS.md only after intentional operator approval.", {"channel": name})
     else:
@@ -536,9 +727,7 @@ def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> No
         if discord_plugin_enabled(plugins):
             add(findings, "discord_plugin_enabled", "critical", "TOOLS.md says Discord plugin is disabled, but plugins config appears to expose enabled Discord plugin state", "Disable Discord plugin again or update TOOLS.md only after intentional operator approval.")
         if telegram_plugin_enabled(plugins):
-            if telegram_setup_exception:
-                add(findings, "telegram_plugin_setup_pending", "warning", "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven", "Verify Telegram delivery before relying on it for scheduled automation reports.")
-            else:
+            if not telegram_approved:
                 add(findings, "telegram_plugin_enabled", "critical", "Telegram plugin appears enabled without a matching approved exception", "Disable Telegram plugin again or update TOOLS.md only after intentional operator approval.")
 
     if not ok_owner:
@@ -546,9 +735,7 @@ def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> No
     elif json_contains_nonempty_discord_owner(owner_allow):
         add(findings, "discord_owner_allow_present", "critical", "TOOLS.md says Discord owner allow entries were removed, but commands.ownerAllowFrom still appears to contain Discord authority", "Remove stale Discord owner authority or document the approved policy change.")
     elif json_contains_nonempty_telegram_owner(owner_allow):
-        if telegram_setup_exception:
-            add(findings, "telegram_owner_allow_setup_pending", "warning", "Telegram owner allow entries are present under Randall's setup-pending exception", "Verify the owner allowlist is narrow and intentional before relying on Telegram delivery.")
-        else:
+        if not telegram_approved:
             add(findings, "telegram_owner_allow_present", "critical", "Telegram owner allow entries appear without a matching approved exception", "Remove stale Telegram owner authority or document the approved policy change.")
 
 
@@ -568,6 +755,7 @@ def build_report(cli_timeout: int) -> dict[str, Any]:
         check_workflow_alignment(findings)
         check_jpm_owner_truth(findings)
         check_structure_protocol(findings)
+        check_db_lifecycle_route(findings)
         check_model_routing_policy(findings)
         check_channel_config(findings, cli_timeout=cli_timeout)
 

@@ -30,6 +30,8 @@ ROOT_ALLOWED_FILES = {
     "USER.md",
 }
 ROOT_ALLOWED_DIRS = {
+    ".backups",
+    ".claude",  # documented runtime/tool-settings exception; do not archive/move without exact runtime approval
     ".clawhub",
     ".git",
     ".obsidian",
@@ -43,16 +45,28 @@ ROOT_ALLOWED_DIRS = {
     "07. Risk",
     "08. Audits",
     "09. Archive",
+    "apps",  # local app surfaces such as the PM TypeScript/Node control cockpit
     "attachments",
+    "backups",
     "data",
     "memory",
     "migration-backups",
     "scripts",
     "skills",
+    "skills-backup",  # documented non-runtime skill backup/provenance exception; active skills remain under skills/
+    "state",
+    "tools",  # documented local tool-runtime exception such as tools/otelcol
+    "training",  # durable Randall-facing internal training assets; source/proof remains in scripts/tmp
     "tmp",
 }
 
-PY_EXCEPTIONS_IN_TMP = set()
+PY_EXCEPTIONS_IN_TMP = {
+    # Audited 2026-06-07 as one-off diagnostic/proof helpers. They are not
+    # durable tooling and should be deleted or archived only after explicit
+    # cleanup approval if they stop supporting current proof review.
+    "health_detail.py",
+    "parity_diag.py",
+}
 SCRIPT_BACKUP_SUFFIX_MARKERS = (".bak-", ".backup-")
 
 
@@ -69,8 +83,10 @@ def classify_data_surface() -> list[dict]:
     data_dir = ROOT / "data"
     if not data_dir.exists():
         return findings
-    approved = {"state-history"}
+    approved = {"state-history", "fundamentals", "finance", "market"}
     for child in sorted(data_dir.iterdir(), key=lambda p: p.name.lower()):
+        if child.is_file() and child.name == "README.md":
+            continue
         if child.name not in approved:
             findings.append({
                 "path": rel(child) + ("/" if child.is_dir() else ""),

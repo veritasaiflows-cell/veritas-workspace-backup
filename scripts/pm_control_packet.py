@@ -32,6 +32,18 @@ TMP = ROOT / "tmp"
 DEFAULT_OUT = TMP / "pm-control-packet.json"
 DEFAULT_DB = TMP / "pm-control-packet.sqlite"
 DEFAULT_LEDGER = TMP / "pm-dispatch-ledger.json"
+CODING_RUNTIME_KPI = TMP / "coding-runtime-kpi-probe.json"
+MODEL_LEARNING_LEDGER = TMP / "model-learning-metadata-ledger.json"
+MODEL_QUALITY_SCORECARD = TMP / "model-quality-scorecard.json"
+WF74_RUNNER = TMP / "wf74-model-quality-collection-cron-runner.json"
+FINANCE_RESPONSE_QUALITY = TMP / "finance-response-quality-slice.json"
+OTEL_OPS = TMP / "otel-ops-control.json"
+OTEL_FIELD_DEPTH_PACKET = TMP / "otel-field-depth-limited-owner-packet.json"
+WF74_OPPORTUNITY_QUEUE = TMP / "wf74-improvement-opportunity-queue.json"
+WF74_PROPOSAL_AUTOPILOT = TMP / "wf74-reflection-to-proposal-autopilot.json"
+WF74_AUTO_PATCH_PROPOSER = TMP / "wf74-auto-patch-proposer.json"
+TRADE_GRADE_REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
+TIER_AB_BAND_CRON_GUARD = TMP / "tier-ab-band-freshness-cron-guard.json"
 
 SCHEMA = "veritas.pm_control_packet.v1"
 
@@ -75,6 +87,179 @@ def as_list(value: Any) -> list[Any]:
 def workspace_path(value: str, default: Path) -> Path:
     path = Path(value) if value else default
     return path if path.is_absolute() else ROOT / path
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def wf74_learning_kpis() -> dict[str, Any]:
+    coding = load_json(CODING_RUNTIME_KPI)
+    ledger = load_json(MODEL_LEARNING_LEDGER)
+    scorecard = load_json(MODEL_QUALITY_SCORECARD)
+    runner = load_json(WF74_RUNNER)
+    finance_response = load_json(FINANCE_RESPONSE_QUALITY)
+    otel_ops = load_json(OTEL_OPS)
+    field_depth = load_json(OTEL_FIELD_DEPTH_PACKET)
+    opportunity_queue = load_json(WF74_OPPORTUNITY_QUEUE)
+    proposal_autopilot = load_json(WF74_PROPOSAL_AUTOPILOT)
+    auto_patch = load_json(WF74_AUTO_PATCH_PROPOSER)
+    coding_kpis = as_dict(coding.get("kpis"))
+    ledger_summary = as_dict(ledger.get("summary"))
+    runner_summary = as_dict(runner.get("summary"))
+    finance_response_summary = as_dict(finance_response.get("summary"))
+    otel_drift = as_dict(otel_ops.get("drift"))
+    opportunity_summary = as_dict(opportunity_queue.get("summary"))
+    proposal_summary = as_dict(proposal_autopilot.get("summary"))
+    auto_patch_summary = as_dict(auto_patch.get("summary"))
+    score_validation = as_dict(scorecard.get("validation"))
+    status = "ok"
+    warnings: list[str] = []
+    if coding.get("status") not in {None, "ok"}:
+        status = "needs_attention"
+        warnings.append("coding_runtime_probe_not_ok")
+    if ledger_summary.get("privacy_scan_status") not in {None, "ok"}:
+        status = "blocked"
+        warnings.append("learning_ledger_privacy_scan_not_ok")
+    if runner_summary.get("steps_blocked") not in {None, 0}:
+        status = "blocked"
+        warnings.append("wf74_runner_steps_blocked")
+    if finance_response.get("status") not in {None, "ok"}:
+        status = "blocked"
+        warnings.append("finance_response_quality_not_ok")
+    if opportunity_queue.get("status") not in {None, "ok", "warning"}:
+        status = "blocked"
+        warnings.append("wf74_improvement_opportunity_queue_not_ok")
+    if proposal_autopilot.get("status") not in {None, "ok", "warning"}:
+        status = "blocked"
+        warnings.append("wf74_reflection_proposal_autopilot_not_ok")
+    if int(proposal_summary.get("auto_apply_count") or 0):
+        status = "blocked"
+        warnings.append("wf74_proposal_autopilot_auto_apply_detected")
+    if auto_patch.get("status") not in {None, "ok", "warning"}:
+        status = "blocked"
+        warnings.append("wf74_auto_patch_proposer_not_ok")
+    if int(auto_patch_summary.get("auto_apply_count") or 0):
+        status = "blocked"
+        warnings.append("wf74_auto_patch_auto_apply_detected")
+    return {
+        "status": status,
+        "warnings": warnings,
+        "sources": {
+            "coding_runtime_kpi_probe": rel(CODING_RUNTIME_KPI),
+            "model_learning_metadata_ledger": rel(MODEL_LEARNING_LEDGER),
+            "model_quality_scorecard": rel(MODEL_QUALITY_SCORECARD),
+            "wf74_runner": rel(WF74_RUNNER),
+            "finance_response_quality_slice": rel(FINANCE_RESPONSE_QUALITY),
+            "otel_ops_control": rel(OTEL_OPS),
+            "otel_field_depth_packet": rel(OTEL_FIELD_DEPTH_PACKET),
+            "wf74_improvement_opportunity_queue": rel(WF74_OPPORTUNITY_QUEUE),
+            "wf74_reflection_to_proposal_autopilot": rel(WF74_PROPOSAL_AUTOPILOT),
+            "wf74_auto_patch_proposer": rel(WF74_AUTO_PATCH_PROPOSER),
+        },
+        "kpis": {
+            "coding_first_pass_clean": coding_kpis.get("first_pass_validation_clean"),
+            "coding_rework_required": coding_kpis.get("rework_required"),
+            "coding_failure_buckets": coding_kpis.get("failure_bucket_counts"),
+            "validator_elapsed_seconds": coding_kpis.get("validator_elapsed_seconds"),
+            "validator_target_seconds": coding_kpis.get("validator_target_seconds"),
+            "validator_failed_count": coding_kpis.get("validator_failed_count"),
+            "recommended_budget": coding_kpis.get("recommended_budget"),
+            "recommended_validator_count": coding_kpis.get("recommended_validator_count"),
+            "learning_row_count": ledger_summary.get("row_count"),
+            "learning_coding_rows": ledger_summary.get("coding_rows"),
+            "learning_coding_runtime_rows": ledger_summary.get("coding_runtime_rows"),
+            "learning_coding_outcome_rows": ledger_summary.get("coding_outcome_rows"),
+            "learning_runtime_otel_rows": ledger_summary.get("runtime_otel_rows"),
+            "learning_privacy_scan_status": ledger_summary.get("privacy_scan_status"),
+            "wf74_steps_ok": runner_summary.get("steps_ok"),
+            "wf74_steps_blocked": runner_summary.get("steps_blocked"),
+            "coding_outcome_ledger_rows": coding_kpis.get("coding_outcome_ledger_rows"),
+            "coding_outcome_session_attributed_count": coding_kpis.get("coding_outcome_session_attributed_count"),
+            "coding_outcome_model_attributed_count": coding_kpis.get("coding_outcome_model_attributed_count"),
+            "coding_outcome_validator_proxy_passed_count": coding_kpis.get("coding_outcome_validator_proxy_passed_count"),
+            "coding_outcome_total_retry_count": coding_kpis.get("coding_outcome_total_retry_count"),
+            "otel_drift_status": otel_drift.get("status"),
+            "otel_daily_warning_or_error_count": otel_drift.get("daily_warning_or_error_count"),
+            "otel_daily_vs_weekly_event_rate_ratio": otel_drift.get("daily_vs_weekly_event_rate_ratio"),
+            "otel_field_depth_packet_status": field_depth.get("status"),
+            "improvement_opportunity_queue_status": opportunity_queue.get("status"),
+            "improvement_opportunity_count": opportunity_summary.get("opportunity_count"),
+            "improvement_high_priority_count": opportunity_summary.get("high_priority_count"),
+            "improvement_top_opportunity_title": opportunity_summary.get("top_opportunity_title"),
+            "reflection_proposal_autopilot_status": proposal_autopilot.get("status"),
+            "reflection_proposal_count": proposal_summary.get("proposal_count"),
+            "reflection_owner_decision_required_count": proposal_summary.get("owner_decision_required_count"),
+            "reflection_auto_apply_count": proposal_summary.get("auto_apply_count"),
+            "auto_patch_proposer_status": auto_patch.get("status"),
+            "auto_patch_plan_count": auto_patch_summary.get("plan_count"),
+            "auto_patch_patch_plan_count": auto_patch_summary.get("patch_plan_count"),
+            "auto_patch_skill_workshop_request_count": auto_patch_summary.get("skill_workshop_request_count"),
+            "auto_patch_owner_gated_plan_count": auto_patch_summary.get("owner_gated_plan_count"),
+            "auto_patch_auto_apply_candidate_count": auto_patch_summary.get("auto_apply_candidate_count"),
+            "auto_patch_auto_apply_count": auto_patch_summary.get("auto_apply_count"),
+            "model_quality_validation": score_validation.get("status"),
+            "finance_response_quality_status": finance_response.get("status"),
+            "finance_response_quality_average_score": finance_response_summary.get("average_quality_score"),
+            "finance_response_quality_blocked_archetypes": finance_response_summary.get("blocked_archetype_count"),
+            "finance_response_quality_wf72_support_only": finance_response_summary.get("wf72_support_only_confirmed"),
+            "finance_response_quality_sector_timing_warning": finance_response_summary.get("sector_timing_warning_available"),
+            "finance_response_quality_section_coverage_status": finance_response_summary.get("section_coverage_status"),
+            "finance_response_quality_technical_gap_count": finance_response_summary.get("technical_posture_missing_both_count"),
+            "finance_response_quality_source_freshness_blocked_count": finance_response_summary.get("source_freshness_blocked_count"),
+            "finance_response_quality_source_open_blocked_count": finance_response_summary.get("source_open_blocked_count"),
+            "finance_response_quality_negative_canary_pass_count": finance_response_summary.get("negative_canary_pass_count"),
+            "finance_response_quality_remediation_tracks_needing_repair": finance_response_summary.get("remediation_tracks_needing_repair"),
+        },
+        "authority_boundary": "PM monitoring only; no execution, model ranking, finance correctness, raw content capture, or owner approval inference.",
+    }
+
+
+def finance_domain_repair_digest() -> dict[str, Any]:
+    conveyor = load_json(TRADE_GRADE_REPAIR_CONVEYOR)
+    tier_ab_guard = load_json(TIER_AB_BAND_CRON_GUARD)
+    summary = as_dict(conveyor.get("summary"))
+    tier_ab_summary = as_dict(tier_ab_guard.get("summary"))
+    validation = as_dict(conveyor.get("validation"))
+    implementation_blockers = int(summary.get("implementation_blocker_count") or 0)
+    control_plane_blockers = int(summary.get("control_plane_blocker_count") or 0)
+    status = "ok" if conveyor.get("status") in {None, "ready_for_repair_execution"} and implementation_blockers == 0 else "needs_attention"
+    return {
+        "status": status,
+        "source": rel(TRADE_GRADE_REPAIR_CONVEYOR),
+        "pm_blocker_scope": summary.get("pm_blocker_scope"),
+        "implementation_queue_posture": summary.get("implementation_queue_posture"),
+        "total_repair_conveyor_row_count": summary.get("total_repair_conveyor_row_count"),
+        "finance_domain_repair_item_count": summary.get("finance_domain_repair_item_count"),
+        "finance_or_owner_gate_repair_item_count": summary.get("finance_or_owner_gate_repair_item_count"),
+        "finance_domain_blocker_count": summary.get("finance_domain_blocker_count"),
+        "owner_finance_gate_count": summary.get("owner_finance_gate_count"),
+        "tier_a_b_daily_decision_grade_band_policy": summary.get("tier_a_b_daily_decision_grade_band_policy"),
+        "tier_a_b_missing_decision_grade_band_count": summary.get("tier_a_b_missing_decision_grade_band_count"),
+        "tier_a_b_missing_decision_grade_band_tickers": summary.get("tier_a_b_missing_decision_grade_band_tickers"),
+        "tier_b_missing_decision_grade_band_count": summary.get("tier_b_missing_decision_grade_band_count"),
+        "tier_b_missing_decision_grade_band_tickers": summary.get("tier_b_missing_decision_grade_band_tickers"),
+        "tier_a_b_band_cron_guard_status": tier_ab_guard.get("status"),
+        "tier_a_b_band_cron_guard_validation": as_dict(tier_ab_guard.get("validation")).get("status"),
+        "tier_a_b_complete_and_current_band_count": tier_ab_summary.get("complete_and_current_count"),
+        "tier_a_b_stale_complete_band_context_count": tier_ab_summary.get("stale_complete_band_context_count"),
+        "tier_a_b_band_context_expected_market_date": tier_ab_summary.get("expected_market_date"),
+        "tier_a_b_cron_contracts_ok": tier_ab_summary.get("cron_contracts_ok"),
+        "implementation_blocker_count": implementation_blockers,
+        "control_plane_blocker_count": control_plane_blockers,
+        "normal_finance_repair_rows_create_pm_implementation_jobs": summary.get("normal_finance_repair_rows_create_pm_implementation_jobs"),
+        "repair_lane_counts": summary.get("repair_lane_counts"),
+        "validation_status": validation.get("status"),
+        "next_safe_action": (
+            "Treat repair-conveyor rows as finance-domain debt only; open implementation work only if implementation_blocker_count or control_plane_blocker_count becomes nonzero."
+        ),
+        "authority_boundary": "PM digest only; no finance repair, implementation execution, capital approval, or account action authority.",
+    }
 
 
 def queue_args(args: argparse.Namespace) -> argparse.Namespace:
@@ -122,6 +307,44 @@ def write_handoff_legacy(payload: dict[str, Any], ledger_path: Path) -> dict[str
     ledger = handoff.update_ledger(ledger_path, payload)
     atomic_write_json(ledger_path, ledger)
     return ledger
+
+
+def stale_lane_digest(program: dict[str, Any], queue_payload: dict[str, Any]) -> dict[str, Any]:
+    jobs_by_lane = {
+        str(job.get("lane_id")): job
+        for job in as_list(queue_payload.get("jobs"))
+        if isinstance(job, dict)
+    }
+    lanes: list[dict[str, Any]] = []
+    for lane in as_list(program.get("lanes")):
+        lane = as_dict(lane)
+        if lane.get("status") != "stale":
+            continue
+        action = as_dict(lane.get("next_action"))
+        job = as_dict(jobs_by_lane.get(str(lane.get("lane_id"))))
+        lanes.append({
+            "lane_id": lane.get("lane_id"),
+            "title": lane.get("title"),
+            "readiness_score": lane.get("readiness_score"),
+            "action_id": action.get("action_id"),
+            "next_action": action.get("description"),
+            "helper_lane_allowed_from_main_session": action.get("helper_lane_allowed_from_main_session"),
+            "top_job_id": job.get("job_id"),
+            "top_job_title": job.get("title"),
+            "validation_budget": as_dict(job.get("validation_budget")).get("budget"),
+            "closeout_mode": job.get("closeout_mode"),
+            "proof_commands": as_list(job.get("proof_commands"))[:4],
+        })
+    return {
+        "stale_lane_count": len(lanes),
+        "lanes": lanes,
+        "next_safe_action": (
+            "Run the listed top job/proof commands for the highest-ranked stale lane, then regenerate pm_control_packet."
+            if lanes
+            else "No stale PM lanes."
+        ),
+        "authority_boundary": "Digest only; no execution, helper spawn, approval, or mutation authority.",
+    }
 
 
 def build_packet(args: argparse.Namespace) -> dict[str, Any]:
@@ -191,6 +414,9 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     ) if args.write_db else None
     if control_db_result:
         validations["pm_control_packet_sqlite"] = control_db_result.get("status")
+    stale_digest = stale_lane_digest(program, queue_payload)
+    learning_kpis = wf74_learning_kpis()
+    finance_repair_digest = finance_domain_repair_digest()
 
     packet = {
         "schema": SCHEMA,
@@ -222,6 +448,9 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
             "pm_readiness": program.get("readiness"),
             "next_action_count": len(as_list(program.get("next_actions"))),
             "top_next_action": as_list(program.get("next_actions"))[0] if as_list(program.get("next_actions")) else {},
+            "stale_lane_digest": stale_digest,
+            "wf74_learning_kpis": learning_kpis,
+            "finance_domain_repair_digest": finance_repair_digest,
             "implementation_queue": queue_payload.get("summary"),
             "heartbeat": {
                 "status": heartbeat_payload.get("status"),
@@ -248,6 +477,8 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
             "first_read": rel(out_path),
             "regenerate": "python scripts\\pm_control_packet.py --write --write-db --validate",
             "legacy_rule": "Legacy PM/heartbeat JSONs are opt-in compatibility sidecars; routine PM lookup must start from this packet.",
+            "stale_lane_digest": "Use summary.stale_lane_digest before drilling into the full PM program-state section.",
+            "finance_domain_repair_digest": "Finance repair-conveyor rows are domain debt, not implementation blockers, unless the digest reports implementation/control-plane blockers.",
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
         "validation": validate_packet(validations, program, queue_payload, heartbeat_payload, handoff_payload),
@@ -344,6 +575,7 @@ def rebuild_sqlite_stub(
         summary = {
             "pm_status": program.get("status"),
             "readiness_band": as_dict(program.get("readiness")).get("readiness_band"),
+            "stale_lane_digest": stale_lane_digest(program, queue_payload),
             "job_count": as_dict(queue_payload.get("summary")).get("job_count"),
             "ready_job_count": as_dict(queue_payload.get("summary")).get("ready_job_count"),
             "heartbeat_candidate_count": heartbeat_payload.get("candidate_count"),
