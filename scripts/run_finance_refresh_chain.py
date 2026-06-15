@@ -139,6 +139,48 @@ def maybe_backup_dashboard(script: str) -> None:
         print(f"  [!] Backup failed: {exc}")
 
 
+def write_recovery_canon_drift_report() -> None:
+    """Best-effort drift proof after any chain failure.
+
+    This is read-only reporting. It ensures a failed window leaves a current
+    canon-drift artifact even when the normal late-chain validators are skipped.
+    """
+    path = SCRIPTS_DIR / "canon_drift_freshness_gate.py"
+    if not path.exists():
+        print("  [!] Recovery canon drift report skipped: script missing")
+        return
+    print("  [!] Writing recovery canon drift report")
+    try:
+        subprocess.run([sys.executable, str(path), "--write"], cwd=str(WORKSPACE), check=False)
+    except Exception as exc:
+        print(f"  [!] Recovery canon drift report failed: {exc}")
+
+
+def write_recovery_sql_indexes(window: str) -> None:
+    """Best-effort refresh of derived SQL/index surfaces after a failed chain.
+
+    A fail-chain stop line must still stop presentation/trust, but it should not
+    leave SQL cockpit routing stranded on an older window. This keeps the
+    rebuildable artifact index current/degraded without granting it canon,
+    approval, portfolio, or trade authority.
+    """
+    commands = [
+        ["current_window_artifact_index.py", "--window", window, "--write"],
+        ["artifact_index.py", "incremental"],
+        ["artifact_index.py", "validate"],
+    ]
+    for script, *args in commands:
+        path = SCRIPTS_DIR / script
+        if not path.exists():
+            print(f"  [!] Recovery SQL/index refresh skipped: {script} missing")
+            continue
+        print(f"  [!] Recovery SQL/index refresh: {script} {' '.join(args)}")
+        try:
+            subprocess.run([sys.executable, str(path), *args], cwd=str(WORKSPACE), check=False)
+        except Exception as exc:
+            print(f"  [!] Recovery SQL/index refresh failed for {script}: {exc}")
+
+
 def print_window_list() -> None:
     print("Supported finance refresh windows:\n")
     for name in ("morning", "post-close", "post-earnings", "sunday", "full"):
@@ -265,6 +307,8 @@ def run_chain(window: str, dry_run: bool = False, strict: bool = False, build_wo
         step_record["status"] = "failed"
         print(f"\nFAILED: {script} {' '.join(run_args)} exited with code {result.returncode}")
         maybe_backup_dashboard(script)
+        write_recovery_canon_drift_report()
+        write_recovery_sql_indexes(window)
 
         state["recovery"]["failed_step"] = {
             "index": step_record["index"],
