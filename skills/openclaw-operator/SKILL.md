@@ -1,171 +1,56 @@
 ---
-name: openclaw-operator
-description: Operate and maintain the OpenClaw workspace and local runtime. Use when auditing startup files, reviewing config, validating skills, checking gateway or runtime state, tightening core-file architecture, or performing safe workspace hardening and cleanup.
+name: "openclaw-operator"
+description: "Add operator audit for lane-register compliance."
 ---
 
-# OpenClaw Operator
+# Proposal: Operator Lane-Register Compliance Check
 
-## Purpose
+## Goal
+Harden OpenClaw operator behavior so cross-surface implementation work can be audited through a durable register instead of relying on tree-scoped session visibility.
 
-Keep the OpenClaw workspace lean, valid, and operational without turning core files into a junk drawer.
+## Proposed Skill Update
+Add this section after **Check live state before claiming anything about runtime**.
 
-## When to Use
+```markdown
+## Cross-Surface Implementation Lane Audit
 
-Use this skill when the work is about:
-- OpenClaw config review or hardening
-- startup-file cleanup or condensation
-- workspace architecture changes
-- skill allowlists, skill inventory, or skill hygiene
-- local runtime checks on Windows
-- gateway, dashboard, and control-surface verification
-- post-update or post-reinstall recovery back to the known-good workspace posture
-- deciding whether instructions belong in core files, skills, memory, or daily notes
+When checking whether Telegram, WebChat, main, helper, isolated, or cron-adjacent sessions are doing implementation work, inspect both runtime state and the durable lane register.
 
-## Inputs to Check First
+Runtime visibility is advisory:
 
-Read only what is needed:
-- `SOUL.md`
-- `AGENTS.md`
-- `TOOLS.md`
-- `MEMORY.md`
-- `migration-review.md` if a migration is active
-- `~/.openclaw/openclaw.json`
-- relevant audits in `08. Audits/`
-- local OpenClaw docs and the official docs when live behavior or schema details matter
+- `sessions_list` may be tree-scoped and omit unrelated WebChat or Telegram sessions.
+- `subagents(action=list)` only proves active/recent child lanes visible to the requester session.
 
-Check live state before claiming anything about runtime:
-- `openclaw status`
-- `openclaw config validate`
-- `openclaw skills list`
-- `openclaw skills check`
-- `openclaw skills search <term>` when comparing local coverage to ClawHub patterns or scouting missing governance capabilities
-- `openclaw security audit`
-
-## Procedure
-
-1. Inspect before editing.
-2. Separate constitutional rules from procedures.
-3. Keep core files short and durable: preserve identity, hierarchy, hard boundaries, startup/routing contracts, and user preferences; route procedures/history/tool minutiae to skills, owner notes, or memory.
-4. Move repeatable workflows into focused skills.
-5. Prefer references or scripts inside skills over bloated core files.
-6. Back up every file before modifying it.
-7. For boot/core slimming, run `scripts/openclaw_cache_efficiency_scorecard.py --write` before/after when practical and report char/token delta; do not weaken finance, paper/live, account, config/auth, or external-action stop lines.
-8. Use `windows-powershell-workspace` when the pass depends on native Windows, PowerShell syntax, wrappers, encoding, approvals, startup, or scheduled-chain behavior.
-9. Validate config and skill state after changes.
-10. Record major architecture changes in the current daily note.
-
-For major protocol or skill-governance changes, also make the checkpoint decision explicit before calling the pass closed.
-
-## ClawHub / discovery rule
-
-When external skill scouting matters:
-- prefer the native `openclaw skills search <term>` path to inspect ClawHub registry candidates
-- if normal web search is unavailable, use direct page fetches only as supporting evidence and say the web-search gap plainly
-- treat external skills as idea sources for local hardening, not as doctrine to import blindly over the workspace's existing rules
-- when recurring automation clearly belongs to one local skill, tighten the local skill and the cron packet before considering a new external dependency
-
-Current Veritas harness scouting themes:
-- harness/eval/regression skills are useful as idea sources for scenario suites, scorecards, baseline-vs-candidate comparison, and failure classification
-- SQLite skills are useful as idea sources for WAL/concurrency/query hygiene, but the local WF75 control-plane boundary still wins
-- stock/evaluator skills may inspire rubric shape, but they must not override Veritas finance authority, owner approval, paper/live, or source-freshness rules
-- install nothing from ClawHub during scouting unless Randall explicitly approves the exact skill and dependency posture
-
-For reported OpenClaw/tool banners, use:
+Durable coordination state is authoritative for implementation collision checks:
 
 ```powershell
-python scripts\veritas_harness_failure_classifier.py --text "<reported command failure>" --write
+python scripts\concurrent_lane_manager.py --status --write --validate
 ```
 
-Then decide whether it is harmless shell noise, warning-only readiness debt,
-real breakage, stale evidence, or an authority regression.
+Interpretation:
 
-## Post-update / post-reinstall recovery protocol
+- Active lane count `0` means no implementation lane has been leased in the durable register.
+- If another surface is actually editing/writing files while active lane count is `0`, that surface did not follow the lane-register protocol.
+- `created_at_utc` is lane lifecycle/planning time.
+- `started_at_utc` is actual running start time for new lanes.
+- `ended_at_utc` / `completed_at_utc` is terminal closeout timing.
+- Legacy lanes without `started_at_utc` cannot prove runtime duration.
 
-When OpenClaw was updated or reinstalled, run this bounded recovery checklist before trusting the environment:
+For operator hardening or after-session audits, report:
 
-1. Confirm the runtime is alive:
-   - `openclaw status`
-   - `openclaw doctor`
-   - `openclaw config validate`
-2. Confirm the persistent control surfaces survived:
-   - `~/.openclaw/openclaw.json`
-   - `~/.openclaw/exec-approvals.json`
-   - workspace `skills/`
-   - startup / gateway persistence surfaces noted in `TOOLS.md`
-3. Re-check skill publication and plugin health:
-   - `openclaw skills check`
-   - if plugin-skill publication errors mention `~/.openclaw/plugin-skills` or `EPERM` / `WinError 1314`, treat that as a Windows symlink-privilege problem, not a missing skill definition
-4. On Windows, verify plugin skill links can be created again before assuming browser or other plugin skills are healthy:
-   - preferred durable fix: enable Windows Developer Mode so non-elevated symlink creation is allowed
-   - fallback: run the relevant OpenClaw process elevated long enough to recreate the managed links
-   - if elevated OpenClaw is unavailable, create only the exact managed browser skill directory symlink from an Administrator PowerShell session, then rerun `openclaw skills check`:
-     ```powershell
-     New-Item -ItemType Directory -Force "C:\Users\Veritas\.openclaw\plugin-skills"
-     New-Item -ItemType SymbolicLink -Path "C:\Users\Veritas\.openclaw\plugin-skills\browser-automation" -Target "C:\Users\Veritas\AppData\Roaming\npm\node_modules\openclaw\dist\extensions\browser\skills\browser-automation"
-     openclaw skills check
-     ```
-   - if the manual symlink command returns `ResourceExists`, do not delete anything first; rerun `openclaw skills check` and inspect whether `browser-automation` is already a valid symlink to the packaged skill target.
-   - do not paper over this with copied skill folders or junctions unless the runtime contract explicitly changes
-5. Re-validate the custom workspace posture that reinstalls often disturb:
-   - `openclaw skills check`
-   - `openclaw approvals get --json`
-   - `openclaw status`
-   - cron inventory / critical job presence when automation matters
-6. Spot-check the highest-risk local customizations rather than assuming they persisted:
-   - exact-command durable approvals for scheduled finance chains
-   - custom workspace skills and their visibility
-   - pinned version / update posture notes in `TOOLS.md`
-   - any known startup launcher or gateway persistence requirements
-7. Write one short daily-note bullet naming what broke, what was restored, and what still needs manual follow-up.
+1. active lane count
+2. latest active/running lanes and write surfaces
+3. latest completed implementation job from `state\implementation-completion-ledger.jsonl`
+4. latest daily-memory completion entry when the user asks for memory state
+5. any mismatch between runtime session activity and lane-register state
 
-## Classification Rule
+If a mismatch suggests a session bypassed the register, classify it as a governance gap, not proof that runtime visibility is broken.
+```
 
-Use this routing test:
-- identity, doctrine, values, boundaries -> `SOUL.md` or `IDENTITY.md`
-- durable facts or preferences -> `MEMORY.md` or `USER.md`
-- environment facts or global tool rules -> `TOOLS.md`
-- repeatable procedures -> `skills/`
-- historical session facts -> `memory/YYYY-MM-DD.md`
-- uncertain or contested material -> `migration-review.md` or another review note
+## Validation Expected After Apply
+- `openclaw skills check`
+- `python scripts\concurrent_lane_manager.py --status --write --validate`
+- spot-check latest implementation ledger and daily memory when answering job-completion questions
 
-## Safety Rules
-
-- Prefer reversible changes.
-- Do not keep stale pseudo-protection in config or notes.
-- Do not delete uncertain files in the same pass that discovers them.
-- Validate after edits instead of assuming success.
-- Treat third-party skills as untrusted until reviewed.
-
-## Files This Skill May Read
-
-- core files
-- `migration-review.md`
-- `08. Audits/*.md`
-- `scripts/README.md`
-- `~/.openclaw/openclaw.json`
-- local or official OpenClaw docs
-
-## Files This Skill May Edit
-
-- `TOOLS.md`
-- `AGENTS.md`
-- `migration-review.md`
-- `~/.openclaw/openclaw.json`
-- workspace skills under `skills/`
-- daily notes when major operator work happened
-
-## Output Format
-
-Report in this order:
-- issue or goal
-- evidence
-- proposed or completed change
-- risk or open question
-- validation result
-
-## Memory Update Rules
-
-- log major workspace or config changes in `memory/YYYY-MM-DD.md`
-- promote durable operator policy to `TOOLS.md` or `MEMORY.md`
-- if a workflow becomes repeatable, create or improve a skill instead of bloating a core file
-- if an operator pass exposes a reusable Windows/PowerShell lesson, update `windows-powershell-workspace` in the same closeout pass
+## Boundary
+Audit/coordination only. No helper spawn, no cron mutation, no config/auth/runtime mutation, no cleanup/delete/archive, no canon/portfolio mutation, no paper/live/account action, no capital approval, and no owner approval inference.

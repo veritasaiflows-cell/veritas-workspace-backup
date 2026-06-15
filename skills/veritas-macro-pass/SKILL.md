@@ -1,6 +1,6 @@
 ---
-name: veritas-macro-pass
-description: Produce a Veritas decision-grade macro regime pass for public-market workflows using workspace-first evidence, explicit manual-dependency handling, and regime-aware portfolio implications. Use when refreshing macro regime, rates and inflation posture, risk-on versus risk-off conditions, energy and commodity context, policy-event interpretation, or when preparing weekly positioning, executive briefs, and market-readiness notes.
+name: "veritas-macro-pass"
+description: "Produce macro regime reads using workspace evidence, macro spine, and portfolio implications."
 ---
 
 # Veritas Macro Pass
@@ -11,6 +11,25 @@ This is not a generic news roundup or a one-number regime classifier.
 Use it when the output needs to judge the macro backdrop, explain what is driving it, disclose evidence quality honestly, and translate that backdrop into portfolio and watchlist implications.
 
 ## Before starting
+
+## Effort routing and macro spine
+
+Before opening the full macro stack, classify the request with `veritas-intelligence-effort-router`.
+
+Default route:
+
+- **Band 0:** explain a macro concept directly.
+- **Band 1:** read `tmp/macro-signal-spine.json` and `tmp/macro-judgment-draft.json` first.
+- **Band 2:** refresh the narrow macro chain: `macro_metrics_ingest.py`, `macro_signal_spine.py`, then `macro_judgment_draft.py` when broad regime judgment matters.
+- **Band 3:** combine macro with positioning, technical, fundamental, and risk evidence before making portfolio-impact language.
+- **Band 4:** use disciplined implementation if macro scripts, cron payloads, validators, or source contracts change.
+
+Use `tmp/macro-signal-spine.json` as the first machine evidence surface for Sahm Rule/labor, claims, CAPE, Buffett proxy, NFCI/ANFCI, credit spreads, rates/volatility, and expanded index/breadth confirmation. It does not replace source truth; it routes the current macro read.
+
+Treat slow-moving valuation indicators carefully:
+- Shiller CAPE is long-horizon valuation risk, not a timing signal.
+- Buffett Indicator proxy is quarterly and source-method dependent; do not present it as a clean Wilshire/GDP FRED series.
+- Stale-but-slow signals may inform backdrop, but cannot carry fresh market-timing claims.
 
 Read the relevant workspace stack first when it matters:
 - `02. Markets/Macro Regime Dashboard.md`

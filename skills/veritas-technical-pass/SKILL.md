@@ -1,6 +1,6 @@
 ---
-name: veritas-technical-pass
-description: Produce a Veritas decision-grade technical pass for stocks, ETFs, and other liquid public-market assets using live chart structure, moving-average posture, entry discipline, invalidation logic, and deployment-state judgment. Use when defining or refreshing support, resistance, entry bands, stops, repair-mode status, blocked status, readiness labels, or when converting a watchlist or thesis list into an execution-aware technical board.
+name: "veritas-technical-pass"
+description: "Run technical setup reads with bands, stops, catalyst risk, and deployment-state discipline."
 ---
 
 # Veritas Technical Pass
@@ -11,6 +11,20 @@ This is not for vague chart commentary.
 Use it when the output needs exact levels, clear setup status, deployment discipline, and explicit timing quality.
 
 ## Before starting
+
+## Effort routing
+
+Before doing a full technical pass, classify the request with `veritas-intelligence-effort-router`.
+
+Default route:
+
+- **Band 0:** explain a technical concept directly.
+- **Band 1:** read existing entry band, stop, deployment readiness, ticker card, or answer-packet state before fresh chart work.
+- **Band 2:** refresh the narrow technical or deployment producer when the current setup artifact is stale, partial, or warning-classed.
+- **Band 3:** run the full technical pass when the answer defines entry, stop, invalidation, deployment readiness, reclaim/repair state, or candidate priority.
+- **Band 4:** use disciplined implementation for entry-band automation, propagation validators, cron maintenance, or skill/routing changes.
+
+Do not call a setup deployable from a thin artifact if current price, band, stop, catalyst timing, or moving-average posture is stale or missing. State the gap or refresh narrowly.
 
 Read the relevant workspace files first when they matter:
 - `04. Research/Coverage and Watchlist.md`
@@ -165,7 +179,7 @@ When a watch/research ticker is promoted to portfolio-review, execution review, 
 4. `python scripts\deployment_check.py` keeps portfolio-review names in `PROMOTION REVIEW`, not `DEPLOYABLE NOW`, unless a separate owner-approved deployment/model gate exists.
 5. `python scripts\generate_dashboard.py` and `python scripts\validate_dashboard_state.py --write` pass and the rendered dashboard shows numeric band/stop values.
 
-If any item fails, say the promotion is technically incomplete. Do not call bands “fully applied” just because low/high/stop exist in one artifact.
+If any item fails, say the promotion is technically incomplete. Do not call bands Ã¢â‚¬Å“fully appliedÃ¢â‚¬Â just because low/high/stop exist in one artifact.
 
 ## Judgment rules
 

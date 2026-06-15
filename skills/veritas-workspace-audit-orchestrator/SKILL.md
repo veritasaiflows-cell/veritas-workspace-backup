@@ -1,0 +1,150 @@
+---
+name: "veritas-workspace-audit-orchestrator"
+description: "Run Veritas workspace audits and targeted finding reviews with control-plane proof."
+---
+
+# Veritas Workspace Audit Orchestrator
+
+Run evidence-backed audits of the Veritas workspace without turning generated proof into authority.
+
+## Purpose
+
+Produce a trustworthy audit packet for broad workspace health or targeted findings:
+- current trust state
+- concrete risks
+- source-backed recommendations
+- next repairs with acceptance proof
+- explicit authority boundaries
+
+Default posture is review-only. Do not clean up, archive, delete, mutate config/auth/runtime, change portfolio/canon state, or imply finance/trade/account approval unless Randall explicitly approves the separate action and the proper gate exists.
+
+## Read First
+
+For full workspace audits, read or route through:
+- `SOUL.md`
+- `AGENTS.md`
+- `USER.md`
+- `TOOLS.md`
+- `06. Playbooks/Startup Truth Index.md`
+- today's and yesterday's `memory/YYYY-MM-DD.md`
+- `MEMORY.md` only when durable continuity matters
+- the latest relevant audit under `08. Audits/`
+- `python scripts\concurrent_lane_manager.py --status --write --validate`
+
+For targeted reviews, start with the owning artifact, then read the smallest adjacent set of producers, consumers, validators, and governing notes needed to verify the claim.
+
+## Audit Modes
+
+Use the narrowest mode that answers Randall's request:
+- **full workspace audit**: broad control-plane, continuity, skill, cron, PM, DB lifecycle, runtime, finance-boundary, memory, and workspace-governance review
+- **targeted finding review**: one finding or cluster, with root cause, current status, fix options, and acceptance proof
+- **control-plane health review**: PM, cron, runtime scorecards, lane register, artifact indexes, route registries, and boot surfaces
+- **skill/procedure hardening review**: map audit residue into skills, operating procedures, validators, or queue items
+- **finance authority review**: verify generated artifacts, routing state, paper/live boundaries, portfolio/canon mutation gates, and owner approval lines
+
+## Full Workspace Procedure
+
+1. Check lane state before any write or generated proof.
+   - Run `python scripts\concurrent_lane_manager.py --status --write --validate`.
+   - If writing an audit note or proposal, lease exact writable surfaces first.
+
+2. Reconstruct the audit contract.
+   - What is being audited?
+   - What is out of scope?
+   - Which generated artifacts are proof only?
+   - Which surfaces carry authority?
+
+3. Refresh thin truth surfaces before broad scans.
+   - PM: `python scripts\pm_control_packet.py --write --write-db --validate`
+   - Cron: `python scripts\cron_control_packet.py --write --validate`
+   - Cron freshness when cron claims matter: `python scripts\cron_freshness_scorecard.py --write --validate`
+   - Runtime: `python scripts\runtime_performance_scorecard.py --timed-quick --write --validate`
+   - Artifact index: `python scripts\artifact_index.py --write --validate`
+   - Go routes when Go validators are in scope: `python scripts\go_sql_helper_route_registry.py --validate`
+   - DB lifecycle when SQLite ownership is in scope: `python scripts\db_lifecycle_manifest.py --write --validate`
+   - Skills: `openclaw skills check`
+   - Config: `openclaw config validate` when config claims matter; do not mutate config during the audit.
+
+4. Inspect exact owner surfaces for any material finding.
+   - Do not rely only on summaries.
+   - If a generated artifact claims green, inspect the live source or validator that backs it.
+   - If live scheduler/runtime state conflicts with generated artifacts, report the conflict instead of averaging them.
+
+5. Audit across these lenses:
+   - **authority**: no generated packet implies approval, account action, capital deployment, paper/live execution, or portfolio mutation outside a gate
+   - **freshness**: timestamps, market data, cron last-run status, boot surfaces, and scorecards are current enough for the claim
+   - **control-plane consistency**: PM, cron, lane register, route registry, and artifact indexes agree or conflicts are named
+   - **DB lifecycle**: every SQLite DB has an owner, purpose, lifecycle, and retention posture
+   - **skills/procedures**: repeated work routes to skills/procedures; skills have scope, boundaries, validation posture, and deprecation triggers
+   - **workspace structure**: root exceptions, numbered domains, tmp-vs-durable placement, generated proof, final audits, and archive candidates are correctly owned
+   - **memory continuity**: daily notes are append-only, not duplicated, and durable lessons are promoted to the right owner
+   - **dirty worktree**: classify volume and risk; do not treat unrelated dirt as audit failure unless it blocks trust or execution
+
+6. Rank findings.
+   - P1: blocks trust, correctness, finance authority, config/runtime safety, or reliable startup/control state
+   - P2: material operational debt that can mislead future work but has a safe workaround
+   - P3: cleanup, ergonomics, or future hardening
+
+7. Recommend concrete repairs.
+   - Each recommendation needs owner surface, next action, stop line, and acceptance proof.
+   - Prefer fixing the smallest real gap over broad restructuring.
+   - If the right fix is durable behavior, route it into a skill, operating procedure, validator, or queue item.
+
+8. Close honestly.
+   - State what was validated.
+   - State what was not checked.
+   - State what remains blocked.
+   - Close the lane with proof if a lane was opened.
+
+## Targeted Finding Review Procedure
+
+1. State the finding in one line.
+2. Verify whether it is still live using current artifacts.
+3. Inspect the exact owner file, producer, consumer, validator, and latest proof.
+4. Classify the finding as live, stale, resolved, partially resolved, or superseded.
+5. Identify root cause, blast radius, and recurrence risk.
+6. Recommend one repair path and one acceptance proof path.
+7. If the finding maps to a repeated pattern, recommend the exact skill/procedure/validator update.
+
+## Skill And Procedure Routing
+
+When an audit finds repeatable residue:
+- repeated operator steps -> operating procedure
+- agent behavior or decision routing -> skill
+- deterministic safety check -> validator/script
+- one-off result -> audit note or daily memory
+- workflow-specific state -> workflow continuity note
+
+Do not create a new skill when an existing skill can be tightened cleanly.
+
+## Output Format
+
+Return findings in this order:
+- conclusion
+- scope audited
+- proof refreshed
+- top findings by severity
+- recommendations
+- stop lines / authority limits
+- next concrete action
+- intentionally deferred checks
+
+For each finding include:
+- evidence
+- impact
+- recommendation
+- acceptance proof
+
+## Stop Lines
+
+Stop and ask before:
+- archive/delete/move/destructive cleanup
+- config/auth/network/channel/credential/startup/service/plugin/runtime mutation outside the workspace
+- portfolio/canon mutation outside approved gates
+- paper/live order action or account/brokerage action
+- external/public action
+- installing third-party ClawHub skills directly
+
+## Good Audit Standard
+
+A good audit makes it harder for the workspace to lie about its own state. It names the gap, the proof, the owner, the next repair, and the boundary.

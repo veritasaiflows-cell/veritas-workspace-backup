@@ -1,6 +1,6 @@
 ---
-name: veritas-fundamental-pass
-description: Produce a decision-grade Veritas fundamental research pass for public equities using reliable public sources, explicit data-quality checks, and the workspace finance operating system. Use when analyzing one or more stocks for business quality, balance-sheet safety, cash-flow durability, valuation, peer ranking, earnings-readiness, or whether a name belongs in the watchlist, research queue, or model portfolio.
+name: "veritas-fundamental-pass"
+description: "Run fundamental equity research with source-quality checks and portfolio-fit judgment."
 ---
 
 # Veritas Fundamental Pass
@@ -11,6 +11,20 @@ This is not a generic stock writeup skill.
 Use it when the output needs to be decision-grade, risk-aware, explicit about data quality, and aligned to the live watchlist, portfolio notes, and risk rules.
 
 ## Before starting
+
+## Effort routing
+
+Before doing a full fundamental pass, classify the request with `veritas-intelligence-effort-router`.
+
+Default route:
+
+- **Band 0:** explain a business-quality or valuation concept directly.
+- **Band 1:** read the current ticker card, WF85 answer packet, or exact company packet if it already answers the question.
+- **Band 2:** refresh the narrow producer or source bridge when a card is stale, partial, warning-classed, or missing the decision-critical field.
+- **Band 3:** run the full fundamental pass when the output ranks businesses, changes research priority, supports a portfolio action, or could influence capital.
+- **Band 4:** use disciplined implementation when changing data pipelines, validators, source bridges, ticker routing contracts, or skills.
+
+A full fundamental pass is not required just because a ticker appears in the prompt. Use the smallest source stack that can answer truthfully, and escalate when freshness, conflicts, missing official evidence, or portfolio consequence demand it.
 
 Read the relevant local note stack first when it matters:
 - `04. Research/Coverage and Watchlist.md`
@@ -157,7 +171,7 @@ Before the final verdict, explicitly state:
 
 Use this structure unless the user requests something else.
 
-### TICKER — Fundamental Verdict
+### TICKER Ã¢â‚¬â€ Fundamental Verdict
 - Resolved entity: [company, exchange, country]
 - Verdict: [Bullish / Neutral / Bearish]
 - Operational fit: [core-quality / tactical / speculative / watch-only / avoid]
@@ -208,9 +222,9 @@ If multiple tickers are analyzed:
 Add this section:
 
 ## Peer ranking
-1. [ticker] — why #1
-2. [ticker] — why #2
-3. [ticker] — why #3
+1. [ticker] Ã¢â‚¬â€ why #1
+2. [ticker] Ã¢â‚¬â€ why #2
+3. [ticker] Ã¢â‚¬â€ why #3
 
 ### Best fit now
 - selected name

@@ -1,84 +1,48 @@
 ---
-name: ic-swarm-orchestrator
-description: Orchestrate multi-contractor (IC) OpenClaw workflows where one lane generates/reasons and another verifies or pushes back before final synthesis. Use when running parallel or staged Claude/Gemini/subagent passes, defining fallback order, enforcing completion handshakes, and preventing partial or fake-green conclusions.
+name: "ic-swarm-orchestrator"
+description: "Require verified Opus challenger routing for serious finance gates."
 ---
 
-# IC Swarm Orchestrator
+# IC Swarm Orchestrator Update - Verified Opus Challenger Gates
 
-## Contract
-Run bounded multi-lane passes with explicit roles:
-1) Reasoner/Generator
-2) Verifier/Challenger
-3) Veritas final synthesis
+## Serious Finance Workflow Opus Gate
 
-Never let helper lanes publish final queue state alone.
-For early automation lanes, default helper scope to contract-building, audit, contradiction, or QA unless the workflow contract explicitly widens authority.
+For serious finance workflow contracts, trade-grade OS promotion gates, authority-sensitive decision-card systems, and WF84/WF85-class work, the challenger lane should use the verified model path `claude-cli/claude-opus-4-8` when available.
 
-## Role routing
-Read `06. Playbooks/Automation Orchestration Protocol.md` first for the canonical lane-routing, fallback, and operator-posture rules.
+This is a challenger/reviewer requirement, not a routine implementation default. Use Opus for false-ready detection, authority-drift review, state-precedence critique, source/freshness gate critique, and schema/contract stress testing before promotion or card-generation gates.
 
-This skill should not maintain a second routing doctrine.
-Its job is to define the lane contract, handshake, and merge discipline after routing is chosen.
+## Required Verification
 
-Treat all external lane references as operator-maintained posture, not permanent truth. Validate live availability before use.
+After spawning or routing the challenger lane, verify the actual subagent/session registry model path. A label containing `Opus` is not sufficient proof.
 
-## Effort posture
-Use the effort posture and model-routing guidance from `06. Playbooks/Automation Orchestration Protocol.md`.
-If the live environment or current operator protocol does not prove a lane/effort path, do not invent one here.
+Acceptance rule:
+- If the registry model is exactly `claude-cli/claude-opus-4-8`, the lane may count as Opus challenger proof.
+- If the registry model differs, the lane may still be useful, but classify it as standard challenger evidence and do not count it as Opus acceptance proof.
+- If Opus is unavailable, record the fallback reason and keep the same bounded challenger contract.
 
-## Fallback order
-Use the fallback order from `06. Playbooks/Automation Orchestration Protocol.md`.
-Remove undefined or unproven routing labels rather than pretending they exist.
-Treat 429/capacity failures as lane availability failures, not evidence.
+## Handoff Packet Requirement
 
-## Completion handshake
-Before synthesis, define expected lanes and require all to resolve.
-- If one finishes first, hold final closeout.
-- If one fails, retry once then fallback.
-- Publish one merged decision only after all expected lanes complete or are explicitly abandoned.
-- For file-grounded proof, prefer a small manifest plus `python scripts/swarm_completion_handshake.py --manifest <path> --write`.
-- Treat `synthesis_allowed=false` or any `blocking_lanes` output as fail-closed: no final synthesis yet.
+For WF84/WF85-class spawns, include these fields in the handoff:
 
-Suggested manifest shape:
-```json
-{
-  "swarm_id": "wf29-example",
-  "expected_lanes": [
-    {
-      "lane_id": "reasoner_subagent",
-      "status": "completed",
-      "verdict": "draft ready",
-      "required_artifacts": [
-        {"path": "tmp/reasoner-output.json", "kind": "json"}
-      ]
-    },
-    {
-      "lane_id": "verifier_cli",
-      "status": "abandoned",
-      "required_artifacts": []
-    }
-  ]
-}
+```text
+Required model: claude-cli/claude-opus-4-8
+Role: read-only challenger / authority-drift reviewer
+Verification: after spawn, confirm actual registry model path equals required model
+Fallback: if mismatched/unavailable, classify as standard challenger output, not Opus proof
+Stop lines: no capital/trade/paper/live/account action, no canon/portfolio mutation, no owner approval inference
 ```
 
-Do not issue an executive-summary-style closeout until acceptance evidence and checkpoint posture are explicit.
+## Closeout Requirement
 
-## Quality gates
-1. Scope gate: one bounded question and acceptance criteria.
-2. Output gate: each lane returns explicit verdict + assumptions + key risks.
-3. Conflict gate: if lanes disagree materially, run one rebuttal/challenge round.
-4. Synthesis gate: Veritas states final recommendation, confidence, and next action.
+The final synthesis should state:
+- expected challenger model
+- actual verified model path
+- whether the lane counts as Opus proof
+- key accepted/rejected challenger findings
+- any remaining downgraded trust state
 
-## Anti-patterns
-- No two-writer collisions on canonical notes.
-- No "parallel for parallel’s sake" with no merge contract.
-- No partial synthesis while expected lanes are still running.
-- No fake-green promotion when warnings/trust gates remain.
+This complements the existing lane-register handshake. It does not replace lane leasing, exact allowed-write declarations, runtime metadata stamping, proof artifacts, or main-session verification.
 
-## Suggested output template
-- decision
-- lane verdicts (Gemini / Claude / subagent)
-- conflicts resolved
-- confidence
-- implementation action
-- blocker or follow-up gate
+## Boundary
+
+Challenger/review routing only. This does not authorize capital deployment, trade/order execution, paper/live/account action, portfolio/canon mutation, config/runtime mutation, autonomous spawning, or owner approval inference.

@@ -1,6 +1,6 @@
 ---
-name: veritas-pm-department
-description: Operate the Veritas PM department for active project tracking, weekly updates, enhancement roadmaps, WF75 readiness timelines, and presentation/PDF handoff planning. Use when Randall asks for project management, weekly status, roadmap/readiness tracking, WF75 product-readiness reporting, presentation planning, or cross-workflow delivery coordination.
+name: "veritas-pm-department"
+description: "Operate PM status, roadmap, queue, readiness, and cross-workflow coordination."
 ---
 
 # Veritas PM Department
@@ -29,6 +29,20 @@ Do not use this skill to run broad workflow phases by itself.
 It packages and coordinates live truth; it does not infer approval.
 
 ## Source order
+
+## Effort routing
+
+Before PM work, classify the request with `veritas-intelligence-effort-router`.
+
+Default route:
+
+- **Band 0:** answer conceptual PM/process questions directly.
+- **Band 1:** read `tmp/pm-control-packet.json`, workflow router output, or the exact PM packet named by the user.
+- **Band 2:** refresh `pm_control_packet.py --write --write-db --validate` when PM state is stale, warning-classed, or needed for current queue truth.
+- **Band 3:** integrate PM, cron, workflow router, and artifact proof when selecting next work or changing priority.
+- **Band 4:** use disciplined implementation, cron automation, QA, and Skill Workshop when PM rules, recurring jobs, skills, workflow state, or control-plane contracts change.
+
+PM should reduce ambiguity. Do not broad-scan Active Workflows, project notes, and memory before checking the current PM/control front doors unless the front door is missing, contradictory, or says source detail is required.
 
 Read the thinnest live truth surfaces first:
 - `06. Playbooks/Active Workflows.md`

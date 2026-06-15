@@ -1,81 +1,85 @@
 ---
-name: code-review-auditor
-description: High-signal code review for OpenClaw workspace scripts and AI-generated patches. Use when reviewing diffs, validating correctness or maintainability, checking contract propagation after shared vocab or JSON changes, or preparing an independent QA pass before workflow closure.
+name: "code-review-auditor"
+description: "Review OpenClaw diffs for correctness, scope drift, contracts, and proof quality."
 ---
 
-# Code Review Auditor
+# Proposed Update: code-review-auditor
 
-Review the code that exists, not the story told about it.
+## Summary
 
-## Read First
+Keep `code-review-auditor` as a review-only skill, but add stronger targeted-review checks for scope drift, adjacent contract completeness, stale docs, and proof honesty.
 
-Read only what matters:
-- the changed file or diff
-- the owning workflow note if one exists
-- the nearest upstream producer and downstream consumer
-- the validator, test, or acceptance harness most likely to catch drift
-- the latest audit note if this is residue review
+## Proposed Description
 
-## Review Lenses
+`Review OpenClaw diffs for correctness, scope drift, contracts, and proof quality. Use when reviewing scripts, validators, manifests, workflow patches, generated-artifact writers, shared JSON/schema/vocab changes, or audit-driven targeted repairs before closure.`
 
-Check these in order:
-1. correctness
-2. contract propagation
-3. fail-closed behavior
-4. freshness or timestamp honesty
-5. maintainability and duplication
-6. proof quality
+## Add Review Lens: Scope Drift
 
-## What to Look For
+Before judging correctness, compare the diff against the stated task.
 
-### Correctness
-- wrong branch or bucket mapping
-- stale constant or dead variable path
-- hidden fallback that undoes the intended fix
-- platform-specific runtime debt
+Flag:
+- unrelated rewrites
+- hidden behavior changes outside the requested lane
+- new writes to authority-bearing surfaces
+- config/auth/runtime/channel changes not explicitly requested
+- finance/account/paper/live/canon/portfolio mutations outside gates
+- cleanup or archive behavior mixed into review/validation work
 
-### Contract propagation
-- shared labels changed in one file but not peers
-- manifest fields added without consumer updates
-- summary surfaces still speaking legacy vocabulary
-- validators still proving the wrong contract
+Classify scope drift as blocking when it changes authority, data ownership, runtime exposure, or external behavior.
 
-### Fail-closed behavior
-- degraded or missing inputs still treated as clean
-- manual dependencies hidden from summaries
-- presentation layer implying readiness not supported by artifacts
+## Add Review Lens: Adjacent Contract Completeness
 
-### Proof quality
-- test expectations still match stale behavior
-- harness mutation leaks between cases
-- compile-only proof used where runtime artifact proof is available
+When a patch changes shared values, JSON shape, routes, status labels, schema fields, or manifest semantics, inspect beyond the diff:
+- producers
+- consumers
+- validators
+- presentation/reporting adapters
+- compatibility sidecars
+- fallback paths
+- docs or route indexes that describe the contract
 
-## Review Procedure
+Look for enum/value additions that were handled in one map but not another.
 
-1. Restate the claimed change in one line.
-2. Inspect the owner file.
-3. Inspect at least one adjacent consumer.
-4. Inspect the proof surface.
-5. Classify findings as:
-   - blocking
-   - should-fix-now
-   - acceptable residue
-6. Recommend the smallest next repair.
+## Add Review Lens: Documentation And Audit Staleness
 
-## Boundaries
+If the patch changes behavior that users or future agents rely on, check whether the nearest docs, skill, route capsule, README, audit note, or continuity note still tells the truth.
 
-- Review only unless Randall explicitly asks for implementation.
-- Do not mutate files, config, auth, runtime, finance authority surfaces, or portfolio/canon artifacts as part of the review pass.
-- Do not broaden scope into redesign unless the inspected change creates a blocking correctness or contract risk.
-- Ground every finding in a concrete file, line, artifact, validator, or observed behavior.
-- If proof is missing, stale, or only compile-level where runtime proof is needed, say that plainly instead of inferring success.
+Report stale docs as material only when they can misroute future work or cause false-green closeout. Do not require documentation churn for small private implementation details.
 
-## Output Format
+## Add Review Lens: Claims Versus Proof
 
-Return in this order:
-- review scope
-- files inspected
-- blocking findings
-- non-blocking findings
-- proof assessment
-- recommended next repair
+For every success claim, ask:
+- what command or artifact proves it?
+- is it fresh enough?
+- did it exercise the runtime path or only compile/import?
+- did it inspect a source surface, or only a generated mirror?
+- did it validate fail-closed behavior or just the happy path?
+
+Flag compile-only proof when runtime artifact proof is available and material.
+
+## Add Review Lens: Risk And Tradeoff Framing
+
+For architecture/design-gate reviews, include:
+- decision being reviewed
+- alternatives considered or implicitly ruled out
+- reversibility
+- failure mode
+- blast radius
+- probability/impact
+- smallest acceptance proof
+
+Do not ask for a full architecture redesign unless the inspected change has a concrete design risk.
+
+## Procedure Addition: Two-Pass Review For Shared Contracts
+
+For shared-contract changes:
+1. First pass: inspect correctness and scope drift in changed files.
+2. Second pass: search adjacent repository surfaces for old vocabulary, stale assumptions, missing validators, and presentation drift.
+
+Prefer `rg` for the second pass.
+
+## Acceptance Proof
+
+After applying this proposal:
+- `openclaw skills check` passes.
+- A future targeted review can catch scope drift, stale adjacent consumers, and insufficient proof without widening into implementation by default.

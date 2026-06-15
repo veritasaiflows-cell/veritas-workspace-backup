@@ -1,376 +1,70 @@
 ---
-name: veritas-self-improvement
-description: Run Veritas's doctrine-aligned reflection, correction-capture, and self-improvement loop inside this workspace. Use when: (1) the user corrects or critiques the assistant, (2) significant multi-step work just finished, (3) a repeated mistake, drift pattern, or manual bottleneck appears, (4) a lesson should be promoted into MEMORY.md, memory/YYYY-MM-DD.md, AGENTS.md, TOOLS.md, or another canonical file, or (5) deciding whether a new reusable skill, validator, or script should be created from repeated work.
+name: "veritas-self-improvement"
+description: "Add WF74 gated auto-patch proposal contract."
 ---
 
-# Veritas Self-Improvement
+# WF74 Gated Auto-Patch Proposer Contract
 
-Use this skill to improve Veritas without creating a second memory system.
+## Purpose
 
-This skill must respect the workspace doctrine:
-- `SOUL.md` defines identity and mission.
-- `AGENTS.md` defines operating behavior.
-- `Continuity Protocol.md` defines continuity and promotion rules.
-- `memory/YYYY-MM-DD.md` is raw daily capture.
-- `MEMORY.md` is curated long-term memory.
-- Core operating files or domain notes hold durable behavioral and workflow rules.
+When WF74 detects repeated implementation friction, alert noise, stale procedures, validator drag, or finance-response quality repair debt, route the finding into a gated patch or skill-update plan instead of leaving it in chat memory.
 
-Do not create a parallel memory tree.
-Do not invent a second doctrine.
-Do not store self-improvement state outside the canonical workspace files unless the user explicitly asks for a separate system.
+## Required Flow
 
-## Core mission
+1. Refresh WF74 evidence surfaces:
+   - `python scripts\wf74_improvement_opportunity_queue.py --write --write-md --validate`
+   - `python scripts\wf74_reflection_to_proposal_autopilot.py --write --write-md --validate`
+   - `python scripts\wf74_auto_patch_proposer.py --write --write-md --validate`
 
-When reflection is warranted:
-1. identify what happened
-2. identify what was wrong, weak, or unusually effective
-3. decide whether the lesson is transient, durable, behavioral, tooling-related, or domain-specific
-4. write it to the right canonical place
-5. propose structural fixes when repeated patterns justify them
-6. convert repeated manual friction into an explicit queue, SOP, validator, automation, or skill-improvement candidate instead of leaving it as chat memory
+2. Classify each proposal by route:
+   - `patch_plan` for low-risk implementation metadata, validator routing, alert wording/dedupe, tests, or non-authority proof metadata.
+   - `skill_workshop_request` for repeated procedural friction that belongs in a reusable skill.
+   - `owner_config_decision` for collector/runtime/config/capture-depth questions.
+   - `finance_repair_review` for finance-answer quality and source/freshness repair.
+   - `execution_guardrail_review` for paper/live/account/action surfaces.
 
-Veritas main session is the live truth surface and final integrator; the workspace file layer is the durable canonical financial database. Substantial self-improvement or workspace work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA should default to a file-grounded `openai-codex/gpt-5.5` high-thinking helper lane when available.
+3. Before any code patch is applied:
+   - lease exact files through `concurrent_lane_manager.py`
+   - set the lane to `running` with available runtime metadata
+   - inspect the generated patch plan in `tmp/wf74-auto-patch-proposer.json`
+   - apply only a scoped diff
+   - run the plan's validation commands plus `python scripts\changed_file_validator_router.py --write --validate`
+   - close the lane with proof artifacts
 
-Helper-completion loop:
-1. integrate and verify the completed helper result against live files, artifacts, or control surfaces
-2. check the live queue / registry / continuity note for the next approved action
-3. choose one: spawn the next safe helper lane, complete a quick bounded main-session task, or ask Randall a concrete blocking question
-4. continue until the active workflow is complete, blocked, or genuinely requires human judgment
-5. if direction, priority, or authority is ambiguous, ask before moving the queue
+4. For skill updates:
+   - create or update a Skill Workshop proposal from the generated `skill_workshop_requests`
+   - keep the proposal pending by default
+   - apply a skill only when Randall explicitly approves that specific proposal
 
-## What to improve
+## Auto-Apply Boundary
 
-Focus on improvement that compounds:
-- repeated mistakes
-- repeated user corrections
-- recurring workflow friction
-- note drift
-- validator gaps
-- places where the same reasoning is being rebuilt too often
-- areas where a script, skill, validator, or operating-file rule would reduce future failure
-- places where good analytical work is staying trapped in chat instead of being pushed into the correct live notes or operating files
+WF74 may automatically detect, rank, propose, and prepare patch plans. It must not directly auto-apply code, skills, collector config, finance canon/portfolio state, paper/live/account actions, credential/auth/network changes, or doctrine changes.
 
-Ignore noise:
-- one-off preferences tied only to a single turn
-- hypothetical patterns
-- flattering signals with no real evidence
-- silence as implied approval
+Standing auto-apply may be considered only for explicitly approved low-risk classes, such as non-authority test fixture refresh, validator routing metadata, alert wording/dedupe, and cron freshness expected-artifact metadata. Even then, require lane lease, exact diff, validator proof, rollback path, and no authority expansion.
 
-## Operating workflow
+## Hard Blocks
 
-### 1. Trigger detection
+Never auto-apply:
+- `SOUL.md`, `AGENTS.md`, `TOOLS.md`, or `MEMORY.md`
+- finance canon, portfolio, cash, sizing, sleeve, or risk-rule surfaces
+- trade/order/paper/live/account/brokerage actions
+- credentials, auth, network exposure, runtime config, startup/service/plugin config
+- OTEL collector capture-depth, logs pipeline, or file exporter changes
+- Skill Workshop apply/install/approval without Randall's explicit request
+- anything that infers owner approval
 
-Use this skill when any of these are true:
-- the user says something is wrong, missing, unclear, too verbose, too cautious, too aggressive, or otherwise unsatisfactory
-- a significant multi-step task just completed
-- a bug, contradiction, or drift issue was discovered and fixed
-- the same kind of instruction has appeared multiple times
-- a repeated manual workflow should probably become a skill, validator, script, or operating rule
+## Validation
 
-### 2. Classify the lesson
-
-Classify the lesson before writing anything.
-
-Use these buckets:
-- **daily context**: useful today, may not matter later
-- **durable memory**: will matter across many sessions
-- **operating rule**: should change how Veritas behaves
-- **tooling/environment rule**: setup, model, browser, node, script, or local environment rule
-- **domain rule**: finance or other domain-specific standard
-- **automation candidate**: repeated work that should become a script, validator, skill, or cron-assisted workflow
-
-### 3. Write to the right place
-
-Default destinations:
-- `memory/YYYY-MM-DD.md`
-  - factual log of what happened today
-  - fixes, discoveries, follow-ups, rough lessons worth reviewing later
-- `MEMORY.md`
-  - durable user preferences
-  - long-term lessons
-  - stable operating posture
-  - important finance rules and decisions
-- `AGENTS.md`
-  - behavior rules
-  - workflow rules
-  - standing operating standards
-- `TOOLS.md`
-  - local setup and environment-specific facts
-- domain note or playbook
-  - if the lesson belongs to finance process, portfolio operations, dashboards, risk, or another specific note layer
-- new or updated skill
-  - if a reusable procedure deserves its own portable operating pattern
-
-If unsure between daily note and MEMORY, prefer the daily note first.
-If a lesson changes future behavior, prefer an operating file or skill over bloating MEMORY.
-
-## Reflection pass
-
-After meaningful work, run a short internal review.
-
-Use this structure:
-- **Outcome**: what was actually accomplished
-- **Gap**: what was wrong, fragile, noisy, or slower than it should have been
-- **Lesson**: what should change next time
-- **Destination**: where that lesson belongs
-- **Structural fix**: whether this should become a script, validator, skill, playbook rule, or file update
-
-Concrete template:
-
-```text
-Outcome: <what got done>
-Gap: <what was weak, missing, noisy, or fragile>
-Lesson: <what should change next time>
-Destination: <daily note | MEMORY | AGENTS | TOOLS | domain note | skill>
-Structural fix: <none | script | validator | skill | playbook | operating-file edit>
-```
-
-Keep it short and concrete.
-Do not produce theatrical self-criticism.
-The goal is better future execution, not ritual.
-
-## Correction handling
-
-When the user corrects Veritas:
-1. capture the correction accurately
-2. decide whether it is:
-   - preference
-   - factual correction
-   - workflow correction
-   - tone/communication correction
-   - domain-method correction
-3. write only what deserves persistence
-4. if the correction reveals a stable rule, promote it
-5. if the correction reveals a system flaw, fix the system, not just the surface reply
-
-Examples:
-- repeated request for directness -> operating behavior rule
-- repeated request for fewer duplicated notes -> workflow rule or skill update
-- model/config mistake -> TOOLS or config guidance update
-- finance evidence standard mistake -> finance operating file update
-
-## Promotion rules
-
-Promote only when evidence is strong.
-
-Promote to durable memory or rules when one of these is true:
-- the user explicitly says to remember it
-- it changes future decision quality
-- it has repeated across multiple sessions or tasks
-- losing it would likely recreate the same mistake
-- it changes finance, risk, or workflow discipline in a lasting way
-
-Do not promote when:
-- the lesson is clearly one-off
-- the scope is narrow and temporary
-- the underlying issue is not yet understood
-- it belongs in a task note rather than durable operating memory
-
-## Routing matrix
-
-Use this table when deciding where the lesson goes.
-
-| Lesson type | Write here first | Promote or structural target |
-|---|---|---|
-| factual event from today | `memory/YYYY-MM-DD.md` | promote later only if durable |
-| durable user preference | `MEMORY.md` | `AGENTS.md` only if it changes operating behavior |
-| repeated behavior mistake | `AGENTS.md` or current daily note | skill update if reusable pattern exists |
-| tooling or environment discovery | `TOOLS.md` | script/config change if repeated |
-| finance process or risk discipline lesson | relevant finance note or playbook | `MEMORY.md` only if it is truly durable policy |
-| repeated manual task | current daily note | script, validator, cron workflow, or skill |
-| note-boundary or file-role confusion | current daily note | update playbook or operating file |
-| one-off session-specific instruction | current daily note only | do not promote unless repeated |
-
-Quick routing rules:
-- If it happened today and may not matter later, write to the daily note.
-- If it changes future judgment across sessions, promote to `MEMORY.md`.
-- If it changes how Veritas should operate, update `AGENTS.md`, `TOOLS.md`, or a skill.
-- If it belongs to a specific domain workflow, update the domain note instead of global memory.
-
-## Audit-to-contract rule
-
-When a review, audit, or IC pass produces grounded findings:
-1. verify them against live artifacts
-2. fix the low-risk gaps in the same workstream when possible
-3. if a gap remains open, convert it into an explicit owner / target / acceptance contract on the live control surfaces
-4. if a new mechanism fixes one residue case, inspect sibling cases before declaring closure
-5. write the lesson into the right operating file, note, or skill instead of leaving it trapped in chat
-
-## Automation and SOP optimization posture
-
-When a lesson reveals repeated manual work, do not stop at reflection.
-
-Route it into one of these concrete outcomes:
-- queue item with owner, next pass, blocker, acceptance check, category, and parallel posture
-- operating procedure when the work is operator-facing and repeatable
-- validator or script when proof can be made mechanical
-- skill update when the sequence is non-obvious and reusable across sessions
-- automation candidate only when trust gates, ownership boundaries, and failure modes are explicit
-
-For coding and workspace-governance work, improvement capture is mandatory when a repeatable lesson appears:
-- code / script / validator lessons -> tighten `disciplined-implementation`, the relevant test, or the owning script contract
-- folder / note / root-boundary lessons -> tighten `workspace-governor`, workspace standards, or the relevant validator
-- orchestration lessons -> tighten queue, spawn governance, or automation orchestration docs
-- if no safe improvement can be made immediately, create an explicit queue item with acceptance criteria
-
-Default boundary:
-- under roughly five minutes and reversible -> main session may execute directly
-- over roughly five minutes, multi-artifact, broad-inspection, or QA-heavy -> spawn `openai-codex/gpt-5.5` high-thinking helper lane with file-grounded context
-- final truth, queue state, canonical conflict resolution, portfolio judgment, and closeout remain main-session responsibilities
-
-## Evaluation loop
-
-Use this loop when stepping back from a workstream:
-
-1. **Failure review**
-   - What has gone wrong more than once?
-   - What keeps drifting or breaking?
-2. **Friction review**
-   - What work still depends on chat rescue or manual reconstruction?
-3. **Compounding review**
-   - What, if formalized once, would save time repeatedly?
-4. **Queue / SOP review**
-   - Does this expose a current operating need that belongs on the live queue?
-   - Would a short SOP reduce repeated reconstruction or operator ambiguity?
-   - Is the SOP a genuine procedure, or would it become a second control plane?
-5. **Right abstraction review**
-   - Should this become:
-     - a script
-     - a validator
-     - a cron workflow
-     - a skill
-     - an operating-file rule
-     - a note-template or playbook
-
-Prefer the smallest abstraction that reliably removes the failure.
-
-
-## WF74 reflection-to-proposal pipeline
-
-For RSI / compounding-improvement work, use the WF74 pipeline artifacts as the current operating contract:
-- `tmp/wf74-rsi-research-brief.json/.md` - bounded RSI research basis
-- `tmp/wf74-clawhub-rsi-inspection-queue.json/.md` - evaluator-first ClawHub inspection queue; no installs by default
-- `tmp/wf74-reflection-to-proposal-pipeline.json/.md` - capture -> classify -> evidence-bind -> propose -> evaluate -> apply/defer -> monitor
-- `tmp/wf74-rsi-trend-report.json/.md` - review-only lesson/correction trend report
-- `tmp/wf74-rsi-evaluation-harness.json/.md` - evaluation dimensions and seed fixtures
-- `tmp/wf74-rsi-validation.json/.md` - local validation proof
-
-RSI improvement proposals must include problem, evidence, lesson type, destination, proposed change, files affected, risks, validation, rollback, QA requirement, and authority boundary.
-
-Before applying skill, script, control-surface, or workflow changes from RSI:
-1. run the local WF74 validation harness or equivalent targeted proof
-2. use independent QA for any non-trivial change
-3. keep changes file-backed, test-backed where practical, and reversible
-4. preserve the hard boundary: no base-model self-modification, no autonomous authority expansion, no second memory tree, no config/auth/channel/service mutation without explicit approval, and no portfolio/trade/account/paper/live authority
-
-## Skill creation trigger
-
-Recommend creating or improving a skill when all are true:
-- the same kind of work recurs
-- the work has non-obvious procedure or fragile sequencing
-- a reusable workflow would improve reliability or speed
-- the knowledge should outlive the current chat
-
-Before creating or materially expanding a skill:
-- check `06. Playbooks/Skills Governance Index.md` for current skill-count and overlap posture
-- apply the minimum quality bar from `06. Playbooks/Skill Quality Standard.md`
-- if the workspace is already at or above the governance-review threshold, prefer merge / deprecate / narrow decisions before adding another overlapping skill
-
-Do not create a skill just because something is interesting.
-Create one when reuse is real.
-
-## Boundaries
-
-Never use this skill to:
-- create a hidden memory system
-- infer preferences from silence alone
-- build a psychological profile
-- retain sensitive secrets unnecessarily
-- create doctrine that conflicts with `SOUL.md`
-- duplicate the same durable fact across many files without reason
-
-## Output style
-
-When reporting improvement findings to the user:
-- be direct
-- name the real issue
-- say what changed
-- say where it was written
-- separate solved internal issues from still-open external risks
-
-Good output pattern:
-- issue
-- fix
-- file or system updated
-- whether it is now solved, partially solved, or still blocked
-
-Additional rule:
-- do not translate a user's desire for higher capability into empty identity inflation. Convert it into better operating standards, stronger validation, cleaner startup discipline, better skills, and fewer repeated mistakes.
-
-## Minimal checklist
-
-Before ending an improvement pass, check:
-- Was a real lesson identified?
-- Was it written to the right place?
-- Did I avoid creating duplicate memory or doctrine drift?
-- Should this have become a skill, validator, or script change?
-- Did I improve future execution rather than just document the past?
-## WF74 Quality Collection Route
-
-When meaningful implementation, finance recommendation work, model canary work, cron proof work, or evaluation/QA work completes, use the WF74 collection route before claiming measurement readiness.
-
-Default command sequence:
+After implementing or reviewing this path, run:
 
 ```powershell
-python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate --include-harness
+python scripts\wf74_auto_patch_proposer.py --write --write-md --validate
+python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate
+python scripts\pm_control_packet.py --write --validate
+python scripts\cron_freshness_spine.py --write --validate
 python scripts\wf74_rsi.py --validate-only
 ```
 
-Artifacts to inspect:
-- `tmp/wf74-model-quality-collection-cron-runner.json`
-- `tmp/model-run-ledger-current.json`
-- `tmp/finance-recommendation-correctness-ledger-current.json`
-- `tmp/model-quality-scorecard.json`
-- `tmp/cron-control-packet.json`
+## Response Contract
 
-Interpretation rules:
-- Treat `model_run_ledger` as operational/run evidence only.
-- Treat `finance_recommendation_correctness_ledger` as ex-ante rule and boundary correctness only.
-- Treat WF55 later outcome grades as blocked until assigned by the WF55 gated outcome process.
-- Do not claim model ranking unless repeated samples, model attribution, session attribution, and later outcome-grade history all support it.
-- Do not infer investment correctness from OTEL metrics, runtime speed, validator success, or canary completion.
-
-Boundary:
-- Review-only measurement.
-- No base-model self-modification.
-- No authority expansion.
-- No raw prompt/content capture.
-- No runtime/config mutation from the collection route.
-- No canon/portfolio mutation.
-- No capital deployment approval.
-- No paper/live/account action.
-- No owner approval inference.
-
-Cron note:
-- The scheduled owner path is `Ops - OTEL Local Digest`, which runs the WF74 collection runner. Cron may refresh proof artifacts and WF74 scorecards only; it may not apply decisions, grade outcomes, execute trades, mutate portfolio/canon state, or promote model rankings.
-## RSI to dataset candidate to skill proposal loop
-
-Use this path when WF74/RSI observations suggest Veritas can improve future behavior:
-
-1. Capture tiny RSI observations in existing JSON artifacts.
-2. Run `python scripts\training_dataset_candidate_builder.py --write --write-md --validate` to classify local metadata-only examples.
-3. Treat candidate rows as review objects, not training data.
-4. Escalate to a skill proposal only when a pattern is repeated, safety-relevant, or clearly reusable across sessions.
-5. Keep finance examples eval-only unless a future gated process explicitly approves another use.
-6. Require redaction review before any raw memory/chat/prose becomes an eval or training example.
-7. Never use RSI, candidate counts, validator success, or cron success to claim base-model retraining, model ranking, investment correctness, or authority expansion.
-
-Recommended destinations:
-
-- Repeated response-quality pattern -> `veritas-response-contract` proposal.
-- Repeated implementation/validator pattern -> `disciplined-implementation` or validator patch.
-- Repeated cron/duplication pattern -> `cron-automation-manager` or duplication audit patch.
-- Repeated memory routing pattern -> `memory-continuity-manager` proposal.
-- One-off observation -> daily memory only.
-
-The goal is controlled learning: evidence first, candidate classification second, skill proposal third, apply only after explicit approval.
+Report generated plan counts, patch-plan counts, Skill Workshop request counts, owner-gated plan counts, auto-apply candidate count, and `auto_apply_count`. If `auto_apply_count` is not zero, stop and treat it as a blocker.

@@ -1,132 +1,81 @@
 ---
-name: workspace-qa-pass
-description: Run a bounded high-signal QA audit on the Veritas workspace after meaningful automation, workflow, skill, script, or control-surface changes. Use when checking residual integrity risk, orchestration drift, trust-gate alignment, schema-guard coverage, atomic-write debt, skill hygiene, or whether a completed hardening pass actually closed the intended gaps without widening scope.
+name: "workspace-qa-pass"
+description: "Run high-signal QA on Veritas workspace changes, audit claims, and control-plane consistency."
 ---
 
-# Workspace QA Pass
+# Proposed Update: workspace-qa-pass
 
-Run an independent review. Do not act like the implementation lane defending its own patch.
+## Summary
 
-## Purpose
+Tighten `workspace-qa-pass` so it can independently review not just implementation patches, but audit claims and control-plane consistency. Keep it bounded and evidence-first.
 
-Find the real remaining risk after a workstream lands:
-- integrity debt
-- orchestration drift
-- control-surface debt
-- doctrine/procedure mismatch
-- stale or fake closure claims
+## Proposed Description
 
-Keep the pass bounded. Prefer evidence over broad redesign.
+`Run high-signal QA on Veritas workspace changes, audit claims, and control-plane consistency. Use when checking residual integrity risk, orchestration drift, live-artifact mismatches, schema/contract propagation, skill hygiene, or whether an audit or hardening pass actually closed the intended gaps.`
 
-## Read first
+## Add Section: Layered QA Stack
 
-Read only what the pass needs, but default to:
-- `SOUL.md`
-- `AGENTS.md`
-- `TOOLS.md`
-- the current workflow contract or playbook entry if the pass targets a named workflow
-- `06. Playbooks/Workspace Structure Protocol.md` and the latest workspace-hygiene audit when path, folder ownership, or generated-artifact placement are in scope
-- the current daily note if the work happened today
-- the changed files and the smallest useful neighboring files
-- the most relevant prior audit in `08. Audits/`
+When reviewing a completed audit, hardening pass, workflow repair, or generated proof claim, use this layered check:
 
-If the pass is about skills, read `06. Playbooks/Skill Quality Standard.md` and `06. Playbooks/Skills Governance Index.md` as the style and governance anchor instead of anchoring the audit to a sample skill file.
+1. **Existence**: Does the claimed file/artifact/proof exist where stated?
+2. **Authenticity**: Was it produced by the expected script, workflow, or owner surface?
+3. **Freshness**: Is the timestamp current enough for the claim?
+4. **Accuracy**: Does the artifact content match the live owner/source surface?
+5. **Authority**: Does the artifact stay inside review/proof authority and avoid implying approval/execution/mutation?
+6. **Closure**: Do queue, lane, memory, and audit surfaces agree on what remains open?
 
-## Boundaries
+If any layer fails, report the weakest layer instead of claiming global failure or success.
 
-Do not widen into full architecture redesign.
-Do not touch auth, network exposure, or permissions unless the requested QA task is explicitly about them.
-Do not mutate canonical finance notes unless the task explicitly includes a note-layer fix.
-Default outputs are an audit note, a bounded fix list, or a skill/workspace recommendation.
+## Add Section: Live State Versus Generated Artifact Reconciliation
 
-## Procedure
+When QA reviews PM, cron, runtime, routes, or dashboards, compare generated control packets against live control surfaces when available.
 
-1. Reconstruct the claimed contract.
-   - What was supposed to be hardened, prevented, or proven?
-   - What was explicitly out of scope?
+Examples:
+- cron control packet green but scheduler `lastRunStatus` has errors
+- PM packet says no blockers while lane register still has active or stale lanes
+- runtime scorecard green while harness artifact is stale or warning
+- route registry green while binary freshness is stale
 
-2. Inspect the live implementation surface.
-   - Read the changed files, not just summaries.
-   - Check adjacent orchestrators, helpers, validators, and output writers that can silently reintroduce drift.
-   - If path truth or folder governance is implicated, inspect the ownership chain across `scripts/`, `tmp/`, `skills/`, documented root exceptions, and the governing structure docs instead of stopping at the changed file.
+Report conflicts explicitly with:
+- generated artifact status
+- live/source status
+- likely owner
+- next proof needed
 
-3. Test for mismatch across six QA lenses.
-   - **Trust enforcement:** do policy flags actually block behavior, or only describe it?
-   - **Write integrity:** where do meaningful outputs still bypass shared atomic helpers?
-   - **Schema honesty:** where do downstream consumers still assume happy-path shapes?
-   - **Contract propagation:** if a shared state vocabulary, JSON contract, or manifest changed, which adjacent consumers, ranking maps, fallback paths, validators, or presentation adapters still speak the old contract?
-   - **Control surface:** what still depends on flaky session/runtime assumptions?
-   - **Workspace hygiene:** did the work create new duplication, stale notes, vague ownership, reopened boundary drift, undocumented root exceptions, or procedural spillover into core files?
+Do not collapse conflicting statuses into a single green summary.
 
-4. Rank only concrete findings.
-   - Prefer a focused list of real residual risks over a broad inventory, but do not make findings so terse that they cannot be verified or acted on.
-   - For each material finding, include: evidence/source file, why it matters, severity, owner or affected surface, recommended fix, and acceptance proof.
-   - For closed items, name the proof that closed them; for open debt, name the next owner/pass when known.
-   - Separate closed items from still-open debt.
-   - Do not relitigate issues already fixed unless new evidence shows regression.
+## Add Section: Audit Claim QA
 
-5. Recommend the next bounded tightening step.
-   - Name the smallest next pass that materially improves trust.
-   - Avoid giant omnibus cleanup plans.
+When reviewing a workspace audit, check whether:
+- every P1/P2 finding has evidence, impact, recommendation, and acceptance proof
+- top findings are current, not copied from stale memory
+- unresolved blockers name owner surfaces and stop lines
+- recommendations route to skills, procedures, validators, or queue items when they are recurring
+- finance/account/paper/live/config boundaries remain explicit
+- intentionally deferred checks are named
 
-6. Check closeout honesty.
-   - Was checkpoint posture made explicit?
-   - Do queue / registry / continuity note agree?
-   - Is the next pass or adjacent candidate routing explicit instead of implied?
+## Add Section: External Pattern Intake QA
 
-7. Validate the QA artifact or skill you create.
-   - Use the smallest meaningful check available: direct inspection, targeted grep/search, `openclaw skills check`, or another local validator.
-   - If workspace structure or truth-surface ownership was in scope, run `python scripts/workspace_boundary_check.py` and `python scripts/dashboard_truth_lint.py` when those validators exist.
-   - If the audited change touched shared vocab, freshness fields, or output contracts, rerun at least one adjacent consumer/acceptance path and confirm the proof artifact is fresh enough to mean anything.
-   - If no validator exists, say that plainly.
+When a pass borrows from ClawHub or web sources:
+- verify the source pattern is summarized, not blindly installed
+- check for security warnings or generic instructions that conflict with Veritas doctrine
+- confirm adopted behavior is routed into a Veritas-owned skill/procedure/validator
+- ensure third-party examples do not introduce Bash assumptions, config mutation, credential exposure, public/customer action, or finance authority drift
 
+## Add Section: Worker Cannot Review Itself
 
-## PM proof-budget fit
+If the same lane implemented a substantial change and then claims closure, QA should treat that as implementation evidence, not independent proof.
 
-When QA reviews work that came through the PM queue, inspect `validation_budget` and `closeout_mode` before deciding whether the proof was enough.
+For higher-risk changes, recommend one of:
+- main-session independent inspection
+- a bounded helper QA lane
+- a deterministic validator
+- a targeted acceptance command
 
-Default interpretation:
-- `micro`: QA focuses on local behavior and obvious stop-line violations.
-- `narrow`: QA verifies the named targeted proof is enough.
-- `shared`: QA inspects producer/consumer contract propagation.
-- `major`: QA expects full integration proof and honest closeout.
+Do not require a separate reviewer for tiny local edits when direct proof is enough.
 
-If the budget is too small for the actual blast radius, report that as a finding instead of manually broadening every pass by habit.
+## Acceptance Proof
 
-## WF75 Evaluation Lens
-
-When QA targets WF75, Generic Intelligence SaaS, or SMB Workflow Clarity, include these checks:
-- PM queue: selected action is review-only, has owner, source artifacts, stop lines, and no inline execution authority
-- product readiness: offer, buyer pain, deliverables, activation/time-to-value hypothesis, exclusions, and pilot gate are explicit
-- service-run lifecycle: status transitions do not imply customer/public readiness
-- renderer/evaluation: clean scenarios pass and unsafe seeded claims fail
-- authority: no customer data, credential access, external delivery, outbound messaging, customer-system implementation, guaranteed ROI, public launch, canon/portfolio mutation, paper/live/account action, config/auth/runtime mutation, or owner approval inference
-- ClawHub pattern intake: useful external patterns are copied into Veritas-owned skills/scripts; generic skills are not installed without a dedicated review
-- workflow automation blueprint: every proposed automation has trigger, input contract, dedup key, idempotency, retry/backoff, audit logging, human review queue, dry-run activation state, and no customer/credential/outbound/writeback authority
-
-## Evidence standard
-
-Do not write generic advice.
-Anchor findings in concrete files, commands, outputs, or observable workflow order.
-Treat prior chat claims, stale audits, and detached-session state as supporting evidence only until live workspace state matches them.
-
-## Output format
-
-Return in this order:
-- scope audited
-- files inspected
-- top findings
-- recommended next pass
-- validation run
-- intentionally deferred items
-
-Top findings should be concise but sufficiently detailed. A useful finding has enough evidence and acceptance criteria that another lane can fix or verify it without reconstructing the audit from scratch.
-
-## Default edit posture
-
-If asked only for QA, prefer writing an audit note over making broad fixes.
-If asked for a small repair too, keep it tightly tied to the findings and verify it.
-
-## Good pass standard
-
-A good QA pass should make it harder for the workspace to lie about its own state.
+After applying this proposal:
+- `openclaw skills check` passes.
+- A future QA pass can catch live scheduler/artifact mismatch and audit-claim overreach without inventing new criteria in chat.

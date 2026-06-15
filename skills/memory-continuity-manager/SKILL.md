@@ -1,119 +1,67 @@
 ---
-name: memory-continuity-manager
-description: Manage daily notes, durable memory, and continuity promotion. Use when logging meaningful work, deciding what belongs in daily memory versus durable memory, pruning memory bloat, handling remember-this requests, or performing heartbeat continuity maintenance.
+name: "memory-continuity-manager"
+description: "Manage memory logging, durable promotion, dedupe, and daily-note hygiene."
 ---
 
-# Memory Continuity Manager
+# Proposed Update: memory-continuity-manager
 
-## Purpose
+## Summary
 
-Keep continuity strong without turning memory into clutter.
+Strengthen daily-note hygiene and audit-to-memory routing without creating a parallel memory system.
 
-## When to Use
+## Proposed Description
 
-Use this skill when:
-- meaningful work needs to be logged in today's note
-- Randall says to remember something
-- recent daily notes need promotion review
-- `MEMORY.md` is growing procedural bloat
-- heartbeat maintenance should update memory or operating files
-- you need to decide whether something belongs in a daily note, `MEMORY.md`, or an operating file
+`Manage memory logging, durable promotion, dedupe, and daily-note hygiene. Use when logging meaningful work, handling remember-this or pre-compaction flushes, preventing duplicate daily headings, pruning memory bloat, or deciding whether audit lessons belong in memory, skills, procedures, or validators.`
 
-## Inputs to Check First
+## Add Section: Pre-Compaction Flush Discipline
 
-Read only what matters:
-- today's daily note in `memory/YYYY-MM-DD.md`
-- yesterday's daily note when continuity matters
-- `MEMORY.md`
-- `Continuity Protocol.md`
-- `HEARTBEAT.md` when responding to a heartbeat
-- any core file that might need the promoted lesson
+When Randall requests a pre-compaction memory flush:
+- write only durable facts that should survive context loss
+- use the canonical daily file `memory/YYYY-MM-DD.md`
+- append only if the file already exists
+- do not create timestamped variants such as `YYYY-MM-DD-HHMM.md`
+- treat bootstrap/reference files like `MEMORY.md`, `DREAMS.md`, `SOUL.md`, `TOOLS.md`, and `AGENTS.md` as read-only unless Randall explicitly instructs otherwise
+- if nothing durable needs storing, reply `NO_REPLY`
 
-## Procedure
+## Add Section: Duplicate Heading Guard
 
-1. Capture only material factual deltas in the daily note.
-2. Before appending, check whether today's note already contains the same topic or opening phrase; merge or update instead of duplicating.
-3. If automation or session-memory writes already touched the note and exact duplicate bullets exist, run `python scripts/daily_note_dedupe.py memory/YYYY-MM-DD.md --apply` as the smallest cleanup guard.
-4. Classify each candidate lesson:
-   - daily context
-   - durable memory
-   - operating rule
-   - environment rule
-   - domain rule
-   - automation candidate
-5. Promote only what should survive many sessions.
-6. Keep `MEMORY.md` curated.
-7. If a lesson changes behavior, update the operating file or skill instead of only logging it.
-8. Remove duplication when promoting.
-
-## Daily Note Discipline
-
-- Daily notes are delta logs, not pass-by-pass transcripts.
-- One short bullet is enough for one material state change.
-- If queue, registry, continuity notes, or audits already own the detail, write only the short outcome or skip the daily note entirely.
-- Do not log repeated "still active", "reran", or "no change" updates.
-- Keep bullets topic-led so duplicates are easy to spot and collapse.
-- When several small actions belong to one workflow, prefer one summary bullet plus a pointer to the owning continuity note.
-- Treat exact duplicate bullets as a hygiene failure to remove, not as acceptable history.
-
-## Routing Rules
-
-- today-only facts -> `memory/YYYY-MM-DD.md`
-- durable user preference -> `USER.md` or `MEMORY.md`
-- durable operator or mission rule -> `MEMORY.md`
-- behavior rule -> `AGENTS.md`
-- tool or environment rule -> `TOOLS.md`
-- repeatable workflow -> a skill
-- uncertain item -> leave in the daily note or send to `migration-review.md`
-
-## Safety Rules
-
-- No mental notes for important facts.
-- Do not promote weak or temporary conclusions.
-- Do not build a second memory system.
-- Avoid copying the same rule into multiple files.
-
-## Files This Skill May Read
-
-- `memory/*.md`
-- `MEMORY.md`
-- `Continuity Protocol.md`
-- `HEARTBEAT.md`
-- core files when routing a lesson
-
-## Files This Skill May Edit
-
-- `memory/*.md`
-- `MEMORY.md`
-- `USER.md`
-- `TOOLS.md`
-- `AGENTS.md`
-- `Continuity Protocol.md`
-- a relevant skill when the lesson is procedural
-
-## Output Format
-
-Use this structure when reporting memory work:
-- what happened
-- what was logged
-- what was promoted
-- what stayed daily-only
-- any open review items
-
-## Memory Update Rules
-
-This skill owns the routing decision.
-Always prefer a small accurate note over a bloated durable file or bloated daily log.
-## Memory-to-dataset boundary
-
-Daily memory and durable memory may be used to route candidate discovery, but they are not automatically training data.
+Before appending to a daily note, check for repeated top-level date headings and repeated topic headings.
 
 Rules:
+- one daily file should have at most one primary date heading
+- append entries under an existing date/topic section when practical
+- do not add a new H1 for every flush or session
+- if duplicate H1s already exist, report the hygiene issue or run the approved dedupe tool when the task includes cleanup
 
-- Use memory files as metadata-only references for candidate discovery unless a separate redaction process is approved.
-- Do not export raw daily-memory text, durable-memory text, user chat, account details, finance execution context, or private identifiers into training/eval files by default.
-- Mark memory-derived candidates as `redaction_review` or `needs_redaction` until a human-gated review confirms safe use.
-- Prefer proof artifacts, validators, and structured RSI observations over raw prose when building eval candidates.
-- If a lesson is durable, promote it through the normal memory/skill/procedure route; do not create a parallel training-memory tree.
+Suggested checks:
+- search `^# ` in `memory/YYYY-MM-DD.md`
+- search for the proposed topic phrase before appending
+- run `python scripts\daily_note_dedupe.py memory\YYYY-MM-DD.md --apply` only when cleanup is safe and in scope
 
-Memory can identify where good examples live. It does not grant permission to use that text for model training.
+## Add Section: Audit Lesson Routing
+
+After a full workspace audit or targeted finding review, route lessons as follows:
+- one-time status result -> daily memory or audit note only
+- repeated agent behavior -> skill proposal/update
+- repeated operator steps -> operating procedure
+- deterministic recurring check -> validator/script
+- durable owner preference -> `USER.md` or curated durable memory
+- workflow-specific current state -> workflow continuity note
+
+Do not put full audit findings into daily memory if the durable audit note already owns them. Daily memory should record the short outcome and pointer, not duplicate the report.
+
+## Add Section: Memory As Evidence Boundary
+
+Memory can route work, but it does not prove current state by itself.
+
+When answering status, audit, finance, cron, PM, route, or runtime questions:
+- use memory as a pointer to relevant surfaces
+- verify live artifacts before claiming current truth
+- mark memory-only claims as stale or historical unless refreshed
+
+## Acceptance Proof
+
+After applying this proposal:
+- `openclaw skills check` passes.
+- Future pre-compaction flushes avoid duplicate daily headings, timestamp variants, and accidental edits to bootstrap/reference files.
+- Audit closeouts route durable lessons to skills/procedures/validators instead of bloating daily memory.

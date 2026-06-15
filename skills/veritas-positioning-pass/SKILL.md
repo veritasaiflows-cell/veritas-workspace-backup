@@ -1,6 +1,6 @@
 ---
-name: veritas-positioning-pass
-description: Produce a Veritas portfolio-positioning pass that turns macro, fundamentals, technicals, and risk rules into disciplined portfolio decisions. Use when reviewing the current portfolio, deciding whether to add, trim, hold, defer, or bench a name, ranking candidates for limited capital, setting conditional next actions, or translating the current regime into sleeve-level positioning and cash-deployment guidance.
+name: "veritas-positioning-pass"
+description: "Translate macro, fundamentals, technicals, and risk rules into owner-gated portfolio positioning."
 ---
 
 # Veritas Positioning Pass
@@ -11,6 +11,22 @@ This is not a broker-connected portfolio manager and not a generic advisory ques
 Use it when the question is: what should the portfolio do next, under current macro, fundamental, technical, and risk conditions?
 
 ## Before starting
+
+## Effort routing
+
+Before opening the full portfolio stack, classify the request with `veritas-intelligence-effort-router`.
+
+Default route:
+
+- **Band 0:** answer conceptual positioning questions directly.
+- **Band 1:** read `tmp/deployment-readiness-surface.json`, current ticker card/answer packet, or PM/router packet before broad notes.
+- **Band 2:** refresh only the stale producer needed for the decision, such as deployment readiness, macro signal spine, or a ticker front door.
+- **Band 3:** run the full positioning pass when the answer asks what to add, trim, hold, bench, prioritize, or prepare for owner approval.
+- **Band 4:** use implementation/QA governance when positioning rules, portfolio maintenance gates, cron routing, or skill contracts change.
+
+For current macro posture inside positioning, prefer `tmp/macro-signal-spine.json` plus `tmp/macro-judgment-draft.json` before older note-layer summaries. If those are warning-classed, carry the warning into portfolio language.
+
+Do not turn review-ready, deployable, or paper-ready language into approval. Capital deployment, paper/live execution, portfolio mutation, cash/sizing/risk-rule changes, and owner approval remain separately gated.
 
 Read the current workspace stack first:
 - `03. Portfolio/Portfolio Snapshot.md`
@@ -134,23 +150,23 @@ Use this structure unless the user asks for something else.
 - [2-4 bullets]
 
 **Best positioned names now**
-- [ticker] — [why]
-- [ticker] — [why]
-- [ticker] — [why]
+- [ticker] Ã¢â‚¬â€ [why]
+- [ticker] Ã¢â‚¬â€ [why]
+- [ticker] Ã¢â‚¬â€ [why]
 
 **Hold / maintain**
-- [ticker] — [why]
+- [ticker] Ã¢â‚¬â€ [why]
 
 **Bench / wait**
-- [ticker] — [why]
+- [ticker] Ã¢â‚¬â€ [why]
 
 **Avoid / do not deploy**
-- [ticker] — [why]
+- [ticker] Ã¢â‚¬â€ [why]
 
 **Capital priority order**
-1. [ticker] — [why first]
-2. [ticker] — [why second]
-3. [ticker] — [why third]
+1. [ticker] Ã¢â‚¬â€ [why first]
+2. [ticker] Ã¢â‚¬â€ [why second]
+3. [ticker] Ã¢â‚¬â€ [why third]
 
 **Risk notes**
 - [3-6 bullets tied to portfolio concentration, catalyst risk, or invalidation clarity]
