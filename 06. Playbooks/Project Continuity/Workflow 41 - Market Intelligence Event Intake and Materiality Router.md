@@ -9,11 +9,12 @@
 
 ## Current phase
 - Artifact-derived v1 router hardening is implemented and main-session QC passed on 2026-05-09.
-- The current router remains a workspace-artifact sidecar, not broad external/news intake. It is closeout-ready for the artifact-derived v1 contract, while broader WF26/WF41 source-tier expansion remains a separate owner-gated design pass.
+- The current router remains a workspace-artifact sidecar, not broad external/news intake.
+- 2026-05-19 audit-directed update: the canonical audit at `08. Audits/Financial Advisor and Real-Time Alerting Readiness Audit - 2026-05-19.md` and Randall's follow-up direction make FA/advisor-grade monitoring plus real-time/intraday alerting the primary goal. WF41 is reopened as a dependency lane for WF68, but only for event/materiality semantics and alert routing contracts. It does not own intraday data plumbing or delivery.
 
 ## Recommended next phase
-- Treat artifact-derived v1 as closeout-ready after repeat window proof.
-- Broader scheduled review-surface generation or external source-tier expansion should wait until WF40 closes or is explicitly paused and Randall approves any wider source policy.
+- Support WF68 by defining how intraday trigger packets become `thesis_review`, `risk_review`, `promotion_review`, `deployment_review`, `no_route`, or `unresolved_truth` events.
+- Keep broader external/news source-tier expansion separate and owner-gated.
 - Do not widen to autonomous thesis updates, watchlist promotion, deployment-state mutation, portfolio-note mutation, or external crawling.
 
 ## Safe automation boundary

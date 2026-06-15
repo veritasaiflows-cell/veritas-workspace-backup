@@ -1,0 +1,49 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "d5e9feed-7ff2-4cb7-bac7-40f162cbdb4f",
+  "name": "Runtime - Weekly OS Improvement Radar Review",
+  "required": true,
+  "owner_workflow": "RUNTIME",
+  "contract_reason": "Weekly main-session reminder to convert repeated friction into OS-improvement candidates without noisy daily review.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 16 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Weekly OS-improvement radar review.\n\nWork in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nPurpose: turn repeated friction into practical OS improvements without creating noise.\n\nReview these proof surfaces first:\n- tmp\\artifact-staleness-explainer.json\n- tmp\\lane-collision-preflight.json\n- tmp\\validator-bundle-router.json\n- tmp\\worktree-checkpoint-planner.json\n- tmp\\cron-contract-validator.json\n- tmp\\cron-control-packet.json\n- tmp\\pm-control-packet.json\n- memory\\YYYY-MM-DD.md recent friction notes\n\nIf proof is stale, you may refresh review-only local proof with:\npython scripts\\artifact_staleness_explainer.py --write --validate\npython scripts\\cron_contract_validator.py --require-contracts --fail-on-drift --write --validate\npython scripts\\changed_file_validator_router.py --write --validate\npython scripts\\pm_control_packet.py --write --write-db --validate\npython scripts\\cron_control_packet.py --write --validate\n\nLook for repeated manual work, false greens, stale artifacts, validator confusion, lane collisions, cron drift, or worktree checkpoint friction. If a high-value candidate exists, report a concise proposal: pain point, recommended tool/procedure, risk reduced, smallest safe next step, and required approval if any.\n\nIf nothing material changed, reply exactly NO_REPLY.\n\nBoundary: review-only OS-improvement radar. Do not mutate cron, config, auth, channels, runtime, files, skills, canon, portfolio, cash, sizing, paper/live/account surfaces, or external delivery without separate explicit approval. Do not infer owner approval. Do not create jobs, patches, commits, or apply changes from this reminder alone."
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [
+    "tmp/artifact-staleness-explainer.json",
+    "tmp/lane-collision-preflight.json",
+    "tmp/validator-bundle-router.json",
+    "tmp/worktree-checkpoint-planner.json",
+    "tmp/cron-contract-validator.json",
+    "tmp/cron-control-packet.json",
+    "tmp/pm-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "main_session_reminder_only": true,
+    "cron_state_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

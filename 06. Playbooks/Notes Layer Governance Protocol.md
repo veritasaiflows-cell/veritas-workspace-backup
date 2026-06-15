@@ -30,14 +30,18 @@ Use **notes**, not folders, for reading order.
 ### Fast operator read stack
 Default human-facing read order:
 1. `01. Dashboards/Executive Brief.md`
-2. `01. Dashboards/This Week.md`
-3. `01. Dashboards/Next Actions.md`
-4. `05. Intelligence/Weekly Positioning Review.md`
-5. `02. Markets/Macro Regime Dashboard.md`
-6. `02. Markets/Watchlist.md`
-7. `03. Portfolio/Portfolio Snapshot.md`
-8. `07. Risk/Risk Rules.md`
-9. `05. Intelligence/Weekly Intelligence Brief.md`
+2. current generated daily surfaces: `tmp/full-portfolio-view.*`, `tmp/current-window-artifacts.*`, latest run summary / daily executive-summary artifacts
+3. `05. Intelligence/Weekly Positioning Review.md`
+4. `06. Playbooks/Active Workflows.md`
+5. `03. Portfolio/Execution Board.md`
+6. `03. Portfolio/Portfolio Snapshot.md`
+7. `04. Research/Coverage and Watchlist.md`
+8. `02. Markets/Macro Regime Dashboard.md`
+9. `07. Risk/Risk Rules.md`
+
+Retired dashboard pointers:
+- `01. Dashboards/This Week.md` is a pointer/stub, not a weekly outcome owner.
+- `01. Dashboards/Next Actions.md` is a pointer/stub, not an action queue.
 
 ### Read packets
 If a workflow needs a special read packet:

@@ -1,0 +1,31 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF70-WF66",
+  "display_name": "Official Evidence Spine",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Monitor validators; capture/roll forward only for active finance/product goals.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "evidence-only; no portfolio/trade authority",
+  "blockers": [],
+  "stop_lines": [
+    "No invented values, no bridge-present-equals-reconciled shortcut, no portfolio/canon/trade authority from evidence alone, no owner approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 70 - Official Company Source Capture and Reconciliation.md",
+  "primary_route_artifact": null,
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Workflow 66 - Why-Aware Recommendation Packet Evidence Bridge.md"
+  ],
+  "validator_commands": [
+    "python scripts\\wf70_wf66_official_evidence_spine.py --validate-only"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

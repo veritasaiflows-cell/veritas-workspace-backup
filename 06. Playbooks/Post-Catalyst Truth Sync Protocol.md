@@ -25,10 +25,10 @@ Update in this order:
 4. downstream dashboards / orientation notes
 
 Owner-first examples:
-- deployment state -> `03. Portfolio/Deployment Trigger Sheet.md`
-- technical levels / invalidation -> `03. Portfolio/Technical Entry and Invalidation Sheet.md`
-- thesis / quick-reference thesis mirror -> `04. Research/Coverage Universe.md`
-- high-level mirror -> `02. Markets/Watchlist.md`
+- deployment state -> `03. Portfolio/Execution Board.md`
+- technical levels / invalidation -> `03. Portfolio/Execution Board.md`
+- thesis / quick-reference thesis mirror -> `04. Research/Coverage and Watchlist.md`
+- high-level mirror -> `04. Research/Coverage and Watchlist.md`
 - orientation summary -> `01. Dashboards/Executive Brief.md`
 
 ## Required checks before closing a sync pass

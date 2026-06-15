@@ -78,6 +78,18 @@ Per-window ownership is cleaner.
     "info": 0,
     "exec_freshness": "usable_with_caution"
   },
+  "artifact_index": {
+    "enabled": true,
+    "status": "ok",
+    "authority_boundary": "derived_review_only_index_not_canon_not_apply",
+    "operator_action_required": false,
+    "checks": { "checks": 15, "failed": 0 },
+    "safety_counts": {
+      "forbidden_true_authority_flags": 0,
+      "canon_stage_apply_allowed": 0
+    },
+    "drift_fingerprint_tables": 15
+  },
   "outputs": {
     "command_center": { "status": "ok", "path": "tmp/veritas-command-center.html" },
     "dashboard_validation": { "status": "ok", "path": "tmp/dashboard-validation.json" },
@@ -118,6 +130,7 @@ Per-window ownership is cleaner.
 - `timing`
 - `execution`
 - `validation`
+- `artifact_index`
 - `outputs`
 - `warnings`
 - `blockers`
@@ -216,6 +229,21 @@ Rules:
   - `partial`
   - `stale`
   - `usable_with_caution`
+
+## Artifact-index block
+
+`artifact_index` exposes the health of `tmp/veritas-artifact-index.sqlite` as a derived SQL cockpit/proof index. It is a routing and trust-health signal only.
+
+Required fields:
+- `enabled`
+- `status`
+- `authority_boundary`
+- `operator_action_required`
+- `checks`
+- `safety_counts`
+- `drift_fingerprint_tables`
+
+If `status != "ok"` or `operator_action_required=true`, downstream dashboards and handoff surfaces must warn the operator before relying on SQL cockpit output as the primary generated-artifact lookup route. This block never grants canon/apply/portfolio mutation, owner approval, trade/account action, or paper/live order authority.
 
 ## Output status block
 

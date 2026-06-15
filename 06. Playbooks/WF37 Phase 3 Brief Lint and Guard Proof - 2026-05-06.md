@@ -15,8 +15,8 @@ Prove the first bounded validator for future commercial briefs catches authority
 
 ## Proof run
 - `python -m py_compile scripts\summary_brief_lint.py`
-- `python scripts\summary_brief_lint.py --packet tmp\premarket-brief-input.json --draft tmp\wf37-safe-draft.md` -> `status: ok`
-- `python scripts\summary_brief_lint.py --packet tmp\premarket-brief-input.json --draft tmp\wf37-unsafe-draft.md` -> expected failure with 7 issues:
+- `python scripts\summary_brief_lint.py --packet tmp\premarket-brief-input.json --draft legacy tmp artifact tombstoned in `state/tmp-lifecycle-deletion-tombstone.json` (`wf37-safe-draft.md`)` -> `status: ok`
+- `python scripts\summary_brief_lint.py --packet tmp\premarket-brief-input.json --draft legacy tmp artifact tombstoned in `state/tmp-lifecycle-deletion-tombstone.json` (`wf37-unsafe-draft.md`)` -> expected failure with 7 issues:
   - missing routing language
   - missing owner citations
   - publishes deployable-now state

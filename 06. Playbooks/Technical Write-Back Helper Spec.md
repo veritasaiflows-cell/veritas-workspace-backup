@@ -32,7 +32,7 @@ The helper may **not**:
 Inputs:
 - `tmp/portfolio-config.json`
 - `tmp/band-proposals.json`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
 
 Current supporting tools:
 - `scripts/apply_band_update.py` -> updates config only, dry-run/interactively gated
@@ -42,7 +42,7 @@ Current supporting tools:
 Inputs:
 - `tmp/trigger-sheet.json`
 - owner deployment note
-- mirror note targets like `02. Markets/Watchlist.md`
+- mirror note targets like `04. Research/Coverage and Watchlist.md`
 
 Output should stay proposal-only unless explicitly approved in the active workflow.
 

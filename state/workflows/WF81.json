@@ -1,0 +1,34 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF81",
+  "display_name": "AI and Technology Opportunity Intelligence Product Line",
+  "tier": "P3",
+  "effective_status": "route_only",
+  "next_action": "Do not build opportunity-intake artifacts unless Randall resumes WF80-WF83. Use general research only for direct questions.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "review-only opportunity/product intelligence",
+  "blockers": [
+    "Owner paused WF80-WF83 on 2026-06-06",
+    "Opportunity schema and candidate queue not built yet"
+  ],
+  "stop_lines": [
+    "No external action, spend, account creation, outreach, customer claim, compliance/security claim, or public launch without separate approval."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 81 - AI and Technology Opportunity Intelligence Product Line.md",
+  "primary_route_artifact": "06. Playbooks/Project Continuity/Workflow 81 - AI and Technology Opportunity Intelligence Product Line.md",
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Workflow 80 - Multi-Product Scaleout Control Plane.md"
+  ],
+  "validator_commands": [
+    "python scripts\\workflow_routing_index.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\workflow_routing_index.py --route WF81",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

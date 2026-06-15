@@ -76,6 +76,6 @@
   3. inspect `tmp/band-proposals.json` and `tmp/entry-band-status.html`
   4. use `apply_band_update.py --dry-run` or targeted ticker approval when needed
   5. run `band_note_sync.py` to generate the exact canonical note-sync checklist
-  6. update `03. Portfolio/Technical Entry and Invalidation Sheet.md` from `tmp/band-note-sync.md` and `tmp/band-update-log.txt`
+  6. update `03. Portfolio/Technical Entry and Invalidation Sheet.md` from ``tmp/band-note-sync.json`` and `tmp/band-update-log.txt`
   7. rerun downstream technical/deployment validation if band changes were applied
 - The structured note-sync helper now exists. The next safe upgrade is to add the workbook build to the chain plus manifest verification — not silent autonomous band rewrites.

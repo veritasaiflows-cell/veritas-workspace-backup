@@ -1,0 +1,90 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF73",
+  "display_name": "Queue/Index/Boot Optimization",
+  "tier": "P1",
+  "effective_status": "stale",
+  "next_action": "Use wf73_control_plane_audit.py for full WF73 audits; use canned SQL route-control lookups after JSON/DB parity is green; use lane manager before intentional multi-helper work. Monitor shadow metrics only; no Postgres service, SQL execution, or lane-claim authority is active.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "review-only route capacity; index never outranks Active Workflows",
+  "blockers": [],
+  "stop_lines": [
+    "No new authority source, doctrine rewrite, destructive/config/channel/runtime mutation, Postgres/Docker/native-service install, network exposure, authority weakening, SQL-first promotion, autonomous spawning/scheduling, or inferred approval."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 73 - Queue Index and Boot Surface Optimization.md",
+  "primary_route_artifact": "tmp/workflow-routing-index.json",
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Workflow Routing Index Expansion.md",
+    "tmp/workflow-routing-index.sqlite",
+    "tmp/concurrent-lane-register.json",
+    "tmp/truth-surface-inventory.json",
+    "tmp/route-efficiency-scorecard.json",
+    "tmp/fast-path-qa.json",
+    "tmp/wf73-control-plane-audit.json",
+    "tmp/wf73-postgres-coordination-spine-plan.json",
+    "tmp/wf73-postgres-schema-adapter-proposal.json",
+    "tmp/wf73-postgres-phase-e-review-packet.json",
+    "tmp/wf73-postgres-ddl-contract-review.json",
+    "tmp/wf73-postgres-parity-validator-spec-review.json",
+    "tmp/wf73-postgres-failure-drills-review.json",
+    "tmp/wf73-postgres-windows-runtime-matrix-review.json",
+    "tmp/wf73-postgres-go-no-go-review.json",
+    "tmp/wf73-postgres-shadow-pilot.json",
+    "tmp/wf73-postgres-shadow-pilot-metrics.json",
+    "scripts/concurrent_lane_manager.py",
+    "scripts/wf73_postgres_shadow_pilot.py",
+    "tmp/cron-freshness-spine.json"
+  ],
+  "validator_commands": [
+    "python scripts\\wf73_control_plane_audit.py --write --validate",
+    "python scripts\\workflow_routing_index.py --write --write-db --validate",
+    "python scripts\\concurrent_lane_manager.py --status --write --validate",
+    "python scripts\\wf73_postgres_shadow_pilot.py --write --validate",
+    "python scripts\\truth_surface_inventory.py --write --validate",
+    "python scripts\\fast_path_qa.py --write --validate",
+    "python scripts\\cron_freshness_spine.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\workflow_routing_index.py --write --write-db --validate",
+  "control_override": null,
+  "pm_action": {
+    "action_id": "parallel_lane_orchestration-refresh_artifact",
+    "action_type": "refresh_artifact",
+    "description": "Refresh the parallel lane recommendation, lease only the emitted distinct-output lane, then spawn a bounded helper if main session wants parallel work.",
+    "lane_id": "parallel_lane_orchestration",
+    "authority": "review_only",
+    "inline_execution_allowed": false,
+    "helper_lane_allowed_from_main_session": true,
+    "heartbeat_may_execute": false,
+    "stop_lines": [
+      "recommendation only",
+      "no autonomous spawning",
+      "no cron mutation",
+      "no merge authority",
+      "no canon/portfolio mutation",
+      "no capital deployment or execution authority"
+    ],
+    "lane_status": "stale",
+    "readiness_score": 45,
+    "rank": 3,
+    "pm_packet_only": true
+  },
+  "pm_job": {
+    "job_id": "pm-03-parallel-lane-orchestration-refresh-artifact",
+    "status": "ready_for_main_or_helper",
+    "validation_budget": {
+      "budget": "shared",
+      "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+      "closeout_mode": "handoff",
+      "proof_command_count": 4,
+      "max_default_proof_commands": 5,
+      "phase_count": 4
+    },
+    "closeout_mode": "handoff",
+    "collision_group": "parallel_lane_orchestration"
+  },
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

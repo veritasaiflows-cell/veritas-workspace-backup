@@ -1,0 +1,35 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF76",
+  "display_name": "Cron Authority / Canon Auto-Update",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Verify selectivity with cron_freshness_spine.py, workflow_advancement_scorecard.py, cron_signal_scorecard.py, and escalation_trigger.py; archive moves only after owner approval/proof.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "scheduled review-only; cron may propose, main applies bounded sync",
+  "blockers": [],
+  "stop_lines": [
+    "No cron-direct portfolio/canon apply; no deletes; no config/auth/channel/service/runtime mutation, owner approval inference, or heartbeat inline execution."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 76 - Cron Automation Authority and Canon Auto-Update Expansion.md",
+  "primary_route_artifact": "scripts/cron_freshness_spine.py",
+  "secondary_artifacts": [
+    "tmp/cron-freshness-spine.json",
+    "tmp/autonomy-spine-readiness-rollup.json",
+    "tmp/wf55-autonomy-outcome-ledger.json"
+  ],
+  "validator_commands": [
+    "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
+    "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
+    "python scripts\\cron_freshness_spine.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\cron_freshness_spine.py --write --validate",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

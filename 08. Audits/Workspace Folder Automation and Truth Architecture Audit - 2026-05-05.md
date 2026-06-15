@@ -30,8 +30,8 @@
 
 ### Automation / implementation risks
 - Executable helpers exist in `tmp/`:
-  - `tmp/fetch_news.py`
-  - `tmp/scrape_ir_links.py`
+  - `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py`
+  - `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py`
 - Trust vocabulary is not fully normalized: some downstream surfaces use `clean` while contracts use `ok | warning | blocked | error`.
 - Stale generated artifacts can coexist with green/clean output language.
 - `tmp/` is carrying retention debt from old sidecars and fallback artifacts.

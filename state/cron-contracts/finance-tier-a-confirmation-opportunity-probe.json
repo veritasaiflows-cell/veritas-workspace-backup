@@ -1,0 +1,62 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "f5ec4cce-2830-482d-9f3b-9f92f5d3176d",
+  "name": "Finance - Tier A Confirmation Opportunity Probe",
+  "required": true,
+  "owner_workflow": "WF78/WF84/WF85/WF87",
+  "contract_reason": "Second market-hours Tier A confirmation pass. Drift can weaken the second fresh-price check before opportunity labels are trusted.",
+  "description": "Market-weekday Tier A confirmation probe at 07:14 Phoenix. Rechecks early opportunity labels against a second fresh quote pass. Review/prep only; no order/account/money/canon/portfolio authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "14 7 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nObjective: run the unified market deployment operating loop for the Tier A confirmation opportunity probe. This second fresh market-hours pass verifies whether early deployable/watch/wait labels from the 06:42 probe still hold after additional price discovery.\n\nExecute exactly this single command:\npython scripts\\finance_market_deployment_operating_loop.py --window intraday --refresh-readiness --refresh-intraday --send --write --write-md --validate\n\nDo not run extra commands. Do not inspect files manually. The runner writes tmp\\finance-market-deployment-operating-loop.json, tmp\\finance-market-deployment-operating-loop.md, tmp\\tier-a-intraday-opportunity-probe.json, and source proof refreshed by the Tier A probe. Telegram send/dedupe remains inside the approved existing Tier A probe path.\n\nFresh-price contract: holidays, weekend, pre-open, open-settling, and post-close outputs must remain candidate-pending-refresh only. Current deployable/review-ready labels require fresh_price_gate.current_deployable_labels_allowed=true and cross_surface_reconciliation.status=aligned.\n\nResponse contract: reply exactly NO_REPLY when the command exits 0. If blocked, report only status, final_market_deployment_state, operator_action, validation errors, and proof path.\n\nBoundaries: review/prep only. Autonomous tier movement is non-capital derived routing only. No paper/live submit, cancel, sell, replace, live endpoint, account action, money movement, portfolio/canon/cash/sizing/risk-rule mutation, owner approval inference, cron-direct execution, or paper-to-live promotion. PREPARE means request-artifact review only; execution still requires exact Randall approval plus fresh WF67 guard and kill-switch proof.",
+    "model": "openai/gpt-5.4",
+    "timeoutSeconds": 900
+  },
+  "compare_fields": [
+    "enabled",
+    "deleteAfterRun",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-market-deployment-operating-loop.json",
+    "tmp/finance-market-deployment-operating-loop.md",
+    "tmp/tier-a-intraday-opportunity-probe.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

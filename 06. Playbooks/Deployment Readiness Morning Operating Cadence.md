@@ -2,14 +2,14 @@
 
 ## Purpose
 
-Define the exact operator use pattern for the deployment-readiness machine surface without letting it outrank the canonical Trigger Sheet.
+Define the exact operator use pattern for the deployment-readiness machine surface without letting it outrank the canonical Execution Board.
 
 ## Owner boundary
 
-- Canonical deployment judgment lives in `03. Portfolio/Deployment Trigger Sheet.md`
+- Canonical deployment judgment lives in `03. Portfolio/Execution Board.md`
 - Machine support artifact lives in `tmp/deployment-readiness-surface.json`
 - Run-summary trust state lives in `tmp/run-summary-<window>.json`
-- If the machine artifact and the Trigger Sheet disagree, the Trigger Sheet wins and the mismatch becomes QA work rather than silent override
+- If the machine artifact and the Execution Board disagree, the Execution Board wins and the mismatch becomes QA work rather than silent override
 
 ## Window routing
 
@@ -53,8 +53,8 @@ Do not treat the Sunday surface as a substitute for a trading-day morning decisi
      7. `DEPLOYABLE NOW`
    - this prevents positive ranking from hiding trust or event-risk residue
 
-6. **Trigger Sheet cross-check**
-   - for any name that appears decision-relevant, cross-check `03. Portfolio/Deployment Trigger Sheet.md`
+6. **Execution Board cross-check**
+   - for any name that appears decision-relevant, cross-check `03. Portfolio/Execution Board.md`
    - if the note is stricter than the machine surface, keep the stricter note-layer judgment
    - if the note is looser than the machine surface, do not loosen automatically; review the contradiction explicitly
 
@@ -66,15 +66,15 @@ Do not treat the Sunday surface as a substitute for a trading-day morning decisi
    - confirm size and invalidation under `07. Risk/Risk Rules.md`
 
 8. **Output rule**
-   - if nothing materially changed, do not churn the Trigger Sheet
-   - if a real state changed, update the Trigger Sheet explicitly and briefly explain the reason
+   - if nothing materially changed, do not churn the Execution Board
+   - if a real state changed, update the Execution Board explicitly and briefly explain the reason
    - if evidence is incomplete, log the contradiction or review need rather than forcing a state change
 
 ## Escalation rules
 
 Escalate to contradiction review instead of action when:
 - a date-sensitive catalyst is unconfirmed inside the active window
-- the machine surface says `DEPLOYABLE NOW` but the Trigger Sheet still says `Almost`, `Blocked`, or `Do not touch`
+- the machine surface says `DEPLOYABLE NOW` but the Execution Board still says `Almost`, `Blocked`, or `Do not touch`
 - validation turns warning/critical in a way that can contaminate deployment state
 - a name is in band but macro/policy trust is degraded enough to undermine confidence
 
@@ -84,14 +84,14 @@ The machine surface may support deployment review only when:
 - the relevant run summary is terminal and usable
 - the stop line is not active
 - validation is not in contradiction with the candidate state
-- the Trigger Sheet either already agrees or is being explicitly reviewed for a justified change
+- the Execution Board either already agrees or is being explicitly reviewed for a justified change
 
 The machine surface may **not**:
 - mutate canonical notes on its own
-- outrank the Trigger Sheet
+- outrank the Execution Board
 - substitute for explicit event-risk or sizing judgment
 - convert a timing-uncertain name into a full green light by ranking alone
 
 ## Handoff rule
 
-Helper lanes may prepare evidence or contradiction packets, but only the main session may reconcile those packets into a proposed Trigger Sheet update against the workspace-file truth layer. The durable Trigger Sheet remains a file-owned decision surface; chat is only a reconciliation interface.
+Helper lanes may prepare evidence or contradiction packets, but only the main session may reconcile those packets into a proposed Execution Board update against the workspace-file truth layer. The durable Execution Board remains a file-owned decision surface; chat is only a reconciliation interface.

@@ -1,0 +1,31 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF-CHIEF-GATE",
+  "display_name": "Chief / WF67 Manager Gate Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate when a candidate/card lacks rank, band/stop proof, sector/monitor/paper context, WF55 caution, or manager readiness.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only; review/routing",
+  "blockers": [],
+  "stop_lines": [
+    "Review/routing only; no watchlist apply, portfolio/canon mutation, paper/live execution, owner approval inference, probability/model authority, or money movement."
+  ],
+  "continuity_note": null,
+  "primary_route_artifact": "scripts/chief_intelligence_promotion_gate.py",
+  "secondary_artifacts": [
+    "scripts/wf67_autonomous_paper_manager.py"
+  ],
+  "validator_commands": [
+    "python scripts\\chief_intelligence_promotion_gate.py --write --validate"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

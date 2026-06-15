@@ -1,0 +1,27 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF-BOARD-CANON-GUARDRAILS",
+  "display_name": "Board / Canon Guardrails Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate on critical contradiction, widened authority flag, or proposal implying self-apply.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only; cron proposes, main applies bounded",
+  "blockers": [],
+  "stop_lines": [
+    "Cron may propose; main applies only bounded freshness/status sync or exact gated maintenance."
+  ],
+  "continuity_note": null,
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

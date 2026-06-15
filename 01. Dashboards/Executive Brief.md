@@ -1,74 +1,65 @@
+<!-- GENERATED REVIEW-ONLY SURFACE
+Source JSON: tmp/human-facing-truth-surface.json
+Generated: 2026-05-31T16:56:13Z
+Authority: orientation only; not canon, approval, archive apply, delete apply, portfolio mutation, paper/live order, account action, or money movement.
+-->
+
 # Executive Brief
 
-## Role
+## Bottom line
 
-This is the fastest high-level operating view for Randall and Veritas.
+This is the single fast human-facing truth surface for Randall and Veritas. It routes to the live proof owners and replaces scattered dashboard pickup notes as the first read.
 
-Use it to answer:
-- what matters now
-- what is trusted enough for review
-- what needs owner judgment
-- what workflow or data risk is blocking cleaner action
+- Status: **review_only_ok**
+- Generated: `2026-05-31T16:56:13Z`
+- Finance SQL state: `ok` with `42` universe rows, `42` current ticker cards, and `42` latest valid entry/stop refs.
+- SQL canon promotion: expanded authority is `False`; full SQL canon migration allowed is `False`.
+- Core human folders 01-05: `23` live files, `0` eligible archive candidates, `1` blocked archive candidate, `0` compression targets.
+- Live-surface migration: `ok`; earnings `9`, parser-compatible surfaces `2`, audit surfaces `1`, archived originals verified `12`.
+- Archive delete posture: `planned_delete_blocked_requires_future_exact_approval`; delete allowed now count is `0`.
 
-Boundary:
-- this is an orientation surface, not canonical truth
-- dashboards summarize; owner notes decide
-- no trade, portfolio, deployment, or approval authority is inferred here
+## Authority boundary
 
-Canonical owners:
-- deployment state: [[03. Portfolio/Deployment Trigger Sheet]]
-- portfolio posture: [[03. Portfolio/Portfolio Snapshot]]
-- technical discipline: [[03. Portfolio/Technical Entry and Invalidation Sheet]]
-- weekly stance: [[05. Intelligence/Weekly Positioning Review]]
-- macro/risk: [[02. Markets/Macro Regime Dashboard]] and [[07. Risk/Risk Rules]]
-- workflow order: [[06. Playbooks/OpenClaw Parallel Pilot Queue]]
+This surface is review-only. It does not grant owner approval, canonical portfolio mutation, archive apply, delete apply, paper/live execution, brokerage/account action, sizing, sleeve, cash, risk-rule, customer delivery, or money-movement authority.
 
-## Current reality
+## Validator posture
 
-The system is stronger than it was this morning, but it is not clean enough to loosen authority.
+- Artifact index: `ok`
+- Workspace boundary: `ok`
+- Dashboard truth lint: `ok` with `0` warnings
+- Workflow hygiene: `warning` with blocking count `0`
+- Heartbeat continuation candidates: `ok`, handoff-ready `5`, blocked `0`
 
-Today's work tightened the truth architecture: post-close authority vocabulary, run-summary terminal semantics, Command Center visibility, stale-source fail-soft classification, regime-scoring ownership, state-history pathing, retrieval metadata, reinstall recovery, and tmp/script boundary controls all moved forward.
+## Canonical routes
 
-Finance posture remains owner-gated:
-- **JPM** and **ETN** are the current deployable-now / conditional-add names in the owner layer.
-- **ETN** must stay disciplined inside its written band; no chase above the band.
-- **NVDA** is wait / no-chase after the fresh rerun showed it above band.
-- **GS / MSFT / GOOG** remain review-first / almost-deployable context, not automatic deployment.
-- **XOM** remains repair/bench/do-not-touch until follow-through and evidence improve.
+- **live finance/ticker proof** -> `tmp/finance-intelligence-state.sqlite and tmp/ticker-intelligence-cards/`
+- **portfolio posture/model** -> `03. Portfolio/Portfolio Snapshot.md`
+- **entry bands/stops/deployment state** -> `03. Portfolio/Execution Board.md compact parser surface + state/finance/execution-board-replacement.json`
+- **research universe/watchlist** -> `04. Research/Coverage and Watchlist.md compact parser surface + state/finance/coverage-watchlist-replacement.json`
+- **post-earnings scorecard lookup** -> `05. Intelligence/Earnings/README.md + state/finance/earnings-scorecard-index.json`
+- **macro and regime** -> `02. Markets/Macro Regime Dashboard.md plus tmp/macro-*.json artifacts`
+- **workflow status** -> `06. Playbooks/Active Workflows.md and owning continuity notes`
+- **archive/delete posture** -> `tmp/core-folders-flattening-watchdog.json and tmp/archive-delete-readiness-plan.json`
 
-## Trust state
+## Remaining residue
 
-- Dashboard validation is structurally usable, but source trust is **partial / review_required**.
-- Policy and credit data still carry FRED/runtime dependency issues; do not treat macro precision as clean.
-- Telegram is enabled only as a setup-pending exception; delivery is not proven.
-- WF40 security automation is warning-grade and still needs one clean ordinary scheduled repeat before closure.
-- Workspace boundary warnings are now mostly cleanup residue: root `backups/` plus six executable helpers in `tmp/` pending owner-approved archive cleanup.
+- **blocked_archive_candidate**: `1`. Remove or update blocking script/control-surface references before moving.
+- **delete_blocked**: `None`. Run retention/restore proof before any future delete helper exists.
 
-## Current next move
+## Next actions
 
-1. Keep finance decisions in the owner notes: read the Trigger Sheet, Portfolio Snapshot, Technical Sheet, and Risk Rules before treating any dashboard state as actionable.
-2. Wait for the next ordinary WF40 scheduled security proof; do not close WF40 from the controlled rerun alone.
-3. Run the WF43 durable state-history append/validate proof before wiring any consumer to `data/state-history/state-history-v1.jsonl`.
-4. Archive the six `tmp/*.py` helpers only after owner approval and manifest/hashes under WF50.
-5. Keep WF49 operator-gated until the exposed FRED key is rotated/replaced outside chat and runtime persistence is handled safely.
+- Keep the new compact live surfaces parser-compatible while continuing to route source-open history through state/finance replacement proof and archive paths.
+- Keep delete blocked until archived-file retention, restore drill, replacement proof, and a separate exact delete approval exist.
+- Run the watchdog after each finance-chain or weekly hygiene pass so folders 01-05 stay flat.
 
-## Operating rule
+## Source proof
 
-Freshness and truth beat convenience. If a source is partial, manual, stale, setup-pending, or warning-grade, say that plainly and route to the owner surface instead of cleaning up the story.
-
-## Navigation
-
-Read in this order:
-1. [[01. Dashboards/Executive Brief]]
-2. [[01. Dashboards/This Week]]
-3. [[01. Dashboards/Next Actions]]
-4. [[05. Intelligence/Weekly Positioning Review]]
-5. [[03. Portfolio/Deployment Trigger Sheet]]
-6. [[03. Portfolio/Portfolio Snapshot]]
-7. [[03. Portfolio/Technical Entry and Invalidation Sheet]]
-8. [[02. Markets/Macro Regime Dashboard]]
-9. [[07. Risk/Risk Rules]]
-
-## Last updated
-
-- 2026-05-09 — tightened after the WF40/WF43/WF48/WF50 and retrieval/runtime hardening session. Reframed this as a lean orientation surface: owner notes govern finance truth, source trust is partial/review-required, WF40 remains scheduled-repeat pending, WF43 durable proof remains pending, and cleanup/credential residue stays owner-gated.
+- `finance_state_validation` -> `tmp/finance-intelligence-state-validation.json` (exists `True`, status `ok`, generated `2026-05-31T04:57:00Z`)
+- `core_folder_watchdog` -> `tmp/core-folders-flattening-watchdog.json` (exists `True`, status `no_archive_candidates_ready`, generated `2026-05-31T06:58:14Z`)
+- `core_live_surface_migration` -> `tmp/core-live-surface-migration.json` (exists `True`, status `ok`, generated `2026-05-31T06:26:17Z`)
+- `archive_delete_readiness` -> `tmp/archive-delete-readiness-plan.json` (exists `True`, status `planned_delete_blocked_requires_future_exact_approval`, generated `2026-05-31T07:20:22Z`)
+- `artifact_index_validation` -> `tmp/artifact-index-validation.json` (exists `False`, status `ok`, generated `2026-05-31T16:56:13Z`)
+- `dashboard_truth_lint` -> `tmp/dashboard-truth-lint.json` (exists `True`, status `ok`, generated `2026-05-31T06:26:25Z`)
+- `workspace_boundary_check` -> `tmp/workspace-boundary-check.json` (exists `True`, status `ok`, generated `2026-05-31T16:51:30Z`)
+- `workflow_hygiene` -> `tmp/workflow-hygiene-check.json` (exists `True`, status `warning`, generated `2026-05-31T09:52:15Z`)
+- `heartbeat_continuation_candidates` -> `tmp/heartbeat-continuation-candidates.json` (exists `True`, status `ok`, generated `2026-05-31T16:51:30Z`)

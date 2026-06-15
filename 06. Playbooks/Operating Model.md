@@ -49,8 +49,8 @@ This layer interprets the market week, catalyst map, and macro regime.
 
 ### 3. Portfolio decision layer
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
+- `03. Portfolio/Execution Board.md`
 
 This layer owns posture, deployability, and execution discipline.
 
@@ -83,11 +83,22 @@ This layer refreshes evidence and derived surfaces. It should stay procedural so
 Boundary rule:
 - canonical notes decide
 - machine artifacts inform
+- validators prove or challenge
 - dashboards summarize
 - scripts orchestrate
+- Active Workflows owns live workflow state
+- workflow continuity notes own resume context
+- memory owns material history only
+- archive owns retired material only after approval
 - when two layers say the same thing at the same level of detail, trim the more derived one first
 
-Deployment ranking is informational. It does not authorize execution-lane promotion. The valid promotion path is: candidate packet schema -> fail-closed gate checks -> Promotion Review Queue row when required -> explicit canonical owner decision. A clean ranking score alone is not permission to mutate the Trigger Sheet, Portfolio Snapshot, or lane state.
+Locked operating spine:
+- script proof -> validator -> canonical owner note -> continuity checkpoint
+
+Operator procedure:
+- use `06. Playbooks/Operating Procedures/Portfolio Truth Surface Ownership Procedure.md` whenever portfolio notes, generated artifacts, dashboards, or workflow surfaces disagree.
+
+Deployment ranking is informational. It does not authorize execution-lane promotion. The valid promotion path is: candidate packet schema -> fail-closed gate checks -> Promotion Review Queue row when required -> explicit canonical owner decision. A clean ranking score alone is not permission to mutate the Execution Board, Portfolio Snapshot, or lane state.
 
 ## Source-of-truth hierarchy
 

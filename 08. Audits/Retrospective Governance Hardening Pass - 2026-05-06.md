@@ -6,8 +6,8 @@
 
 ## Inputs
 - `08. Audits/Closed Workflow Retrospective Guidance - 2026-05-06.md`
-- `tmp/retrospective-governance-gap-proposal-2026-05-06.md`
-- `tmp/retrospective-hardening-qa-2026-05-06.md`
+- `09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/retrospective-governance-gap-proposal-2026-05-06.md`
+- `09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/retrospective-hardening-qa-2026-05-06.md`
 - `06. Playbooks/Workflow Closeout Artifact Standard.md`
 - `06. Playbooks/Major Workflow Contract Standard.md`
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md`

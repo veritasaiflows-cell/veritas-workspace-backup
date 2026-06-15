@@ -38,7 +38,7 @@ Not allowed:
 ## Owner layer
 
 Canonical owner judgment remains in:
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `03. Portfolio/Portfolio Snapshot.md`
 - `05. Intelligence/Weekly Positioning Review.md`
 - `07. Risk/Risk Rules.md`
@@ -106,7 +106,7 @@ Escalate only a small subset:
 
 System trust objects should be allowed into the escalation set before lower-priority ticker objects when trust is degraded.
 
-When reporting escalations to Randall, do not stop at listing routed events. Each escalation should include a concrete recommended next action, not just a route label. The action should name the useful next tool, script, note, or review surface when one exists, for example: run and review `python scripts/entry_band_fetch.py <TICKER> --html --quiet` for entry-band questions; open the generated entry-band HTML; compare against the Technical Entry Sheet / Deployment Trigger Sheet; check earnings/catalyst timing; or route to owner promotion review. `Wait`, `review only`, or `owner approval required` is acceptable only when paired with the specific review/check that should happen next. Recommended actions must preserve the authority boundary: no trade execution, no automatic portfolio mutation, no inferred owner approval, and no canonical note mutation unless separately approved.
+When reporting escalations to Randall, do not stop at listing routed events. Each escalation should include a concrete recommended next action, not just a route label. The action should name the useful next tool, script, note, or review surface when one exists, for example: run and review `python scripts/entry_band_fetch.py <TICKER> --html --quiet` for entry-band questions; open the generated entry-band HTML; compare against the Execution Board / Execution Board; check earnings/catalyst timing; or route to owner promotion review. `Wait`, `review only`, or `owner approval required` is acceptable only when paired with the specific review/check that should happen next. Recommended actions must preserve the authority boundary: no trade execution, no automatic portfolio mutation, no inferred owner approval, and no canonical note mutation unless separately approved.
 
 ## Capital-deployment recommendation posture
 

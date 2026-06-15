@@ -1,0 +1,27 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF63",
+  "display_name": "Paper Readiness Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate on readiness/no-submit guard warning/critical or live endpoint/credential exposure.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only",
+  "blockers": [],
+  "stop_lines": [
+    "No live endpoint/credentials, money movement/account changes, or submit/cancel outside WF67."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 63 - Alpaca Paper Trading Readiness.md",
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF83",
+  "display_name": "Product Packaging and Launch Readiness Factory",
+  "tier": "P3",
+  "effective_status": "route_only",
+  "next_action": "Do not build launch/readiness matrix unless Randall resumes WF80-WF83. Near-term readiness work should support internal efficiency/proof, not launch packaging.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "review-only packaging/readiness gate",
+  "blockers": [
+    "Owner paused WF80-WF83 on 2026-06-06",
+    "Readiness matrix/no-go validator not built yet",
+    "Customer/public launch remains blocked"
+  ],
+  "stop_lines": [
+    "No public launch, customer delivery, outbound action, spend, credential/account use, customer-data import, legal/compliance/security certification claim, finance advice/customer allocation, or owner approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 83 - Product Packaging and Launch Readiness Factory.md",
+  "primary_route_artifact": "06. Playbooks/Project Continuity/Workflow 83 - Product Packaging and Launch Readiness Factory.md",
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Workflow 80 - Multi-Product Scaleout Control Plane.md",
+    "scripts/retail_automation_control_plane.py",
+    "scripts/generic_intelligence_saas_pivot.py"
+  ],
+  "validator_commands": [
+    "python scripts\\workflow_routing_index.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\workflow_routing_index.py --route WF83",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

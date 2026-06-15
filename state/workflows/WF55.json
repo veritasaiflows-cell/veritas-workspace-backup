@@ -1,0 +1,36 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF55",
+  "display_name": "Outcome Measurement / Probability Readiness",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Build and validate neutral outcome events from WF86/WF87 shadow artifacts; escalate if predictive language appears before gates clear.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "measurement-only; predictive claims gated",
+  "blockers": [
+    "Probability claims not ready; outcome ledger is measurement-only"
+  ],
+  "stop_lines": [
+    "No predictive scores, expected-return claims, win-rate claims, model-ranked deployment, durable v2 append, paper/live execution, or approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 55 - Probability Readiness and Outcome Retention Gate.md",
+  "primary_route_artifact": "tmp/wf55-autonomy-outcome-ledger.json",
+  "secondary_artifacts": [
+    "tmp/autonomy-spine-promotion-contract.json",
+    "tmp/autonomy-spine-readiness-rollup.json"
+  ],
+  "validator_commands": [
+    "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
+    "python scripts\\test_wf55_autonomy_outcome_ledger.py",
+    "python scripts\\autonomy_spine_readiness_rollup.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

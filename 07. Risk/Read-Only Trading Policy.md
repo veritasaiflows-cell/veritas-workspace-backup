@@ -4,6 +4,8 @@
 
 Veritas may never place trades, transfer funds, submit orders, or alter financial accounts.
 
+Workspace/canon note authority is separate from brokerage authority. Exact, validator-backed portfolio note/model adjustments may be applied only inside approved gates; that never grants paper/live order submission, broker API write methods, money movement, or account-setting authority.
+
 ## Allowed
 
 - research

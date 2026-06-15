@@ -1,0 +1,55 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF72",
+  "display_name": "Financial OS SQL Support",
+  "tier": "P1",
+  "effective_status": "support_only",
+  "next_action": "Keep support-only mode; use WF72 only for read-only lookup, cache guard, artifact index, and fast-path QA support. Separate gate required before consumer promotion, Python retirement, SQL-first use, or any finance answer-path ownership.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "support-only; SQL is proof/index, not canon/approval",
+  "blockers": [
+    "Separate gate required before SQL-first use / Python retirement"
+  ],
+  "stop_lines": [
+    "No SQL write expansion, archive/move/delete without proof, action-state/canon/portfolio mutation, customer output, runtime/config mutation, Python retirement, SQL-first promotion, finance front-door ownership, or approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md",
+  "primary_route_artifact": "tmp/veritas-canon-cache.sqlite",
+  "secondary_artifacts": [
+    "state/finance/finance-canon.sqlite",
+    "tmp/veritas-artifact-index.sqlite",
+    "tmp/fast-path-qa.json"
+  ],
+  "validator_commands": [
+    "python scripts\\artifact_index.py validate",
+    "python scripts\\fast_path_qa.py --write --validate"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": {
+    "action_id": "sql_index-run_validator",
+    "action_type": "run_validator",
+    "description": "Refresh JSON-to-SQL promotion index, Python/SQL contract lint, schema drift lint, and SQL proof probe.",
+    "lane_id": "sql_index",
+    "authority": "review_only",
+    "inline_execution_allowed": false,
+    "helper_lane_allowed_from_main_session": true,
+    "heartbeat_may_execute": false,
+    "stop_lines": [
+      "JSON remains source",
+      "no SQL import authority",
+      "no canon/portfolio authority",
+      "no finance answer front-door ownership"
+    ],
+    "lane_status": "needs_validation",
+    "readiness_score": 60,
+    "rank": 16,
+    "pm_packet_only": true
+  },
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

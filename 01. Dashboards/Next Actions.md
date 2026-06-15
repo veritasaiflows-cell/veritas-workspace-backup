@@ -1,79 +1,33 @@
 # Next Actions
 
-## Role
+## Status
 
-This dashboard answers one question:
-- what should Randall or Veritas do next?
+This dashboard has been **retired as an independent action queue**.
 
-Boundary:
-- immediate action queue only
-- route to owner notes and proof artifacts
-- do not restate the full portfolio, catalyst, or workflow registry
-- do not infer trade, deployment, portfolio mutation, or owner approval authority
+Reason: the live system now has better, lower-drift action surfaces:
+- Command Center / generated daily artifacts for current operating status
+- Daily Executive Summary, pre-market, and post-close packets for daily market-cycle actions
+- [[06. Playbooks/Active Workflows]] for workflow truth and queue movement
+- [[05. Intelligence/Weekly Positioning Review]] for weekly strategy posture
+- [[03. Portfolio/Execution Board]], [[03. Portfolio/Portfolio Snapshot]], [[04. Research/Coverage and Watchlist]], and [[07. Risk/Risk Rules]] for finance truth
 
-## Current best next actions
+## What to use instead
 
-1. **Wait for the next ordinary WF40 security cron proof**
-   - Owner surface: [[06. Playbooks/OpenClaw Parallel Pilot Queue]] and [[06. Playbooks/Cron Run Ledger]].
-   - Required proof: `tmp/cyber-security-daily-audit-cron-proof.json` fresh from the scheduled run with `proof_status=ok`, `audit_stop_line=false`, and empty wrapper errors.
-   - Do not close WF40 from the controlled manual rerun alone.
+If you need the next action, use this order:
 
-2. **Run WF43 durable state-history proof when ready**
-   - Owner surface: [[06. Playbooks/Project Continuity/Workflow 43 - State History and Review Outcome Retention]].
-   - Proof path:
-     - `python -m py_compile scripts\state_history_capture.py scripts\test_state_history_capture.py`
-     - `python scripts\test_state_history_capture.py`
-     - `python scripts\state_history_capture.py sample --window post-close`
-     - `python scripts\state_history_capture.py append --window post-close`
-     - `python scripts\state_history_capture.py validate`
-   - Inspect the first durable row before any consumer wiring.
+1. **Live finance status:** `tmp/full-portfolio-view.*`, `tmp/current-window-artifacts.*`, `tmp/deployment-readiness-surface.json`, and the latest run summary.
+2. **Daily decision card:** Daily Executive Summary / pre-market / post-close review packets.
+3. **Workflow queue:** [[06. Playbooks/Active Workflows]].
+4. **Weekly lens:** [[05. Intelligence/Weekly Positioning Review]].
+5. **Portfolio truth:** [[03. Portfolio/Execution Board]], [[03. Portfolio/Portfolio Snapshot]], [[04. Research/Coverage and Watchlist]], [[07. Risk/Risk Rules]].
 
-3. **Use owner notes before any finance action**
-   - Read [[03. Portfolio/Deployment Trigger Sheet]], [[03. Portfolio/Portfolio Snapshot]], [[03. Portfolio/Technical Entry and Invalidation Sheet]], and [[07. Risk/Risk Rules]].
-   - Current owner-layer posture: JPM and ETN are deployable/conditional-add names; ETN requires band discipline; NVDA is wait/no-chase; XOM remains repair/bench.
-   - This is review support only, not trade execution.
+## Boundary
 
-4. **Keep source trust partial / review-required visible**
-   - Review `tmp/dashboard-validation.json` before trusting any generated dashboard state.
-   - Current key limits: FRED-backed policy/credit inputs are incomplete without runtime FRED persistence; policy still has manual dependency; source trust is not presentation-clean.
+This file no longer owns priorities, ticker state, workflow order, or capital-deployment language.
 
-5. **Handle WF50 cleanup only with owner approval**
-   - Owner surface: [[06. Playbooks/Project Continuity/Workflow 50 - Tmp Helper Archive Cleanup]].
-   - Do not promote the six `tmp/*.py` helpers as standalone scripts.
-   - If approved, archive them with manifest/hashes and rerun boundary/governance/truth validators.
-
-6. **Keep WF49 credential/runtime work separate**
-   - Rotate/replace the exposed FRED key outside chat before persistent runtime configuration.
-   - Do not write secrets to workspace files.
-   - Do not mutate config/auth/runtime surfaces without explicit approval.
-
-7. **Use retrieval, but verify source**
-   - Use `scripts\workspace_index.py --search "<query>" --limit 10` or `scripts\artifact_index.py` to locate evidence faster.
-   - Open the source Markdown/JSON before judgment, queue movement, or note mutation.
-
-## If there are only 15 minutes
-
-Do one of these:
-- check whether WF40 scheduled proof is fresh and clean
-- run the WF43 durable proof sequence through validate
-- inspect `tmp/dashboard-validation.json` and name the current source-trust blockers
-- classify the six tmp helpers for WF50 archive approval
-- read the owner portfolio notes before considering JPM/ETN/NVDA/XOM
-
-## If there is a full focused session
-
-Work in this order:
-1. WF40 scheduled proof review / close-or-keep-open decision
-2. WF43 durable append/validate proof
-3. WF50 owner-approved archive cleanup, if approved
-4. WF45 artifact-index freshness/provenance follow-up
-5. WF44 LMT dual-layer owner-state / technical-risk rendering follow-up
-6. WF49 FRED runtime persistence after key rotation/replacement
-
-## Anti-drift rule
-
-If the action does not improve truth, freshness, retrieval efficiency, portfolio discipline, risk awareness, or owner-gated decision clarity, it is probably not the next action.
+No trade, portfolio mutation, deployment, sizing, cash, sleeve, execution-entitlement, account action, or owner approval is inferred here.
 
 ## Last updated
 
-- 2026-05-09 — tightened after the current session. Reframed around WF40 scheduled proof, WF43 durable state-history proof, owner-note finance action, partial source trust, WF50 tmp-helper cleanup, and WF49 credential/runtime gating.
+- 2026-05-14 — converted to a pointer/stub after Randall approved reducing duplicate dashboard truth layers.
+- 2026-05-14 — runtime-event check: no independent action queue restored. Active workflow truth remains [[06. Playbooks/Active Workflows]]: WF58/WF56 scheduled proof monitoring is the operational lane, WF62 is implemented/monitoring, WF55 remains the probability-readiness prerequisite, and the latest sector-diversification research outputs are review-only research inputs rather than action authority.

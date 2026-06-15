@@ -1,0 +1,84 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF84",
+  "display_name": "Trade-Grade Personal Finance OS Canonical Data Model",
+  "tier": "P0",
+  "effective_status": "ready",
+  "next_action": "Use the validated JSON packet, SQLite companion, and phase 6-10 proof for internal read-only consumer expansion; use full-answer parity before duplicate-surface retirement.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "internal review-only canonical data-plane interface; no customer/account/execution authority",
+  "blockers": [],
+  "stop_lines": [
+    "Internal personal finance infrastructure only; no retail/customer launch, customer/account/PII/suitability/brokerage data, canon/portfolio/cash/risk-rule mutation, capital approval, paper/live/account action, SQL/capsule/dashboard row as approval, or owner approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 84 - Trade-Grade Personal Finance OS Canonical Data Model.md",
+  "primary_route_artifact": "tmp/canonical-finance-data-plane.json",
+  "secondary_artifacts": [
+    "scripts/canonical_finance_data_plane_contract.py",
+    "scripts/canonical_finance_data_plane.py",
+    "scripts/canonical_finance_data_plane_phase6_10.py",
+    "scripts/full_intelligence_answer_parity.py",
+    "tmp/canonical-finance-data-plane-contract.json",
+    "tmp/canonical-finance-data-plane-validation.json",
+    "tmp/canonical-finance-data-plane.sqlite",
+    "tmp/canonical-finance-data-plane-phase6-10.json",
+    "tmp/canonical-finance-data-plane-retirement-readiness.json",
+    "tmp/full-answer-parity/full-answer-parity-rollup.json",
+    "tmp/wf78-auto-tier-routing.json",
+    "tmp/finance-intelligence-state.sqlite",
+    "tmp/wf78-tier-weighted-freshness-resolution.json",
+    "tmp/finance-decision-sync-spine.json"
+  ],
+  "validator_commands": [
+    "python scripts\\canonical_finance_data_plane_contract.py --write --validate",
+    "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+    "python scripts\\full_intelligence_answer_parity.py --all --write --pretty",
+    "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+    "python scripts\\canonical_finance_data_plane_retirement_readiness.py --write --validate",
+    "python scripts\\db_lifecycle_manifest.py --write --validate",
+    "python scripts\\workflow_routing_index.py --write --write-db --validate",
+    "python scripts\\workflow_router.py WF84 --answer all --write-capsules --validate"
+  ],
+  "default_resume_command": "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+  "control_override": null,
+  "pm_action": {
+    "action_id": "finance_os_data_model-execute_safe_next_step",
+    "action_type": "execute_safe_next_step",
+    "description": "Use the validated WF84 phase 6-10 proof for internal read-only consumer expansion, parity, source drillback, priority queue, and retirement gating.",
+    "lane_id": "finance_os_data_model",
+    "authority": "review_only",
+    "inline_execution_allowed": false,
+    "helper_lane_allowed_from_main_session": true,
+    "heartbeat_may_execute": false,
+    "stop_lines": [
+      "internal personal finance infrastructure only",
+      "no customer/account/PII/suitability/brokerage data",
+      "no canon/portfolio/cash/risk-rule mutation",
+      "no capital deployment or execution authority",
+      "no SQL row or generated artifact becomes approval"
+    ],
+    "lane_status": "ready",
+    "readiness_score": 90,
+    "rank": 7,
+    "pm_packet_only": true
+  },
+  "pm_job": {
+    "job_id": "pm-07-finance-os-data-model-execute-safe-next-step",
+    "status": "ready_for_main_or_helper",
+    "validation_budget": {
+      "budget": "shared",
+      "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+      "closeout_mode": "handoff",
+      "proof_command_count": 5,
+      "max_default_proof_commands": 5,
+      "phase_count": 4
+    },
+    "closeout_mode": "handoff",
+    "collision_group": "finance_os_data_model"
+  },
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

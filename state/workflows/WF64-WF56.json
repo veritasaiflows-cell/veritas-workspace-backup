@@ -1,0 +1,33 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF64-WF56",
+  "display_name": "Portfolio/Canon Maintenance",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Keep validators clean; use scoped band maintenance for eligible entry-band/stop refresh and exact standing/scoped approval artifacts for broader categories.",
+  "helper_safe": false,
+  "owner_action_required": true,
+  "authority_boundary": "scoped entry-band maintenance allowed; broader proposal/preview/gated-apply only",
+  "blockers": [
+    "Broader applies remain exact-gated"
+  ],
+  "stop_lines": [
+    "No trade/account/brokerage/money movement; no cron direct apply outside approved scoped band/reference paths; no cash/risk-rule/execution-entitlement mutation unless separately scoped; no clean-validation-equals-approval."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 64 - Bounded Portfolio Agent Cron Architecture.md",
+  "primary_route_artifact": null,
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Workflow 56 - Portfolio Mutation Proposal Object and Gated Apply Helper.md"
+  ],
+  "validator_commands": [
+    "python scripts\\test_portfolio_mutation_validators.py"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

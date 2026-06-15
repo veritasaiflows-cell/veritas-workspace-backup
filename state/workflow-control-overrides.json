@@ -1,0 +1,42 @@
+{
+  "schema": "veritas.workflow_control_overrides.v1",
+  "generated_at_utc": "2026-06-15T03:13:14Z",
+  "authority_boundary": {
+    "review_only": true,
+    "routing_override_only": true,
+    "canon_or_portfolio_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "overrides": {
+    "retail_truth_routing": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": null,
+      "set_at_utc": "2026-06-09T13:22:02Z",
+      "reason": "Paused by Randall on 2026-06-09 06:19 MST so Personal Trade-Grade Decision OS/WF85 becomes the primary PM goal.",
+      "resume_condition": "Randall explicitly resumes retail-grade truth-routing work",
+      "aliases": [
+        "retail-grade_truth_routing",
+        "retail_grade_os"
+      ],
+      "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    },
+    "wf-retail-routing": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": null,
+      "set_at_utc": "2026-06-09T13:23:36Z",
+      "reason": "Paused by Randall on 2026-06-09 06:19 MST so Personal Trade-Grade Decision OS/WF85 becomes the primary PM goal.",
+      "resume_condition": "Randall explicitly resumes retail-grade truth-routing work",
+      "aliases": [
+        "retail-grade_truth_routing",
+        "retail_grade_os",
+        "retail_truth_routing"
+      ],
+      "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    }
+  }
+}

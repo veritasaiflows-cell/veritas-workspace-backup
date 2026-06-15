@@ -13,16 +13,16 @@ WF34 is complete enough to close as a workspace-boundary hardening pass. The top
 
 ## Actions completed
 - Archived one-off helper scripts out of active `tmp/`:
-  - `tmp/fetch_news.py` -> `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py`
-  - `tmp/scrape_ir_links.py` -> `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py`
-  - `tmp/wf36_audit_probe.py` -> `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/wf36_audit_probe.py`
+  - `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py` -> `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py`
+  - `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py` -> `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py`
+  - `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/wf36_audit_probe.py` -> `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/wf36_audit_probe.py`
 - Moved script backup debris out of active `scripts/`:
   - `scripts/premarket_snapshot.py.bak-20260505-084507` -> `migration-backups/2026-05-05-wf34-script-backups/`
   - `scripts/run_finance_refresh_chain.py.bak-20260505-084507` -> `migration-backups/2026-05-05-wf34-script-backups/`
 - Removed empty root `state/` after reference review showed no active runtime entitlement.
 - Retained `attachments/` because `.obsidian/app.json` points attachments there.
 - Retained `migration-review.md` as a documented root exception for uncertain migration/review material.
-- Archived stale `tmp/entry-band-reports/BRK-B_entry_band.html`; current generated/dashboard consumers point to `BRK.B_entry_band.html`.
+- Archived stale `09. Archive/entry-band-reports - Archived/2026-05-05-wf34/BRK-B_entry_band.html`; current generated/dashboard consumers point to `BRK.B_entry_band.html`.
 - Added `scripts/workspace_boundary_check.py` as a read-only validator.
 - Wrote latest validator output to `tmp/workspace-boundary-check.json`.
 

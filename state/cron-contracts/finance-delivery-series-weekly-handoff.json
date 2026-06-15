@@ -1,0 +1,56 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "584256df-318b-447e-87ec-f37709da713d",
+  "name": "Finance Delivery Series - Weekly Handoff",
+  "required": true,
+  "owner_workflow": "WF75",
+  "contract_reason": "Sunday main-session handoff for weekly market read and weekly investments/performance artifacts.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "15 17 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "systemEvent"
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-delivery-series.json",
+    "tmp/finance-delivery-series.xlsx",
+    "tmp/finance-delivery-series/weekly-market-read.pdf",
+    "tmp/finance-delivery-series/weekly-investments-performance.pdf",
+    "tmp/cron-control-packet.json",
+    "tmp/pm-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "main_session_handoff_only": true,
+    "customer_or_external_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

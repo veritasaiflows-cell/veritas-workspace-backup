@@ -1,0 +1,235 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-11T03:15:12Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-01-trade-grade-decision-os-execute-safe-next-step"
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-01-trade-grade-decision-os-execute-safe-next-step"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-01-trade-grade-decision-os-execute-safe-next-step",
+        "budget": "shared",
+        "closeout_mode": "handoff",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-01-trade-grade-decision-os-execute-safe-next-step",
+      "rank": 1,
+      "priority": "P1",
+      "title": "Advance WF85 Personal Trade-Grade Decision OS",
+      "implementation_class": "trade_grade_decision_os",
+      "owner_surface": "WF85 Personal Trade-Grade Decision OS contract and Phase 1 card builder",
+      "collision_group": "trade_grade_decision_os",
+      "validation_budget": {
+        "budget": "shared",
+        "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+        "closeout_mode": "handoff",
+        "proof_command_count": 8,
+        "max_default_proof_commands": 5,
+        "phase_count": 4
+      },
+      "closeout_mode": "handoff",
+      "target_files": [
+        "scripts/trade_grade_decision_os_contract.py",
+        "scripts/trade_grade_decision_cards.py",
+        "scripts/trade_grade_repair_conveyor.py",
+        "scripts/trade_grade_os_freshness_cron_runner.py",
+        "tmp/trade-grade-decision-os-contract.json",
+        "tmp/trade-grade-source-freshness-gate.json",
+        "tmp/trade-grade-decision-cards.json",
+        "tmp/trade-grade-decision-card-authority-validation.json",
+        "tmp/trade-grade-approval-card-gate.json",
+        "tmp/trade-grade-risk-sizing-overlay.json",
+        "tmp/trade-grade-repair-conveyor.json",
+        "tmp/trade-grade-os-freshness-cron-runner.json",
+        "tmp/post-close-final-quote-ledger.json",
+        "tmp/wf78-tier-weighted-freshness-resolution.json",
+        "tmp/canonical-finance-data-plane.json",
+        "tmp/canonical-finance-data-plane-phase6-10.json",
+        "tmp/wf78-capital-review-queue.json",
+        "tmp/finance-decision-sync-spine.json"
+      ],
+      "proof_commands": [
+        "python scripts\\trade_grade_decision_os_contract.py --write --validate",
+        "python scripts\\trade_grade_decision_cards.py --write --validate",
+        "python scripts\\trade_grade_repair_conveyor.py --write --validate",
+        "python scripts\\trade_grade_os_freshness_cron_runner.py --write --validate",
+        "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+        "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+        "python scripts\\workflow_router.py WF85 --answer all --validate",
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\trade_grade_decision_os_contract.py --write --validate",
+      "started_at_utc": "2026-06-11T03:14:39Z",
+      "completed_at_utc": "2026-06-11T03:14:39Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "wrote tmp/trade-grade-decision-os-contract.json status=ok",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\trade_grade_decision_cards.py --write --validate",
+      "started_at_utc": "2026-06-11T03:14:39Z",
+      "completed_at_utc": "2026-06-11T03:14:40Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "wrote tmp/trade-grade-source-freshness-gate.json, tmp/trade-grade-decision-cards.json, tmp/trade-grade-decision-card-authority-validation.json, tmp/trade-grade-approval-card-gate.json, tmp/trade-grade-risk-sizing-overlay.json status=ok authority=ok",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\trade_grade_repair_conveyor.py --write --validate",
+      "started_at_utc": "2026-06-11T03:14:40Z",
+      "completed_at_utc": "2026-06-11T03:14:40Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "wrote tmp/trade-grade-repair-conveyor.json status=ready_for_repair_execution pilots=0",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[3]",
+      "command": "python scripts\\trade_grade_os_freshness_cron_runner.py --write --validate",
+      "started_at_utc": "2026-06-11T03:14:40Z",
+      "completed_at_utc": "2026-06-11T03:15:10Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "status=ok validation=ok operator_action=NO_REPLY steps_ok=25/25 wf84=ok wf85_review_ready=0 approval_drafts=0 repair_candidates=0",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[4]",
+      "command": "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:15:10Z",
+      "completed_at_utc": "2026-06-11T03:15:11Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\"db\": \"tmp/canonical-finance-data-plane.sqlite\", \"packet\": \"tmp/canonical-finance-data-plane.json\", \"sqlite\": {\"authority_view\": {\"decision_forbidden_count\": 0, \"routing_forbidden_count\": 0}, \"db_path\": \"tmp/canonical-finance-data-plane.sqlite\", \"foreign_key_errors\": [], \"integrity_check\": \"ok\", \"schema\": \"veritas.canonical_finance_data_plane.sqlite.v1\", \"status\": \"ok\", \"table_counts\": {\"analyst_snapshot\": 200, \"decision_queue_state\": 200, \"earnings_catalyst\": 200, \"entry_stop_reference\": 200, \"evidence_family_status\": 4200, \"full_answer_section_context\": 3400, \"fundamental_snapshot\": 200, \"official_evidence\": 800, \"price_technical_current\": 200, \"routing_state_current\": 200, \"schema_run\": 1, \"security_master\": 200, \"source_artifact\": 10, \"universe_membership\": 200, \"validation_result\": 25}, \"view_counts\": {\"v_current_decision_overview\": 200, \"v_decision_grade_os_layer\": 200, \"v_full_answer_source_drillback\": 3400, \"v_full_ticker_answer_context\": 3400, \"v_owner_action_queue\": 16, \"v_pm_decision_queue_overlay\": 200, \"v_source_lineage_drillback\": 10, \"v_ticker_source_drillback\": 457, \"v_wf84_priority_queue\": 200}}, \"status\": \"ok\", \"summary\": {\"canonical_table_count\": 15, \"decision_queue_state_count\": 200, \"decision_spine_extra_count\": 6, \"evidence_family_status_count\": 4200, \"forbidden_authority_true_count\": 0, \"full_answer_section_context_count\": 3400, \"owner_action_required_count\": 16, \"routing_state_current_count\": 200, \"security_master_count\": 200, \"source_artifact_count\": 10, \"tier_counts\": {\"Tier A\": 16, \"Tier B\": 32, \"Tier C\": 152}}, \"validation\": \"tmp/canonical-finance-data-plane-validation.json\"}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[5]",
+      "command": "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+      "started_at_utc": "2026-06-11T03:15:11Z",
+      "completed_at_utc": "2026-06-11T03:15:11Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"out\": \"tmp/canonical-finance-data-plane-phase6-10.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"archive_delete_apply_allowed\": false,\n    \"checks\": 54,\n    \"consumer_default_switch_allowed\": true,\n    \"critical_error_count\": 0,\n    \"default_switched_consumer_count\": 4,\n    \"fallback_required_for_default_consumers\": false,\n    \"fallback_surfaces_retained_for_resilience\": true,\n    \"phase_count\": 6,\n    \"source_feeders_required\": true,\n    \"warning_count\": 0\n  },\n  \"validation\": {\n    \"critical_errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[6]",
+      "command": "python scripts\\workflow_router.py WF85 --answer all --validate",
+      "started_at_utc": "2026-06-11T03:15:11Z",
+      "completed_at_utc": "2026-06-11T03:15:11Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "_packet.py --write --write-db --validate\"\n      ],\n      \"default_resume_command\": \"python scripts\\\\trade_grade_decision_cards.py --write --validate\",\n      \"control_override\": null,\n      \"pm_action\": {\n        \"action_id\": \"trade_grade_decision_os-execute_safe_next_step\",\n        \"action_type\": \"execute_safe_next_step\",\n        \"description\": \"Use the Phase 1 decision-card family and repair conveyor as the WF85 proof surface: source/freshness gate, fail-closed cards, authority scan, approval-card gate, risk/sizing overlay, and upstream repair routing.\",\n        \"lane_id\": \"trade_grade_decision_os\",\n        \"authority\": \"review_only\",\n        \"inline_execution_allowed\": false,\n        \"helper_lane_allowed_from_main_session\": true,\n        \"heartbeat_may_execute\": false,\n        \"stop_lines\": [\n          \"internal personal decision support only\",\n          \"no customer/account/PII/suitability data\",\n          \"no canon/portfolio/cash/risk-rule mutation\",\n          \"no capital deployment or execution authority\",\n          \"no card/score/SQL row becomes approval\"\n        ],\n        \"lane_status\": \"ready\",\n        \"readiness_score\": 90,\n        \"rank\": 1,\n        \"pm_packet_only\": true\n      },\n      \"pm_job\": {\n        \"job_id\": \"pm-01-trade-grade-decision-os-execute-safe-next-step\",\n        \"status\": \"ready_for_main_or_helper\",\n        \"validation_budget\": {\n          \"budget\": \"shared\",\n          \"description\": \"Shared JSON/state/router/control contract, but no apply/execution authority.\",\n          \"closeout_mode\": \"handoff\",\n          \"proof_command_count\": 8,\n          \"max_default_proof_commands\": 5,\n          \"phase_count\": 4\n        },\n        \"closeout_mode\": \"handoff\",\n        \"collision_group\": \"trade_grade_decision_os\"\n      },\n      \"sources\": {\n        \"route_index\": \"tmp\\\\workflow-routing-index.json\",\n        \"pm_control_packet\": \"tmp/pm-control-packet.json\"\n      }\n    }\n  ],\n  \"written\": [],\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:proof[7]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:15:11Z",
+      "completed_at_utc": "2026-06-11T03:15:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "lity_blocked_archetypes\": 0,\n        \"finance_response_quality_negative_canary_pass_count\": 6,\n        \"finance_response_quality_remediation_tracks_needing_repair\": 0,\n        \"finance_response_quality_section_coverage_status\": \"ok\",\n        \"finance_response_quality_sector_timing_warning\": true,\n        \"finance_response_quality_source_freshness_blocked_count\": 0,\n        \"finance_response_quality_source_open_blocked_count\": 0,\n        \"finance_response_quality_status\": \"ok\",\n        \"finance_response_quality_technical_gap_count\": 0,\n        \"finance_response_quality_wf72_support_only\": true,\n        \"learning_coding_rows\": 2,\n        \"learning_coding_runtime_rows\": 1,\n        \"learning_privacy_scan_status\": \"ok\",\n        \"learning_row_count\": 113,\n        \"learning_runtime_otel_rows\": 20,\n        \"model_quality_validation\": \"ok\",\n        \"recommended_budget\": \"shared\",\n        \"recommended_validator_count\": 18,\n        \"validator_elapsed_seconds\": 3.162,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 18\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-01-trade-grade-decision-os-execute-safe-next-step:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:15:12Z",
+      "completed_at_utc": "2026-06-11T03:15:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "lity_blocked_archetypes\": 0,\n        \"finance_response_quality_negative_canary_pass_count\": 6,\n        \"finance_response_quality_remediation_tracks_needing_repair\": 0,\n        \"finance_response_quality_section_coverage_status\": \"ok\",\n        \"finance_response_quality_sector_timing_warning\": true,\n        \"finance_response_quality_source_freshness_blocked_count\": 0,\n        \"finance_response_quality_source_open_blocked_count\": 0,\n        \"finance_response_quality_status\": \"ok\",\n        \"finance_response_quality_technical_gap_count\": 0,\n        \"finance_response_quality_wf72_support_only\": true,\n        \"learning_coding_rows\": 2,\n        \"learning_coding_runtime_rows\": 1,\n        \"learning_privacy_scan_status\": \"ok\",\n        \"learning_row_count\": 113,\n        \"learning_runtime_otel_rows\": 20,\n        \"model_quality_validation\": \"ok\",\n        \"recommended_budget\": \"shared\",\n        \"recommended_validator_count\": 18,\n        \"validator_elapsed_seconds\": 3.162,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 18\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

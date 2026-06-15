@@ -1,0 +1,56 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "f0f44888-bbe8-4463-955b-1f7f811e720e",
+  "name": "Finance Delivery Series - Monthly Handoff",
+  "required": true,
+  "owner_workflow": "WF75",
+  "contract_reason": "First-Saturday main-session handoff for monthly investment direction and market deep dive artifacts.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "45 8 1-7 * 6",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "systemEvent"
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-delivery-series.json",
+    "tmp/finance-delivery-series.xlsx",
+    "tmp/finance-delivery-series/monthly-investment-direction.pdf",
+    "tmp/finance-delivery-series/monthly-market-deep-dive.pdf",
+    "tmp/cron-control-packet.json",
+    "tmp/pm-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "main_session_handoff_only": true,
+    "customer_or_external_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

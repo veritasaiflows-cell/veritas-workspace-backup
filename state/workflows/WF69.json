@@ -1,0 +1,31 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF69",
+  "display_name": "Intelligence / Probability Stack V2",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Use SQL truth spine as proof/index substrate only; validate bundles without predictive claims.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "review-only; no predictive claims",
+  "blockers": [
+    "Probability/win-rate claims blocked while WF55 not ready"
+  ],
+  "stop_lines": [
+    "No probability/win-rate/expected-return/model-readiness claims while WF55 is not ready; no live/paper/account authority."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 69 - Intelligence Probability Predictive Stack V2 Revamp.md",
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [
+    "python scripts\\wf_v2_intelligence_stack_validator.py --write"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

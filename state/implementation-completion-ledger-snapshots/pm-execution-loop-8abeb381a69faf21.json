@@ -1,0 +1,1035 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-14T23:01:42Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 10,
+    "job": null
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 9,
+    "selected_jobs": [
+      "pm-02-trade-grade-decision-os-execute-safe-next-step",
+      "pm-03-finance-os-data-model-execute-safe-next-step",
+      "pm-04-wf78-scaleout-execute-safe-next-step",
+      "pm-05-ticker-card-refresh-execute-safe-next-step",
+      "pm-06-tier-promotion-review-execute-safe-next-step",
+      "pm-07-parallel-lane-orchestration-execute-safe-next-step",
+      "pm-08-operator-console-execute-safe-next-step",
+      "pm-09-pm-handoff-pdf-execute-safe-next-step",
+      "pm-10-smb-workflow-clarity-execute-safe-next-step"
+    ],
+    "skipped_count": 1,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 6,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-02-trade-grade-decision-os-execute-safe-next-step",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      },
+      {
+        "job_id": "pm-03-finance-os-data-model-execute-safe-next-step",
+        "budget": "shared",
+        "closeout_mode": "handoff",
+        "closeout_command_count": 1
+      },
+      {
+        "job_id": "pm-04-wf78-scaleout-execute-safe-next-step",
+        "budget": "major",
+        "closeout_mode": "integration",
+        "closeout_command_count": 2
+      },
+      {
+        "job_id": "pm-05-ticker-card-refresh-execute-safe-next-step",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      },
+      {
+        "job_id": "pm-06-tier-promotion-review-execute-safe-next-step",
+        "budget": "major",
+        "closeout_mode": "integration",
+        "closeout_command_count": 2
+      },
+      {
+        "job_id": "pm-07-parallel-lane-orchestration-execute-safe-next-step",
+        "budget": "shared",
+        "closeout_mode": "handoff",
+        "closeout_command_count": 1
+      },
+      {
+        "job_id": "pm-08-operator-console-execute-safe-next-step",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      },
+      {
+        "job_id": "pm-09-pm-handoff-pdf-execute-safe-next-step",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      },
+      {
+        "job_id": "pm-10-smb-workflow-clarity-execute-safe-next-step",
+        "budget": "shared",
+        "closeout_mode": "handoff",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-02-trade-grade-decision-os-execute-safe-next-step",
+      "rank": 2,
+      "priority": "P1",
+      "title": "Advance WF85 Personal Trade-Grade Decision OS",
+      "implementation_class": "trade_grade_decision_os",
+      "owner_surface": "WF85 Personal Trade-Grade Decision OS contract and Phase 1 card builder",
+      "collision_group": "trade_grade_decision_os",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 3,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "scripts/trade_grade_decision_os_contract.py",
+        "scripts/trade_grade_decision_cards.py",
+        "scripts/trade_grade_repair_conveyor.py",
+        "scripts/trade_grade_os_freshness_cron_runner.py",
+        "tmp/trade-grade-decision-os-contract.json",
+        "tmp/trade-grade-source-freshness-gate.json",
+        "tmp/trade-grade-decision-cards.json",
+        "tmp/trade-grade-decision-card-authority-validation.json",
+        "tmp/trade-grade-approval-card-gate.json",
+        "tmp/trade-grade-risk-sizing-overlay.json",
+        "tmp/trade-grade-repair-conveyor.json",
+        "tmp/trade-grade-os-freshness-cron-runner.json",
+        "tmp/post-close-final-quote-ledger.json",
+        "tmp/wf78-tier-weighted-freshness-resolution.json",
+        "tmp/canonical-finance-data-plane.json",
+        "tmp/canonical-finance-data-plane-phase6-10.json",
+        "tmp/wf78-capital-review-queue.json",
+        "tmp/finance-decision-sync-spine.json"
+      ],
+      "proof_commands": [
+        "python scripts\\trade_grade_decision_os_contract.py --write --validate",
+        "python scripts\\trade_grade_os_freshness_cron_runner.py --component daily_core --full-answer-mode changed --write --validate",
+        "python scripts\\workflow_router.py WF85 --answer all --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    },
+    {
+      "job_id": "pm-03-finance-os-data-model-execute-safe-next-step",
+      "rank": 3,
+      "priority": "P1",
+      "title": "Maintain WF84 internal finance data-plane consumer/parity proof",
+      "implementation_class": "canonical_finance_data_plane",
+      "owner_surface": "WF84 canonical finance data-plane contract",
+      "collision_group": "finance_os_data_model",
+      "validation_budget": {
+        "budget": "shared",
+        "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+        "closeout_mode": "handoff",
+        "proof_command_count": 5,
+        "max_default_proof_commands": 5,
+        "phase_count": 4
+      },
+      "closeout_mode": "handoff",
+      "target_files": [
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane.py",
+        "tmp/canonical-finance-data-plane-contract.json",
+        "tmp/canonical-finance-data-plane.json",
+        "tmp/canonical-finance-data-plane-validation.json",
+        "tmp/canonical-finance-data-plane.sqlite",
+        "tmp/canonical-finance-data-plane-phase6-10.json",
+        "tmp/canonical-finance-data-plane-retirement-readiness.json"
+      ],
+      "proof_commands": [
+        "python scripts\\canonical_finance_data_plane_contract.py --write --validate",
+        "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+        "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+        "python scripts\\canonical_finance_data_plane_retirement_readiness.py --write --validate",
+        "python scripts\\workflow_router.py WF84 --answer all --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    },
+    {
+      "job_id": "pm-04-wf78-scaleout-execute-safe-next-step",
+      "rank": 4,
+      "priority": "P2",
+      "title": "Advance 500-ticker feeder scaleout through the reputation gate",
+      "implementation_class": "wf78_reputation_scaleout_gate",
+      "owner_surface": "WF78 non-capital feeder for WF84/WF85 finance route",
+      "collision_group": "wf78_wf84_wf85_feeder_scaleout",
+      "validation_budget": {
+        "budget": "major",
+        "description": "Workflow/control-plane or authority-adjacent contract change.",
+        "closeout_mode": "integration",
+        "proof_command_count": 5,
+        "max_default_proof_commands": 99,
+        "phase_count": 5
+      },
+      "closeout_mode": "integration",
+      "target_files": [
+        "scripts/wf78_phase_runner.py",
+        "scripts/wf78_auto_tier_router.py",
+        "scripts/wf78_event_triggered_rerouting.py",
+        "scripts/wf78_500_ticker_reputation_gate.py",
+        "tmp/wf78-auto-tier-routing.json",
+        "tmp/wf78-event-triggered-rerouting.json",
+        "tmp/wf78-500-ticker-reputation-gate.json",
+        "tmp/wf78-500-ticker-reputation-gate.sqlite"
+      ],
+      "proof_commands": [
+        "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+        "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+        "python scripts\\wf78_auto_tier_router.py --write --validate",
+        "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+        "python scripts\\automation_stack_hardening_pass.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate",
+        "python scripts\\helper_completion_handshake.py --write --validate"
+      ]
+    },
+    {
+      "job_id": "pm-05-ticker-card-refresh-execute-safe-next-step",
+      "rank": 5,
+      "priority": "P2",
+      "title": "Run ticker-card refresh gate and classify repair queue",
+      "implementation_class": "ticker_card_refresh_gate",
+      "owner_surface": "WF77/WF78 ticker-card refresh gate",
+      "collision_group": "wf77_ticker_card_refresh",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 2,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "scripts/finance_ticker_card_refresh_gate.py",
+        "scripts/ticker_intelligence_card.py",
+        "tmp/finance-ticker-card-refresh-gate.json",
+        "tmp/ticker-card-refresh-gate-card-build-summary.json",
+        "tmp/finance-intelligence-state-stale-tickers.json"
+      ],
+      "proof_commands": [
+        "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode changed",
+        "python scripts\\automation_stack_hardening_pass.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    },
+    {
+      "job_id": "pm-06-tier-promotion-review-execute-safe-next-step",
+      "rank": 6,
+      "priority": "P2",
+      "title": "Keep WF78 auto-router primary and classify evidence-repair queue",
+      "implementation_class": "wf78_auto_router_consumer_sync",
+      "owner_surface": "WF78 automated non-capital tier routing",
+      "collision_group": "wf78_tier_promotion_review",
+      "validation_budget": {
+        "budget": "major",
+        "description": "Workflow/control-plane or authority-adjacent contract change.",
+        "closeout_mode": "integration",
+        "proof_command_count": 11,
+        "max_default_proof_commands": 99,
+        "phase_count": 5
+      },
+      "closeout_mode": "integration",
+      "target_files": [
+        "scripts/wf78_auto_tier_router.py",
+        "scripts/wf78_tier_promotion_review_gate.py",
+        "scripts/wf78_tier_b_research_packet.py",
+        "scripts/wf78_routing_dashboard.py",
+        "tmp/wf78-auto-tier-routing.json",
+        "tmp/wf78-capital-review-queue.json",
+        "tmp/wf78-capital-review-queue.sqlite",
+        "tmp/wf78-event-triggered-rerouting.json",
+        "tmp/wf78-event-triggered-rerouting.sqlite",
+        "tmp/wf78-tier-promotion-review-gate.json",
+        "tmp/wf78-tier-promotion-review-gate.sqlite",
+        "tmp/wf78-tier-b-research-packets.json",
+        "tmp/wf78-tier-b-research-packet-requests.json",
+        "tmp/wf78-tier-b-research-packet-phase2-eval.json",
+        "tmp/wf78-101-200-tier-c-owner-decision-packet.json",
+        "tmp/wf78-routing-dashboard.json",
+        "tmp/wf78-routing-dashboard.sqlite",
+        "tmp/finance-ticker-card-refresh-gate.json",
+        "tmp/wf78-500-ticker-reputation-gate.json"
+      ],
+      "proof_commands": [
+        "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode never",
+        "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+        "python scripts\\wf78_capital_review_queue.py --write --write-db --validate",
+        "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+        "python scripts\\wf78_auto_tier_router.py --write --validate",
+        "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+        "python scripts\\wf78_tier_promotion_review_gate.py --write --write-db --validate",
+        "python scripts\\wf78_tier_b_research_packet.py --write --write-db --validate",
+        "python scripts\\wf78_tier_funnel_promotion_gate.py --requests tmp\\wf78-tier-b-research-packet-requests.json --out tmp\\wf78-tier-b-research-packet-phase2-eval.json --write --validate",
+        "python scripts\\wf78_routing_dashboard.py --write --write-db --validate",
+        "python scripts\\automation_stack_hardening_pass.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate",
+        "python scripts\\helper_completion_handshake.py --write --validate"
+      ]
+    },
+    {
+      "job_id": "pm-07-parallel-lane-orchestration-execute-safe-next-step",
+      "rank": 7,
+      "priority": "P3",
+      "title": "Advance bounded parallel orchestration and overhead reduction lanes",
+      "implementation_class": "parallel_overhead_reduction_orchestration",
+      "owner_surface": "WF71/WF73 parallel helper orchestration",
+      "collision_group": "parallel_lane_orchestration",
+      "validation_budget": {
+        "budget": "shared",
+        "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+        "closeout_mode": "handoff",
+        "proof_command_count": 4,
+        "max_default_proof_commands": 5,
+        "phase_count": 4
+      },
+      "closeout_mode": "handoff",
+      "target_files": [
+        "scripts/workflow_automation_autonomy_review.py",
+        "scripts/parallel_lane_recommender.py",
+        "scripts/concurrent_lane_manager.py",
+        "tmp/workflow-automation-autonomy-review.json",
+        "tmp/parallel-lane-recommendation.json",
+        "tmp/concurrent-lane-register.json"
+      ],
+      "proof_commands": [
+        "python scripts\\workflow_automation_autonomy_review.py --write --validate",
+        "python scripts\\workflow_routing_index.py --write --write-db --validate",
+        "python scripts\\parallel_lane_recommender.py --write --validate",
+        "python scripts\\concurrent_lane_manager.py --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    },
+    {
+      "job_id": "pm-08-operator-console-execute-safe-next-step",
+      "rank": 8,
+      "priority": "P3",
+      "title": "Improve local operator visibility without adding authority",
+      "implementation_class": "local_ui_control_surface",
+      "owner_surface": "Local operator console / PM cockpit",
+      "collision_group": "pm_cockpit_ui",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 1,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "apps/pm-control-cockpit",
+        "state/pm-cockpit-source-registry.json",
+        "tmp/wf75-operator-console.json"
+      ],
+      "proof_commands": [
+        "cd apps\\pm-control-cockpit; npm run validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    },
+    {
+      "job_id": "pm-09-pm-handoff-pdf-execute-safe-next-step",
+      "rank": 9,
+      "priority": "P3",
+      "title": "Refresh internal PM handoff and readiness packet",
+      "implementation_class": "pm_packet_refresh",
+      "owner_surface": "PM handoff / readiness brief lane",
+      "collision_group": "pm_handoff_packets",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 3,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "scripts/wf75_pm_weekly_update.py",
+        "scripts/wf75_artifact_only_pm_handoff.py",
+        "scripts/wf75_pm_readiness_pdf.py"
+      ],
+      "proof_commands": [
+        "python scripts\\wf75_pm_weekly_update.py --write --validate",
+        "python scripts\\wf75_artifact_only_pm_handoff.py --write --validate",
+        "python scripts\\wf75_pm_readiness_pdf.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    },
+    {
+      "job_id": "pm-10-smb-workflow-clarity-execute-safe-next-step",
+      "rank": 10,
+      "priority": "P3",
+      "title": "Advance one anonymous SMB workflow implementation slice",
+      "implementation_class": "bounded_product_implementation",
+      "owner_surface": "P1 SMB Workflow Clarity / WF75 service-state lane",
+      "collision_group": "wf75_smb_service_state",
+      "validation_budget": {
+        "budget": "shared",
+        "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+        "closeout_mode": "handoff",
+        "proof_command_count": 2,
+        "max_default_proof_commands": 5,
+        "phase_count": 4
+      },
+      "closeout_mode": "handoff",
+      "target_files": [
+        "scripts/generic_intelligence_saas_pivot.py",
+        "scripts/wf75_closeout_refresh.py",
+        "tmp/wf75-smb-automation-blueprints.json",
+        "tmp/wf75-smb-customer-preview-validation.json",
+        "tmp/wf79-smb-offer-icp-packet.json",
+        "tmp/wf79-smb-demo-packets-validation.json",
+        "tmp/wf79-smb-marketing-ops-blueprints-validation.json",
+        "tmp/wf79-smb-phase-closeout.json"
+      ],
+      "proof_commands": [
+        "python scripts\\generic_intelligence_saas_pivot.py --write --write-db --validate",
+        "python scripts\\wf75_closeout_refresh.py --validation-budget shared --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "job_id": "pm-01-qa-source-trust-inspect-blocker",
+      "reason": "status=blocked"
+    }
+  ],
+  "proof_results": [
+    {
+      "name": "pm-02-trade-grade-decision-os-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\trade_grade_decision_os_contract.py --write --validate",
+      "started_at_utc": "2026-06-14T22:59:58Z",
+      "completed_at_utc": "2026-06-14T22:59:58Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "wrote tmp/trade-grade-decision-os-contract.json status=ok",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-02-trade-grade-decision-os-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\trade_grade_os_freshness_cron_runner.py --component daily_core --full-answer-mode changed --write --validate",
+      "started_at_utc": "2026-06-14T22:59:58Z",
+      "completed_at_utc": "2026-06-14T23:00:36Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "status=ok validation=warning operator_action=NO_REPLY steps_ok=27/27 wf84=ok wf85_review_ready=0 approval_drafts=0 repair_candidates=0\n  [warning] wf67_guard_stale_blocks_paper_execution_context_but_no_drafts_exist",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-02-trade-grade-decision-os-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\workflow_router.py WF85 --answer all --validate",
+      "started_at_utc": "2026-06-14T23:00:36Z",
+      "completed_at_utc": "2026-06-14T23:00:36Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "thon scripts\\\\pm_control_packet.py --write --write-db --validate\"\n      ],\n      \"default_resume_command\": \"python scripts\\\\trade_grade_decision_cards.py --write --validate\",\n      \"control_override\": null,\n      \"pm_action\": {\n        \"action_id\": \"trade_grade_decision_os-execute_safe_next_step\",\n        \"action_type\": \"execute_safe_next_step\",\n        \"description\": \"Use the Phase 1 decision-card family and repair conveyor as the WF85 proof surface: source/freshness gate, fail-closed cards, authority scan, approval-card gate, risk/sizing overlay, and upstream repair routing.\",\n        \"lane_id\": \"trade_grade_decision_os\",\n        \"authority\": \"review_only\",\n        \"inline_execution_allowed\": false,\n        \"helper_lane_allowed_from_main_session\": true,\n        \"heartbeat_may_execute\": false,\n        \"stop_lines\": [\n          \"internal personal decision support only\",\n          \"no customer/account/PII/suitability data\",\n          \"no canon/portfolio/cash/risk-rule mutation\",\n          \"no capital deployment or execution authority\",\n          \"no card/score/SQL row becomes approval\"\n        ],\n        \"lane_status\": \"ready\",\n        \"readiness_score\": 90,\n        \"rank\": 2,\n        \"pm_packet_only\": true\n      },\n      \"pm_job\": {\n        \"job_id\": \"pm-02-trade-grade-decision-os-execute-safe-next-step\",\n        \"status\": \"ready_for_main_or_helper\",\n        \"validation_budget\": {\n          \"budget\": \"narrow\",\n          \"description\": \"One owner plus one adjacent consumer or validator.\",\n          \"closeout_mode\": \"pm_state\",\n          \"proof_command_count\": 3,\n          \"max_default_proof_commands\": 3,\n          \"phase_count\": 3\n        },\n        \"closeout_mode\": \"pm_state\",\n        \"collision_group\": \"trade_grade_decision_os\"\n      },\n      \"sources\": {\n        \"route_index\": \"tmp\\\\workflow-routing-index.json\",\n        \"pm_control_packet\": \"tmp/pm-control-packet.json\"\n      }\n    }\n  ],\n  \"written\": [],\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-03-finance-os-data-model-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\canonical_finance_data_plane_contract.py --write --validate",
+      "started_at_utc": "2026-06-14T23:00:36Z",
+      "completed_at_utc": "2026-06-14T23:00:36Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/canonical-finance-data-plane-contract.json\",\n  \"summary\": {\n    \"expected_active_tickers\": 200,\n    \"router_active_tickers\": 200,\n    \"finance_state_universe_rows\": 200,\n    \"finance_state_ticker_tier_rows\": 200,\n    \"canonical_table_count\": 14,\n    \"feeder_source_count\": 18\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": [],\n    \"warnings\": [],\n    \"observed_counts\": {\n      \"expected_active_tickers\": 200,\n      \"router_active_tickers\": 200,\n      \"finance_state_universe_rows\": 200,\n      \"finance_state_ticker_tier_rows\": 200,\n      \"canonical_table_count\": 14,\n      \"feeder_source_count\": 18\n    }\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-03-finance-os-data-model-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:00:36Z",
+      "completed_at_utc": "2026-06-14T23:00:37Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\"db\": \"tmp/canonical-finance-data-plane.sqlite\", \"packet\": \"tmp/canonical-finance-data-plane.json\", \"sqlite\": {\"authority_view\": {\"decision_forbidden_count\": 0, \"routing_forbidden_count\": 0}, \"db_path\": \"tmp/canonical-finance-data-plane.sqlite\", \"foreign_key_errors\": [], \"integrity_check\": \"ok\", \"schema\": \"veritas.canonical_finance_data_plane.sqlite.v1\", \"status\": \"ok\", \"table_counts\": {\"analyst_snapshot\": 200, \"decision_queue_state\": 200, \"earnings_catalyst\": 200, \"entry_stop_reference\": 200, \"evidence_family_status\": 4200, \"full_answer_section_context\": 3400, \"fundamental_snapshot\": 200, \"official_evidence\": 800, \"price_technical_current\": 200, \"routing_state_current\": 200, \"schema_run\": 1, \"security_master\": 200, \"source_artifact\": 10, \"universe_membership\": 200, \"validation_result\": 26}, \"view_counts\": {\"v_current_decision_overview\": 200, \"v_decision_grade_os_layer\": 200, \"v_full_answer_source_drillback\": 3400, \"v_full_ticker_answer_context\": 3400, \"v_owner_action_queue\": 14, \"v_pm_decision_queue_overlay\": 200, \"v_source_lineage_drillback\": 10, \"v_ticker_source_drillback\": 457, \"v_wf84_priority_queue\": 200}}, \"status\": \"ok\", \"summary\": {\"canonical_table_count\": 15, \"decision_queue_state_count\": 200, \"decision_spine_extra_count\": 6, \"evidence_family_status_count\": 4200, \"forbidden_authority_true_count\": 0, \"full_answer_section_context_count\": 3400, \"owner_action_required_count\": 14, \"routing_state_current_count\": 200, \"security_master_count\": 200, \"source_artifact_count\": 10, \"tier_counts\": {\"Tier A\": 19, \"Tier B\": 29, \"Tier C\": 152}}, \"validation\": \"tmp/canonical-finance-data-plane-validation.json\"}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-03-finance-os-data-model-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+      "started_at_utc": "2026-06-14T23:00:37Z",
+      "completed_at_utc": "2026-06-14T23:00:38Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"out\": \"tmp/canonical-finance-data-plane-phase6-10.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"archive_delete_apply_allowed\": false,\n    \"checks\": 54,\n    \"consumer_default_switch_allowed\": true,\n    \"critical_error_count\": 0,\n    \"default_switched_consumer_count\": 4,\n    \"fallback_required_for_default_consumers\": false,\n    \"fallback_surfaces_retained_for_resilience\": true,\n    \"phase_count\": 6,\n    \"source_feeders_required\": true,\n    \"warning_count\": 0\n  },\n  \"validation\": {\n    \"critical_errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-03-finance-os-data-model-execute-safe-next-step:proof[3]",
+      "command": "python scripts\\canonical_finance_data_plane_retirement_readiness.py --write --validate",
+      "started_at_utc": "2026-06-14T23:00:38Z",
+      "completed_at_utc": "2026-06-14T23:00:38Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/canonical-finance-data-plane-retirement-readiness.json\",\n  \"summary\": {\n    \"surface_count\": 8,\n    \"archive_ready_count\": 0,\n    \"delete_ready_count\": 0,\n    \"apply_allowed_count\": 0,\n    \"approval_plan_prepared\": true,\n    \"source_feeder_retirement_ready_count\": 0,\n    \"duplicate_surface_retirement_ready_count\": 0,\n    \"full_answer_parity_status\": \"ok\",\n    \"full_answer_parity_ready_to_start_duplicate_surface_retirement_planning\": true,\n    \"archive_plan_owner_action_required\": true,\n    \"next_safe_action\": \"Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": [],\n    \"warnings\": [],\n    \"checks\": [\n      {\n        \"check\": \"archive_ready_count_zero\",\n        \"status\": \"ok\",\n        \"count\": 0\n      },\n      {\n        \"check\": \"delete_ready_count_zero\",\n        \"status\": \"ok\",\n        \"count\": 0\n      },\n      {\n        \"check\": \"apply_allowed_false\",\n        \"status\": \"ok\"\n      }\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-03-finance-os-data-model-execute-safe-next-step:proof[4]",
+      "command": "python scripts\\workflow_router.py WF84 --answer all --validate",
+      "started_at_utc": "2026-06-14T23:00:38Z",
+      "completed_at_utc": "2026-06-14T23:00:38Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "scripts\\\\workflow_router.py WF84 --answer all --write-capsules --validate\"\n      ],\n      \"default_resume_command\": \"python scripts\\\\canonical_finance_data_plane_phase6_10.py --write --validate\",\n      \"control_override\": null,\n      \"pm_action\": {\n        \"action_id\": \"finance_os_data_model-execute_safe_next_step\",\n        \"action_type\": \"execute_safe_next_step\",\n        \"description\": \"Use the validated WF84 phase 6-10 proof for internal read-only consumer expansion, parity, source drillback, priority queue, and retirement gating.\",\n        \"lane_id\": \"finance_os_data_model\",\n        \"authority\": \"review_only\",\n        \"inline_execution_allowed\": false,\n        \"helper_lane_allowed_from_main_session\": true,\n        \"heartbeat_may_execute\": false,\n        \"stop_lines\": [\n          \"internal personal finance infrastructure only\",\n          \"no customer/account/PII/suitability/brokerage data\",\n          \"no canon/portfolio/cash/risk-rule mutation\",\n          \"no capital deployment or execution authority\",\n          \"no SQL row or generated artifact becomes approval\"\n        ],\n        \"lane_status\": \"ready\",\n        \"readiness_score\": 90,\n        \"rank\": 3,\n        \"pm_packet_only\": true\n      },\n      \"pm_job\": {\n        \"job_id\": \"pm-03-finance-os-data-model-execute-safe-next-step\",\n        \"status\": \"ready_for_main_or_helper\",\n        \"validation_budget\": {\n          \"budget\": \"shared\",\n          \"description\": \"Shared JSON/state/router/control contract, but no apply/execution authority.\",\n          \"closeout_mode\": \"handoff\",\n          \"proof_command_count\": 5,\n          \"max_default_proof_commands\": 5,\n          \"phase_count\": 4\n        },\n        \"closeout_mode\": \"handoff\",\n        \"collision_group\": \"finance_os_data_model\"\n      },\n      \"sources\": {\n        \"route_index\": \"tmp\\\\workflow-routing-index.json\",\n        \"pm_control_packet\": \"tmp/pm-control-packet.json\"\n      }\n    }\n  ],\n  \"written\": [],\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-04-wf78-scaleout-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+      "started_at_utc": "2026-06-14T23:00:38Z",
+      "completed_at_utc": "2026-06-14T23:01:08Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"failed_steps\": 0,\n  \"md_out\": null,\n  \"out\": \"tmp/wf78-phase-runner-current.json\",\n  \"phase\": \"all-safe\",\n  \"status\": \"ok\",\n  \"steps\": 25,\n  \"validation\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-04-wf78-scaleout-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:08Z",
+      "completed_at_utc": "2026-06-14T23:01:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"actions\": 191,\n  \"db_out\": \"tmp/wf78-event-triggered-rerouting.sqlite\",\n  \"out\": \"tmp/wf78-event-triggered-rerouting.json\",\n  \"owner_action_required\": 3,\n  \"status\": \"ok\",\n  \"validation\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-04-wf78-scaleout-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\wf78_auto_tier_router.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:09Z",
+      "completed_at_utc": "2026-06-14T23:01:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "      \"AMD\",\n      \"AMZN\",\n      \"ANET\",\n      \"APH\",\n      \"APP\",\n      \"BKNG\",\n      \"CASY\",\n      \"CAT\",\n      \"CDNS\",\n      \"DECK\",\n      \"ECL\",\n      \"FCX\",\n      \"GE\",\n      \"KTOS\",\n      \"LNG\",\n      \"MU\",\n      \"NFLX\",\n      \"PLTR\",\n      \"TMUS\",\n      \"VMC\",\n      \"WMB\",\n      \"XLB\"\n    ],\n    \"held_phase2_b_candidates_count\": 4,\n    \"held_phase2_b_candidates\": [\n      \"ALLE\",\n      \"AMCR\",\n      \"AME\",\n      \"AOS\"\n    ],\n    \"phase2_auto_tier_b_candidate_count\": 0,\n    \"phase2_auto_tier_b_candidates\": [],\n    \"phase2_eligible_c_to_b_candidate_count\": 15,\n    \"phase2_eligible_c_to_b_candidates\": [\n      \"ACN\",\n      \"ADI\",\n      \"ADP\",\n      \"ADSK\",\n      \"AKAM\",\n      \"ALB\",\n      \"ALLE\",\n      \"AMAT\",\n      \"AMCR\",\n      \"AME\",\n      \"ANET\",\n      \"AOS\",\n      \"APH\",\n      \"APP\",\n      \"CDNS\"\n    ],\n    \"competitive_gate_auto_tier_a_candidate_count\": 2,\n    \"competitive_gate_auto_tier_a_candidates\": [\n      \"CVX\",\n      \"LLY\"\n    ],\n    \"competitive_gate_auto_tier_a_capacity_held_count\": 0,\n    \"competitive_gate_auto_tier_a_capacity_held\": [],\n    \"auto_tier_a_capacity_demoted_count\": 0,\n    \"auto_tier_a_capacity_demoted_tickers\": [],\n    \"tier_a_missing_confidence_count\": 0,\n    \"tier_a_missing_confidence_tickers\": [],\n    \"tier_a_conflicted_ready_count\": 0,\n    \"tier_a_conflicted_ready_tickers\": [],\n    \"inline_confidence_convergence_count\": 2,\n    \"inline_confidence_convergence_tickers\": [\n      \"XLF\",\n      \"XLI\"\n    ],\n    \"tier_c_attention_candidate_count\": 11,\n    \"tier_c_attention_candidates\": [\n      \"ARES\",\n      \"ASML\",\n      \"BAX\",\n      \"BBY\",\n      \"BXP\",\n      \"CCL\",\n      \"CHTR\",\n      \"CPB\",\n      \"LYV\",\n      \"SCCO\",\n      \"TXN\"\n    ],\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"next_safe_action\": \"Use this artifact as the live non-capital routing state; capital deployment and execution still require separate exact approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-04-wf78-scaleout-execute-safe-next-step:proof[3]",
+      "command": "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:09Z",
+      "completed_at_utc": "2026-06-14T23:01:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db_out\": \"tmp/wf78-500-ticker-reputation-gate.sqlite\",\n  \"json_out\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n  \"output_validation_errors\": [],\n  \"output_validation_result\": \"ok\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"batch_size\": 100,\n    \"current_100_count\": 200,\n    \"current_baseline_count\": 200,\n    \"future_prior_batch_hold_count\": 200,\n    \"future_validation_required_count\": 0,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_batch_tier_c_eligible_count\": 0,\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"repair_queue_count\": 100,\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"target_count\": 500,\n    \"tier_a_production_eligible_count\": 0,\n    \"tier_b_research_eligible_count\": 0\n  },\n  \"validation_result\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-04-wf78-scaleout-execute-safe-next-step:proof[4]",
+      "command": "python scripts\\automation_stack_hardening_pass.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:09Z",
+      "completed_at_utc": "2026-06-14T23:01:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "tus\": \"ok\"\n  },\n  \"wf78_event_triggered_rerouting_hardening\": {\n    \"action_count\": 191,\n    \"exists\": true,\n    \"next_safe_action\": \"Repair evidence and reroute labels only; prepare owner review cards only after freshness blockers clear.\",\n    \"owner_action_required_count\": 3,\n    \"path\": \"tmp/wf78-event-triggered-rerouting.json\",\n    \"status\": \"ok\",\n    \"top_action\": {\n      \"action_type\": \"prepare_owner_card\",\n      \"apply_allowed\": false,\n      \"capital_deployment_approved\": false,\n      \"current_route\": \"A-READY\",\n      \"owner_action_required\": true,\n      \"paper_or_live_execution_allowed\": false,\n      \"priority\": 90,\n      \"proposed_route\": \"OWNER_CARD_PREP_ONLY\",\n      \"queue_rank\": 1,\n      \"reason\": \"Candidate has no local freshness blockers; prepare a non-executing owner review card only.\",\n      \"source_artifacts\": [\n        \"tmp/intraday-alerts/quote-snapshot-proof.json\",\n        \"tmp/market-execution-readiness-cron-hardening.json\",\n        \"tmp/post-close-final-quote-ledger.json\",\n        \"tmp/ticker-intelligence-cards/GOOG.current.json\",\n        \"tmp/wf78-auto-tier-routing.json\",\n        \"tmp/wf78-capital-review-queue.json\",\n        \"tmp/wf78-production-tier-adjudication.json\",\n        \"tmp/wf78-routing-delta.json\"\n      ],\n      \"ticker\": \"GOOG\",\n      \"trade_or_execution_approved\": false,\n      \"trigger\": \"capital_candidate_review_ready\"\n    },\n    \"validation_status\": \"ok\"\n  },\n  \"wf78_reputation_hardening\": {\n    \"current_baseline_count\": 200,\n    \"exists\": true,\n    \"future_validation_required_count\": 0,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"path\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"tier_a_production_eligible_count\": 0,\n    \"validation_status\": \"ok\"\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-ticker-card-refresh-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode changed",
+      "started_at_utc": "2026-06-14T23:01:09Z",
+      "completed_at_utc": "2026-06-14T23:01:25Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": ": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/UNH.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNH\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/UNP.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNP\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/URI.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"URI\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/V.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"V\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/WMT.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"WMT\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    }\n  ],\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"2 production answer-path ticker card(s) still need evidence repair\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-ticker-card-refresh-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\automation_stack_hardening_pass.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:25Z",
+      "completed_at_utc": "2026-06-14T23:01:25Z",
+      "returncode": 0,
+      "ok": true,
+      "reused": true,
+      "reused_from": "pm-04-wf78-scaleout-execute-safe-next-step:proof[4]",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode never",
+      "started_at_utc": "2026-06-14T23:01:25Z",
+      "completed_at_utc": "2026-06-14T23:01:28Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": ": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/UNH.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNH\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/UNP.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNP\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/URI.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"URI\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/V.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"V\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/WMT.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"WMT\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    }\n  ],\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"2 production answer-path ticker card(s) still need evidence repair\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+      "started_at_utc": "2026-06-14T23:01:28Z",
+      "completed_at_utc": "2026-06-14T23:01:28Z",
+      "returncode": 0,
+      "ok": true,
+      "reused": true,
+      "reused_from": "pm-04-wf78-scaleout-execute-safe-next-step:proof[0]",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\wf78_capital_review_queue.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:28Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db\": \"tmp/wf78-capital-review-queue.sqlite\",\n  \"out\": \"tmp/wf78-capital-review-queue.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"candidate_count\": 3,\n    \"capital_deployment_approved_count\": 0,\n    \"freshness_blocked_count\": 0,\n    \"next_safe_action\": \"Prepare non-executing owner capital-review cards for review-ready rows; do not execute or imply approval.\",\n    \"review_ready_count\": 3,\n    \"top_candidate\": \"NVDA\",\n    \"trade_or_execution_approved_count\": 0\n  },\n  \"validation\": {\n    \"errors\": 0,\n    \"status\": \"ok\"\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[3]",
+      "command": "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "reused": true,
+      "reused_from": "pm-04-wf78-scaleout-execute-safe-next-step:proof[1]",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[4]",
+      "command": "python scripts\\wf78_auto_tier_router.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "reused": true,
+      "reused_from": "pm-04-wf78-scaleout-execute-safe-next-step:proof[2]",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[5]",
+      "command": "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "reused": true,
+      "reused_from": "pm-04-wf78-scaleout-execute-safe-next-step:proof[3]",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[6]",
+      "command": "python scripts\\wf78_tier_promotion_review_gate.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db\": \"tmp/wf78-tier-promotion-review-gate.sqlite\",\n  \"out\": \"tmp/wf78-tier-promotion-review-gate.json\",\n  \"output_errors\": [],\n  \"owner_packet_out\": \"tmp/wf78-101-200-tier-c-owner-decision-packet.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"c_to_b_research_lead_count\": 100,\n    \"current_card_repair_job_count\": 173,\n    \"import_apply_blocked\": true,\n    \"macro_thesis_shortlist_count\": 15,\n    \"next_safe_action\": \"Use the macro/thesis overlay shortlist and evidence-repair jobs before any Tier B/Tier A promotion.\",\n    \"owner_decision_packet_status\": \"approved_applied_tier_c_only\",\n    \"owner_decision_ticker_count\": 100,\n    \"status\": \"ok\",\n    \"tier_a_b_combined_capacity_max\": 75,\n    \"tier_a_capacity_max\": 25,\n    \"tier_a_deployment_eligible_now_count\": 0,\n    \"tier_a_remaining_capacity\": 25,\n    \"tier_b_capacity_max\": 50,\n    \"tier_b_remaining_capacity\": 50,\n    \"tier_b_research_eligible_now_count\": 0,\n    \"tier_c_101_200_import_status\": \"ok_already_imported_tier_c_only\",\n    \"tier_c_import_review_eligible_count\": 100,\n    \"tier_capacity_policy_status\": \"ok\"\n  },\n  \"validation_status\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[7]",
+      "command": "python scripts\\wf78_tier_b_research_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "rity_true_flags_preserved\",\n        \"ok\": true,\n        \"severity\": \"critical\",\n        \"status\": \"ok\"\n      },\n      {\n        \"detail\": {\n          \"apply_allowed\": false,\n          \"brokerage_or_account_action_allowed\": false,\n          \"canon_or_portfolio_mutation_allowed\": false,\n          \"capital_deployment_allowed\": false,\n          \"customer_or_external_delivery_allowed\": false,\n          \"money_movement_allowed\": false,\n          \"owner_approval_inferred\": false,\n          \"paper_or_live_execution_allowed\": false,\n          \"phase2_request_generation_only\": true,\n          \"production_answer_path_change_allowed\": false,\n          \"promotion_allowed\": false,\n          \"report_only\": true,\n          \"research_packet_only\": true,\n          \"review_only\": true,\n          \"sql_first_promotion_allowed\": false,\n          \"ticker_import_allowed\": false,\n          \"tier_a_admission_executed\": false,\n          \"tier_b_admission_executed\": false\n        },\n        \"name\": \"authority_false_flags_preserved\",\n        \"ok\": true,\n        \"severity\": \"critical\",\n        \"status\": \"ok\"\n      },\n      {\n        \"detail\": {\n          \"evidence_repair_repaired_count\": 15,\n          \"evidence_repair_rows\": 15,\n          \"missing_evidence_counts\": {},\n          \"needs_evidence_repair_count\": 0,\n          \"next_safe_action\": \"Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision.\",\n          \"owner_approval_inferred_count\": 0,\n          \"packet_count\": 15,\n          \"phase2_ready_request_count\": 15,\n          \"phase2_request_count\": 15,\n          \"shortlist_count\": 15,\n          \"tier_a_admission_executed_count\": 0,\n          \"tier_b_admission_executed_count\": 0\n        },\n        \"name\": \"all_ready_requires_repair_backing\",\n        \"ok\": true,\n        \"severity\": \"warning\",\n        \"status\": \"ok\"\n      }\n    ],\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[8]",
+      "command": "python scripts\\wf78_tier_funnel_promotion_gate.py --requests tmp\\wf78-tier-b-research-packet-requests.json --out tmp\\wf78-tier-b-research-packet-phase2-eval.json --write --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\"out\": \"tmp/wf78-tier-b-research-packet-phase2-eval.json\", \"output_errors\": [], \"status\": \"ok\", \"summary\": {\"c_to_b_candidate_count\": 15, \"candidate_count\": 15, \"checks_failed_error\": 0, \"checks_failed_warning\": 0, \"checks_total\": 41, \"d_to_c_candidate_count\": 0, \"decision_status_counts\": {\"eligible_for_admission\": 15}, \"eligible_for_admission_count\": 15, \"next_safe_action\": \"Build evidence packets for the highest-priority Tier C->B leads; once a lead's required evidence is proven present, this gate marks it eligible for nomination (still report-only, still owner/apply-gated).\", \"other_candidate_count\": 0, \"self_tests_passed\": 11, \"self_tests_total\": 11, \"status\": \"ok\"}, \"validation_status\": \"ok\"}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[9]",
+      "command": "python scripts\\wf78_routing_dashboard.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "alse, \"name\": \"authority_owner_approval_inferred_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_paper_or_live_execution_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_production_answer_path_change_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_promotion_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_sql_first_promotion_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_sqlite_is_canon_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_ticker_import_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_tier_a_admission_executed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_tier_admission_executed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": \"tmp/wf78-routing-dashboard.json\", \"name\": \"output_json_schema_current\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": {\"integrity_check\": \"ok\", \"path\": \"tmp/wf78-routing-dashboard.sqlite\", \"status\": \"ok\", \"table_counts\": {\"artifact_provenance\": 9, \"authority_boundary\": 20, \"lane_summary\": 1, \"meta\": 5, \"routing_rows\": 100, \"skill_routes\": 10, \"validation_results\": 34}}, \"name\": \"output_sqlite_integrity_ok\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": {\"integrity_check\": \"ok\", \"path\": \"tmp/wf78-routing-dashboard.sqlite\", \"status\": \"ok\", \"table_counts\": {\"artifact_provenance\": 9, \"authority_boundary\": 20, \"lane_summary\": 1, \"meta\": 5, \"routing_rows\": 100, \"skill_routes\": 10, \"validation_results\": 34}}, \"name\": \"output_sqlite_has_routing_rows\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}], \"errors\": [], \"status\": \"ok\", \"warnings\": []}}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-06-tier-promotion-review-execute-safe-next-step:proof[10]",
+      "command": "python scripts\\automation_stack_hardening_pass.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "reused": true,
+      "reused_from": "pm-04-wf78-scaleout-execute-safe-next-step:proof[4]",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-07-parallel-lane-orchestration-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\workflow_automation_autonomy_review.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:29Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": ",\n        \"no portfolio/trade/account authority\"\n      ],\n      \"tier\": \"P1\",\n      \"workflow\": \"WF74 Recursive Self-Improvement\"\n    },\n    {\n      \"cron_posture\": \"authority matrix and dry-run/archive suggestions only\",\n      \"current_phase\": \"scheduled_review_surfaces\",\n      \"heartbeat_posture\": \"flag_if_cron_run_state_action_needed\",\n      \"helper_lane_posture\": \"cron contract QA or proposal only\",\n      \"human_decision_required_for\": [\n        \"cron edit/create/delete\",\n        \"archive move/delete\",\n        \"config/auth/channel/runtime mutation\"\n      ],\n      \"main_session_posture\": \"scheduler/change owner\",\n      \"recommended_next_phase\": \"scheduled_artifact_generation\",\n      \"safe_unattended_actions\": [\n        \"run cron authority matrix validator\",\n        \"produce archive suggestions\",\n        \"inspect cron state for actionable failures\"\n      ],\n      \"stop_lines\": [\n        \"no cron-direct broad apply\",\n        \"no deletes\",\n        \"no owner approval inference\"\n      ],\n      \"tier\": \"P1\",\n      \"workflow\": \"WF76 Cron Authority / Canon Auto-Update Expansion\"\n    },\n    {\n      \"cron_posture\": \"contract/provenance validation only\",\n      \"current_phase\": \"manual\",\n      \"heartbeat_posture\": \"flag_if_probability_language_appears\",\n      \"helper_lane_posture\": \"methodology/provenance audit only\",\n      \"human_decision_required_for\": [\n        \"predictive model readiness claims\",\n        \"deployment ranking by model output\"\n      ],\n      \"main_session_posture\": \"claim boundary owner\",\n      \"recommended_next_phase\": \"scheduled_review_surfaces\",\n      \"safe_unattended_actions\": [\n        \"run intelligence-stack validator\",\n        \"scan for probability/win-rate/expected-return claim leakage\"\n      ],\n      \"stop_lines\": [\n        \"no probability/win-rate claims\",\n        \"no model-ranked deployment\",\n        \"no live/paper/account authority\"\n      ],\n      \"tier\": \"P1\",\n      \"workflow\": \"WF69 Intelligence / Probability / Predictive Stack V2\"\n    }\n  ]\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-07-parallel-lane-orchestration-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\workflow_routing_index.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:29Z",
+      "completed_at_utc": "2026-06-14T23:01:30Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "wrote tmp\\workflow-routing-index.json (35 routes)\nwrote tmp\\workflow-routing-index.sqlite: ok (35 routes, integrity=ok, fk_errors=0)\nwrote tmp\\workflow-routing-index-validation.json: ok (35 routes, 0 critical, 0 warning)",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-07-parallel-lane-orchestration-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\parallel_lane_recommender.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:30Z",
+      "completed_at_utc": "2026-06-14T23:01:30Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"lease_command\": \"\",\n  \"out\": \"tmp/parallel-lane-recommendation.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"active_lane_count\": 2,\n    \"all_candidates_complete\": true,\n    \"automation_hardening_status\": \"warning\",\n    \"candidate_count\": 4,\n    \"completed_candidate_count\": 4,\n    \"completed_lane_count\": 235,\n    \"eligible_candidate_count\": 0,\n    \"next_safe_action\": \"No eligible new helper lane is available; do not re-lease a completed or ineligible lane. Main session should continue ready PM work inline or refresh candidates after state changes.\",\n    \"pm_ready_job_count\": 9,\n    \"top_score\": -5,\n    \"top_title\": \"WF72 A2 support-readiness QA lane\",\n    \"top_workflow\": \"WF72\",\n    \"top_workstream\": \"a2-readonly-qa\",\n    \"wf78_event_action_count\": 191\n  },\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-07-parallel-lane-orchestration-execute-safe-next-step:proof[3]",
+      "command": "python scripts\\concurrent_lane_manager.py --validate",
+      "started_at_utc": "2026-06-14T23:01:30Z",
+      "completed_at_utc": "2026-06-14T23:01:30Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"action\": \"status\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"lane_count\": 245,\n    \"status_counts\": {\n      \"cancelled\": 8,\n      \"complete\": 235,\n      \"running\": 2\n    },\n    \"workflow_counts\": {\n      \"CRON\": 26,\n      \"PM\": 25,\n      \"RUNTIME\": 4,\n      \"RUNTIME::GPT55PRO-ALLOWLIST\": 1,\n      \"WF55\": 4,\n      \"WF60\": 2,\n      \"WF67\": 9,\n      \"WF71\": 1,\n      \"WF72\": 1,\n      \"WF73\": 28,\n      \"WF74\": 15,\n      \"WF76\": 1,\n      \"WF78\": 40,\n      \"WF79\": 25,\n      \"WF84\": 7,\n      \"WF85\": 21,\n      \"WF86\": 15,\n      \"WF87\": 20\n    },\n    \"active_lane_count\": 2,\n    \"next_safe_action\": \"Lease narrow distinct-output lanes only after allowed_writes are explicit; main session must merge and update continuity.\"\n  },\n  \"lane\": null,\n  \"validation\": {\n    \"errors\": 0,\n    \"warnings\": 2\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-08-operator-console-execute-safe-next-step:proof[0]",
+      "command": "cd apps\\pm-control-cockpit; npm run validate",
+      "started_at_utc": "2026-06-14T23:01:30Z",
+      "completed_at_utc": "2026-06-14T23:01:33Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "> veritas-pm-control-cockpit@0.1.0 validate\n> node --experimental-strip-types src/server.ts --validate\n\n{\n  \"status\": \"ok\",\n  \"registry\": \"state/pm-cockpit-source-registry.json\",\n  \"source_count\": 128,\n  \"missing_required_count\": 0,\n  \"stale_required_count\": 6,\n  \"closeout_ok\": true,\n  \"dispatcher_present\": false,\n  \"academy_ready\": true,\n  \"sql_cache_present\": true,\n  \"sql_adapter_status\": \"ok\",\n  \"errors\": [],\n  \"warnings\": [\n    \"stale_required_source:wf75_cron_authority_plan\",\n    \"stale_required_source:wf78_tier_capacity_policy_gate\",\n    \"stale_required_source:wf78_legacy_42_tier_migration_planner\",\n    \"stale_required_source:retail_automation_control_plane\",\n    \"stale_required_source:wf75_academy_current\",\n    \"stale_required_source:wf75_academy_manifest\"\n  ]\n}",
+      "stderr_preview": "npm notice\nnpm notice New minor version of npm available! 11.12.1 -> 11.17.0\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v11.17.0\nnpm notice To update run: npm install -g npm@11.17.0\nnpm notice"
+    },
+    {
+      "name": "pm-09-pm-handoff-pdf-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\wf75_pm_weekly_update.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:33Z",
+      "completed_at_utc": "2026-06-14T23:01:33Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "},\n    \"pm_department_validation\": \"ok\",\n    \"proof_required_present\": 23,\n    \"proof_required_total\": 23,\n    \"authority_errors\": []\n  },\n  \"presentation_handoff\": {\n    \"audience\": \"Randall / internal operator review\",\n    \"purpose\": \"Weekly WF75 PM readiness update and enhancement roadmap.\",\n    \"slide_outline\": [\n      \"Current verdict and readiness target\",\n      \"6-10 week timeline\",\n      \"Completed this week\",\n      \"Upcoming enhancements\",\n      \"Blockers and owner decisions\",\n      \"Proof and validation status\",\n      \"Next sprint focus\"\n    ],\n    \"source_stack\": [\n      \"06. Playbooks/Active Workflows.md\",\n      \"06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md\",\n      \"tmp/wf75-service-led-saas-readiness-plan.json\",\n      \"tmp/operator-packets/retail-saas-wf75.json\",\n      \"tmp/wf75-service-state-current.json\",\n      \"tmp/wf75-service-state-sqlite.json\",\n      \"tmp/wf75-operator-queue.json\",\n      \"tmp/wf75-operator-console.json\",\n      \"tmp/wf75-automation-movement.json\",\n      \"tmp/wf75-artifact-only-pm-handoff.json\",\n      \"tmp/wf75-pm-readiness-brief.json\",\n      \"tmp/veritas-harness-scorecard.json\",\n      \"tmp/macro-event-calendar.json\",\n      \"tmp/veritas-pm-department-validation.json\"\n    ]\n  },\n  \"next_safe_action\": \"Use this weekly PM surface to drive the next WF75 sprint: keep supplemental WF77 price evidence, macro-event calendar, renderer/export regression, scenario-template library, service-state, SQLite WAL control-plane, operator queue, and artifact-only PM handoff proof fresh, then build the next operator-console/service-state slice.\",\n  \"authority_boundary\": \"Internal review/proof only. No public launch, real customer data, external delivery, source-licensing claim, legal/compliance claim, portfolio/canon mutation, trading, account, paper/live action, or owner approval inference.\",\n  \"validation_errors\": [],\n  \"outputs\": {\n    \"json\": \"tmp/wf75-pm-weekly-update.json\"\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-09-pm-handoff-pdf-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\wf75_artifact_only_pm_handoff.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:33Z",
+      "completed_at_utc": "2026-06-14T23:01:33Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "s\": \"error\",\n    \"seeded_bad_markdown_validation_status\": \"error\",\n    \"status\": \"ok\"\n  },\n  \"scenario_template_library\": {\n    \"scenario_count\": 8,\n    \"scenario_ids\": [\n      \"anon-watchlist-ai-infrastructure-v1\",\n      \"anon-materials-diversification-v1\",\n      \"anon-risk-freshness-edge-cases-v1\",\n      \"anon-single-ticker-deep-dive-v1\",\n      \"anon-etf-comparison-v1\",\n      \"anon-earnings-follow-up-v1\",\n      \"anon-below-stop-repair-review-v1\",\n      \"anon-insufficient-evidence-v1\"\n    ],\n    \"status\": \"ok\"\n  },\n  \"schema\": \"veritas.wf75.artifact_only_pm_handoff.v1\",\n  \"sqlite_wal_control_plane\": {\n    \"busy_timeout_ms\": 5000,\n    \"claim_rows\": [\n      {\n        \"claim_status\": \"claimed\",\n        \"worker_id\": \"wf75-worker-alpha\"\n      },\n      {\n        \"claim_status\": \"already_claimed\",\n        \"worker_id\": \"wf75-worker-beta\"\n      }\n    ],\n    \"db_path\": \"tmp/wf75-service-state.sqlite\",\n    \"journal_mode\": \"wal\",\n    \"status\": \"control_plane_ready\",\n    \"table_counts\": {\n      \"artifact_refs\": 55,\n      \"claim_log\": 2,\n      \"events\": 234,\n      \"queue_items\": 1,\n      \"service_requests\": 5\n    }\n  },\n  \"status\": \"ready_for_internal_artifact_only_pm_handoff\",\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  },\n  \"validation_status\": {\n    \"automation_movement\": \"ok\",\n    \"macro_event_calendar\": \"ok\",\n    \"operator_console\": \"ok\",\n    \"operator_queue\": \"ok\",\n    \"pm_weekly_update\": \"ready_for_internal_pm_review\",\n    \"renderer_regression\": \"ok\",\n    \"scenario_library\": \"ok\",\n    \"service_state\": \"ok\",\n    \"sqlite_wal_control_plane\": \"ok\",\n    \"veritas_harness_scorecard\": \"ok\",\n    \"wf77_bridge\": \"ok\"\n  },\n  \"wf77_price_evidence\": {\n    \"excluded_price_rows\": [],\n    \"missing_price_rows\": [],\n    \"row_count\": 42,\n    \"status\": \"ok\",\n    \"supplemental_public_price_row_count\": 4,\n    \"supplemental_public_price_rows\": [\n      \"SMCI\",\n      \"SLV\",\n      \"TLT\",\n      \"KTOS\"\n    ],\n    \"valid_price_row_count\": 42\n  },\n  \"workflow\": \"WF75\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-09-pm-handoff-pdf-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\wf75_pm_readiness_pdf.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:33Z",
+      "completed_at_utc": "2026-06-14T23:01:34Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"schema\": \"veritas.wf75.pm_readiness_pdf.v1\",\n  \"generated_at_utc\": \"2026-06-14T23:01:33Z\",\n  \"status\": \"ready\",\n  \"outputs\": {\n    \"html\": \"tmp/wf75-pm-readiness-brief.html\",\n    \"pdf\": \"tmp/wf75-pm-readiness-brief.pdf\",\n    \"manifest\": \"tmp/wf75-pm-readiness-brief.json\"\n  },\n  \"source_checks\": {\n    \"pm_update\": {\n      \"path\": \"tmp/wf75-pm-weekly-update.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"artifact_handoff\": {\n      \"path\": \"tmp/wf75-artifact-only-pm-handoff.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"sqlite_control_plane\": {\n      \"path\": \"tmp/wf75-service-state-sqlite.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"operator_console\": {\n      \"path\": \"tmp/wf75-operator-console.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"operator_packet\": {\n      \"path\": \"tmp/operator-packets/retail-saas-wf75.json\",\n      \"exists\": true,\n      \"parseable\": true\n    }\n  },\n  \"html_only\": false,\n  \"authority_boundary\": {\n    \"public_launch_allowed\": false,\n    \"real_customer_data_allowed\": false,\n    \"external_delivery_allowed\": false,\n    \"source_licensing_assumed\": false,\n    \"legal_or_compliance_ready\": false,\n    \"portfolio_or_canon_mutation_allowed\": false,\n    \"paper_live_or_account_action_allowed\": false,\n    \"owner_approval_inferred\": false\n  },\n  \"errors\": [],\n  \"html_size_bytes\": 10101,\n  \"pdf_result\": {\n    \"status\": \"ok\",\n    \"browser\": \"C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\n    \"returncode\": 0,\n    \"stdout_tail\": \"\",\n    \"stderr_tail\": \"103859 bytes written to file C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\\\\tmp\\\\wf75-pm-readiness-brief.pdf\\n\",\n    \"pdf_size_bytes\": 103859\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-10-smb-workflow-clarity-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\generic_intelligence_saas_pivot.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:34Z",
+      "completed_at_utc": "2026-06-14T23:01:35Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "olish_packet_md\": \"tmp/wf79-smb-demo-polish-packet.md\",\n    \"outreach_prep_validation\": \"tmp/wf79-smb-outreach-prep-validation.json\",\n    \"pilot_readiness_packet\": \"tmp/wf79-smb-pilot-readiness-packet.json\",\n    \"pilot_readiness_packet_md\": \"tmp/wf79-smb-pilot-readiness-packet.md\",\n    \"sales_conversation_drill\": \"tmp/wf79-smb-sales-conversation-drill.json\",\n    \"sales_conversation_drill_md\": \"tmp/wf79-smb-sales-conversation-drill.md\",\n    \"demo_selection_tree\": \"tmp/wf79-smb-demo-selection-tree.json\",\n    \"demo_selection_tree_md\": \"tmp/wf79-smb-demo-selection-tree.md\",\n    \"vertical_test_framework\": \"tmp/wf79-smb-vertical-test-framework.json\",\n    \"vertical_test_framework_md\": \"tmp/wf79-smb-vertical-test-framework.md\",\n    \"pilot_readiness_validation\": \"tmp/wf79-smb-pilot-readiness-validation.json\",\n    \"rollout_readiness_plan\": \"tmp/wf79-smb-rollout-readiness-plan.json\",\n    \"rollout_readiness_plan_md\": \"tmp/wf79-smb-rollout-readiness-plan.md\",\n    \"client_rollout_checklist\": \"tmp/wf79-smb-client-rollout-checklist.json\",\n    \"client_rollout_checklist_md\": \"tmp/wf79-smb-client-rollout-checklist.md\",\n    \"curriculum_map\": \"tmp/wf79-smb-curriculum-map.json\",\n    \"curriculum_map_md\": \"tmp/wf79-smb-curriculum-map.md\",\n    \"rollout_readiness_validation\": \"tmp/wf79-smb-rollout-readiness-validation.json\",\n    \"phase_closeout\": \"tmp/wf79-smb-phase-closeout.json\",\n    \"sqlite\": {\n      \"db_path\": \"tmp/generic-service-state.sqlite\",\n      \"status\": \"ok\",\n      \"integrity_check\": \"ok\",\n      \"table_counts\": {\n        \"service_runs\": 2,\n        \"domain_payloads\": 30,\n        \"artifact_refs\": 34,\n        \"operator_queue\": 1,\n        \"qa_events\": 1,\n        \"renderer_outputs\": 1,\n        \"authority_events\": 15\n      },\n      \"authority\": \"Derived generic service-state lookup only; no source-of-truth, customer, delivery, credential, outreach, payment, finance-canon, or approval authority.\"\n    }\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": [],\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-10-smb-workflow-clarity-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\wf75_closeout_refresh.py --validation-budget shared --write --validate",
+      "started_at_utc": "2026-06-14T23:01:35Z",
+      "completed_at_utc": "2026-06-14T23:01:41Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"command_count\": 18,\n  \"failed_commands\": [],\n  \"failure_count\": 0,\n  \"mode\": \"full\",\n  \"out\": \"tmp/wf75-closeout-refresh.json\",\n  \"status\": \"ok\"\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-02-trade-grade-decision-os-execute-safe-next-step:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-14T23:01:41Z",
+      "completed_at_utc": "2026-06-14T23:01:42Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "   \"model_quality_validation\": \"ok\",\n        \"otel_daily_vs_weekly_event_rate_ratio\": 1.5829,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"ok\",\n        \"otel_field_depth_packet_status\": \"owner_decision_required\",\n        \"recommended_budget\": \"shared\",\n        \"recommended_validator_count\": 18,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 2,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 2,\n        \"validator_elapsed_seconds\": 2.072,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 21\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-04-wf78-scaleout-execute-safe-next-step:closeout[1]",
+      "command": "python scripts\\helper_completion_handshake.py --write --validate",
+      "started_at_utc": "2026-06-14T23:01:42Z",
+      "completed_at_utc": "2026-06-14T23:01:42Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"mode\": \"idle_contract\",\n  \"out\": \"tmp/helper-completion-handshake.json\",\n  \"status\": \"ok\",\n  \"synthesis_allowed\": true,\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

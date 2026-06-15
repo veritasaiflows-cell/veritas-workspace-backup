@@ -1,0 +1,32 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF77",
+  "display_name": "Finance Coverage / Question Router",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Use finance_intelligence_state.py ticker <TICKER> first for finance questions. Use WF77 for ticker-card coverage/source proof and refresh repair before promotion-quality WF84/WF85 use.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "review/intelligence only",
+  "blockers": [],
+  "stop_lines": [
+    "Review/intelligence only; no live trading/account/money movement, paper execution, approval inference, import/apply, production promotion, or canon/portfolio mutation."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 77 - Finance Intelligence Coverage and Question Router.md",
+  "primary_route_artifact": "scripts/finance_intelligence_state.py",
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Deployment State Contract Migration.md",
+    "scripts/artifact_index.py"
+  ],
+  "validator_commands": [
+    "python scripts\\artifact_index.py validate"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF67",
+  "display_name": "Alpaca Paper Execution Guardrail",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Refresh gate, run manager with request refresh, present ready/blocked/repair status; execute only after fresh kill switch, guards, redacted audit, notification, and Randall exact approval.",
+  "helper_safe": false,
+  "owner_action_required": true,
+  "authority_boundary": "paper-only simulation; exact owner approval required to execute",
+  "blockers": [
+    "Execution requires fresh kill switch + guards + redacted audit + notification + exact approval"
+  ],
+  "stop_lines": [
+    "No live endpoint/credentials, money movement/account settings, close/liquidation endpoints, inferred approval, autonomous paper orders, refresh-triggered submit/cancel/sell, or paper-to-live promotion."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
+  "primary_route_artifact": "scripts/wf67_autonomous_paper_manager.py",
+  "secondary_artifacts": [
+    "tmp/wf67-paper-position-state.sqlite"
+  ],
+  "validator_commands": [
+    "python scripts\\chief_intelligence_promotion_gate.py --write --validate"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

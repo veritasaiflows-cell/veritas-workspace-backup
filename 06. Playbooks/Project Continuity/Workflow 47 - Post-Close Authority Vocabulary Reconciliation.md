@@ -11,7 +11,7 @@
 - Finance chain completed cleanly and produced downstream artifacts.
 - Audit confirmed review-only/non-execution language exists in several places but authority vocabulary is not globally consistent.
 - 2026-05-09 WF47 implementation pass reconciled post-close generated archive vocabulary: `postmarket-snapshot.json` and `daily-executive-brief.json` now declare `consumer_posture=generated_dashboard_archive`, `canonical_mutation_allowed=false`, `presentation_allowed=false`, `portfolio_mutation_allowed=false`, `deployment_state_mutation_allowed=false`, `trade_execution_allowed=false`, and `owner_approval_granted=false`.
-- `scripts/pipeline_state_consistency_check.py` now validates post-close authority ceilings against `tmp/run-summary-post-close.json`; `scripts/test_postclose_authority.py` covers the live four-artifact contract.
+- `scripts/pipeline_state_consistency_check.py` now validates post-close authority artifacts against a static fail-closed scheduled-window policy; `scripts/test_postclose_authority.py` covers the live four-artifact contract and `scripts/test_run_summary_tail_order.py` separately keeps run-summary downstream authority fail-closed.
 
 ## Outstanding
 - Monitor the next scheduled post-close chain to confirm generated artifacts retain the reconciled authority fields without manual intervention.

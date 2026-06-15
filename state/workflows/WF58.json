@@ -1,0 +1,31 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF58",
+  "display_name": "Dashboard / Capital Packets Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate on validator warning/critical, false-green dashboard, packet-vs-canon conflict, or duplicated legacy deployment-state fields reappearing in presentation artifacts.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only",
+  "blockers": [],
+  "stop_lines": [
+    "No self-apply, trade/account authority, per-packet approval inference, or legacy/source-field deletion outside compatibility proof."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Deployment State Contract Migration.md",
+  "primary_route_artifact": "scripts/deployment_contract_migration_validation_bundle.py",
+  "secondary_artifacts": [
+    "tmp/deployment-contract-agreement-validation.json"
+  ],
+  "validator_commands": [
+    "python scripts\\deployment_contract_migration_validation_bundle.py --write"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

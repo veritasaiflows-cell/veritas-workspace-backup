@@ -17,12 +17,12 @@ without creating ownership drift, fake green states, or reconciliation debt.
 
 ### Keep stable
 - OpenClaw main session posture: live truth surface, workspace-file truth interpreter, orchestrator, QC owner, and final integrator
-- OpenClaw spawned subagent default for substantial workspace work: use the approved `openai-codex/*` model set with role-based thinking rather than blanket high effort
+- OpenClaw spawned subagent default for substantial workspace work: use the approved `openai/*` Codex-runtime model set with role-based thinking rather than blanket high effort
 - OpenClaw app/runtime pinned at `2026.5.4` because Randall accepted `2026.5.4` as the current stable runtime on this machine
 
 ### Lower-complexity helper posture
 - Lower-complexity helper work should usually use tighter scope and lower thinking, not a lower-trust model.
-- Keep Veritas-routed helper work inside the approved `openai-codex/*` model set unless Randall intentionally changes runtime policy.
+- Keep Veritas-routed helper work inside the approved `openai/*` Codex-runtime model set unless Randall intentionally changes runtime policy.
 
 `openai-codex/gpt-5.3-codex` and `openai-codex/gpt-5.3-codex-spark` are removed from Veritas-routed workflow use. Randall may still use lighter external tools manually and report findings back as evidence for review.
 
@@ -76,12 +76,19 @@ If category or posture is unclear, default back to serial until the contract is 
 
 ## Default operating mode
 
-Default to **sequential orchestration**:
-- Veritas acts as product owner/manager (PoM), orchestrator, auditor/QA owner, and executive integrator
-- spawned lanes do bounded execution against an explicit contract
-- meaningful workflow completion should usually include both a spawned worker lane and a fresh independent audit lane before closeout
-- Veritas reviews the result before opening the next lane
-- only open a second active lane when it clearly beats the merge cost
+As of the 2026-06-12 WF73 shadow-pilot stress pass, default implementation posture is **parallel-by-default when lane contracts are clean**:
+- Veritas acts as product owner/manager (PoM), orchestrator, auditor/QA owner, and executive integrator.
+- Main session handles blocker classification, lane leasing, shared-surface edits, skill governance, and final synthesis.
+- Helper lanes run in parallel only when outputs are disjoint, `allowed_writes` are exact, and the lane register validates cleanly.
+- Each helper produces a proof artifact or blocks cleanly; helpers do not mutate shared continuity, startup files, skills, finance canon, portfolio, config/runtime, or execution surfaces unless separately leased.
+- Veritas integrates helper outputs before any shared-surface update, owner-facing claim, or next queue promotion.
+- Fall back to serial when write surfaces overlap, authority boundaries are ambiguous, or the next action needs owner judgment.
+
+As of the 2026-06-13 autonomous-paper posture pass, new parallel lanes should default to **implementation slices**, not QA/audit-only lanes. Use QA, audit, challenger, or contradiction lanes after a slice lands, after trust is disputed, or when Randall explicitly asks. Do not re-lease completed helper candidates from stale recommender output; refresh the PM packet and recommender after material state changes, then select a PM/WF next-action slice with exact write ownership.
+
+For the current WF85/WF86/WF87 work, "autonomous trading" means scoped autonomous **paper** readiness only. Phase A hardening is already built; the critical path is clean shadow-decision/session accrual, GET-only reconciliation maturity, daylight/stale-gate clearance, fresh WF67 guard/kill-switch proof, and Randall exact approval. Parallel work should make that bottleneck visible and feed it higher-quality decisions, not pretend code can skip the empirical maturity gates.
+
+WF73 shadow-pilot telemetry is the operating speedometer: if lane-register shadow refresh stays comfortably under a few hundred milliseconds and validation is clean, parallel implementation may continue. If overhead or collision warnings rise, reduce active lanes before adding infrastructure.
 
 Default worker posture:
 - Veritas main session = live truth surface, workspace-file truth interpreter, orchestration, QC, and final integration
@@ -230,6 +237,11 @@ If the project is too small to justify that structure, it is probably small enou
 
 Before any non-trivial spawned lane begins, pass a compact file-grounded packet.
 
+Pre-spawn / pre-parallel route:
+1. Check the lane register with `python scripts\concurrent_lane_manager.py --status --write --validate`.
+2. Refresh PM operator visibility with `python scripts\parallel_operator_visibility.py --write --validate`.
+3. Launch helpers only after active lanes, write leases, and PM blocker/readiness signals are clear.
+
 Canonical rule source:
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md` owns spawn classification, runtime-budget, artifact-first, early-checkpoint, and closeout authority rules.
 - `06. Playbooks/Subagent Spawn Handoff Template.md` owns the copyable packet structure.
@@ -264,6 +276,25 @@ If those conditions are not true, stay with one serious worker plus one reviewer
 For the current research automation lane, parallel help should default to contract-building, contradiction review, and QA rather than freeform research synthesis.
 
 ## Current recommended rollout
+
+### Implementation slices first
+Use parallelism for bounded implementation slices, not broad swarms or stale QA re-runs.
+
+Current priority pattern:
+1. Finish any active leased lane and integrate proof before opening overlapping work.
+2. Refresh `pm_control_packet.py --write --write-db --validate`, `concurrent_lane_manager.py --status --write --validate`, and `parallel_operator_visibility.py --write --validate`.
+3. Pick 3-4 disjoint implementation slices from PM/WF next actions only when write leases are exact.
+4. Prefer slices that advance the unified paper-autonomy OS: WF85 decision freshness, WF78 feeder handoff, WF79 command visibility, WF86/WF87 maturity/command rollups, WF76 cron selectivity, WF71 helper templates, or WF69 probability-language blockers.
+5. Use QA/audit lanes only after those slices land or when trust state is uncertain.
+
+For the autonomous-paper OS, the practical rollout is wide-to-narrow:
+- Phase 0/1: parallel implementation slices that feed or expose the shadow/reconciliation loop.
+- Phase 2: merge WF86/WF87 hardening validation around real shadow data.
+- Phase 3: single main-session readiness synthesis and owner gate. Green readiness is not execution approval.
+
+## Historical rollout baseline
+
+The section below is retained as history for the original delegation pilot. Use the current implementation-slices-first rollout above for active WF/P1/WF85-WF87 work.
 
 ### Phase 1 — prove clean delegation
 Use parallelism for bounded helper work, not broad swarms.
@@ -350,14 +381,14 @@ This keeps the queue stable enough to trust while still allowing evidence-driven
 For the daily queue/orchestration control plane:
 - low-effort control-plane fixes stay in the main session
 - medium-effort detached work should use an approved live default model with a tighter scope rather than a removed cheap helper model
-- substantial or high-effort detached work uses `openai-codex/gpt-5.5` with high-thinking posture after preflight review clears the contract
+- substantial or high-effort detached work uses `openai/gpt-5.5` through the Codex runtime with high-thinking posture after preflight review clears the contract
 - default detached posture is one worker at a time, bounded task, no silent canonical finance note mutation, and no auth/config/network escalation without approval
 - if the blocker is judgment rather than labor, stop and record the blocker instead of spawning theater
 
 ## Next concrete moves
 
 1. keep the main session as live truth surface, orchestrator, QC owner, and final integrator
-2. use spawned `openai-codex/gpt-5.5` high-thinking subagents for substantial bounded workspace work when available
+2. use spawned `openai/gpt-5.5` Codex-runtime high-thinking subagents for substantial bounded workspace work when available
 3. reserve Claude for contract/judgment-heavy reviews
 4. use Gemini Flash only as a cheap bounded audit helper
 5. keep active serious parallel load capped at two substantive lanes plus one helper lane

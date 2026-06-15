@@ -19,7 +19,7 @@ Veritas remains the:
 - final integrator
 
 Claude CLI, Gemini Flash, OpenClaw subagents, and other helper lanes are support lanes.
-They do not own final queue state, final judgment, or canonical conflict resolution. Prioritize OpenClaw subagents inside the allowed `openai-codex/*` model set, but choose thinking effort by role rather than defaulting every substantial workspace task to high.
+They do not own final queue state, final judgment, or canonical conflict resolution. Prioritize OpenClaw subagents inside the approved Codex-runtime model set, default bounded helpers to `openai/gpt-5.4`, reserve `openai/gpt-5.5` for deliberate high-stakes exceptions, and choose thinking effort by role rather than defaulting every substantial workspace task to high. Spark is the exception: any `codex/gpt-5.3-codex-spark` lane must run with `xhigh` thinking until repeated proof says otherwise.
 
 ## Main-lane reserve rule
 When an approved workflow is being advanced, default to a spawned sub-session for the working pass. Substantial work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA should use a file-grounded helper lane, with model/thinking selected from the role-effort matrix instead of a blanket high-effort default.
@@ -42,6 +42,7 @@ Main-session exceptions are allowed only when one of these is true:
 - the work is quick, reversible, and bounded enough to stay under roughly five minutes
 - an emergency truth fix is needed immediately
 - the work is the final merge / QC step
+- the work is a coordinating validator or spawn-contract repair where helper context overhead is the bottleneck
 - spawning would add more friction than value
 
 If the main session takes one of those exceptions on a meaningful workflow pass, say so explicitly in the continuity note or status summary.
@@ -59,8 +60,31 @@ Required sequence:
 
 Do not spawn continuation work just to look busy. The next lane must have a clear owner, deliverable, stop line, and acceptance check.
 
+## Reuse-before-new-script gate
+
+Before creating a new script, helper lane, validator, dashboard surface, or workflow artifact family, the lane must explicitly check whether an existing command, helper module, validator, chain step, skill, or owner surface can be extended safely.
+
+Default order:
+1. reuse an existing CLI/script as-is when it already covers the need
+2. extend an existing helper/module when behavior is compatible and validators can prove no drift
+3. add a thin wrapper around an existing stable command when the user-facing contract must stay stable
+4. create a new script only when reuse would create unsafe coupling, two-writer risk, authority ambiguity, or excessive regression risk
+
+When a new script is justified, the lane must state:
+- what existing scripts/helpers were checked
+- why extension was rejected or deferred
+- whether the new script is intended as prototype, wrapper, validator, production entrypoint, or temporary proof
+- which owner department owns it
+- how it will be consolidated, migrated, or archived after proof
+
+For proof-first work, isolated scripts are allowed to reduce blast radius. But proof scripts must not become permanent by default. Once the proof is green, the next workflow step should consider migration into a shared module, stable CLI wrapper, declarative registry, or archive-candidate review.
+
+This rule is especially strict for finance automation, canon/portfolio maintenance, WF67 paper execution, WF68 alerting, WF70 official-source capture, and dashboard/Today-card surfaces. Never flatten by merging high-authority guardrails into generic helpers unless validators prove authority boundaries remain intact.
+
 ## Queue freshness rule
 The active project queue must stay fresh enough that the next move is visible without reconstructing chat history.
+
+For generated artifact/proof awareness, use the SQL cockpit as the first routing layer before broad `tmp/` scans: `scripts/artifact_index.py cockpit`, `ticker-cockpit`, `trust-cockpit`, `proof-field`, `stoplines`, and `validate`. SQL cockpit output may route work, expose provenance, and flag authority boundaries, but it remains derived proof/index/staging only. Inspect the target artifact or canonical owner note before making content claims, queue moves, finance judgments, or any gated apply decision.
 
 At minimum, each active or near-term queued item should make clear:
 - current status
@@ -185,12 +209,15 @@ Best for:
 - synthesis stress-testing
 - second-opinion pushback on major decisions
 - high-risk reasoning where false-green risk is high
+- serious finance workflow contract/promotion gates where false-ready or authority-drift risk is material
 
 Effort posture:
 - routine research and read-only audits: use low thinking by default; escalate only when evidence conflict, high-stakes judgment, or broad ambiguous contracts require it
 - implementation and bounded script/workflow edits: use medium thinking by default with exact validation gates
 - hard debugging, cross-contract failures, security/trust-sensitive adjudication, or repeated false-green/false-red residue: use high thinking
+- Spark (`codex/gpt-5.3-codex-spark`) QA/audit/pre-work/challenger lanes: use `xhigh` thinking by default; lower effort is a future optimization only after repeated clean proof
 - hard judgment/trust work in Claude: run Claude with higher effort (`--effort high` or above) only when the task risk justifies it
+- WF84/WF85-class trade-grade OS gates: spawn or route the challenger as `claude-cli/claude-opus-4-8` when available, and verify the actual subagent model path after spawn. A human-readable label containing "Opus" is not proof. If the registry shows another model, treat the result as standard challenger evidence and do not count it as Opus acceptance proof.
 - routine bounded checks: keep effort lower and prompts tighter
 - Gemini CLI has no direct effort flag in this environment; adjust effort by task scope, model choice, and prompt depth
 
@@ -213,10 +240,14 @@ For any multi-lane decision pass, track expected completions explicitly and clos
 
 Minimum handshake:
 - define expected lanes up front (for example: spawned pass + shell CLI)
+- define required completion artifacts up front for each lane (`tmp/...worker.json/.md`, QA artifact, validator output, or an explicit `PARTIAL_BLOCKED` artifact)
+- treat subagent announcement text as notification only; do not accept summary-only completion as proof
+- if a lane compacts/resumes, require it to continue from durable artifacts and not announce `complete` unless the required artifacts exist and parse
 - if one lane finishes first, hold final synthesis until the other lane completes or is formally timed out/canceled
-- once all expected lanes are resolved, publish one combined decision summary immediately
+- if QA finishes before the worker artifact exists, classify QA as baseline-only and require post-worker main verification or a targeted follow-up QA before final closeout
+- once all expected lanes are resolved and artifact requirements are met, publish one combined decision summary immediately
 
-Do not leave completed lane output waiting unintegrated.
+Do not leave completed lane output waiting unintegrated. Do not label a compacted/resumed or artifact-missing worker as failed by assumption; classify it as `partial_unverified` until live artifacts/history prove success, partial completion, or failure.
 
 ## Runtime proof rule
 Runtime/session state is advisory until it earns boring consistency.

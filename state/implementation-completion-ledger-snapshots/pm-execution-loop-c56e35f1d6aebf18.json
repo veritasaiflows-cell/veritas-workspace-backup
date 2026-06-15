@@ -1,0 +1,143 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-11T02:17:01Z",
+  "status": "ok",
+  "mode": "dry_run",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": false,
+    "limit": 1,
+    "job": null
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-01-trade-grade-decision-os-execute-safe-next-step"
+    ],
+    "skipped_count": 0,
+    "executed": false,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-01-trade-grade-decision-os-execute-safe-next-step",
+        "budget": "shared",
+        "closeout_mode": "handoff",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Review job output, then re-run with --execute to run the next collision-distinct job."
+  },
+  "selected": [
+    {
+      "job_id": "pm-01-trade-grade-decision-os-execute-safe-next-step",
+      "rank": 1,
+      "priority": "P1",
+      "title": "Advance WF85 Personal Trade-Grade Decision OS",
+      "implementation_class": "trade_grade_decision_os",
+      "owner_surface": "WF85 Personal Trade-Grade Decision OS contract and Phase 1 card builder",
+      "collision_group": "trade_grade_decision_os",
+      "validation_budget": {
+        "budget": "shared",
+        "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+        "closeout_mode": "handoff",
+        "proof_command_count": 8,
+        "max_default_proof_commands": 5,
+        "phase_count": 4
+      },
+      "closeout_mode": "handoff",
+      "target_files": [
+        "scripts/trade_grade_decision_os_contract.py",
+        "scripts/trade_grade_decision_cards.py",
+        "scripts/trade_grade_repair_conveyor.py",
+        "scripts/trade_grade_os_freshness_cron_runner.py",
+        "tmp/trade-grade-decision-os-contract.json",
+        "tmp/trade-grade-source-freshness-gate.json",
+        "tmp/trade-grade-decision-cards.json",
+        "tmp/trade-grade-decision-card-authority-validation.json",
+        "tmp/trade-grade-approval-card-gate.json",
+        "tmp/trade-grade-risk-sizing-overlay.json",
+        "tmp/trade-grade-repair-conveyor.json",
+        "tmp/trade-grade-os-freshness-cron-runner.json",
+        "tmp/post-close-final-quote-ledger.json",
+        "tmp/wf78-tier-weighted-freshness-resolution.json",
+        "tmp/canonical-finance-data-plane.json",
+        "tmp/canonical-finance-data-plane-phase6-10.json",
+        "tmp/wf78-capital-review-queue.json",
+        "tmp/finance-decision-sync-spine.json"
+      ],
+      "proof_commands": [
+        "python scripts\\trade_grade_decision_os_contract.py --write --validate",
+        "python scripts\\trade_grade_decision_cards.py --write --validate",
+        "python scripts\\trade_grade_repair_conveyor.py --write --validate",
+        "python scripts\\trade_grade_os_freshness_cron_runner.py --write --validate",
+        "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+        "python scripts\\canonical_finance_data_plane_phase6_10.py --write --validate",
+        "python scripts\\workflow_router.py WF85 --answer all --validate",
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [],
+  "closeout_results": [],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

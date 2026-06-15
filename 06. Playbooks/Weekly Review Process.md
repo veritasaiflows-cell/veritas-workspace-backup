@@ -7,7 +7,7 @@ Run this process to keep market understanding and portfolio discipline current.
 ## Steps
 
 1. Update [[02. Markets/Macro Regime Dashboard]]
-2. Review [[02. Markets/Watchlist]]
+2. Review [[04. Research/Coverage and Watchlist]]
 3. Update [[05. Intelligence/Weekly Intelligence Brief]]
 4. Review [[03. Portfolio/Portfolio Snapshot]]
 5. Log any proposed changes in [[03. Portfolio/Rebalance Log]]

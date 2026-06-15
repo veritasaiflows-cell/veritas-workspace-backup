@@ -1,0 +1,66 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "58fc5f27-4cc1-470f-8af5-eba29327a0d5",
+  "name": "Finance - Weekday Post-Close Review Refresh",
+  "required": true,
+  "owner_workflow": "WF84/WF85",
+  "contract_reason": "High-consequence post-close finance chain with approved bounded note-maintenance rails.",
+  "enabled": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "20 13 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nRun the deterministic weekday post-close finance refresh wrapper:\n\npython scripts\\post_close_review_cron_runner.py --write --validate\n\nThen inspect tmp\\post-close-review-cron-runner.json. If status is ok and operator_action is NO_REPLY, reply NO_REPLY. If operator_action is MAIN_SESSION_REQUIRED or BLOCKED, report only runner status, failed step names, validation errors/warnings, proof path, and next repair owner.\n\nBoundary: review-only post-close finance proof plus only the existing approved scoped entry-band maintenance, reference-band visibility sync, and Portfolio Snapshot sizing semantic sync rails. No trade/account action, brokerage order, money movement, inferred per-packet owner approval, self-applying capital recommendation packet, portfolio-config weight changes, new allocation decisions, sleeve changes, cash/risk-rule changes, execution-entitlement changes, customer/public output, config/auth/channel/runtime mutation, or owner approval inference.",
+    "model": "openai/gpt-5.4",
+    "thinking": "high",
+    "timeoutSeconds": 3600,
+    "lightContext": false
+  },
+  "compare_fields": [
+    "enabled",
+    "deleteAfterRun",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/post-close-review-cron-runner.json",
+    "tmp/run-chain-post-close.json",
+    "tmp/run-summary-post-close.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

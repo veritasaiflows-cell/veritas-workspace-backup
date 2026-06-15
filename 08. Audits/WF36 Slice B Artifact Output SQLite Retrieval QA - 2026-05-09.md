@@ -40,7 +40,7 @@ Additional control-surface / adjacent evidence inspected:
 - `scripts/market_data_utils.py` JSON loader excerpt
 - `.gitignore`
 - live generated DB metadata from `tmp/veritas-artifact-index.sqlite`
-- early checkpoint written to `tmp/wf36-slice-b-qa-checkpoint.md`
+- early checkpoint written to `09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf36-slice-b-qa-checkpoint.md`
 
 ## Contract reconstruction
 

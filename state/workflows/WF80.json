@@ -1,0 +1,37 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF80",
+  "display_name": "Multi-Product Scaleout Control Plane",
+  "tier": "P3",
+  "effective_status": "route_only",
+  "next_action": "Do not advance product registry/build work unless Randall resumes WF80-WF83. Near-term priority routes through WF84/WF85 finance decision unification, WF78 evidence repair, WF73/WF72 support-route efficiency, and WF79 command visibility.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "review-only product portfolio control plane",
+  "blockers": [
+    "Owner paused WF80-WF83 on 2026-06-06",
+    "Product registry/validator not built yet",
+    "Customer/public launch remains blocked"
+  ],
+  "stop_lines": [
+    "Report-only product scaleout; no customer/public output, spend, external action, account/customer-data import, legal/compliance claim, finance execution authority, or owner-approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 80 - Multi-Product Scaleout Control Plane.md",
+  "primary_route_artifact": "06. Playbooks/Project Continuity/Workflow 80 - Multi-Product Scaleout Control Plane.md",
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Workflow 81 - AI and Technology Opportunity Intelligence Product Line.md",
+    "06. Playbooks/Project Continuity/Workflow 82 - Learning and Teaching Product Line.md",
+    "06. Playbooks/Project Continuity/Workflow 83 - Product Packaging and Launch Readiness Factory.md"
+  ],
+  "validator_commands": [
+    "python scripts\\workflow_routing_index.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\workflow_routing_index.py --route WF80",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

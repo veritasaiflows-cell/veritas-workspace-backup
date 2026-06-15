@@ -1,0 +1,63 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "978f36d2-d192-41c0-bef2-bafd5266d903",
+  "name": "Finance - Tier A Late-Session Opportunity Probe",
+  "required": true,
+  "owner_workflow": "WF78/WF85/WF87",
+  "contract_reason": "Late-session Tier A review/prep notification path. Drift can blur prep vs execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "7 12 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nRun the deterministic Tier A late-session opportunity/risk probe wrapper:\n\npython scripts\\tier_a_late_session_opportunity_cron_runner.py --send --write --validate\n\nThen inspect tmp\\tier-a-late-session-opportunity-cron-runner.json. If status is ok and operator_action is NO_REPLY, reply NO_REPLY. If operator_action is MAIN_SESSION_REQUIRED or BLOCKED, report only runner status, final_market_deployment_state, validation errors/warnings, proof path, and next repair owner.\n\nBoundary: review/prep notification only. Autonomous tier movement is non-capital derived routing only. No paper/live submit, cancel, sell, replace, live endpoint, account action, money movement, portfolio/canon/cash/sizing/risk-rule mutation, owner approval inference, cron-direct execution, or paper-to-live promotion. PREPARE means request-artifact review only; execution still requires exact Randall approval plus fresh WF67 guard and kill-switch proof.",
+    "model": "openai/gpt-5.4",
+    "thinking": "high",
+    "timeoutSeconds": 1500,
+    "lightContext": false
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/tier-a-late-session-opportunity-cron-runner.json",
+    "tmp/finance-market-deployment-operating-loop.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

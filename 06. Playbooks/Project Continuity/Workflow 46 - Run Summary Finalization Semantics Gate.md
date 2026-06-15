@@ -12,7 +12,7 @@
 ## Last Meaningful Progress
 - WF46 helper lane updated `scripts/run_summary_refresh.py`, `scripts/dashboard_run_summary_consumer.py`, and `scripts/test_run_summary_tail_order.py`.
 - Main-session QC reran compile, tail-order test, `run_summary_refresh.py --window post-close`, `dashboard_run_summary_consumer.py --window post-close`, and direct JSON inspection; all passed.
-- Report written: `tmp/wf46-implementation-report.md`.
+- Report written: `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf46-implementation-report.md)`.
 
 ## Outstanding
 - Full active-chain proof of the self-observation path is still useful, but should not be run casually if the chain may touch unresolved canonical-mutation surfaces before WF47/WF48.

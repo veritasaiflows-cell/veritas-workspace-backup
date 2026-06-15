@@ -1,0 +1,1309 @@
+{
+  "schema": "veritas.pm_cockpit_source_registry.v1",
+  "status": "active",
+  "generated_at_utc": "2026-05-31T23:00:00Z",
+  "purpose": "Thin source registry for the local TypeScript/Node PM cockpit. Paths may move later without changing cockpit UI code.",
+  "workspace_root": ".",
+  "default_refresh_seconds": 60,
+  "authority_boundary": {
+    "review_only": true,
+    "public_launch_allowed": false,
+    "real_customer_data_allowed": false,
+    "external_delivery_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "sources": [
+    {
+      "key": "pm_control_packet",
+      "title": "PM Control Packet",
+      "path": "tmp/pm-control-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "pm",
+      "role": "primary_pm_control_packet"
+    },
+    {
+      "key": "parallel_lane_recommendation",
+      "title": "Parallel Lane Recommendation",
+      "path": "tmp/parallel-lane-recommendation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "pm",
+      "role": "review_only_helper_lane_spawn_packet_with_lease_command"
+    },
+    {
+      "key": "truth_surface_inventory",
+      "title": "Truth Surface Inventory",
+      "path": "tmp/truth-surface-inventory.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "workflow",
+      "role": "classification_map_for_authority_router_proof_dashboard_legacy_surfaces"
+    },
+    {
+      "key": "route_efficiency_scorecard",
+      "title": "Route Efficiency Scorecard",
+      "path": "tmp/route-efficiency-scorecard.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "workflow",
+      "role": "fast_path_and_cockpit_latency_baseline"
+    },
+    {
+      "key": "fast_path_qa",
+      "title": "Fast Path QA",
+      "path": "tmp/fast-path-qa.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "workflow",
+      "role": "route_pm_artifact_cron_fast_path_validation"
+    },
+    {
+      "key": "parallel_repeatable_work_orchestration",
+      "title": "Parallel Repeatable Work Orchestration",
+      "path": "tmp/parallel-repeatable-work-orchestration.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "workflow",
+      "role": "wf78_evidence_owner_card_macro_parallel_orchestration"
+    },
+    {
+      "key": "repeatable_work_closeout",
+      "title": "Repeatable Work Closeout",
+      "path": "tmp/repeatable-work-closeout.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "workflow",
+      "role": "standard_route_scorer_reroute_inventory_qa_index_pm_closeout_chain"
+    },
+    {
+      "key": "wf75_closeout_refresh",
+      "title": "WF75 Closeout Refresh",
+      "path": "tmp/wf75-closeout-refresh.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "wf75",
+      "role": "post_implementation_closeout_proof"
+    },
+    {
+      "key": "workflow_routing_index",
+      "title": "Workflow Routing Index",
+      "path": "tmp/workflow-routing-index.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "workflow",
+      "role": "json_first_workflow_route_proof"
+    },
+    {
+      "key": "workflow_routing_index_validation",
+      "title": "Workflow Routing Validation",
+      "path": "tmp/workflow-routing-index-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "workflow",
+      "role": "route_schema_and_sql_parity_validation"
+    },
+    {
+      "key": "workflow_routing_index_sqlite",
+      "title": "Workflow Routing SQLite",
+      "path": "tmp/workflow-routing-index.sqlite",
+      "kind": "sqlite",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "workflow",
+      "role": "derived_read_only_route_control_lookup"
+    },
+    {
+      "key": "wf75_operator_console",
+      "title": "WF75 Operator Console",
+      "path": "tmp/wf75-operator-console.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "wf75",
+      "role": "local_operator_control_proof"
+    },
+    {
+      "key": "wf75_pm_readiness_brief",
+      "title": "WF75 PM Readiness Brief",
+      "path": "tmp/wf75-pm-readiness-brief.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "wf75",
+      "role": "pm_readiness_brief_manifest"
+    },
+    {
+      "key": "wf75_cron_authority_plan",
+      "title": "WF75 Cron Authority Plan",
+      "path": "tmp/wf75-cron-automation-authority-plan.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "autonomy",
+      "role": "cron_dispatcher_authority_proof"
+    },
+    {
+      "key": "generic_service_run_contract",
+      "title": "Generic Service Run Contract",
+      "path": "tmp/generic-service-run-contract.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "generic_service_contract"
+    },
+    {
+      "key": "smb_workflow_scenario_library",
+      "title": "SMB Workflow Scenario Library",
+      "path": "tmp/wf75-smb-workflow-scenario-library.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "lead_rescue_scenario_library"
+    },
+    {
+      "key": "smb_customer_preview",
+      "title": "SMB Customer Preview",
+      "path": "tmp/wf75-smb-customer-preview.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "local_review_only_customer_preview"
+    },
+    {
+      "key": "smb_customer_preview_validation",
+      "title": "SMB Customer Preview Validation",
+      "path": "tmp/wf75-smb-customer-preview-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "customer_preview_validator"
+    },
+    {
+      "key": "smb_pilot_decision_packet",
+      "title": "SMB Pilot Decision Packet",
+      "path": "tmp/wf75-smb-pilot-decision-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "manual_pilot_review_packet"
+    },
+    {
+      "key": "smb_automation_blueprints",
+      "title": "SMB Automation Blueprints",
+      "path": "tmp/wf75-smb-automation-blueprints.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "dry_run_automation_design_packet"
+    },
+    {
+      "key": "smb_automation_blueprints_validation",
+      "title": "SMB Automation Blueprints Validation",
+      "path": "tmp/wf75-smb-automation-blueprints-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "automation_blueprint_validator"
+    },
+    {
+      "key": "smb_service_state",
+      "title": "SMB Service State",
+      "path": "tmp/wf75-smb-service-state-current.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "lead_rescue_service_state"
+    },
+    {
+      "key": "smb_service_state_validation",
+      "title": "SMB Service State Validation",
+      "path": "tmp/wf75-smb-service-state-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "lead_rescue_service_state_validation"
+    },
+    {
+      "key": "smb_offer_icp_packet",
+      "title": "SMB Offer ICP Packet",
+      "path": "tmp/wf79-smb-offer-icp-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "offer_icp_packet"
+    },
+    {
+      "key": "smb_demo_packets",
+      "title": "SMB Demo Packets",
+      "path": "tmp/wf79-smb-demo-packets.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "sanitized_demo_packets"
+    },
+    {
+      "key": "smb_demo_packets_validation",
+      "title": "SMB Demo Packets Validation",
+      "path": "tmp/wf79-smb-demo-packets-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "sanitized_demo_packet_validator"
+    },
+    {
+      "key": "smb_marketing_ops_blueprints",
+      "title": "SMB Marketing Ops Blueprints",
+      "path": "tmp/wf79-smb-marketing-ops-blueprints.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "marketing_ops_blueprint_packet"
+    },
+    {
+      "key": "smb_marketing_ops_blueprints_validation",
+      "title": "SMB Marketing Ops Blueprints Validation",
+      "path": "tmp/wf79-smb-marketing-ops-blueprints-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "marketing_ops_blueprint_validator"
+    },
+    {
+      "key": "smb_cockpit_panel",
+      "title": "SMB Cockpit Panel",
+      "path": "tmp/wf79-smb-cockpit-panel.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "local_cockpit_phase_panel"
+    },
+    {
+      "key": "smb_sales_practice_packet",
+      "title": "SMB Sales Practice Packet",
+      "path": "tmp/wf79-smb-sales-practice-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "internal_sales_practice"
+    },
+    {
+      "key": "smb_phase_closeout",
+      "title": "SMB Phase Closeout",
+      "path": "tmp/wf79-smb-phase-closeout.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "phase_closeout_manifest"
+    },
+    {
+      "key": "smb_go_boundary_lint",
+      "title": "SMB Go Boundary Lint",
+      "path": "tmp/wf75-smb-boundary-lint.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "smb",
+      "role": "independent_go_boundary_validator"
+    },
+    {
+      "key": "finance_sql_go_boundary_lint",
+      "title": "Finance SQL Go Boundary Lint",
+      "path": "tmp/finance-sql-boundary-lint.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "independent_go_finance_sql_validator"
+    },
+    {
+      "key": "python_sql_contract_lint",
+      "title": "Python SQL Contract Lint",
+      "path": "tmp/python-sql-contract-lint.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "independent_go_python_sql_contract_validator"
+    },
+    {
+      "key": "sql_schema_drift_lint",
+      "title": "SQL Schema Drift Lint",
+      "path": "tmp/sql-schema-drift-lint.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "independent_go_sql_schema_validator"
+    },
+    {
+      "key": "sql_proof_probe",
+      "title": "SQL Proof Probe",
+      "path": "tmp/sql-proof-probe.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "independent_go_sql_proof_aggregator"
+    },
+    {
+      "key": "go_sql_latency_probe",
+      "title": "Go SQL Latency Probe",
+      "path": "tmp/go-sql-latency-probe.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "independent_go_sql_latency_parity_probe"
+    },
+    {
+      "key": "go_sql_inventory_helper",
+      "title": "Go SQL Inventory Helper",
+      "path": "tmp/go-sql-inventory-helper.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "reusable_go_read_only_sql_inventory_helper"
+    },
+    {
+      "key": "python_go_sql_parity_check",
+      "title": "Python-Go SQL Parity Check",
+      "path": "tmp/python-go-sql-parity-check.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_sql_helper_parity_gate"
+    },
+    {
+      "key": "python_go_sql_migration_candidates",
+      "title": "Python-Go SQL Migration Candidates",
+      "path": "tmp/python-go-sql-migration-candidates.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_sql_helper_migration_queue"
+    },
+    {
+      "key": "go_sql_source_truth_manifest",
+      "title": "Go SQL Source Truth Manifest",
+      "path": "tmp/go-sql-source-truth-authority-manifest.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_companion_for_sql_source_truth_authority_manifest"
+    },
+    {
+      "key": "python_go_source_truth_manifest_parity",
+      "title": "Python-Go Source Truth Manifest Parity",
+      "path": "tmp/python-go-source-truth-manifest-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_manifest_fixture_parity_gate"
+    },
+    {
+      "key": "go_source_truth_parity_validator",
+      "title": "Go Source Truth Parity Validator",
+      "path": "tmp/go-source-truth-parity-validation.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_companion_for_sql_source_truth_parity_validator"
+    },
+    {
+      "key": "python_go_source_truth_parity_validator_parity",
+      "title": "Python-Go Source Truth Parity Validator Parity",
+      "path": "tmp/python-go-source-truth-parity-validator-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_source_truth_parity_validator_gate"
+    },
+    {
+      "key": "go_sql_500_expansion_gate",
+      "title": "Go SQL 500 Expansion Design Gate",
+      "path": "tmp/go-sql-500-ticker-expansion-design-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_companion_for_sql_500_ticker_expansion_design_gate"
+    },
+    {
+      "key": "python_go_sql_500_expansion_gate_parity",
+      "title": "Python-Go SQL 500 Expansion Gate Parity",
+      "path": "tmp/python-go-sql-500-expansion-gate-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_sql_500_expansion_gate_parity"
+    },
+    {
+      "key": "wf78_500_reputation_gate",
+      "title": "WF78 500 Ticker Reputation Gate",
+      "path": "tmp/wf78-500-ticker-reputation-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "review_only_reputation_and_batch_gate_for_wf78_scaleout"
+    },
+    {
+      "key": "finance_ticker_card_refresh_gate",
+      "title": "Finance Ticker Card Refresh Gate",
+      "path": "tmp/finance-ticker-card-refresh-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_evidence_refresh_card_rebuild_and_repair_queue"
+    },
+    {
+      "key": "wf78_tier_promotion_review_gate",
+      "title": "WF78 Tier Promotion Review Gate",
+      "path": "tmp/wf78-tier-promotion-review-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_tier_c_owner_packet_and_tier_b_a_repair_gate"
+    },
+    {
+      "key": "wf78_tier_b_research_packets",
+      "title": "WF78 Tier B Research Packets",
+      "path": "tmp/wf78-tier-b-research-packets.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_tier_c_to_tier_b_research_evidence_packets"
+    },
+    {
+      "key": "wf78_tier_b_research_packet_requests",
+      "title": "WF78 Tier B Research Packet Requests",
+      "path": "tmp/wf78-tier-b-research-packet-requests.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "phase2_request_file_for_tier_b_research_packets"
+    },
+    {
+      "key": "wf78_tier_b_research_packet_phase2_eval",
+      "title": "WF78 Tier B Research Packet Phase 2 Eval",
+      "path": "tmp/wf78-tier-b-research-packet-phase2-eval.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "phase2_eval_over_tier_b_research_packet_requests"
+    },
+    {
+      "key": "wf78_101_200_tier_c_owner_decision_packet",
+      "title": "WF78 101-200 Tier C Owner Decision Packet",
+      "path": "tmp/wf78-101-200-tier-c-owner-decision-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "exact_owner_decision_packet_for_tier_c_review_monitor_scope"
+    },
+    {
+      "key": "wf78_auto_tier_router",
+      "title": "WF78 Auto Tier Router",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "primary_derived_non_capital_tier_routing_state"
+    },
+    {
+      "key": "wf78_capital_review_queue",
+      "title": "WF78 A-Deploy Candidate Review Queue",
+      "path": "tmp/wf78-capital-review-queue.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "owner_gated_non_executing_capital_review_queue"
+    },
+    {
+      "key": "wf78_capital_review_queue_sqlite",
+      "title": "WF78 A-Deploy Candidate Review Queue SQLite",
+      "path": "tmp/wf78-capital-review-queue.sqlite",
+      "kind": "sqlite",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "derived_read_only_lookup_for_owner_gated_capital_review_queue"
+    },
+    {
+      "key": "wf78_event_triggered_rerouting",
+      "title": "WF78 AI Event-Triggered Rerouting",
+      "path": "tmp/wf78-event-triggered-rerouting.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "ai_plumbing_non_capital_rerouting_and_evidence_repair_queue"
+    },
+    {
+      "key": "wf78_evidence_drag_reduction",
+      "title": "WF78 Evidence Drag Reduction",
+      "path": "tmp/wf78-evidence-drag-reduction.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "ranked_evidence_repair_and_non_executing_card_prep_queue"
+    },
+    {
+      "key": "wf78_evidence_family_repair",
+      "title": "WF78 Evidence Family Repair",
+      "path": "tmp/wf78-evidence-family-repair.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "family_first_repair_routing_for_repeated_stale_evidence"
+    },
+    {
+      "key": "wf78_source_open_repair_execution",
+      "title": "WF78 Source-Open Repair Execution",
+      "path": "tmp/wf78-source-open-repair-execution.json",
+      "kind": "json",
+      "required": false,
+      "max_age_hours": 72,
+      "group": "finance",
+      "role": "review_only_source_open_repair_execution_proof"
+    },
+    {
+      "key": "wf78_source_open_work_packets",
+      "title": "WF78 Source-Open Work Packets",
+      "path": "tmp/wf78-source-open-work-packets.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "parallel_safe_source_open_repair_work_packets"
+    },
+    {
+      "key": "wf78_position_sizing_surface_review",
+      "title": "WF78 Position-Sizing Surface Review",
+      "path": "tmp/wf78-position-sizing-surface-review.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_position_sizing_and_deployment_readiness_packaging"
+    },
+    {
+      "key": "wf78_deployment_readiness_review",
+      "title": "WF78 Deployment-Readiness Review",
+      "path": "tmp/wf78-deployment-readiness-review.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_deployment_readiness_gap_packaging"
+    },
+    {
+      "key": "wf78_source_artifact_capture_review",
+      "title": "WF78 Source-Artifact Capture Review",
+      "path": "tmp/wf78-source-artifact-capture-review.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_source_artifact_capture_blocker_queue"
+    },
+    {
+      "key": "wf78_position_sizing_integration_proposal",
+      "title": "WF78 Position-Sizing Integration Proposal",
+      "path": "tmp/wf78-position-sizing-integration-proposal.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_position_sizing_integration_proposals_not_applied"
+    },
+    {
+      "key": "wf78_tier_a_owner_readiness_proposals",
+      "title": "WF78 Tier A Owner-Readiness Proposals",
+      "path": "tmp/wf78-tier-a-owner-readiness-proposals.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "non_executing_tier_a_owner_readiness_proposals"
+    },
+    {
+      "key": "wf78_missing_band_context_repair",
+      "title": "WF78 Missing Band Context Repair",
+      "path": "tmp/wf78-missing-band-context-repair.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_current_price_and_band_status_repair_for_blocked_rows"
+    },
+    {
+      "key": "wf78_source_capture_requirements_queue",
+      "title": "WF78 Source-Capture Requirements Queue",
+      "path": "tmp/wf78-source-capture-requirements-queue.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_source_capture_requirements_for_blocked_tier_b_names"
+    },
+    {
+      "key": "wf78_official_source_discovery",
+      "title": "WF78 Official Source Discovery",
+      "path": "tmp/wf78-official-source-discovery.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_official_source_discovery_for_source_capture_blockers"
+    },
+    {
+      "key": "wf78_official_registry_proposal",
+      "title": "WF78 Official Registry Proposal",
+      "path": "tmp/wf78-official-registry-proposal.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "not_applied_official_registry_proposal"
+    },
+    {
+      "key": "wf78_promotion_owner_lineage_queue",
+      "title": "WF78 Promotion Owner-Lineage Queue",
+      "path": "tmp/wf78-promotion-owner-lineage-queue.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "promotion_only_owner_entry_stop_lineage_queue"
+    },
+    {
+      "key": "wf78_owner_lineage_proposal",
+      "title": "WF78 Owner Lineage Proposal",
+      "path": "tmp/wf78-owner-lineage-proposal.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_proposed_entry_stop_lineage_for_tier_b_blockers"
+    },
+    {
+      "key": "wf78_ph_owner_review_candidate_packet",
+      "title": "WF78 PH Owner-Review Candidate Packet",
+      "path": "tmp/wf78-ph-owner-review-candidate-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_ph_owner_review_candidate_packet"
+    },
+    {
+      "key": "wf78_tier_a_invalidation_review_queue",
+      "title": "WF78 Tier A Invalidation Review Queue",
+      "path": "tmp/wf78-tier-a-invalidation-review-queue.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_tier_a_invalidation_queue_not_buy_candidates"
+    },
+    {
+      "key": "wf78_official_source_capture_packet",
+      "title": "WF78 Official Source-Capture Packet",
+      "path": "tmp/wf78-official-source-capture-packet.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_official_source_pointers_for_tier_b_blockers"
+    },
+    {
+      "key": "wf78_next_owner_review_and_source_capture_integration",
+      "title": "WF78 Owner Review And Source Capture Integration",
+      "path": "tmp/wf78-next-owner-review-and-source-capture-integration.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_next_owner_review_and_source_capture_summary"
+    },
+    {
+      "key": "wf78_ticker_freshness_ledger",
+      "title": "WF78 Ticker Freshness Ledger",
+      "path": "tmp/wf78-ticker-freshness-ledger.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "daily_ticker_freshness_debt_ledger"
+    },
+    {
+      "key": "wf78_tier_weighted_freshness_resolution",
+      "title": "WF78 Tier-Weighted Freshness Resolution",
+      "path": "tmp/wf78-tier-weighted-freshness-resolution.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "tier_appropriate_200_ticker_freshness_debt_resolution"
+    },
+    {
+      "key": "wf78_daily_freshness_loop",
+      "title": "WF78 Daily Freshness Loop",
+      "path": "tmp/wf78-daily-freshness-loop.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "daily_review_only_wf78_freshness_orchestration"
+    },
+    {
+      "key": "macro_event_guard_loop",
+      "title": "Macro Event Guard Loop",
+      "path": "tmp/macro-event-guard-loop.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_macro_overlay_refresh_for_ticker_routing"
+    },
+    {
+      "key": "wf78_owner_card_prep_loop",
+      "title": "WF78 Owner Card Prep Loop",
+      "path": "tmp/wf78-owner-card-prep-loop.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "non_executing_owner_card_and_wf67_request_artifact_preparation"
+    },
+    {
+      "key": "wf78_tier_a_evidence_repair_batch",
+      "title": "WF78 Tier A Evidence Repair Batch",
+      "path": "tmp/wf78-tier-a-evidence-repair-batch.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "tier_a_challenged_ranked_repair_tracking"
+    },
+    {
+      "key": "wf78_event_triggered_rerouting_sqlite",
+      "title": "WF78 AI Event-Triggered Rerouting SQLite",
+      "path": "tmp/wf78-event-triggered-rerouting.sqlite",
+      "kind": "sqlite",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "derived_read_only_lookup_for_ai_rerouting_actions"
+    },
+    {
+      "key": "wf78_routing_dashboard",
+      "title": "WF78 Routing Dashboard Legacy Proof",
+      "path": "tmp/wf78-routing-dashboard.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "legacy_derived_lane_verdict_index_secondary_to_auto_router"
+    },
+    {
+      "key": "wf78_routing_dashboard_sqlite",
+      "title": "WF78 Routing Dashboard SQLite Legacy Proof",
+      "path": "tmp/wf78-routing-dashboard.sqlite",
+      "kind": "sqlite",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "legacy_read_only_sqlite_lookup_secondary_to_auto_router"
+    },
+    {
+      "key": "wf78_101_200_tier_c_import_gate",
+      "title": "WF78 101-200 Tier C Import Gate",
+      "path": "tmp/wf78-101-200-tier-c-import-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "finance",
+      "role": "approved_tier_c_review_monitor_only_import_gate_for_101_200"
+    },
+    {
+      "key": "wf78_macro_thesis_overlay_gate",
+      "title": "WF78 Macro Thesis Overlay Gate",
+      "path": "tmp/wf78-macro-thesis-overlay-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_macro_theme_triage_for_tier_c_to_tier_b_research_shortlist"
+    },
+    {
+      "key": "wf78_tier_capacity_policy_gate",
+      "title": "WF78 Tier Capacity Policy Gate",
+      "path": "tmp/wf78-tier-capacity-policy-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_tier_a_25_tier_b_50_capacity_policy_for_wf78_scaleout"
+    },
+    {
+      "key": "wf78_legacy_42_tier_migration_planner",
+      "title": "WF78 Legacy 42 Tier Migration Planner",
+      "path": "tmp/wf78-legacy-42-tier-migration-planner.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "shadow_migration_and_dependency_gate_for_legacy_42_into_tier_a_b_model"
+    },
+    {
+      "key": "go_finance_data_coverage_probe",
+      "title": "Go Finance Data Coverage Probe",
+      "path": "tmp/go-finance-data-coverage-probe.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_fixture_probe_for_finance_data_coverage_registry"
+    },
+    {
+      "key": "python_go_finance_data_coverage_probe_parity",
+      "title": "Python-Go Finance Data Coverage Probe Parity",
+      "path": "tmp/python-go-finance-data-coverage-probe-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_finance_data_coverage_probe_parity"
+    },
+    {
+      "key": "go_finance_human_notes_sql_check",
+      "title": "Go Finance Human Notes SQL Check",
+      "path": "tmp/go-finance-human-notes-sql-check.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_companion_for_finance_human_notes_sql_canon_check"
+    },
+    {
+      "key": "python_go_finance_human_notes_sql_check_parity",
+      "title": "Python-Go Finance Human Notes SQL Check Parity",
+      "path": "tmp/python-go-finance-human-notes-sql-check-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_finance_human_notes_sql_check_parity"
+    },
+    {
+      "key": "go_finance_universe_validation_probe",
+      "title": "Go Finance Universe Validation Probe",
+      "path": "tmp/go-finance-universe-validation-probe.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_durable_output_probe_for_finance_universe_validation"
+    },
+    {
+      "key": "python_go_finance_universe_validation_parity",
+      "title": "Python-Go Finance Universe Validation Parity",
+      "path": "tmp/python-go-finance-universe-validation-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_durable_output_parity_for_finance_universe_validation"
+    },
+    {
+      "key": "go_wf78_sql_phase2_readiness_probe",
+      "title": "Go WF78 SQL Phase 2 Readiness Probe",
+      "path": "tmp/go-wf78-sql-phase2-readiness-probe.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_durable_output_probe_for_wf78_sql_phase2_readiness"
+    },
+    {
+      "key": "python_go_wf78_sql_phase2_readiness_parity",
+      "title": "Python-Go WF78 SQL Phase 2 Readiness Parity",
+      "path": "tmp/python-go-wf78-sql-phase2-readiness-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_durable_output_parity_for_wf78_sql_phase2_readiness"
+    },
+    {
+      "key": "python_go_durable_output_parity_repeated_gate",
+      "title": "Python-Go Durable Output Parity Repeated Gate",
+      "path": "tmp/python-go-durable-output-parity-repeated-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "repeated_durable_output_parity_gate_for_python_demotion"
+    },
+    {
+      "key": "go_sql_consumer_authority_guard",
+      "title": "Go SQL Consumer Authority Guard",
+      "path": "tmp/go-sql-consumer-authority-guard.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_fail_closed_companion_for_sql_consumer_authority_guard"
+    },
+    {
+      "key": "python_go_sql_consumer_authority_guard_parity",
+      "title": "Python-Go SQL Consumer Authority Guard Parity",
+      "path": "tmp/python-go-sql-consumer-authority-guard-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_sql_consumer_authority_guard_parity"
+    },
+    {
+      "key": "python_go_sql_consumer_authority_guard_fixture_parity",
+      "title": "Python-Go SQL Consumer Authority Guard Fixture Parity",
+      "path": "tmp/python-go-sql-consumer-authority-guard-fixture-parity.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_sql_consumer_authority_guard_fixture_parity_for_demotion_readiness"
+    },
+    {
+      "key": "python_go_sql_consumer_authority_dashboard_ab",
+      "title": "Python-Go SQL Consumer Authority Dashboard A/B",
+      "path": "tmp/python-go-sql-consumer-authority-dashboard-ab.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_go_sql_consumer_authority_dashboard_ab_for_demotion_readiness"
+    },
+    {
+      "key": "python_go_sql_consumer_authority_demotion_dry_run",
+      "title": "Python-Go SQL Consumer Authority Demotion Dry Run",
+      "path": "tmp/python-go-sql-consumer-authority-demotion-dry-run.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "go_first_python_fallback_controlled_demotion_dry_run"
+    },
+    {
+      "key": "python_go_sql_consumer_authority_controlled_router",
+      "title": "Python-Go SQL Consumer Authority Controlled Router",
+      "path": "tmp/python-go-sql-consumer-authority-controlled-router.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "explicit_python_default_go_first_controlled_router_proof"
+    },
+    {
+      "key": "python_go_sql_helper_demotion_readiness_gate",
+      "title": "Python-Go SQL Helper Demotion Readiness Gate",
+      "path": "tmp/python-go-sql-helper-demotion-readiness-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "durable_output_and_contract_first_python_demotion_gate"
+    },
+    {
+      "key": "python_go_sql_helper_demotion_queue",
+      "title": "Python-Go SQL Helper Demotion Queue",
+      "path": "tmp/python-go-sql-helper-demotion-queue.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "first_controlled_demotion_and_next_candidate_queue"
+    },
+    {
+      "key": "python_go_sql_helper_contract_gate",
+      "title": "Python-Go SQL Helper Contract Gate",
+      "path": "tmp/python-go-sql-helper-contract-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "fixture_contracts_semantic_shape_parity_and_consumer_stability_gate"
+    },
+    {
+      "key": "python_go_sql_helper_controlled_router_batch",
+      "title": "Python-Go SQL Helper Controlled Router Batch",
+      "path": "tmp/python-go-sql-helper-controlled-router-batch.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "controlled_go_first_python_fallback_batch_without_retirement"
+    },
+    {
+      "key": "python_go_sql_helper_go_primary_history_gate",
+      "title": "Python-Go SQL Helper Go-Primary History Gate",
+      "path": "tmp/python-go-sql-helper-go-primary-history-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "repeated_controlled_go_primary_history_without_default_route_change"
+    },
+    {
+      "key": "python_go_sql_helper_default_route_promotion",
+      "title": "Python-Go SQL Helper Default Route Promotion",
+      "path": "tmp/python-go-sql-helper-default-route-promotion.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_owner_default_go_validator_only_routing_policy"
+    },
+    {
+      "key": "python_go_sql_helper_default_route_history_gate",
+      "title": "Python-Go SQL Helper Default Route History Gate",
+      "path": "tmp/python-go-sql-helper-default-route-history-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "repeated_python_owner_default_history_with_go_validator_only"
+    },
+    {
+      "key": "python_go_sql_helper_fallback_removal_readiness_gate",
+      "title": "Python-Go SQL Helper Fallback Removal Readiness Gate",
+      "path": "tmp/python-go-sql-helper-fallback-removal-readiness-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "report_only_fallback_removal_readiness_proposal_gate"
+    },
+    {
+      "key": "python_go_sql_helper_retirement_gate",
+      "title": "Python-Go SQL Helper Retirement Gate",
+      "path": "tmp/python-go-sql-helper-retirement-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "python_retirement_blocking_gate_with_fallback_retained"
+    },
+    {
+      "key": "go_sql_inprocess_driver_pilot_gate",
+      "title": "Go SQL In-Process Driver Pilot Gate",
+      "path": "tmp/go-sql-inprocess-driver-pilot-gate.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "report_only_cli_vs_inprocess_sqlite_driver_gate_for_selected_helpers"
+    },
+    {
+      "key": "runtime_performance_scorecard",
+      "title": "Runtime Performance Scorecard",
+      "path": "tmp/runtime-performance-scorecard.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "system",
+      "role": "cross_runtime_performance_scorecard"
+    },
+    {
+      "key": "retail_automation_control_plane",
+      "title": "Retail Automation Control Plane",
+      "path": "tmp/retail-automation-control-plane.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "retail",
+      "role": "p0_phase_4_5_to_7_visibility_safety_freshness_demo_packet"
+    },
+    {
+      "key": "wf75_academy_current",
+      "title": "WF75 Academy Current Training Packet",
+      "path": "training/wf75-academy/wf75-academy-current.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "academy",
+      "role": "current_training_packet"
+    },
+    {
+      "key": "wf75_academy_manifest",
+      "title": "WF75 Academy Asset Manifest",
+      "path": "training/wf75-academy/wf75-academy-manifest.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 168,
+      "group": "academy",
+      "role": "training_asset_manifest"
+    },
+    {
+      "key": "canonical_finance_data_plane_phase6_10",
+      "title": "WF84 Phase 6-10 Proof",
+      "path": "tmp/canonical-finance-data-plane-phase6-10.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "wf84_read_only_consumer_parity_source_drillback_priority_and_retirement_gate"
+    },
+    {
+      "key": "generic_service_state_sqlite",
+      "title": "Generic Service State SQLite",
+      "path": "tmp/generic-service-state.sqlite",
+      "kind": "sqlite",
+      "required": false,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "derived_control_plane_cache"
+    },
+    {
+      "key": "wf75_service_state_sqlite",
+      "title": "WF75 Service State SQLite",
+      "path": "tmp/wf75-service-state.sqlite",
+      "kind": "sqlite",
+      "required": false,
+      "max_age_hours": 168,
+      "group": "sql",
+      "role": "derived_workflow_state_cache"
+    },
+    {
+      "key": "canonical_finance_data_plane_sqlite",
+      "title": "WF84 Canonical Finance Data Plane SQLite",
+      "path": "tmp/canonical-finance-data-plane.sqlite",
+      "kind": "sqlite",
+      "required": false,
+      "max_age_hours": 24,
+      "group": "sql",
+      "role": "derived_review_only_finance_os_lookup_with_fallback_parity_gate"
+    },
+    {
+      "key": "cron_operator_ledger",
+      "title": "Cron Operator Ledger",
+      "path": "tmp/cron-operator-ledger.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "autonomy",
+      "role": "cron_status_surface"
+    },
+    {
+      "key": "workspace_boundary_check",
+      "title": "Workspace Boundary Check",
+      "path": "tmp/workspace-boundary-check.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "authority",
+      "role": "boundary_audit"
+    },
+    {
+      "key": "finance_decision_factory",
+      "title": "Finance Decision Factory",
+      "path": "tmp/finance-decision-factory.json",
+      "kind": "json",
+      "required": false,
+      "max_age_hours": 72,
+      "group": "finance",
+      "role": "repeatable_candidate_to_card_decision_ledger_spine"
+    },
+    {
+      "key": "wf78_evidence_repair_batch",
+      "title": "WF78 Evidence Repair Batch",
+      "path": "tmp/wf78-evidence-repair-batch.json",
+      "kind": "json",
+      "required": false,
+      "max_age_hours": 72,
+      "group": "finance",
+      "role": "resumable_tier_ordered_evidence_debt_burn_down"
+    },
+    {
+      "key": "control_closeout_bundle",
+      "title": "Control Closeout Bundle",
+      "path": "tmp/control-closeout-bundle.json",
+      "kind": "json",
+      "required": false,
+      "max_age_hours": 72,
+      "group": "workflow",
+      "role": "single_closeout_chain_handoff_and_lane_register_health"
+    },
+    {
+      "key": "pm_execution_loop",
+      "title": "PM Execution Loop",
+      "path": "tmp/pm-execution-loop.json",
+      "kind": "json",
+      "required": false,
+      "max_age_hours": 72,
+      "group": "pm",
+      "role": "collision_safe_pm_job_selection_proof_and_closeout"
+    }
+  ],
+  "ui": {
+    "title": "Veritas PM Control Cockpit",
+    "subtitle": "Internal PM/program-state surface over generated proof packets.",
+    "primary_owner": "Veritas main session",
+    "default_tab": "overview"
+  }
+}

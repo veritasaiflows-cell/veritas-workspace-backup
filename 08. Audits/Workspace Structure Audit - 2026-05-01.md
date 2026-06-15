@@ -70,10 +70,10 @@ Highest-confidence drift:
 
 Examples:
 - `tmp/external-research/2026-05-01 XOM Post-Earnings Risk Pass - GPT5.md.md` -> duplicate extension / naming drift
-- `tmp/rtx_doc_builder.py`
-- `tmp/rtx_doc_builder_v2.py`
-- `tmp/rtx_fetch_ir_links.py`
-- `tmp/schedule_openclaw_audits.py`
+- `09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx_doc_builder.py`
+- `09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx_doc_builder_v2.py`
+- `09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx_fetch_ir_links.py`
+- `09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/schedule_openclaw_audits.py`
 
 Judgment:
 - `tmp/` is being used correctly for many artifacts

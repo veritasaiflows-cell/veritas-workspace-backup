@@ -1,0 +1,54 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "a29d092a-037c-4154-9d98-09555200dd06",
+  "name": "Finance Delivery Series - Daily Market Read Handoff",
+  "required": true,
+  "owner_workflow": "WF75",
+  "contract_reason": "Weekday main-session handoff for concise internal daily market read after builder proof.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "58 6 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "systemEvent"
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-delivery-series.json",
+    "tmp/finance-delivery-series.xlsx",
+    "tmp/finance-delivery-series/daily-market-read.pdf",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "main_session_handoff_only": true,
+    "customer_or_external_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

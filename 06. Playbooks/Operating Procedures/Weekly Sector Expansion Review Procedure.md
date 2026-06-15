@@ -10,7 +10,7 @@ Run one clean weekly review to decide whether a new sector should be expanded an
 
 ## Read first
 - `02. Markets/Regime Scoring Matrix.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `03. Portfolio/Portfolio Snapshot.md`
 - `07. Risk/Risk Rules.md`
 - `06. Playbooks/WF38 Phase 1 Weekly Sector Expansion Review Contract - 2026-05-06.md`
@@ -27,7 +27,7 @@ Run one clean weekly review to decide whether a new sector should be expanded an
    - acceptable catalyst timing
    - acceptable sector and correlated-sleeve impact
 5. If key technical/risk fields are missing, request or review a candidate packet instead of treating the name as ready.
-6. Route promotion decisions back to the Trigger Sheet / Portfolio Snapshot owner layer.
+6. Route promotion decisions back to the Execution Board / Portfolio Snapshot owner layer.
 
 ## Current standing guidance
 - do not use this procedure to justify adding more Tech / AI risk when diversification is the real need

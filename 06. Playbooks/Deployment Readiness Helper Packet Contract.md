@@ -12,7 +12,7 @@ Define the first helper packets that can support deployment readiness without cr
   - move queue state
   - mutate canonical notes
   - make final portfolio conclusions
-  - overrule the Trigger Sheet
+  - overrule the Execution Board
 - Main-session Veritas remains the integrator and final reviewer
 
 ## Packet 1 — Admission prep
@@ -21,8 +21,8 @@ Define the first helper packets that can support deployment readiness without cr
 Prepare a bounded decision packet for a name that may deserve promotion into the execution board or a tighter deployment review.
 
 ### Inputs
-- `04. Research/Coverage Universe.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `04. Research/Coverage and Watchlist.md`
+- `03. Portfolio/Execution Board.md`
 - `tmp/trigger-sheet.json`
 - `tmp/deployment-readiness-surface.json`
 - current earnings / macro artifacts when relevant
@@ -60,7 +60,7 @@ A packet that states:
 - event summary
 - likely thesis impact: `supports`, `neutral`, `pressures`, or `contradicts`
 - whether the issue is immediate deployment-relevance or only broader research relevance
-- whether a human Trigger Sheet review is warranted
+- whether a human Execution Board review is warranted
 
 ### Stop-line rules
 Stop at packet output if:
@@ -74,7 +74,7 @@ Stop at packet output if:
 Flag conflicts between machine surfaces and owner notes before those conflicts become false confidence.
 
 ### Inputs
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `tmp/deployment-readiness-surface.json`
 - `tmp/trigger-sheet.json`
 - `tmp/run-summary-<window>.json`

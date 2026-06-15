@@ -1,0 +1,73 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF-RETAIL-ROUTING",
+  "display_name": "Retail-Grade Truth Routing System",
+  "tier": "P0",
+  "effective_status": "on_hold",
+  "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only.",
+  "helper_safe": false,
+  "owner_action_required": true,
+  "authority_boundary": "review-only internal routing; customer output gated",
+  "blockers": [
+    "Customer-safe output waits for Randall",
+    "Paused by Randall on 2026-06-09 06:19 MST so Personal Trade-Grade Decision OS/WF85 becomes the primary PM goal."
+  ],
+  "stop_lines": [
+    "No SQL-first promotion, SQL writes/imports, customer/external output, canon/portfolio mutation, paper/live/account action, Python fallback retirement, cron mutation, or approval inference."
+  ],
+  "continuity_note": null,
+  "primary_route_artifact": "scripts/retail_truth_routing_contract.py",
+  "secondary_artifacts": [
+    "scripts/retail_answer_harness.py",
+    "scripts/retail_automation_control_plane.py"
+  ],
+  "validator_commands": [
+    "python scripts\\retail_truth_routing_contract.py --write --validate",
+    "python scripts\\retail_answer_harness.py --write --validate",
+    "python scripts\\retail_automation_control_plane.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\retail_truth_routing_contract.py --write --validate",
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Randall",
+    "set_at_local": null,
+    "set_at_utc": "2026-06-09T13:23:36Z",
+    "reason": "Paused by Randall on 2026-06-09 06:19 MST so Personal Trade-Grade Decision OS/WF85 becomes the primary PM goal.",
+    "resume_condition": "Randall explicitly resumes retail-grade truth-routing work",
+    "aliases": [
+      "retail-grade_truth_routing",
+      "retail_grade_os",
+      "retail_truth_routing"
+    ],
+    "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+  },
+  "pm_action": {
+    "action_id": "retail_truth_routing-hold",
+    "action_type": "hold",
+    "description": "Do not advance this workflow. Preserve artifacts and boundary proof only.",
+    "lane_id": "retail_truth_routing",
+    "authority": "review_only",
+    "inline_execution_allowed": false,
+    "helper_lane_allowed_from_main_session": false,
+    "heartbeat_may_execute": false,
+    "stop_lines": [
+      "artifact-owned truth",
+      "source-open material claims",
+      "SQL read support only",
+      "PM coordinates but does not own final truth",
+      "no customer output",
+      "no canon/portfolio mutation",
+      "no paper/live/account action",
+      "no owner approval inference"
+    ],
+    "lane_status": "on_hold",
+    "readiness_score": 40,
+    "rank": 17,
+    "pm_packet_only": true
+  },
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

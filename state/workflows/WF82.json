@@ -1,0 +1,35 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF82",
+  "display_name": "Learning and Teaching Product Line",
+  "tier": "P3",
+  "effective_status": "route_only",
+  "next_action": "Do not build learning-product inventory unless Randall resumes WF80-WF83. Keep internal training assets available for current workflow efficiency only.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "internal-first learning product lane",
+  "blockers": [
+    "Owner paused WF80-WF83 on 2026-06-06",
+    "Learning-asset inventory and readiness validator not built yet"
+  ],
+  "stop_lines": [
+    "No customer/public training product, certification, legal/compliance claim, guaranteed outcome claim, or external publication without separate approval."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 82 - Learning and Teaching Product Line.md",
+  "primary_route_artifact": "06. Playbooks/Project Continuity/Workflow 82 - Learning and Teaching Product Line.md",
+  "secondary_artifacts": [
+    "scripts/wf75_training_desk.py",
+    "06. Playbooks/Project Continuity/Workflow 83 - Product Packaging and Launch Readiness Factory.md"
+  ],
+  "validator_commands": [
+    "python scripts\\workflow_routing_index.py --write --validate"
+  ],
+  "default_resume_command": "python scripts\\workflow_routing_index.py --route WF82",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

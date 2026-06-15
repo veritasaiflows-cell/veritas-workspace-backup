@@ -1,0 +1,36 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF79",
+  "display_name": "Veritas Command Center V2 UI Infrastructure",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Use compact reader/shell as active route; keep legacy full-detail dashboard for Randall drilldown. Optional future work is legacy payload retirement, not a blocking Path B dependency.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "review-only local UI",
+  "blockers": [],
+  "stop_lines": [
+    "Local/review-only UI. No canon/portfolio mutation, paper/live/account action, approval inference, public/customer delivery, SQL promotion, proof deletion, sidecar archive/delete, or config/channel/runtime expansion."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 79 - Veritas Command Center V2 UI Infrastructure.md",
+  "primary_route_artifact": "tmp/presentation-retrieval-route-map.json",
+  "secondary_artifacts": [
+    "06. Playbooks/Project Continuity/Presentation Artifact Flattening and Retrieval Routing.md",
+    "06. Playbooks/Project Continuity/Deployment State Contract Migration.md",
+    "tmp/veritas-command-center-compact-reader.json",
+    "tmp/veritas-command-center-compact.html",
+    "tmp/veritas-command-center.html",
+    "tmp/dashboard-presentation-view-model.json"
+  ],
+  "validator_commands": [
+    "python scripts\\deployment_contract_migration_validation_bundle.py --write"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

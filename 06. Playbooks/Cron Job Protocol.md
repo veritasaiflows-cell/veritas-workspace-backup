@@ -125,6 +125,7 @@ Each cron design should say which of these is expected:
 
 If spawning is allowed, the packet should also specify:
 - recommended model posture
+- required thinking posture; Spark (`codex/gpt-5.3-codex-spark`) cron/helper lanes must use `xhigh` thinking until repeated proof says otherwise
 - exact files to read first
 - exact acceptance target
 - out-of-bounds surfaces
@@ -151,6 +152,24 @@ To keep runs smaller, faster, and more coherent, prefer adding these fields when
    If trust, inputs, or completion state are unclear, stop and record the blocker.
 5. **Use the smallest real action.**
    Correct the outlier, not every file.
+
+
+## Cron Automation Authority Tiers
+
+Randall approved broader cron automation authority on 2026-05-23. Use these tiers for every recurring job and handoff. The machine-readable contract is `tmp/cron-automation-authority-contract.json`; validate it with `python scripts\cron_authority_matrix_validator.py --write`.
+
+| Tier | Name | Cron can do | Cron cannot do |
+|---|---|---|---|
+| T0 | Observe/report | status, warnings, run summaries, ledger rows | mutate notes/canon/archive |
+| T1 | Review-only artifact/dashboard refresh | write `tmp/` packets, dashboards, reports, SQL proof/index/staging | canonical/portfolio mutation or approval language |
+| T2 | Patch proposal / semantic preview | generate canonical-note patch proposals, portfolio proposals, exact previews, verifier reports | apply patches or imply eligibility |
+| T3 | Main-session bounded freshness/status sync | wake/handoff main session to inspect artifacts and apply bounded freshness/status sync | unattended direct cron note write |
+| T4 | Exact gated workspace portfolio/canon maintenance | generate proposal/verifier; use existing narrow applies only where already approved | broaden direct apply; trade/account/cash/risk/execution changes |
+| T4A | Future narrow cron-direct maintenance candidate | inactive placeholder only | any current direct apply |
+| T5 | Bounded auto-archive movement | archive-only moves under the approved policy | deletes or moving protected/canonical/current-window/script/skill/config files |
+| TX | Blocked | nothing | live/paper-outside-WF67, credentials, config/service, deletes, approval inference |
+
+Financial notes/canon default to T1/T2 proposal, preview, verifier, and reporting. Main-session Veritas owns T3 bounded freshness/status sync after artifact inspection. Existing narrow T4 helper applies (`event_calendar_apply.py --apply`, `auto_apply_entry_band_maintenance.py --apply`, and `canon_volatile_execution_board_sync.py --apply --strict-exit`) are category-specific and do not authorize broader cron-direct canon apply. T4A remains inactive until a future exact category is separately promoted with repeated proof, lock, rollback, audit, and independent QA.
 
 ## Session-target rule
 - **main** -> reminders and system events only
@@ -191,9 +210,10 @@ A job is not real because it was created. It is real after proof.
 
 ## Effort Routing
 - **Low effort** -> handle in the main cron run
-- **Medium effort** -> spawn one bounded detached worker only with an approved live model and a tighter scope; do not assume a removed cheap helper model exists
-- **High effort** -> require preflight review first, then spawn one bounded detached worker with `openai-codex/gpt-5.5` high-thinking posture when available, only if the contract is clear enough
-- **Fallback rule** -> if `openai-codex/gpt-5.5` is unavailable, keep the same bounded contract and record the fallback rather than silently using a weaker lane
+- **Medium effort** -> spawn one bounded detached worker with `openai/gpt-5.4` and a tighter scope; do not assume an unpinned/default helper model
+- **High effort** -> require preflight review first, then spawn one bounded detached worker with `openai/gpt-5.4` and high-thinking posture when the contract is clear enough; use `openai/gpt-5.5` only as a deliberate high-stakes exception
+- **Spark effort rule** -> if a cron job or spawned cron helper uses `codex/gpt-5.3-codex-spark`, set `--thinking xhigh` / payload thinking `xhigh`; Spark is cheap enough that lower effort is not the default until proof says otherwise
+- **Fallback rule** -> if the chosen model is unavailable, keep the same bounded contract and record the fallback rather than silently using a weaker lane
 
 ## Secure Spawn Default
 When spawn is allowed:
@@ -225,11 +245,14 @@ Each cron run should end with:
 Cron proof should be visible without reading raw chat history.
 
 Use these surfaces together:
-- `06. Playbooks/Cron Run Ledger.md`
+- `tmp/cron-operator-ledger.json` for current machine-readable cron operator status
+- `optional Markdown digest beside `tmp/cron-operator-ledger.json`` for the compact human digest generated from that JSON
+- `06. Playbooks/Cron Run Ledger.md` for legacy historical proof until migration is complete
 - `06. Playbooks/Automation Run Summary Contract.md`
 - cron run history
 
-The ledger is the compact operator view.
+The JSON ledger is the current operator truth route.
+The Markdown digest is the compact operator view.
 The run-summary contract is the machine-readable per-window evidence layer.
 Raw cron history is the audit trail behind them.
 

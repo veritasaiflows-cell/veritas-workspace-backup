@@ -38,7 +38,7 @@
 ## Preflight / Entry Checklist
 - [ ] confirm current active workflow order before opening work
 - [ ] run `git status --short` and identify files changed by active finance work
-- [ ] inspect `tmp/fetch_news.py` and `tmp/scrape_ir_links.py` before moving or archiving
+- [ ] inspect `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py` and `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py` before moving or archiving
 - [ ] verify whether `attachments/` or `state/` are runtime-required before removing or documenting them
 - [ ] inspect references to `migration-review.md` before moving it
 
@@ -126,8 +126,8 @@
 - `06. Playbooks/Notes Layer Audit Checklist.md`
 - `skills/workspace-governor/references/workspace-standards.md`
 - `scripts/README.md`
-- `tmp/fetch_news.py`
-- `tmp/scrape_ir_links.py`
+- `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py`
+- `09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py`
 - `migration-review.md`
 - `Home.md`
 - `01. Dashboards/Executive Brief.md`

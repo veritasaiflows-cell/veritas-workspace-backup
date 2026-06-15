@@ -66,10 +66,10 @@
 ### 2) Macro / regime desk
 - **Owner:** Veritas main session (current accountable operator)
 - **Purpose:** maintain the market regime frame that governs portfolio posture and deployment aggressiveness
-- **Owned machine inputs:** `tmp/market-state.json`, `tmp/policy-expectations.json`, `tmp/macro-regime.json`, breadth/credit artifacts
+- **Owned machine inputs:** `tmp/market-state.json`, `tmp/policy-expectations.json`, `tmp/macro-regime.json`, `tmp/macro-metrics-current.json`, `tmp/macro-event-calendar.json`, `tmp/macro-judgment-draft.json`, `tmp/json-sql-promotion-index.json`, `tmp/json-sql-promotion-registry.json`, `tmp/json-sql-promotion-index.sqlite`, breadth/credit artifacts
 - **Owned note outputs:** `02. Markets/Macro Regime Dashboard.md`, macro sections inside `01. Dashboards/Executive Brief.md` and `05. Intelligence/Weekly Positioning Review.md`
 - **Cadence:** post-close refreshes, Sunday weekly rebuild, and event-driven policy/macro updates
-- **Hard boundary:** automation may refresh data and draft summaries; final regime judgment, caveat wording, and portfolio implications stay human-gated in the note layer
+- **Hard boundary:** automation may refresh data, draft summaries, and build derived SQLite lookup indexes back to JSON proof; final regime judgment, caveat wording, portfolio implications, capital action, SQL import authority, and owner approval stay human-gated in the note layer
 
 ### 3) Coverage / company intelligence desk
 - **Owner:** Veritas main session (current accountable operator)
@@ -106,7 +106,7 @@
 ## Practical cadence map
 - **Post-close finance windows (normally active market days, not every calendar day):** macro refresh -> technical/deployment refresh -> validation -> selective note sync -> downstream refreshes where the current trust contract allows them
 - **Pre-earnings / post-earnings:** coverage desk opens prep/closure path -> portfolio desk updates action state only if the evidence changed -> publishing refreshes after note/state sync
-- **Weekly / Sunday rebuild:** macro/regime summary, coverage-universe hygiene, portfolio ranking review, and outstanding trust-debt triage
+- **Weekly / Sunday rebuild:** macro/regime summary, macro judgment draft, JSON-to-SQL promotion index refresh, coverage-universe hygiene, portfolio ranking review, research opportunity reset, and outstanding trust-debt triage
 - **Ad hoc:** real catalyst, validator contradiction, or note/machine drift that would mislead a decision surface
 
 ## Explicit non-goals
@@ -126,3 +126,21 @@
 - Keep Workflow 9 in the main session unless a bounded helper lane is needed for comparison or structure prep.
 - Do not let the department model outrun the trust-gated note/dashboard/workbook ownership rules.
 - If this workflow pauses, resume from this note first.
+
+## 2026-05-12 automation extension
+
+Randall asked how the research department operating model is being automated and whether the system has enough fresh data to keep tickers fresh, find sector-diversification opportunities, and evaluate improving small/mid-cap posture.
+
+Current answer:
+- the existing finance chains already refresh large-cap tracked ticker freshness, earnings/catalyst state, technical/deployment state, macro/regime state, sector expansion board, sector correlation check, and capital-deployment proposal packets;
+- the JSON-to-SQL promotion index now gives the research and macro desks a fast derived lookup layer over stable macro, WF75, research, and decision-packet JSON proof contracts;
+- this is enough for review-only tracked-ticker freshness and sector opportunity routing;
+- it is not enough to add small/mid-cap exposure automatically or treat improving small/mid-cap posture as portfolio approval.
+
+New downstream workflows:
+- `Workflow 60 - Research Freshness and Opportunity Cron Automation.md` owns the dedicated research freshness/opportunity review packet and cron design.
+- `Workflow 61 - Small Mid Cap Regime Feed and Candidate Sleeve.md` owns small/mid-cap ETF/proxy regime feed design before any portfolio proposal.
+
+Authority boundary:
+- automation may generate freshness queues, sector opportunity queues, candidate packet requests, and review-only portfolio-change proposal inputs;
+- automation may not promote, demote, size, allocate, add a sleeve, infer approval, trade, mutate portfolio truth, turn SQLite into canon, import authority, or act on customer/account data from these signals.

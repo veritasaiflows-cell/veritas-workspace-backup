@@ -74,13 +74,12 @@ When a regime change is triggered, update files in this exact order:
 
 ### Step 3: Update the portfolio layer (within 24 hours)
 - Update `03. Portfolio/Portfolio Snapshot.md` — revise overall posture, cash level, and risk flags
-- Update `03. Portfolio/Deployment Trigger Sheet.md` — review all action states. Names that were "Almost deployable" in the prior regime may become "Do not touch" in a broken regime.
-- Update `03. Portfolio/Technical Entry and Invalidation Sheet.md` — entry bands set under the prior regime may no longer be valid if the macro environment changes the support/resistance structure
+- Update `03. Portfolio/Execution Board.md` — review all action states, entry bands, stops, and invalidation logic. Names that were "Almost deployable" in the prior regime may become "Do not touch" in a broken regime, and bands set under the prior regime may no longer be valid if macro conditions change support/resistance structure.
 
 ### Step 4: Update the intelligence layer (within 48 hours)
 - Update `05. Intelligence/Weekly Positioning Review.md` — revise weekly posture, deployment map, and risk section
 - Update `05. Intelligence/Weekly Intelligence Brief.md` — add a regime change section with the evidence and implications
-- Update `02. Markets/Watchlist.md` — confirm that the active tracking universe still makes sense under the new or transitioning regime
+- Update `04. Research/Coverage and Watchlist.md` — confirm that the active tracking universe still makes sense under the new or transitioning regime
 
 ### Step 5: Review risk rules (within 48 hours)
 - Review `07. Risk/Risk Rules.md` — confirm that sizing tiers and escalation triggers are still calibrated for the new environment

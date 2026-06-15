@@ -6,11 +6,11 @@
 - **proposed lane:** watch
 - **portfolio role:** energy watch-lane candidate / possible cleaner upstream complement or alternative to the current energy mix
 - **one-sentence reason for inclusion:** EOG is in the immediate catalyst cluster and is a plausible high-quality upstream energy name, so it is a valid test of whether the desk admits new energy names for durable decision value rather than for earnings-calendar curiosity.
-- **thesis status:** not yet written in `04. Research/Coverage Universe.md`
+- **thesis status:** not yet written in `04. Research/Coverage and Watchlist.md`
 - **macro fit:** potentially constructive in the current energy-sensitive regime, but role clarity is weak while XOM remains the primary long-duration energy thesis and CVX/LNG already cover adjacent energy reads
 - **trigger condition:** only worth admitting if it offers a clearer or more durable role than the existing energy names, not just because earnings are tomorrow
 - **next review condition:** reopen only if post-earnings evidence or sector posture shows EOG deserves a distinct tracked role versus XOM / CVX / LNG
-- **owner note destinations:** `04. Research/Coverage Universe.md`, `02. Markets/Watchlist.md`, `tmp/portfolio-config.json`
+- **owner note destinations:** `04. Research/Coverage and Watchlist.md`, `04. Research/Coverage and Watchlist.md`, `tmp/portfolio-config.json`
 - **required evidence still missing:** written thesis block, key risk, act-when condition, technical levels, and explicit peer-comparison case versus the existing energy sleeve names
 - **no-go condition:** if EOG is only interesting because it is in the earnings cluster, or if it adds no cleaner role than XOM/CVX/LNG, do not admit it
 - **decision:** defer
@@ -20,9 +20,9 @@
 ## Evidence used
 - `01. Dashboards/Daily Executive Summary/2026-05-04.md` -> EOG earnings tomorrow
 - `tmp/earnings-calendar.json` -> EOG next earnings date `2026-05-05`
-- `02. Markets/Watchlist.md` -> EOG is not in the active tracking universe
-- `04. Research/Coverage Universe.md` -> no current EOG thesis block in the live covered universe
-- `03. Portfolio/Deployment Trigger Sheet.md` and `03. Portfolio/Technical Entry and Invalidation Sheet.md` -> existing energy sleeve already represented by XOM/CVX/LNG without an EOG execution case
+- `04. Research/Coverage and Watchlist.md` -> EOG is not in the active tracking universe
+- `04. Research/Coverage and Watchlist.md` -> no current EOG thesis block in the live covered universe
+- `03. Portfolio/Execution Board.md` -> existing energy sleeve already represented by XOM/CVX/LNG without an EOG execution case
 
 ## Honest outcome
 This is a valid pilot success even though the answer is **defer**. WF25 is supposed to prove disciplined admission procedure, not maximize ticker count.

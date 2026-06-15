@@ -33,6 +33,7 @@ If a note is mostly tool doctrine, keep it in the owning playbook or skill inste
 - `Skill-to-Procedure Ownership Map.md`
 - `Daily Summary Review-Only Brief Procedure.md`
 - `SQLite Retrieval Index Procedure.md`
+- `Portfolio Truth Surface Ownership Procedure.md`
 
 ## Current gaps to fill next
 - startup / session-opening operating checklist

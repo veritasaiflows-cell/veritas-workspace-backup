@@ -1,0 +1,291 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-11T03:36:09Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-05-tier-promotion-review-execute-safe-next-step"
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-05-tier-promotion-review-execute-safe-next-step"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-05-tier-promotion-review-execute-safe-next-step",
+        "budget": "major",
+        "closeout_mode": "integration",
+        "closeout_command_count": 2
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-05-tier-promotion-review-execute-safe-next-step",
+      "rank": 5,
+      "priority": "P2",
+      "title": "Keep WF78 auto-router primary and classify evidence-repair queue",
+      "implementation_class": "wf78_auto_router_consumer_sync",
+      "owner_surface": "WF78 automated non-capital tier routing",
+      "collision_group": "wf78_tier_promotion_review",
+      "validation_budget": {
+        "budget": "major",
+        "description": "Workflow/control-plane or authority-adjacent contract change.",
+        "closeout_mode": "integration",
+        "proof_command_count": 12,
+        "max_default_proof_commands": 99,
+        "phase_count": 5
+      },
+      "closeout_mode": "integration",
+      "target_files": [
+        "scripts/wf78_auto_tier_router.py",
+        "scripts/wf78_tier_promotion_review_gate.py",
+        "scripts/wf78_tier_b_research_packet.py",
+        "scripts/wf78_routing_dashboard.py",
+        "tmp/wf78-auto-tier-routing.json",
+        "tmp/wf78-capital-review-queue.json",
+        "tmp/wf78-capital-review-queue.sqlite",
+        "tmp/wf78-event-triggered-rerouting.json",
+        "tmp/wf78-event-triggered-rerouting.sqlite",
+        "tmp/wf78-tier-promotion-review-gate.json",
+        "tmp/wf78-tier-promotion-review-gate.sqlite",
+        "tmp/wf78-tier-b-research-packets.json",
+        "tmp/wf78-tier-b-research-packet-requests.json",
+        "tmp/wf78-tier-b-research-packet-phase2-eval.json",
+        "tmp/wf78-101-200-tier-c-owner-decision-packet.json",
+        "tmp/wf78-routing-dashboard.json",
+        "tmp/wf78-routing-dashboard.sqlite",
+        "tmp/finance-ticker-card-refresh-gate.json",
+        "tmp/wf78-500-ticker-reputation-gate.json"
+      ],
+      "proof_commands": [
+        "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh",
+        "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+        "python scripts\\wf78_capital_review_queue.py --write --write-db --validate",
+        "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+        "python scripts\\wf78_auto_tier_router.py --write --validate",
+        "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+        "python scripts\\wf78_tier_promotion_review_gate.py --write --write-db --validate",
+        "python scripts\\wf78_tier_b_research_packet.py --write --write-db --validate",
+        "python scripts\\wf78_tier_funnel_promotion_gate.py --requests tmp\\wf78-tier-b-research-packet-requests.json --out tmp\\wf78-tier-b-research-packet-phase2-eval.json --write --validate",
+        "python scripts\\wf78_routing_dashboard.py --write --write-db --validate",
+        "python scripts\\automation_stack_hardening_pass.py --write --validate",
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate",
+        "python scripts\\helper_completion_handshake.py --write --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh",
+      "started_at_utc": "2026-06-11T03:35:32Z",
+      "completed_at_utc": "2026-06-11T03:35:43Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": ": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/UNH.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNH\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/UNP.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNP\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/URI.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"URI\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/V.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"V\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/WMT.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"price_band_stop\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"WMT\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    }\n  ],\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"3 production answer-path ticker card(s) still need evidence repair\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+      "started_at_utc": "2026-06-11T03:35:43Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"failed_steps\": 0,\n  \"md_out\": null,\n  \"out\": \"tmp/wf78-phase-runner-current.json\",\n  \"phase\": \"all-safe\",\n  \"status\": \"ok\",\n  \"steps\": 24,\n  \"validation\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\wf78_capital_review_queue.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db\": \"tmp/wf78-capital-review-queue.sqlite\",\n  \"out\": \"tmp/wf78-capital-review-queue.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"candidate_count\": 3,\n    \"capital_deployment_approved_count\": 0,\n    \"freshness_blocked_count\": 0,\n    \"next_safe_action\": \"Prepare non-executing owner capital-review cards for review-ready rows; do not execute or imply approval.\",\n    \"review_ready_count\": 1,\n    \"top_candidate\": \"NVDA\",\n    \"trade_or_execution_approved_count\": 0\n  },\n  \"validation\": {\n    \"errors\": 0,\n    \"status\": \"ok\"\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[3]",
+      "command": "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"actions\": 202,\n  \"db_out\": \"tmp/wf78-event-triggered-rerouting.sqlite\",\n  \"out\": \"tmp/wf78-event-triggered-rerouting.json\",\n  \"owner_action_required\": 3,\n  \"status\": \"ok\",\n  \"validation\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[4]",
+      "command": "python scripts\\wf78_auto_tier_router.py --write --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "READY\": 3,\n      \"A-WATCH\": 3,\n      \"B-CANDIDATE\": 29,\n      \"B-CHALLENGED\": 3,\n      \"C-MONITOR\": 152\n    },\n    \"auto_tier_a_count\": 16,\n    \"auto_tier_a_tickers\": [\n      \"BRK.B\",\n      \"CAT\",\n      \"ETN\",\n      \"GOOG\",\n      \"ITA\",\n      \"LIN\",\n      \"LLY\",\n      \"LMT\",\n      \"META\",\n      \"MSFT\",\n      \"NVDA\",\n      \"PH\",\n      \"SMCI\",\n      \"VRT\",\n      \"XLB\",\n      \"XOM\"\n    ],\n    \"auto_tier_b_count\": 32,\n    \"auto_tier_b_tickers\": [\n      \"ACN\",\n      \"ADI\",\n      \"ADP\",\n      \"ADSK\",\n      \"AKAM\",\n      \"ALB\",\n      \"ALLE\",\n      \"AMAT\",\n      \"AMCR\",\n      \"AMD\",\n      \"AME\",\n      \"AMZN\",\n      \"ANET\",\n      \"AOS\",\n      \"APH\",\n      \"APP\",\n      \"BKNG\",\n      \"CDNS\",\n      \"CME\",\n      \"CVX\",\n      \"ECL\",\n      \"GE\",\n      \"GS\",\n      \"JPM\",\n      \"KTOS\",\n      \"LNG\",\n      \"NFLX\",\n      \"PLTR\",\n      \"RTX\",\n      \"TMUS\",\n      \"VMC\",\n      \"WMB\"\n    ],\n    \"held_phase2_b_candidates_count\": 0,\n    \"held_phase2_b_candidates\": [],\n    \"phase2_auto_tier_b_candidate_count\": 15,\n    \"phase2_auto_tier_b_candidates\": [\n      \"ACN\",\n      \"ADI\",\n      \"ADP\",\n      \"ADSK\",\n      \"AKAM\",\n      \"ALB\",\n      \"ALLE\",\n      \"AMAT\",\n      \"AMCR\",\n      \"AME\",\n      \"ANET\",\n      \"AOS\",\n      \"APH\",\n      \"APP\",\n      \"CDNS\"\n    ],\n    \"competitive_gate_auto_tier_a_candidate_count\": 2,\n    \"competitive_gate_auto_tier_a_candidates\": [\n      \"LLY\",\n      \"XLB\"\n    ],\n    \"tier_a_missing_confidence_count\": 0,\n    \"tier_a_missing_confidence_tickers\": [],\n    \"tier_a_conflicted_ready_count\": 0,\n    \"tier_a_conflicted_ready_tickers\": [],\n    \"inline_confidence_convergence_count\": 3,\n    \"inline_confidence_convergence_tickers\": [\n      \"CME\",\n      \"GS\",\n      \"JPM\"\n    ],\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"next_safe_action\": \"Use this artifact as the live non-capital routing state; capital deployment and execution still require separate exact approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[5]",
+      "command": "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db_out\": \"tmp/wf78-500-ticker-reputation-gate.sqlite\",\n  \"json_out\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n  \"output_validation_errors\": [],\n  \"output_validation_result\": \"ok\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"batch_size\": 100,\n    \"current_100_count\": 200,\n    \"current_baseline_count\": 200,\n    \"future_validation_required_count\": 200,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_batch_tier_c_eligible_count\": 100,\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"repair_queue_count\": 200,\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"target_count\": 500,\n    \"tier_a_production_eligible_count\": 0,\n    \"tier_b_research_eligible_count\": 0\n  },\n  \"validation_result\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[6]",
+      "command": "python scripts\\wf78_tier_promotion_review_gate.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db\": \"tmp/wf78-tier-promotion-review-gate.sqlite\",\n  \"out\": \"tmp/wf78-tier-promotion-review-gate.json\",\n  \"output_errors\": [],\n  \"owner_packet_out\": \"tmp/wf78-101-200-tier-c-owner-decision-packet.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"c_to_b_research_lead_count\": 100,\n    \"current_card_repair_job_count\": 189,\n    \"import_apply_blocked\": true,\n    \"macro_thesis_shortlist_count\": 15,\n    \"next_safe_action\": \"Use the macro/thesis overlay shortlist and evidence-repair jobs before any Tier B/Tier A promotion.\",\n    \"owner_decision_packet_status\": \"approved_applied_tier_c_only\",\n    \"owner_decision_ticker_count\": 100,\n    \"status\": \"ok\",\n    \"tier_a_b_combined_capacity_max\": 75,\n    \"tier_a_capacity_max\": 25,\n    \"tier_a_deployment_eligible_now_count\": 0,\n    \"tier_a_remaining_capacity\": 25,\n    \"tier_b_capacity_max\": 50,\n    \"tier_b_remaining_capacity\": 50,\n    \"tier_b_research_eligible_now_count\": 0,\n    \"tier_c_101_200_import_status\": \"ok_already_imported_tier_c_only\",\n    \"tier_c_import_review_eligible_count\": 100,\n    \"tier_capacity_policy_status\": \"ok\"\n  },\n  \"validation_status\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[7]",
+      "command": "python scripts\\wf78_tier_b_research_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:07Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "rity_true_flags_preserved\",\n        \"ok\": true,\n        \"severity\": \"critical\",\n        \"status\": \"ok\"\n      },\n      {\n        \"detail\": {\n          \"apply_allowed\": false,\n          \"brokerage_or_account_action_allowed\": false,\n          \"canon_or_portfolio_mutation_allowed\": false,\n          \"capital_deployment_allowed\": false,\n          \"customer_or_external_delivery_allowed\": false,\n          \"money_movement_allowed\": false,\n          \"owner_approval_inferred\": false,\n          \"paper_or_live_execution_allowed\": false,\n          \"phase2_request_generation_only\": true,\n          \"production_answer_path_change_allowed\": false,\n          \"promotion_allowed\": false,\n          \"report_only\": true,\n          \"research_packet_only\": true,\n          \"review_only\": true,\n          \"sql_first_promotion_allowed\": false,\n          \"ticker_import_allowed\": false,\n          \"tier_a_admission_executed\": false,\n          \"tier_b_admission_executed\": false\n        },\n        \"name\": \"authority_false_flags_preserved\",\n        \"ok\": true,\n        \"severity\": \"critical\",\n        \"status\": \"ok\"\n      },\n      {\n        \"detail\": {\n          \"evidence_repair_repaired_count\": 15,\n          \"evidence_repair_rows\": 15,\n          \"missing_evidence_counts\": {},\n          \"needs_evidence_repair_count\": 0,\n          \"next_safe_action\": \"Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision.\",\n          \"owner_approval_inferred_count\": 0,\n          \"packet_count\": 15,\n          \"phase2_ready_request_count\": 15,\n          \"phase2_request_count\": 15,\n          \"shortlist_count\": 15,\n          \"tier_a_admission_executed_count\": 0,\n          \"tier_b_admission_executed_count\": 0\n        },\n        \"name\": \"all_ready_requires_repair_backing\",\n        \"ok\": true,\n        \"severity\": \"warning\",\n        \"status\": \"ok\"\n      }\n    ],\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[8]",
+      "command": "python scripts\\wf78_tier_funnel_promotion_gate.py --requests tmp\\wf78-tier-b-research-packet-requests.json --out tmp\\wf78-tier-b-research-packet-phase2-eval.json --write --validate",
+      "started_at_utc": "2026-06-11T03:36:07Z",
+      "completed_at_utc": "2026-06-11T03:36:08Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\"out\": \"tmp/wf78-tier-b-research-packet-phase2-eval.json\", \"output_errors\": [], \"status\": \"ok\", \"summary\": {\"c_to_b_candidate_count\": 15, \"candidate_count\": 15, \"checks_failed_error\": 0, \"checks_failed_warning\": 0, \"checks_total\": 41, \"d_to_c_candidate_count\": 0, \"decision_status_counts\": {\"eligible_for_admission\": 15}, \"eligible_for_admission_count\": 15, \"next_safe_action\": \"Build evidence packets for the highest-priority Tier C->B leads; once a lead's required evidence is proven present, this gate marks it eligible for nomination (still report-only, still owner/apply-gated).\", \"other_candidate_count\": 0, \"self_tests_passed\": 11, \"self_tests_total\": 11, \"status\": \"ok\"}, \"validation_status\": \"ok\"}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[9]",
+      "command": "python scripts\\wf78_routing_dashboard.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:08Z",
+      "completed_at_utc": "2026-06-11T03:36:08Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "alse, \"name\": \"authority_owner_approval_inferred_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_paper_or_live_execution_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_production_answer_path_change_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_promotion_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_sql_first_promotion_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_sqlite_is_canon_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_ticker_import_allowed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_tier_a_admission_executed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": false, \"name\": \"authority_tier_admission_executed_false\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": \"tmp/wf78-routing-dashboard.json\", \"name\": \"output_json_schema_current\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": {\"integrity_check\": \"ok\", \"path\": \"tmp/wf78-routing-dashboard.sqlite\", \"status\": \"ok\", \"table_counts\": {\"artifact_provenance\": 9, \"authority_boundary\": 20, \"lane_summary\": 1, \"meta\": 5, \"routing_rows\": 100, \"skill_routes\": 10, \"validation_results\": 34}}, \"name\": \"output_sqlite_integrity_ok\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}, {\"detail\": {\"integrity_check\": \"ok\", \"path\": \"tmp/wf78-routing-dashboard.sqlite\", \"status\": \"ok\", \"table_counts\": {\"artifact_provenance\": 9, \"authority_boundary\": 20, \"lane_summary\": 1, \"meta\": 5, \"routing_rows\": 100, \"skill_routes\": 10, \"validation_results\": 34}}, \"name\": \"output_sqlite_has_routing_rows\", \"ok\": true, \"severity\": \"critical\", \"status\": \"ok\"}], \"errors\": [], \"status\": \"ok\", \"warnings\": []}}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[10]",
+      "command": "python scripts\\automation_stack_hardening_pass.py --write --validate",
+      "started_at_utc": "2026-06-11T03:36:08Z",
+      "completed_at_utc": "2026-06-11T03:36:08Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "s\": \"ok\"\n  },\n  \"wf78_event_triggered_rerouting_hardening\": {\n    \"action_count\": 202,\n    \"exists\": true,\n    \"next_safe_action\": \"Repair evidence and reroute labels only; prepare owner review cards only after freshness blockers clear.\",\n    \"owner_action_required_count\": 3,\n    \"path\": \"tmp/wf78-event-triggered-rerouting.json\",\n    \"status\": \"ok\",\n    \"top_action\": {\n      \"action_type\": \"prepare_owner_card\",\n      \"apply_allowed\": false,\n      \"capital_deployment_approved\": false,\n      \"current_route\": \"A-READY\",\n      \"owner_action_required\": true,\n      \"paper_or_live_execution_allowed\": false,\n      \"priority\": 90,\n      \"proposed_route\": \"OWNER_CARD_PREP_ONLY\",\n      \"queue_rank\": 1,\n      \"reason\": \"Candidate has no local freshness blockers; prepare a non-executing owner review card only.\",\n      \"source_artifacts\": [\n        \"tmp/intraday-alerts/quote-snapshot-proof.json\",\n        \"tmp/market-execution-readiness-cron-hardening.json\",\n        \"tmp/post-close-final-quote-ledger.json\",\n        \"tmp/ticker-intelligence-cards/NVDA.current.json\",\n        \"tmp/wf78-auto-tier-routing.json\",\n        \"tmp/wf78-capital-review-queue.json\",\n        \"tmp/wf78-production-tier-adjudication.json\",\n        \"tmp/wf78-routing-delta.json\"\n      ],\n      \"ticker\": \"NVDA\",\n      \"trade_or_execution_approved\": false,\n      \"trigger\": \"capital_candidate_review_ready\"\n    },\n    \"validation_status\": \"ok\"\n  },\n  \"wf78_reputation_hardening\": {\n    \"current_baseline_count\": 200,\n    \"exists\": true,\n    \"future_validation_required_count\": 200,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"path\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"tier_a_production_eligible_count\": 0,\n    \"validation_status\": \"ok\"\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:proof[11]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:08Z",
+      "completed_at_utc": "2026-06-11T03:36:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "lity_blocked_archetypes\": 0,\n        \"finance_response_quality_negative_canary_pass_count\": 6,\n        \"finance_response_quality_remediation_tracks_needing_repair\": 0,\n        \"finance_response_quality_section_coverage_status\": \"ok\",\n        \"finance_response_quality_sector_timing_warning\": true,\n        \"finance_response_quality_source_freshness_blocked_count\": 0,\n        \"finance_response_quality_source_open_blocked_count\": 0,\n        \"finance_response_quality_status\": \"ok\",\n        \"finance_response_quality_technical_gap_count\": 0,\n        \"finance_response_quality_wf72_support_only\": true,\n        \"learning_coding_rows\": 2,\n        \"learning_coding_runtime_rows\": 1,\n        \"learning_privacy_scan_status\": \"ok\",\n        \"learning_row_count\": 113,\n        \"learning_runtime_otel_rows\": 20,\n        \"model_quality_validation\": \"ok\",\n        \"recommended_budget\": \"shared\",\n        \"recommended_validator_count\": 18,\n        \"validator_elapsed_seconds\": 3.162,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 18\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-11T03:36:09Z",
+      "completed_at_utc": "2026-06-11T03:36:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "lity_blocked_archetypes\": 0,\n        \"finance_response_quality_negative_canary_pass_count\": 6,\n        \"finance_response_quality_remediation_tracks_needing_repair\": 0,\n        \"finance_response_quality_section_coverage_status\": \"ok\",\n        \"finance_response_quality_sector_timing_warning\": true,\n        \"finance_response_quality_source_freshness_blocked_count\": 0,\n        \"finance_response_quality_source_open_blocked_count\": 0,\n        \"finance_response_quality_status\": \"ok\",\n        \"finance_response_quality_technical_gap_count\": 0,\n        \"finance_response_quality_wf72_support_only\": true,\n        \"learning_coding_rows\": 2,\n        \"learning_coding_runtime_rows\": 1,\n        \"learning_privacy_scan_status\": \"ok\",\n        \"learning_row_count\": 113,\n        \"learning_runtime_otel_rows\": 20,\n        \"model_quality_validation\": \"ok\",\n        \"recommended_budget\": \"shared\",\n        \"recommended_validator_count\": 18,\n        \"validator_elapsed_seconds\": 3.162,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 18\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-05-tier-promotion-review-execute-safe-next-step:closeout[1]",
+      "command": "python scripts\\helper_completion_handshake.py --write --validate",
+      "started_at_utc": "2026-06-11T03:36:09Z",
+      "completed_at_utc": "2026-06-11T03:36:09Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"mode\": \"idle_contract\",\n  \"out\": \"tmp/helper-completion-handshake.json\",\n  \"status\": \"ok\",\n  \"synthesis_allowed\": true,\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

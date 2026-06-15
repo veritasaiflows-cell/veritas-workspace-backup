@@ -37,8 +37,8 @@ Not yet allowed as a default posture.
 Human-readable notes remain canonical for judgment, interpretation, and final operating guidance.
 
 Examples:
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
+- `03. Portfolio/Execution Board.md`
 - `03. Portfolio/Portfolio Snapshot.md`
 - `05. Intelligence/Earnings/`
 - `05. Intelligence/Weekly Positioning Review.md`
@@ -262,6 +262,7 @@ If any gate is weak, do not widen autonomy.
 
 Validation is not optional.
 Each workflow window needs explicit pass conditions, downgrade behavior, and a stop line.
+Scheduled chains must call `pipeline_state_consistency_check.py` with an explicit `--window`; `--window auto` is reserved for manual/debug inspection only.
 
 ### Morning window validation
 
@@ -272,6 +273,8 @@ Required checks:
 - command center renders successfully
 - workbook CSV exports complete
 - pre-market snapshot writes successfully if the chain includes it
+- `snapshot_contract_check.py --window morning` verifies that the pre-market snapshot preserves the full trigger-sheet summary bucket contract
+- `pipeline_state_consistency_check.py --window morning` compares only current morning-window surfaces and validates the morning authority bundle against the static fail-closed scheduled-window policy, without depending on post-close artifacts or a future run-summary artifact
 
 Minimum pass standard:
 - no critical validation failures
@@ -296,6 +299,8 @@ Required checks:
 - command center renders successfully
 - workbook CSV exports complete
 - post-market snapshot and daily executive summary write successfully when scheduled in the chain
+- `snapshot_contract_check.py --window post-close` verifies that the post-market snapshot preserves the full trigger-sheet summary bucket contract, including negative buckets such as `do_not_touch`
+- `pipeline_state_consistency_check.py --window post-close` compares the current post-close surfaces, treats pre-market snapshots as non-window evidence, and validates only the post-close authority bundle against the static fail-closed scheduled-window policy
 
 Minimum pass standard:
 - no critical validation failures
@@ -303,7 +308,7 @@ Minimum pass standard:
 - next-day catalyst visibility must not be silently omitted
 
 Stop line:
-- do not promote the post-close bundle as ready if earnings staging failed, dashboard validation is absent, or generated intelligence notes did not write
+- do not promote the post-close bundle as ready if earnings staging failed, dashboard validation is absent, generated intelligence notes did not write, snapshot bucket parity failed, or current-window pipeline-state consistency failed
 
 Fallback behavior:
 - preserve prior canonical notes
@@ -340,6 +345,8 @@ Required checks:
 - `validate_dashboard_state.py --write` runs after dashboard generation
 - weekly macro snapshot and weekly intelligence brief staging outputs write successfully
 - workbook CSV exports complete
+- `snapshot_contract_check.py --window sunday` verifies that the Sunday post-market snapshot preserves the full trigger-sheet summary bucket contract
+- `pipeline_state_consistency_check.py --window sunday` compares only the Sunday/current-window state surfaces and validates the Sunday authority bundle against the static fail-closed scheduled-window policy, without depending on post-close packet artifacts or a future run-summary artifact
 
 Minimum pass standard:
 - no critical validation failures

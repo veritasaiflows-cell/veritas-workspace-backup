@@ -56,6 +56,10 @@
     "obsidian": {
       "version": "1.0.0",
       "installedAt": 1778359345912
+    },
+    "sec": {
+      "version": "1.2.3",
+      "installedAt": 1779052825734
     }
   }
 }

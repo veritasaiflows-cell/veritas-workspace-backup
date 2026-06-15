@@ -53,6 +53,7 @@ Use for:
 
 Rule:
 - these files define how Veritas operates
+- Veritas / the main session is always responsible for keeping the notes layer and canon up to date by reconciling canonical notes against verified artifacts/evidence within approved authority boundaries
 - they are not daily logs or procedural dump zones
 
 ## Routing rules

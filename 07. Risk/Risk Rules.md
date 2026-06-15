@@ -20,6 +20,8 @@
 
 ## Sizing rules
 
+Sizing and sector-posture changes may be proposed at any time, but may be applied to canonical portfolio notes/model files only through an exact validator-backed approved gate. This does not authorize trades, brokerage orders, money movement, or account changes.
+
 - Tier 1: 8% to 12% normally
 - Tier 2: 4% to 7%
 - Tier 3: 1% to 3%

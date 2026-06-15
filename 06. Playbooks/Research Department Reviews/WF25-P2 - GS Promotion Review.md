@@ -16,8 +16,8 @@
 - **downstream mutations required:** none to the current tier language; preserve the explicit tactical-secondary framing in owner surfaces
 
 ## Evidence used
-- `03. Portfolio/Deployment Trigger Sheet.md` -> GS is deployable now but explicitly secondary to JPM
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md` -> GS is in band with bullish MA posture and explicit stop
+- `03. Portfolio/Execution Board.md` -> GS is deployable now but explicitly secondary to JPM
+- `03. Portfolio/Execution Board.md` -> GS is in band with bullish MA posture and explicit stop
 - `02. Markets/Regime Scoring Matrix.md` -> GS scores well but still ranks behind JPM
 - `01. Dashboards/This Week.md` -> GS is deployable-now tactical secondary, still subordinate to JPM
 - `tmp/deployment-readiness-surface.json` -> GS is machine-deployable, but the workflow/surface state still preserves the tactical-secondary posture

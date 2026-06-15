@@ -1,0 +1,32 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF-SQL-INDEXES",
+  "display_name": "SQL / Current-Window Indexes Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate on missing proof, authority flag violation, stale index, index treated as approval/action, or unlabeled lifecycle.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only; SQL is proof/staging",
+  "blockers": [],
+  "stop_lines": [
+    "SQL candidate is universe/scope only; other indexes are proof/staging. No approval/execution/archive/delete authority."
+  ],
+  "continuity_note": null,
+  "primary_route_artifact": "scripts/artifact_index.py",
+  "secondary_artifacts": [
+    "tmp/veritas-artifact-index.sqlite"
+  ],
+  "validator_commands": [
+    "python scripts\\artifact_index.py incremental",
+    "python scripts\\artifact_index.py validate"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

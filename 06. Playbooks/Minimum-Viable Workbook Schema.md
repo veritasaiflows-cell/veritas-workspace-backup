@@ -144,7 +144,7 @@ Structured summary of the tracked universe.
 |---|---|---|---|
 | ticker | text | canonical | primary key |
 | company | text | watchlist / config | |
-| coverage_tier | text | `02. Markets/Watchlist.md` | controlled values later if needed |
+| coverage_tier | text | `04. Research/Coverage and Watchlist.md` | controlled values later if needed |
 | sleeve | text | snapshot / config | portfolio theme / sleeve |
 | board_state | enum | trigger/note layer | use controlled vocabulary |
 | deployability_label | text | trigger sheet | short action posture |

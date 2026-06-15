@@ -1,0 +1,72 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF75",
+  "display_name": "Retail Investor Finance Intelligence SaaS",
+  "tier": "P0",
+  "effective_status": "stale",
+  "next_action": "Run/refine the next anonymous service-state slice and keep the internal PM PDF, operator Excel, and recurring finance delivery series current.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "review-only internal/service-led; customer output gated",
+  "blockers": [
+    "Customer/public/account/advice output blocked",
+    "No fake-person product truth"
+  ],
+  "stop_lines": [
+    "No fake-person product truth, public/customer/account/advice/trading claims, guaranteed return/win-rate/probability claim, source-licensing assumption, or legal/compliance-readiness claim."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md",
+  "primary_route_artifact": "scripts/wf75_training_desk.py",
+  "secondary_artifacts": [
+    "tmp/wf75-operator-console.json",
+    "tmp/wf75-service-state-current.json",
+    "tmp/wf75-deliverable-packager.json",
+    "tmp/wf75-deliverables-workbook.xlsx",
+    "tmp/finance-delivery-series.json",
+    "tmp/finance-delivery-series.xlsx"
+  ],
+  "validator_commands": [
+    "python scripts\\wf75_training_desk.py --write --write-md --write-training-assets --validate",
+    "python scripts\\wf75_deliverable_packager.py --write --validate",
+    "python scripts\\finance_delivery_series_orchestrator.py --mode all --write --validate"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": {
+    "action_id": "wf75_service_state-refresh_artifact",
+    "action_type": "refresh_artifact",
+    "description": "Refresh WF75 service state and readiness plan, then rerun validation.",
+    "lane_id": "wf75_service_state",
+    "authority": "review_only",
+    "inline_execution_allowed": false,
+    "helper_lane_allowed_from_main_session": true,
+    "heartbeat_may_execute": false,
+    "stop_lines": [
+      "no customer data",
+      "no external delivery",
+      "no public launch"
+    ],
+    "lane_status": "stale",
+    "readiness_score": 45,
+    "rank": 4,
+    "pm_packet_only": true
+  },
+  "pm_job": {
+    "job_id": "pm-04-wf75-service-state-refresh-artifact",
+    "status": "ready_for_main_or_helper",
+    "validation_budget": {
+      "budget": "narrow",
+      "description": "One owner plus one adjacent consumer or validator.",
+      "closeout_mode": "pm_state",
+      "proof_command_count": 1,
+      "max_default_proof_commands": 3,
+      "phase_count": 3
+    },
+    "closeout_mode": "pm_state",
+    "collision_group": "wf75_service_state"
+  },
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

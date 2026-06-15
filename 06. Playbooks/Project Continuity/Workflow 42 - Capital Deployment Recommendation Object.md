@@ -58,13 +58,15 @@
 - recommendation text implies approval, execution, or mutation authority
 
 ## Trust gates still missing
-- stable sector/correlation artifact remains absent; v1 explicitly marks `sector_correlation_check=missing_artifact_manual_fallback_required` rather than pretending confidence.
-- append-only state-history / owner-outcome retention remains absent and is tracked by WF43.
+- repeat scheduled-window proof remains open residue.
+- WF43 has durable append/provenance proof, but lifecycle / owner-outcome update flow is still missing before outcome analytics can inform recommendations.
+- WF56 proposal schemas and validators are not yet built, so WF42 recommendation objects can inform mutation proposals but must not become apply authority.
 - repeat window proof before closure.
 
 ## Trust gates passed for v1
 - Packet schema now includes owner approval required/granted, confidence, trust/source freshness, risk/invalidation, evidence provenance, missing evidence, and WF42 action mapping.
 - Fail-closed behavior remains visible when upstream source freshness is `partial / review_required`.
+- WF53 sector/correlation artifacts now exist and are consumed as review-only concentration context when fresh.
 - Recommendation objects and top-level packet explicitly deny canonical, portfolio, deployment-state, and trade mutation.
 - Main-session QC reran py_compile, post-close packet generation, daily-review tests, and direct JSON inspection.
 
@@ -75,7 +77,7 @@
 - audit that output wording stays recommendation-only and owner-gated
 
 ## Next action
-- Move WF42 v1 to monitoring/closeout after repeat proof; proceed to WF43 append-only state-history design/implementation without enabling model-driven deployment.
+- Keep WF42 v1 in monitoring / repeat-proof posture. Use it as an input to WF56 proposal packets only after WF56 schema, risk, invariant, patch-scope, and authority-vocabulary validators exist.
 
 ## Key files
 - `06. Playbooks/Project Continuity/Workflow 42 - Capital Deployment Recommendation Object.md`

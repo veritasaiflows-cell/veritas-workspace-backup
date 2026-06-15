@@ -1,0 +1,32 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF68",
+  "display_name": "Intraday Alert Engine and Advisor Surface",
+  "tier": "P1",
+  "effective_status": "route_only",
+  "next_action": "Keep producer/digest proof clean; manual REVIEW / PREPARE only after artifact + WF67 guard inspection.",
+  "helper_safe": false,
+  "owner_action_required": true,
+  "authority_boundary": "review-only; manual REVIEW/PREPARE gated",
+  "blockers": [
+    "Telegram shadow delivery paused",
+    "authority flags false"
+  ],
+  "stop_lines": [
+    "No channel expansion, config/auth/runtime mutation, live/paper/order/account action, canon/portfolio/sizing/sleeve/cash/risk-rule mutation, or approval inference."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 68 - Intraday Alert Engine and Advisor Surface.md",
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [
+    "python scripts\\wf68_runtime_wiring_plan_validator.py --write"
+  ],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

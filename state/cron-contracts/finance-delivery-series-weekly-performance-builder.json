@@ -1,0 +1,61 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "678de2ab-d06c-4605-91c3-da4b418f9ec8",
+  "name": "Finance Delivery Series - Weekly Performance Builder",
+  "required": true,
+  "owner_workflow": "WF75",
+  "contract_reason": "Friday internal weekly investments and performance builder for Randall's recurring finance intelligence series.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "20 17 * * 5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "model": "openai/gpt-5.4",
+    "thinking": "medium",
+    "timeoutSeconds": 900,
+    "lightContext": false
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-delivery-series.json",
+    "tmp/finance-delivery-series.xlsx",
+    "tmp/finance-delivery-series/weekly-investments-performance.html",
+    "tmp/finance-delivery-series/weekly-investments-performance.pdf"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "customer_or_external_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

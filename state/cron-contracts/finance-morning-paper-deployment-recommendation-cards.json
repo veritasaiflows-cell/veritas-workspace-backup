@@ -1,0 +1,63 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "249c5db9-f920-4fd0-a6ce-cd0077b35498",
+  "name": "Finance - Morning Paper Deployment Recommendation Cards",
+  "required": true,
+  "owner_workflow": "WF78/WF67",
+  "contract_reason": "Morning paper-card builder produces non-executing owner cards and WF67 request artifacts. Drift can create stale-card alerts or hide failed card generation.",
+  "description": "Weekday review-only WF78/WF67 morning paper deployment recommendation card builder after WF78/WF84/WF85 freshness proof. Prepares owner cards/request artifacts only; failure alerts enabled; no paper/live submit/cancel/sell/modify/approve, account action, money movement, canon/portfolio mutation, or approval inference.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "18 7 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "model": "openai/gpt-5.4",
+    "timeoutSeconds": 900
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.model",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/morning-paper-deployment-recommendation-cards.json",
+    "tmp/morning-paper-deployment-recommendation-cards.md",
+    "tmp/finance-decision-sync-spine.json",
+    "tmp/wf78-capital-review-queue.json",
+    "tmp/finance-decision-factory.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

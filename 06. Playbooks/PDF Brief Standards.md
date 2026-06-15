@@ -93,8 +93,8 @@ Primary source stack:
 - company note / thesis note
 - `veritas-fundamental-pass` conclusions
 - `veritas-technical-pass` conclusions
-- `03. Portfolio/Deployment Trigger Sheet.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
+- `03. Portfolio/Execution Board.md`
 - visual assets from `equity_visual_report.py`
 
 ### 4. Portfolio Positioning PDF
@@ -108,6 +108,37 @@ Primary source stack:
 - `07. Risk/Risk Rules.md`
 - `tmp/trigger-sheet.json`
 - `tmp/dashboard-validation.json`
+
+### 5. Composite Regime and Sector Positioning PDF
+
+Purpose:
+- package the current macro regime, sector leadership, underexposure map, promotion-review candidates, and review-only sector tilt proposals into one decision-grade weekly memo
+
+Standard weekly visual shell:
+- canonical renderer: `scripts/render_composite_regime_sector_pdf.py`
+- standard output path: `06. Playbooks/Weekly Intelligence PDF/Weekly Composite Regime and Sector Positioning - YYYY-MM-DD Visual Review Candidate.pdf`
+- verified export route: Microsoft Edge headless print from script-generated HTML/CSS
+- visual route: inline SVG charts generated from current JSON artifacts, with pandas allowed for data shaping when available and no new charting dependency required
+
+Required visual panels:
+- leadership / underexposure heatmap
+- strict deployment-surface distribution chart
+- sector exposure-vs-cap chart
+- visible trust/freshness/authority panel on Page 1
+
+Primary source stack:
+- `06. Playbooks/Composite Regime and Sector Positioning PDF Candidate.md`
+- `05. Intelligence/Weekly Positioning Review.md`
+- `02. Markets/Macro Regime Dashboard.md`
+- `03. Portfolio/Portfolio Snapshot.md`
+- `07. Risk/Risk Rules.md`
+- `tmp/market-state.json`
+- `tmp/sector-expansion-board.json`
+- `tmp/deployment-readiness-surface.json`
+- `tmp/dashboard-validation.json`
+
+Hard rule:
+- sector weights, sleeve changes, promotions, demotions, sizing, and execution entitlement must be labeled review-only unless Randall explicitly approves applying the mutation
 
 ---
 
@@ -207,6 +238,19 @@ Recommended flow:
 
 Hard rule:
 - this is a decision memo, not a holdings dump
+
+## Composite Regime and Sector Positioning PDF
+
+Recommended flow:
+1. executive regime verdict
+2. composite macro regime
+3. sector leadership and underexposure
+4. review-only sector tilt / weight proposal layer
+5. names that matter by sector and deployment state
+6. risks, invalidation, and next actions
+
+Hard rule:
+- this is a regime-to-positioning proposal memo, not applied portfolio mutation authority
 
 ---
 

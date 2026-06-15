@@ -45,7 +45,7 @@ Use only when:
 - the affected note is stale relative to already-approved evidence or owner surfaces
 
 ## Not allowed in v1
-- direct promotion into Trigger Sheet action-state changes
+- direct promotion into Execution Board action-state changes
 - direct promotion into Portfolio Snapshot weight or posture changes
 - direct macro-regime wording changes from packet output alone
 - automatic queue movement based on packet output

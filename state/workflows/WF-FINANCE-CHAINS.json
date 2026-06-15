@@ -1,0 +1,29 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF-FINANCE-CHAINS",
+  "display_name": "Finance Chains Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate on missing/failed run, stale current-window index, validator warning/critical, or digest escalation.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only",
+  "blockers": [],
+  "stop_lines": [
+    "Review/proof only; no mutation/action/approval authority."
+  ],
+  "continuity_note": null,
+  "primary_route_artifact": "tmp/current-window-artifacts.json",
+  "secondary_artifacts": [
+    "tmp/cron-freshness-spine.json"
+  ],
+  "validator_commands": [],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

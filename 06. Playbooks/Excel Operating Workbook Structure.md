@@ -127,7 +127,7 @@ Optional columns:
 - conviction bucket
 
 Primary sources:
-- `02. Markets/Watchlist.md`
+- `04. Research/Coverage and Watchlist.md`
 - `tmp/trigger-sheet.json`
 - `tmp/earnings-calendar.json`
 - `tmp/technical-refresh.json`
@@ -156,7 +156,7 @@ This sheet should answer:
 - if capital became available today, where would it go first?
 
 Primary sources:
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `tmp/trigger-sheet.json`
 - `tmp/deployment-check.json`
 - `05. Intelligence/Weekly Positioning Review.md`
@@ -182,7 +182,7 @@ Core columns:
 - note owner
 
 Primary sources:
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `tmp/band-proposals.json`
 - `tmp/technical-refresh.json`
 - `tmp/band-update-log.txt`

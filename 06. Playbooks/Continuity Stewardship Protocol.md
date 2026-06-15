@@ -149,7 +149,7 @@ Examples:
 
 Posture:
 - spawn only when it keeps the main session cleaner than doing it directly
-- preferred model: use an approved live default model with a tighter bounded task rather than assuming a removed cheap helper model
+- preferred model: use `openai/gpt-5.4` with a tighter bounded task rather than assuming an unpinned/default helper model
 - use one bounded detached run, not an open-ended swarm
 
 ### High effort
@@ -162,8 +162,8 @@ Examples:
 Posture:
 - require preflight review first
 - if the work is cleared to proceed without fresh human input, spawn one bounded detached worker
-- preferred model: `openai-codex/gpt-5.5` with high-thinking posture when available
-- if `openai-codex/gpt-5.5` is unavailable, keep the same bounded contract and record the fallback instead of silently downgrading trust
+- preferred model: `openai/gpt-5.4` with high-thinking posture for bounded detached work; use `openai/gpt-5.5` only as a deliberate high-stakes exception
+- if the chosen model is unavailable, keep the same bounded contract and record the fallback instead of silently downgrading trust
 - if a second-opinion judgment lane is needed rather than implementation labor, stop and record that need instead of faking unattended progress
 
 ## Secure subagent spawn rule

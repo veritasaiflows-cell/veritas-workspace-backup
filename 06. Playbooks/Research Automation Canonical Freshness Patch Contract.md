@@ -60,9 +60,9 @@ Every patch candidate must include:
 - `05. Intelligence/Weekly Intelligence Brief.md`
 
 ### Manual-only / caution surfaces in v1
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Technical Entry and Invalidation Sheet.md`
+- `03. Portfolio/Execution Board.md`
 - `02. Markets/Macro Regime Dashboard.md`
 
 A candidate patch may reference manual-only surfaces as evidence.

@@ -38,10 +38,10 @@ Desk rule:
 
 ## Allowed downstream outputs from the research department
 After WF25 review is decided, the desk may hand off only these outputs:
-- **admit to watch** -> update `Coverage Universe`, `Watchlist`, and machine-tracked universe if approved
+- **admit to watch** -> update `Coverage and Watchlist` and machine-tracked universe if approved
 - **promote / hold / demote / remove** -> update only the owner surfaces the decision actually changes
 - **thesis-review needed** -> route to the appropriate research note owner without implying deployment approval
-- **portfolio / deployment review required** -> hand off to `Deployment Trigger Sheet`, `Technical Entry and Invalidation Sheet`, or `Portfolio Snapshot` owners for separate judgment
+- **portfolio / deployment review required** -> hand off to `Execution Board` or `Portfolio Snapshot` owners for separate judgment
 - **command-center visibility candidate** -> only after the owner surfaces are updated and the state is already true elsewhere
 
 ## Not allowed

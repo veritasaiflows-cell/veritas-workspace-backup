@@ -30,6 +30,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `06. Playbooks/Workspace Structure Protocol.md`
 - `06. Playbooks/Notes Layer Governance Protocol.md`
 - `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md`
+- `06. Playbooks/Operating Procedures/Portfolio Truth Surface Ownership Procedure.md`
 
 ### 05. Skills governance
 - `06. Playbooks/Skills Governance Index.md`
@@ -44,6 +45,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - research automation contracts under `06. Playbooks/Research Automation*.md`
 - finance output / workbook contracts
 - daily summary review procedure under `06. Playbooks/Operating Procedures/Daily Summary Review-Only Brief Procedure.md`
+- portfolio truth ownership procedure under `06. Playbooks/Operating Procedures/Portfolio Truth Surface Ownership Procedure.md`
 
 ### 08. Active project continuity procedures
 - `06. Playbooks/Project Continuity/`
@@ -56,6 +58,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `06. Playbooks/Operating Procedures/SQLite Retrieval Index Procedure.md`
 - `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md`
 - `06. Playbooks/Operating Procedures/OpenClaw Reinstall Recovery Checklist.md`
+- `06. Playbooks/Operating Procedures/Portfolio Truth Surface Ownership Procedure.md`
 - `06. Playbooks/Cron Job Protocol.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md`

@@ -1,0 +1,114 @@
+{
+  "schema": "veritas.control_closeout_bundle.v1",
+  "generated_at_utc": "2026-06-11T03:17:39Z",
+  "status": "ok",
+  "purpose": "Single control-closeout bundle: closeout chain + workflow handoff + lane-register health + optional cockpit validate.",
+  "authority_boundary": {
+    "review_only": true,
+    "closeout_and_handoff_validation_only": true,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "archive_or_delete_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "steps_run": 4,
+    "failed_steps": [],
+    "lane_register": {
+      "present": true,
+      "validation_status": "ok",
+      "lane_count": 18,
+      "active_lane_count": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "closeout_artifact": {
+      "present": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-06-11T03:17:37Z"
+    },
+    "pm_control_artifact": {
+      "present": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-06-11T03:17:38Z"
+    },
+    "next_safe_action": "Use fast-path QA + PM control packet as pickup proof; pick the next safe PM job."
+  },
+  "steps": [
+    {
+      "name": "repeatable_work_closeout",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\repeatable_work_closeout.py",
+        "--validation-budget",
+        "shared",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-06-11T03:17:28Z",
+      "completed_at_utc": "2026-06-11T03:17:38Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "wrote tmp/repeatable-work-closeout.json status=ok steps=11",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm_control_packet",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\pm_control_packet.py",
+        "--write",
+        "--write-db",
+        "--validate"
+      ],
+      "started_at_utc": "2026-06-11T03:17:38Z",
+      "completed_at_utc": "2026-06-11T03:17:39Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": " deployment or execution authority\",\n        \"no card/score/SQL row becomes approval\"\n      ]\n    },\n    \"wf74_learning_kpis\": {\n      \"authority_boundary\": \"PM monitoring only; no execution, model ranking, finance correctness, raw content capture, or owner approval inference.\",\n      \"kpis\": {\n        \"coding_failure_buckets\": {},\n        \"coding_first_pass_clean\": true,\n        \"coding_rework_required\": false,\n        \"finance_response_quality_average_score\": 1.0,\n        \"finance_response_quality_blocked_archetypes\": 0,\n        \"finance_response_quality_negative_canary_pass_count\": 6,\n        \"finance_response_quality_remediation_tracks_needing_repair\": 0,\n        \"finance_response_quality_section_coverage_status\": \"ok\",\n        \"finance_response_quality_sector_timing_warning\": true,\n        \"finance_response_quality_source_freshness_blocked_count\": 0,\n        \"finance_response_quality_source_open_blocked_count\": 0,\n        \"finance_response_quality_status\": \"ok\",\n        \"finance_response_quality_technical_gap_count\": 0,\n        \"finance_response_quality_wf72_support_only\": true,\n        \"learning_coding_rows\": 2,\n        \"learning_coding_runtime_rows\": 1,\n        \"learning_privacy_scan_status\": \"ok\",\n        \"learning_row_count\": 113,\n        \"learning_runtime_otel_rows\": 20,\n        \"model_quality_validation\": \"ok\",\n        \"recommended_budget\": \"shared\",\n        \"recommended_validator_count\": 18,\n        \"validator_elapsed_seconds\": 3.162,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 18\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "concurrent_lane_register_status",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\concurrent_lane_manager.py",
+        "--status",
+        "--validate"
+      ],
+      "started_at_utc": "2026-06-11T03:17:39Z",
+      "completed_at_utc": "2026-06-11T03:17:39Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"action\": \"status\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"lane_count\": 18,\n    \"status_counts\": {\n      \"complete\": 18\n    },\n    \"workflow_counts\": {\n      \"PM\": 1,\n      \"WF72\": 1,\n      \"WF73\": 1,\n      \"WF76\": 1,\n      \"WF78\": 7,\n      \"WF79\": 4,\n      \"WF84\": 1,\n      \"WF85\": 2\n    },\n    \"active_lane_count\": 0,\n    \"next_safe_action\": \"Lease narrow distinct-output lanes only after allowed_writes are explicit; main session must merge and update continuity.\"\n  },\n  \"lane\": null,\n  \"validation\": {\n    \"errors\": 0,\n    \"warnings\": 0\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm_cockpit_validate",
+      "ok": true,
+      "skipped": true,
+      "reason": "not requested (pass --cockpit-validate to enable)"
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Validation/proof only; reuses existing closeout, handoff, and lane-register tooling.",
+    "No canon/portfolio/SQL mutation, archive/delete, config/auth/runtime change, or customer delivery.",
+    "No capital deployment, trade/paper/live/account action, money movement, or owner approval inference."
+  ]
+}

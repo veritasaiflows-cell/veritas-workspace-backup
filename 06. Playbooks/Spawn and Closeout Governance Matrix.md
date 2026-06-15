@@ -82,6 +82,27 @@ Minimum preflight:
 8. for implementation lanes, require an early progress checkpoint within 3-5 minutes when practical
 9. name the acceptance proof before launch
 
+### Narrow-packet default
+
+After the 2026-05-29 SQL retail-grade/scaleout helper timeout cluster, the default spawn shape is a narrow packet, not a broad workstream.
+
+Default limits:
+- one child lane owns one artifact, one validator, or one read-only finding set
+- first-pass read list should usually be three to six files
+- implementation lanes should write or update one primary output before documentation or continuity edits
+- main session should handle broad owner-note reading, final integration, and queue/continuity sync
+- use `lightContext: true` and isolated context unless the current transcript is strictly required
+
+Split instead of spawning when the proposed lane includes more than one of these in the same packet:
+- broad workflow review
+- script implementation
+- README/documentation update
+- continuity/memory update
+- archive or path migration planning
+- final QA/closeout synthesis
+
+If a child times out after reading but before output, treat the next attempt as a contract shrink: fewer files, one output, earlier checkpoint, or main-session execution if the validator is coordinating shared truth.
+
 Role-effort matrix:
 
 | Role / task shape | Default thinking | Escalate when |
@@ -90,7 +111,7 @@ Role-effort matrix:
 | Implementation, validator/script edits, workflow artifact production | medium | repeated test failures, shared-contract drift, or unclear downstream consumers |
 | Hard debugging, runtime failures, auth/config diagnosis, false-green/false-red residue, trust adjudication | high | already high; narrow scope before increasing runtime |
 
-Use `openai-codex/gpt-5.5` when available for important lanes, but route effort independently from model choice. If a lower allowed model is sufficient for a routine lane, use it rather than burning top-tier effort by habit.
+Use `openai/gpt-5.4` through the Codex runtime as the default bounded helper/subagent workhorse, and route thinking effort independently from model choice. Reserve `openai/gpt-5.5` for deliberate high-stakes exceptions that truly require main-tier synthesis or hard judgment. Use `codex/gpt-5.3-codex-spark` only for narrow proof/canary/QA/pre-work lanes after canary proof is clean, and always set Spark thinking to `xhigh` until repeated proof says a lower effort is equally reliable.
 
 Use `06. Playbooks/Subagent Spawn Handoff Template.md` for the copyable packet.
 
@@ -105,6 +126,8 @@ If the task needs more than that, the contract is probably too broad. Split it b
 Root-cause lesson from the 2026-05-09 finance-OS audit timeout: a broad audit with no explicit runtime budget and no artifact-first checkpoint can time out after doing useful inspection but before delivering a usable packet. Treat that as a contract failure, not a worker-quality verdict.
 
 Runtime lesson from the 2026-05-09 SQLite artifact-index implementation spawn: a helper can have valid write/exec access and still fail with `subagent run lost active execution context` before writing the intended files. Treat that as runtime/session reliability residue. Preserve any partial inspection output, verify access separately if needed, then continue in main or relaunch a narrower lane with an early progress checkpoint.
+
+Runtime lesson from the 2026-05-29 SQL scaleout orchestration pass: helper lanes with large inherited prompt/cache, broad file lists, and multiple deliverables can time out before producing a usable artifact even when the underlying task is bounded. Treat that as a spawn-contract failure. The corrective action is a narrow packet with light context, one target file/artifact, and a 3-5 minute checkpoint, or main-session execution for the coordinating validator.
 
 ## Helper-lane authority rule
 

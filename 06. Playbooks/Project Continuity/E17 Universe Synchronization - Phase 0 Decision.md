@@ -100,7 +100,7 @@ One owner per artifact. Everyone else is a reader. Mutation policy is explicit.
 | `tmp/workbook-*.csv` + manifest | `workbook_export.py` | Operator (Excel) | Per chain run | Single writer. |
 | `tmp/band-proposals.json` | `band_refresh.py` | `apply_band_update.py` | Per chain run | Single writer (proposal only). |
 | `tmp/band-update-log.txt` | `apply_band_update.py` | Operator | Per gated apply | Single writer. |
-| `tmp/band-note-sync.md` | `band_note_sync.py` | Operator | Per chain run | Read-only against canonical note. Never writes the note. |
+| ``tmp/band-note-sync.json`` | `band_note_sync.py` | Operator | Per chain run | Read-only against canonical note. Never writes the note. |
 | `tmp/run-summary-*.json` | `run_summary_refresh.py` | `dashboard_run_summary_consumer.py` | Per chain run | Single writer. |
 | `02. Markets/Watchlist.md` | Operator (human prose) | Operator + audit script (Phase 3 of plan) | Per universe change | Human only. Audit script reads, never writes. |
 | `03. Portfolio/Deployment Trigger Sheet.md` | Operator (human interpretation layer) | Operator | Per material change in board state | Human only. Refresh policy in Phase 4. |

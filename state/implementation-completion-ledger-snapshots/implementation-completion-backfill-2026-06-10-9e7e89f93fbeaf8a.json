@@ -1,0 +1,120 @@
+{
+  "schema": "veritas.implementation_completion_backfill.v1",
+  "generated_at_utc": "2026-06-11T03:16:00Z",
+  "status": "ok",
+  "purpose": "Backfill reconstructed 2026-06-10 implementation completions into the hash-chained completion ledger.",
+  "source_quality": "reconstructed_from_daily_memory_pm_artifacts_and_prior_user_visible_completion_summaries",
+  "authority_boundary": {
+    "review_only": true,
+    "completion_proof_only": true,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "memory/2026-06-10.md",
+    "tmp/pm-control-packet.json",
+    "tmp/pm-implementation-job-queue.json",
+    "tmp/market-today-answer-packet.json",
+    "tmp/control-closeout-bundle.json",
+    "tmp/changed-file-validator-router.json"
+  ],
+  "completed_jobs": [
+    {
+      "job_id": "wf78-automatic-tier-routing-cron-update-2026-06-10",
+      "title": "WF78 automatic tier routing and cron update",
+      "summary": "Wired C to B, B to A, and A to B challenged demotion routing logic into WF78 auto-router and cron contracts.",
+      "completed_at_utc": "2026-06-11T01:05:00Z",
+      "implementation_class": "wf78_tier_routing",
+      "owner_surface": "WF78 automatic tier routing and cron contracts",
+      "collision_group": "wf78_tier_promotion_review",
+      "target_files": [
+        "scripts/wf78_daily_freshness_cron_runner.py",
+        "scripts/cron_freshness_spine.py",
+        "scripts/pm_control_packet.py"
+      ]
+    },
+    {
+      "job_id": "wf85-cpi-macro-context-full-answer-route-2026-06-10",
+      "title": "CPI macro context into WF85 full-answer route",
+      "summary": "Injected CPI release decomposition and macro judgment into WF85 full answers through review-only macro_risk_context.",
+      "completed_at_utc": "2026-06-11T01:56:00Z",
+      "implementation_class": "trade_grade_full_answer_macro_context",
+      "owner_surface": "WF85 full-answer assembler",
+      "collision_group": "trade_grade_decision_os",
+      "target_files": [
+        "scripts/trade_grade_full_answer_assembler.py",
+        "scripts/test_trade_grade_full_answer_macro_context.py",
+        "tmp/macro-metrics-current.json",
+        "tmp/macro-judgment-draft.json"
+      ]
+    },
+    {
+      "job_id": "pm-implementation-queue-sidecar-repair-2026-06-10",
+      "title": "PM implementation queue sidecar disagreement repair",
+      "summary": "Repaired standalone PM implementation queue sidecar generation so it prefers the fresh PM control packet over stale legacy sidecars.",
+      "completed_at_utc": "2026-06-11T01:57:00Z",
+      "implementation_class": "pm_implementation_job_queue",
+      "owner_surface": "PM implementation queue",
+      "collision_group": "pm_state",
+      "target_files": [
+        "scripts/pm_implementation_job_queue.py",
+        "tmp/pm-control-packet.json",
+        "tmp/pm-implementation-job-queue.json"
+      ]
+    },
+    {
+      "job_id": "cron-control-hardening-items-1-4-2026-06-10",
+      "title": "Cron/control hardening items 1-4",
+      "summary": "Added stable WF78 cron wrapper, moved WF78 cron to deterministic GPT-5.4 command, added morning background launcher, and refreshed WF74/control proof.",
+      "completed_at_utc": "2026-06-11T02:14:00Z",
+      "implementation_class": "cron_control_hardening",
+      "owner_surface": "cron/control hardening",
+      "collision_group": "cron_control",
+      "target_files": [
+        "scripts/cron_control_packet.py",
+        "scripts/cron_freshness_spine.py",
+        "tmp/cron-control-packet.json"
+      ]
+    },
+    {
+      "job_id": "local-full-market-recap-gap-closure-2026-06-10",
+      "title": "Local full market-recap data gap closure",
+      "summary": "Added broad-index close/change table, same-day 2Y Treasury fallback, and source-backed market-driver digest so the market packet can answer a full close recap locally.",
+      "completed_at_utc": "2026-06-11T02:27:00Z",
+      "implementation_class": "market_today_answer_packet",
+      "owner_surface": "market today answer packet",
+      "collision_group": "market_today_answer_packet",
+      "target_files": [
+        "scripts/market_state_refresh.py",
+        "scripts/market_today_answer_packet.py",
+        "scripts/test_market_today_answer_packet.py",
+        "tmp/market-today-answer-packet.json"
+      ]
+    },
+    {
+      "job_id": "tier-b-band-stop-debt-closure-2026-06-10",
+      "title": "Tier B decision-grade band/stop debt closure",
+      "summary": "Closed Tier A/B missing decision-grade band/stop debt with review-only technical context; 48 of 48 Tier A/B rows complete/current.",
+      "completed_at_utc": "2026-06-11T02:32:00Z",
+      "implementation_class": "wf78_missing_band_context_repair",
+      "owner_surface": "WF78 missing band context repair and WF84/WF85 freshness guard",
+      "collision_group": "wf78_wf84_wf85_feeder_scaleout",
+      "target_files": [
+        "scripts/wf78_missing_band_context_repair.py",
+        "scripts/tier_ab_band_freshness_cron_guard.py",
+        "scripts/trade_grade_os_freshness_cron_runner.py",
+        "tmp/wf78-missing-band-context-repair.json"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "Backfill rows are reconstructed local proof, not stronger than the referenced source artifacts."
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF79-SMB",
+  "display_name": "SMB Workflow Clarity / Marketing Ops Automation",
+  "tier": "P1",
+  "effective_status": "ready",
+  "next_action": "Review completed sanitized Lead Rescue and Marketing Ops phase proof: offer/ICP packet, demo packets, automation blueprints, cockpit panel, training/sales practice, outreach kit, pilot scope/intake, vertical ICP targeting, demo polish, pilot-readiness packet, sales conversation drill, demo-selection tree, vertical test framework, rollout-readiness plan, client-rollout checklist, curriculum map, and validator lint. Next gate is Randall exact approval for real outreach or pilot use; do not contact real prospects yet.",
+  "helper_safe": true,
+  "owner_action_required": true,
+  "authority_boundary": "review-only; no customer/outbound/public",
+  "blockers": [
+    "No real customer data/outbound/public claims"
+  ],
+  "stop_lines": [
+    "No real customer data, credentials, outbound/writeback, external delivery, ROI/legal/compliance/security claims, spend, ad account action, SQL-as-canon, or certification claims."
+  ],
+  "continuity_note": null,
+  "primary_route_artifact": "scripts/generic_intelligence_saas_pivot.py",
+  "secondary_artifacts": [
+    "scripts/wf75_training_desk.py",
+    "tmp/wf75-smb-boundary-lint.json",
+    "tmp/wf79-smb-outreach-prep-validation.json",
+    "tmp/wf79-smb-pilot-readiness-validation.json",
+    "tmp/wf79-smb-rollout-readiness-validation.json"
+  ],
+  "validator_commands": [
+    "python scripts\\generic_intelligence_saas_pivot.py --write --write-db --validate"
+  ],
+  "default_resume_command": "python scripts\\generic_intelligence_saas_pivot.py --write --write-db --validate",
+  "control_override": null,
+  "pm_action": {
+    "action_id": "smb_workflow_clarity-execute_safe_next_step",
+    "action_type": "execute_safe_next_step",
+    "description": "Use the completed internal phase packets to review offer/ICP, demo packets, marketing-ops blueprints, cockpit panel, sales-practice assets, and approval-gated outreach readiness.",
+    "lane_id": "smb_workflow_clarity",
+    "authority": "review_only",
+    "inline_execution_allowed": false,
+    "helper_lane_allowed_from_main_session": true,
+    "heartbeat_may_execute": false,
+    "stop_lines": [
+      "no real customer data",
+      "no external delivery",
+      "no customer outreach",
+      "no credential access",
+      "no customer-system or ad-account implementation",
+      "no guaranteed ROI claim"
+    ],
+    "lane_status": "ready",
+    "readiness_score": 90,
+    "rank": 13,
+    "pm_packet_only": true
+  },
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

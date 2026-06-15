@@ -8,8 +8,9 @@
 - Local OpenClaw / workspace cyber-security posture for the current single-operator Control UI setup.
 
 ## Current phase
-- scheduled review-surface hardening
-- the script exists, the cron job exists, exact-command approval coverage is in place for enabled cron script commands, and the security job has machine-checked wrapper proof; the 2026-05-09 17:10 scheduled run refreshed artifacts but failed closed, so the lane remains active
+- closed as workflow blocker / scheduled confirmation watch
+- the script exists, the cron job exists, exact-command approval coverage is in place for enabled cron script commands, and the security job has machine-checked wrapper proof; the 2026-05-11 17:40 MST residual-proof exception fix allowed WF40 to remain documented as scheduled-proof residue while WF56 is active
+- controlled wrapper proof at `2026-05-12T00:50:27Z` returned `proof_status=ok`, `audit_status=warning`, `audit_stop_line=false`, `artifact_fresh_for_runner=true`, wrapper `errors=[]`, and governance criticals `0`; next ordinary scheduled run remains confirmation evidence, not an active queue blocker
 
 ## Recommended next phase
 - stable scheduled artifacts with repeated proof
@@ -62,6 +63,7 @@
 
 ## Trust gates still missing
 - one clean boring ordinary scheduled cron run after the controlled post-fix proof, with matching run history plus fresh proof/audit artifacts showing `proof_status=ok`, `audit_stop_line=false`, and empty wrapper errors
+- the active queue does not need to revert from WF55 to WF40 for this residual proof; only a real scheduled-proof failure, stale artifact, wrapper error, stop line, or non-excepted governance contradiction should block the cron proof
 - repeated boring runs before treating the daily audit as stable baseline infrastructure
 - manual owner decisions on whether the current warning stack is accepted local-only posture or should be remediated separately
 - manual owner decisions on whether to fix the doctor/runtime drift, pin plugin install specs, document/remove `backups/`, and relocate/archive `tmp/inspect_memory_db.py`
@@ -85,14 +87,15 @@
 - baseline note: `08. Audits/WF40 Cyber-Security Baseline and Daily Audit Proof - 2026-05-07.md`
 
 ## Next action
-- keep WF40 active; do not close it from the controlled post-fix proof alone because the next ordinary scheduled repeat still has to prove the corrected path
-- leave config/auth/channel remediation for explicit operator-approved work; next ordinary scheduled proof must produce `proof_status=ok`, `audit_stop_line=false`, and empty wrapper errors
+- keep WF40 closed as a workflow blocker with scheduled confirmation watch; do not treat the ordinary cron path as fully boring until the next scheduled repeat produces `proof_status=ok`, `audit_stop_line=false`, and empty wrapper errors
+- do not flag the current approved active/next queue posture as a WF40 cron blocker when the queue and registry explicitly preserve WF40 as residual scheduled-proof watch
+- leave config/auth/channel remediation for explicit operator-approved work
 - if the exact-command approval prompt recurs, surface the approval id and command instead of widening approval scope silently
 - after one more stable run, decide whether remaining warnings become manual-remediation backlog or accepted local-only posture
 
 ## Next pass
-- if the next cron proof is clean enough, close or hand off WF40 with the remaining warning stack triaged into manual fixes vs accepted local-only posture
-- if the next cron proof is blocked or contradictory, keep WF40 active and fix the proof surface before calling the lane healthy
+- confirm the next ordinary scheduled cron proof after the 2026-05-11 residual-exception fix; if clean, record the confirmation and leave WF40 closed
+- if the next cron proof is blocked or contradictory, reopen only the specific proof-surface residue instead of reverting the whole workflow to active by default
 
 ## Key files
 - `06. Playbooks/Project Continuity/Workflow 40 - Cyber-Security Hardening and Bounded Daily Audit.md`
@@ -108,3 +111,25 @@
 - `tmp/cyber-security-daily-audit.json`
 - `tmp/cyber-security-daily-audit.md`
 - `C:\Users\Veritas\.openclaw\openclaw.json`
+
+## 2026-05-10 Orchestration Update
+- Manual wrapper proof was run because Randall explicitly directed not to wait for cron.
+- `python scripts\cyber_security_daily_audit_cron_runner.py` succeeded and wrote fresh proof at `tmp/cyber-security-daily-audit-cron-proof.json`.
+- Result: `proof_status=ok`, `audit_status=warning`, `audit_stop_line=false`, `audit_exit_code=0`, wrapper `errors=[]`, 0 critical findings.
+- Main artifact: `tmp/wf40-manual-proof-report.json` / `.md`.
+- Closure judgment: WF40 manual-proof work is complete enough to move the orchestration chain forward, but ordinary scheduled-repeat proof remains a residual stability gate. Config/auth/channel remediation remains operator-gated.
+
+## 2026-05-10 Operator Warning Posture Answers
+- Randall confirmed intended posture is **local Control UI**.
+- Owner/command access should be **local only**, with pairing only where explicitly intended.
+- PI routing for the default OpenAI model may remain; native Codex runtime routing is not required as a security remediation.
+- Keep Control UI **local-only**; do not configure trusted reverse proxies unless the posture intentionally changes.
+- This is **not** a multi-user deployment; treat as local-only / single-operator posture.
+- Authorized immediate fix: update the IC Project Registry WF40 row to match active / cron / audit wording. No config/auth/channel/proxy/browser/plugin/network/owner-allowlist mutation was authorized.
+
+## 2026-05-11 Closure Update
+- Randall approved fixing the stale WF40 residual-proof exception and closing WF40 as a workflow blocker.
+- `scripts/workspace_governance_truth_check.py` now treats WF40 residual scheduled-proof watch as valid while another approved workflow is active, provided the queue and registry explicitly preserve WF40 as residual scheduled proof and the WF40 registry row still shows active cron/audit residue.
+- Proof run at `2026-05-12T00:50:27Z`: `python scripts\cyber_security_daily_audit_cron_runner.py` returned `proof_status=ok`, `artifact_fresh_for_runner=true`, `audit_status=warning`, `audit_stop_line=false`, `audit_exit_code=0`, and `errors=[]`.
+- WF40 is closed from active workflow blocking status; the next ordinary scheduled 17:10 run remains a confirmation watch and should be checked once.
+- Remaining warnings are manual/remediation backlog only unless Randall separately authorizes config/auth/channel/proxy/browser/plugin/network changes.

@@ -4,7 +4,14 @@
 
 Define the live operator queue for deliberate parallel execution and workflow sequencing.
 
-This note is the compact active control surface.
+This note remains the detailed sequencing and helper-lane handoff surface.
+The compact live workflow control surface is now:
+- `06. Playbooks/Active Workflows.md`
+
+Live status rule: `Active Workflows.md` is authoritative for the current active/paused/blocked/cron-owned posture. If this queue, the registry, or history detail conflicts with that compact surface, reconcile `Active Workflows.md` first, then update this queue as the subordinate sequencing surface.
+
+Status warning: this queue is subordinate sequencing history unless its current-chain rows have been freshly reconciled against `Active Workflows.md`. If active workflow, next action, or priority conflicts with `Active Workflows.md`, stop and update this queue before spawning work from it.
+
 Detailed historical workflow entries now live in:
 - `06. Playbooks/OpenClaw Parallel Pilot Queue - History.md`
 
@@ -15,13 +22,13 @@ Detailed historical workflow entries now live in:
 - use for orchestration, integration, final judgment, queue/registry control, QC, and quick bounded execution
 
 ### Spawned worker default
-- Use the approved `openai-codex/*` model set with role-based thinking, not maximum effort by habit.
+- Use the approved `openai/*` Codex-runtime model set with role-based thinking, not maximum effort by habit.
 - Use for substantial workspace work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA.
 - Default thinking by role: low for routine research/read-only audit, medium for implementation, high for hard debugging, repeated false-green/false-red residue, or high-stakes trust adjudication.
 
 ### Lower-complexity helper posture
 - Lower effort should usually mean tighter scope and lower thinking, not a lower-trust model.
-- Keep helper routing inside the approved `openai-codex/*` set unless Randall intentionally changes runtime policy.
+- Keep helper routing inside the approved `openai/*` Codex-runtime set unless Randall intentionally changes runtime policy.
 
 Do not use reduced-trust helper posture for:
 - final trust adjudication
@@ -51,45 +58,57 @@ Each meaningful queued item should make clear:
 - execution mode
 - QC complete
 
-After any helper lane finishes, Veritas/main must check this queue before going idle: either spawn the next safe helper, execute the next quick bounded task directly, close/pause with proof, or ask Randall a concrete blocking question.
+After any helper lane finishes, Veritas/main must check `06. Playbooks/Active Workflows.md` first, then this queue before going idle: either spawn the next safe helper, execute the next quick bounded task directly, close/pause with proof, or ask Randall a concrete blocking question.
 
 ## Sequencing rule
 
 - **Workflow-level order** is authoritative for which numbered workflow opens next.
 - **Strict ordered execution queue** is authoritative for phase-level work inside the current day / current chain.
 - If those two views appear to disagree, do not average them. Reconcile the workflow-level active / next-three truth first, then update phase-level tasks beneath it.
-- Current workflow-level order: **WF40 active / scheduled-repeat pending -> WF46 targeted QC complete -> WF47 targeted QC complete -> WF44 bounded visibility slice QC complete / LMT follow-up pending -> WF45 Slice A QC complete -> WF41 artifact-derived v1 QC complete -> WF42 recommendation-object v1 QC complete -> WF43 durable path approved / proof pending -> WF48 closed -> WF49 operator-gated sidecar -> WF37 paused follow-up -> SOP / automation optimization backlog**. WF46/WF47 were moved ahead of broad WF44/WF45 work on 2026-05-09 after implementation-readiness review showed run-summary terminal semantics and authority vocabulary are upstream truth contracts. WF44 now has the safe Promotion Review + Decision Queue slice implemented without authority widening; LMT-style dual-layer owner/risk visibility remains a bounded follow-up. WF45 established shared fail-soft source classification without chain-integrating the artifact index. WF41 artifact-derived router v1 and WF42 recommendation-object v1 are closeout-ready after repeat proof. WF43 now has an approved durable path at `data/state-history/state-history-v1.jsonl`, but durable append/validate proof and lifecycle policy remain pending. Broader source-tier/external intake, sector/correlation scoring, history consumer wiring, and execution/sizing remain owner-gated or unwired. WF48 is closed as a bounded machine-companion note mutation exception; WF49 remains operator-gated because it requires credential/runtime handling.
+- Current workflow-level order: **WF51 closure hardening complete -> WF56 Phase 1 schema/validator complete -> WF57 Composite PDF polish complete -> WF56 Phase 2 review-only proposal generator next -> WF55 probability-readiness gate paused/reprioritized -> WF45 artifact-index freshness/provenance follow-up -> WF44 residual dashboard truth alignment -> WF49 operator-gated runtime sidecar -> WF50 owner-gated cleanup -> WF37 paused follow-up -> SOP / automation optimization backlog**. Completed or handed-off proof spine: WF40 manual wrapper proof passed but scheduled-repeat stability remains residual; WF43 repeat durable append/validate proof passed with durable rows; WF52 controlled post-close real-chain apply proof passed and the bounded Event Calendar freshness path is implemented; WF53 sector/correlation board is live; WF54 standalone ticker-monitoring analytics v1 is implemented and main-session verified; WF51 is close-ready for review-only signal/guard hardening; WF56 Phase 1 is complete as schema/validator only; WF57 produced a polished internal PDF candidate and reusable HTML/CSS renderer. WF51 production candidate generation remains deferred until trust-context and outcome-retention rules are stronger. WF56 Phase 2 may add review-only proposal generation, but still has no apply helper, portfolio mutation apply, trade execution, or owner-approval inference. WF54/WF55 remain measurement/readiness lanes only, not probability or deployment authority. WF48 is closed as a bounded machine-companion note mutation exception; WF49 remains operator-gated because it requires credential/runtime handling.
 - Rationale for 2026-05-05 insertion: folder/truth architecture research showed that finance JSON spine, chain manifest, root/tmp/script boundaries, and dashboard/document truth routing should be tightened before wider external-intelligence expansion.
 - WF32/WF33 reprioritization was completed on 2026-05-06 and those hardening lanes are now closed. Their resolved discrepancy set remains part of the control-plane rationale for opening WF31 now and keeping WF26 downstream of runtime-proof closure.
 
 ## Current chain state
 
 ### Active workflow
-**Workflow 40 - Cyber-Security Hardening and Bounded Daily Audit**
+**Workflow 64 - Bounded Portfolio Agent Cron Architecture**
 
 Status:
-- opened 2026-05-07 after WF38 closed honestly from live owner-layer and proof-surface evidence
-- current purpose is to harden the local OpenClaw / workspace security posture with a bounded daily read-only audit, explicit trust gates, and a non-conflicting internal-only cron run
-- the v1 script now exists: `scripts/cyber_security_daily_audit.py`
-- the isolated daily cron job now exists as **Security Audit - Daily Bounded Hardening** on `10 17 * * *` / `America/Phoenix`
-- manual proof already exists: the script writes `tmp/cyber-security-daily-audit.json` and `.md`, security audit + deep audit both run, skills inventory is healthy, firewall/AV posture is checked, and governance truth is clean after CLI path hardening
-- current live artifact truth after the post-fix refresh is warning-grade, not critical: `tmp/cyber-security-daily-audit.json` at `2026-05-10T01:47:00Z` shows `status: "warning"`, `stop_line: false`, and no critical findings
-- current warning stack is real but non-critical: Telegram is enabled under a setup-pending exception but delivery is not proven, `commands.ownerAllowFrom` still cannot be read by the checker, trusted proxies remain unset for a still-loopback Gateway, `openclaw doctor` still exposes runtime/doctor debt, and workspace-boundary warnings remain cleanup/backlog items
-- controlled cron proof moved past the approval gate, and the 2026-05-09 17:10 America/Phoenix scheduled run did execute from live job `d2cbac10-f1fb-4060-8445-cb13f3dfc6be`; that scheduled run failed closed, but the controlled post-fix proof at `2026-05-10T01:47:00Z` is clean enough for warning-grade posture (`proof_status: ok`, `audit_status: warning`, `audit_stop_line: false`, `errors: []`)
-- WF40 still stays active because closure requires the next ordinary scheduled repeat to prove the corrected path; config/auth/channel remediation is operator-gated and was not changed here
-- automatic fixes, config mutation, browser enablement, auth/network changes, destructive cleanup, and canonical note mutation remain blocked
+- active priority after Randall approved stronger autonomous workspace portfolio-management posture on 2026-05-16
+- standing-approved exact gated apply foundation exists for workspace portfolio/canon maintenance, with proof through ETN `entry_band` applies and post-apply validation
+- semantic preview bundle/report now covers `entry_band`, `earnings_state`, `ticker_state`, `sleeve`, `sizing`, and `sector_posture` as preview-only/non-self-applying control surfaces
+- next work is expanding semantic generation beyond the ETN proof path and deciding only after repeated proof whether any narrow category merits cron-direct apply
+- must not build trade/account paths, owner-approval inference, scheduled high-consequence mutation apply, cash/risk-rule mutation, or execution entitlement; all owner-file writes require exact scoped artifacts, preview hash, standing/scoped approval artifact, validators, backups/rollback, post-apply proof, and main-session integration
+
+### Recently completed / handed-off proof spine
+- **WF40:** closed as a workflow blocker after the 2026-05-11 17:40 MST residual-proof exception fix. Controlled wrapper proof at `2026-05-12T00:50:27Z` returned `proof_status=ok`, `audit_status=warning`, `audit_stop_line=false`, `artifact_fresh_for_runner=true`, wrapper `errors=[]`, and governance criticals `0`. Do not mutate config/auth/channel settings without approval; ordinary scheduled-repeat proof remains confirmation evidence only, not an active queue blocker. Governance validators should not require the active/next queue item to revert to WF40 solely for scheduled-proof watch when the queue explicitly preserves WF40 as residual scheduled proof.
+- **WF43:** repeat append/validate proof passed; `data/state-history/state-history-v1.jsonl` now has 2 rows, latest capture `20260510T232051Z_postclose_ee2357cf8e68`. Lifecycle/outcome-update/probability gates remain blocked.
+- **WF52:** controlled post-close real-chain proof passed; `tmp/run-chain-post-close.json` is `status=ok`, `exit_code=0`; `tmp/event-calendar-apply.json` is `status=ok`, `mode=apply`, `applied_rollforward_count=10`, `nvda_primary_confirmed=true`, and authority stayed Event Calendar-only. Browser-runner proof remains residual.
+- **WF54:** standalone ticker monitoring analytics v1 implemented and main-session verified; `tmp/ticker-monitoring-performance.json` is `status=ok`, `review_only`, all authority flags false, 19 tickers reviewed, state-history rows=2, `outcome_analytics_ready=false`.
+- **WF57:** polished internal Composite Regime and Sector Positioning PDF candidate generated with reusable HTML/CSS renderer; outputs are `06. Playbooks/Weekly Intelligence PDF/Weekly Composite Regime and Sector Positioning - 2026-05-11 Polished.html` and `.pdf`; trust/manual-dependency disclosure, pending-vs-approved promotion split, and `proposal_for_review` labels are visible; no canonical truth or portfolio mutation authority widened.
 
 ### Next approved queue item
-**WF40 blocked scheduled-proof remediation / stable cron repeat proof**
+**WF64 semantic generator expansion / bounded category coverage**
 
 Status:
-- next move is not closure: wait for the next ordinary scheduled repeat proof where `tmp/cyber-security-daily-audit-cron-proof.json` is fresh, `proof_status=ok`, `audit_stop_line=false`, and wrapper errors are empty
-- operator-gated blockers remain: whether enabled Telegram/channel config is intentional versus should be disabled again after setup, whether to restore/read `commands.ownerAllowFrom`, and whether to set `gateway.trustedProxies` to explicit proxy IPs or keep Control UI local-only; do not mutate config without Randall's explicit approval
-- after one clean ordinary scheduled repeat proof, WF40 can move toward closure or bounded handoff for remaining warning-grade debt
-- WF37 remains paused follow-up; it is not the next queue move unless WF40 is blocked or intentionally paused
+- next move is a bounded implementation pass that generalizes semantic exact-patch generation beyond the ETN proof path while keeping generated materials preview-only until exact gated approval/apply proof exists
+- acceptance: broader ticker/category material validates through proposal schema, patch-scope, patch-preview, authority vocabulary, and relevant post-apply dry-run/coherence checks without widening trade/account authority
+- blocked scope: no ungated write-capable apply, no scheduled mutation, no owner-approval mutation, no portfolio/risk/canonical-note mutation outside exact gates, no cash mutation, and no trade/account action
+- WF58/WF56 remain supporting surfaces for dashboard/capital-rec and gated apply proof rather than the active workflow priority
 
-### Priority source for next workflow advancement after WF40 unblocks
-`08. Audits/WFs Automation Audit 2026.05.08.md.txt` remains the priority source for Level-3 review-object automation direction once WF40 is eligible to close or hand off. The later 2026-05-09 audits still justify the prerequisite ordering now recorded here: WF44/WF45/WF46/WF47 should precede wider WF41-WF43 autonomy because decision-object visibility, stale-source fail-soft behavior, run-summary terminal semantics, and authority vocabulary need to be boring before Level-3 recommendation expansion.
+### Recently completed sidecar
+**WF56 portfolio-mutation proposal object / Phase 1 schema validator**
+
+Status:
+- opened 2026-05-10 from Randall's request to audit sleeve and ticker-status mutation workflows and prepare automation bones
+- Phase 1 completed: `scripts/schemas/portfolio_mutation_proposal_schema.json`, `scripts/portfolio_mutation_proposal_schema_validator.py`, `scripts/test_portfolio_mutation_proposal_schema_validator.py`, and `tmp/portfolio-mutation-proposals/.gitkeep`
+- audit artifacts: `08. Audits/Portfolio Mutation Automation Audit - 2026-05-10.md`, `tmp/portfolio-mutation-automation-audit.json`, and `08. Audits/WF56 Phase 1 Schema Validator Audit - 2026-05-10.md`
+- boundary: schema/validator only; no generator, dry-run patch helper, write-capable apply helper, scheduled mutation, owner-approval mutation, canonical portfolio note mutation, or trade/account action path
+- future Phase 2 may generate review-only proposals, but all weights, cash target, sleeve, promotion/demotion, owner-approval, sizing, risk-rule, execution-entitlement, canonical-status, trade, or account mutation remains explicit scoped Randall-approval gated
+
+### Priority source for next workflow advancement
+`08. Audits/WFs Automation Audit 2026.05.08.md.txt` remains the priority source for Level-3 review-object automation direction. The 2026-05-09 audits still justify keeping decision-object visibility, stale-source fail-soft behavior, run-summary terminal semantics, and authority vocabulary boring before wider recommendation expansion.
 
 ### Bounded audit-response sidecar
 
@@ -101,7 +120,7 @@ Status:
 - 2026-05-09 WF41 hardening added per-event source trust/freshness, unresolved-truth event behavior for non-clean source states, and no-route contract coverage
 - main-session QC passed py_compile, router generation, router tests, daily-review generation, daily-review tests, and direct JSON inspection; live post-close router emits 23 events, 5 escalations, and one unresolved-truth event under `review_required` source trust
 - this is not a new authority lane: no broad web/news crawling, no canonical note mutation, no deployment-state mutation, no config mutation, and no trade execution
-- remaining autonomy gaps stay explicit: broader WF26/WF41 source-tier/external intake policy, stable sector/correlation artifact, and append-only state-history / owner-outcome retention
+- remaining autonomy gaps stay explicit: broader WF26/WF41 source-tier/external intake policy, optional sector-taxonomy refinement, and append-only state-history / owner-outcome retention
 
 ### Recently completed prerequisite workflow
 **Workflow 46 - Run Summary Finalization Semantics Gate**
@@ -118,7 +137,7 @@ Status:
 Status:
 - targeted implementation/QC completed 2026-05-09 for post-close artifacts
 - `postmarket-snapshot.json` and `daily-executive-brief.json` now declare generated dashboard/archive posture with canonical/presentation/portfolio/deployment/trade/owner-approval authority false
-- `scripts/pipeline_state_consistency_check.py` now validates post-close authority ceilings against `tmp/run-summary-post-close.json`; `scripts/test_postclose_authority.py` covers the live contract
+- `scripts/pipeline_state_consistency_check.py` now validates post-close authority artifacts against a static fail-closed scheduled-window policy; `scripts/test_postclose_authority.py` and `scripts/test_run_summary_tail_order.py` cover the live authority/run-summary contract
 - main-session QC passed py_compile, authority test, pipeline consistency, market-intelligence router test, daily-review objects test, artifact-index test, and direct artifact inspection
 - remaining proof is repeat scheduled post-close run; no current live post-close authority contradiction remains
 
@@ -149,7 +168,7 @@ Status:
 Status:
 - closed 2026-05-09 after Randall approved the controlled machine-companion note authority boundary
 - `scripts/regime_scoring_refresh.py` may directly update bounded scoring/ranking/freshness blocks in `02. Markets/Regime Scoring Matrix.md`
-- final action authority remains with the Deployment Trigger Sheet, Portfolio Snapshot, Risk Rules, and owner approval
+- final action authority remains with the Execution Board, Portfolio Snapshot, Risk Rules, and owner approval
 - proof passed: targeted authority test, positioning ranking refresh, and full post-close finance chain
 
 **Workflow 49 - FRED Runtime Environment Persistence**
@@ -170,10 +189,11 @@ Status:
 **Workflow 42 - Capital Deployment Recommendation Object**
 
 Status:
-- added 2026-05-08 behind WF41
+- v1 implemented and in monitoring / repeat-proof posture
 - purpose is to convert research, technical, macro, risk, and fresh-intelligence evidence into a reviewable `deploy / wait / reject / review` packet
-- authority is recommendation-only with explicit owner approval field; no trade execution, no account action, no automatic Portfolio Snapshot or Deployment Trigger Sheet mutation
-- implementation must compare against existing daily review-object recommendation-prep output and fill only real contract/proof gaps
+- current daily-review objects carry evidence provenance, risk/invalidation, source freshness, missing-evidence flags, action mapping, and explicit mutation/approval authority fields
+- authority is recommendation-only with explicit owner approval field; no trade execution, no account action, no automatic Portfolio Snapshot or Execution Board mutation
+- WF42 can inform WF56 mutation proposals, but it cannot become apply authority
 
 ### Following approved workflow
 **Workflow 43 - State History and Review Outcome Retention**
@@ -183,8 +203,78 @@ Status:
 - purpose is append-only point-in-time history for deployment state, band status, review outcomes, owner approvals/rejections, and realized later outcomes
 - authority is historical retention only; no model-driven deployment and no rewriting prior labels with hindsight
 - Randall approved `data/state-history/state-history-v1.jsonl` as the durable path on 2026-05-09; `tmp/state-history-v1.jsonl` remains proof-only residue
-- next proof contract: compile/test state-history script, sample post-close row, append to durable path, validate durable JSONL, and inspect provenance/authority fields before any consumer wiring
+- controlled durable-path exception proof passed 2026-05-10: compile/test, sample, append, validate, and direct row inspection succeeded; the durable file now has 1 validated post-close row
+- bounded review-support consumers may treat state history as present/provenanced; modeling, probability scoring, outcome calibration, canonical mutation, deployment mutation, trade execution, and owner-approval inference remain blocked
 - this is the honest prerequisite for future WF27-style predictive datasets, not a modeling or trading workflow
+
+### Newly opened workflow
+**Workflow 51 - Daily Fresh Intelligence and Price Trend Promotion Branch**
+
+Status:
+- opened 2026-05-09 from Randall's request for daily news/fresh-content truth, watchlist promotion discipline, daily price-trend tracking, and better candidate-promotion evidence
+- purpose is to connect fresh macro/company/source-tier intelligence with price-trend deltas, band posture, catalyst windows, regime scores, and watchlist promotion candidate packets
+- current branch must stay review-only: no automatic watchlist-to-deployable promotion, no canonical note mutation, no portfolio/deployment mutation, no sizing/execution authority, and no precise probability claims before WF43 history/outcome proof exists
+- Phase 1 helper-lane design/reuse and verifier/risk scans completed; outputs are `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf51-phase1-schema-reuse-scan.md)` and `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf51-phase1-verifier-risk-scan.md)`
+- Phase 2 completed as a standalone read-only trend-signal artifact: `scripts/daily_price_trend_signals.py`, `scripts/test_daily_price_trend_signals.py`, and `tmp/daily-price-trend-signals.json`
+- Phase 2 proof passed compile, targeted tests, live artifact generation, direct JSON inspection, and final independent verifier closeout in `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf51-phase2-final-verifier.md)`
+- current output emits 22 current-state signals and 6 material shortlist entries; GS remains visible, MSFT/below-stop fails closed, macro-degraded names are capped, and all prior-state deltas remain `unknown` while WF43 history is unavailable
+- Phase 3 readiness and authority-risk helpers completed; outputs are `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf51-phase3-candidate-generator-readiness.md)` and `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf51-phase3-authority-risk-audit.md)`, with main synthesis in `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf51-phase3-synthesis.md)`
+- Phase 3 verdict: defer production daily candidate generation; under current evidence no shortlist name should be `candidate_review_ready`
+- Phase 3A guard/root-cause fix completed: candidate-packet validation now blocks authority vocabulary, non-pass gate states, missing sector/correlation checks, and degraded trust contexts; ETN/JPM owner-machine drift was reconciled across portfolio config, trigger/deployment artifacts, and owner notes
+- current expected classes: ETN should not emit `candidate_review_ready` because it is already owner-promoted and remains manual-only; JPM should not emit `candidate_review_ready` because approval is recorded but the live trigger is below band; GS remains `needs_research`; GOOG/MSFT/NVDA remain blocked or wait/no-chase by location/risk
+- next implementation move: no production generator yet; design only a dry-run blocked/needs-research diagnostic after trust-context and sector/correlation proof wiring is explicit
+- blocked/limited by WF43 durable append/validate proof for calibrated trend/outcome history, WF49/FRED runtime for cleaner macro freshness, source-tier expansion policy before broad web/news ingestion, and sector/correlation artifact gaps before stronger candidate-packet readiness
+- owner note: GS-style almost-deployable candidates must remain visible in summaries when material, even when they are secondary to a stronger peer such as JPM
+
+### Newly opened workflow
+**Workflow 52 - Earnings Date Source Confidence and Event Calendar Roll-Forward Automation**
+
+Status:
+- opened 2026-05-10 from Randall's request to fix NVDA timing-source uncertainty and automate stale Event Calendar date review without silent overclaiming
+- purpose is to keep earnings-date maintenance honest: detect stale vault dates, compare to provider next dates, stage/apply bounded Event Calendar roll-forward maintenance, and label confidence as `provider_estimate_unconfirmed` unless primary evidence is attached
+- Randall gave hardcoded approval on 2026-05-10 to keep `05. Intelligence/Event Calendar.md` fresh and integrate that maintenance into daily chain updates
+- current implementation has source-confidence, roll-forward, and bounded apply helpers: `scripts/earnings_date_source_confidence.py`, `scripts/event_calendar_rollforward.py`, `scripts/event_calendar_apply.py`, plus `tmp/earnings-date-source-confidence.json/.md`, `tmp/event-calendar-rollforward.json/.md`, and `tmp/event-calendar-apply.json/.md`
+- current chain posture: morning, post-close, post-earnings, and Sunday windows run source confidence after earnings enrichment, then roll-forward, then `event_calendar_apply.py --apply`; optional browser confirmation evidence still belongs between enrichment and source confidence but is not a hard daily-chain dependency until runtime proof exists
+- current proof: compile passed, `test_earnings_date_source_confidence.py`, `test_event_calendar_rollforward.py`, and `test_event_calendar_apply.py` passed; live apply updated the Event Calendar auto-managed block with 10 caveated provider-estimated next-earnings rows; dry-run manifests for morning/post-close/post-earnings/Sunday show the apply step wired
+- NVDA May 20 is primary-confirmed from Randall-provided official NVIDIA IR evidence stored as `primary_evidence`; the stale May 13 timing-confirmation deadline was removed from the live Event Calendar
+- discrepancy response rule remains explicit: when yfinance/provider dates are missing, contradictory, or unconfirmed, include official check sites for Randall, prioritizing company IR/events, company newsroom/press releases, and SEC EDGAR
+- next pass: verify the next real scheduled/chain proof, then optionally add dashboard/run-summary visibility or browser-runner verification when browser tooling is available in scheduled runtime
+- authority boundary: Event Calendar freshness only; no primary-confirmed language from yfinance alone, no deployment/portfolio/watchlist/sizing mutation, and no trade execution or owner-approval inference
+
+### Newly opened workflow
+**Workflow 53 - Sector Expansion Coverage and Correlation Proof Layer**
+
+Status:
+- v1 implemented and QA-accepted 2026-05-10 from Randall's request to plan sector expansion into the OS and start automating more with Veritas approval
+- current outputs are review-only `tmp/sector-correlation-check.json` and `tmp/sector-expansion-board.json`; the board reviews all 11 SPDR sectors vs SPY, sector breadth, portfolio exposure, tracked candidates, promotion-review status, and concentration warnings
+- chain posture: morning, post-close, and Sunday run `sector_correlation_check.py` then `sector_expansion_board.py` before `daily_review_objects.py`; post-earnings may consume still-fresh optional artifacts but does not regenerate WF53
+- current board answer: leadership improving in Technology; underexposed sectors are Communication Services, Consumer Discretionary, Consumer Staples, Health Care, Materials, Real Estate, and Utilities; promotion-review candidates parsed are CAT, ETN, GS, JPM, LLY, NVDA
+- proof passed compile, `test_daily_review_objects.py`, `test_sector_expansion_board.py`, `test_sector_correlation_check.py`, artifact regeneration, post-close daily-review generation, and post-close/morning/Sunday dry-run manifest checks
+- independent QA blocker was fixed: daily-review sector context now uses only fresh board/correlation artifacts and falls back when both are stale
+- authority boundary remains strict: no watchlist promotion, no Portfolio Snapshot mutation, no Execution Board mutation, no sizing/allocation recommendation, no trade execution, no probability/modeling authority, and no owner-approval inference
+- optional residue: tighten non-SPDR taxonomy mapping for Defense, Commodities, and Diversified Quality if this becomes decision-relevant
+
+### Recently implemented workflow
+**Workflow 54 - Ticker Monitoring Performance Analytics v1**
+
+Status:
+- implemented and main-session verified 2026-05-10
+- `scripts/ticker_monitoring_performance.py` and `scripts/test_ticker_monitoring_performance.py` now produce and validate `tmp/ticker-monitoring-performance.json` plus `.md`
+- current artifact measures review-only current-state monitoring diagnostics across 19 tickers, uses WF43 row count and WF53 context, separates known-at-time fields from future realized outcomes, and keeps `outcome_analytics_ready=false`
+- main-session QC clarified `fail_closed_tickers` as below-stop / repair only, with separate `blocked_or_review_required_tickers` for broader band-review/catalyst/review debt
+- authority boundary: no probability language, no model-ranked deployment candidates, no automatic promotion, no canonical note mutation, no portfolio/deployment mutation, and no trade execution
+- next pass: decide later whether to wire WF54 into a chain; do not widen beyond standalone review diagnostics until WF55 readiness criteria exist
+
+### Superseded workflow snapshot
+
+This older queue-detail section is superseded by `06. Playbooks/Active Workflows.md` and the current chain-state block above.
+
+Current truth:
+- WF56 Phase 2 is active for review-only proposal generation under `tmp/portfolio-mutation-proposals/`.
+- WF57 is closed/productized as an internal review candidate and reusable weekly visual-reporting baseline.
+- WF55 is paused/reprioritized; do not build predictive scoring or probability claims.
+
+Authority boundary remains unchanged: no weights, cash target, sleeve, promotion/demotion, owner approval state, sizing, risk-rule, execution-entitlement, canonical status, trade, account mutation, external distribution, or runtime/config mutation without explicit scoped Randall approval.
 
 ### Paused follow-up lane
 **Workflow 37 - Daily Summary Commercial Brief Hardening**
@@ -204,7 +294,7 @@ Status:
 - candidate 3: incident/degraded-run response SOP for failed cron, run-summary, memory, or artifact states
 - candidate 4: cron proof / promotion review SOP before scheduled review-only layers widen
 - candidate 5: SOP repository maintenance procedure to prevent sprawl
-- candidate 6: read-only workspace archive suggester (`scripts/archive_suggester.py`) before any auto-archive behavior; implemented v1 as suggestion/report-only (`tmp/archive-suggestions.json`, `tmp/archive-suggestions.md`) with `apply_allowed=false`, owner approval required, and no file moves
+- candidate 6: read-only workspace archive suggester (`scripts/archive_suggester.py`) before any auto-archive behavior; implemented v1 as suggestion/report-only (`tmp/archive-suggestions.json`, `legacy tmp artifact tombstoned in `state/tmp-lifecycle-deletion-tombstone.json` (`archive-suggestions.md`)`) with `apply_allowed=false`, owner approval required, and no file moves
 - candidate 7 / WF50: tmp helper archive cleanup after owner approval; model-routing drift check was folded into `scripts/workspace_governance_truth_check.py`, but the six `tmp/*.py` helpers still need archive-manifest cleanup before boundary warnings clear
 
 ### Recently closed truth-architecture hardening lanes
@@ -220,7 +310,7 @@ Status:
 
 Status:
 - closed 2026-05-06 after spawned audit plus independent verification confirmed the new operating posture is reflected across core doctrine, durable memory, tool/model routing, orchestration/spawn governance, operating model, self-improvement skill, queue, registry, continuity, and daily memory
-- mission baseline: Veritas main session is the live financial truth surface / final integrator; workspace files are the durable canonical financial database; substantial work defaults to `openai-codex/gpt-5.5` high-thinking helper lanes when available
+- mission baseline: Veritas main session is the live financial truth surface / final integrator; workspace files are the durable canonical financial database; substantial work defaults to `openai/gpt-5.5` through the Codex runtime with high-thinking helper lanes when available
 - no trading, account-action, or automatic canonical finance-note mutation authority was widened
 
 ### Previously closed truth-architecture hardening lanes

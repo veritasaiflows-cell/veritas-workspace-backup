@@ -12,6 +12,13 @@ Use this standard when a workflow touches any of:
 - canonical-surface mutation boundaries
 - queue / registry / continuity state across several files
 
+Do **not** require this full standard for every implementation task. Use `skills/disciplined-implementation/SKILL.md` to classify implementation size first:
+- **Micro**: one-file/one-artifact fixes with one targeted proof command.
+- **Narrow**: one owner plus one adjacent consumer/validator.
+- **Major**: shared semantics, authority boundaries, workflow state, multi-file control-plane behavior, or cross-surface contracts.
+
+This standard applies to **Major** implementation/workflow passes. Micro and Narrow passes should stay lean unless they reveal a shared contract change.
+
 ## Required sections in every major workflow continuity note
 
 ```md

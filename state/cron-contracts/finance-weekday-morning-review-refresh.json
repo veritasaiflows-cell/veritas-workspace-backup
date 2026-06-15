@@ -1,0 +1,65 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "63512442-b4cf-4c9c-a704-158e6bc36a9b",
+  "name": "Finance - Weekday Morning Review Refresh",
+  "required": true,
+  "owner_workflow": "WF78/WF84/WF85 morning review",
+  "contract_reason": "Weekday morning finance launcher that can refresh approved scoped maintenance and review proof before market work starts. Drift can alter morning readiness and authority boundaries.",
+  "description": "Weekday morning finance refresh through stable launcher/runner. Launcher returns quickly for Gateway accounting while the approved scoped morning chain writes proof artifacts in background. No trade/account action, capital deployment, paper/live execution, or approval inference.",
+  "enabled": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "5 6 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nObjective: launch the weekday morning finance refresh through the stable background launcher. The launcher returns quickly for Gateway accounting while the existing approved morning runner writes the real proof artifact.\n\nExecute exactly this single command:\npython scripts\\weekday_morning_review_cron_runner.py --launch-background --write --validate\n\nDo not run additional commands. Do not inspect files manually. The child runner executes the existing approved morning chain and writes:\n- tmp\\weekday-morning-review-cron-launcher.json\n- tmp\\weekday-morning-review-cron-runner.json\n- tmp\\run-chain-morning.json\n- tmp\\run-summary-morning.json\n\nResponse contract: reply exactly NO_REPLY when the launcher exits 0 and operator_action is NO_REPLY. If launcher fails, report only launcher status, artifact path, and next repair owner.\n\nBoundaries: the child runner may execute only the existing approved morning chain: scoped eligible entry-band maintenance, reference-band visibility sync, and Portfolio Snapshot sizing semantic sync inside existing exact-diff approval rails. No trade/account action, brokerage order, money movement, inferred per-packet owner approval, self-applying capital recommendation packet, portfolio-config weight change, new allocation decision, sleeve/cash/risk-rule/execution-entitlement change, customer/external delivery, config/auth/channel/runtime mutation, paper/live execution, or owner approval inference.",
+    "model": "openai/gpt-5.4",
+    "timeoutSeconds": 300,
+    "lightContext": false
+  },
+  "compare_fields": [
+    "enabled",
+    "deleteAfterRun",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/weekday-morning-review-cron-launcher.json",
+    "tmp/weekday-morning-review-cron-runner.json",
+    "tmp/run-chain-morning.json",
+    "tmp/run-summary-morning.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

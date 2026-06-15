@@ -4,8 +4,8 @@
 Prove the new packet + writer-contract + lint stack can produce review-only commercial drafts for both daily windows without drifting into shadow-canon authority.
 
 ## Drafts created
-- `tmp/wf37-first-premarket-brief-draft.md`
-- `tmp/wf37-first-postclose-brief-draft.md`
+- `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf37-first-premarket-brief-draft.md)`
+- `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf37-first-postclose-brief-draft.md)`
 
 These are non-canonical trial outputs only.
 
@@ -18,8 +18,8 @@ These are non-canonical trial outputs only.
 4. linted the first real pre-market draft against `tmp/premarket-brief-input.json`
 
 ## Results
-- `tmp/wf37-first-postclose-brief-draft.md` -> `status: ok`
-- `tmp/wf37-first-premarket-brief-draft.md` -> `status: ok`
+- `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf37-first-postclose-brief-draft.md)` -> `status: ok`
+- `legacy tmp artifact tombstoned in state/tmp-lifecycle-deletion-tombstone.json (wf37-first-premarket-brief-draft.md)` -> `status: ok`
 - no owner-note mutation occurred
 - no cron or autonomous promotion occurred
 - drafts remained review-only and owner-cited

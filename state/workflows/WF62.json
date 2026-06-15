@@ -1,0 +1,27 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF62",
+  "display_name": "Canon Consolidation Monitor",
+  "tier": "P2",
+  "effective_status": "route_only",
+  "next_action": "Escalate when a consumer points to retired canon or a dashboard outranks an owner note.",
+  "helper_safe": true,
+  "owner_action_required": false,
+  "authority_boundary": "monitor-only",
+  "blockers": [],
+  "stop_lines": [
+    "No ungated canon mutation or delete/archive without approval."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 62 - Finance Canon Consolidation and Consumer Migration.md",
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [],
+  "default_resume_command": null,
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

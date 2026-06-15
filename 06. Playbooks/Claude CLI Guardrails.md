@@ -89,6 +89,8 @@ Reason:
 - Randall may still prompt Claude directly when desired
 - Gemini remains the primary local implementation / bounded audit lane unless Claude is intentionally chosen
 - Claude remains the stronger default judgment and synthesis lane
+- For serious finance workflow contracts and trade-grade OS gates such as WF84/WF85, the required hard-judgment challenger path is `claude-cli/claude-opus-4-8` when available.
+- Verify the actual spawned model path after launch. A label containing "Opus" is not sufficient proof; if the registry shows another model, classify the result as a standard challenger lane, not Opus acceptance proof.
 
 ## Safe-use rules
 
@@ -98,10 +100,12 @@ Reason:
 - cross-artifact synthesis
 - bounded review of specific notes, artifacts, or reports
 - selective implementation where judgment and coherence matter together
+- false-ready, authority-drift, state-precedence, and source/freshness challenge passes for serious finance workflows
 
 ### Effort guidance
 - `medium` = default savings mode for real judgment work that is not yet a final high-consequence call
 - `high` = use when near a real operator decision, canonical-state change, or difficult reconciliation
+- `claude-cli/claude-opus-4-8` = preferred verified Opus challenger model for WF84/WF85-class trade-grade OS work; use as challenger/reviewer, not routine worker
 - 1M context variants = use only when context volume is the actual bottleneck, not just because they exist
 - `Haiku 4.5` = quick helper only, not a serious deployment-readiness or thesis-adjudication lane
 
