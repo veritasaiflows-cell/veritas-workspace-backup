@@ -27,37 +27,37 @@ def test_coverage_universe_not_deployment_authority(errors: list[str]) -> None:
     schema_source = (SCRIPTS_DIR / "schemas" / "candidate_packet_schema.json").read_text(encoding="utf-8")
     contract_source = (SCRIPTS_DIR.parent / "06. Playbooks" / "Watchlist Promotion Candidate Packet Contract.md").read_text(encoding="utf-8")
     config_source = (SCRIPTS_DIR.parent / "tmp" / "portfolio-config.json").read_text(encoding="utf-8")
-    expect("CANONICAL_THESIS_NOTE" not in candidate_source, "candidate validator must not name Coverage Universe as canonical thesis owner", errors)
-    expect("thesis_block_exists" not in candidate_source, "candidate validator must not gate on Coverage Universe heading presence", errors)
+    expect("CANONICAL_THESIS_NOTE" not in candidate_source, "candidate validator must not name Coverage and Watchlist as canonical thesis owner", errors)
+    expect("thesis_block_exists" not in candidate_source, "candidate validator must not gate on Coverage and Watchlist heading presence", errors)
     expect("canonical_thesis_source" not in candidate_source + schema_source + contract_source, "candidate packet contract must not carry canonical_thesis_source wording", errors)
-    expect("Coverage Universe.md" not in config_source, "tracked_universe source_of_truth must not include Coverage Universe", errors)
-    expect("COVERAGE_UNIVERSE_PATH" not in dashboard_source, "dashboard validation must not parse Coverage Universe as a live-state consistency surface", errors)
-    expect("coverage_quickref_stale" not in dashboard_source, "dashboard validation must not emit Coverage Universe quick-reference stale-state warnings", errors)
+    expect("Coverage and Watchlist.md" not in config_source, "tracked_universe source_of_truth must not include Coverage and Watchlist", errors)
+    expect("COVERAGE_UNIVERSE_PATH" not in dashboard_source, "dashboard validation must not parse Coverage and Watchlist as a live-state consistency surface", errors)
+    expect("coverage_quickref_stale" not in dashboard_source, "dashboard validation must not emit Coverage and Watchlist quick-reference stale-state warnings", errors)
 
 
 def test_workbook_nontechnical_owner_pointer(errors: list[str]) -> None:
     expect(
-        workbook_export.owner_note_pointer_for_ticker("KTOS", technical_entitled=False) == "02. Markets/Watchlist.md",
-        "non-technical names should point to Watchlist, not Coverage Universe",
+        workbook_export.owner_note_pointer_for_ticker("KTOS", technical_entitled=False) == "04. Research/Coverage and Watchlist.md",
+        "non-technical names should point to Coverage and Watchlist",
         errors,
     )
     expect(
-        workbook_export.owner_note_pointer_for_ticker("JPM", technical_entitled=True) == "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-        "technical-entitled names should point to the Technical Entry Sheet when no scorecard overrides it",
+        workbook_export.owner_note_pointer_for_ticker("JPM", technical_entitled=True) == "03. Portfolio/Execution Board.md",
+        "technical-entitled names should point to the Execution Board when no scorecard overrides it",
         errors,
     )
 
 
-def test_promotion_auto_approval_boundary(errors: list[str]) -> None:
+def test_promotion_review_only_boundary(errors: list[str]) -> None:
     expect(
-        promotion_review_check.AUTO_APPROVAL_GATE_PATTERN == {
+        promotion_review_check.REVIEW_READY_GATE_PATTERN == {
             "thesis": "pass",
             "macro_regime": "pass",
             "technical": "pass",
             "catalyst": "clear",
             "risk_sizing": "warning",
         },
-        "auto-approval gate pattern should stay exact and conservative",
+        "review-ready gate pattern should stay exact and conservative",
         errors,
     )
 
@@ -69,21 +69,17 @@ def test_promotion_auto_approval_boundary(errors: list[str]) -> None:
     for ticker, review in reviews.items():
         expect(review.get("trade_execution_authorized") is False, f"{ticker} review path must never authorize trade execution", errors)
         expect(review.get("canonical_mutation_allowed") is False, f"{ticker} review path must never authorize automatic canonical mutation", errors)
-        if review.get("status") != "auto_approved":
-            expect(review.get("deployable_now_authorized") is False, f"{ticker} must fail closed unless every exact auto-approval gate is satisfied", errors)
+        expect(review.get("deployable_now_authorized") is False, f"{ticker} review path must never authorize deployable-now", errors)
+        expect(review.get("authorization_required") is True, f"{ticker} review path must always require explicit owner authorization", errors)
+        expect(review.get("non_authorizing") is True, f"{ticker} review path must stay non-authorizing", errors)
+        expect(review.get("status") != "auto_approved", f"{ticker} review path must not emit auto_approved", errors)
+        expect("auto_approval" not in review, f"{ticker} review path must not emit auto_approval blocks", errors)
 
-    live_auto_approved = [review for review in reviews.values() if review.get("status") == "auto_approved"]
-    if live_auto_approved:
-        approved = live_auto_approved[0]
-        expect(approved.get("deployable_now_authorized") is True, "an auto-approved review should authorize deployable-now status inside the workspace review layer", errors)
-        expect(approved.get("automated_queue_judgment") == "approve for deployable-now", "an auto-approved review should emit the deployable-now queue judgment", errors)
-        expect(not approved.get("auto_approval", {}).get("blockers"), "an auto-approved review should not retain auto-approval blockers", errors)
-    else:
-        expect(
-            any(review.get("blockers") for review in reviews.values()),
-            "if no live name auto-approves, at least one checked review should expose explicit fail-closed blockers",
-            errors,
-        )
+    expect(
+        any(review.get("blockers") for review in reviews.values()),
+        "checked reviews should expose explicit fail-closed blockers for currently unready names",
+        errors,
+    )
 
     nvda = reviews["NVDA"]
     expect(nvda.get("deployable_now_authorized") is False, "NVDA must not auto-authorize when live promotion gates are not clean", errors)
@@ -111,7 +107,7 @@ def main() -> int:
     errors: list[str] = []
     test_coverage_universe_not_deployment_authority(errors)
     test_workbook_nontechnical_owner_pointer(errors)
-    test_promotion_auto_approval_boundary(errors)
+    test_promotion_review_only_boundary(errors)
     test_workflow_state_vocab_contract(errors)
     if errors:
         print("wf38_authority_tests_failed")

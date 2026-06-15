@@ -67,6 +67,12 @@ def test_live_artifact_apply_boundaries(errors: list[str]) -> None:
             "VRT execution-lane WATCH proposal should remain review-only / non-applyable",
             errors,
         )
+    if "BKNG" in proposals:
+        expect(
+            proposals["BKNG"].get("canonical_apply_eligible") is False,
+            "BKNG repair-mode proposal must remain review-only / non-applyable",
+            errors,
+        )
     if "LNG" in proposals:
         expect(
             proposals["LNG"].get("canonical_apply_eligible") is False,
@@ -75,11 +81,114 @@ def test_live_artifact_apply_boundaries(errors: list[str]) -> None:
         )
     for ticker in ("GOOG", "MSFT", "NVDA"):
         if ticker in proposals:
-            expect(
-                proposals[ticker].get("canonical_apply_eligible") is False,
-                f"{ticker} unsafe band status or catalyst window should remain review-only / non-applyable",
-                errors,
-            )
+            proposal = proposals[ticker]
+            unsafe_status = proposal.get("band_status") not in {"IN_BAND", "NEAR_BAND"}
+            unclear_earnings = proposal.get("earnings_state") != "CLEAR"
+            if unsafe_status or unclear_earnings:
+                expect(
+                    proposal.get("canonical_apply_eligible") is False,
+                    f"{ticker} unsafe band status or catalyst window should remain review-only / non-applyable",
+                    errors,
+                )
+
+
+def test_repair_mode_blockers_do_not_become_dashboard_stale_debt(errors: list[str]) -> None:
+    proposal = band_refresh.BandProposal(
+        ticker="BKNG",
+        coverage_lane="watch",
+        workflow_state="REPAIR",
+        entry_policy="repair_mode",
+        current_band_low=164.05,
+        current_band_high=170.91,
+        current_stop=155.97,
+        band_last_set="2026-05-10",
+        days_old=0,
+        trading_days_old=0,
+        close=165.93,
+        ma20=177.08,
+        ma50=174.19,
+        ma200=198.3,
+        atr14=6.8,
+        canonical_apply_eligible=False,
+        needs_review=True,
+        reasons=["repair-mode proposal remains manual wait-state"],
+    )
+    expect(band_refresh.is_accepted_repair_mode_blocker(proposal), "repair-mode proposal should be classified as accepted manual blocker", errors)
+    expect(not band_refresh.is_blocking_review(proposal), "accepted repair-mode proposal should not create dashboard stale-band debt", errors)
+
+
+def test_non_applyable_wait_states_do_not_become_dashboard_stale_debt(errors: list[str]) -> None:
+    proposal = band_refresh.BandProposal(
+        ticker="MSFT",
+        coverage_lane="execution",
+        workflow_state="ALMOST",
+        entry_policy="band_defined",
+        current_band_low=389.64,
+        current_band_high=412.56,
+        current_stop=378.18,
+        band_last_set="2026-04-28",
+        days_old=13,
+        trading_days_old=9,
+        close=412.66,
+        ma20=417.56,
+        ma50=398.55,
+        ma200=463.89,
+        atr14=11.8,
+        suggested_band_low=463.89,
+        suggested_band_high=478.56,
+        suggested_stop=452.15,
+        entry_band_method="DUAL_MA_RECLAIM",
+        band_status="BELOW_STOP",
+        canonical_apply_eligible=False,
+        needs_review=True,
+        reasons=["unsafe reclaim proposal remains manual wait-state"],
+    )
+    expect(
+        band_refresh.is_accepted_review_only_wait_state(proposal),
+        "non-applyable wait-state proposal should be accepted as review-only",
+        errors,
+    )
+    expect(
+        not band_refresh.is_blocking_review(proposal),
+        "non-applyable wait-state proposal should not create dashboard stale-band debt",
+        errors,
+    )
+
+    earnings_frozen = band_refresh.BandProposal(
+        ticker="LNG",
+        coverage_lane="watch",
+        workflow_state="WATCH",
+        entry_policy="underdefined",
+        current_band_low=260.82,
+        current_band_high=275.56,
+        current_stop=253.45,
+        band_last_set="2026-05-06",
+        days_old=6,
+        trading_days_old=4,
+        close=240.70,
+        ma20=250.0,
+        ma50=255.0,
+        ma200=260.0,
+        atr14=5.0,
+        suggested_band_low=260.82,
+        suggested_band_high=275.56,
+        suggested_stop=253.45,
+        entry_band_method="EARNINGS_FROZEN",
+        band_status="EARNINGS_IMMINENT",
+        canonical_apply_eligible=False,
+        needs_review=True,
+        reasons=["event risk freezes band application"],
+    )
+    expect(
+        not band_refresh.is_accepted_review_only_wait_state(earnings_frozen),
+        "earnings-frozen proposal should not be silently accepted as ordinary wait-state",
+        errors,
+    )
+    expect(
+        band_refresh.is_blocking_review(earnings_frozen),
+        "earnings-frozen proposal should remain dashboard blocking debt",
+        errors,
+    )
 
 
 def test_non_applyable_earnings_split(errors: list[str]) -> None:
@@ -116,6 +225,8 @@ def main() -> int:
     errors: list[str] = []
     test_band_age(errors)
     test_workflow_badges(errors)
+    test_repair_mode_blockers_do_not_become_dashboard_stale_debt(errors)
+    test_non_applyable_wait_states_do_not_become_dashboard_stale_debt(errors)
     test_non_applyable_earnings_split(errors)
     test_live_artifact_apply_boundaries(errors)
     if errors:

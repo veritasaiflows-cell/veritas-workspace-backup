@@ -25,15 +25,20 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
+def authority_bool(data: dict[str, Any], *keys: str) -> bool:
+    block = data.get("authority") if isinstance(data.get("authority"), dict) else {}
+    return any(bool(data.get(key, False)) or bool(block.get(key, False)) for key in keys)
+
+
 def artifact_authority(data: dict[str, Any]) -> dict[str, bool]:
     return {
-        "canonical_mutation_allowed": bool(data.get("canonical_mutation_allowed", False)),
-        "presentation_allowed": bool(data.get("presentation_allowed", False)),
-        "portfolio_mutation_allowed": bool(data.get("portfolio_mutation_allowed", False)),
-        "deployment_state_mutation_allowed": bool(data.get("deployment_state_mutation_allowed", False)),
-        "trade_execution_allowed": bool(data.get("trade_execution_allowed", False)),
+        "canonical_mutation_allowed": authority_bool(data, "canonical_mutation_allowed", "canonical_note_mutation_allowed"),
+        "presentation_allowed": authority_bool(data, "presentation_allowed"),
+        "portfolio_mutation_allowed": authority_bool(data, "portfolio_mutation_allowed"),
+        "deployment_state_mutation_allowed": authority_bool(data, "deployment_state_mutation_allowed"),
+        "trade_execution_allowed": authority_bool(data, "trade_execution_allowed"),
         "owner_approval_granted": any(
-            bool(data.get(key, False))
+            authority_bool(data, key)
             for key in ("owner_approval_granted", "owner_approval_inferred", "owner_approved")
         ),
     }
@@ -73,7 +78,7 @@ def main() -> int:
         )
 
     result = subprocess.run(
-        [sys.executable, str(WORKSPACE / "scripts" / "pipeline_state_consistency_check.py")],
+        [sys.executable, str(WORKSPACE / "scripts" / "pipeline_state_consistency_check.py"), "--window", "post-close"],
         cwd=WORKSPACE,
         text=True,
         capture_output=True,

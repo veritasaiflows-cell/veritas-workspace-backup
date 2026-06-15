@@ -22,7 +22,7 @@ def main() -> int:
 
     require("controlled machine-companion ranking note" in note, "note must declare machine-companion authority")
     require("not final canonical deployment truth" in note, "note must reject final deployment authority")
-    require("Deployment Trigger Sheet" in note and "Portfolio Snapshot" in note and "Risk Rules" in note, "note must name final authority surfaces")
+    require("Execution Board" in note and "Portfolio Snapshot" in note and "Risk Rules" in note, "note must name final authority surfaces")
     require("owner approval" in note.lower(), "note must preserve owner-approval boundary")
     require("Canonical ranking source" not in note, "old canonical-ranking claim must be removed")
 
@@ -39,6 +39,13 @@ def main() -> int:
 
     require("REGIME_MATRIX_AUTHORITY" in script, "script should centralize authority text")
     require(re.search(r"re\.sub\(\s*r\"- Data as of:\.\*\"", script), "script should update freshness data-as-of line")
+
+    records = {r.get("ticker"): r for r in scores.get("records", [])}
+    for ticker in ("JPM", "LNG"):
+        rec = records.get(ticker) or {}
+        if rec.get("below_stop") is True:
+            require(rec.get("stance") == "Do not touch", f"{ticker} below-stop state must force Do not touch stance")
+            require("stop breached" in (rec.get("band_note") or ""), f"{ticker} below-stop note must name stop breach")
 
     print("regime_scoring_authority_tests_passed")
     return 0
