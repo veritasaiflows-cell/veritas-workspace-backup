@@ -144,7 +144,7 @@ diagnose.py and diagnose_calendar.py are temporary tools that served their purpo
 12. scripts/market_state_refresh_plan.md is superseded.
 This is a planning document from before the live implementation existed. It now has no operational value. Delete it or move it to 09. Archive/.
 13. Two orphaned Python files in tmp/.
-tmp/calc_ma.py and tmp/refresh_technicals.py are sitting in the folder designated for machine-generated artifacts only. They're not scripts and they're not JSON. They're scaffold leftovers. Delete them.
+09. Archive/Scripts and Tmp Cleanup - Archived/calc_ma.py and tmp/refresh_technicals.py are sitting in the folder designated for machine-generated artifacts only. They're not scripts and they're not JSON. They're scaffold leftovers. Delete them.
 14. Rebalance Log has no actual entries.
 One stub from April 19: "no actual rebalance recommendation logged yet." This is fine for now given the portfolio is still in draft stage, but it should be populated with the first real recommendation once a deployment decision is made on ETN or JPM. This is a process reminder, not a file problem.
 15. Templates folder has content from the old consulting branch.
