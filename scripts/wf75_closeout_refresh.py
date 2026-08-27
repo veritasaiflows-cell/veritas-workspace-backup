@@ -65,18 +65,20 @@ def command_plan(scenario_id: str, mode: str, validation_budget: str) -> list[li
         ["python", "scripts\\wf75_operator_console.py", "--write", "--validate"],
         ["python", "scripts\\veritas_pm_department_validate.py", "--write"],
         ["python", "scripts\\operator_packet.py", "--workflow", "all", "--write", "--validate"],
-        ["python", "scripts\\wf75_pm_weekly_update.py", "--write", "--validate"],
         ["python", "scripts\\wf75_artifact_only_pm_handoff.py", "--write", "--validate"],
+        ["python", "scripts\\wf75_pm_weekly_update.py", "--write", "--validate"],
         ["python", "scripts\\wf75_pm_readiness_pdf.py", "--write", "--validate"],
+        ["python", "scripts\\wf75_operator_console.py", "--write", "--validate"],
     ]
     handoff_only = [
         ["python", "scripts\\generic_intelligence_saas_pivot.py", "--write", "--write-db", "--validate"],
         ["python", "scripts\\wf75_operator_console.py", "--write", "--validate"],
         ["python", "scripts\\veritas_pm_department_validate.py", "--write"],
         ["python", "scripts\\operator_packet.py", "--workflow", "all", "--write", "--validate"],
-        ["python", "scripts\\wf75_pm_weekly_update.py", "--write", "--validate"],
         ["python", "scripts\\wf75_artifact_only_pm_handoff.py", "--write", "--validate"],
+        ["python", "scripts\\wf75_pm_weekly_update.py", "--write", "--validate"],
         ["python", "scripts\\wf75_pm_readiness_pdf.py", "--write", "--validate"],
+        ["python", "scripts\\wf75_operator_console.py", "--write", "--validate"],
     ]
     tail = [
         ["python", "scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"],

@@ -1,0 +1,401 @@
+{
+  "schema": "veritas.ai_drop_service_os.team_board.v1",
+  "generated_at_utc": "2026-07-04T01:23:18Z",
+  "status": "phase4_private_pilot_approval_card_candidate_owner_gated",
+  "owner_workflow": "WF75",
+  "workstream_id": "WF75::AI-DROP-SERVICE-PERSISTENT-AGENTS-20260703",
+  "display_name": "AI Drop-Service OS First Slice",
+  "mission": "Build an internal AI drop-service operating lane around the AI Workflow Clarity Sprint, with recoverable long-work packets, training for Randall, and a staged path toward isolated agents and automation.",
+  "current_slice": {
+    "phase": "phase4_private_pilot_approval_card_candidate",
+    "focus": "HVAC 20-prospect research list and QA-cleared internal outreach approval-card candidate. Actual outreach remains owner-gated and not approved.",
+    "recommended_offer": "AI Workflow Clarity Sprint",
+    "target_buyer_initial": "Small service businesses with missed leads, slow intake, messy follow-up, or manual admin workflows.",
+    "default_authority": "internal_only_review_and_planning"
+  },
+  "authority_boundary": {
+    "internal_build_allowed": true,
+    "market_research_allowed": true,
+    "fictional_or_anonymized_demo_allowed": true,
+    "persistent_agent_creation_allowed_now": true,
+    "external_outreach_allowed": false,
+    "customer_or_public_delivery_allowed": false,
+    "payment_or_vendor_account_setup_allowed": false,
+    "channel_binding_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "capital_deployment_allowed": false,
+    "owner_approval_inferred": false,
+    "persistent_agent_creation_completed_20260703": true,
+    "bounded_runtime_agent_registry_mutation_approved_20260703": true
+  },
+  "supporting_workflows": [
+    {
+      "workflow_id": "WF75",
+      "role": "Business model, offer, demo, service workflow, and monetization lane owner."
+    },
+    {
+      "workflow_id": "WF71",
+      "role": "Department staff, helper-lane, and agent topology support."
+    },
+    {
+      "workflow_id": "WF74",
+      "role": "Convert repeated lessons into skills, validators, PM jobs, or improvement routing."
+    },
+    {
+      "workflow_id": "RUNTIME",
+      "role": "Lane register, long-work packet, isolated-agent creation plan, and recovery mechanics."
+    },
+    {
+      "workflow_id": "CRON",
+      "role": "Future watchdogs and scheduled review-only freshness checks after exact schedule approval."
+    }
+  ],
+  "logical_agents": [
+    {
+      "name": "veritas-main",
+      "role": "CEO orchestrator and final integrator",
+      "model_route": "openai/gpt-5.5 high for premium build work",
+      "status": "active_existing_main"
+    },
+    {
+      "name": "research-scout",
+      "role": "Public research, competitor scans, niche evidence",
+      "model_route": "openai/gpt-5.4",
+      "status": "persistent_active_no_channel_binding",
+      "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout",
+      "agent_dir": "C:\\Users\\Veritas\\.openclaw\\agents\\research-scout\\agent",
+      "direct_message_route": "internal OpenClaw agent/session routing; no external channel binding",
+      "model_change_note": "Upgraded from openai/gpt-5.4-mini to openai/gpt-5.4 at Randall's request on 2026-07-03."
+    },
+    {
+      "name": "offer-architect",
+      "role": "Offer, buyer, promise, pricing, sales assets",
+      "model_route": "openai/gpt-5.5 high for premium build, GPT-5.4 for bounded drafting",
+      "status": "logical_only"
+    },
+    {
+      "name": "workflow-engineer",
+      "role": "Delivery templates, SOPs, automation map, proof workflow",
+      "model_route": "openai/gpt-5.5 high for premium build, GPT-5.4 for narrow implementation",
+      "status": "logical_only"
+    },
+    {
+      "name": "qa-redteam",
+      "role": "Challenge claims, privacy, feasibility, quality, and operational risk",
+      "model_route": "openai/gpt-5.4",
+      "status": "persistent_active_no_channel_binding",
+      "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+      "agent_dir": "C:\\Users\\Veritas\\.openclaw\\agents\\qa-redteam\\agent",
+      "direct_message_route": "internal OpenClaw agent/session routing; no external channel binding"
+    },
+    {
+      "name": "continuity-clerk",
+      "role": "Recovery packet, team board, accepted/rejected output register, next action",
+      "model_route": "GPT-5.4-mini or GPT-5.4 depending task risk",
+      "status": "logical_only"
+    }
+  ],
+  "training_tracks": [
+    "AI drop-service business model and offer strategy",
+    "Randall's role as owner/operator/sales lead",
+    "OpenClaw multi-agent workflow operation",
+    "Client intake and workflow diagnosis",
+    "Proof, claims, privacy, and quality standards",
+    "Market trends and opportunity radar"
+  ],
+  "artifacts": {
+    "long_work_packet": "tmp/wf75-ai-drop-service-os-first-slice-packet.json",
+    "training_plan": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS Training Plan.md",
+    "continuity_note": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS First Slice.md",
+    "team_board": "state/ai-drop-service-os/team-board.json",
+    "persistent_agent_packet": "tmp/wf75-ai-drop-service-os-persistent-agent-training-packet.json",
+    "agent_training_md": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS Agent Training.md",
+    "agent_training_html": "10. Deliverables/AI Drop-Service OS/AI Drop-Service OS Agent Training - 2026-07-03.html",
+    "agent_training_pdf": "10. Deliverables/AI Drop-Service OS/AI Drop-Service OS Agent Training - 2026-07-03.pdf",
+    "agent_training_render_manifest": "tmp/wf75-ai-drop-service-os-agent-training-render.json",
+    "agent_training_renderer_script": "scripts/wf75_agent_training_pdf.py",
+    "agent_smoke_test": "tmp/wf75-ai-drop-service-os-agent-smoke-test.json",
+    "isolated_agent_contract_skill": "skills/veritas-isolated-agent-contract/SKILL.md",
+    "agent_bootstrap_generator_script": "scripts/agent_bootstrap_generator.py",
+    "agent_bootstrap_linter_script": "scripts/agent_bootstrap_linter.py",
+    "agent_bootstrap_generator_summary": "tmp/agent-bootstrap/agent-bootstrap-generator-summary.json",
+    "agent_bootstrap_linter_packet": "tmp/agent-bootstrap/agent-bootstrap-linter.json",
+    "agent_knowledge_base_index": "06. Playbooks/Agent Knowledge Base/index.md",
+    "agent_knowledge_base_authority_boundaries": "06. Playbooks/Agent Knowledge Base/contracts/authority-boundaries.md",
+    "agent_knowledge_base_manifest_schema": "06. Playbooks/Agent Knowledge Base/contracts/capability-manifest.schema.json",
+    "agent_knowledge_base_spawn_contract": "06. Playbooks/Agent Knowledge Base/runbooks/spawn-contract.md",
+    "agent_knowledge_base_direct_communication": "06. Playbooks/Agent Knowledge Base/runbooks/direct-agent-communication.md",
+    "agent_knowledge_base_latest_delta": "06. Playbooks/Agent Knowledge Base/self-improvement/latest-agent-delta.md",
+    "agent_knowledge_base_research_scout_template": "06. Playbooks/Agent Knowledge Base/agent-templates/research-scout.md",
+    "agent_knowledge_base_qa_redteam_template": "06. Playbooks/Agent Knowledge Base/agent-templates/qa-redteam.md",
+    "research_scout_manifest": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout\\agent.capabilities.json",
+    "research_scout_bootstrap": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout\\BOOTSTRAP.md",
+    "qa_redteam_manifest": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\agent.capabilities.json",
+    "qa_redteam_bootstrap": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\BOOTSTRAP.md",
+    "missed_lead_demo_packet": "tmp\\wf75-missed-lead-demo-v1\\packet.json",
+    "missed_lead_demo_validation": "tmp\\wf75-missed-lead-demo-v1\\validation.json",
+    "missed_lead_demo_deliverable": "10. Deliverables\\AI Drop-Service OS\\AI Workflow Clarity Sprint Synthetic Demo - 2026-07-03.md",
+    "missed_lead_demo_continuity": "06. Playbooks\\Project Continuity\\Workflow 75 - AI Workflow Clarity Sprint Demo Stack - 2026-07-03.md",
+    "missed_lead_demo_generator": "scripts/wf75_ai_drop_service_demo.py",
+    "missed_lead_demo_agent_validation": "tmp\\wf75-missed-lead-demo-v1\\agent-validation-evidence.json",
+    "agent_workspace_findings_index": "tmp/wf75-agent-workspace-findings-index.json",
+    "research_scout_problem_evidence_json": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout\\findings\\wf75\\missed-lead-problem-evidence-20260703.json",
+    "research_scout_problem_evidence_md": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout\\findings\\wf75\\missed-lead-problem-evidence-20260703.md",
+    "qa_redteam_problem_evidence_audit_json": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\audits\\wf75\\missed-lead-problem-evidence-audit-20260703.json",
+    "qa_redteam_problem_evidence_audit_md": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\audits\\wf75\\missed-lead-problem-evidence-audit-20260703.md",
+    "agent_workspace_findings_continuity": "06. Playbooks/Project Continuity/Workflow 75 - Agent Workspace Findings - 2026-07-03.md",
+    "monetization_training_markdown": "10. Deliverables/AI Drop-Service OS/AI Workflow Clarity Sprint Monetization Training - 2026-07-03.md",
+    "monetization_training_html": "10. Deliverables/AI Drop-Service OS/AI Workflow Clarity Sprint Monetization Training - 2026-07-03.html",
+    "monetization_training_pdf": "10. Deliverables/AI Drop-Service OS/AI Workflow Clarity Sprint Monetization Training - 2026-07-03.pdf",
+    "monetization_training_manifest": "tmp/wf75-ai-workflow-clarity-sprint-monetization-training-render.json",
+    "monetization_training_continuity": "06. Playbooks/Project Continuity/Workflow 75 - AI Workflow Clarity Sprint Monetization Training - 2026-07-03.md"
+  },
+  "validation_state": {
+    "json_parse": "ok",
+    "long_work_packet_linter_preflight": "ok_0_critical_0_warning",
+    "openclaw_skills_check": "ok_101_total_63_eligible_0_missing_requirements",
+    "skill_workshop_body_guard": "ok_0_critical_0_live_errors_0_warnings",
+    "changed_file_validator_router": "ok_major_budget_due_large_existing_changed_surface",
+    "validator_bundle_router": "ok_plan_only_selected_83_failed_0",
+    "go_binary_freshness_guard": "ok_stale_0_missing_0",
+    "go_implementation_profile": "blocked_unrelated_sql_source_lineage_and_stale_sql_proof_residue",
+    "implementation_release_contract": "blocked_missing_go_implementation_and_source_lineage_post_producer_gates",
+    "closeout_truth": "first_slice_artifacts_valid; broad release contract remains warning-grade due existing finance SQL proof residue outside this WF75 slice",
+    "persistent_agents_created": "ok_research_scout_and_qa_redteam_visible_in_openclaw_agents_list",
+    "agent_bindings": "ok_zero_routing_bindings_no_external_channel",
+    "agent_identity_files": "ok_role_specific_identity_soul_agents_tools_user_memory_installed",
+    "config_mutation_scope": "bounded_agent_registry_only_user_approved_no_channel_credentials_cron_or_plugin_allowlist_mutation",
+    "agent_training_render": "ok_pdf_created_153051_bytes_sha256_d510bd9d368c0d547484606d2f59b67839607dacf42f31e7c4772f628dff225e",
+    "direct_cli_smoke_tests": "ok_research_scout_and_qa_redteam_openclaw_agent_agent_route",
+    "agent_to_agent_sessions_send": "blocked_by_tools_sessions_visibility_all_and_tools_agentToAgent_enabled_not_changed",
+    "training_closeout": "ok_internal_training_complete_external_channel_cron_customer_public_authority_false",
+    "agent_training_render_generated_at_utc": "2026-07-03T07:28:46Z",
+    "isolated_agent_contract_skill_apply": "ok_applied_veritas-isolated-agent-contract-20260703-c20513800d",
+    "agent_bootstrap_generator": "ok_research_scout_qa_redteam_write_validate_0_errors_0_warnings",
+    "agent_bootstrap_linter": "ok_2_agents_0_errors_0_warnings",
+    "agent_bootstrap_authority_boundary": "ok_no_config_auth_runtime_cron_binding_telemetry_capture_finance_execution_or_owner_approval_authority",
+    "preoptimized_agent_factory": "v1_generator_supports_all_non_default_agents_and_custom_fallback_profiles",
+    "openclaw_skills_check_after_isolated_agent_contract_apply": "ok_102_total_64_eligible_0_missing_requirements",
+    "skill_workshop_body_guard_after_apply": "ok_0_critical_0_live_errors_0_warnings_live_skill_count_49",
+    "openclaw_config_validate_after_bootstrap_factory": "ok",
+    "changed_file_validator_router_after_bootstrap_factory": "ok_major_budget_paths_500",
+    "validator_bundle_router_after_bootstrap_factory": "ok_plan_only_selected_83_failed_0",
+    "go_binary_freshness_guard_after_bootstrap_factory": "ok_stale_0_missing_0",
+    "implementation_release_contract_after_bootstrap_factory": "ok_ready_to_close_true_missing_0_unknown_0",
+    "control_closeout_bundle_after_bootstrap_factory": "ok_steps_14_failed_0",
+    "agent_registry_after_bootstrap_factory": "ok_main_research_scout_qa_redteam_zero_bindings",
+    "agent_bindings_after_bootstrap_factory": "ok_empty_array",
+    "agent_knowledge_base_v1_files": "ok_8_files_created_central_main_workspace_reference_only",
+    "agent_bootstrap_generator_after_kb_v1": "ok_agents_all_write_validate_agent_knowledge_base_exists_true_0_errors_0_warnings",
+    "agent_bootstrap_linter_after_kb_v1": "ok_2_agents_0_errors_0_warnings_kb_links_validated",
+    "agent_registry_after_kb_v1": "ok_main_research_scout_qa_redteam_zero_bindings",
+    "agent_bindings_after_kb_v1": "ok_empty_array",
+    "openclaw_config_validate_after_kb_v1": "ok",
+    "agent_knowledge_base_authority_boundary": "ok_reference_only_no_config_auth_cron_external_telemetry_capture_finance_execution_or_owner_approval_authority",
+    "missed_lead_demo_v1": "ok_errors_0_warnings_0"
+  },
+  "next_safe_actions": [
+    "Run research-scout for missed-lead and slow-response problem/outcome evidence.",
+    "Draft the one-page AI Workflow Clarity Sprint offer.",
+    "Draft the intake/discovery script and no-sensitive-data customer-data rule.",
+    "Run qa-redteam before any customer-facing claim or private-pilot approval card is treated as decision-ready."
+  ],
+  "owner_gated_next_actions": [
+    "Bind any agent to Telegram, Discord, email, webhook, or customer-facing channel.",
+    "Create cron/watchdog schedules that dispatch agent work automatically.",
+    "Create payment pages, vendor accounts, domains, ads, or outbound campaigns.",
+    "Use real customer data or client systems.",
+    "Allow agents to mutate shared workspace artifacts without explicit write scope.",
+    "Apply cross-agent session visibility or agent-to-agent messaging config.",
+    "Enable deeper telemetry capture, external telemetry export, or raw prompt/tool payload capture.",
+    "Turn the bootstrap feed into an automated cron/watchdog schedule."
+  ],
+  "persistent_agents": [
+    {
+      "agent_id": "research-scout",
+      "identity": "Research Scout",
+      "model": "openai/gpt-5.4-mini",
+      "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout",
+      "agent_dir": "C:\\Users\\Veritas\\.openclaw\\agents\\research-scout\\agent",
+      "bindings": [],
+      "role": "public-source research and source tables",
+      "first_use": "Ask it for public examples, competitor scans, tool/vendor maps, and source-grounded market evidence."
+    },
+    {
+      "agent_id": "qa-redteam",
+      "identity": "QA Red-Team",
+      "model": "openai/gpt-5.4",
+      "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+      "agent_dir": "C:\\Users\\Veritas\\.openclaw\\agents\\qa-redteam\\agent",
+      "bindings": [],
+      "role": "independent critique, risk review, acceptance criteria, proof gaps",
+      "first_use": "Ask it to challenge claims, offers, SOPs, prompts, and workflow artifacts before trusting them."
+    }
+  ],
+  "communication_options": [
+    {
+      "option": "Through Veritas main chat",
+      "status": "available_now",
+      "example": "Veritas, send this to research-scout: find 8 sourced examples of AI workflow audit offers."
+    },
+    {
+      "option": "Direct internal OpenClaw session/agent routing",
+      "status": "available_now_when_UI_or_tool_route_exposes_agent_selection",
+      "example": "Start or select a session for agent research-scout, then give it a bounded task."
+    },
+    {
+      "option": "External channel routing such as Telegram/Discord/email/webhook",
+      "status": "not_enabled_owner_gated",
+      "example": "Requires separate approval, channel binding, trust test, and no customer/public access by default."
+    },
+    {
+      "option": "Cron/watchdog scheduled tasks",
+      "status": "not_enabled_owner_gated",
+      "example": "Requires separate approved schedule, task contract, heartbeat, stale-output handling, and stop lines."
+    }
+  ],
+  "latest_agent_workspace_findings": {
+    "generated_at_utc": "2026-07-03T19:18:32Z",
+    "research_scout_status": "warning",
+    "qa_redteam_status": "warning",
+    "qa_decision": "internal_only",
+    "private_pilot_prep_ready": false,
+    "index": "tmp/wf75-agent-workspace-findings-index.json",
+    "continuity": "06. Playbooks/Project Continuity/Workflow 75 - Agent Workspace Findings - 2026-07-03.md",
+    "next_safe_action": [
+      "Replace mirrored or snippet-only sources with direct primary or stronger secondary sources.",
+      "Pick one first niche before offer drafting.",
+      "Add one public source for the chosen niche on urgency, call dependence, or lead friction."
+    ]
+  },
+  "latest_monetization_training": {
+    "generated_at_utc": "2026-07-03T19:39:22Z",
+    "status": "ok",
+    "first_offer": "AI Workflow Clarity Sprint",
+    "first_niche": "HVAC or Plumbing",
+    "private_pilot_ready": false,
+    "qa_decision": "internal_only",
+    "pdf": "10. Deliverables/AI Drop-Service OS/AI Workflow Clarity Sprint Monetization Training - 2026-07-03.pdf",
+    "manifest": "tmp/wf75-ai-workflow-clarity-sprint-monetization-training-render.json"
+  },
+  "latest_research_scout_model_change": {
+    "generated_at_utc": "2026-07-03T20:03:20Z",
+    "agent_id": "research-scout",
+    "old_model": "openai/gpt-5.4-mini",
+    "new_model": "openai/gpt-5.4",
+    "authority": "Explicit Randall request in WebChat on 2026-07-03.",
+    "bindings_changed": false,
+    "cron_changed": false,
+    "external_channels_changed": false,
+    "finance_or_execution_authority_changed": false
+  },
+  "latest_hvac_evidence_pass": {
+    "generated_at_utc": "2026-07-03T20:25:46Z",
+    "workflow_id": "WF75",
+    "workstream_id": "ai-drop-service-niche-evidence-gpt54-20260703",
+    "niche": "HVAC",
+    "status": "internal_demo_ok_public_and_private_pilot_blocked",
+    "research_scout_artifact": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout\\findings\\wf75\\hvac-missed-lead-evidence-20260703.json",
+    "qa_redteam_audit": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\audits\\wf75\\hvac-missed-lead-evidence-audit-20260703.json",
+    "integration_packet": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\wf75-hvac-evidence-pass-20260703\\packet.json",
+    "validation_packet": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\wf75-hvac-evidence-pass-20260703\\validation.json",
+    "source_count": 9,
+    "approved_for": [
+      "internal_demo",
+      "internal_one_page_offer_draft"
+    ],
+    "blocked_for": [
+      "public outreach",
+      "payment collection",
+      "customer delivery",
+      "real customer data",
+      "client credentials or system access",
+      "external channel bindings",
+      "cron dispatch",
+      "public or ROI claims"
+    ]
+  },
+  "latest_hvac_offer_intake_draft": {
+    "generated_at_utc": "2026-07-03T20:34:37Z",
+    "workflow_id": "WF75",
+    "workstream_id": "hvac-internal-offer-and-intake-draft-20260703",
+    "status": "internal_use_ok_private_pilot_public_blocked",
+    "offer_draft": "C:\\Users\\Veritas\\.openclaw\\workspace\\10. Deliverables\\AI Drop-Service OS\\AI Workflow Clarity Sprint - HVAC Internal Offer Draft - 2026-07-03.md",
+    "intake_script": "C:\\Users\\Veritas\\.openclaw\\workspace\\10. Deliverables\\AI Drop-Service OS\\AI Workflow Clarity Sprint - HVAC Intake Discovery Script - 2026-07-03.md",
+    "qa_audit": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\audits\\wf75\\hvac-internal-offer-intake-audit-20260703.json",
+    "packet": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\wf75-hvac-offer-intake-20260703\\packet.json",
+    "validation": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\wf75-hvac-offer-intake-20260703\\validation.json",
+    "approved_for": [
+      "Internal draft review",
+      "Internal demo practice",
+      "Internal offer shaping",
+      "Internal discovery-script rehearsal",
+      "Private-pilot approval-card preparation only after separate Randall approval"
+    ],
+    "blocked_for": [
+      "Public outreach",
+      "Customer-facing use",
+      "Customer calls",
+      "Customer data collection",
+      "Payment collection",
+      "Pilot commitment",
+      "ROI or revenue claims",
+      "Booking or conversion claims",
+      "Compliance or legal safety claims",
+      "Emergency-response claims",
+      "Live-system or credential access without separate approval"
+    ]
+  },
+  "latest_hvac_prospect_outreach_prep": {
+    "generated_at_utc": "2026-07-04T01:23:18Z",
+    "workflow_id": "WF75",
+    "workstream_id": "hvac-prospect-outreach-prep-20260703",
+    "status": "internal_approval_card_ok_owner_gated_no_send_authority",
+    "niche": "HVAC",
+    "prospect_count": 20,
+    "recommended_first_batch_size": 5,
+    "recommended_first_batch": [
+      "Olive Air & Heating",
+      "Instant Heating and Air",
+      "Frozen Cactus Air",
+      "Cold Stinger Heating & Air Conditioning",
+      "Norris Air"
+    ],
+    "recommended_channel": "manual official-site contact form or email only",
+    "research_scout_artifacts": {
+      "json": "C:/Users/Veritas/.openclaw/workspaces/research-scout/findings/wf75/hvac-prospect-research-20260703.json",
+      "md": "C:/Users/Veritas/.openclaw/workspaces/research-scout/findings/wf75/hvac-prospect-research-20260703.md"
+    },
+    "qa_redteam_audit": {
+      "decision": "internal_approval_card_ok",
+      "json": "C:/Users/Veritas/.openclaw/workspaces/qa-redteam/audits/wf75/hvac-prospect-outreach-audit-20260703.json",
+      "md": "C:/Users/Veritas/.openclaw/workspaces/qa-redteam/audits/wf75/hvac-prospect-outreach-audit-20260703.md"
+    },
+    "main_artifacts": {
+      "outreach_packet": "10. Deliverables/AI Drop-Service OS/AI Workflow Clarity Sprint - HVAC Private Pilot Outreach Packet - 2026-07-03.md",
+      "packet_json": "tmp/wf75-hvac-prospect-outreach-20260703/packet.json",
+      "prospects_csv": "tmp/wf75-hvac-prospect-outreach-20260703/prospects.csv"
+    },
+    "approved_for": [
+      "internal approval-card review",
+      "manual rehearsal",
+      "Randall decision prep"
+    ],
+    "blocked_for": [
+      "sending outreach",
+      "phone outreach",
+      "SMS outreach",
+      "bulk or automated sending",
+      "payment collection",
+      "customer data collection",
+      "CRM import",
+      "channel binding",
+      "ROI/revenue/booking claims",
+      "customer/public delivery"
+    ],
+    "next_owner_decision": "Approve, reject, or revise the exact first batch, channel, and copy before any send."
+  }
+}

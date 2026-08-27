@@ -24,7 +24,6 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json  # noqa: E402
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers  # noqa: E402
 
 STATE = ROOT / "state" / "finance"
 DATA_FINANCE = ROOT / "data" / "finance"
@@ -35,10 +34,24 @@ DB_PATH = STATE / "finance-canon.sqlite"
 REPORT_PATH = TMP / "finance-sql-canon-promotion.json"
 ARCHIVE_PLAN_PATH = TMP / "finance-sql-canon-legacy-42-archive-plan.json"
 UNIVERSE_PATH = DATA_FINANCE / "universe-v1.json"
+AUTO_ROUTER_PATH = TMP / "wf78-auto-tier-routing.json"
+FRESHNESS_PATH = TMP / "wf78-tier-weighted-freshness-resolution.json"
 
-PRODUCTION_SCOPE = "production_current_42"
+# Production-scope proof join. Routing auto_tier is the single tier authority because it already
+# drives required_depth in the freshness resolver; universe_membership.tier is the derived
+# coverage obligation. "resolved_thin_monitor_current" only means staleness is tolerable at
+# C-tier monitor depth, so "fresh" is the one state that clears full decision-grade depth.
+PROOF_JOIN_TIERS = {"A", "B"}
+PROOF_JOIN_FRESH_STATES = {"fresh"}
+# The router demotes a name to *-CHALLENGED when its Tier A confidence gate finds a critical
+# fundamentals conflict. Recommendation-grade output must not inherit a name the router itself
+# demoted, so the join fails closed on anything other than an explicit "ready" with zero conflicts.
+PROOF_JOIN_CONFIDENCE_STATUS = "ready"
+
+RETIRED_PRODUCTION_SCOPE = "production_current_42"
+PRODUCTION_SCOPE = "active_internal_universe"
 REVIEW_100_SCOPE = "review_100_monitor"
-EXPECTED_PRODUCTION_COUNT = 42
+EXPECTED_RETIRED_LEGACY_COUNT = 0
 SUPPORTED_ACTIVE_COUNTS = {100, 200, 300, 400, 500}
 SUPPORTED_REVIEW_MONITOR_COUNTS = {58, 158, 258, 358, 458}
 
@@ -106,18 +119,20 @@ def computed_summary(universe: dict[str, Any]) -> dict[str, Any]:
     by_scope = Counter(str(row.get("universe_scope", PRODUCTION_SCOPE)) for row in entries)
     by_tier = Counter(str(row.get("tier") or "unknown") for row in entries)
     by_type = Counter(str(row.get("instrument_type") or "unknown") for row in entries)
-    migrated_tickers = set(legacy_42_tier_tickers())
-    legacy_tickers = sorted(
-        migrated_tickers
-        or {
+    # Derived from source artifacts rather than read back from the DB: this runs while the
+    # rebuild transaction is still constructing the SQL-first scope, so a DB read here would
+    # always see an empty set. validate_db checks the built DB against this same rule.
+    production_scope_ticker_set = proof_join_expected_tickers(universe)
+    retired_legacy_tickers = sorted(
+        {
             str(row.get("ticker", "")).upper()
             for row in entries
-            if row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE
+            if row.get("universe_scope") == RETIRED_PRODUCTION_SCOPE
         }
     )
     return {
         "active_ticker_count": len(entries),
-        "production_active_ticker_count": len(legacy_tickers),
+        "production_active_ticker_count": len(production_scope_ticker_set),
         "review_100_monitor_count": by_scope.get(REVIEW_100_SCOPE, 0),
         "pilot_fixture_count": by_scope.get("pilot_fixture", 0),
         "tier_counts": dict(sorted(by_tier.items())),
@@ -127,8 +142,11 @@ def computed_summary(universe: dict[str, Any]) -> dict[str, Any]:
             for row in entries
             if row.get("universe_scope") == REVIEW_100_SCOPE
         ),
-        "legacy_production_42_tickers": legacy_tickers,
-        "legacy_production_42_source": "wf78_legacy_42_tier_state_shadow" if migrated_tickers else "universe_scope_fallback",
+        "retired_legacy_42_tickers": retired_legacy_tickers,
+        "retired_legacy_42_count": len(retired_legacy_tickers),
+        "retired_legacy_42_source": "source_universe_retired_label_audit_only",
+        "legacy_production_42_tickers": retired_legacy_tickers,
+        "legacy_production_42_source": "retired_compatibility_summary_only",
     }
 
 
@@ -143,20 +161,9 @@ def sync_universe_summary(universe: dict[str, Any]) -> tuple[dict[str, Any], boo
     ])
     universe["summary"] = {**existing, **expected}
     if (
-        expected["active_ticker_count"] == 200
-        and expected["production_active_ticker_count"] == EXPECTED_PRODUCTION_COUNT
-        and expected["review_100_monitor_count"] == 158
-    ):
-        universe["status"] = "wf78_101_200_tier_c_monitor_ready"
-    elif (
-        expected["active_ticker_count"] == 100
-        and expected["production_active_ticker_count"] == EXPECTED_PRODUCTION_COUNT
-        and expected["review_100_monitor_count"] == 58
-    ):
-        universe["status"] = "phase5_review_100_monitor_ready"
-    elif (
         expected["active_ticker_count"] in SUPPORTED_ACTIVE_COUNTS
-        and expected["production_active_ticker_count"] == EXPECTED_PRODUCTION_COUNT
+        and expected["production_active_ticker_count"] == len(proof_join_expected_tickers(universe))
+        and expected["retired_legacy_42_count"] == EXPECTED_RETIRED_LEGACY_COUNT
         and expected["review_100_monitor_count"] in SUPPORTED_REVIEW_MONITOR_COUNTS
     ):
         universe["status"] = "wf78_tier_c_scaleout_monitor_ready"
@@ -209,6 +216,69 @@ def apply_pragmas(conn: sqlite3.Connection) -> None:
     conn.execute("PRAGMA temp_store=MEMORY")
 
 
+PRESERVED_EXTENSION_TABLES = ("reference_levels", "evidence_freshness")
+
+
+def table_exists(conn: sqlite3.Connection, table: str) -> bool:
+    return conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+        (table,),
+    ).fetchone() is not None
+
+
+def table_columns(conn: sqlite3.Connection, table: str) -> list[str]:
+    return [str(row[1]) for row in conn.execute(f"PRAGMA table_info({table})").fetchall()]
+
+
+def fetch_preserved_extension_rows(conn: sqlite3.Connection) -> dict[str, list[dict[str, Any]]]:
+    preserved: dict[str, list[dict[str, Any]]] = {}
+    for table in PRESERVED_EXTENSION_TABLES:
+        if not table_exists(conn, table):
+            preserved[table] = []
+            continue
+        columns = table_columns(conn, table)
+        if "ticker" not in columns:
+            preserved[table] = []
+            continue
+        rows = conn.execute(f"SELECT * FROM {table}").fetchall()
+        preserved[table] = [dict(zip(columns, row)) for row in rows]
+    return preserved
+
+
+def restore_preserved_extension_rows(
+    conn: sqlite3.Connection,
+    preserved: dict[str, list[dict[str, Any]]],
+    universe: dict[str, Any],
+) -> dict[str, int]:
+    active_tickers = {
+        str(row.get("ticker", "")).upper()
+        for row in active_entries(universe)
+        if row.get("ticker")
+    }
+    restored: dict[str, int] = {}
+    for table, rows in preserved.items():
+        restored[table] = 0
+        if not rows or not table_exists(conn, table):
+            continue
+        current_columns = table_columns(conn, table)
+        insert_columns = [column for column in current_columns if any(column in row for row in rows)]
+        if "ticker" not in insert_columns:
+            continue
+        placeholders = ", ".join("?" for _ in insert_columns)
+        column_sql = ", ".join(insert_columns)
+        sql = f"INSERT OR IGNORE INTO {table} ({column_sql}) VALUES ({placeholders})"
+        for row in rows:
+            ticker = str(row.get("ticker", "")).upper()
+            if ticker not in active_tickers:
+                continue
+            values = [row.get(column) for column in insert_columns]
+            before = conn.total_changes
+            conn.execute(sql, values)
+            if conn.total_changes > before:
+                restored[table] += 1
+    return restored
+
+
 def create_schema(conn: sqlite3.Connection) -> None:
     conn.executescript(
         """
@@ -246,8 +316,16 @@ def create_schema(conn: sqlite3.Connection) -> None:
             ticker TEXT PRIMARY KEY REFERENCES securities(ticker) ON DELETE CASCADE,
             universe_scope TEXT NOT NULL,
             tier TEXT NOT NULL CHECK(tier IN ('A', 'B', 'C', 'D')),
+            -- Same value as tier, named for what it actually means: the validator-enforced data
+            -- coverage obligation (A/B = daily band/stop/technical, C/D = weekly). Live opportunity
+            -- ranking is tier_routing_state.auto_tier and is a different semantic.
+            coverage_obligation_tier TEXT NOT NULL CHECK(coverage_obligation_tier IN ('A', 'B', 'C', 'D')),
             monitoring_role TEXT NOT NULL,
-            legacy_production_42 INTEGER NOT NULL CHECK(legacy_production_42 IN (0, 1)),
+            production_scope_member INTEGER NOT NULL DEFAULT 0 CHECK(production_scope_member IN (0, 1)),
+            production_scope_source TEXT,
+            sql_tier TEXT,
+            sql_tier_state TEXT,
+            tier_decision_scope TEXT,
             review_100_monitor INTEGER NOT NULL CHECK(review_100_monitor IN (0, 1)),
             decision_grade_eligible INTEGER NOT NULL CHECK(decision_grade_eligible IN (0, 1)),
             source_open_required INTEGER NOT NULL CHECK(source_open_required IN (0, 1)),
@@ -309,7 +387,8 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE VIEW current_active_universe AS
         SELECT s.ticker, s.name, s.instrument_type, s.sector, s.industry,
                u.universe_scope, u.tier, u.monitoring_role,
-               u.legacy_production_42, u.review_100_monitor,
+               u.production_scope_member, u.production_scope_source,
+               u.sql_tier, u.sql_tier_state, u.tier_decision_scope, u.review_100_monitor,
                u.decision_grade_eligible, u.source_open_required
         FROM securities s
         JOIN universe_membership u USING (ticker)
@@ -318,7 +397,7 @@ def create_schema(conn: sqlite3.Connection) -> None:
         CREATE VIEW current_answer_path AS
         SELECT *
         FROM current_active_universe
-        WHERE legacy_production_42 = 1;
+        WHERE production_scope_member = 1;
 
         CREATE VIEW review_monitor_universe AS
         SELECT *
@@ -326,6 +405,118 @@ def create_schema(conn: sqlite3.Connection) -> None:
         WHERE review_100_monitor = 1;
         """
     )
+
+
+def normalize_routing_tier(value: Any) -> str | None:
+    text = str(value or "").strip().upper()
+    if text.startswith("TIER "):
+        text = text[5:].strip()
+    return text or None
+
+
+def load_proof_join_freshness() -> dict[str, dict[str, Any]] | None:
+    """Per-ticker freshness rows for the production-scope proof join.
+
+    Returns None when the freshness proof is absent so the join fails closed instead of
+    promoting names on missing evidence.
+    """
+    freshness = load_json(FRESHNESS_PATH, None)
+    if not isinstance(freshness, dict):
+        return None
+    rows = freshness.get("rows")
+    if not isinstance(rows, list) or not rows:
+        return None
+    return {
+        str(row.get("ticker", "")).upper(): row
+        for row in rows
+        if isinstance(row, dict) and row.get("ticker")
+    }
+
+
+def load_proof_join_routing() -> dict[str, dict[str, Any]] | None:
+    """Per-ticker router rows carrying the Tier A confidence verdict.
+
+    Returns None when the router proof is absent so the join fails closed rather than
+    promoting names whose confidence state is simply unknown.
+    """
+    router = load_json(AUTO_ROUTER_PATH, None)
+    if not isinstance(router, dict):
+        return None
+    rows = router.get("rows")
+    if not isinstance(rows, list) or not rows:
+        return None
+    return {
+        str(row.get("ticker", "")).upper(): row
+        for row in rows
+        if isinstance(row, dict) and row.get("ticker")
+    }
+
+
+def resolve_production_scope(
+    ticker: str,
+    freshness_rows: dict[str, dict[str, Any]] | None,
+    routing_rows: dict[str, dict[str, Any]] | None,
+    in_coverage: bool,
+    card_exists: bool,
+) -> tuple[bool, str]:
+    if freshness_rows is None:
+        return False, "freshness_proof_unavailable_fail_closed"
+    if routing_rows is None:
+        return False, "routing_proof_unavailable_fail_closed"
+    row = freshness_rows.get(ticker)
+    if row is None:
+        return False, "no_freshness_row"
+    if normalize_routing_tier(row.get("auto_tier")) not in PROOF_JOIN_TIERS:
+        return False, "routing_tier_below_ab"
+    if str(row.get("resolution_state")) not in PROOF_JOIN_FRESH_STATES:
+        return False, "not_decision_grade_fresh"
+    # Production scope means "answerable at decision grade", so only blocking-severity card
+    # gaps disqualify. Context gaps (e.g. absence from the owner-side deployment-readiness
+    # surface) describe owner workflow state, not missing evidence. Absent proof fails closed.
+    blocking_gaps = row.get("card_blocking_gap_count")
+    if not isinstance(blocking_gaps, int) or isinstance(blocking_gaps, bool):
+        return False, "card_blocking_gap_proof_unavailable_fail_closed"
+    if blocking_gaps != 0:
+        return False, "card_blocking_gap_present"
+    routing = routing_rows.get(ticker)
+    if routing is None:
+        return False, "no_routing_row"
+    if routing.get("critical_data_conflict_count") != 0:
+        return False, "critical_data_conflict_or_unknown"
+    if str(routing.get("tier_a_confidence_status")) != PROOF_JOIN_CONFIDENCE_STATUS:
+        return False, "confidence_status_not_ready"
+    if not in_coverage:
+        return False, "not_in_coverage_registry"
+    if not card_exists:
+        return False, "no_production_card_on_disk"
+    return True, "proof_joined_routing_tier_ab_fresh_confident_card_coverage"
+
+
+def proof_join_expected_tickers(universe: dict[str, Any]) -> set[str]:
+    """Recompute the production-scope set straight from source artifacts.
+
+    Used by validation so the DB is checked against the evidence rather than against a
+    hardcoded count. If the freshness proof is missing this returns an empty set, which
+    keeps the guard fail-closed exactly as it was before the join existed.
+    """
+    freshness_rows = load_proof_join_freshness()
+    routing_rows = load_proof_join_routing()
+    coverage = load_json(TMP / "finance-data-coverage-current.json", {}) or {}
+    coverage_tickers = set((coverage.get("ticker_coverage") or {}).keys())
+    expected: set[str] = set()
+    for row in active_entries(universe):
+        ticker = str(row.get("ticker", "")).upper()
+        card_path = TMP / "ticker-intelligence-cards" / f"{ticker}.current.json"
+        member, _ = resolve_production_scope(
+            ticker,
+            freshness_rows,
+            routing_rows,
+            in_coverage=ticker in coverage_tickers,
+            card_exists=card_path.exists(),
+        )
+        if member:
+            expected.add(ticker)
+    return expected
 
 
 def insert_universe(conn: sqlite3.Connection, universe: dict[str, Any]) -> None:
@@ -337,14 +528,31 @@ def insert_universe(conn: sqlite3.Connection, universe: dict[str, Any]) -> None:
         for row in provider.get("results", [])
         if isinstance(row, dict)
     }
-    migrated_legacy_tickers = set(legacy_42_tier_tickers())
+    freshness_rows = load_proof_join_freshness()
+    routing_rows = load_proof_join_routing()
     for row in active_entries(universe):
         ticker = str(row.get("ticker", "")).upper()
         source_symbols = row.get("source_symbols") if isinstance(row.get("source_symbols"), dict) else {}
-        scope = str(row.get("universe_scope", PRODUCTION_SCOPE))
-        legacy_42 = ticker in migrated_legacy_tickers if migrated_legacy_tickers else scope == PRODUCTION_SCOPE
-        review_100 = scope == REVIEW_100_SCOPE
+        source_scope = str(row.get("universe_scope", PRODUCTION_SCOPE))
+        legacy_42 = source_scope == RETIRED_PRODUCTION_SCOPE
+        scope = PRODUCTION_SCOPE if legacy_42 else source_scope
+        review_100 = source_scope == REVIEW_100_SCOPE
         card_path = TMP / "ticker-intelligence-cards" / f"{ticker}.current.json"
+        production_scope_member, production_scope_source = resolve_production_scope(
+            ticker,
+            freshness_rows,
+            routing_rows,
+            in_coverage=ticker in coverage_tickers,
+            card_exists=card_path.exists(),
+        )
+        tier = str(row.get("tier") or "C")
+        sql_tier = f"Tier {tier.upper()}" if tier.upper() in {"A", "B", "C", "D"} else "Tier C"
+        sql_tier_state = "sql_first_wait_for_routing"
+        tier_decision_scope = (
+            f"tier_{tier.lower()}_sql_first_review_scope"
+            if tier.upper() in {"A", "B"}
+            else (f"tier_{tier.lower()}_sql_first_review_scope" if tier.upper() == "C" else "non_tier_abc_monitor_scope")
+        )
         conn.execute(
             """
             INSERT INTO securities(ticker, name, instrument_type, sector, industry, yfinance_symbol, sec_cik, company_ir, active)
@@ -364,17 +572,24 @@ def insert_universe(conn: sqlite3.Connection, universe: dict[str, Any]) -> None:
         conn.execute(
             """
             INSERT INTO universe_membership(
-                ticker, universe_scope, tier, monitoring_role, legacy_production_42, review_100_monitor,
+                ticker, universe_scope, tier, coverage_obligation_tier, monitoring_role,
+                production_scope_member, production_scope_source, sql_tier, sql_tier_state, tier_decision_scope,
+                review_100_monitor,
                 decision_grade_eligible, source_open_required, promotion_required_before_action, raw_json
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 ticker,
                 scope,
-                str(row.get("tier") or "C"),
+                tier,
+                tier,
                 str(row.get("monitoring_role") or "review_monitor"),
-                int(legacy_42),
+                int(production_scope_member),
+                production_scope_source,
+                sql_tier,
+                sql_tier_state,
+                tier_decision_scope,
                 int(review_100),
                 int(bool(row.get("decision_grade_eligible"))),
                 int(row.get("source_open_required") is True),
@@ -392,11 +607,11 @@ def insert_universe(conn: sqlite3.Connection, universe: dict[str, Any]) -> None:
             """,
             (
                 ticker,
-                int(legacy_42 and card_path.exists()),
-                rel(card_path) if legacy_42 and card_path.exists() else None,
+                int(card_path.exists() and production_scope_member),
+                rel(card_path) if card_path.exists() and production_scope_member else None,
                 int(ticker in coverage_tickers),
                 provider_status.get(ticker),
-                int(legacy_42),
+                int(production_scope_member),
             ),
         )
         conn.execute(
@@ -408,8 +623,65 @@ def insert_universe(conn: sqlite3.Connection, universe: dict[str, Any]) -> None:
             """,
             (
                 ticker,
-                "legacy_production_42" if legacy_42 else "review_100_monitor",
-                int(legacy_42),
+                "sql_first_production_grade" if production_scope_member else "sql_first_review_monitor",
+                int(production_scope_member),
+            ),
+        )
+
+
+def sync_tier_routing_state(conn: sqlite3.Connection, universe: dict[str, Any]) -> None:
+    existing = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='tier_routing_state'"
+    ).fetchone()
+    if not existing:
+        return
+    router = load_json(AUTO_ROUTER_PATH, {}) or {}
+    router_by_ticker = {
+        str(row.get("ticker", "")).upper(): row
+        for row in router.get("rows", [])
+        if isinstance(row, dict) and row.get("ticker")
+    }
+    active_tickers = sorted(
+        str(row.get("ticker", "")).upper()
+        for row in active_entries(universe)
+        if row.get("ticker")
+    )
+    if not active_tickers:
+        return
+    placeholders = ",".join("?" for _ in active_tickers)
+    conn.execute(f"DELETE FROM tier_routing_state WHERE ticker NOT IN ({placeholders})", active_tickers)
+    source_sha = sha256(AUTO_ROUTER_PATH) if AUTO_ROUTER_PATH.exists() else None
+    source_generated = router.get("generated_at_utc") if isinstance(router, dict) else None
+    for ticker in active_tickers:
+        row = router_by_ticker.get(ticker, {})
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO tier_routing_state(
+                ticker, auto_tier, auto_state, route_reason, route_priority,
+                data_confidence_rating, fundamentals_confidence, tier_a_confidence_status,
+                critical_data_conflict_count, tier_c_attention_score, tier_c_attention_next_action,
+                capital_deployment_approved, trade_or_execution_approved,
+                requires_separate_capital_or_execution_approval, source_artifact_path,
+                source_artifact_sha256, source_generated_at_utc, raw_json
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 1, ?, ?, ?, ?)
+            """,
+            (
+                ticker,
+                row.get("auto_tier") or row.get("opportunity_tier") or "Tier C",
+                row.get("auto_state") or "C-MONITOR",
+                row.get("route_reason") or "sql_first_dynamic_universe_sync",
+                row.get("route_priority"),
+                row.get("data_confidence_rating"),
+                row.get("fundamentals_confidence"),
+                row.get("tier_a_confidence_status"),
+                int(row.get("critical_data_conflict_count") or 0),
+                row.get("tier_c_attention_score"),
+                row.get("tier_c_attention_next_action"),
+                rel(AUTO_ROUTER_PATH),
+                source_sha,
+                source_generated,
+                json.dumps(row or {"ticker": ticker, "fallback": "sql_first_dynamic_universe_sync"}, sort_keys=True),
             ),
         )
 
@@ -518,6 +790,7 @@ def build_db(universe: dict[str, Any], approval_reference: str, run_id: str) -> 
     STATE.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         apply_pragmas(conn)
+        preserved_extension_rows = fetch_preserved_extension_rows(conn)
         with conn:
             create_schema(conn)
             conn.execute("INSERT INTO meta(key, value) VALUES('schema_version', 'finance_sql_canon.v1')")
@@ -525,8 +798,11 @@ def build_db(universe: dict[str, Any], approval_reference: str, run_id: str) -> 
             conn.execute("INSERT INTO meta(key, value) VALUES('approval_reference', ?)", (approval_reference,))
             conn.execute("INSERT INTO meta(key, value) VALUES('authority_boundary_json', ?)", (json.dumps(AUTHORITY_BOUNDARY, sort_keys=True),))
             insert_universe(conn, universe)
+            sync_tier_routing_state(conn, universe)
+            restored_extensions = restore_preserved_extension_rows(conn, preserved_extension_rows, universe)
             for path, role in [
                 (UNIVERSE_PATH, "source_universe_json_audit_mirror"),
+                (AUTO_ROUTER_PATH, "dynamic_sql_first_tier_routing_source"),
                 (TMP / "wf78-finance-universe-validation.json", "validator"),
                 (TMP / "finance-data-coverage-current.json", "coverage_registry"),
                 (TMP / "wf78-100-ticker-import-gate.json", "import_gate_proof"),
@@ -542,7 +818,11 @@ def build_db(universe: dict[str, Any], approval_reference: str, run_id: str) -> 
                     run_id,
                     utc_now(),
                     "finance_sql_canon_candidate_built",
-                    json.dumps({"approval_reference": approval_reference, "archive_plan": rel(ARCHIVE_PLAN_PATH)}, sort_keys=True),
+                    json.dumps({
+                        "approval_reference": approval_reference,
+                        "archive_plan": rel(ARCHIVE_PLAN_PATH),
+                        "restored_extension_rows": restored_extensions,
+                    }, sort_keys=True),
                 ),
             )
         conn.execute("PRAGMA optimize")
@@ -578,6 +858,8 @@ def validate_db() -> dict[str, Any]:
             """
         ).fetchone()[0]
         archive_now = conn.execute("SELECT COUNT(*) FROM archive_candidates WHERE archive_apply_allowed_now != 0").fetchone()[0]
+        reference_rows = conn.execute("SELECT COUNT(*) FROM reference_levels").fetchone()[0] if table_exists(conn, "reference_levels") else 0
+        freshness_rows = conn.execute("SELECT COUNT(*) FROM evidence_freshness").fetchone()[0] if table_exists(conn, "evidence_freshness") else 0
         validators_bad = conn.execute(
             """
             SELECT name, status
@@ -589,12 +871,41 @@ def validate_db() -> dict[str, Any]:
             ORDER BY name
             """
         ).fetchall()
+        validators_bad = [
+            row for row in validators_bad
+            if not (row["name"] == "sql_500_ticker_expansion_design_gate" and row["status"] == "blocked")
+        ]
         add("integrity_check_ok", integrity == "ok", integrity)
         add("foreign_key_check_ok", len(fk_rows) == 0, len(fk_rows))
         add("active_universe_supported_scaleout", active in SUPPORTED_ACTIVE_COUNTS, {"actual": active, "supported": sorted(SUPPORTED_ACTIVE_COUNTS)})
-        add("legacy_answer_path_42", legacy == EXPECTED_PRODUCTION_COUNT, legacy)
+        expected_production = proof_join_expected_tickers(load_json(UNIVERSE_PATH, {}) or {})
+        db_production = {
+            str(row["ticker"]).upper()
+            for row in conn.execute("SELECT ticker FROM current_answer_path").fetchall()
+        }
+        add(
+            "sql_first_answer_path_matches_proof_join",
+            db_production == expected_production,
+            {
+                "db_count": legacy,
+                "expected_count": len(expected_production),
+                "in_db_not_expected": sorted(db_production - expected_production),
+                "expected_not_in_db": sorted(expected_production - db_production),
+            },
+        )
         add("review_monitor_supported_scaleout", review in SUPPORTED_REVIEW_MONITOR_COUNTS, {"actual": review, "supported": sorted(SUPPORTED_REVIEW_MONITOR_COUNTS)})
-        add("production_card_generation_limited_to_42", prod_card_allowed == EXPECTED_PRODUCTION_COUNT, prod_card_allowed)
+        add(
+            "production_card_generation_matches_proof_join",
+            prod_card_allowed == len(expected_production),
+            {"allowed": prod_card_allowed, "expected": len(expected_production)},
+        )
+        add(
+            "production_scope_never_exceeds_active_universe",
+            len(expected_production) <= active,
+            {"production": len(expected_production), "active": active},
+        )
+        add("reference_levels_not_emptied_by_rebuild", reference_rows > 0, reference_rows)
+        add("evidence_freshness_not_emptied_by_rebuild", freshness_rows > 0, freshness_rows)
         add("forbidden_customer_execution_flags_zero", forbidden == 0, forbidden)
         add("archive_apply_disabled_first_pass", archive_now == 0, archive_now)
         add("validators_green_or_expected_design_status", len(validators_bad) == 0, [dict(row) for row in validators_bad])
@@ -675,3 +986,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

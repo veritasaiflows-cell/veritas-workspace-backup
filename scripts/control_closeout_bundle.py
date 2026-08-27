@@ -4,9 +4,9 @@
 This is a thin bundle over capabilities that already exist. It runs the
 repeatable-work closeout chain (route index, action scorer, event rerouting,
 truth-surface inventory, fast-path QA, artifact index, PM control), then
-refreshes the consolidated PM control packet and reports concurrent-lane-register
-health.
-It optionally validates the PM cockpit source registry.
+refreshes the consolidated PM control packet, refreshes the small set of
+cockpit-required live proofs that are not owned by the closeout chain, validates
+the PM cockpit source registry, and reports concurrent-lane-register health.
 
 It is validation/proof only: no canon/portfolio mutation, no SQL import, no
 archive/delete, no config/auth/runtime mutation, no customer/external delivery,
@@ -33,11 +33,17 @@ COCKPIT_DIR = ROOT / "apps" / "pm-control-cockpit"
 LANE_REGISTER = TMP / "concurrent-lane-register.json"
 PM_CONTROL = TMP / "pm-control-packet.json"
 CLOSEOUT = TMP / "repeatable-work-closeout.json"
+GREENKEEPER = TMP / "main-session-greenkeeper-controller.json"
+ESCALATION_CONSUMER = TMP / "main-session-escalation-consumer.json"
+ACTION_EXECUTOR = TMP / "main-session-action-executor.json"
+RELEASE_CONTRACT = TMP / "implementation-release-contract.json"
 SCHEMA = "veritas.control_closeout_bundle.v1"
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
-    "closeout_and_handoff_validation_only": True,
+    "closeout_handoff_and_allowlisted_pm_proof_only": True,
+    "executes_code_patches": False,
+    "spawns_helpers": False,
     "canon_or_portfolio_mutation_allowed": False,
     "sql_canon_mutation_allowed": False,
     "archive_or_delete_allowed": False,
@@ -137,6 +143,24 @@ def artifact_status(path: Path) -> dict[str, Any]:
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     steps: list[dict[str, Any]] = []
 
+    steps.append(run_step(
+        "implementation_release_contract_pre_closeout",
+        py_cmd("scripts\\implementation_release_contract.py", "--phase", "advisory", "--write", "--validate"),
+        180,
+    ))
+
+    steps.append(run_step(
+        "response_recommendation_contract_lint_self_test",
+        py_cmd("scripts\\response_recommendation_contract_lint.py", "--self-test", "--write", "--validate"),
+        120,
+    ))
+
+    steps.append(run_step(
+        "cockpit_live_required_source_refresh",
+        py_cmd("scripts\\wf78_tier_capacity_policy_gate.py", "--write", "--write-db", "--validate"),
+        240,
+    ))
+
     closeout_cmd = py_cmd("scripts\\repeatable_work_closeout.py", "--validation-budget", args.validation_budget, "--write", "--validate")
     if args.continue_on_failure:
         closeout_cmd.append("--continue-on-failure")
@@ -149,19 +173,85 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     ))
 
     steps.append(run_step(
+        "main_session_escalation_consumer",
+        py_cmd(
+            "scripts\\main_session_escalation_consumer.py",
+            "--context",
+            "closeout",
+            "--refresh-frontdoors",
+            "--execute-safe",
+            "--write",
+            "--validate",
+            "--append-ledger",
+        ),
+        1200,
+    ))
+
+    steps.append(run_step(
+        "pm_control_packet_after_escalation_consumer",
+        py_cmd("scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"),
+        240,
+    ))
+
+    steps.append(run_step(
+        "main_session_greenkeeper_controller",
+        py_cmd(
+            "scripts\\main_session_greenkeeper_controller.py",
+            "--refresh-frontdoors",
+            "--execute-safe",
+            "--write",
+            "--validate",
+            "--append-ledger",
+        ),
+        600,
+    ))
+
+    steps.append(run_step(
+        "pm_control_packet_after_greenkeeper",
+        py_cmd("scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"),
+        240,
+    ))
+
+    steps.append(run_step(
+        "main_session_action_executor",
+        py_cmd(
+            "scripts\\main_session_action_executor.py",
+            "--context",
+            "closeout",
+            "--execute-safe",
+            "--write",
+            "--validate",
+            "--append-ledger",
+        ),
+        1500,
+    ))
+
+    steps.append(run_step(
+        "pm_control_packet_after_action_executor",
+        py_cmd("scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"),
+        240,
+    ))
+
+    steps.append(run_step(
+        "implementation_release_contract_post_producers",
+        py_cmd("scripts\\implementation_release_contract.py", "--phase", "advisory", "--write", "--validate"),
+        180,
+    ))
+
+    steps.append(run_step(
         "concurrent_lane_register_status",
         py_cmd("scripts\\concurrent_lane_manager.py", "--status", "--validate"),
         120,
     ))
 
-    if args.cockpit_validate:
+    if not args.skip_cockpit_validate:
         npm = shutil.which("npm") or shutil.which("npm.cmd")
         if npm and COCKPIT_DIR.exists():
             steps.append(run_step("pm_cockpit_validate", [npm, "run", "validate"], 240, cwd=COCKPIT_DIR))
         else:
             steps.append(failed_step("pm_cockpit_validate", "requested but npm not found on PATH or cockpit dir missing"))
     else:
-        steps.append(skipped_step("pm_cockpit_validate", "not requested (pass --cockpit-validate to enable)"))
+        steps.append(skipped_step("pm_cockpit_validate", "skipped by --skip-cockpit-validate"))
 
     failed = [s["name"] for s in steps if not s.get("ok")]
     status = "ok" if not failed else "blocked"
@@ -170,7 +260,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
         "status": status,
-        "purpose": "Single control-closeout bundle: closeout chain + workflow handoff + lane-register health + optional cockpit validate.",
+        "purpose": "Single control-closeout bundle: live cockpit-source refresh + closeout chain + cron escalation consumer + greenkeeper + one allowlisted PM proof pickup + workflow handoff + lane-register health + cockpit validate.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "summary": {
             "steps_run": len(steps),
@@ -178,6 +268,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "lane_register": lane_register_health(),
             "closeout_artifact": artifact_status(CLOSEOUT),
             "pm_control_artifact": artifact_status(PM_CONTROL),
+            "escalation_consumer_artifact": artifact_status(ESCALATION_CONSUMER),
+            "greenkeeper_artifact": artifact_status(GREENKEEPER),
+            "action_executor_artifact": artifact_status(ACTION_EXECUTOR),
+            "implementation_release_contract": artifact_status(RELEASE_CONTRACT),
             "next_safe_action": (
                 "Use fast-path QA + PM control packet as pickup proof; pick the next safe PM job."
                 if status == "ok"
@@ -191,7 +285,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "warnings": [],
         },
         "stop_lines": [
-            "Validation/proof only; reuses existing closeout, handoff, and lane-register tooling.",
+            "Validation/proof only; may consume allowlisted cron escalation repairs and run one allowlisted PM proof job through main_session_action_executor.",
             "No canon/portfolio/SQL mutation, archive/delete, config/auth/runtime change, or customer delivery.",
             "No capital deployment, trade/paper/live/account action, money movement, or owner approval inference.",
         ],
@@ -203,7 +297,8 @@ def main() -> int:
     parser.add_argument("--write", action="store_true", help="Write the bundle artifact.")
     parser.add_argument("--validate", action="store_true", help="Return non-zero when status is blocked.")
     parser.add_argument("--continue-on-failure", action="store_true", help="Pass through to the closeout chain.")
-    parser.add_argument("--cockpit-validate", action="store_true", help="Also run the PM cockpit source-registry validate (requires npm).")
+    parser.add_argument("--cockpit-validate", action="store_true", help="Deprecated no-op: cockpit validation now runs by default.")
+    parser.add_argument("--skip-cockpit-validate", action="store_true", help="Skip PM cockpit source-registry validation.")
     parser.add_argument("--record-completion", action="store_true", help="Append this successful closeout to the implementation completion ledger.")
     parser.add_argument("--completion-job-id", default=None, help="Job id to use when --record-completion is set.")
     parser.add_argument("--completion-title", default=None, help="Job title to use when --record-completion is set.")

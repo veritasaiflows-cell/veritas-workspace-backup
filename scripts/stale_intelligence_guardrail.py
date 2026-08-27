@@ -64,6 +64,10 @@ def section_between(text: str, start_marker: str, end_pattern: str) -> str:
     return rest[: m.start()]
 
 
+def current_deployable_section(text: str) -> str:
+    return section_between(text, "**Deployable now:**", r"^\s*-?\s*\*\*[^\n]+:\*\*")
+
+
 def ticker_section(text: str, ticker: str) -> str:
     m = re.search(rf"(?ms)^###\s+{re.escape(ticker)}\b.*?(?=^###\s+|^---\s*$|\Z)", text)
     return m.group(0) if m else ""
@@ -87,7 +91,7 @@ def evaluate() -> dict[str, Any]:
     config = load_json(CONFIG_ARTIFACT)
     bands = config.get("entry_bands", {}) if isinstance(config.get("entry_bands"), dict) else {}
 
-    deployable_section = section_between(wpr, "**Deployable now:**", r"^\*\*[^\n]+:\*\*")
+    deployable_section = current_deployable_section(wpr)
     if "JPM" in deployable_section:
         add(findings, "critical", WPR, "jpm_still_in_deployable_now", "Weekly Positioning Review still lists JPM in the current Deployable now section.", deployable_section)
     if re.search(r"JPM[^\n]{0,120}(deployable-now|DEPLOYABLE NOW|Deployable now)", wpr):
@@ -138,7 +142,8 @@ def evaluate() -> dict[str, Any]:
         if artifact_close is not None and band.get("high") is not None:
             close = float(artifact_close)
             high = float(band["high"])
-            if high and 0 <= (high - close) / high <= 0.01 and not re.search(r"no-chase|no chase|near the upper", etn_section, re.I):
+            no_chase_visible = bool(re.search(r"no-chase|no chase|do not chase|near the upper", etn_section or tech, re.I))
+            if high and 0 <= (high - close) / high <= 0.01 and not no_chase_visible:
                 add(findings, "critical", TECH, "etn_no_chase_missing", "ETN is within 1% of band top but the Execution Board does not make no-chase discipline visible.", etn_section)
     except (TypeError, ValueError):
         pass

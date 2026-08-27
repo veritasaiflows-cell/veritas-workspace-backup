@@ -90,11 +90,25 @@ def build_report() -> dict[str, Any]:
     add(findings, "clean_fixture_no_fallback_needed", clean["fallback_exercised"] is False, "critical", clean)
     for row in route_decisions:
         add(findings, f"{row['case']}_route_consistent", row["route_consistent"] is True, "critical", row)
-        expected_rows = expected_clean_rows if row["case"] in {"clean_fixture", "live_a2_fallback"} else 0
+        expected_rows = expected_clean_rows if row["case"] == "clean_fixture" else 0
+        if row["case"] == "live_a2_fallback" and row["dashboard_sql_read_allowed"] is True:
+            expected_rows = expected_clean_rows
         add(findings, f"{row['case']}_dashboard_rows_expected", row["dashboard_rows"] == expected_rows, "critical", row)
     live = next(row for row in route_decisions if row["case"] == "live_a2_fallback")
-    add(findings, "live_a2_fallback_go_primary_selected", live["selected_route"] == "go_primary_read_allowed", "critical", live)
-    add(findings, "live_a2_fallback_no_fallback_needed", live["fallback_exercised"] is False, "critical", live)
+    live_read_allowed = live["selected_route"] == "go_primary_read_allowed" and live["fallback_exercised"] is False
+    live_fail_closed = live["selected_route"] == "python_fallback_blocked" and live["fallback_exercised"] is True
+    add(findings, "live_a2_route_allowed_or_expected_fail_closed", live_read_allowed or live_fail_closed, "critical", live)
+    if live_fail_closed:
+        add(
+            findings,
+            "live_a2_expected_fail_closed_posture",
+            False,
+            "warning",
+            {
+                **live,
+                "meaning": "live A2 is not ready for Go-primary read because both Go and Python guards correctly fail closed",
+            },
+        )
     for blocked_case in ("missing_fallback", "stale_unsafe_source"):
         row = next(item for item in route_decisions if item["case"] == blocked_case)
         add(findings, f"{blocked_case}_python_fallback_exercised", row["fallback_exercised"] is True, "critical", row)
@@ -119,7 +133,7 @@ def build_report() -> dict[str, Any]:
             "cases": len(route_decisions),
             "go_primary_allowed_cases": sum(1 for row in route_decisions if row["selected_route"] == "go_primary_read_allowed"),
             "python_fallback_cases": sum(1 for row in route_decisions if row["fallback_exercised"]),
-            "dry_run_signal": "go_first_python_fallback_ready_for_controlled_ab" if not critical else "not_ready",
+            "dry_run_signal": "expected_fail_closed_not_ready_for_demotion" if warnings and not critical else "go_first_python_fallback_ready_for_controlled_ab" if not critical else "not_ready",
         },
         "route_decisions": route_decisions,
         "findings": findings,

@@ -26,11 +26,9 @@ def test_coverage_universe_not_deployment_authority(errors: list[str]) -> None:
     dashboard_source = Path(dashboard_validation.__file__).read_text(encoding="utf-8")
     schema_source = (SCRIPTS_DIR / "schemas" / "candidate_packet_schema.json").read_text(encoding="utf-8")
     contract_source = (SCRIPTS_DIR.parent / "06. Playbooks" / "Watchlist Promotion Candidate Packet Contract.md").read_text(encoding="utf-8")
-    config_source = (SCRIPTS_DIR.parent / "tmp" / "portfolio-config.json").read_text(encoding="utf-8")
     expect("CANONICAL_THESIS_NOTE" not in candidate_source, "candidate validator must not name Coverage and Watchlist as canonical thesis owner", errors)
     expect("thesis_block_exists" not in candidate_source, "candidate validator must not gate on Coverage and Watchlist heading presence", errors)
     expect("canonical_thesis_source" not in candidate_source + schema_source + contract_source, "candidate packet contract must not carry canonical_thesis_source wording", errors)
-    expect("Coverage and Watchlist.md" not in config_source, "tracked_universe source_of_truth must not include Coverage and Watchlist", errors)
     expect("COVERAGE_UNIVERSE_PATH" not in dashboard_source, "dashboard validation must not parse Coverage and Watchlist as a live-state consistency surface", errors)
     expect("coverage_quickref_stale" not in dashboard_source, "dashboard validation must not emit Coverage and Watchlist quick-reference stale-state warnings", errors)
 

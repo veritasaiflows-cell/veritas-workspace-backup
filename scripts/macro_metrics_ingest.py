@@ -65,10 +65,12 @@ CPI_RELEASE_COMPONENT_LABELS = {
 }
 
 CPI_NARRATIVE_COMPONENT_PATTERNS = {
-    "owners_equivalent_rent": r"owners' equivalent rent rose ([+-]?\d+(?:\.\d+)?) percent in May",
-    "rent_of_primary_residence": r"index for rent increased ([+-]?\d+(?:\.\d+)?) percent",
-    "lodging_away_from_home": r"lodging away from home index also rose ([+-]?\d+(?:\.\d+)?) percent",
+    "owners_equivalent_rent": r"owners['\u2019] equivalent rent (?P<direction>rose|increased|fell|declined|decreased) (?P<value>[+-]?\d+(?:\.\d+)?) percent(?: in [A-Za-z]+| over the month)?",
+    "rent_of_primary_residence": r"index for rent (?P<direction>rose|increased|fell|declined|decreased) (?P<value>[+-]?\d+(?:\.\d+)?) percent(?: in [A-Za-z]+| over the month)?",
+    "lodging_away_from_home": r"lodging away from home index (?:also )?(?P<direction>rose|increased|fell|declined|decreased) (?P<value>[+-]?\d+(?:\.\d+)?) percent(?: in [A-Za-z]+| over the month)?",
 }
+
+CPI_NARRATIVE_NEGATIVE_DIRECTIONS = {"fell", "declined", "decreased"}
 
 SERIES: dict[str, dict[str, Any]] = {
     "cpi_headline": {
@@ -344,6 +346,22 @@ def parse_float(value: Any) -> float | None:
         return None
 
 
+def narrative_change_pct(match: re.Match[str]) -> float | None:
+    """Return a direction-normalized CPI narrative percentage.
+
+    BLS narrative prose commonly reports an unsigned magnitude after a verb
+    such as ``rose`` or ``fell``.  Preserve fail-closed behavior when either
+    field is unavailable and normalize negative-direction verbs explicitly.
+    """
+    value = parse_float(match.group("value"))
+    direction = str(match.group("direction") or "").lower()
+    if value is None or not direction:
+        return None
+    if direction in CPI_NARRATIVE_NEGATIVE_DIRECTIONS:
+        return -abs(value)
+    return abs(value)
+
+
 def parse_bls_cpi_release_html(html: str, source_url: str = BLS_CPI_RELEASE_URL) -> dict[str, Any]:
     plain = html_to_text(html)
     parser = HtmlTableRowParser()
@@ -378,7 +396,7 @@ def parse_bls_cpi_release_html(html: str, source_url: str = BLS_CPI_RELEASE_URL)
                     "key": key,
                     "label": key.replace("_", " "),
                     "source_table": "BLS CPI release narrative",
-                    "latest_mom_pct": parse_float(match.group(1)),
+                    "latest_mom_pct": narrative_change_pct(match),
                     "previous_mom_pct": None,
                     "yoy_pct": None,
                     "raw_text_match": match.group(0),

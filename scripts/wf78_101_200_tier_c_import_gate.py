@@ -30,7 +30,7 @@ from finance_universe_validator import (  # noqa: E402
     with_summary,
 )
 from market_data_utils import atomic_write_json, load_json_artifact  # noqa: E402
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers  # noqa: E402
+from finance_production_scope import production_tickers as production_scope_tickers  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -42,7 +42,7 @@ SCHEMA = "veritas.wf78_101_200_tier_c_import_gate.v1"
 
 EXPECTED_BATCH = "101-200"
 EXPECTED_TICKER_COUNT = 100
-PRODUCTION_SCOPE = "production_current_42"
+PRODUCTION_SCOPE = "strategic_production_grade"
 ACCEPTABLE_OWNER_PACKET_STATUSES = {
     "decision_required",
     "approved_tier_c_review_monitor_only",
@@ -247,7 +247,7 @@ def build_report(apply: bool, approval_reference: str, universe_path: Path = DEF
     universe = load_dict(universe_path)
     entries = [row for row in as_list(universe.get("entries")) if isinstance(row, dict)]
     active_symbols = {normalize_ticker(row.get("ticker")) for row in entries if row.get("active") is not False}
-    production_symbols = set(legacy_42_tier_tickers()) or {
+    production_symbols = set(production_scope_tickers()) or {
         normalize_ticker(row.get("ticker"))
         for row in entries
         if row.get("active") is not False and row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE
@@ -294,7 +294,7 @@ def build_report(apply: bool, approval_reference: str, universe_path: Path = DEF
     idempotent_approval_present = idempotent_already_imported and len(imported_packet_entries) == EXPECTED_TICKER_COUNT and bool(imported_approval_refs)
     effective_approval_reference = approval_reference.strip() or ("; ".join(imported_approval_refs) if idempotent_approval_present else "")
     effective_approval_present = bool(effective_approval_reference)
-    post_production_tickers = set(legacy_42_tier_tickers()) or {
+    post_production_tickers = set(production_scope_tickers()) or {
         normalize_ticker(row.get("ticker"))
         for row in post_entries
         if row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE
@@ -379,3 +379,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

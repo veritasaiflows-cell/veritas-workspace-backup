@@ -23,7 +23,7 @@ SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
 
 TMP = ROOT / "tmp"
 DATA = ROOT / "data"
@@ -129,7 +129,7 @@ def universe_rows() -> list[dict[str, Any]]:
 
 
 def current_tickers() -> set[str]:
-    migrated = set(legacy_42_tier_tickers())
+    migrated = set(production_scope_tickers())
     if migrated:
         return migrated
     return {
@@ -137,7 +137,7 @@ def current_tickers() -> set[str]:
         for row in universe_rows()
         if isinstance(row, dict)
         and row.get("active") is True
-        and row.get("universe_scope", "production_current_42") == "production_current_42"
+        and row.get("production_scope") is True
     }
 
 
@@ -282,3 +282,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

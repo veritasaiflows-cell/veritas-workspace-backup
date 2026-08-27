@@ -1,12 +1,12 @@
 {
   "ticker": "PLTR",
   "name": "Palantir Technologies Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
     "start": "2020-09",
-    "end": "2026-05"
+    "end": "2026-08"
   },
   "data": [
     {
@@ -556,10 +556,34 @@
     {
       "d": "2026-05",
       "o": 143.25,
-      "h": 149.64,
-      "l": 131.15,
-      "c": 137.8,
-      "v": 382.31
+      "h": 157.78,
+      "l": 128.75,
+      "c": 156.54,
+      "v": 901.19
+    },
+    {
+      "d": "2026-06",
+      "o": 159.98,
+      "h": 163.7,
+      "l": 106.37,
+      "c": 116.67,
+      "v": 894.39
+    },
+    {
+      "d": "2026-07",
+      "o": 120.05,
+      "h": 138.9,
+      "l": 117.89,
+      "c": 123.06,
+      "v": 800.47
+    },
+    {
+      "d": "2026-08",
+      "o": 126.7,
+      "h": 182.44,
+      "l": 123.66,
+      "c": 179.94,
+      "v": 785.52
     }
   ],
   "macro_regimes": {
@@ -621,30 +645,32 @@
     "high": 149.53,
     "stop": 131.29,
     "set": "2026-05-06",
-    "label": "137.37–149.53"
+    "label": "137.37-149.53"
   },
   "current_quote": {
-    "close": 137.8,
-    "ma20": 141.23,
-    "ma50": 145.7,
-    "ma200": 163.93,
-    "data_date": "2026-05-08"
+    "close": 179.94,
+    "ma20": 157.27,
+    "ma50": 138.93,
+    "ma200": 151.51,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "DUAL_MA_RECLAIM",
-    "type": "VAULT_RECLAIM",
-    "status": "BELOW_STOP",
-    "trend_stack": "BELOW_ALL_MAS",
-    "suggested_low": 163.93,
-    "suggested_high": 171.61,
-    "suggested_stop": 157.79,
-    "sma_envelope_low": 137.49,
-    "sma_envelope_high": 151.97,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "ABOVE_BAND_WAIT",
+    "trend_stack": "ABOVE_ALL_MAS",
+    "suggested_low": 139.89,
+    "suggested_high": 163.76,
+    "suggested_stop": 129.04,
+    "sma_envelope_low": 140.66,
+    "sma_envelope_high": 155.46,
     "earnings_state": "CLEAR",
-    "band_confidence": 2,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
     "needs_review": true,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:37+00:00"
+  "generated_at": "2026-08-21T20:32:23+00:00"
 }

@@ -156,6 +156,16 @@ def write_minimal_sources(paths: dict[str, Path], *, daylight_blocked: bool = Fa
     }
     write_json(paths["autonomous_routing_cards"], autonomous)
 
+    visibility = base_payload("ok")
+    visibility["summary"] = {
+        "candidate_count": 3,
+        "owner_review_ready_count": 0,
+        "market_refresh_pending_count": 2,
+        "gate_deferred_count": 1,
+        "repair_or_wait_count": 0,
+    }
+    write_json(paths["wf85_visibility_queue"], visibility)
+
     cron = base_payload("blocked")
     cron["summary"] = {"job_count": 52, "enabled_job_count": 34, "blocked_count": 1, "urgent_attention_count": 1}
     write_json(paths["cron_freshness"], cron)
@@ -182,6 +192,8 @@ def test_command_center_quiets_expected_collecting_data_state() -> None:
         assert payload["summary"]["morning_card_execution_allowed_count"] == 0
         assert payload["summary"]["autonomous_card_execution_allowed_now"] is False
         assert payload["summary"]["autonomous_execution_allowed_now"] is False
+        assert payload["summary"]["wf85_visibility_candidate_count"] == 3
+        assert payload["summary"]["wf85_visibility_market_refresh_pending_count"] == 2
         assert payload["validation"]["status"] == "ok"
 
 

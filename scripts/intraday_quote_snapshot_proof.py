@@ -24,6 +24,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PORTFOLIO_CONFIG = ROOT / "tmp" / "portfolio-config.json"
 DEFAULT_WF78_AUTO_ROUTER = ROOT / "tmp" / "wf78-auto-tier-routing.json"
 DEFAULT_WF78_CAPITAL_REVIEW_QUEUE = ROOT / "tmp" / "wf78-capital-review-queue.json"
+DEFAULT_WF85_NOTIFICATION_DIGEST = ROOT / "tmp" / "wf85-paper-deployment-notification-digest.json"
+DEFAULT_FINANCE_DECISION_SYNC = ROOT / "tmp" / "finance-decision-sync-spine.json"
+DEFAULT_BAND_HYGIENE_CONTROLLER = ROOT / "tmp" / "band-hygiene-freshness-controller.json"
 OUT_DIR = ROOT / "tmp" / "intraday-alerts"
 DEFAULT_JSON_OUTPUT = OUT_DIR / "quote-snapshot-proof.json"
 DEFAULT_MD_OUTPUT = OUT_DIR / "quote-snapshot-proof.md"
@@ -50,6 +53,13 @@ AMBIGUOUS_OR_LIVE_NAMES = {
 }
 DEFAULT_SYMBOL_COUNT = 10
 DEFAULT_EXTRA_SYMBOLS = ["ETN"]
+DECISION_SYNC_QUOTE_STATES = {
+    "blocked_missing_freshness",
+    "entry_policy_review_required",
+    "in_band_not_clean",
+    "paper_position_monitor",
+    "promotion_vetoed",
+}
 FRESH_SECONDS = 15 * 60
 CURRENT_SECONDS = 24 * 60 * 60
 
@@ -124,6 +134,60 @@ def symbols_from_capital_review_queue(path: Path) -> list[str]:
     return [str(row.get("ticker")) for row in rows if isinstance(row, dict) and isinstance(row.get("ticker"), str)]
 
 
+def symbols_from_wf85_notification_digest(path: Path) -> list[str]:
+    payload = load_json(path)
+    categories = payload.get("categories") if isinstance(payload.get("categories"), dict) else {}
+    symbols: list[str] = []
+    for rows in (categories.get("deployment_ready"), categories.get("near_deployment")):
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            if isinstance(row, dict) and isinstance(row.get("ticker"), str):
+                symbols.append(str(row["ticker"]))
+    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
+    for key in ("deployment_ready_tickers", "near_deployment_tickers"):
+        value = summary.get(key)
+        if isinstance(value, list):
+            symbols.extend(str(symbol) for symbol in value if isinstance(symbol, str))
+    return symbols
+
+
+def symbols_from_finance_decision_sync(path: Path) -> list[str]:
+    payload = load_json(path)
+    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
+    symbols: list[str] = []
+    for key, value in summary.items():
+        if key.endswith("_tickers") and isinstance(value, list):
+            symbols.extend(str(symbol) for symbol in value if isinstance(symbol, str))
+    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("ticker"), str):
+            continue
+        states = row.get("states") if isinstance(row.get("states"), list) else []
+        state_set = {str(state) for state in states}
+        if (
+            row.get("clean_for_paper_deployment_review") is True
+            or row.get("owner_action_required") is True
+            or bool(DECISION_SYNC_QUOTE_STATES.intersection(state_set))
+        ):
+            symbols.append(str(row["ticker"]))
+    return symbols
+
+
+def symbols_from_band_hygiene(path: Path) -> list[str]:
+    payload = load_json(path)
+    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
+    symbols: list[str] = []
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("ticker"), str):
+            continue
+        state = str(row.get("state") or "")
+        entry_policy_review = row.get("entry_policy_review") if isinstance(row.get("entry_policy_review"), dict) else {}
+        if (state and state != "clean_and_fresh") or entry_policy_review.get("candidate") is True:
+            symbols.append(str(row["ticker"]))
+    return symbols
+
+
 def append_unique(symbols: list[str], additions: list[str]) -> list[str]:
     result = list(symbols)
     for symbol in additions:
@@ -146,9 +210,15 @@ def load_symbols(config_path: Path, explicit_symbols: list[str] | None, wf78_aut
         symbols = append_unique(symbols, DEFAULT_EXTRA_SYMBOLS)
         tier_a_symbols = symbols_from_wf78_auto_router(wf78_auto_router)
         capital_review_symbols = symbols_from_capital_review_queue(wf78_capital_review_queue)
+        wf85_digest_symbols = symbols_from_wf85_notification_digest(DEFAULT_WF85_NOTIFICATION_DIGEST)
+        decision_sync_symbols = symbols_from_finance_decision_sync(DEFAULT_FINANCE_DECISION_SYNC)
+        band_hygiene_symbols = symbols_from_band_hygiene(DEFAULT_BAND_HYGIENE_CONTROLLER)
         symbols = append_unique(symbols, tier_a_symbols)
         symbols = append_unique(symbols, capital_review_symbols)
-        policy = "portfolio_first_10_plus_etn_plus_wf78_tier_a_plus_capital_review_queue"
+        symbols = append_unique(symbols, wf85_digest_symbols)
+        symbols = append_unique(symbols, decision_sync_symbols)
+        symbols = append_unique(symbols, band_hygiene_symbols)
+        policy = "portfolio_first_10_plus_etn_plus_wf78_wf85_finance_sync_band_hygiene_candidates"
     cleaned: list[str] = []
     for symbol in symbols:
         if not isinstance(symbol, str):
@@ -164,6 +234,9 @@ def load_symbols(config_path: Path, explicit_symbols: list[str] | None, wf78_aut
         "extra_symbols": DEFAULT_EXTRA_SYMBOLS,
         "wf78_auto_router": rel(wf78_auto_router),
         "wf78_capital_review_queue": rel(wf78_capital_review_queue),
+        "wf85_notification_digest": rel(DEFAULT_WF85_NOTIFICATION_DIGEST),
+        "finance_decision_sync": rel(DEFAULT_FINANCE_DECISION_SYNC),
+        "band_hygiene_controller": rel(DEFAULT_BAND_HYGIENE_CONTROLLER),
         "requested_symbol_count": len(cleaned),
     }
 

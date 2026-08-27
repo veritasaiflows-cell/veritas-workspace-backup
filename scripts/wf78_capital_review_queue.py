@@ -32,6 +32,9 @@ MARKET_HARDENING = TMP / "market-execution-readiness-cron-hardening.json"
 POST_CLOSE_FINAL_QUOTES = TMP / "post-close-final-quote-ledger.json"
 WF84_DB = TMP / "canonical-finance-data-plane.sqlite"
 WF84_PHASE = TMP / "canonical-finance-data-plane-phase6-10.json"
+WF85_FULL_ANSWER_DIR = TMP / "trade-grade-full-answer"
+WF85_DECISION_CARDS = TMP / "trade-grade-decision-cards.json"
+WF85_SOURCE_FRESHNESS_GATE = TMP / "trade-grade-source-freshness-gate.json"
 
 SCHEMA = "veritas.wf78_capital_review_queue.v1"
 
@@ -219,6 +222,113 @@ def canonical_summary(canonical: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def wf85_full_answer(ticker: str) -> dict[str, Any]:
+    return load_dict(WF85_FULL_ANSWER_DIR / f"{ticker_key(ticker)}.json")
+
+
+def wf85_decision_cards_index() -> dict[str, dict[str, Any]]:
+    return by_ticker(as_list(load_dict(WF85_DECISION_CARDS).get("cards")))
+
+
+def wf85_source_freshness_index() -> dict[str, dict[str, Any]]:
+    return by_ticker(as_list(load_dict(WF85_SOURCE_FRESHNESS_GATE).get("rows")))
+
+
+def wf85_current_decision_contract(
+    ticker: str,
+    wf78_queue_state: str,
+    decision_card: dict[str, Any],
+    source_freshness: dict[str, Any],
+) -> dict[str, Any]:
+    source_freshness = source_freshness or as_dict(decision_card.get("source_freshness"))
+    decision_state = decision_card.get("decision_state")
+    freshness_status = source_freshness.get("freshness_status") or source_freshness.get("status")
+    source_open_status = source_freshness.get("source_open_status")
+    decision_grade_allowed = decision_state == "review_ready"
+    may_use_approval_ready = decision_grade_allowed and freshness_status == "fresh" and source_open_status in {None, "verified"}
+    wf78_review_ready = wf78_queue_state == "A-DEPLOY-CANDIDATE-REVIEW-READY"
+    conflict = wf78_review_ready and not (decision_grade_allowed and may_use_approval_ready)
+    blockers = list(as_list(decision_card.get("decision_state_reason")))
+    blockers.extend(as_list(source_freshness.get("blockers")))
+    for family in as_list(source_freshness.get("missing_or_stale_families")):
+        family_dict = as_dict(family)
+        family_id = family_dict.get("family_id")
+        status = family_dict.get("status")
+        if family_id:
+            blockers.append(f"stale_or_missing_family:{family_id}:{status}")
+    if source_open_status not in {None, "verified"}:
+        blockers.append("source_open_not_verified")
+    return {
+        "source": rel(WF85_DECISION_CARDS),
+        "source_freshness_gate": rel(WF85_SOURCE_FRESHNESS_GATE),
+        "present": True,
+        "status": "ok",
+        "decision_state": decision_state,
+        "primary_state": decision_card.get("primary_state"),
+        "queue_state": decision_card.get("queue_state"),
+        "trade_grade": None,
+        "owner_action": (
+            "prepare_review_card"
+            if decision_grade_allowed and may_use_approval_ready
+            else "freshness_or_decision_repair_first"
+        ),
+        "source_open_status": source_open_status,
+        "freshness_status": freshness_status,
+        "decision_grade_claim_allowed": decision_grade_allowed,
+        "may_use_approval_ready_language": may_use_approval_ready,
+        "blockers": sorted(set(str(item) for item in blockers if item)),
+        "wf78_review_ready_conflicts_with_wf85": conflict,
+        "final_language_rule": (
+            "routing_candidate_not_decision_ready"
+            if conflict
+            else "wf85_allows_decision_language"
+            if decision_grade_allowed and may_use_approval_ready
+            else "wf85_decision_contract_required_before_approval_language"
+        ),
+    }
+
+
+def wf85_decision_contract(
+    ticker: str,
+    wf78_queue_state: str,
+    decision_card: dict[str, Any] | None = None,
+    source_freshness: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if decision_card:
+        return wf85_current_decision_contract(ticker, wf78_queue_state, decision_card, source_freshness or {})
+    packet = wf85_full_answer(ticker)
+    machine = as_dict(packet.get("machine_state"))
+    gate = as_dict(machine.get("decision_grade_gate"))
+    trade_grade = as_dict(machine.get("trade_grade"))
+    owner_action = as_dict(machine.get("owner_action"))
+    decision_state = machine.get("decision_state")
+    may_use_approval_ready = gate.get("may_use_approval_ready_language") is True
+    decision_grade_allowed = gate.get("decision_grade_claim_allowed") is True
+    wf78_review_ready = wf78_queue_state == "A-DEPLOY-CANDIDATE-REVIEW-READY"
+    conflict = wf78_review_ready and not (decision_grade_allowed and may_use_approval_ready)
+    return {
+        "source": rel(WF85_FULL_ANSWER_DIR / f"{ticker_key(ticker)}.json"),
+        "present": bool(packet),
+        "status": packet.get("status"),
+        "decision_state": decision_state,
+        "primary_state": machine.get("primary_state"),
+        "queue_state": machine.get("queue_state"),
+        "trade_grade": trade_grade.get("grade"),
+        "owner_action": owner_action.get("owner_action"),
+        "decision_grade_claim_allowed": decision_grade_allowed,
+        "may_use_approval_ready_language": may_use_approval_ready,
+        "blockers": as_list(gate.get("blockers")),
+        "wf78_review_ready_conflicts_with_wf85": conflict,
+        "final_language_rule": (
+            "routing_candidate_not_decision_ready"
+            if conflict
+            else "wf85_allows_decision_language"
+            if decision_grade_allowed and may_use_approval_ready
+            else "wf85_decision_contract_required_before_approval_language"
+        ),
+    }
+
+
 def current_band_status(price: float | None, low: float | None, high: float | None, stop: float | None) -> str:
     if price is None or low is None or high is None:
         return "UNKNOWN"
@@ -347,12 +457,18 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     post_close_quotes = load_dict(POST_CLOSE_FINAL_QUOTES)
 
     auto_rows = by_ticker(as_list(auto_router.get("rows")))
-    tier_a_rows = by_ticker(as_list(tier_a.get("rows")))
+    tier_a_deprecated = bool(tier_a) and (
+        as_dict(tier_a.get("deprecation_status")).get("deprecated_for_authority") is True
+        or TIER_A_PACKET.name == "wf78-tier-a-final-promotion-packet.json"
+    )
+    tier_a_rows = {} if tier_a_deprecated else by_ticker(as_list(tier_a.get("rows")))
     card_rows = by_ticker(as_list(card_summary.get("cards")))
     stale_rows = by_ticker(as_list(stale.get("stale_ticker_cards")))
     quote_snapshots = quote_snapshot_by_ticker(quote_proof)
     post_close_quote_rows = post_close_quote_by_ticker(post_close_quotes)
     canonical_rows = wf84_canonical_index()
+    wf85_decision_cards = wf85_decision_cards_index()
+    wf85_source_freshness = wf85_source_freshness_index()
     candidates = as_list(delta.get("capital_review_candidates"))
 
     rows: list[dict[str, Any]] = []
@@ -405,6 +521,17 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         effective_stale_row_present = bool(stale_row) and not quote_context["resolved_for_non_executing_review_card"] and not post_close_resolved
         effective_blockers, authority_cautions = effective_card_prep_blockers(blockers, quote_context)
         queue_state = readiness_state(effective_stale_count, effective_blockers, band_status)
+        wf85_contract = wf85_decision_contract(
+            ticker,
+            queue_state,
+            wf85_decision_cards.get(ticker),
+            wf85_source_freshness.get(ticker),
+        )
+        decision_ready = (
+            queue_state == "A-DEPLOY-CANDIDATE-REVIEW-READY"
+            and wf85_contract.get("decision_grade_claim_allowed") is True
+            and wf85_contract.get("may_use_approval_ready_language") is True
+        )
         rows.append({
             "ticker": ticker,
             "name": auto_row.get("name") or tier_row.get("name"),
@@ -436,6 +563,9 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             },
             "written_band": band,
             "wf84_canonical_data_plane": canonical_summary(canonical),
+            "wf78_semantic_role": "feeder_repair_event_routing_only",
+            "wf78_readiness_interpretation": "routing_candidate_not_decision_grade",
+            "wf85_decision_contract": wf85_contract,
             "current_price": effective_price,
             "current_band_status": band_status or None,
             "stop_or_invalidation": band.get("stop_or_invalidation"),
@@ -455,10 +585,11 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             "blockers": effective_blockers,
             "raw_blockers": blockers,
             "cautions": sorted(set(cautions + authority_cautions)),
-            "source_artifacts": sorted(set(as_list(tier_row.get("source_artifacts")) + [rel(AUTO_ROUTER), rel(ROUTING_DELTA), rel(QUOTE_PROOF), rel(MARKET_HARDENING), rel(POST_CLOSE_FINAL_QUOTES)])),
+            "source_artifacts": sorted(set(as_list(tier_row.get("source_artifacts")) + [rel(AUTO_ROUTER), rel(ROUTING_DELTA), rel(QUOTE_PROOF), rel(MARKET_HARDENING), rel(POST_CLOSE_FINAL_QUOTES), rel(WF85_DECISION_CARDS), rel(WF85_SOURCE_FRESHNESS_GATE)])),
             "owner_action_required": True,
             "requires_fresh_quote_band_stop_before_deployment_review": effective_stale_count > 0 or effective_stale_row_present,
-            "capital_review_card_preparable": queue_state == "A-DEPLOY-CANDIDATE-REVIEW-READY",
+            "capital_review_card_preparable": decision_ready,
+            "wf78_routing_candidate_preparable": queue_state == "A-DEPLOY-CANDIDATE-REVIEW-READY",
             "capital_deployment_approved": False,
             "trade_or_execution_approved": False,
             "paper_or_live_execution_allowed": False,
@@ -466,6 +597,8 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             "next_safe_action": (
                 "Refresh quote/band/stop and source-open blockers before owner approval-card preparation."
                 if effective_stale_count > 0 or effective_stale_row_present
+                else "Resolve WF85 decision contract before using approval-ready or capital-review-card-ready language."
+                if wf85_contract.get("wf78_review_ready_conflicts_with_wf85")
                 else "Prepare a non-executing owner capital-review card; do not execute or imply approval."
             ),
         })
@@ -475,7 +608,8 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     sources = {
         "auto_router": rel(AUTO_ROUTER),
         "routing_delta": rel(ROUTING_DELTA),
-        "tier_a_final_packet": rel(TIER_A_PACKET),
+        "tier_a_final_packet_compatibility": rel(TIER_A_PACKET),
+        "tier_a_final_packet_deprecated_for_authority": tier_a_deprecated,
         "ticker_card_summary": rel(CARD_SUMMARY),
         "stale_tickers": rel(STALE_TICKERS),
         "quote_snapshot_proof": rel(QUOTE_PROOF),
@@ -483,6 +617,8 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         "post_close_final_quote_ledger": rel(POST_CLOSE_FINAL_QUOTES),
         "wf84_canonical_data_plane_sqlite": rel(WF84_DB),
         "wf84_phase6_10_switch_proof": rel(WF84_PHASE),
+        "wf85_decision_cards": rel(WF85_DECISION_CARDS),
+        "wf85_source_freshness_gate": rel(WF85_SOURCE_FRESHNESS_GATE),
     }
     return rows, sources
 
@@ -493,14 +629,32 @@ def build_report() -> dict[str, Any]:
     for path, name in [
         (AUTO_ROUTER, "auto_router_present"),
         (ROUTING_DELTA, "routing_delta_present"),
-        (TIER_A_PACKET, "tier_a_packet_present"),
         (CARD_SUMMARY, "ticker_card_summary_present"),
     ]:
         add_check(checks, name, path.exists(), rel(path))
+    add_check(checks, "tier_a_packet_present_if_not_archived", TIER_A_PACKET.exists(), rel(TIER_A_PACKET), severity="warning")
     add_check(checks, "candidate_rows_present", bool(rows), len(rows), severity="warning")
     add_check(checks, "all_rows_owner_action_required", all(row.get("owner_action_required") is True for row in rows), None)
     add_check(checks, "all_rows_capital_deployment_false", all(row.get("capital_deployment_approved") is False for row in rows), None)
     add_check(checks, "all_rows_trade_execution_false", all(row.get("trade_or_execution_approved") is False for row in rows), None)
+    add_check(
+        checks,
+        "wf78_review_ready_conflicts_fail_closed",
+        all(
+            not as_dict(row.get("wf85_decision_contract")).get("wf78_review_ready_conflicts_with_wf85")
+            or row.get("capital_review_card_preparable") is False
+            for row in rows
+        ),
+        [
+            {
+                "ticker": row.get("ticker"),
+                "wf78_queue_state": row.get("queue_state"),
+                "wf85_decision_state": as_dict(row.get("wf85_decision_contract")).get("decision_state"),
+            }
+            for row in rows
+            if as_dict(row.get("wf85_decision_contract")).get("wf78_review_ready_conflicts_with_wf85")
+        ],
+    )
     for flag in sorted(REQUIRED_TRUE_FLAGS):
         add_check(checks, f"authority_{flag}_true", AUTHORITY_BOUNDARY.get(flag) is True, AUTHORITY_BOUNDARY.get(flag))
     for flag in sorted(REQUIRED_FALSE_FLAGS):
@@ -520,11 +674,37 @@ def build_report() -> dict[str, Any]:
         "status": "ok" if not errors else "blocked",
         "workflow": "WF78 - A-DEPLOY-CANDIDATE Capital Review Queue",
         "purpose": "Rank A-READY names for non-executing owner capital-review card preparation while preserving all capital/execution approval stop lines.",
+        "decision_contract": {
+            "wf78_role": "feeder_repair_event_routing_only",
+            "wf78_may_surface": [
+                "routing_candidate",
+                "repair_candidate",
+                "owner_review_candidate",
+            ],
+            "wf78_must_not_surface": [
+                "decision_grade",
+                "approval_ready",
+                "deployable",
+                "trade_grade",
+            ],
+            "wf85_owns": [
+                "decision_state",
+                "trade_grade",
+                "owner_action",
+                "approval_card_status",
+            ],
+            "fail_closed_rule": "When WF78 review-ready and WF85 decision language disagree, final status is routing candidate, not decision-ready.",
+        },
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": sources,
         "summary": {
             "candidate_count": len(rows),
             "review_ready_count": len(review_ready),
+            "wf78_routing_ready_count": len([row for row in rows if row.get("wf78_routing_candidate_preparable")]),
+            "wf78_wf85_conflict_count": len([
+                row for row in rows
+                if as_dict(row.get("wf85_decision_contract")).get("wf78_review_ready_conflicts_with_wf85")
+            ]),
             "freshness_blocked_count": len(freshness_blocked),
             "capital_deployment_approved_count": 0,
             "trade_or_execution_approved_count": 0,

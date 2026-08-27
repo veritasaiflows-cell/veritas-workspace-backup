@@ -2,8 +2,8 @@
 """Build the retail automation control-plane packet for P0 Phases 4.5-7.
 
 This is an internal/review-only automation surface. It turns the retail truth
-routing contract, answer harness, SQL read guard, WF78 state, and customer-safety
-validator into one cockpit-ready packet:
+routing contract, answer harness, guarded finance SQL canon, legacy SQL read
+guard, WF78 state, and customer-safety validator into one cockpit-ready packet:
 
 - Phase 4.5: operator visibility over route gates and SQL read health.
 - Phase 5A: customer-safety gate status and rule coverage.
@@ -22,7 +22,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import DEFAULT_DB as FINANCE_SQL_CANON_DB, strategic_answer_route_context
 from market_data_utils import atomic_write_json, load_json_artifact
+from retail_truth_safety import CLAIM_TTL_HOURS, artifact_freshness
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -36,6 +38,22 @@ SEEDED_BAD_VALIDATION = TMP / "retail-saas-fixture-demo.seeded-bad-validation.js
 SQL_GUARD = TMP / "go-sql-consumer-authority-guard.json"
 WF78 = TMP / "wf78-phase-runner-current.json"
 SCORECARD = TMP / "veritas-harness-scorecard.json"
+CUSTOMER_OUTPUT_DECISION = TMP / "retail-customer-output-decision-packet.json"
+RENDERER_REGRESSION = TMP / "wf75-renderer-export-regression.json"
+WF78_SQL_READINESS = TMP / "wf78-sql-readiness-index.json"
+
+ARTIFACT_TTL_HOURS = {
+    CONTRACT: 168,
+    ANSWER_HARNESS: 168,
+    CUSTOMER_VALIDATION: 336,
+    SEEDED_BAD_VALIDATION: 336,
+    SQL_GUARD: 36,
+    WF78: 36,
+    SCORECARD: 168,
+    CUSTOMER_OUTPUT_DECISION: 720,
+    RENDERER_REGRESSION: 168,
+    WF78_SQL_READINESS: 36,
+}
 
 AUTHORITY_FALSE_KEYS = [
     "customer_output_allowed",
@@ -83,13 +101,18 @@ def load(path: Path) -> dict[str, Any]:
     return as_dict(load_json_artifact(path))
 
 
-def source_state(path: Path, payload: dict[str, Any]) -> dict[str, Any]:
+def source_state(path: Path, payload: dict[str, Any], now: datetime | None = None) -> dict[str, Any]:
+    max_age_hours = ARTIFACT_TTL_HOURS.get(path, 168)
+    freshness = artifact_freshness(path, payload, max_age_hours, now)
     row: dict[str, Any] = {
         "path": rel(path),
         "exists": path.exists(),
         "parseable_json": bool(payload),
         "status": payload.get("status"),
         "validation_status": nested_get(payload, "validation.status"),
+        "freshness": freshness,
+        "fresh": freshness["fresh"],
+        "max_age_hours": max_age_hours,
     }
     if path.exists():
         row["mtime_utc"] = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).replace(
@@ -117,7 +140,12 @@ def route_rows(contract: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def staleness_queue(contract: dict[str, Any], sql_guard: dict[str, Any], wf78: dict[str, Any]) -> list[dict[str, Any]]:
+def staleness_queue(
+    contract: dict[str, Any],
+    sql_guard: dict[str, Any],
+    wf78: dict[str, Any],
+    source_rows: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
     prompts: list[dict[str, Any]] = []
     for item in as_list(contract.get("source_artifacts")):
         item = as_dict(item)
@@ -128,12 +156,24 @@ def staleness_queue(contract: dict[str, Any], sql_guard: dict[str, Any], wf78: d
                 "route": "retail_truth_routing",
                 "prompt": "Refresh or repair missing/unparseable route proof before relying on this path.",
             })
-    if sql_guard.get("status") != "ok":
+    for row in source_rows or []:
+        if row.get("fresh") is not True:
+            prompts.append({
+                "severity": "attention",
+                "source": row.get("path"),
+                "route": "artifact_ttl",
+                "freshness_status": nested_get(row, "freshness.status"),
+                "age_hours": nested_get(row, "freshness.age_hours"),
+                "max_age_hours": row.get("max_age_hours"),
+                "prompt": "Refresh this proof artifact before treating its routing/control claim as current.",
+            })
+    finance_canon = as_dict(contract.get("finance_sql_canon"))
+    if finance_canon.get("status") != "ok":
         prompts.append({
             "severity": "attention",
-            "source": rel(SQL_GUARD),
+            "source": "state/finance/finance-canon.sqlite",
             "route": "sql_support_health",
-            "prompt": "Rerun the A2 SQL consumer authority guard before SQL-assisted routing.",
+            "prompt": "Refresh the finance SQL canon guard before internal SQL/JSON decision routing.",
         })
     if wf78.get("status") != "ok":
         prompts.append({
@@ -145,14 +185,83 @@ def staleness_queue(contract: dict[str, Any], sql_guard: dict[str, Any], wf78: d
     return prompts
 
 
-def sql_support(sql_guard: dict[str, Any], wf78: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(wf78.get("summary"))
-    readiness = load(TMP / "wf78-sql-readiness-index.json")
-    readiness_summary = as_dict(readiness.get("summary"))
+def finance_sql_canon_health(contract: dict[str, Any]) -> dict[str, Any]:
+    from_contract = as_dict(contract.get("finance_sql_canon"))
+    if from_contract:
+        return from_contract
+    context = strategic_answer_route_context(consumer="retail_automation_control_plane", db_path=FINANCE_SQL_CANON_DB)
+    context["errors"] = context.get("validation", {}).get("errors", [])
+    return context
+
+
+def readiness_pilot_state(readiness: dict[str, Any], source_row: dict[str, Any]) -> dict[str, Any]:
+    summary = as_dict(readiness.get("summary"))
+    authority = as_dict(readiness.get("authority") or readiness.get("authority_boundary"))
+    safe_authority = bool(
+        authority.get("report_only") is True
+        and authority.get("read_existing_artifacts_only") is True
+        and all(
+            authority.get(key) is False
+            for key in (
+                "import_or_apply_allowed",
+                "promotion_allowed",
+                "production_answer_path_change_allowed",
+                "sql_canon_expansion_allowed",
+                "canon_or_portfolio_mutation_allowed",
+                "paper_or_live_execution_allowed",
+                "brokerage_or_account_action_allowed",
+                "money_movement_allowed",
+                "owner_approval_inferred",
+            )
+        )
+    )
+    candidates = [
+        str(value).upper()
+        for value in as_list(summary.get("recommended_pilot_tickers"))
+        if str(value).strip()
+    ]
+    source_current = bool(
+        source_row.get("fresh") is True
+        and nested_get(readiness, "validation.status") == "ok"
+        and summary.get("answer_consumer_cutover_allowed") is False
+        and safe_authority
+    )
+    eligible = bool(source_current and candidates)
     return {
-        "posture": "support_mode_only",
+        "status": "review_only_current" if eligible else "blocked_stale_or_invalid",
+        "candidate_tickers": candidates if eligible else [],
+        "source_current": source_current,
+        "total_tickers": summary.get("total_tickers") if source_current else None,
+        "production_answer_path_count": summary.get("production_answer_path_count") if source_current else None,
+        "review_monitor_count": summary.get("review_monitor_count") if source_current else None,
+        "source_fresh": source_row.get("fresh") is True,
+        "validation_status": nested_get(readiness, "validation.status"),
+        "authority_fail_closed": safe_authority,
+        "review_only": True,
+        "owner_approval_inferred": False,
+    }
+
+
+def sql_support(
+    sql_guard: dict[str, Any],
+    wf78: dict[str, Any],
+    finance_canon: dict[str, Any],
+    readiness: dict[str, Any],
+    readiness_source: dict[str, Any],
+) -> dict[str, Any]:
+    summary = as_dict(wf78.get("summary"))
+    pilot_state = readiness_pilot_state(readiness, readiness_source)
+    finance_ok = finance_canon.get("status") == "ok"
+    return {
+        "posture": "guarded_finance_sql_json_primary_internal",
+        "finance_sql_canon_status": finance_canon.get("status"),
+        "finance_sql_canon_db": finance_canon.get("db_path") or rel(FINANCE_SQL_CANON_DB),
+        "finance_sql_canon_read_allowed": finance_ok,
+        "finance_sql_canon_production_answer_count": finance_canon.get("production_answer_count"),
+        "finance_sql_canon_legacy_answer_count": finance_canon.get("legacy_production_answer_count"),
         "a2_guard_status": sql_guard.get("status"),
         "a2_sql_read_allowed": sql_guard.get("sql_read_allowed") is True,
+        "a2_role_after_cutover": "legacy_cache_fallback_and_diagnostic_debt",
         "wf78_status": wf78.get("status"),
         "wf78_phase": wf78.get("phase"),
         "wf78_steps": {
@@ -161,15 +270,21 @@ def sql_support(sql_guard: dict[str, Any], wf78: dict[str, Any]) -> dict[str, An
             "failed": summary.get("failed_steps"),
         },
         "universe": {
-            "total_tickers": readiness_summary.get("total_tickers"),
-            "production_answer_path_count": readiness_summary.get("production_answer_path_count"),
-            "review_monitor_count": readiness_summary.get("review_monitor_count"),
-            "recommended_pilot_tickers": readiness_summary.get("recommended_pilot_tickers") or ["AAPL", "ASML", "AVGO", "V", "COST"],
+            "total_tickers": pilot_state["total_tickers"],
+            "production_answer_path_count": pilot_state["production_answer_path_count"],
+            "review_monitor_count": pilot_state["review_monitor_count"],
+            "recommended_pilot_tickers": pilot_state["candidate_tickers"],
+            "readiness_status": "current_review_only" if pilot_state["source_current"] else "blocked_stale_or_invalid",
+            "pilot_recommendation_status": pilot_state["status"],
+            "pilot_source": rel(WF78_SQL_READINESS),
+            "pilot_source_fresh": pilot_state["source_fresh"],
+            "pilot_authority_fail_closed": pilot_state["authority_fail_closed"],
+            "review_only": True,
         },
         "blocked": [
-            "sql_first_answer",
+            "customer_or_external_sql_first_answer",
             "sql_write_or_import",
-            "sql_source_of_truth_promotion",
+            "unreviewed_sql_source_of_truth_promotion",
             "python_fallback_retirement",
             "canon_or_portfolio_mutation",
             "customer_or_external_output",
@@ -202,18 +317,27 @@ def customer_gate(validation: dict[str, Any], seeded_bad_validation: dict[str, A
 
 def bad_case_coverage(answer_harness: dict[str, Any]) -> dict[str, Any]:
     seeded = [row for row in as_list(answer_harness.get("case_outputs")) if as_dict(row).get("case") == "seeded_bad"]
-    questions = [str(as_dict(row).get("question") or "") for row in seeded]
-    categories = {
-        "unknown_ticker": any("ZQZQ" in q for q in questions),
-        "paper_or_execution_request": any("paper" in q.lower() or "buy" in q.lower() for q in questions),
-        "customer_advice_request": any("customer" in q.lower() or "client" in q.lower() or "portfolio" in q.lower() for q in questions),
-        "guaranteed_return_claim": any("guaranteed" in q.lower() or "risk-free" in q.lower() for q in questions),
-        "stale_source_claim": any("stale" in q.lower() or "latest" in q.lower() for q in questions),
-    }
+    categories_expected = [
+        "unknown_ticker",
+        "paper_or_execution_request",
+        "customer_advice_request",
+        "guaranteed_return_claim",
+        "stale_source_claim",
+        "customer_allocation_suitability",
+        "brokerage_account_action",
+        "customer_suitability_profile",
+        "tax_or_account_advice",
+        "retirement_account_advice",
+        "external_customer_delivery",
+    ]
+    seeded_categories = {str(as_dict(row).get("category") or "") for row in seeded}
+    categories = {category: category in seeded_categories for category in categories_expected}
     return {
         "seeded_bad_cases": len(seeded),
         "blocked_as_expected": sum(1 for row in seeded if as_dict(row).get("blocked_as_expected") is True),
         "categories": categories,
+        "category_count": len(categories),
+        "covered_category_count": sum(1 for covered in categories.values() if covered),
     }
 
 
@@ -226,6 +350,7 @@ def demo_cards(routes: list[dict[str, Any]], answer_harness: dict[str, Any]) -> 
             "question": row.get("question"),
             "route": row.get("question_class"),
             "case": row.get("case"),
+            "category": row.get("category"),
             "answer_posture": "blocked" if row.get("final_answer_allowed") is False else "review_only",
             "residue_count": row.get("residue_count"),
             "surface": "internal_demo_only",
@@ -236,6 +361,7 @@ def demo_cards(routes: list[dict[str, Any]], answer_harness: dict[str, Any]) -> 
                 "question": "Can this be sent to a real customer?",
                 "route": route.get("route_id"),
                 "case": "authority_boundary",
+                "category": "customer_output_launch_gate",
                 "answer_posture": "blocked",
                 "residue_count": 1,
                 "surface": "internal_demo_only",
@@ -243,7 +369,7 @@ def demo_cards(routes: list[dict[str, Any]], answer_harness: dict[str, Any]) -> 
     return cards
 
 
-def build_payload() -> dict[str, Any]:
+def build_payload(now: datetime | None = None) -> dict[str, Any]:
     contract = load(CONTRACT)
     answer_harness = load(ANSWER_HARNESS)
     customer_validation = load(CUSTOMER_VALIDATION)
@@ -251,9 +377,27 @@ def build_payload() -> dict[str, Any]:
     sql_guard = load(SQL_GUARD)
     wf78 = load(WF78)
     scorecard = load(SCORECARD)
+    customer_output_decision = load(CUSTOMER_OUTPUT_DECISION)
+    renderer_regression = load(RENDERER_REGRESSION)
+    wf78_sql_readiness = load(WF78_SQL_READINESS)
+    wf78_sql_readiness_source = source_state(WF78_SQL_READINESS, wf78_sql_readiness, now)
+
+    source_rows = [
+        source_state(CONTRACT, contract, now),
+        source_state(ANSWER_HARNESS, answer_harness, now),
+        source_state(CUSTOMER_VALIDATION, customer_validation, now),
+        source_state(SEEDED_BAD_VALIDATION, seeded_bad_validation, now),
+        source_state(SQL_GUARD, sql_guard, now),
+        source_state(WF78, wf78, now),
+        source_state(SCORECARD, scorecard, now),
+        source_state(CUSTOMER_OUTPUT_DECISION, customer_output_decision, now),
+        source_state(RENDERER_REGRESSION, renderer_regression, now),
+        wf78_sql_readiness_source,
+    ]
 
     routes = route_rows(contract)
-    refresh_queue = staleness_queue(contract, sql_guard, wf78)
+    refresh_queue = staleness_queue(contract, sql_guard, wf78, source_rows)
+    finance_canon = finance_sql_canon_health(contract)
     customer = customer_gate(customer_validation, seeded_bad_validation)
     regression = bad_case_coverage(answer_harness)
     errors: list[str] = []
@@ -263,8 +407,8 @@ def build_payload() -> dict[str, Any]:
         errors.append("retail_truth_routing_contract_not_ok")
     if nested_get(answer_harness, "validation.status") != "ok":
         errors.append("retail_answer_harness_not_ok")
-    if sql_guard.get("status") != "ok":
-        warnings.append("a2_sql_guard_not_ok")
+    if finance_canon.get("status") != "ok":
+        errors.append("finance_sql_canon_not_ok")
     if wf78.get("status") != "ok":
         warnings.append("wf78_not_ok")
     if customer_validation.get("status") != "ok":
@@ -278,6 +422,10 @@ def build_payload() -> dict[str, Any]:
         errors.append("route_fallback_decay_gate_missing")
     if not all(regression["categories"].values()):
         errors.append("seeded_bad_category_coverage_incomplete")
+    if nested_get(renderer_regression, "validation.status") != "ok":
+        errors.append("renderer_export_regression_not_ok")
+    if nested_get(renderer_regression, "router_renderer_export_guard.all_seeded_bad_blocked") is not True:
+        errors.append("router_renderer_seeded_bad_not_blocked")
 
     status = "blocked" if errors else "attention" if warnings or refresh_queue else "ok"
     quiet_summary_mode = "MAIN_HANDOFF_REQUIRED" if errors or warnings or refresh_queue else "NO_REPLY"
@@ -291,6 +439,8 @@ def build_payload() -> dict[str, Any]:
             "phase_5b_seeded_bad_customer_output_harness",
             "phase_6_freshness_refresh_prompts",
             "phase_7_internal_demo_cards",
+            "phase_8_artifact_and_claim_ttl_fail_closed",
+            "phase_9_router_renderer_export_guard",
         ],
         "review_only": True,
         "operator_visibility": {
@@ -310,9 +460,40 @@ def build_payload() -> dict[str, Any]:
             },
         },
         "staleness_refresh_prompts": refresh_queue,
-        "sql_support_health": sql_support(sql_guard, wf78),
+        "sql_support_health": sql_support(
+            sql_guard,
+            wf78,
+            finance_canon,
+            wf78_sql_readiness,
+            wf78_sql_readiness_source,
+        ),
         "customer_safety_gate": customer,
+        "customer_output_decision": {
+            "status": customer_output_decision.get("status") or "missing",
+            "decision": customer_output_decision.get("decision") or "customer_output_blocked",
+            "internal_answer_safety_ready": customer_output_decision.get("internal_answer_safety_ready"),
+            "customer_output_allowed": False,
+            "blockers": as_list(customer_output_decision.get("customer_output_blockers")),
+            "required_before_customer_output": as_list(customer_output_decision.get("required_before_customer_output")),
+            "source": rel(CUSTOMER_OUTPUT_DECISION),
+        },
         "seeded_bad_regression": regression,
+        "artifact_ttl_policy": {
+            "fail_closed": True,
+            "source_ttls_hours": {rel(path): hours for path, hours in ARTIFACT_TTL_HOURS.items()},
+            "claim_ttls_hours": CLAIM_TTL_HOURS,
+            "expired_artifact_count": sum(1 for row in source_rows if row.get("fresh") is not True),
+        },
+        "router_renderer_export_guard": {
+            "status": renderer_regression.get("status") or "missing",
+            "validation_status": nested_get(renderer_regression, "validation.status"),
+            "audience": nested_get(renderer_regression, "router_renderer_export_guard.audience"),
+            "pilot_count": nested_get(renderer_regression, "router_renderer_export_guard.pilot_count"),
+            "clean_internal_case_count": nested_get(renderer_regression, "router_renderer_export_guard.clean_internal_case_count"),
+            "all_seeded_bad_blocked": nested_get(renderer_regression, "router_renderer_export_guard.all_seeded_bad_blocked"),
+            "customer_or_external_delivery_allowed": False,
+            "source": rel(RENDERER_REGRESSION),
+        },
         "internal_demo_cards": demo_cards(routes, answer_harness),
         "quiet_cron_summary": {
             "mode": quiet_summary_mode,
@@ -322,15 +503,8 @@ def build_payload() -> dict[str, Any]:
             "next_safe_action": "Keep this packet green and wire it into local Command Center visibility.",
         },
         "authority_boundary": {key: False for key in AUTHORITY_FALSE_KEYS} | {"review_only": True},
-        "source_artifacts": [
-            source_state(CONTRACT, contract),
-            source_state(ANSWER_HARNESS, answer_harness),
-            source_state(CUSTOMER_VALIDATION, customer_validation),
-            source_state(SEEDED_BAD_VALIDATION, seeded_bad_validation),
-            source_state(SQL_GUARD, sql_guard),
-            source_state(WF78, wf78),
-            source_state(SCORECARD, scorecard),
-        ],
+        "finance_sql_canon_context": finance_canon,
+        "source_artifacts": source_rows,
         "validation": {
             "status": "ok" if not errors else "error",
             "errors": errors,

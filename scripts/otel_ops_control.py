@@ -9,6 +9,7 @@ collector config, cron schedules, runtime settings, or telemetry capture depth.
 from __future__ import annotations
 
 import argparse
+import glob
 import hashlib
 import json
 import re
@@ -25,8 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 OTEL_DIR = TMP / "otel-collector"
 DEFAULT_LOG = OTEL_DIR / "collector.err.log"
+DEFAULT_LOG_GLOB = "tmp/otel-collector/*.err.log"
 DEFAULT_RECEIPTS = OTEL_DIR / "receipts.jsonl"
-DEFAULT_COLLECTOR_CONFIG = ROOT / "tools" / "otelcol" / "openclaw-local-otel.yaml"
+DEFAULT_COLLECTOR_CONFIG = ROOT / "tools" / "otelcol" / "openclaw-local-otel-runtime-metadata.yaml"
 DEFAULT_EVENTS = TMP / "otel-ops-events.jsonl"
 DEFAULT_DB = TMP / "otel-ops.sqlite"
 DEFAULT_OUT = TMP / "otel-ops-control.json"
@@ -34,6 +36,11 @@ DEFAULT_WINDOW_SUMMARY = TMP / "otel-ops-window-summary.json"
 DEFAULT_LEGACY_CONTROL_LOOP = TMP / "otel" / "control-loop.json"
 DEFAULT_FIELD_DEPTH_PACKET = TMP / "otel-field-depth-limited-owner-packet.json"
 DEFAULT_TOOL_WORKFLOW_METADATA = TMP / "otel-tool-workflow-metadata.json"
+
+# Randall approved this exact local-only collector depth configuration on
+# 2026-06-19. Similar keys in an arbitrary alternate config prove observation,
+# not approval authority.
+APPROVED_FIELD_DEPTH_CONFIG_SHA256 = "c9b51de50b52cc6e01d1c5ef9e3985e7cd7de8a3809e057a9d95d17aa23823e6"
 
 SCHEMA = "veritas.otel_ops_control.v1"
 WINDOW_SUMMARY_SCHEMA = "veritas.otel_ops_window_summary.v1"
@@ -221,6 +228,43 @@ def parse_collector_log(path: Path) -> tuple[list[dict[str, Any]], dict[str, Any
                 "summary": line[-500:],
             })
     return events, {"present": True, "path": rel(path), "line_count": len(lines), "bytes": path.stat().st_size}
+
+
+def collector_log_paths(primary: Path, pattern: str | None) -> list[Path]:
+    paths: list[Path] = [primary]
+    if pattern:
+        pattern_path = Path(pattern)
+        if not pattern_path.is_absolute():
+            pattern_path = ROOT / pattern_path
+        paths.extend(Path(match) for match in glob.glob(str(pattern_path)))
+    unique: dict[str, Path] = {}
+    for path in paths:
+        try:
+            key = str(path.resolve())
+        except OSError:
+            key = str(path)
+        unique.setdefault(key, path)
+    return sorted(unique.values(), key=lambda path: rel(path))
+
+
+def parse_collector_logs(primary: Path, pattern: str | None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    events: list[dict[str, Any]] = []
+    files: list[dict[str, Any]] = []
+    for path in collector_log_paths(primary, pattern):
+        file_events, source = parse_collector_log(path)
+        events.extend(file_events)
+        if source.get("present") or path == primary:
+            files.append(source)
+    present_files = [source for source in files if source.get("present")]
+    return events, {
+        "present": bool(present_files),
+        "path": rel(primary),
+        "glob": pattern,
+        "file_count": len(present_files),
+        "line_count": sum(int(source.get("line_count") or 0) for source in present_files),
+        "bytes": sum(int(source.get("bytes") or 0) for source in present_files),
+        "files": files,
+    }
 
 
 def parse_receipts(path: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -474,6 +518,16 @@ def per_hour(value: Any, hours: float) -> float | None:
     return round(numeric / hours, 4)
 
 
+def active_window_hours(events: list[dict[str, Any]], window_hours: float, minimum_hours: float = 1.0) -> float:
+    """Return observed active span inside a window so sparse history does not dilute the baseline."""
+    selected = window_events(events, window_hours)
+    timestamps = [dt for event in selected if (dt := parse_iso_utc(event.get("timestamp_utc")))]
+    if not timestamps:
+        return float(window_hours)
+    span_hours = (max(timestamps) - min(timestamps)).total_seconds() / 3600.0
+    return round(max(span_hours, minimum_hours), 4)
+
+
 def window_status(summary: dict[str, Any], health: dict[str, Any]) -> str:
     if health.get("status") != "ok":
         return "blocked"
@@ -492,9 +546,29 @@ def warning_or_error_count(summary: dict[str, Any]) -> int:
 def drift_summary(events: list[dict[str, Any]]) -> dict[str, Any]:
     daily = summarize_events(events, 24.0)
     weekly = summarize_events(events, 168.0)
+    if int(daily.get("event_count") or 0) == 0 and int(weekly.get("event_count") or 0) == 0:
+        return {
+            "status": "insufficient_data",
+            "data_sufficiency": "no_telemetry_events",
+            "daily_warning_or_error_count": 0,
+            "daily_events_per_hour": None,
+            "weekly_events_per_hour": None,
+            "weekly_full_window_events_per_hour": None,
+            "weekly_active_events_per_hour": None,
+            "weekly_active_observed_span_hours": 0.0,
+            "baseline_mode": "insufficient_data",
+            "daily_vs_weekly_event_rate_ratio": None,
+            "drift_reasons": ["no_telemetry_events"],
+            "alert_rule": "drift is unknown until telemetry events establish a daily and weekly baseline",
+            "meaning": "No operational drift conclusion is available because no telemetry events were observed.",
+        }
     daily_rate = per_hour(daily.get("event_count"), 24.0) or 0.0
-    weekly_rate = per_hour(weekly.get("event_count"), 168.0) or 0.0
-    ratio = round(daily_rate / weekly_rate, 4) if weekly_rate else None
+    weekly_full_window_rate = per_hour(weekly.get("event_count"), 168.0) or 0.0
+    weekly_active_hours = active_window_hours(events, 168.0, minimum_hours=24.0)
+    weekly_active_rate = per_hour(weekly.get("event_count"), weekly_active_hours) or 0.0
+    baseline_rate = weekly_active_rate if weekly_active_hours < 168.0 else weekly_full_window_rate
+    baseline_mode = "weekly_active_observed_span" if weekly_active_hours < 168.0 else "weekly_full_window"
+    ratio = round(daily_rate / baseline_rate, 4) if baseline_rate else None
     warning_count = warning_or_error_count(daily)
     drift_reasons: list[str] = []
     if warning_count > 0:
@@ -505,11 +579,121 @@ def drift_summary(events: list[dict[str, Any]]) -> dict[str, Any]:
         "status": "review" if drift_reasons else "ok",
         "daily_warning_or_error_count": warning_count,
         "daily_events_per_hour": daily_rate,
-        "weekly_events_per_hour": weekly_rate,
+        "weekly_events_per_hour": baseline_rate,
+        "weekly_full_window_events_per_hour": weekly_full_window_rate,
+        "weekly_active_events_per_hour": weekly_active_rate,
+        "weekly_active_observed_span_hours": weekly_active_hours,
+        "baseline_mode": baseline_mode,
         "daily_vs_weekly_event_rate_ratio": ratio,
         "drift_reasons": drift_reasons,
         "alert_rule": "review when daily_warning_or_error_count > 0 or daily/weekly event-rate ratio is outside 0.25x-2.5x",
         "meaning": "Operational drift only; not a model-quality, finance-correctness, or execution-readiness signal.",
+    }
+
+
+def volume_normalization_recommendation(summary: dict[str, Any], drift: dict[str, Any]) -> dict[str, Any]:
+    daily_events_per_hour = per_hour(summary.get("event_count"), 24.0) or 0.0
+    metric_batches_per_hour = per_hour(summary.get("metric_batches"), 24.0) or 0.0
+    trace_batches_per_hour = per_hour(summary.get("trace_batches"), 24.0) or 0.0
+    warning_count = warning_or_error_count(summary)
+    no_telemetry = int(summary.get("event_count") or 0) == 0 or drift.get("status") == "insufficient_data"
+
+    def estimated_events_per_hour(metric_flush_minutes: float) -> float:
+        if metric_flush_minutes <= 0:
+            return daily_events_per_hour
+        normalized_metric_rate = min(metric_batches_per_hour, 60.0 / metric_flush_minutes)
+        return round(max(0.0, daily_events_per_hour - metric_batches_per_hour + normalized_metric_rate), 4)
+
+    if no_telemetry:
+        return {
+            "status": "insufficient_data",
+            "configuration_recommendation_allowed": False,
+            "current_recommendation": "Collect telemetry before evaluating volume or proposing any collector/runtime configuration change.",
+            "current_rates_per_hour": {
+                "events": None,
+                "metric_batches": None,
+                "trace_batches": None,
+            },
+            "baseline": {
+                "mode": "insufficient_data",
+                "selected_weekly_events_per_hour": None,
+                "full_window_weekly_events_per_hour": None,
+                "active_observed_weekly_events_per_hour": None,
+                "active_observed_span_hours": 0.0,
+                "daily_vs_weekly_ratio": None,
+            },
+            "owner_gated_config_options": [],
+            "next_safe_action": "Restore or verify telemetry collection, then rerun this packet after events are indexed.",
+            "do_not_do_now": [
+                "do not infer a healthy baseline from zero events",
+                "do not recommend or mutate collector/runtime config without telemetry evidence",
+                "do not treat missing telemetry as model-quality, finance-correctness, or execution-readiness evidence",
+            ],
+            "authority_boundary": {
+                "review_only": True,
+                "collector_config_mutation_allowed": False,
+                "runtime_config_mutation_allowed": False,
+                "owner_approval_required_before_config_change": True,
+            },
+        }
+
+    return {
+        "status": "hold_config" if drift.get("status") == "ok" and warning_count == 0 else "review_config_proposal",
+        "configuration_recommendation_allowed": True,
+        "current_recommendation": (
+            "Keep collector/runtime config unchanged while the active weekly baseline matures."
+            if drift.get("status") == "ok" and warning_count == 0
+            else "Review operational volume before proposing any owner-approved collector/runtime config change."
+        ),
+        "current_rates_per_hour": {
+            "events": daily_events_per_hour,
+            "metric_batches": metric_batches_per_hour,
+            "trace_batches": trace_batches_per_hour,
+        },
+        "baseline": {
+            "mode": drift.get("baseline_mode"),
+            "selected_weekly_events_per_hour": drift.get("weekly_events_per_hour"),
+            "full_window_weekly_events_per_hour": drift.get("weekly_full_window_events_per_hour"),
+            "active_observed_weekly_events_per_hour": drift.get("weekly_active_events_per_hour"),
+            "active_observed_span_hours": drift.get("weekly_active_observed_span_hours"),
+            "daily_vs_weekly_ratio": drift.get("daily_vs_weekly_event_rate_ratio"),
+        },
+        "owner_gated_config_options": [
+            {
+                "option": "no_change",
+                "recommended_now": drift.get("status") == "ok" and warning_count == 0,
+                "expected_events_per_hour": daily_events_per_hour,
+                "rationale": "Current daily volume matches the active observed weekly baseline and warning/error count is zero.",
+            },
+            {
+                "option": "flush_interval_5m",
+                "config_surface": "diagnostics.otel.flushIntervalMs",
+                "candidate_value_ms": 300000,
+                "recommended_now": False,
+                "estimated_events_per_hour": estimated_events_per_hour(5.0),
+                "tradeoff": "Cuts metric batch volume materially while preserving trace sampling and enough local health resolution.",
+            },
+            {
+                "option": "flush_interval_10m_plus_trace_sampling_review",
+                "config_surface": "diagnostics.otel.flushIntervalMs and diagnostics.otel.sampleRate",
+                "candidate_flush_interval_ms": 600000,
+                "candidate_sample_rate_review": "0.1 only if trace volume remains too high after the flush-interval change",
+                "recommended_now": False,
+                "estimated_events_per_hour_before_trace_sampling_change": estimated_events_per_hour(10.0),
+                "tradeoff": "Lowest volume option, but weaker short-window observability and trace coverage.",
+            },
+        ],
+        "do_not_do_now": [
+            "do not mutate collector/runtime config from this control packet",
+            "do not disable the debug exporter until structured JSONL exporter parsing is the primary parser path",
+            "do not treat event-rate volume as model-quality, finance-correctness, or execution-readiness evidence",
+        ],
+        "authority_boundary": {
+            "review_only": True,
+            "collector_config_mutation_allowed": False,
+            "runtime_config_mutation_allowed": False,
+            "owner_approval_required_before_config_change": True,
+        },
     }
 
 
@@ -656,21 +840,42 @@ def validate_window_summary(payload: dict[str, Any]) -> dict[str, Any]:
 def collector_config_posture(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"present": False, "path": rel(path)}
-    text = path.read_text(encoding="utf-8", errors="ignore")
+    raw = path.read_bytes()
+    text = raw.decode("utf-8", errors="ignore")
     lower = text.lower()
+    verbosity_match = re.search(r"verbosity:\s*([a-z0-9_-]+)", lower)
+    debug_verbosity = verbosity_match.group(1) if verbosity_match else None
     return {
         "present": True,
         "path": rel(path),
+        "sha256": hashlib.sha256(raw).hexdigest(),
         "has_debug_exporter": "debug:" in lower,
-        "debug_verbosity_basic": "verbosity: basic" in lower,
-        "has_file_exporter": "file:" in lower,
+        "debug_verbosity": debug_verbosity,
+        "debug_verbosity_basic": debug_verbosity == "basic",
+        "debug_verbosity_detailed": debug_verbosity == "detailed",
+        "has_file_exporter": re.search(r"^\s*file(?:/[\w.-]+)?:", lower, re.M) is not None,
         "has_logs_pipeline": re.search(r"pipelines:\s*.*logs:", lower, re.S) is not None,
         "binds_loopback_4318": "127.0.0.1:4318" in lower,
     }
 
 
+def field_depth_config_approval_identity(config: dict[str, Any]) -> dict[str, Any]:
+    observed_enabled = bool(config.get("has_file_exporter") and config.get("has_logs_pipeline"))
+    path_matches = config.get("path") == rel(DEFAULT_COLLECTOR_CONFIG)
+    hash_matches = config.get("sha256") == APPROVED_FIELD_DEPTH_CONFIG_SHA256
+    return {
+        "observed_enabled": observed_enabled,
+        "approved_config_path": rel(DEFAULT_COLLECTOR_CONFIG),
+        "observed_config_path": str(config.get("path") or ""),
+        "path_matches_approved_config": path_matches,
+        "sha256_matches_approved_config": hash_matches,
+        "owner_approval_proven_for_exact_config": bool(observed_enabled and path_matches and hash_matches),
+    }
+
+
 def build_actions(summary: dict[str, Any], config: dict[str, Any], health: dict[str, Any], drift: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     actions: list[dict[str, Any]] = []
+    depth_identity = field_depth_config_approval_identity(config)
     if health.get("status") != "ok":
         actions.append({
             "id": "otel_collector_not_listening",
@@ -691,16 +896,37 @@ def build_actions(summary: dict[str, Any], config: dict[str, Any], health: dict[
             "recommended_command": "python scripts\\otel_ops_control.py --write --write-db --validate",
             "status": "review",
         })
-    if config.get("debug_verbosity_basic") and not config.get("has_file_exporter"):
+    if not config.get("has_file_exporter") and not config.get("has_logs_pipeline"):
         actions.append({
             "id": "otel_field_depth_limited",
             "severity": "info",
             "action_type": "wf74_followup",
             "owner": "WF74 / model-quality-scorecard",
-            "rationale": "Current collector logs prove metrics/traces are arriving but expose only batch counts, not model/tool/token/error fields.",
+            "rationale": "Current collector logs prove metrics/traces are arriving but do not provide a stable structured file/logs stream for model/tool/token/error fields.",
             "recommended_command": "Prepare a local-only detailed-field capture packet before changing collector config.",
             "status": "candidate",
         })
+    elif config.get("has_file_exporter") and config.get("has_logs_pipeline"):
+        if depth_identity["owner_approval_proven_for_exact_config"]:
+            actions.append({
+                "id": "otel_local_file_depth_enabled",
+                "severity": "info",
+                "action_type": "wf74_followup",
+                "owner": "WF74 / model-quality-scorecard",
+                "rationale": "Randall approved this exact local-only OTEL file/logs configuration on 2026-06-19; collector output has structured local sinks for traces, metrics, and logs.",
+                "recommended_command": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
+                "status": "enabled_review_only",
+            })
+        else:
+            actions.append({
+                "id": "otel_local_file_depth_observed_unapproved_config",
+                "severity": "warning",
+                "action_type": "owner_review",
+                "owner": "openclaw-operator / WF74",
+                "rationale": "File exporters and a logs pipeline are observed, but this path/hash is not the exact approved collector identity; approval must not be inferred.",
+                "recommended_command": "Review the exact collector config identity before treating observed field depth as owner-approved.",
+                "status": "observed_enabled_owner_approval_unverified",
+            })
     if summary.get("by_severity", {}).get("error", 0) or summary.get("by_severity", {}).get("warning", 0):
         actions.append({
             "id": "otel_collector_warnings_or_errors",
@@ -737,16 +963,27 @@ def build_actions(summary: dict[str, Any], config: dict[str, Any], health: dict[
 
 
 def build_field_depth_packet(config: dict[str, Any], summary: dict[str, Any], drift: dict[str, Any]) -> dict[str, Any]:
+    collector_config = str(config.get("path") or rel(DEFAULT_COLLECTOR_CONFIG))
+    approval_identity = field_depth_config_approval_identity(config)
+    observed_enabled = approval_identity["observed_enabled"]
+    approved_enabled = approval_identity["owner_approval_proven_for_exact_config"]
     payload = {
         "schema": "veritas.otel_field_depth_limited_owner_packet.v1",
         "generated_at_utc": utc_now(),
-        "status": "owner_decision_required",
-        "purpose": "Review packet for richer local-only OTEL field capture. This packet does not change collector config.",
+        "status": (
+            "approved_enabled"
+            if approved_enabled
+            else "observed_enabled_owner_approval_unverified"
+            if observed_enabled
+            else "owner_decision_required"
+        ),
+        "purpose": "Review packet for richer local-only OTEL field capture and its current approval state.",
         "current_collector_posture": config,
         "current_24h_summary": summary,
         "current_drift_summary": drift,
+        "collector_config_approval_identity": approval_identity,
         "proposed_change_if_approved_later": {
-            "collector_config": rel(DEFAULT_COLLECTOR_CONFIG),
+            "collector_config": collector_config,
             "candidate_capability": "file exporter and logs pipeline or equivalent bounded local receiver for model/tool/token/error fields",
             "required_scope": "local-only, metadata-only, no raw prompt/response/tool payload/system prompt/secrets/headers",
             "required_review": "owner approval plus config diff, rollback, privacy scan, and post-change OTEL validation",
@@ -754,21 +991,37 @@ def build_field_depth_packet(config: dict[str, Any], summary: dict[str, Any], dr
         "authority_boundary": {
             **AUTHORITY_BOUNDARY,
             "collector_config_mutation_allowed": False,
+            "local_depth_expansion_observed_enabled": observed_enabled,
+            "owner_approved_local_depth_expansion": approved_enabled,
             "owner_decision_packet_only": True,
         },
         "blocked_now": [
-            "no collector config mutation",
-            "no telemetry capture-depth expansion",
-            "no file exporter/logs pipeline enablement",
             "no external export",
             "no raw prompt/response/tool payload/system-prompt/secret/header capture",
+            "no finance/canon/portfolio mutation",
+            "no paper/live execution, brokerage/account action, or owner approval inference",
+            *(["no collector config mutation from this script"] if not approved_enabled else []),
+            *(["do not infer owner approval from observed config keys alone"] if observed_enabled and not approved_enabled else []),
+            *(["no telemetry capture-depth expansion before owner approval"] if not observed_enabled else []),
         ],
-        "next_safe_action": "Use this as the owner-review packet if deeper OTEL field capture is worth approving later.",
+        "next_safe_action": (
+            "Keep local file/logs depth enabled and validate OTEL health after collector restarts."
+            if approved_enabled
+            else "Treat the enabled depth as observed only and review the exact config path/hash before claiming owner approval."
+            if observed_enabled
+            else "Use this as the owner-review packet if deeper OTEL field capture is worth approving later."
+        ),
     }
     payload["validation"] = {
         "status": "ok",
         "errors": [],
-        "warnings": ["owner_approval_required_before_any_collector_config_change"],
+        "warnings": (
+            []
+            if approved_enabled
+            else ["owner_approval_not_proven_for_collector_config_identity"]
+            if observed_enabled
+            else ["owner_approval_required_before_any_collector_config_change"]
+        ),
     }
     return payload
 
@@ -791,15 +1044,15 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
     if db and db.get("integrity") != "ok":
         errors.append("sqlite_integrity_not_ok")
     config = payload.get("collector_config", {})
-    if config.get("has_logs_pipeline"):
-        errors.append("collector_logs_pipeline_enabled")
+    if config.get("has_logs_pipeline") and not config.get("has_file_exporter"):
+        errors.append("collector_logs_pipeline_without_file_exporter")
     if not config.get("binds_loopback_4318"):
         warnings.append("collector_config_loopback_binding_not_confirmed")
     return {"status": "ok" if not errors else "blocked", "errors": errors, "warnings": warnings}
 
 
 def build_payload(args: argparse.Namespace) -> dict[str, Any]:
-    log_events, log_source = parse_collector_log(args.collector_log)
+    log_events, log_source = parse_collector_logs(args.collector_log, args.collector_log_glob)
     receipt_events, receipt_source = parse_receipts(args.receipts)
     events = sorted(log_events + receipt_events, key=lambda event: (event.get("timestamp_utc") or "", event.get("source") or "", event.get("line_number") or 0))
     summary = summarize_events(events, args.window_hours)
@@ -831,6 +1084,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         "collector_config": config,
         "summary": summary,
         "drift": drift,
+        "volume_normalization_recommendation": volume_normalization_recommendation(summary, drift),
         "tool_workflow_metadata": {
             "present": bool(tool_workflow_metadata),
             "status": tool_workflow_metadata.get("status"),
@@ -854,18 +1108,26 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
                 "span count",
                 "collector warning/error lines",
                 "legacy local receipt content length and signal when receipts exist",
+                f"collector debug exporter verbosity: {config.get('debug_verbosity') or 'unknown'}",
                 "metadata-only tool names from local proof artifacts",
                 "metadata-only tool status/failure categories from local proof artifacts",
                 "metadata-only session/workflow/lane IDs from local proof artifacts",
             ],
-            "not_available_from_basic_debug_log": [
+            "not_reliably_available_from_collector_debug_log_alone": [
                 "model/provider name",
                 "token usage",
                 "cost",
                 "raw tool payloads",
                 "request latency fields beyond collector batch timing",
             ],
-            "next_depth_gate": "Tool/workflow metadata is now collected from bounded proof artifacts; collector-depth expansion remains owner-gated for richer runtime fields.",
+            "not_available_from_basic_debug_log": [
+                "compatibility key; see not_reliably_available_from_collector_debug_log_alone",
+            ],
+            "next_depth_gate": (
+                "Randall approved local file/logs depth expansion on 2026-06-19; keep it local-only, metadata-bounded, and validated."
+                if config.get("has_file_exporter") and config.get("has_logs_pipeline")
+                else "Tool/workflow metadata is now collected from bounded proof artifacts; collector-depth expansion remains owner-gated for richer runtime fields."
+            ),
         },
         "actions": actions,
         "sqlite": sqlite_summary,
@@ -892,6 +1154,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build local OTEL operations control packet.")
     parser.add_argument("--collector-log", type=Path, default=DEFAULT_LOG)
+    parser.add_argument("--collector-log-glob", default=DEFAULT_LOG_GLOB)
     parser.add_argument("--receipts", type=Path, default=DEFAULT_RECEIPTS)
     parser.add_argument("--collector-config", type=Path, default=DEFAULT_COLLECTOR_CONFIG)
     parser.add_argument("--events", type=Path, default=DEFAULT_EVENTS)
@@ -909,7 +1172,7 @@ def main() -> int:
     args = parser.parse_args()
 
     payload = build_payload(args)
-    events, _ = parse_collector_log(args.collector_log)
+    events, _ = parse_collector_logs(args.collector_log, args.collector_log_glob)
     receipts, _ = parse_receipts(args.receipts)
     all_events = sorted(events + receipts, key=lambda event: (event.get("timestamp_utc") or "", event.get("source") or "", event.get("line_number") or 0))
     window_payload: dict[str, Any] | None = None

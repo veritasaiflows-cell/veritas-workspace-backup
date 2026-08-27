@@ -26,6 +26,7 @@ AUTHORITY_BOUNDARY = {
 
 PRODUCER_RULES = [
     ("cron-control-packet.json", "cron_control_packet.py", "python scripts\\cron_control_packet.py --write --validate", "cron"),
+    ("main-session-escalation-consumer.json", "main_session_escalation_consumer.py", "python scripts\\main_session_escalation_consumer.py --context main_session --refresh-frontdoors --execute-safe --write --validate --append-ledger", "cron"),
     ("cron-freshness-spine.json", "cron_freshness_spine.py", "python scripts\\cron_freshness_spine.py --write --validate", "cron"),
     ("pm-control-packet.json", "pm_control_packet.py", "python scripts\\pm_control_packet.py --write --write-db --validate", "pm"),
     ("fast-path-qa.json", "fast_path_qa.py", "python scripts\\fast_path_qa.py --write --validate", "runtime"),
@@ -133,6 +134,7 @@ def explain_artifact(path: Path, max_age_hours: float) -> dict[str, Any]:
 def default_artifacts() -> list[Path]:
     return [
         TMP / "cron-control-packet.json",
+        TMP / "main-session-escalation-consumer.json",
         TMP / "pm-control-packet.json",
         TMP / "fast-path-qa.json",
         TMP / "concurrent-lane-register.json",

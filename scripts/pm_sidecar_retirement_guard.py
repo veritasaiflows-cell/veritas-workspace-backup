@@ -25,10 +25,13 @@ SIDECARS = {
     "pm-lane-scoreboard.json",
     "pm-next-actions.json",
     "pm-blocker-register.json",
-    "pm-implementation-job-queue.json",
     "heartbeat-continuation-candidates.json",
     "pm-main-session-handoff.json",
     "pm-dispatch-ledger.json",
+}
+
+CURRENT_DERIVED_PM_SURFACES = {
+    "pm-implementation-job-queue.json",
 }
 
 ALLOWED_FILES = {
@@ -36,14 +39,24 @@ ALLOWED_FILES = {
     "scripts/pm_control_packet.py",
     "scripts/pm_program_state.py",
     "scripts/pm_implementation_job_queue.py",
+    "scripts/pm_autonomy_dispatcher.py",
     "scripts/pm_main_session_handoff.py",
     "scripts/heartbeat_continuation_candidates.py",
     "scripts/pm_execution_loop.py",
+    "scripts/pm_post_repair_quiescence_refresh.py",
     "scripts/test_pm_implementation_job_queue_control_packet_preference.py",
+    "scripts/test_pm_main_session_handoff.py",
+    "scripts/test_pm_sidecar_retirement_guard.py",
+    "scripts/test_status_card_packet.py",
     "scripts/operating_leverage_spine.py",
+    "scripts/startup_brief_packet.py",
+    "scripts/status_card_packet.py",
+    "scripts/wf74_autonomy_work_router.py",
+    "scripts/wf74_improvement_opportunity_queue.py",
     "scripts/wf75_closeout_refresh.py",
     "scripts/db_lifecycle_manifest.py",
     "scripts/pm_sidecar_retirement_guard.py",
+    "state/cron-contracts/pm-auto-implementation-gpt55.json",
 }
 
 WARNING_ONLY_FILES = {
@@ -84,6 +97,10 @@ def scan_file(path: Path) -> list[dict[str, Any]]:
     return matches
 
 
+def is_current_derived_pm_surface(sidecar: str) -> bool:
+    return sidecar in CURRENT_DERIVED_PM_SURFACES
+
+
 def source_files() -> list[Path]:
     roots = [ROOT / "scripts", ROOT / "state", ROOT / "06. Playbooks"]
     files: list[Path] = [ROOT / "TOOLS.md"]
@@ -107,6 +124,10 @@ def is_completion_ledger_proof(path: str) -> bool:
     )
 
 
+def is_tmp_lifecycle_rollback_proof(path: str) -> bool:
+    return path.startswith("state/tmp-lifecycle-rollback/")
+
+
 def build_report() -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     for path in source_files():
@@ -116,10 +137,15 @@ def build_report() -> dict[str, Any]:
     allowed: list[dict[str, Any]] = []
     for finding in findings:
         path = str(finding.get("path"))
-        if path in ALLOWED_FILES or is_generated_capsule(path):
+        sidecar = str(finding.get("sidecar") or "")
+        if is_current_derived_pm_surface(sidecar):
+            allowed.append({**finding, "reason": "current derived PM lookup, not retired sidecar"})
+        elif path in ALLOWED_FILES or is_generated_capsule(path):
             allowed.append({**finding, "reason": "legacy producer/fallback or generated capsule"})
         elif is_completion_ledger_proof(path):
             allowed.append({**finding, "reason": "historical completion-ledger proof snapshot, not active PM consumer"})
+        elif is_tmp_lifecycle_rollback_proof(path):
+            allowed.append({**finding, "reason": "historical tmp lifecycle rollback proof, not active PM consumer"})
         elif path in WARNING_ONLY_FILES:
             warnings.append({**finding, "reason": "documentation/source-registry cleanup pending"})
         else:

@@ -38,6 +38,7 @@ DEPLOY_STATE_MAP = {
     # Canonical forms (deployment_check.py emits these since WF32B)
     "DEPLOYABLE NOW": "DEPLOYABLE NOW",
     "PROMOTION REVIEW": "PROMOTION REVIEW",
+    "ENTRY POLICY REVIEW": "ENTRY POLICY REVIEW",
     "ALMOST DEPLOYABLE": "ALMOST DEPLOYABLE",
     "BLOCKED": "BLOCKED",
     "BELOW STOP": "DO NOT TOUCH",
@@ -53,12 +54,13 @@ DEPLOY_STATE_MAP = {
 ACTION_STATE_RANK = {
     "DEPLOYABLE NOW": 0,
     "PROMOTION REVIEW": 1,
-    "ALMOST DEPLOYABLE": 2,
-    "BLOCKED": 3,
-    "BENCH": 4,
-    "DO NOT TOUCH": 5,
-    "WATCH / RESEARCH NEEDED": 6,
-    "ERROR": 7,
+    "ENTRY POLICY REVIEW": 2,
+    "ALMOST DEPLOYABLE": 3,
+    "BLOCKED": 4,
+    "BENCH": 5,
+    "DO NOT TOUCH": 6,
+    "WATCH / RESEARCH NEEDED": 7,
+    "ERROR": 8,
 }
 
 
@@ -102,6 +104,8 @@ def map_action_state(deploy_state: str, ticker: str, rec: dict[str, Any], meta: 
     # setup is actually decision-grade in the canonical workflow layer.
     if meta.get("repair_mode") or workflow_state == "REPAIR":
         return "DO NOT TOUCH"
+    if (deploy_state or "").upper() == "ENTRY POLICY REVIEW":
+        return "ENTRY POLICY REVIEW"
     if workflow_state == "WATCH" or meta.get("entry_policy") == "underdefined":
         return "WATCH / RESEARCH NEEDED"
     if workflow_state == "BLOCKED":
@@ -471,7 +475,9 @@ def main() -> None:
         elif meta.get("repair_mode"):
             why = "Repair mode remains active until chart structure and support rebuild make the setup decision-grade again"
         elif workflow_state == "WATCH":
-            if tech_rec.get("in_entry_band") is None and entry_policy == "underdefined":
+            if deploy_rec.get("action_state") == "ENTRY POLICY REVIEW":
+                why = deploy_rec.get("reason") or "Existing band/technical surfaces show a setup, but main-session entry-policy review is required before recommendation"
+            elif tech_rec.get("in_entry_band") is None and entry_policy == "underdefined":
                 if coverage_lane and coverage_lane != "execution":
                     why = f"{coverage_lane}-lane only -- explicit entry and stop are not defined yet"
                 else:

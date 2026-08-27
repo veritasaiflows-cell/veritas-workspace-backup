@@ -3,7 +3,8 @@
 
 The universe registry is durable routing metadata for finance intelligence
 scaleout. It is not canon, approval, portfolio mutation authority, or trading
-authority. Phase 1 covers the current WF77 42-ticker universe only.
+authority. Production-grade answer scope is SQL-first and dynamic; the retired
+42-name label may appear only as historical compatibility residue.
 """
 from __future__ import annotations
 
@@ -19,7 +20,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers, source_summary as legacy_42_tier_source_summary
+from finance_production_scope import production_tickers as production_scope_tickers, source_summary as production_scope_source_summary
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -70,11 +71,11 @@ AUTHORITY_BOUNDARY = {
 ETF_SYMBOLS = {"ITA", "PAVE", "VAW", "VXUS", "XLB", "XLC", "XLE", "XLF", "XLI"}
 COMMODITY_PROXY_SYMBOLS = {"SLV"}
 BOND_OR_RATE_PROXY_SYMBOLS = {"TLT"}
-PRODUCTION_SCOPE = "production_current_42"
+ACTIVE_INTERNAL_SCOPE = "active_internal_universe"
+PRODUCTION_SCOPE = "strategic_production_grade"
 PILOT_SCOPE = "pilot_fixture"
 REVIEW_100_SCOPE = "review_100_monitor"
-PRODUCTION_ACTIVE_COUNT = 42
-SUPPORTED_ACTIVE_COUNTS = {42, 100, 200, 300, 400, 500}
+SUPPORTED_ACTIVE_COUNTS = {100, 200, 300, 400, 500}
 SUPPORTED_REVIEW_MONITOR_COUNTS = {0, 58, 158, 258, 358, 458}
 PILOT_FIXTURES = [
     {"ticker": "ADBE", "name": "Adobe Inc.", "sector": "Technology", "industry": "Application Software"},
@@ -199,6 +200,19 @@ def monitoring_cadence_for(tier: str) -> dict[str, str]:
     return {"price_technical": "monthly_or_triggered", "fundamentals": "on_promotion", "analyst": "optional", "official_evidence": "on_promotion"}
 
 
+def is_production_scope_row(row: dict[str, Any]) -> bool:
+    return row.get("production_scope") is True or row.get("universe_scope") == PRODUCTION_SCOPE
+
+
+def has_retired_scope_marker(row: dict[str, Any]) -> bool:
+    coverage_reason = row.get("coverage_reason") if isinstance(row.get("coverage_reason"), dict) else {}
+    return row.get("retired_legacy_42_scope") is True or coverage_reason.get("retired_legacy_42") is True
+
+
+def active_internal_entries(active_entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [row for row in active_entries if row.get("universe_scope") == ACTIVE_INTERNAL_SCOPE]
+
+
 def build_universe() -> dict[str, Any]:
     coverage = load_dict(TMP / "finance-data-coverage-current.json")
     fundamentals = load_dict(TMP / "fundamental-metrics-current.json")
@@ -276,7 +290,7 @@ def build_universe() -> dict[str, Any]:
         "artifact_type": "wf78_finance_universe_registry",
         "generated_at_utc": utc_now(),
         "workflow": "WF78 - 500 Ticker Finance Intelligence Scaleout",
-        "status": "phase1_current_42_ready",
+        "status": "dynamic_sql_first_universe_ready",
         "review_only": True,
         "source_open_rule": "Use this durable universe registry for tier/type/routing metadata only. Open exact source artifacts and canonical owner notes before finance, readiness, recommendation, authority, or action claims.",
         "architecture_boundary": {
@@ -301,43 +315,50 @@ def build_universe() -> dict[str, Any]:
 def with_summary(universe: dict[str, Any]) -> dict[str, Any]:
     entries = [row for row in universe.get("entries", []) if isinstance(row, dict)]
     active_entries = [row for row in entries if row.get("active") is True]
-    production_entries = [row for row in active_entries if row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE]
+    production_entries = [row for row in active_entries if is_production_scope_row(row)]
+    internal_entries = active_internal_entries(active_entries)
     pilot_entries = [row for row in active_entries if row.get("universe_scope") == PILOT_SCOPE]
     review_100_entries = [row for row in active_entries if row.get("universe_scope") == REVIEW_100_SCOPE]
+    allowed_scopes = {ACTIVE_INTERNAL_SCOPE, PRODUCTION_SCOPE, PILOT_SCOPE, REVIEW_100_SCOPE}
+    retired_marker_entries = [row for row in active_entries if has_retired_scope_marker(row)]
+    unknown_scope_entries = [row for row in active_entries if row.get("universe_scope") not in allowed_scopes]
     coverage = load_dict(TMP / "finance-data-coverage-current.json")
     coverage_tickers = sorted((coverage.get("ticker_coverage") or {}).keys())
     production_tickers = {str(row.get("ticker", "")).upper() for row in production_entries}
-    migrated_production_tickers = set(legacy_42_tier_tickers())
-    effective_production_tickers = migrated_production_tickers or production_tickers
+    production_scope_ticker_set = set(production_scope_tickers())
+    effective_production_tickers = production_scope_ticker_set
     universe["generated_at_utc"] = utc_now()
-    if len(production_entries) == PRODUCTION_ACTIVE_COUNT and len(review_100_entries) == 158 and len(active_entries) == 200:
-        universe["status"] = "wf78_101_200_tier_c_monitor_ready"
-    elif len(production_entries) == PRODUCTION_ACTIVE_COUNT and len(review_100_entries) == 58 and len(active_entries) == 100:
-        universe["status"] = "phase5_review_100_monitor_ready"
+    if unknown_scope_entries:
+        universe["status"] = "invalid_universe_scope_detected"
     elif (
-        len(production_entries) == PRODUCTION_ACTIVE_COUNT
+        len(active_entries) in SUPPORTED_ACTIVE_COUNTS
         and len(review_100_entries) in SUPPORTED_REVIEW_MONITOR_COUNTS
-        and len(active_entries) in SUPPORTED_ACTIVE_COUNTS
-        and len(production_entries) + len(review_100_entries) == len(active_entries)
+        and len(production_entries) + len(review_100_entries) + len(internal_entries) == len(active_entries)
     ):
         universe["status"] = "wf78_tier_c_scaleout_monitor_ready"
     elif pilot_entries:
         universe["status"] = "phase1_pilot_fixture_ready"
     else:
-        universe["status"] = universe.get("status") or "phase1_current_42_ready"
+        universe["status"] = universe.get("status") or "dynamic_sql_first_universe_ready"
     universe["summary"] = {
         "active_ticker_count": len(active_entries),
         "production_active_ticker_count": len(production_entries),
         "effective_production_tier_ticker_count": len(effective_production_tickers),
-        "effective_production_tier_source": legacy_42_tier_source_summary(),
+        "effective_production_tier_source": production_scope_source_summary(),
+        "active_internal_universe_count": len(internal_entries),
+        "retired_legacy_42_active_count": 0,
+        "retired_legacy_42_marker_count": len(retired_marker_entries),
+        "retired_legacy_42_marker_tickers": sorted(str(row.get("ticker", "")).upper() for row in retired_marker_entries),
+        "unknown_scope_count": len(unknown_scope_entries),
+        "unknown_scope_tickers": sorted(str(row.get("ticker", "")).upper() for row in unknown_scope_entries),
         "pilot_fixture_count": len(pilot_entries),
         "review_100_monitor_count": len(review_100_entries),
         "review_monitor_count": len(review_100_entries),
         "supported_scaleout_active_counts": sorted(SUPPORTED_ACTIVE_COUNTS),
         "tier_counts": {tier: sum(1 for row in active_entries if row.get("tier") == tier) for tier in sorted(VALID_TIERS)},
         "instrument_type_counts": {kind: sum(1 for row in active_entries if row.get("instrument_type") == kind) for kind in sorted(VALID_INSTRUMENT_TYPES)},
-        "current_wf77_ticker_count": len(coverage_tickers),
-        "current_wf77_tickers_represented": sorted(set(coverage_tickers).intersection(effective_production_tickers)),
+        "coverage_registry_ticker_count": len(coverage_tickers),
+        "dynamic_production_tickers": sorted(effective_production_tickers),
         "pilot_fixture_tickers": sorted(str(row.get("ticker", "")).upper() for row in pilot_entries),
         "review_100_monitor_tickers": sorted(str(row.get("ticker", "")).upper() for row in review_100_entries),
     }
@@ -379,7 +400,7 @@ def pilot_fixture_entry(fixture: dict[str, str]) -> dict[str, Any]:
         "demotion_triggers": [
             "provider_runtime_or_error_budget_fails",
             "stale_or_missing_source_disclosure_blocks_routing_use",
-            "pilot_row_degrades_current_42_a_b_answer_quality",
+            "pilot_row_degrades_dynamic_sql_first_answer_quality",
             "owner_removes_from_pilot_scope",
         ],
         "source_open_required": True,
@@ -394,9 +415,9 @@ def add_pilot_fixtures(universe: dict[str, Any]) -> dict[str, Any]:
     existing_by_ticker = {str(row.get("ticker", "")).upper(): row for row in entries}
     for row in entries:
         ticker = str(row.get("ticker", "")).upper()
-        if ticker and row.get("universe_scope") not in {PRODUCTION_SCOPE, PILOT_SCOPE}:
-            row["universe_scope"] = PRODUCTION_SCOPE
-            row["production_scope"] = True
+        if ticker and row.get("universe_scope") not in {ACTIVE_INTERNAL_SCOPE, PRODUCTION_SCOPE, PILOT_SCOPE, REVIEW_100_SCOPE}:
+            row["universe_scope"] = ACTIVE_INTERNAL_SCOPE
+            row["production_scope"] = False
             row["pilot_scope"] = False
     for fixture in PILOT_FIXTURES:
         ticker = fixture["ticker"].upper()
@@ -431,35 +452,36 @@ def validate_universe(universe: dict[str, Any]) -> list[dict[str, Any]]:
 
     entries = universe.get("entries") if isinstance(universe.get("entries"), list) else []
     active_entries = [row for row in entries if isinstance(row, dict) and row.get("active") is True]
-    production_entries = [row for row in active_entries if row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE]
+    production_entries = [row for row in active_entries if is_production_scope_row(row)]
+    internal_entries = active_internal_entries(active_entries)
     pilot_entries = [row for row in active_entries if row.get("universe_scope") == PILOT_SCOPE]
     review_100_entries = [row for row in active_entries if row.get("universe_scope") == REVIEW_100_SCOPE]
+    retired_marker_entries = [row for row in active_entries if has_retired_scope_marker(row)]
+    retired_marker_production = [str(row.get("ticker", "")).upper() for row in retired_marker_entries if is_production_scope_row(row)]
     tickers = [str(row.get("ticker", "")).upper() for row in active_entries]
     production_tickers = [str(row.get("ticker", "")).upper() for row in production_entries]
-    migrated_production_tickers = legacy_42_tier_tickers()
-    effective_production_tickers = migrated_production_tickers or production_tickers
+    production_scope_ticker_set = production_scope_tickers()
+    effective_production_tickers = production_scope_ticker_set
     pilot_tickers = [str(row.get("ticker", "")).upper() for row in pilot_entries]
     coverage = load_dict(TMP / "finance-data-coverage-current.json")
-    current_42 = sorted(effective_production_tickers)
     allowed_pilot = sorted(row["ticker"] for row in PILOT_FIXTURES)
-    allowed_scopes = {PRODUCTION_SCOPE, PILOT_SCOPE, REVIEW_100_SCOPE}
+    allowed_scopes = {ACTIVE_INTERNAL_SCOPE, PRODUCTION_SCOPE, PILOT_SCOPE, REVIEW_100_SCOPE}
 
     add("schema_version", universe.get("schema_version") == SCHEMA_VERSION, f"schema_version={universe.get('schema_version')!r}")
     add("metadata_present", bool(universe.get("generated_at_utc") and universe.get("artifact_type")), "generated_at_utc and artifact_type required")
     add("review_only_boundary", universe.get("review_only") is True and not false_authority_flags(universe), "review_only true and no authority flag true")
     add("active_tickers_present", bool(active_entries), f"active={len(active_entries)}")
     add("unique_active_tickers", len(tickers) == len(set(tickers)), f"active={len(tickers)} unique={len(set(tickers))}")
-    missing_current = sorted(set(current_42) - set(production_tickers))
-    add("current_42_wf77_tickers_represented", not missing_current and len(current_42) == PRODUCTION_ACTIVE_COUNT, f"current_42={len(current_42)} source={legacy_42_tier_source_summary().get('source')} missing={missing_current}")
-    add("production_scope_count_locked_42", len(production_entries) == PRODUCTION_ACTIVE_COUNT, f"production={len(production_entries)}")
+    add("retired_scope_markers_do_not_grant_production_scope", not retired_marker_production, json.dumps(retired_marker_production))
+    add("sql_first_production_scope_no_json_fallback", len(effective_production_tickers) == len(production_scope_ticker_set), f"sql_production={len(production_scope_ticker_set)} json_production_rows={len(production_entries)}")
     add("pilot_scope_within_contract", set(pilot_tickers).issubset(set(allowed_pilot)) and len(pilot_tickers) <= len(allowed_pilot), f"pilot={pilot_tickers} allowed={allowed_pilot}")
     add("production_pilot_no_overlap", not set(production_tickers).intersection(pilot_tickers), f"overlap={sorted(set(production_tickers).intersection(pilot_tickers))}")
     add("wf78_scaleout_active_count_supported", len(active_entries) in SUPPORTED_ACTIVE_COUNTS, f"active={len(active_entries)} supported={sorted(SUPPORTED_ACTIVE_COUNTS)}")
     add(
         "review_monitor_shape_valid",
         len(review_100_entries) in SUPPORTED_REVIEW_MONITOR_COUNTS
-        and len(production_entries) + len(review_100_entries) == len(active_entries),
-        f"production={len(production_entries)} review_monitor={len(review_100_entries)} active={len(active_entries)} supported_review={sorted(SUPPORTED_REVIEW_MONITOR_COUNTS)}",
+        and len(production_entries) + len(review_100_entries) + len(internal_entries) == len(active_entries),
+        f"production={len(production_entries)} active_internal={len(internal_entries)} review_monitor={len(review_100_entries)} active={len(active_entries)} supported_review={sorted(SUPPORTED_REVIEW_MONITOR_COUNTS)}",
     )
     add("architecture_notes_preserved", not any(universe.get("architecture_boundary", {}).get(key) is True for key in ["full_sql_canon_migration_allowed", "tmp_artifact_promotion_allowed", "db_path_migration_allowed"]), json.dumps(universe.get("architecture_boundary", {}), sort_keys=True))
 
@@ -475,6 +497,9 @@ def validate_universe(universe: dict[str, Any]) -> list[dict[str, Any]]:
     bad_scope: list[str] = []
     bad_pilot_rows: list[str] = []
     bad_review_100_rows: list[str] = []
+    ab_not_decision_grade: list[str] = []
+    proxy_exception_conflict: list[str] = []
+    obligation_upgrade_candidates: list[str] = []
     for row in active_entries:
         ticker = str(row.get("ticker", "")).upper()
         required_fields = [
@@ -520,10 +545,27 @@ def validate_universe(universe: dict[str, Any]) -> list[dict[str, Any]]:
         if row.get("tier") in {"A", "B"}:
             if requirements.get("price_band_stop") != "daily_required" or requirements.get("technical_posture") != "daily_required":
                 weak_ab.append(ticker)
+            if row.get("decision_grade_eligible") is not True:
+                ab_not_decision_grade.append(ticker)
+        # The ETF/proxy exception in tier_a_cohort_alignment_reconciliation keys off
+        # decision_grade_eligible is False. A proxy carrying that flag must stay outside the A/B
+        # obligation set, or the exception silently stops firing and the name starts escalating
+        # as route drift.
+        if (
+            row.get("instrument_type") in {"etf", "etf_or_macro_proxy"}
+            and row.get("decision_grade_eligible") is False
+            and row.get("tier") in {"A", "B"}
+        ):
+            proxy_exception_conflict.append(ticker)
+        # A C/D name already carrying the daily obligation is a promotion nomination, not a defect.
+        if row.get("tier") in {"C", "D"} and requirements.get("price_band_stop") == "daily_required":
+            obligation_upgrade_candidates.append(ticker)
         if row.get("universe_scope") == PILOT_SCOPE:
             coverage_reason = row.get("coverage_reason") if isinstance(row.get("coverage_reason"), dict) else {}
             if row.get("tier") not in {"C", "D"} or row.get("decision_grade_eligible") is not False or coverage_reason.get("production_answer_path_member") is not False:
                 bad_pilot_rows.append(ticker)
+        if row.get("universe_scope") == ACTIVE_INTERNAL_SCOPE and row.get("production_scope") is True:
+            bad_scope.append(f"{ticker}:active_internal_marked_production_scope")
         if row.get("universe_scope") == REVIEW_100_SCOPE:
             coverage_reason = row.get("coverage_reason") if isinstance(row.get("coverage_reason"), dict) else {}
             if (
@@ -546,6 +588,15 @@ def validate_universe(universe: dict[str, Any]) -> list[dict[str, Any]]:
     add("source_open_requirements_visible", not missing_source_open, json.dumps(missing_source_open))
     add("pilot_rows_are_lower_tier_non_decision_grade", not bad_pilot_rows, json.dumps(bad_pilot_rows))
     add("review_100_rows_are_thin_c_tier_non_decision_grade", not bad_review_100_rows, json.dumps(bad_review_100_rows))
+    add("tier_ab_are_decision_grade_eligible", not ab_not_decision_grade, json.dumps(ab_not_decision_grade))
+    add("proxy_exception_names_stay_out_of_ab_obligation", not proxy_exception_conflict, json.dumps(proxy_exception_conflict))
+    # Nomination signal, not a defect: a C/D name carrying the daily obligation is a promotion
+    # candidate for owner review, so this check reports without failing the bundle.
+    add(
+        "coverage_obligation_upgrade_candidates_reported",
+        True,
+        json.dumps({"nomination_only": True, "tickers": obligation_upgrade_candidates}),
+    )
     return checks
 
 
@@ -564,9 +615,12 @@ def build_validation(universe: dict[str, Any]) -> dict[str, Any]:
             "checks": len(checks),
             "failed": len(failed),
             "active_ticker_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True]),
-            "production_active_ticker_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE]),
-            "effective_production_tier_ticker_count": len(legacy_42_tier_tickers()) or len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE]),
-            "effective_production_tier_source": legacy_42_tier_source_summary(),
+            "production_active_ticker_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and is_production_scope_row(row)]),
+            "effective_production_tier_ticker_count": len(production_scope_tickers()),
+            "effective_production_tier_source": production_scope_source_summary(),
+            "active_internal_universe_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and row.get("universe_scope") == ACTIVE_INTERNAL_SCOPE]),
+            "retired_legacy_42_active_count": 0,
+            "retired_legacy_42_marker_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and has_retired_scope_marker(row)]),
             "pilot_fixture_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and row.get("universe_scope") == PILOT_SCOPE]),
             "review_100_monitor_count": len([row for row in universe.get("entries", []) if isinstance(row, dict) and row.get("active") is True and row.get("universe_scope") == REVIEW_100_SCOPE]),
         },
@@ -576,14 +630,27 @@ def build_validation(universe: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build and validate the WF78 durable finance universe registry.")
+    # allow_abbrev=False: `--write` used to prefix-match `--write-from-coverage` and silently
+    # rebuild the whole registry when a read-only validation run was intended.
+    parser = argparse.ArgumentParser(
+        description="Build and validate the WF78 durable finance universe registry.",
+        allow_abbrev=False,
+    )
     parser.add_argument("--universe", type=Path, default=DEFAULT_UNIVERSE, help="Universe registry JSON path.")
     parser.add_argument("--validation-output", type=Path, default=DEFAULT_VALIDATION, help="Validation artifact output path.")
     parser.add_argument("--write-from-coverage", action="store_true", help="Build and write universe from current WF77 coverage/fundamental artifacts.")
-    parser.add_argument("--add-pilot-fixtures", action="store_true", help="Add WF78 Phase 1 fixture rows without changing the production 42 answer path.")
+    parser.add_argument("--add-pilot-fixtures", action="store_true", help="Add WF78 Phase 1 fixture rows without changing the dynamic SQL-first production answer path.")
     parser.add_argument("--validate", action="store_true", help="Validate universe and write validation artifact.")
     parser.add_argument("--print", dest="print_json", action="store_true", help="Print universe JSON to stdout.")
+    parser.add_argument("--write", action="store_true", help="Rejected. This script has no generic write mode; use --write-from-coverage explicitly.")
     args = parser.parse_args()
+
+    if args.write:
+        parser.error(
+            "--write is not a valid mode for this script and will not be treated as a shorthand. "
+            "Use --validate for read-only validation, or --write-from-coverage to deliberately "
+            "rebuild data/finance/universe-v1.json from WF77 coverage artifacts."
+        )
 
     if args.write_from_coverage:
         universe = build_universe()

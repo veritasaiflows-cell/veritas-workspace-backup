@@ -29,7 +29,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -145,7 +145,7 @@ def preflight_candidates() -> list[dict[str, Any]]:
 
 
 def production_tickers() -> list[str]:
-    migrated = sorted(legacy_42_tier_tickers())
+    migrated = sorted(production_scope_tickers())
     if migrated:
         return migrated
     universe = load_dict(UNIVERSE_PATH)
@@ -157,7 +157,7 @@ def production_tickers() -> list[str]:
         for row in entries
         if isinstance(row, dict)
         and row.get("active") is True
-        and row.get("universe_scope", "production_current_42") == "production_current_42"
+        and row.get("production_scope") is True
     )
 
 
@@ -651,3 +651,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

@@ -20,7 +20,7 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 
 | Ticker | Sector | Coverage Tier | Current Deployment State | Canonical Source |
 |---|---|---|---|---|
-| JPM | Financials | Core candidate | Deployable now — explicit owner approval landed on 2026-05-07; still manual-only with normal size discipline | Trigger Sheet |
+| JPM | Financials | Core candidate | Almost deployable — explicit owner approval remains recorded, but the 2026-05-08 close fell below the formal band; require reclaim or explicit band review before treating the trigger as live | Trigger Sheet |
 | ETN | Tech / AI Infrastructure | Core candidate | Deployable now / conditional add — owner-promoted on 2026-05-09 after fresh entry-band rerun confirmed it remained in band; manual-only Tier 2, no chase | Trigger Sheet |
 | VRT | Tech / AI Infrastructure | Tactical | Watch / research needed | Trigger Sheet |
 | NVDA | Tech / AI Infrastructure | Tactical | Wait / no chase — above band after 2026-05-09 rerun, with May 20 timing / crowding keeping deployable-now blocked | Trigger Sheet |
@@ -50,7 +50,8 @@ Execution-lane names feed the daily deployment surfaces. Watch, macro, and specu
 See [[02. Markets/Regime Scoring Matrix]] for the current scored ranking.
 
 Current live action orientation:
-- **Deployable now:** JPM, ETN
+- **Deployable now:** ETN
+- **Owner-approved but trigger not live:** JPM
 - **Wait / no chase:** NVDA
 - **Almost deployable:** GOOG, GS, MSFT
 - **Bench / do not touch / repair:** BRK.B, LMT, XOM
@@ -62,6 +63,6 @@ This file should mirror those high-level states, not invent its own ranking syst
 
 ## Freshness
 
-- Last updated: 2026-05-09 — ETN moved to deployable-now / conditional add after Randall approved promotion and the fresh entry-band rerun confirmed it remained in band; JPM remains deployable-now, NVDA moved to wait / no chase after moving above band, and GOOG / GS / MSFT remain almost deployable.
+- Last updated: 2026-05-10 — ETN remains deployable-now / conditional add after Randall approved promotion and the fresh entry-band rerun confirmed it remained in band; JPM approval remains recorded but the latest machine close is below the formal band, so it fails closed to almost deployable until reclaim or explicit band review; NVDA remains wait / no chase, and GOOG / GS / MSFT remain almost deployable.
 - Refresh this index when names are added to or removed from the active tracking universe, or when deployment state changes materially
 - Do not add thesis content, tier rankings, or setup detail to this file — those belong in Coverage Universe, Trigger Sheet, and Regime Scoring Matrix respectively

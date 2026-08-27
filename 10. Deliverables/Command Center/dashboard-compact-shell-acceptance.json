@@ -1,0 +1,41 @@
+{
+  "schema_version": "dashboard_compact_shell_acceptance.v1",
+  "status": "ok",
+  "critical": 0,
+  "warning": 0,
+  "artifacts": {
+    "compact_shell": "tmp/veritas-command-center-compact.html",
+    "compact_reader": "tmp/veritas-command-center-compact-reader.json",
+    "shell_validation": "tmp/dashboard-compact-shell-validation.json",
+    "view_model": "tmp/dashboard-presentation-view-model.json",
+    "v2_reader": "tmp/dashboard-v2-reader-migration.json",
+    "legacy_dashboard_ref": "tmp/dashboard-data.json",
+    "finance_daily_actionability_snapshot": "tmp/finance-daily-actionability-snapshot.json"
+  },
+  "summary": {
+    "panel_count": 7,
+    "html_bytes": 16739,
+    "legacy_payload_embedded": false,
+    "legacy_payload_retained_by_design": true,
+    "review_only_boundary_present": true,
+    "all_finance_panels_migrated": true,
+    "workflow_pm_migrated_to_pm_cockpit": true,
+    "finance_actionability_status": "review_only_actionability",
+    "retail_seeded_bad_cases": 14,
+    "retail_customer_output_allowed": false,
+    "randall_full_detail_route_present": true
+  },
+  "authority": {
+    "review_only": true,
+    "legacy_dashboard_replaced": false,
+    "legacy_payload_retained_by_design": true,
+    "legacy_payload_embedded": false,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "customer_or_public_output_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "findings": []
+}

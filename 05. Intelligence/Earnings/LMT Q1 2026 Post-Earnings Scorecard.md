@@ -36,9 +36,9 @@
 
 ## Pre-report context
 
-The vault's pre-event assessment (from Technical Entry Sheet and Deployment Trigger Sheet, Apr 22) explicitly flagged that the LMT setup was **already broken before the print**. Specifically:
+The vault's pre-event assessment (from pre-consolidation technical and deployment surfaces, Apr 22) explicitly flagged that the LMT setup was **already broken before the print**. Specifically:
 - Price had been losing ground relative to key MAs ahead of the report
-- The pre-event Deployment Trigger Sheet stance was "Do not touch" — not "Blocked into earnings," but "setup pre-invalidated"
+- The pre-event pre-consolidation deployment stance was "Do not touch" — not "Blocked into earnings," but "setup pre-invalidated"
 - This was unusual: most portfolio names were "Blocked" (good setup, waiting for event); LMT was "Do not touch" (setup already failed)
 
 The earnings move confirmed and accelerated the prior structural deterioration.
@@ -79,7 +79,7 @@ The earnings move confirmed and accelerated the prior structural deterioration.
 
 1. Source the actual Q1 2026 EPS, revenue, and full-year guidance from LMT investor relations or earnings release
 2. Review F-35 delivery commentary and any program-specific guidance changes
-3. Update Coverage Universe "act when" field — the old entry framing is no longer valid
+3. Update Coverage and Watchlist "act when" field — the old entry framing is no longer valid
 4. Update Event Calendar to reflect LMT closure state as "Synced" once this scorecard and the above follow-up are complete
 5. If thesis is intact after full data review, define new entry band from the rebuilt base — do not reuse old levels
 
@@ -89,10 +89,10 @@ The earnings move confirmed and accelerated the prior structural deterioration.
 
 - **Reported:** ✅ April 23, 2026
 - **Interpreted:** ✅ Price action and sector context interpreted
-- **Synced:** ⬜ Pending primary earnings data confirmation and Coverage Universe update
+- **Synced:** ⬜ Pending primary earnings data confirmation and Coverage and Watchlist update
 - **Closed with follow-up:** F-35 delivery and guidance verification required before full thesis restoration
 
 ---
 
 *Written: 2026-04-26*
-*Source: Technical Entry Sheet (Apr 24 close), Deployment Trigger Sheet (Apr 24), Event Calendar, Weekly Intelligence Brief*
+*Source: pre-consolidation technical and deployment surfaces (Apr 24), Event Calendar, Weekly Intelligence Brief*

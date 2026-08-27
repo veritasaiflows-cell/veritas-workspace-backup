@@ -1,6 +1,6 @@
 """weekly_intelligence_brief.py
 
-Append a structured, machine-populated section to the Weekly Intelligence Brief.
+Append a structured, machine-populated section to the weekly machine brief.
 
 Reads:
     tmp/market-state.json
@@ -13,16 +13,18 @@ Reads:
     tmp/regime-scores.json
     tmp/band-proposals.json (optional)
     tmp/weekly-review-skeleton.json (optional, for cross-link)
-    05. Intelligence/Weekly Intelligence Brief.md (read for idempotency)
+    05. Intelligence/Weekly Intelligence Brief - machine.md (read for idempotency)
 
 Writes:
-    05. Intelligence/Weekly Intelligence Brief.md (new section appended IF the
+    05. Intelligence/Weekly Intelligence Brief - machine.md (new section appended IF the
         current week's section is not already present)
     tmp/weekly-intelligence-brief.json
 
 Behavior:
     - Idempotent: if the current week's heading already exists, prints a delta
       report and does NOT overwrite the existing section.
+    - Scheduled proof is always machine-sidecar only. It never grants canonical
+      mutation authority or writes the canonical weekly brief.
     - All quantitative sections auto-populate. Sections requiring qualitative
       narrative (regime read paragraph, geopolitical scan, recommended actions)
       are auto-populated with structured data plus explicit `_[judgment]_`
@@ -64,6 +66,7 @@ FUND_VALIDATION  = WORKSPACE / "tmp" / "fundamental-metrics-validation.json"
 BRIEF_MD         = WORKSPACE / "05. Intelligence" / "Weekly Intelligence Brief.md"
 BRIEF_MACHINE_MD = WORKSPACE / "05. Intelligence" / "Weekly Intelligence Brief - machine.md"
 OUT_JSON         = WORKSPACE / "tmp" / "weekly-intelligence-brief.json"
+MACHINE_SIDECAR_ONLY = True
 
 
 def load_json(path: Path) -> dict | list | None:
@@ -507,8 +510,15 @@ def main() -> int:
     fund_validation = load_json(FUND_VALIDATION) or {}
 
     section_md = render_section(today, ms, trigger, earnings, post_prep, technical, scores, deployment, portfolio_config, fundamentals, fund_validation)
-    canonical_allowed, trust_reason = canonical_note_mutation_gate(validation)
-    target_brief = BRIEF_MD if canonical_allowed else BRIEF_MACHINE_MD
+    gate_canonical_allowed, gate_reason = canonical_note_mutation_gate(validation)
+    canonical_allowed = False
+    trust_reason = (
+        f"machine-sidecar-only scheduled proof; canonical gate result was "
+        f"{'allowed' if gate_canonical_allowed else 'blocked'} ({gate_reason})"
+        if MACHINE_SIDECAR_ONLY
+        else gate_reason
+    )
+    target_brief = BRIEF_MACHINE_MD if MACHINE_SIDECAR_ONLY else (BRIEF_MD if gate_canonical_allowed else BRIEF_MACHINE_MD)
 
     if not target_brief.exists():
         # Bootstrap the file with a header

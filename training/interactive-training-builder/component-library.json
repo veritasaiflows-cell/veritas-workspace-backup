@@ -1,0 +1,192 @@
+{
+  "schema": "veritas.interactive_training_component_library.v1",
+  "generated_at_utc": "2026-07-04T14:40:03Z",
+  "status": "ok",
+  "purpose": "Reusable component contract for local interactive training modules.",
+  "components": [
+    {
+      "id": "lesson",
+      "label": "Lesson",
+      "purpose": "Teach a compact concept before practice.",
+      "required_fields": [
+        "id",
+        "title",
+        "body",
+        "key_points"
+      ],
+      "validation": [
+        "at least one lesson",
+        "at least two key points"
+      ],
+      "reuse_notes": "Keep bodies concise and tie every lesson to a later interaction."
+    },
+    {
+      "id": "multiple_choice",
+      "label": "Multiple Choice",
+      "purpose": "Check recognition of the safest or most accurate path.",
+      "required_fields": [
+        "id",
+        "type",
+        "title",
+        "prompt",
+        "choices",
+        "xapi_object"
+      ],
+      "validation": [
+        "at least one correct choice",
+        "choice feedback explains why"
+      ],
+      "reuse_notes": "Use for command selection, source classification, and unsafe-claim spotting.",
+      "xapi_verbs": [
+        "answered"
+      ]
+    },
+    {
+      "id": "checklist",
+      "label": "Checklist",
+      "purpose": "Train minimum proof, approval, or handoff fields.",
+      "required_fields": [
+        "id",
+        "type",
+        "title",
+        "prompt",
+        "checklist_items",
+        "xapi_object"
+      ],
+      "validation": [
+        "all checklist items must be selected for a pass"
+      ],
+      "reuse_notes": "Use when a task has non-negotiable completeness fields.",
+      "xapi_verbs": [
+        "answered"
+      ]
+    },
+    {
+      "id": "scenario",
+      "label": "Scenario",
+      "purpose": "Practice written operator judgment under uncertainty.",
+      "required_fields": [
+        "id",
+        "type",
+        "title",
+        "prompt",
+        "expected",
+        "rubric",
+        "xapi_object"
+      ],
+      "validation": [
+        "expected answer present",
+        "rubric names the required judgment"
+      ],
+      "reuse_notes": "Use for stale proof, conflict, warning-grade, and boundary-repair cases.",
+      "xapi_verbs": [
+        "answered"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection",
+      "purpose": "Capture explain-back and next-safe-action thinking.",
+      "required_fields": [
+        "id",
+        "type",
+        "title",
+        "prompt",
+        "rubric",
+        "xapi_object"
+      ],
+      "validation": [
+        "rubric names safe use and blocked use"
+      ],
+      "reuse_notes": "Use as the final practice item for each module.",
+      "xapi_verbs": [
+        "answered"
+      ]
+    },
+    {
+      "id": "boundary_ack",
+      "label": "Boundary Acknowledgement",
+      "purpose": "Force explicit recognition of authority limits.",
+      "required_fields": [
+        "id",
+        "type",
+        "title",
+        "prompt",
+        "expected",
+        "xapi_object"
+      ],
+      "validation": [
+        "expected confirmation present",
+        "module-level blocked flags remain false"
+      ],
+      "reuse_notes": "Every module that touches action authority should include one.",
+      "xapi_verbs": [
+        "reviewed_boundary"
+      ]
+    },
+    {
+      "id": "local_xapi",
+      "label": "Local xAPI Events",
+      "purpose": "Record local started, answered, completed, passed, failed, and boundary review events.",
+      "required_fields": [
+        "xapi.activity_id",
+        "xapi.verbs"
+      ],
+      "validation": [
+        "all required verbs present",
+        "no external LRS configured"
+      ],
+      "reuse_notes": "Default storage is browser-local; loopback ledger is optional and local-only.",
+      "xapi_verbs": [
+        "answered",
+        "completed",
+        "failed",
+        "passed",
+        "reviewed_boundary",
+        "started"
+      ]
+    },
+    {
+      "id": "scorm_package",
+      "label": "SCORM Package",
+      "purpose": "Package the module for later LMS smoke/import testing.",
+      "required_fields": [
+        "index.html",
+        "module.json",
+        "xapi-seed.json",
+        "imsmanifest.xml"
+      ],
+      "validation": [
+        "LMSInitialize",
+        "LMSSetValue",
+        "LMSCommit",
+        "LMSFinish"
+      ],
+      "reuse_notes": "External LMS import remains owner-gated; local mock-LMS smoke is the proof path."
+    },
+    {
+      "id": "browser_qa",
+      "label": "Browser QA",
+      "purpose": "Prove desktop/mobile rendering, accessibility, console, and overflow behavior.",
+      "required_fields": [
+        "desktop screenshot",
+        "mobile screenshot",
+        "axe result",
+        "console result"
+      ],
+      "validation": [
+        "severe axe violations 0",
+        "console errors 0",
+        "overflow 0"
+      ],
+      "reuse_notes": "Run after each new module or runtime change."
+    }
+  ],
+  "authority_boundary": {
+    "local_files_only": true,
+    "external_lms_lrs_configured": false,
+    "customer_data_allowed": false,
+    "public_delivery_approved": false,
+    "owner_approval_inferred": false
+  }
+}

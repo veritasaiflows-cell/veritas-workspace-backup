@@ -195,6 +195,14 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def validation_has_blocking_issue(payload: dict[str, Any]) -> bool:
+    validation = as_dict(payload.get("validation"))
+    status = str(validation.get("status") or "").lower()
+    errors = as_list(validation.get("errors"))
+    critical_count = int_or_zero(validation.get("critical_count"))
+    return bool(errors or critical_count or status in {"error", "blocked", "failed", "critical"})
+
+
 def int_or_zero(value: Any) -> int:
     try:
         return int(value or 0)
@@ -376,6 +384,14 @@ def tier_summary(router: dict[str, Any]) -> dict[str, Any]:
         "validation_status": as_dict(router.get("validation")).get("status"),
         "active_ticker_count": summary.get("active_ticker_count"),
         "auto_tier_counts": summary.get("auto_tier_counts"),
+        "lane_tier_counts": summary.get("lane_tier_counts"),
+        "review_lane_counts": summary.get("review_lane_counts"),
+        "tier_a_equity_count": summary.get("tier_a_equity_count"),
+        "tier_a_sleeve_count": summary.get("tier_a_sleeve_count"),
+        "tier_a_commodity_count": summary.get("tier_a_commodity_count"),
+        "tier_a_rates_income_count": summary.get("tier_a_rates_income_count"),
+        "tier_a_macro_currency_count": summary.get("tier_a_macro_currency_count"),
+        "tier_a_crypto_proxy_count": summary.get("tier_a_crypto_proxy_count"),
         "auto_state_counts": summary.get("auto_state_counts"),
         "tier_a_count": summary.get("auto_tier_a_count"),
         "tier_b_count": summary.get("auto_tier_b_count"),
@@ -526,7 +542,13 @@ def reconcile_surfaces(session: dict[str, Any], fresh: dict[str, Any], opp: dict
     }
 
 
-def semantic_input_snapshot(tier: dict[str, Any], fresh: dict[str, Any], opp: dict[str, Any], session: dict[str, Any]) -> dict[str, Any]:
+def semantic_input_snapshot(
+    tier: dict[str, Any],
+    fresh: dict[str, Any],
+    opp: dict[str, Any],
+    session: dict[str, Any],
+    blockers: list[str] | None = None,
+) -> dict[str, Any]:
     return {
         "market_session": {
             "window": session.get("window"),
@@ -537,6 +559,8 @@ def semantic_input_snapshot(tier: dict[str, Any], fresh: dict[str, Any], opp: di
         },
         "tier": {
             "auto_tier_counts": tier.get("auto_tier_counts"),
+            "lane_tier_counts": tier.get("lane_tier_counts"),
+            "review_lane_counts": tier.get("review_lane_counts"),
             "auto_state_counts": tier.get("auto_state_counts"),
             "tier_a_tickers": tier.get("tier_a_tickers"),
             "tier_b_tickers": tier.get("tier_b_tickers"),
@@ -563,6 +587,7 @@ def semantic_input_snapshot(tier: dict[str, Any], fresh: dict[str, Any], opp: di
             "autonomous_clean_randall_review_card_count": opp.get("autonomous_clean_randall_review_card_count"),
             "autonomous_blocked_or_waiting_count": opp.get("autonomous_blocked_or_waiting_count"),
         },
+        "blockers": sorted(blockers or []),
     }
 
 
@@ -570,6 +595,7 @@ def decision_count_snapshot(final: str, tier: dict[str, Any], fresh: dict[str, A
     return {
         "final_market_deployment_state": final,
         "tier_counts": tier.get("auto_tier_counts"),
+        "lane_tier_counts": tier.get("lane_tier_counts"),
         "tier_states": tier.get("auto_state_counts"),
         "timing_counts": fresh.get("tier_a_b_timing_counts"),
         "quote_freshness_class_counts": fresh.get("quote_freshness_class_counts"),
@@ -696,11 +722,11 @@ def build_payload(args: argparse.Namespace, now: datetime) -> dict[str, Any]:
             blockers.append(f"authority_widened:{record['name']}")
     if tier["capital_deployment_approved_count"] or tier["trade_or_execution_approved_count"]:
         blockers.append("tier_router_authority_approval_count_nonzero")
-    if as_dict(payloads["wf78_auto_router"].get("validation")).get("status") not in {"ok", None}:
+    if validation_has_blocking_issue(payloads["wf78_auto_router"]):
         blockers.append("wf78_auto_router_validation_not_ok")
-    if fresh["deployment_timing_validation"] not in {"ok", None}:
+    if validation_has_blocking_issue(payloads["wf85_timing_gate"]):
         blockers.append("wf85_timing_gate_validation_not_ok")
-    if as_dict(payloads["autonomous_routing_cards"].get("validation")).get("status") not in {"ok", None}:
+    if validation_has_blocking_issue(payloads["autonomous_routing_cards"]):
         blockers.append("autonomous_routing_cards_validation_not_ok")
     if opp.get("autonomous_execution_allowed_now") is True:
         blockers.append("autonomous_routing_cards_execution_authority_drift")
@@ -709,7 +735,7 @@ def build_payload(args: argparse.Namespace, now: datetime) -> dict[str, Any]:
     if final in {"risk_review_now", "owner_review_candidate", "review_opportunity"} and reconciliation["status"] == "downgrade_required":
         final = "candidate_pending_decision_layer_confirmation"
         next_action = "Decision surfaces disagree; refresh/reconcile WF85/opportunity/fresh-price proof before owner-review card prep."
-    input_snapshot = semantic_input_snapshot(tier, fresh, opp, session)
+    input_snapshot = semantic_input_snapshot(tier, fresh, opp, session, blockers)
     decision_snapshot = decision_count_snapshot(final, tier, fresh, opp)
     determinism = determinism_guard(input_snapshot, decision_snapshot)
     packet = {
@@ -801,6 +827,7 @@ def render_md(packet: dict[str, Any]) -> str:
         "",
         "## Tier And Freshness",
         f"- Tier counts: `{tier.get('auto_tier_counts')}`",
+        f"- Lane-qualified tier counts: `{tier.get('lane_tier_counts')}`",
         f"- Tier states: `{tier.get('auto_state_counts')}`",
         f"- WF85 timing states: `{fresh.get('tier_a_b_timing_counts')}`",
         f"- Quote freshness classes: `{fresh.get('quote_freshness_class_counts')}`",

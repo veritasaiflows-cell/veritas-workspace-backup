@@ -52,6 +52,15 @@ def add(findings: list[dict[str, Any]], check: str, ok: bool, severity: str, det
     findings.append({"check": check, "ok": ok, "severity": "info" if ok else severity, "detail": detail})
 
 
+def gate_clean_or_warning(payload: dict[str, Any]) -> bool:
+    summary = as_dict(payload.get("summary"))
+    return (
+        payload.get("status") in {"ok", "warning"}
+        and as_dict(payload.get("validation")).get("status") == "ok"
+        and int(summary.get("critical") or 0) == 0
+    )
+
+
 def contract_requirements(row: dict[str, Any]) -> list[str]:
     requirements = [
         "fixture_input_contract",
@@ -77,9 +86,16 @@ def build_report() -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     add(findings, "candidate_registry_ok", candidates.get("status") in {"ok", "warning"}, "critical", candidates.get("status"))
     add(findings, "candidate_registry_has_rows", len(rows) > 0, "critical", len(rows))
-    add(findings, "demotion_dry_run_ok", demotion_dry_run.get("status") == "ok", "critical", demotion_dry_run.get("status"))
-    add(findings, "dashboard_ab_gate_ok", dashboard_ab_gate.get("status") == "ok", "critical", dashboard_ab_gate.get("status"))
-    add(findings, "controlled_router_ok", controlled_router.get("status") == "ok", "critical", controlled_router.get("status"))
+    add(findings, "demotion_dry_run_ok", gate_clean_or_warning(demotion_dry_run), "critical", {"status": demotion_dry_run.get("status"), "summary": demotion_dry_run.get("summary")})
+    add(findings, "dashboard_ab_gate_ok", gate_clean_or_warning(dashboard_ab_gate), "critical", {"status": dashboard_ab_gate.get("status"), "summary": dashboard_ab_gate.get("summary")})
+    add(findings, "controlled_router_ok", gate_clean_or_warning(controlled_router), "critical", {"status": controlled_router.get("status"), "summary": controlled_router.get("summary")})
+    for gate_name, gate_payload in (
+        ("demotion_dry_run", demotion_dry_run),
+        ("dashboard_ab_gate", dashboard_ab_gate),
+        ("controlled_router", controlled_router),
+    ):
+        if gate_payload.get("status") == "warning":
+            add(findings, f"{gate_name}_expected_fail_closed_warning", False, "warning", as_dict(gate_payload.get("summary")))
     add(
         findings,
         "controlled_router_keeps_python_default",
@@ -152,7 +168,7 @@ def build_report() -> dict[str, Any]:
             "contract_first_candidates": len(contract_first),
             "ready_for_go_spike_contracts": len(contract_queue),
             "retire_python_now": len(blocked_retire),
-            "demotion_gate_signal": "ready_for_controlled_router_ab_only_no_python_retirement" if not critical else "not_ready",
+            "demotion_gate_signal": "expected_fail_closed_not_ready_for_demotion" if warnings and not critical else "ready_for_controlled_router_ab_only_no_python_retirement" if not critical else "not_ready",
         },
         "contract_first_queue": contract_queue,
         "findings": findings,

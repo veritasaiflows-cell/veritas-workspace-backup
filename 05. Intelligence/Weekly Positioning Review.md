@@ -1,193 +1,125 @@
+<!-- THIN HUMAN SURFACE
+Backup before thinning: backups/sql-json-md-thinning/20260619T192613Z/05. Intelligence/Weekly Positioning Review.md
+Structured owner: state/finance/finance-canon.sqlite plus generated/read-only proof packets.
+Authority: weekly reasoning and audit context only; no execution, portfolio mutation, archive/delete/apply authority, or inferred approval.
+-->
+
 # Weekly Positioning Review
 
 ## Role
 
-This is the **single current weekly strategy/intelligence product** for Randall and Veritas. [[05. Intelligence/Weekly Intelligence Brief]] is demoted to an archive/scaffold pointer unless deliberately rebuilt later.
+This is the human weekly reasoning layer for Randall and Veritas. It should explain market posture, risk posture, opportunity themes, owner decisions, and what the daily machinery should watch next.
 
-Use it to answer:
-- what is the weekly market posture?
-- what names or sectors deserve attention this week?
-- what risks should shape patience, sizing review, or no-chase discipline?
-- what should the daily/pre-market/post-close surfaces watch next?
+It should not duplicate ticker-level current state, technical levels, evidence currentness, routing status, answer-scope membership, or machine queues. Those structured facts are SQL-generated/read-only.
 
-Boundary:
-- weekly strategy layer only
-- not a live execution board
-- not a daily dashboard
-- not a full catalyst calendar
-- not a portfolio-mutation or trade-approval surface
+## Weekly Reasoning Standard
 
-Latest Sunday finance/opportunity cue - 2026-06-14T16:36:23Z:
-- **Status:** Sunday chain warning / review-only. Required research sources are fresh enough and there is no stop line, but sector expansion and opportunity radar are degraded because sector-correlation, daily source-freshness, and band-proposal review debt remain open.
-- **Deployment posture:** ETN is the only deployable-now review-only candidate, inside band at 391.39. GOOG, MSFT, NVDA, and VRT are in promotion review and require explicit owner promotion/model/sleeve/deployment decisions. GS and JPM are almost deployable but not live triggers; JPM is above band/no-chase. BRK.B, LMT, and XOM remain do-not-touch/repair.
-- **Improving leadership:** Consumer Staples, Financials, Industrials, Materials, Real Estate, Technology.
+Each weekly pass should answer:
+
+- what changed in the macro and market regime
+- which portfolio risks deserve patience
+- which opportunity themes deserve more research
+- what constraints should shape any later proposal
+- what proof packet should be checked before a material finance claim
+
+## Current Structured Views
+
+Use these generated/read-only routes for structured finance state:
+
+- SQL-generated/read-only structured canon guard: `python scripts\finance_sql_canon_access.py --write --validate`
+- SQL-generated/read-only trade-grade readiness: `python scripts\trade_grade_os_freshness_cron_runner.py --write --validate`
+- SQL-generated/read-only WF78 routing: `python scripts\wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate`
+- SQL-generated/read-only WF84 data plane: `python scripts\canonical_finance_data_plane_phase6_10.py --write --validate`
+- SQL-generated/read-only WF85 parity: `python scripts\full_intelligence_answer_parity.py --all --write --validate`
+
+Generated/read-only proof files:
+
+- `tmp/trade-grade-os-freshness-cron-runner.json`
+- `tmp/wf78-intelligence-routing-v2.json`
+- `tmp/canonical-finance-data-plane-phase6-10.json`
+- `tmp/full-answer-parity/full-answer-parity-rollup.json`
+
+## Boundary
+
+Weekly reasoning may recommend research, repair, or proposal work. It does not approve orders, paper execution, live execution, cash changes, portfolio mutation, SQL schema changes, or archive/delete/apply packets.
+
+## Historical Trail
+
+The pre-thinning weekly review was preserved before this rewrite:
+
+- `backups/sql-json-md-thinning/20260619T192613Z/05. Intelligence/Weekly Positioning Review.md`
+
+Use it as historical/audit context only. Rebuild future weekly reasoning as narrative, not as a hand-maintained duplicate of structured finance fields.
+---
+
+## Current Sunday Sync - 2026-06-28
+
+### Weekly posture
+
+- **Posture:** Defensive-neutral / selective-risk-on for review only.
+- **Historical/audit Sunday sync snapshot - confidence:** Moderate for review-only posture; not enough for deployment approval. Sunday artifacts were accepted with no stop line and dashboard validation was clean except for the known info-grade active-weight accounting gap. Deployment readiness was still presentation-blocked/review-only, and the research radar was degraded because sector-expansion proof was degraded.
+- **Historical/audit Sunday sync snapshot - operating stance:** Keep deployment selective and owner-gated; prioritize in-band quality setups, avoid chase behavior, and require manual review for macro/rates-sensitive names, financials, and AI-power concentration before any proposal.
+- **What changed:** Breadth improved back to broad participation, credit remains benign, and rates/dollar/inflation pressure still argue against broad deployment. ETN is the only deployable-now review candidate; GS and VRT are promotion-review names; JPM is almost deployable but above band.
+
+### Macro regime and confidence
+
+Sources: `tmp/weekly-macro-snapshot.json`, `tmp/macro-judgment-draft.json`, `tmp/macro-metrics-current.json`, `tmp/macro-signal-spine.json`, and `tmp/dashboard-validation.json`, generated 2026-06-28.
+
+- **Regime:** Restrictive pause, resilient growth, selective risk-on with large-cap quality bias.
+- **Rates:** Fed target 3.50%-3.75%, next FOMC 2026-07-29, next-meeting cut probability 0%; 2Y 4.070%, 10Y 4.372%, 3M bill 3.663%.
+- **Market tape:** SPX 7,354.02, VIX 18.41, DXY 101.36, Brent $72.60, WTI $69.23.
+- **Inflation/growth read:** CPI/core/PCE still keep rate sensitivity high; claims and payrolls do not show a collapse. GDP and ISM keep the base case away from risk-off, but inflation and dollar pressure keep broad deployment gated.
+- **Risk stack:** Credit is benign and breadth is broad, with 8 of 11 sectors above 50DMA and RSP/SPY +3.00% over 5 days. That supports selective review, not automatic allocation.
+
+### Deployment map
+
+Sources: `tmp/deployment-readiness-surface.json` and `tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json`, generated 2026-06-28. Review-only; no apply packet is authorized.
+
+- **Deployable now:** ETN.
+- **Promotion review:** GS, VRT.
+- **Almost deployable:** JPM.
+- **Do not touch:** BRK.B, LMT, XOM.
+- **Additional do-not-touch states:** GOOG, MSFT, and NVDA are also in do-not-touch state in the generated deployment surface.
+- **Capital-deployment recommendation packet:** 4 proposal rows exist for GS, VRT, ETN, and JPM; validation is ok, but `proposal_apply_allowed=false`, packet-level owner approval is not inferred, and `trade_execution_allowed=false`. It is a review packet, not an instruction to mutate portfolio, sizing, cash, sleeve, account, or execution state.
+- **Historical/audit Sunday sync snapshot - priority:** ETN was the only in-band deployable-now review candidate in this snapshot, still constrained by size/correlation and no-chase discipline. GS/VRT needed explicit promotion review; JPM needed band discipline because it was above band.
+
+### Research opportunity radar
+
+Source: `tmp/research-freshness-opportunity-review.json`, generated 2026-06-28T16:54:51Z.
+
+- **Improving leadership:** Consumer Staples, Financials, Health Care, Industrials, Materials, Real Estate, Utilities.
 - **Underexposed lanes:** Communication Services, Consumer Discretionary, Consumer Staples, Health Care, Materials, Real Estate, Utilities.
 - **Portfolio-review candidates:** CME, ITA, LIN, META, PH, VRT, XLB.
-- **Conditional watch:** ECL, ETN, GE, NFLX, TMUS, VMC, WMB.
-- **Blocked/deferred:** CAT, GS, JPM, LLY, NVDA.
-- **Diversified fund cue:** small/mid-cap posture improved to review-only, with AVUV, IJH, IJR, IJS, IWM, MDY, SCHA, VB, VBR, and VO improving; no commodity review candidate is current, and macro/correlation review is still required before any proposal.
-- **WF65 full-picture context:** fundamentals are fresh review-only evidence, not deployment authority. Covered universe is 200 tickers; 189 equity rows are covered, 183 are clean, and 6 are partial. Fundamental validation is warning-grade with 10 warnings and no critical findings. IR reconciliation packets are ok for 31 active equity tickers, and all 31 remain SEC/IR manual-review packets before adjusted EPS/guidance or bank-specific capital adequacy claims are used.
-- **Per-share / capital-return gates:** 34 names are tracked, 153 carry capital-allocation caution, and 2 bank rows require manual CET1/ROTCE/NIM/deposit/credit-quality review because industrial FCF/debt gates are suppressed. Anomaly queues include capital return above FCF, debt-funded capital-return risk, elevated leverage, EPS/FCF-per-share divergence, SBC offsetting buybacks, capital returns with negative FCF, share-count dilution, buybacks with net dilution, low ROIC proxy, and net share issuance. Company-IR reconciliation remains heavily manual: configured manual review is required for 31 active equity names, broader company-IR matching is mostly manual, and one local conflict repair is still required.
-- **Boundary:** review-only opportunity and fundamentals radar only; no portfolio addition, promotion/demotion, sizing, sleeve, cash, execution entitlement, trade/account action, paper/live order, or inferred owner approval.
+- **Conditional watch:** ECL, GE, NFLX, TMUS, VMC, WMB.
+- **Blocked/deferred:** CAT, ETN, GS, JPM, LLY, NVDA.
+- **Diversified-fund cue:** small/mid-cap posture is improving-review-only; AVUV, IJH, IJR, IJS, IWM, MDY, SCHA, VB, VBR, and VO are improving. No commodity review candidate is current. Macro/correlation review is required before any proposal.
+- **Historical/audit Sunday sync snapshot - freshness gaps:** Required research sources were fresh enough, but outcome analytics were not ready, future realized outcomes were not used, portfolio config was stale/manual-dependency context, and sector-expansion status was degraded. No monitoring context was missing.
 
-The older authored weekly reset below is retained for traceability. The June 14 cue above is the current weekly status overlay until the full weekly strategy section is deliberately rebuilt.
+### WF65 fundamental context
 
-Canonical owners:
-- live execution state, bands, stops, repair status: [[03. Portfolio/Execution Board]]
-- portfolio posture/model weights: [[03. Portfolio/Portfolio Snapshot]]
-- research universe and thesis/watchlist state: [[04. Research/Coverage and Watchlist]]
-- risk constraints: [[07. Risk/Risk Rules]]
-- current machine proof/review surfaces: `tmp/current-window-artifacts.*`, `tmp/full-portfolio-view.*`, `tmp/deployment-readiness-surface.json`, `tmp/capital-deployment-recommendation-validation.json`
+Sources: `tmp/fundamental-metrics-current.json`, `tmp/fundamental-metrics-validation.json`, `tmp/fundamental-ir-reconciliation-packets.json`, and `tmp/fundamental-ir-reconciliation-validation.json`, generated 2026-06-28.
 
----
+- **Coverage:** 300 tickers covered; 289 equity tickers; 132 clean equity rows, 2 partial rows, and 155 missing rows.
+- **Per-share quality gates:** WF65 tracks revenue/EPS/FCF per share, share count, buyback/SBC/dividend/capital-return behavior, ROIC proxy, valuation context, and anomaly flags. These are evidence gates, not deployment gates.
+- **SEC reconciliation:** 113 matched, 11 matched via period alias, 4 SEC-lag wait, 158 manual-review required, 3 foreign-issuer IR required, and 11 not applicable.
+- **IR reconciliation:** 31 active equity IR packets exist and validation is ok; all 31 consumed validated official captures and SEC reconciliation status is matched, but the packets remain manual-required review packets.
+- **Anomaly pressure:** Capital-allocation caution remains high: capital return exceeds FCF in 55 rows, debt-funded capital-return risk in 42, elevated leverage in 36, EPS/FCF per-share divergence in 25, capital returns with negative FCF in 23, low ROIC proxy in 18, SBC offsets buybacks in 14, buybacks with net dilution in 14, net share issuance in 14, and share-count dilution in 13.
+- **Validation warning surface:** 475 warning findings, 0 critical. Main warning codes are SEC manual period review, missing equity core growth/period fields, SEC-lag wait, and foreign-issuer IR review.
+- **Authority:** WF65 is review-only. SEC/IR manual-review warnings must be respected before using fundamentals for any high-consequence answer, and fundamentals do not grant deployability, sizing, sleeve, cash, execution, paper/live order, trade/account, or owner-approval authority.
 
-## Current weekly reset — Week of 2026-05-11 to 2026-05-15
+### Constraints and next questions
 
-### Authority and planning constraints
+- **Breadth:** Breadth is broad again, but dollar, rates, inflation pressure, and deployment-surface gating keep the stance selective rather than broad-risk-on.
+- **Historical/audit Sunday sync snapshot - research radar degradation:** Sector-expansion proof was degraded by a degraded sector-correlation check, parsed-portfolio fallback, daily-review freshness requiring review, and band-proposal review debt.
+- **Concentration:** Direct Technology is at its 25% cap and AI-power correlated exposure is 32% including ETN. Any VRT/NVDA/ETN/MSFT action needs concentration sequencing, not just ticker-level attractiveness.
+- **Accounting:** Active portfolio weights plus cash sum to 90%; the remaining 10% is suspended legacy model weight, not active exposure.
+- **Historical/audit Sunday sync snapshot - questions:** Whether ETN remained inside the owner band without breaching no-chase discipline; whether GS/VRT deserved source-open promotion-review packets; whether JPM should wait for band reclaim; whether WF65 anomaly review weakened any almost-deployable or promotion-review thesis.
 
-- **Authority:** review-only weekly strategy prose. This grants no trade, sizing, sleeve, cash, canonical mutation, brokerage/account, paper/live order, or inferred owner-approval authority.
-- **Known constraints:** long-term-first portfolio posture; draft capital base roughly **$5k-$10k**; target cash **10%**; normal single-name ceiling **15%**; sector cap **25%**; speculative sleeve normally **1%-3% per idea / up to 5% total** unless separately approved.
-- **Unknown / not assumed:** actual live account holdings, tax constraints, near-term liquidity needs, income requirement, and precise drawdown from a live funded high. Keep all action language conditional and owner-gated.
-- **WF55 boundary:** probability/outcome analytics are **NOT_READY**; no calibrated win-rate, expected-return, percent-chance, or model-ranked deployment language.
+Review-only cue: no promotion, sizing, sleeve, cash, deployment, trade, account action, or owner approval is inferred from this cron output.
 
-### 1) Weekly posture
+Historical/audit note: the older 2026-06-15 to 2026-06-26 scaffold below is retained as stale/unpromoted structure only where it conflicts with this current sync.
 
-- **Posture:** Neutral to moderately offensive / selective risk-on.
-- **Confidence:** Moderate, with caution. Fresh market-state and deployment surfaces are available and validators show no critical findings, but dashboard/deployment still carries a warning posture around NVDA event-risk/band freeze and overall trust remains manual-dependency / review-required.
-- **Operating stance:** Deploy only where the written band, catalyst window, concentration limits, and owner gate all line up; otherwise preserve cash and wait for pullbacks/reclaims.
-- **What changed from last week:** The weekly posture improved enough to keep selective offense alive, but not enough to broaden deployment. ETN stayed the first in-band priority; MSFT remains strategically approved but constrained by band/Tech-cap sequencing and freshness conflict; JPM was resolved fail-closed below the authoritative 306.82-318.12 trigger band and 301.17 stop; NVDA moved into near-earnings caution; sector-expansion work matured into review-only diversification queues rather than an action queue.
-
-### 2) Macro regime and confidence
-
-Machine-populated data basis: `tmp/market-state.json` as of 2026-05-15 market data, generated 2026-05-17; `tmp/macro-regime.json` generated 2026-05-17.
-
-- **Fed / rates:** Target 3.50%–3.75% confirmed 2026-05-17. Next FOMC 2026-06-17. Current artifact shows 0% cut probability / 100% hold. 2Y 3.820%, 10Y 4.595%, 3M 3.588%.
-- **Yield curve:** 2s10s +77.5 bps, 3m-10y +100.7 bps. Curve constructive but front-end still restrictive and long rates still valuation-sensitive.
-- **Volatility / equities:** VIX 18.43, SPX 7,408.50.
-- **Dollar / energy:** DXY 99.27, Brent 109.26, WTI 101.02.
-- **Regime assessment:** This week's data is still consistent with the late-cycle restrictive baseline: Fed policy is on hold, the curve is positively sloped, credit remains benign, and breadth is broad/recovering. The caution is that the 10Y near 4.6%, Brent above $109, WTI above $101, and VIX around 18 keep valuation, inflation, and event-risk discipline alive. This is not a defensive regime, but it is also not a full-clearance risk-on regime.
-
-### 3) Deployment map
-
-Current review-only deployable-now names:
-- **ETN** — close 399.44, band 369.08-410.06, stop 350.45. Manual-only; no chase above the written ceiling; first current capital-deployment priority.
-
-Almost deployable / pullback required:
-- **GOOG** — close 393.32, band 352.95-374.93, stop 330.94.
-- **GS** — close 948.47, band 894.64-935.77, stop 866.76.
-- **MSFT** — board context had owner-approved staged setup, but newer generated packet shows 421.92 / `wait_for_band`; resolve freshness/price-state conflict before action.
-- **NVDA** — close 225.32, band 197.01-210.84, stop 190.10; earnings event risk active.
-
-Do not touch / repair:
-- **BRK.B** — below stop / reclaim-watch.
-- **JPM** — approval recorded, but trigger not live; below authoritative trigger band and below 301.17 stop.
-- **LMT** — below stop, below major MAs; defense gap decision required.
-- **XOM** — repair mode remains active until structure and support rebuild.
-
-Active watch / no execution entitlement:
-- **VRT** — levels defined, but watch-only until intentionally promoted.
-
-**Priority this week:**
-1. **ETN** — closest to actionable because it remains inside the 369.08-410.06 band with stop 350.45; owner-approved/manual-only status still requires no chase above the ceiling and concentration review.
-2. **GS / GOOG** — both are close but still above written bands; GS could move first on a pullback into 894.64-935.77, while GOOG needs a cleaner pullback into 352.95-374.93 and explicit promotion discipline.
-3. **MSFT** — high-quality and owner-promoted, but current artifacts conflict on band state and the portfolio model already has direct Tech at the 25% cap. A fresh in-band setup plus a Tech-cap sequencing decision is required before any real sizing action.
-
-Do **not** upgrade NVDA before earnings. It is above band, near the May 20 event, and explicitly in no-chase / earnings-caution state.
-
-### 4) Catalyst calendar
-
-**Reported this week:**
-- April NFP on May 8: resilient-but-cooling labor, not a growth break.
-- April CPI on May 12: inflation reacceleration risk confirmed; remove stale future-tense CPI language.
-- EIA petroleum status / Baker Hughes rig count: oil supply-premium context remains live.
-
-**Coming up:**
-- **NVDA** — earnings 2026-05-20.
-- **BAH** — earnings 2026-05-22.
-- **FOMC** — 2026-06-17.
-- **BEA Q1 GDP second estimate / April Personal Income and Outlays** — 2026-05-28.
-
-**FOMC / macro events to watch:** rates/oil/credit complex rather than a forced Fed-event trade: 2Y/10Y yield moves, oil above/below the current high-price regime, DXY, credit spreads, jobless/labor-growth data, and any inflation read-through that would reprice the restrictive-pause baseline.
-
-**Read-throughs to watch:**
-- **NVDA May 20 earnings** — primary AI/semiconductor/AI-power read-through for NVDA, MSFT/GOOG AI sentiment, AMD/SMCI/VRT, and ETN AI-power demand confidence; no pre-event chase.
-- **BAH May 22 earnings** — defense/government-services read-through for the defense gap while LMT/RTX remain repair/watch-state.
-- **Oil / energy-infrastructure read-throughs** — Brent/WTI strength, EIA reads, LNG/Hormuz/Qatar follow-through matter for XOM, LNG, WMB, XLE, and commodity-inflation review, but XOM remains repair until chart structure requalifies.
-- **Financials / curve read-through** — GS/CME/JPM/XLF require curve, credit, and capital-markets context; GS remains secondary and JPM remains fail-closed until reclaim.
-
-### 5) Sector allocation and risk flags
-
-Draft sector groupings from trigger sheet / portfolio model. Weights are model targets, not live deployed positions.
-
-| Sector | Names | Risk cap | Current read |
-|---|---|---:|---|
-| Tech | GOOG, MSFT, NVDA | 25% | **At cap** in draft model; no automatic expansion. |
-| Industrials / AI-power | ETN | 25% | ETN is deployable/manual-only but adds correlated AI-power/capex exposure. |
-| Financials | GS, JPM | 25% | JPM fail-closed; GS almost deployable but secondary. |
-| Defense | LMT, KTOS | 25% | LMT suspended/below-stop; KTOS speculative only; decision packet prepared. |
-| Energy | XOM | 25% | Macro supportive, but XOM repair state controls. |
-| Diversified Quality | BRK.B | 25% | Repair/reclaim watch. |
-
-- **Concentration check:** Direct Technology is already at the **25% draft model cap** through MSFT/GOOG/NVDA. The broader AI-power correlated sleeve is even more crowded once ETN is included. That imposes a sequencing constraint: do not add fresh Tech/AI exposure without reducing another Tech weight, keeping any tranche within verified headroom, or obtaining a written exception.
-- **Cash level:** The **10% target cash** remains consistent with the current regime and opportunity set. Cash is not dead weight while most candidates are above band, in repair, or event-gated.
-- **Risk flags:** NVDA event risk; JPM below trigger/stop; BRK.B/LMT/XOM repair; Tech cap / AI-power correlation; official-source/manual-required evidence for some packeted names.
-
-### 6) Risk rules check
-
-The written sizing framework is being respected only if all recommendations stay review-only and conditional. The 25% direct Tech cap blocks automatic MSFT/GOOG/NVDA expansion; normal single-name sizing remains capped at 15%; speculative names remain watch/speculative only; and catalyst-window escalation rules block adding into NVDA before earnings. No drawdown escalation can be assessed from live holdings because the portfolio is still model/draft-stage in the note layer, not a verified live allocation snapshot.
-
-### 7) Key questions to answer this week
-
-1. Does ETN stay inside 369.08-410.06 without losing the 50-day/support zone, or does it break enough to defer the only current in-band priority?
-2. Does NVDA earnings clear the event-risk freeze with thesis and guidance intact, or does it reset AI/semiconductor/AI-power exposure lower?
-3. Can MSFT re-enter/hold the 389.64-412.56 working band while the portfolio resolves the direct-Tech cap sequencing problem?
-4. Do GOOG or GS pull back into written bands without damaging their thesis/technical structure?
-5. Which diversification lane deserves the next owner-review packet: LLY/XLV Healthcare, LIN Materials quality, CME financial infrastructure substitution, Staples quality, or commodity-inflation exposure?
-
-### 8) Friday close / week lookback
-
-The week ended with selective risk-on intact but not broad enough to justify forced deployment. ETN remained the only clean in-band review candidate.
-
-GOOG, GS, MSFT, and NVDA were constructive but above band, freshness-conflicted, or event-gated. JPM failed closed after owner resolution. BRK.B, LMT, and XOM remained in repair / do-not-touch lanes.
-
-The vault update need was to replace incomplete judgment prose with this authored strategy layer, preserve review-bound authority language, and keep daily surfaces responsible for exact bands/stops rather than turning the weekly note into an execution board.
-
----
-
-## Current owner-decision packets opened by audit remediation
-
-- **MSFT Tech-cap sequencing:** decision packet exists at `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-portfolio-decision-packets.md`. Default Veritas recommendation is planning-direction only: use the 40/60 model planning weight for MSFT at 8% risk assets / 7.2% account-level, no Tech-cap exception, no action until fresh band/price-state confirmation.
-- **LMT / Defense gap:** decision packet exists at `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-portfolio-decision-packets.md`. Default Veritas recommendation is planning-direction only: LMT active model role 0% pending repair, Defense ETF role queued for validation, KTOS capped as a small speculative monitor allocation. No canonical apply yet.
-
----
-
-## Research opportunity radar - 2026-06-14 Sunday reset
-
-Artifact basis: `tmp/research-freshness-opportunity-review.json` generated 2026-06-14T16:36:23Z; `tmp/sector-expansion-board.json` generated 2026-06-14T16:36:23Z; `tmp/deployment-readiness-surface.json` generated 2026-06-14T15:11:13Z; `tmp/fundamental-metrics-current.json` generated 2026-06-14T15:02:33Z; `tmp/fundamental-ir-reconciliation-packets.json` generated 2026-06-14T15:07:39Z.
-
-- **Status:** degraded-but-usable / review-only. Required sources are fresh enough, but sector expansion remains degraded because sector-correlation, daily source-freshness, and band-proposal items still require review; do not treat this as an autonomous promotion or action queue.
-- **Improving leadership:** Consumer Staples, Financials, Industrials, Materials, Real Estate, Technology.
-- **Underexposed lanes:** Communication Services, Consumer Discretionary, Consumer Staples, Health Care, Materials, Real Estate, Utilities.
-- **Portfolio-review candidates:** CME, ITA, LIN, META, PH, VRT, XLB.
-- **Conditional-watch names:** ECL, ETN, GE, NFLX, TMUS, VMC, WMB.
-- **Blocked/deferred:** CAT, GS, JPM, LLY, NVDA.
-- **Exact blockers / review cues:** CAT = technical drift / sizing; ETN = size/correlation discipline and no automatic execution; GS = risk/sizing and peer-priority discipline; JPM = above current band / no-chase and not a live trigger without explicit review; CME/ITA/LIN/META/PH/VRT/XLB = separate owner-gated model/sleeve/deployment decision required; ECL/GE/NFLX/TMUS/VMC/WMB = research-only monitor with explicit promotion review required. LLY and NVDA remain promotion-review-only because valuation/event/crowding/sizing risk needs separate review before any action.
-- **Diversified-fund / commodity cue:** small/mid-cap posture improved to review-only with AVUV, IJH, IJR, IJS, IWM, MDY, SCHA, VB, VBR, and VO improving. No commodity review candidate is current, but macro/correlation review is still required before any owner-gated proposal.
-- **Boundary:** Review-only cue: no promotion, sizing, sleeve, cash, deployment, trade, account action, or owner approval is inferred from this cron output.
-
-## Freshness and refresh policy
-
-- **Last updated:** 2026-06-14 bounded Sunday finance freshness/status sync.
-- **Data as of:** market, deployment, technical, dashboard, fundamentals, IR-reconciliation, sector-opportunity, and capital-deployment recommendation artifacts refreshed from the 2026-06-14 Sunday window, with market/technical data primarily as of the 2026-06-12 close.
-- **Next mandatory refresh:** after a material regime break, portfolio/sector state change, or post-close artifact set that would make this weekly map misleading.
-- **Refresh rule:** keep this note short and authored. Do not paste full daily tables here; link to daily and canonical surfaces instead.
-
-## Authority boundary
-
-This note is review-only strategy guidance. It does not grant owner approval, trade/account action, cash movement, paper/live orders, portfolio mutation, sizing/sleeve changes, or execution entitlement. Exact portfolio/canon maintenance, if later approved and validator-backed, must route through WF64/WF56 gated apply.
----
-
-## Week of 2026-05-18 to 2026-05-22
+## Week of 2026-06-15 to 2026-06-19
 
 ### 1) Weekly posture
 
@@ -200,35 +132,34 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 
 ### 2) Macro regime and confidence
 
-*Machine-populated from market-state.json as of 2026-05-22. Sections marked (judgment) require human/AI interpretation.*
+*Machine-populated from market-state.json as of 2026-06-19. Sections marked (judgment) require human/AI interpretation.*
 
-- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-05-24). Next FOMC 2026-06-17 — 2% cut probability. 2Y 3.820%, 10Y 4.558%, 3M 3.585%.
-- **Yield curve:** 2s10s +74 bps, 3m-10y +97 bps. Curve constructive but front-end still restrictive.
-- **Volatility / equities:** VIX 16.70, SPX 7,473.47.
-- **Dollar / energy:** DXY 99.32, Brent 100.21 $/bbl, WTI 96.60 $/bbl.
+- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-06-21). Next FOMC 2026-07-29 — 0% cut probability. 2Y 4.190%, 10Y 4.451%, 3M 3.658%.
+- **Yield curve:** 2s10s +26 bps, 3m-10y +79 bps. Curve constructive but front-end still restrictive.
+- **Volatility / equities:** VIX 16.40, SPX 7,500.58.
+- **Dollar / energy:** DXY 100.85, Brent 80.59 $/bbl, WTI 76.54 $/bbl.
 - **Regime assessment (judgment):** _[Fill: is this week's data consistent with late-cycle restrictive baseline? Any threshold approaching?]_
 
 ---
 
 ### 3) Deployment map
 
-*Data: trigger-sheet.json as of 2026-05-22*
+*Data: trigger-sheet.json as of 2026-06-18*
 
-**Deployable now (1):**
-  - **ETN** — close 391.35, band 356.99–400.66 | stop 337.14 | score 18/20
 
-**Almost deployable — pullback required (6):**
-  - **NVDA** — close 215.33, band 198.47–216.66 | stop 187.90 | score 19/20
-  - **VRT** — close 327.46, band 286.60–338.58 | stop 262.98 | score 17/20
-  - **GOOG** — close 379.38, band 355.35–378.98 | stop 334.58 | score 18/20
-  - **GS** — close 996.73, band 894.64-935.77 | stop 866.76 | score 16/20
-  - **JPM** — close 306.38, band 300.47–305.27 | stop 293.02 | score 18/20
-  - **MSFT** — close 418.57, band 389.64-412.56 | stop 378.18 | score 18/20
+**Almost deployable — pullback required (7):**
+  - **Historical/audit scaffold snapshot - GOOG** - close 367.46, band 354.25-369.69 | stop 341.07 | score 19/20
+  - **Historical/audit scaffold snapshot - NVDA** - close 210.69, band 202.81-212.23 | stop 192.95 | score 18/20
+  - **Historical/audit scaffold snapshot - VRT** - close 333.05, band 300.02-319.13 | stop 276.97 | score 16/20
+  - **Historical/audit scaffold snapshot - ETN** - close 421.77, band 387.67-404.02 | stop 367.60 | score 17/20
+  - **Historical/audit scaffold snapshot - GS** - close 1,096.56, band 971.53-1048.14 | stop 928.97 | score 15/20 | earnings in 23d
+  - **Historical/audit scaffold snapshot - JPM** - close 325.22, band 304.96-315.95 | stop 296.21 | score 16/20 | earnings in 23d
+  - **Historical/audit scaffold snapshot - MSFT** - close 379.40, band 389.64-412.56 | stop 378.18 | score 18/20
 
 **Do not touch — repair or review (3):**
   - **BRK.B** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
-  - **LMT** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
-  - **XOM** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+  - **Historical/audit scaffold snapshot - LMT** - close 510.95 is below stop 531.63 -- do not deploy
+  - **Historical/audit scaffold snapshot - XOM** - close 137.81 is below stop 146.14 -- do not deploy
 
 - **Priority this week (judgment):** _[Fill: which 1–3 names are closest to actionable? What specific trigger would move them to deployed?]_
 
@@ -236,10 +167,7 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 
 ### 4) Catalyst calendar
 
-**This week (May 18–May 22):** No tracked earnings this week.
-
-**Coming up (next 2 weeks):**
-  - **SAIC** — earnings 2026-06-01 (in 8d)
+**This week (Jun 15–Jun 19):** No tracked earnings this week.
 
 - **FOMC / macro events (judgment):** _[Fill: list any FOMC dates, macro data releases, or geopolitical events that could change the regime this week]_
 - **Read-throughs to watch (judgment):** _[Fill: any peer earnings or sector data that would shift conviction on names in the universe?]_
@@ -256,107 +184,12 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 | Diversified Quality | BRK.B | 25% max | — |
 | Energy | XOM | 25% max | — |
 | Financials | GS, JPM | 25% max | — |
-| Industrials | ETN, VRT | 25% max | — |
-| Tech | NVDA, GOOG, MSFT | 25% max | — |
-
-- **Concentration check (judgment):** _[Fill: is any sector approaching the 25% cap at current draft weights? What sequencing constraint does that impose?]_
-- **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_
-- **Risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
-
----
-
-### 6) Risk rules check
-
-- _[Fill: are all sizing tiers being respected? Any escalation triggers from Risk Rules approaching? Drawdown vs. model high?]_
-
----
-
-### 7) Key questions to answer this week
-
-- _[Fill: what are the 3–5 questions whose answers would most change deployment decisions this week?]_
-
----
-
-### 8) Friday close / week lookback
-
-- _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_
----
-
-## Week of 2026-05-25 to 2026-05-29
-
-### 1) Weekly posture
-
-- **Posture (judgment):** _[Fill: Offensive / Defensive-neutral / Defensive]_
-- **Confidence level (judgment):** _[Fill: High / Moderate / Low — state the basis]_
-- **Operating stance (judgment):** _[Fill: what is the 1-sentence directive for this week?]_
-- **What changed from last week (judgment):** _[Fill: key developments since last review]_
-
----
-
-### 2) Macro regime and confidence
-
-*Machine-populated from market-state.json as of 2026-05-29. Sections marked (judgment) require human/AI interpretation.*
-
-- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-05-30). Next FOMC 2026-06-17 — 2% cut probability. 2Y 4.009%, 10Y 4.453%, 3M 3.588%.
-- **Yield curve:** 2s10s +44 bps, 3m-10y +86 bps. Curve constructive but front-end still restrictive.
-- **Volatility / equities:** VIX 15.32, SPX 7,580.06.
-- **Dollar / energy:** DXY 98.91, Brent 91.12 $/bbl, WTI 87.36 $/bbl.
-- **Regime assessment (judgment):** _[Fill: is this week's data consistent with late-cycle restrictive baseline? Any threshold approaching?]_
-
----
-
-### 3) Deployment map
-
-*Data: trigger-sheet.json as of 2026-05-29*
-
-**Deployable now (1):**
-  - **ETN** — close 400.60, band 382.90–401.36 | stop 362.67 | score 18/20
-
-**Almost deployable — pullback required (6):**
-  - **GOOG** — close 376.43, band 357.91–381.38 | stop 339.61 | score 19/20
-  - **NVDA** — close 211.14, band 198.47–216.66 | stop 187.90 | score 18/20
-  - **VRT** — close 315.71, band 284.18–333.07 | stop 261.95 | score 17/20
-  - **GS** — close 1,025.56, band 913.96–966.83 | stop 882.04 | score 16/20
-  - **JPM** — close 299.31, band 300.47–305.27 | stop 293.02 | score 17/20
-  - **MSFT** — close 450.24, band 389.64-412.56 | stop 378.18 | score 17/20
-
-**Do not touch — repair or review (3):**
-  - **BRK.B** — close 474.48 is below stop 483.05 -- do not deploy
-  - **LMT** — close 530.45 is below stop 531.63 -- do not deploy
-  - **XOM** — close 145.26 is below stop 146.14 -- do not deploy
-
-- **Priority this week (judgment):** _[Fill: which 1–3 names are closest to actionable? What specific trigger would move them to deployed?]_
-
----
-
-### 4) Catalyst calendar
-
-**This week (May 25–May 29):** No tracked earnings this week.
-
-**Coming up (next 2 weeks):**
-  - **SAIC** — earnings 2026-06-01 (in 1d)
-
-- **FOMC / macro events (judgment):** _[Fill: list any FOMC dates, macro data releases, or geopolitical events that could change the regime this week]_
-- **Read-throughs to watch (judgment):** _[Fill: any peer earnings or sector data that would shift conviction on names in the universe?]_
-
----
-
-### 5) Sector allocation and risk flags
-
-*Draft sector groupings from trigger sheet. Weights are model targets, not live deployed positions.*
-
-| Sector | Names | Risk Cap | Note |
-|---|---|---|---|
-| Defense | LMT | 25% max | — |
-| Diversified Quality | BRK.B | 25% max | — |
-| Energy | XOM | 25% max | — |
-| Financials | GS, JPM | 25% max | — |
-| Industrials | ETN, VRT | 25% max | — |
+| Industrials | VRT, ETN | 25% max | — |
 | Tech | GOOG, NVDA, MSFT | 25% max | — |
 
 - **Concentration check (judgment):** _[Fill: is any sector approaching the 25% cap at current draft weights? What sequencing constraint does that impose?]_
 - **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_
-- **Risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
+- **Historical/audit scaffold placeholder - risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
 
 ---
 
@@ -377,7 +210,7 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 - _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_
 ---
 
-## Week of 2026-06-01 to 2026-06-05
+## Week of 2026-06-22 to 2026-06-26
 
 ### 1) Weekly posture
 
@@ -390,35 +223,35 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 
 ### 2) Macro regime and confidence
 
-*Machine-populated from market-state.json as of 2026-06-05. Sections marked (judgment) require human/AI interpretation.*
+*Machine-populated from market-state.json as of 2026-06-26. Sections marked (judgment) require human/AI interpretation.*
 
-- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-04-29). Next FOMC 2026-06-17 — 1% cut probability. 2Y 3.840%, 10Y 4.536%, 3M 3.625%.
-- **Yield curve:** 2s10s +70 bps, 3m-10y +91 bps. Curve constructive but front-end still restrictive.
-- **Volatility / equities:** VIX 21.51, SPX 7,383.74.
-- **Dollar / energy:** DXY 100.07, Brent 93.09 $/bbl, WTI 90.54 $/bbl.
+- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-06-28). Next FOMC 2026-07-29 — 0% cut probability. 2Y 4.070%, 10Y 4.372%, 3M 3.663%.
+- **Yield curve:** 2s10s +30 bps, 3m-10y +71 bps. Curve constructive but front-end still restrictive.
+- **Volatility / equities:** VIX 18.41, SPX 7,354.02.
+- **Dollar / energy:** DXY 101.36, Brent 72.60 $/bbl, WTI 69.23 $/bbl.
 - **Regime assessment (judgment):** _[Fill: is this week's data consistent with late-cycle restrictive baseline? Any threshold approaching?]_
 
 ---
 
 ### 3) Deployment map
 
-*Data: trigger-sheet.json as of 2026-06-05*
+*Data: trigger-sheet.json as of 2026-06-26*
 
 **Deployable now (1):**
-  - **ETN** — close 395.94, band 367.00–406.99 | stop 348.82 | score 18/20
+  - **Historical/audit scaffold snapshot - ETN** - close 402.68, band 387.67-404.02 | stop 367.60 | score 18/20
 
-**Almost deployable — pullback required (6):**
-  - **GOOG** — close 365.76, band 354.63–376.48 | stop 342.49 | score 19/20
-  - **NVDA** — close 205.10, band 198.47–216.66 | stop 187.90 | score 18/20
-  - **VRT** — close 300.51, band 276.69–330.75 | stop 252.12 | score 17/20
-  - **GS** — close 1,038.68, band 938.76–1007.34 | stop 900.66 | score 17/20
-  - **JPM** — close 312.37, band 291.13–305.17 | stop 283.33 | score 18/20
-  - **MSFT** — close 416.67, band 389.64-412.56 | stop 378.18 | score 18/20
+**Almost deployable — pullback required (3):**
+  - **Historical/audit scaffold snapshot - GS** - close 1,019.61, band 971.53-1048.14 | stop 928.97 | score 16/20 | earnings in 16d
+  - **Historical/audit scaffold snapshot - VRT** - close 303.95, band 300.02-319.13 | stop 276.97 | score 17/20
+  - **Historical/audit scaffold snapshot - JPM** - close 329.05, band 304.96-315.95 | stop 296.21 | score 17/20 | earnings in 16d
 
-**Do not touch — repair or review (3):**
+**Do not touch — repair or review (6):**
   - **BRK.B** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
-  - **LMT** — close 523.76 is below stop 531.63 -- do not deploy
-  - **XOM** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+  - **Historical/audit scaffold snapshot - GOOG** - close 334.69 is below stop 341.07 -- do not deploy
+  - **Historical/audit scaffold snapshot - LMT** - close 507.4 is below stop 531.63 -- do not deploy
+  - **Historical/audit scaffold snapshot - MSFT** - close 372.97 is below stop 378.18 -- do not deploy
+  - **Historical/audit scaffold snapshot - NVDA** - close 192.53 is below stop 192.95 -- do not deploy
+  - **Historical/audit scaffold snapshot - XOM** - close 136.54 is below stop 146.14 -- do not deploy
 
 - **Priority this week (judgment):** _[Fill: which 1–3 names are closest to actionable? What specific trigger would move them to deployed?]_
 
@@ -426,99 +259,7 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 
 ### 4) Catalyst calendar
 
-**This week (Jun 1–Jun 5):** No tracked earnings this week.
-
-- **FOMC / macro events (judgment):** _[Fill: list any FOMC dates, macro data releases, or geopolitical events that could change the regime this week]_
-- **Read-throughs to watch (judgment):** _[Fill: any peer earnings or sector data that would shift conviction on names in the universe?]_
-
----
-
-### 5) Sector allocation and risk flags
-
-*Draft sector groupings from trigger sheet. Weights are model targets, not live deployed positions.*
-
-| Sector | Names | Risk Cap | Note |
-|---|---|---|---|
-| Defense | LMT | 25% max | — |
-| Diversified Quality | BRK.B | 25% max | — |
-| Energy | XOM | 25% max | — |
-| Financials | GS, JPM | 25% max | — |
-| Industrials | ETN, VRT | 25% max | — |
-| Tech | GOOG, NVDA, MSFT | 25% max | — |
-
-- **Concentration check (judgment):** _[Fill: is any sector approaching the 25% cap at current draft weights? What sequencing constraint does that impose?]_
-- **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_
-- **Risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
-
----
-
-### 6) Risk rules check
-
-- _[Fill: are all sizing tiers being respected? Any escalation triggers from Risk Rules approaching? Drawdown vs. model high?]_
-
----
-
-### 7) Key questions to answer this week
-
-- _[Fill: what are the 3–5 questions whose answers would most change deployment decisions this week?]_
-
----
-
-### 8) Friday close / week lookback
-
-- _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_
----
-
-## Week of 2026-06-08 to 2026-06-12
-
-### 1) Weekly posture
-
-- **Posture (judgment):** _[Fill: Offensive / Defensive-neutral / Defensive]_
-- **Confidence level (judgment):** _[Fill: High / Moderate / Low — state the basis]_
-- **Operating stance (judgment):** _[Fill: what is the 1-sentence directive for this week?]_
-- **What changed from last week (judgment):** _[Fill: key developments since last review]_
-
----
-
-### 2) Macro regime and confidence
-
-*Machine-populated from market-state.json as of 2026-06-12. Sections marked (judgment) require human/AI interpretation.*
-
-- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-04-29). Next FOMC 2026-06-17 — 1% cut probability. 2Y 4.090%, 10Y 4.487%, 3M 3.618%.
-- **Yield curve:** 2s10s +40 bps, 3m-10y +87 bps. Curve constructive but front-end still restrictive.
-- **Volatility / equities:** VIX 17.68, SPX 7,431.46.
-- **Dollar / energy:** DXY 99.75, Brent 87.33 $/bbl, WTI 84.88 $/bbl.
-- **Regime assessment (judgment):** _[Fill: is this week's data consistent with late-cycle restrictive baseline? Any threshold approaching?]_
-
----
-
-### 3) Deployment map
-
-*Data: trigger-sheet.json as of 2026-06-12*
-
-**Deployable now (1):**
-  - **ETN** — close 391.39, band 361.19–402.25 | stop 342.53 | score 18/20
-
-**Almost deployable — pullback required (6):**
-  - **GOOG** — close 358.16, band 350.28–372.67 | stop 337.84 | score 19/20
-  - **MSFT** — close 390.74, band 389.64-412.56 | stop 378.18 | score 19/20
-  - **NVDA** — close 205.19, band 198.47–216.66 | stop 187.90 | score 18/20
-  - **VRT** — close 302.87, band 265.44–318.38 | stop 241.38 | score 17/20
-  - **GS** — close 1,062.75, band 948.40–1022.76 | stop 905.15 | score 16/20 | earnings in 30d
-  - **JPM** — close 320.72, band 301.50–307.78 | stop 293.93 | score 17/20 | earnings in 30d
-
-**Do not touch — repair or review (3):**
-  - **BRK.B** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
-  - **LMT** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
-  - **XOM** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
-
-- **Priority this week (judgment):** _[Fill: which 1–3 names are closest to actionable? What specific trigger would move them to deployed?]_
-
----
-
-### 4) Catalyst calendar
-
-**This week (Jun 8–Jun 12):** No tracked earnings this week.
+**This week (Jun 22–Jun 26):** No tracked earnings this week.
 
 - **FOMC / macro events (judgment):** _[Fill: list any FOMC dates, macro data releases, or geopolitical events that could change the regime this week]_
 - **Read-throughs to watch (judgment):** _[Fill: any peer earnings or sector data that would shift conviction on names in the universe?]_
@@ -540,7 +281,106 @@ This note is review-only strategy guidance. It does not grant owner approval, tr
 
 - **Concentration check (judgment):** _[Fill: is any sector approaching the 25% cap at current draft weights? What sequencing constraint does that impose?]_
 - **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_
-- **Risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
+- **Historical/audit scaffold placeholder - risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
+
+---
+
+### 6) Risk rules check
+
+- _[Fill: are all sizing tiers being respected? Any escalation triggers from Risk Rules approaching? Drawdown vs. model high?]_
+
+---
+
+### 7) Key questions to answer this week
+
+- _[Fill: what are the 3–5 questions whose answers would most change deployment decisions this week?]_
+
+---
+
+### 8) Friday close / week lookback
+
+- _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_
+---
+
+## Week of 2026-06-29 to 2026-07-03
+
+### 1) Weekly posture
+
+- **Posture (judgment):** _[Fill: Offensive / Defensive-neutral / Defensive]_
+- **Confidence level (judgment):** _[Fill: High / Moderate / Low — state the basis]_
+- **Operating stance (judgment):** _[Fill: what is the 1-sentence directive for this week?]_
+- **What changed from last week (judgment):** _[Fill: key developments since last review]_
+
+---
+
+### 2) Macro regime and confidence
+
+*Machine-populated from market-state.json as of 2026-07-03. Sections marked (judgment) require human/AI interpretation.*
+
+- **Fed / rates:** Target 3.50%–3.75% (confirmed 2026-07-05). Next FOMC 2026-07-29 — 0% cut probability. 2Y 4.140%, 10Y 4.485%, 3M 3.668%.
+- **Yield curve:** 2s10s +34 bps, 3m-10y +82 bps. Curve constructive but front-end still restrictive.
+- **Volatility / equities:** VIX 16.15, SPX 7,483.24.
+- **Dollar / energy:** DXY 100.86, Brent 72.13 $/bbl, WTI 68.78 $/bbl.
+- **Regime assessment (judgment):** _[Fill: is this week's data consistent with late-cycle restrictive baseline? Any threshold approaching?]_
+
+---
+
+### 3) Deployment map
+
+*Data: trigger-sheet.json as of 2026-07-02*
+
+**Deployable now (1):**
+  - **Historical/audit scaffold snapshot - ETN** - close 398.52, band 387.67-404.02 | stop 367.60 | score 17/20 | earnings in 30d
+
+**Almost deployable — pullback required (6):**
+  - **Historical/audit scaffold snapshot - GOOG** - close 356.18, band 354.25-369.69 | stop 341.07 | score 18/20 | earnings in 18d
+  - **Historical/audit scaffold snapshot - GS** - close 1,021.00, band 971.53-1048.14 | stop 928.97 | score 15/20 | earnings in 9d
+  - **Historical/audit scaffold snapshot - MSFT** - close 390.49, band 389.64-412.56 | stop 378.18 | score 18/20 | earnings in 24d
+  - **Historical/audit scaffold snapshot - VRT** - close 300.53, band 300.02-319.13 | stop 276.97 | score 16/20 | earnings in 24d
+  - **Historical/audit scaffold snapshot - JPM** - close 334.47, band 304.96-315.95 | stop 296.21 | score 15/20 | earnings in 9d
+  - **Historical/audit scaffold snapshot - NVDA** - close 194.83, band 202.81-212.23 | stop 192.95 | score 17/20
+
+**Do not touch — repair or review (3):**
+  - **BRK.B** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+  - **LMT** — Repair mode remains active until chart structure and support rebuild make the setup decision-grade again
+  - **Historical/audit scaffold snapshot - XOM** - close 137.09 is below stop 146.14 -- do not deploy
+
+- **Priority this week (judgment):** _[Fill: which 1–3 names are closest to actionable? What specific trigger would move them to deployed?]_
+
+---
+
+### 4) Catalyst calendar
+
+**This week (Jun 29–Jul 3):** No tracked earnings this week.
+
+**Coming up (next 2 weeks):**
+  - **JPM** — earnings 2026-07-14 (in 9d)
+  - **GS** — earnings 2026-07-14 (in 9d)
+  - **ASML** — earnings 2026-07-15 (in 10d)
+  - **NFLX** — earnings 2026-07-16 (in 11d)
+  - **GE** — earnings 2026-07-16 (in 11d)
+
+- **FOMC / macro events (judgment):** _[Fill: list any FOMC dates, macro data releases, or geopolitical events that could change the regime this week]_
+- **Read-throughs to watch (judgment):** _[Fill: any peer earnings or sector data that would shift conviction on names in the universe?]_
+
+---
+
+### 5) Sector allocation and risk flags
+
+*Draft sector groupings from trigger sheet. Weights are model targets, not live deployed positions.*
+
+| Sector | Names | Risk Cap | Note |
+|---|---|---|---|
+| Defense | LMT | 25% max | — |
+| Diversified Quality | BRK.B | 25% max | — |
+| Energy | XOM | 25% max | — |
+| Financials | GS, JPM | 25% max | — |
+| Industrials | ETN, VRT | 25% max | — |
+| Tech | GOOG, MSFT, NVDA | 25% max | — |
+
+- **Concentration check (judgment):** _[Fill: is any sector approaching the 25% cap at current draft weights? What sequencing constraint does that impose?]_
+- **Cash level (judgment):** _[Fill: is current cash allocation consistent with regime state and deployment opportunity set?]_
+- **Historical/audit scaffold placeholder - risk flags (judgment):** _[Fill: any names approaching stop, any positions requiring re-assessment this week?]_
 
 ---
 

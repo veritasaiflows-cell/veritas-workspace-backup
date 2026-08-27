@@ -1,0 +1,152 @@
+{
+  "schema": "veritas.model_token_pricing.v1",
+  "generated_at_utc": "2026-08-09T02:57:21Z",
+  "status": "ok",
+  "purpose": "Local metadata-only model pricing table for review-only token cost estimates.",
+  "pricing_basis": {
+    "service_tier": "standard",
+    "currency": "USD",
+    "short_context_input_limit_tokens": 272000,
+    "cache_write_pricing_recorded": true,
+    "long_context_pricing_recorded": true,
+    "verified_at_utc": "2026-08-09T02:57:21Z",
+    "source": "https://developers.openai.com/api/docs/pricing"
+  },
+  "chatgpt_credit_pricing_basis": {
+    "unit": "credits_per_1m_tokens",
+    "source": "https://learn.chatgpt.com/docs/pricing",
+    "verified_at_utc": "2026-08-09T00:00:00Z",
+    "official_rates_only": true,
+    "separate_models_without_public_rates_remain_null": true
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "cost_estimate_only": true,
+    "local_only": true,
+    "external_export_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "unit": "usd_per_1m_tokens",
+  "model_aliases": {
+    "openai-codex/gpt-5.5": "openai/gpt-5.5",
+    "openai-codex/gpt-5.3-codex-spark": "codex/gpt-5.3-codex-spark",
+    "openai/gpt-5.3-codex-spark": "codex/gpt-5.3-codex-spark"
+  },
+  "models": {
+    "openai/gpt-5.6-sol": {
+      "billable_model_id": "gpt-5.6-sol",
+      "input_per_million": 5.0,
+      "cached_input_per_million": 0.5,
+      "cache_write_per_million": 6.25,
+      "output_per_million": 30.0,
+      "long_context_input_per_million": 10.0,
+      "long_context_cached_input_per_million": 1.0,
+      "long_context_cache_write_per_million": 12.5,
+      "long_context_output_per_million": 45.0,
+      "chatgpt_credits_per_million": {
+        "input": 125.0,
+        "cached_input": 12.5,
+        "output": 750.0
+      },
+      "chatgpt_credit_pricing_status": "official",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+      "status": "official",
+      "verified_at_utc": "2026-08-09T02:57:21Z"
+    },
+    "openai/gpt-5.6-terra": {
+      "billable_model_id": "gpt-5.6-terra",
+      "input_per_million": 2.0,
+      "cached_input_per_million": 0.2,
+      "cache_write_per_million": 2.5,
+      "output_per_million": 12.0,
+      "long_context_input_per_million": 4.0,
+      "long_context_cached_input_per_million": 0.4,
+      "long_context_cache_write_per_million": 5.0,
+      "long_context_output_per_million": 18.0,
+      "chatgpt_credits_per_million": {
+        "input": 50.0,
+        "cached_input": 5.0,
+        "output": 300.0
+      },
+      "chatgpt_credit_pricing_status": "official",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+      "status": "official",
+      "verified_at_utc": "2026-08-09T02:57:21Z"
+    },
+    "openai/gpt-5.6-luna": {
+      "billable_model_id": "gpt-5.6-luna",
+      "input_per_million": 0.2,
+      "cached_input_per_million": 0.02,
+      "cache_write_per_million": 0.25,
+      "output_per_million": 1.2,
+      "long_context_input_per_million": 0.4,
+      "long_context_cached_input_per_million": 0.04,
+      "long_context_cache_write_per_million": 0.5,
+      "long_context_output_per_million": 1.8,
+      "chatgpt_credits_per_million": {
+        "input": 5.0,
+        "cached_input": 0.5,
+        "output": 30.0
+      },
+      "chatgpt_credit_pricing_status": "official",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+      "status": "official",
+      "verified_at_utc": "2026-08-09T02:57:21Z"
+    },
+    "openai/gpt-5.5": {
+      "input_per_million": 5.0,
+      "cached_input_per_million": 0.5,
+      "output_per_million": 30.0,
+      "chatgpt_credits_per_million": {
+        "input": 125.0,
+        "cached_input": 12.5,
+        "output": 750.0
+      },
+      "chatgpt_credit_pricing_status": "official",
+      "source": "https://openai.com/api/pricing/",
+      "status": "official"
+    },
+    "openai/gpt-5.4": {
+      "input_per_million": 2.5,
+      "cached_input_per_million": 0.25,
+      "output_per_million": 15.0,
+      "chatgpt_credits_per_million": {
+        "input": 62.5,
+        "cached_input": 6.25,
+        "output": 375.0
+      },
+      "chatgpt_credit_pricing_status": "official",
+      "source": "https://openai.com/api/pricing/",
+      "status": "official"
+    },
+    "openai/gpt-5.4-mini": {
+      "input_per_million": 0.75,
+      "cached_input_per_million": 0.075,
+      "output_per_million": 4.5,
+      "chatgpt_credits_per_million": {
+        "input": 18.75,
+        "cached_input": 1.875,
+        "output": 113.0
+      },
+      "chatgpt_credit_pricing_status": "official",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+      "status": "official"
+    },
+    "codex/gpt-5.3-codex-spark": {
+      "input_per_million": 1.75,
+      "cached_input_per_million": 0.175,
+      "output_per_million": 14.0,
+      "chatgpt_credits_per_million": null,
+      "chatgpt_credit_pricing_status": "separate_no_public_rate",
+      "source": "https://developers.openai.com/api/docs/pricing",
+      "status": "proxy_from_gpt-5.3-codex",
+      "caveat": "Spark is listed as a Codex research preview; no separate official Spark token-price row was found."
+    }
+  }
+}

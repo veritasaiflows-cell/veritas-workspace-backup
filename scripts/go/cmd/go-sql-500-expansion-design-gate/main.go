@@ -23,15 +23,15 @@ func main() {
 		os.Exit(2)
 	}
 	report := expansiongate.Run(expansiongate.Options{Root: absRoot, SQLitePath: *sqlitePath, Driver: *driver})
-	if err := expansiongate.Validate(report); err != nil {
-		fmt.Fprintf(os.Stderr, "validate report: %v\n", err)
-		os.Exit(2)
-	}
 	if *out != "" {
 		if err := reporting.WriteJSON(*out, report); err != nil {
 			fmt.Fprintf(os.Stderr, "write report: %v\n", err)
 			os.Exit(2)
 		}
+	}
+	if err := expansiongate.Validate(report); err != nil {
+		fmt.Fprintf(os.Stderr, "validate report: %v\n", err)
+		os.Exit(2)
 	}
 	fmt.Printf("status=%s validation=%s production=%s pilot=%s overlap=%s\n", report.Status, report.Validation.Status, intText(report.CurrentState.ProductionCurrentCards), intText(report.CurrentState.LivePilotCandidates), intText(report.CurrentState.PilotProductionOverlap))
 }

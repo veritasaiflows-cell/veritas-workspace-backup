@@ -3,16 +3,31 @@
   "workflow_id": "WF55",
   "display_name": "Outcome Measurement / Probability Readiness",
   "tier": "P1",
-  "effective_status": "route_only",
-  "next_action": "Build and validate neutral outcome events from WF86/WF87 shadow artifacts; escalate if predictive language appears before gates clear.",
-  "helper_safe": true,
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Promoted to active autonomy measurement substrate; probability claims remain blocked while neutral outcome events and process-quality grades feed WF74.",
+  "next_action": "Keep WF55 active as a review-only scorecard through neutral measurement grades, stale-data/process-failure tracking, and WF74 model-quality proof; escalate if predictive language appears before semantic outcome gates clear.",
+  "authoritative_next_action": "Keep WF55 active as a review-only scorecard through neutral measurement grades, stale-data/process-failure tracking, and WF74 model-quality proof; escalate if predictive language appears before semantic outcome gates clear.",
+  "helper_safe": false,
   "owner_action_required": false,
   "authority_boundary": "measurement-only; predictive claims gated",
+  "authority_class": "review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/wf55-autonomy-outcome-ledger.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [
-    "Probability claims not ready; outcome ledger is measurement-only"
+    "Predictive/probability claims not ready; WF55 measurement scorecard is active review-only"
   ],
   "stop_lines": [
-    "No predictive scores, expected-return claims, win-rate claims, model-ranked deployment, durable v2 append, paper/live execution, or approval inference."
+    "No predictive scores, expected-return claims, win-rate claims, model-ranked deployment, paper/live execution, or approval inference. Durable v2 append is allowed only for review-only measurement rows under the 2026-06-19 owner approval."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Workflow 55 - Probability Readiness and Outcome Retention Gate.md",
   "primary_route_artifact": "tmp/wf55-autonomy-outcome-ledger.json",
@@ -23,6 +38,7 @@
   "validator_commands": [
     "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
     "python scripts\\test_wf55_autonomy_outcome_ledger.py",
+    "python scripts\\model_quality_scorecard.py --write --write-md --validate",
     "python scripts\\autonomy_spine_readiness_rollup.py --write --validate"
   ],
   "default_resume_command": "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
@@ -31,6 +47,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

@@ -21,7 +21,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -34,7 +34,7 @@ OUT_MD = TMP / "wf78-live-25-pilot-preflight.md"
 EXPECTED_PRODUCTION_COUNT = 42
 EXPECTED_PILOT_FIXTURE_COUNT = 11
 TARGET_LIVE_PILOT_COUNT = 25
-PRODUCTION_SCOPE = "production_current_42"
+PRODUCTION_SCOPE = "strategic_production_grade"
 PILOT_SCOPE = "pilot_fixture"
 REVIEW_100_SCOPE = "review_100_monitor"
 
@@ -128,7 +128,7 @@ def universe_by_scope() -> tuple[list[str], list[str]]:
     entries = load_dict(UNIVERSE_PATH).get("entries")
     if not isinstance(entries, list):
         return [], []
-    production = sorted(legacy_42_tier_tickers()) or sorted(
+    production = sorted(production_scope_tickers()) or sorted(
         str(row.get("ticker", "")).upper()
         for row in entries
         if isinstance(row, dict)
@@ -372,3 +372,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

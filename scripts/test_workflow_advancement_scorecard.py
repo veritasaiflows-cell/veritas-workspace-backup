@@ -108,6 +108,70 @@ def test_scorecard_separates_cron_progress_from_wf87_blocker() -> None:
         assert by_wf["WF55"]["signal"] == "advanced"
         assert by_wf["AUTONOMY-SPINE"]["signal"] == "blocked"
         assert "shadow_threshold_not_met" in by_wf["WF87"]["blockers"]
+        followups = {row["workflow_id"]: row for row in payload["workflow_blocker_followups"]}
+        assert payload["workflow_blocker_followup_summary"]["followup_count"] == 2
+        assert followups["WF87"]["route"] == "maturity_accrual"
+        assert followups["WF87"]["owner"] == "WF87 maturity lane"
+        assert followups["AUTONOMY-SPINE"]["route"] == "dependency_rollup"
+        assert followups["AUTONOMY-SPINE"]["acceptance_validators"]
+        assert followups["WF87"]["authority_boundary"]["paper_or_live_execution_allowed"] is False
+
+
+def test_scorecard_keeps_stale_only_cron_warning_out_of_blockers() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths)
+        cron = json.loads(paths["cron_freshness"].read_text(encoding="utf-8"))
+        cron["status"] = "warning"
+        cron["summary"]["stale_count"] = 1
+        cron["summary"]["monitor_only_or_stale_count"] = 1
+        cron["validation"]["warnings"] = ["one_or_more_enabled_jobs_have_stale_artifacts"]
+        write_json(paths["cron_freshness"], cron)
+
+        payload = scorecard.build_payload(paths)
+        by_wf = {signal["workflow_id"]: signal for signal in payload["signals"]}
+        assert by_wf["CRON"]["signal"] == "advanced"
+        assert by_wf["CRON"]["blockers"] == []
+        assert "stale_count=1" in by_wf["CRON"]["attention"]
+        followups = {row["workflow_id"]: row for row in payload["workflow_blocker_followups"]}
+        assert "CRON" not in followups
+
+
+def test_scorecard_keeps_reconciled_scheduler_exceptions_out_of_blockers() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths)
+        cron = json.loads(paths["cron_freshness"].read_text(encoding="utf-8"))
+        cron["status"] = "warning"
+        cron["summary"]["stale_count"] = 2
+        cron["summary"]["monitor_only_or_stale_count"] = 2
+        cron["summary"]["live_scheduler_last_run_exception_count"] = 2
+        cron["validation"]["warnings"] = ["one_or_more_enabled_jobs_have_stale_artifacts"]
+        write_json(paths["cron_freshness"], cron)
+
+        payload = scorecard.build_payload(paths)
+        by_wf = {signal["workflow_id"]: signal for signal in payload["signals"]}
+        assert by_wf["CRON"]["signal"] == "advanced"
+        assert by_wf["CRON"]["blockers"] == []
+        assert "live_scheduler_last_run_exception_count=2" in by_wf["CRON"]["attention"]
+        followups = {row["workflow_id"]: row for row in payload["workflow_blocker_followups"]}
+        assert "CRON" not in followups
+
+
+def test_scorecard_blocks_scheduler_exceptions_when_hard_cron_blocker_present() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths)
+        cron = json.loads(paths["cron_freshness"].read_text(encoding="utf-8"))
+        cron["summary"]["blocked_count"] = 1
+        cron["summary"]["live_scheduler_last_run_exception_count"] = 1
+        write_json(paths["cron_freshness"], cron)
+
+        payload = scorecard.build_payload(paths)
+        by_wf = {signal["workflow_id"]: signal for signal in payload["signals"]}
+        assert by_wf["CRON"]["signal"] == "blocked"
+        assert "blocked_count=1" in by_wf["CRON"]["blockers"]
+        assert "live_scheduler_last_run_exception_count=1" in by_wf["CRON"]["blockers"]
 
 
 def test_scorecard_blocks_execution_authority_drift() -> None:
@@ -121,5 +185,8 @@ def test_scorecard_blocks_execution_authority_drift() -> None:
 
 if __name__ == "__main__":
     test_scorecard_separates_cron_progress_from_wf87_blocker()
+    test_scorecard_keeps_stale_only_cron_warning_out_of_blockers()
+    test_scorecard_keeps_reconciled_scheduler_exceptions_out_of_blockers()
+    test_scorecard_blocks_scheduler_exceptions_when_hard_cron_blocker_present()
     test_scorecard_blocks_execution_authority_drift()
     print("workflow_advancement_scorecard tests passed")

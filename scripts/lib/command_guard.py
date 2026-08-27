@@ -35,8 +35,21 @@ FORBIDDEN_REVIEW_ONLY_TOKENS = (
     "remove-item",
 )
 
+ALLOWED_REVIEW_ONLY_PREFIXES = (
+    "python scripts\\finance_sql_canon_access.py --write --validate",
+    "python scripts/finance_sql_canon_access.py --write --validate",
+)
+
+
+def _normalized_command(command: str) -> str:
+    return " ".join(command.strip().lower().split())
+
 
 def command_is_review_only_safe(command: str, forbidden_tokens: tuple[str, ...] = FORBIDDEN_REVIEW_ONLY_TOKENS) -> bool:
+    normalized = _normalized_command(command)
+    if any(normalized.startswith(_normalized_command(prefix)) for prefix in ALLOWED_REVIEW_ONLY_PREFIXES):
+        lowered = f" {command.lower()} "
+        return not any(token in lowered for token in forbidden_tokens if token != "finance_sql_canon")
     lowered = f" {command.lower()} "
     return not any(token in lowered for token in forbidden_tokens)
 
@@ -50,4 +63,3 @@ def parse_command(command: str) -> list[str]:
         else:
             cleaned.append(part)
     return cleaned
-

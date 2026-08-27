@@ -3,8 +3,19 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from otel_ops_control import build_control_loop_compat, build_field_depth_packet, build_window_summary, drift_summary
+from otel_ops_control import (
+    DEFAULT_COLLECTOR_CONFIG,
+    build_control_loop_compat,
+    build_field_depth_packet,
+    build_window_summary,
+    collector_config_posture,
+    drift_summary,
+    parse_collector_logs,
+    volume_normalization_recommendation,
+)
 
 
 def event(event_id: str, age_minutes: int, signal: str, value: int) -> dict[str, object]:
@@ -35,6 +46,18 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
+def collector_line(timestamp: str, signal: str, count: int) -> str:
+    if signal == "metrics":
+        return (
+            f'{timestamp}\tinfo\tMetrics\t{{"otelcol.signal": "metrics", '
+            f'"resource metrics": 1, "metrics": 3, "data points": {count}}}'
+        )
+    return (
+        f'{timestamp}\tinfo\tTraces\t{{"otelcol.signal": "traces", '
+        f'"resource spans": 1, "spans": {count}}}'
+    )
+
+
 def main() -> int:
     errors: list[str] = []
     events = [
@@ -59,6 +82,22 @@ def main() -> int:
     expect(window_payload["drift"]["status"] in {"ok", "review"}, "window summary should expose drift status", errors)
     expect("daily_warning_or_error_count" in drift, "drift summary should expose warning/error count", errors)
 
+    empty_drift = drift_summary([])
+    empty_volume = volume_normalization_recommendation(
+        {"event_count": 0, "metric_batches": 0, "trace_batches": 0, "by_severity": {}},
+        empty_drift,
+    )
+    expect(empty_drift["status"] == "insufficient_data", "zero events must not report drift status ok", errors)
+    expect(empty_drift["data_sufficiency"] == "no_telemetry_events", "zero-event drift must explain insufficient data", errors)
+    expect(empty_volume["status"] == "insufficient_data", "zero events must not recommend hold_config", errors)
+    expect(empty_volume["configuration_recommendation_allowed"] is False, "zero events must forbid a configuration recommendation", errors)
+    expect(empty_volume["owner_gated_config_options"] == [], "zero events must not emit configuration options", errors)
+    expect("matches" not in empty_volume["current_recommendation"].lower(), "zero-event recommendation must not claim baseline match", errors)
+
+    observed_volume = volume_normalization_recommendation(windows["daily_24h"]["summary"], drift)
+    expect(observed_volume["status"] in {"hold_config", "review_config_proposal"}, "nonzero telemetry behavior must remain actionable", errors)
+    expect(observed_volume["configuration_recommendation_allowed"] is True, "nonzero telemetry should retain owner-gated review behavior", errors)
+
     compat = build_control_loop_compat(
         {
             "status": "ok",
@@ -73,7 +112,54 @@ def main() -> int:
     packet = build_field_depth_packet(config, windows["daily_24h"]["summary"], drift)
     expect(packet["status"] == "owner_decision_required", "field-depth packet must require owner decision", errors)
     expect(packet["authority_boundary"]["collector_config_mutation_allowed"] is False, "field-depth packet must not allow config mutation", errors)
-    expect("no collector config mutation" in packet["blocked_now"], "field-depth packet must preserve config stop line", errors)
+    expect(
+        any("no collector config mutation" in str(item) for item in packet["blocked_now"]),
+        "field-depth packet must preserve config stop line",
+        errors,
+    )
+    approved_config = collector_config_posture(DEFAULT_COLLECTOR_CONFIG)
+    approved_packet = build_field_depth_packet(approved_config, windows["daily_24h"]["summary"], drift)
+    expect(approved_packet["status"] == "approved_enabled", "exact approved config identity should remain approved", errors)
+    expect(
+        approved_packet["authority_boundary"]["owner_approved_local_depth_expansion"] is True,
+        "exact approved path/hash should prove owner approval",
+        errors,
+    )
+    with TemporaryDirectory() as tmp:
+        tmp_dir = Path(tmp)
+        alternate_config = tmp_dir / "alternate-collector.yaml"
+        alternate_config.write_bytes(DEFAULT_COLLECTOR_CONFIG.read_bytes())
+        alternate_posture = collector_config_posture(alternate_config)
+        alternate_packet = build_field_depth_packet(alternate_posture, windows["daily_24h"]["summary"], drift)
+        expect(
+            alternate_packet["status"] == "observed_enabled_owner_approval_unverified",
+            "alternate config with identical keys/content must not inherit approval",
+            errors,
+        )
+        expect(
+            alternate_packet["authority_boundary"]["local_depth_expansion_observed_enabled"] is True,
+            "alternate enabled config should remain observable",
+            errors,
+        )
+        expect(
+            alternate_packet["authority_boundary"]["owner_approved_local_depth_expansion"] is False,
+            "alternate config must not infer owner approval",
+            errors,
+        )
+        expect(
+            alternate_packet["collector_config_approval_identity"]["path_matches_approved_config"] is False,
+            "alternate path must fail exact config identity",
+            errors,
+        )
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000%z")
+        primary = tmp_dir / "collector.err.log"
+        restart = tmp_dir / "local-restart.err.log"
+        primary.write_text(collector_line(timestamp, "metrics", 10) + "\n", encoding="utf-8")
+        restart.write_text(collector_line(timestamp, "traces", 2) + "\n", encoding="utf-8")
+        parsed, source = parse_collector_logs(primary, str(tmp_dir / "*.err.log"))
+        expect(source["file_count"] == 2, "collector log glob should include restart log", errors)
+        expect(len(parsed) == 2, "collector log parser should merge primary and restart events", errors)
+        expect({row["signal"] for row in parsed} == {"metrics", "traces"}, "collector log parser should preserve signal types", errors)
 
     if errors:
         print("otel_ops_control_tests_failed")

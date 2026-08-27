@@ -164,6 +164,29 @@ Current WF79 posture:
 - Optional future work: legacy payload retirement or section-by-section legacy JS reader migration if Randall later wants the full legacy dashboard thinned.
 - Stop lines unchanged: local/review-only UI only; no proof deletion, sidecar archive/delete, canon/portfolio mutation, SQL promotion, paper/live/account action, approval inference, or config/channel/runtime expansion.
 
+## 2026-06-18 human canon and deliverables split
+
+Randall approved the full execution pass to separate human notes from machine proof, move human deliverables out of `tmp/`, and align the local UI around two roles:
+- Veritas Command Center: Randall-facing human finance intelligence view.
+- Veritas PM: operator/proof/queue/source-health view.
+
+Implemented scope:
+- Added `10. Deliverables/` as the human-facing shelf for PDFs, Excel workbooks, HTML views, and CSV exports.
+- Added `state/deliverables/` as the manifest/index owner for that shelf.
+- Added `scripts/deliverables_publisher.py` to copy known current deliverables without deleting or moving `tmp/` proof.
+- Added `05. Intelligence/Thesis Ranking and Leadership Board.md` as the human thesis/ranking/leadership surface.
+- Updated `Home.md`, `01. Dashboards/Executive Brief.md`, `Workspace Structure Protocol`, and `Notes Layer Governance Protocol` to make the human/machine split explicit.
+- Updated the local PM cockpit/Command Center route so Randall and deliverables views sit beside the Veritas PM/proof tabs.
+
+Stop lines:
+- No `09. Archive/` restore, archive, or delete.
+- No `tmp/` proof deletion or move.
+- No portfolio/canon mutation.
+- No SQL promotion.
+- No paper/live/account action.
+- No customer/public delivery.
+- No approval inference.
+
 ## Acceptance Gates
 - Command Center is local-only and review-only.
 - No visual clutter from proof/source paths on primary screens.
@@ -171,3 +194,110 @@ Current WF79 posture:
 - Entry-band posture is consistent across Deployment Board and Technical tabs.
 - PM auto-refresh is low-noise and does not wake main session unless a concrete stop/approval-needed signal exists.
 - Canonical owner notes remain source of portfolio truth.
+
+## 2026-06-18 finance actionability compact slice
+
+Randall asked to continue from the Command Center UI/navigation audit and implement an available slice.
+
+Implemented Slice 1:
+- Added `scripts/finance_daily_actionability_snapshot.py` and `tmp/finance-daily-actionability-snapshot.json` as the first-screen finance actionability contract.
+- Added `scripts/test_finance_daily_actionability_snapshot.py`.
+- Updated the compact view-model route so the finance Command Center has seven human-labeled panels: Today, Trust, Capital, Macro, Portfolio, Technicals, and Fundamentals.
+- Removed `workflow_pm` from the finance compact reader and marked it migrated to `http://127.0.0.1:8765/` / Veritas PM Cockpit.
+- Updated compact shell, renderer, migration proof, and acceptance gates to validate the seven-panel finance route and PM cockpit handoff.
+- Published the refreshed compact Command Center into `10. Deliverables/Command Center/veritas-command-center-compact.html` through `deliverables_publisher.py`.
+
+Current truth after implementation:
+- `tmp/finance-daily-actionability-snapshot.json` reports `actionability_status=refresh_required_before_actionability`, `actionability_allowed=false`, `source_freshness_status=stale`, `source_trust_level=review_required`.
+- Capital buckets are visible but review-only: deployable now `0`, owner review `9`, pullback-only `4`, below-stop `10`.
+- Fundamentals, macro, and energy remain warning-class caveated evidence, not failed proof.
+- Daily review and market-intelligence packets are stale, so the Command Center correctly refuses to imply "actionable after last refresh."
+
+Validation:
+- `python scripts\test_finance_daily_actionability_snapshot.py` passed.
+- `python scripts\finance_daily_actionability_snapshot.py --write --validate` passed.
+- `python -m py_compile` passed for changed WF79/snapshot scripts.
+- `python scripts\dashboard_presentation_view_model.py --write --validate` passed with 7 panels.
+- `python scripts\dashboard_presentation_renderer.py --write --validate` passed.
+- `python scripts\dashboard_v2_reader_migration.py --write --validate` passed.
+- `python scripts\dashboard_compact_shell.py --write --validate` passed.
+- `python scripts\dashboard_compact_shell_acceptance.py --write --validate` passed.
+- `python scripts\dashboard_presentation_acceptance.py --write --validate` passed.
+- `python scripts\validate_dashboard_state.py` exited 0 while reporting stale/review_required source freshness.
+- `python scripts\deliverables_publisher.py --write --validate` passed with 29 published / 0 errors.
+
+Stop lines:
+- Local/review-only presentation and retrieval only.
+- No customer/public output, proof deletion, archive/delete, SQL promotion, config/channel/runtime expansion, portfolio/canon/cash/sizing/risk mutation, capital deployment, paper/live/account action, brokerage/account action, money movement, or owner approval inference.
+
+## 2026-06-18 Command Center audit remediation hardening
+
+Randall approved continuing from `08. Audits/command-center-ui-navigation-audit-2026-06-18.md` with the recommended parallel plan.
+
+Implemented hardening:
+- `scripts/finance_daily_actionability_snapshot.py` now selects daily-review and market-intelligence packet pairs by operating window instead of hardcoding post-close packets for every window.
+- The daily finance snapshot now exposes `actionability_mode`, `actionability_permission`, exact `refresh_blockers`, `market_data_as_of`, `next_refresh_due`, latest required input timestamp, and proof routes.
+- `scripts/dashboard_presentation_view_model.py` carries the expanded actionability contract into `tmp/dashboard-presentation-view-model.json`.
+- `scripts/dashboard_compact_shell.py` now renders a first-screen actionability gate, Capital Decision Funnel, fundamentals/macro/energy caveats, and proof routes.
+- `scripts/dashboard_compact_shell_acceptance.py` validates the new funnel/caveat/proof requirements and the expanded reader actionability contract.
+- `scripts/deliverables_publisher.py` now publishes compact JSON proof files alongside the Command Center HTML shelf deliverables.
+- PM cockpit copy is now `Veritas PM Cockpit`, with a local `Finance Snapshot` link.
+- `apps/pm-control-cockpit/src/server.ts` serves the published Command Center shelf read-only at `/command-center/`.
+
+Current truth after hardening:
+- `tmp/finance-daily-actionability-snapshot.json` validates `ok` but reports `actionability_status=refresh_required_before_actionability`.
+- Current refresh blockers are `dashboard_exec_freshness_stale`, `dashboard_presentation_not_allowed`, and `stale_required_source:portfolio`.
+- `python scripts\validate_dashboard_state.py` exits 0 but still reports `overall_exec_status: stale` and `source_freshness: stale / review_required`; the stale portfolio config remains the current trust limit.
+- Published Command Center shelf now includes:
+  - `10. Deliverables/Command Center/veritas-command-center-compact.html`
+  - `10. Deliverables/Command Center/veritas-command-center-compact-reader.json`
+  - `10. Deliverables/Command Center/dashboard-presentation-view-model.json`
+  - `10. Deliverables/Command Center/finance-daily-actionability-snapshot.json`
+  - compact shell validation and acceptance JSON.
+- The live local PM cockpit at `http://127.0.0.1:8765` was restarted and now serves `http://127.0.0.1:8765/command-center/` with the finance-first compact snapshot.
+
+Validation:
+- `python scripts\finance_daily_actionability_snapshot.py --write --validate` passed.
+- `python scripts\dashboard_presentation_view_model.py --write --validate` passed with 7 panels.
+- `python scripts\dashboard_compact_shell.py --write --validate` passed with 0 critical.
+- `python scripts\dashboard_compact_shell_acceptance.py --write --validate` passed with 0 critical.
+- `npm run validate` in `apps/pm-control-cockpit` passed: source count 130, missing required 0, stale required 0, SQL adapter ok.
+- `python scripts\deliverables_publisher.py --write --validate` passed: 34 published, 0 errors.
+- `http://127.0.0.1:8765/health` returned ok with missing required 0 and stale required 0.
+- `http://127.0.0.1:8765/command-center/` returned 200 and contains `Veritas Finance Command Center`, `Capital Decision Funnel`, and `Proof Routes`.
+
+Stop lines:
+- Local/review-only UI, routing, and deliverable publication only.
+- No public/customer delivery, proof deletion, archive/delete, SQL promotion, portfolio/canon/cash/sizing/risk mutation, capital deployment, paper/live/account action, brokerage/account action, money movement, or owner approval inference.
+
+## 2026-06-18 refresh ordering and portfolio freshness unblock
+
+Randall approved proceeding with the next recommended Command Center audit slice after Slice 1 left one stale actionability blocker.
+
+Implemented Slice 2:
+- Patched `scripts/dashboard_core.py` so `tmp/portfolio-config.json` is treated as an explicit manual-review dependency when its own `manual_review_policy` / `manual_review_fields` contract is present, instead of turning its old `generated_at_utc` provenance timestamp into a false stale blocker.
+- Patched `scripts/source_freshness_classifier.py` so allowlisted dashboard manual dependencies, currently only `portfolio`, do not get age-escalated back to `stale` after `dashboard_core` has classified them as manual dependencies.
+- Regenerated the dashboard payload, daily actionability snapshot, compact view model, compact shell, acceptance proof, and published Command Center shelf deliverables in order.
+
+Current truth after Slice 2:
+- `tmp/finance-daily-actionability-snapshot.json` now reports `actionability_status=review_only_actionability`, `actionability_mode=review_only`, `actionability_permission=review_only`, and `refresh_blockers=[]`.
+- `tmp/dashboard-data.json` now reports `exec_freshness=usable_with_caution`, `source_freshness.overall_classification=manual_dependency`, `source_freshness.trust_level=review_required`, and `source_freshness.presentation_allowed=true`.
+- Portfolio config remains visible as a review-required manual dependency, not a clean/fresh automated source.
+- Capital/action boundaries remain false: no capital action, execution, brokerage/account action, money movement, owner approval inference, or portfolio/canon mutation authority.
+- Remaining dashboard warnings are real review caveats, not refresh blockers: deteriorating/narrow breadth and the suspended 10% legacy model-weight gap.
+
+Validation:
+- Direct portfolio source probe: `status=usable_with_caution`, `classification=manual_dependency`, `stop_line=false`, `stale_after_hours=None`.
+- `python -m py_compile scripts\dashboard_core.py scripts\source_freshness_classifier.py` passed.
+- `python scripts\generate_dashboard.py` passed: 0 critical, 2 warning, `Exec freshness: usable_with_caution`.
+- `python scripts\validate_dashboard_state.py` passed: 0 critical, 2 warning; `source_freshness: manual_dependency / review_required`.
+- `python scripts\finance_daily_actionability_snapshot.py --write --validate` passed with `review_only_actionability`.
+- `python scripts\dashboard_presentation_view_model.py --write --validate` passed with 7 panels.
+- `python scripts\dashboard_compact_shell.py --write --validate` passed with 0 critical.
+- `python scripts\dashboard_compact_shell_acceptance.py --write --validate` passed with 0 critical.
+- `python scripts\deliverables_publisher.py --write --validate` passed: 34 published, 0 errors.
+- `http://127.0.0.1:8765/command-center/` returned 200 and contains the finance title, Capital Decision Funnel, and review-only actionability; it no longer shows the refresh-required gate.
+
+Stop lines:
+- Local/review-only UI, routing, freshness classification, and deliverable publication only.
+- No public/customer delivery, proof deletion, archive/delete, SQL promotion, portfolio/canon/cash/sizing/risk mutation, capital deployment, paper/live/account action, brokerage/account action, money movement, or owner approval inference.

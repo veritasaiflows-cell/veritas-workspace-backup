@@ -13,6 +13,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import DEFAULT_DB as SQL_CANON_DB, strategic_answer_route_context
+
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 GO_ROOT = ROOT / "scripts" / "go"
@@ -169,6 +171,13 @@ def rollback_instruction(helper: dict[str, Any]) -> str:
     )
 
 
+def finance_sql_canon_guard_context() -> dict[str, Any]:
+    """Validate the shared read-only SQL-canon access layer for SQL helper routes."""
+    context = strategic_answer_route_context(consumer="go_sql_helper_route_registry", db_path=SQL_CANON_DB)
+    context["errors"] = context.get("validation", {}).get("errors", [])
+    return context
+
+
 def _check(checks: list[dict[str, Any]], name: str, ok: bool, detail: str = "") -> None:
     checks.append({"name": name, "ok": bool(ok), "detail": detail})
 
@@ -183,9 +192,16 @@ def validate_registry() -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     all_helpers = SELECTED_INPROCESS_BINARY_HELPERS + PROBE_ONLY_INPROCESS_HELPERS
     keys = [str(helper.get("key", "")) for helper in all_helpers]
+    sql_guard = finance_sql_canon_guard_context()
 
     _check(checks, "helper_keys_unique", len(keys) == len(set(keys)), "all helper keys must be unique")
     _check(checks, "selected_helpers_present", len(SELECTED_INPROCESS_BINARY_HELPERS) == 5, "five approved selected helpers")
+    _check(
+        checks,
+        "finance_sql_canon_access_guard_ok",
+        sql_guard.get("status") == "ok",
+        "shared read-only typed access must validate before SQL helper routes make finance-state claims",
+    )
 
     for helper in SELECTED_INPROCESS_BINARY_HELPERS:
         key = str(helper["key"])
@@ -214,6 +230,7 @@ def validate_registry() -> dict[str, Any]:
         "status": "ok" if ok else "blocked",
         "selected_helper_keys": [helper["key"] for helper in SELECTED_INPROCESS_BINARY_HELPERS],
         "probe_only_helper_keys": [helper["key"] for helper in PROBE_ONLY_INPROCESS_HELPERS],
+        "finance_sql_canon_guard": sql_guard,
         "checks": checks,
         "authority_boundary": (
             "Read-only route metadata validation only. No SQL writes/imports, "

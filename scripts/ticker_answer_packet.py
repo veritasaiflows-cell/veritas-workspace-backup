@@ -41,7 +41,8 @@ SCRIPTS = WORKSPACE / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
+from finance_sql_canon_access import FinanceSqlCanonAccess, p0_registry_lane_status
 from trade_grade_full_answer_assembler import build_legacy_answer_packet
 
 TMP = WORKSPACE / "tmp"
@@ -125,6 +126,17 @@ REVIEW_ONLY_AUTHORITY_BOUNDARY = {
     "source_open_required_before_final_recommendation_or_action_claim": True,
 }
 
+COMPATIBILITY_ROUTE_CONTRACT = {
+    "route_role": "legacy_compatibility_wrapper",
+    "active_default_writer": False,
+    "preferred_writer": "scripts\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate",
+    "write_requires_explicit_allow_legacy_write": True,
+    "delete_allowed_now": False,
+    "archive_allowed_now": False,
+    "apply_allowed_now": False,
+    "owner_approval_inferred": False,
+}
+
 LEVEL_SCORE = {"high": 0.9, "medium": 0.6, "low": 0.3, "none": 0.1}
 DECISION_RELEVANT_DOMAINS = ("action_state", "price_band_stop", "recommendation")
 PERIPHERAL_DOMAINS = ("analyst", "sector_context")
@@ -189,8 +201,8 @@ def packet_path_for(ticker: str) -> Path:
 
 
 def coverage_tickers() -> tuple[list[str], str | None]:
-    """Return the migrated legacy-42 answer universe, shadow Tier state first."""
-    migrated = legacy_42_tier_tickers()
+    """Return the strategic production answer universe."""
+    migrated = production_scope_tickers()
     if migrated:
         return migrated, None
     universe, err = load_json(UNIVERSE_PATH)
@@ -206,10 +218,119 @@ def coverage_tickers() -> tuple[list[str], str | None]:
             if isinstance(row, dict)
             and row.get("ticker")
             and row.get("active") is True
-            and row.get("universe_scope", "production_current_42") == "production_current_42"
+            and row.get("production_scope") is True
         }
     )
     return tickers, None
+
+
+def sql_canon_packet_context(requested: list[str], *, require_production_scope: bool) -> dict[str, Any]:
+    requested_set = sorted({str(ticker).upper() for ticker in requested if str(ticker).strip()})
+    expected_production = sorted(production_scope_tickers())
+    client = FinanceSqlCanonAccess()
+    validation = client.validate()
+    critical: list[str] = []
+    warnings: list[str] = []
+    registry: dict[str, Any] = {}
+    strategic_production: list[str] = []
+    sql_production: list[str] = []
+    missing_state_tickers: list[str] = []
+    non_production_requested: list[str] = []
+    evaluated_scope_mismatches: list[dict[str, Any]] = []
+
+    if validation.get("status") != "ok":
+        critical.append("sql_canon_access_validation_blocked")
+    else:
+        try:
+            strategic_production = client.production_answer_tickers()
+            sql_production = strategic_production
+            states = client.ticker_states(requested_set)
+            registry = client.migration_registry_summary()
+        except RuntimeError as exc:
+            critical.append("sql_canon_access_guard_blocked")
+            warnings.append(str(exc))
+            strategic_production = []
+            states = {}
+        missing_state_tickers = sorted(set(requested_set) - set(states))
+        if missing_state_tickers:
+            critical.append("sql_canon_requested_tickers_missing_state")
+
+        sql_production_set = set(sql_production)
+        expected_set = set(expected_production)
+        if sql_production_set != expected_set:
+            critical.append("sql_canon_production_answer_scope_drift")
+        if require_production_scope and set(requested_set) != sql_production_set:
+            critical.append("sql_canon_requested_scope_not_exact_strategic_production_answer_path")
+
+        non_production_requested = sorted(set(requested_set) - sql_production_set)
+        if non_production_requested and not require_production_scope:
+            warnings.append("sql_canon_single_request_outside_production_answer_scope")
+
+        for ticker in requested_set:
+            state = states.get(ticker)
+            if state is None:
+                continue
+            sql_in_scope = ticker in sql_production_set
+            expected_in_scope = ticker in expected_set
+            if sql_in_scope != expected_in_scope:
+                evaluated_scope_mismatches.append({
+                    "ticker": ticker,
+                    "expected_strategic_production_scope": expected_in_scope,
+                    "sql_strategic_production_scope": sql_in_scope,
+                    "sql_production_card_generation_allowed": state.production_card_generation_allowed,
+                })
+        if evaluated_scope_mismatches:
+            critical.append("sql_canon_evaluated_scope_mismatch")
+        p0_status = p0_registry_lane_status(registry)
+        if not p0_status["ok"]:
+            critical.extend(p0_status["errors"])
+
+    status = "blocked" if critical else "ok"
+    return {
+        "schema": "veritas.ticker_answer_packet.sql_canon_scope.v1",
+        "status": status,
+        "access_validation_status": validation.get("status"),
+        "requested_ticker_count": len(requested_set),
+        "require_production_scope": require_production_scope,
+        "expected_production_answer_tickers": expected_production,
+        "strategic_production_answer_tickers": strategic_production,
+        "strategic_production_answer_count": len(strategic_production),
+        "strategic_production_definition": "proof-joined routing Tier A/B, decision-grade fresh, confident, carded, in coverage",
+        "sql_canon_production_answer_tickers": sql_production,
+        "sql_canon_production_answer_count": len(sql_production),
+        "sql_canon_production_answer_definition": "proof-joined strategic production scope",
+        "missing_state_tickers": missing_state_tickers,
+        "non_production_requested": non_production_requested,
+        "production_scope_diff": {
+            "missing_from_sql": sorted(set(expected_production) - set(sql_production)),
+            "extra_in_sql": sorted(set(sql_production) - set(expected_production)),
+        },
+        "evaluated_scope_mismatches": evaluated_scope_mismatches,
+        "migration_registry_summary": registry,
+        "p0_registry_lane_status": p0_registry_lane_status(registry),
+        "validation": {"status": status, "critical_errors": critical, "warnings": warnings},
+        "authority_boundary": {
+            "sql_canon_scope_validation_only": True,
+            "legacy_packet_writer_remains_compatibility_only": True,
+            "consumer_cutover_allowed_by_this_packet": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
+def sql_canon_validation_checks(context: dict[str, Any]) -> list[dict[str, Any]]:
+    checks: list[dict[str, Any]] = []
+    validation = context.get("validation") or {}
+    for item in validation.get("critical_errors") or []:
+        checks.append(check(f"sql_canon_scope:{item}", False, json.dumps(context, sort_keys=True), "error"))
+    for item in validation.get("warnings") or []:
+        checks.append(check(f"sql_canon_scope:{item}", False, json.dumps(context, sort_keys=True), "warning"))
+    if not checks:
+        checks.append(check("sql_canon_scope_guard_ok", True, "typed SQL-canon scope matches requested packet build scope."))
+    return checks
 
 
 # --------------------------------------------------------------------------- #
@@ -805,9 +926,10 @@ def validate_packets(packets: dict[str, dict[str, Any]]) -> list[dict[str, Any]]
             results.append(check("brkb_action_state_high", conf.get("action_state", {}).get("level") == "high", f"action_state={conf.get('action_state', {}).get('level')!r}"))
             results.append(check("brkb_recommendation_high", conf.get("recommendation", {}).get("level") == "high", f"recommendation={conf.get('recommendation', {}).get('level')!r}"))
             results.append(check("brkb_analyst_low", conf.get("analyst", {}).get("level") == "low", f"analyst={conf.get('analyst', {}).get('level')!r}"))
-            results.append(check("brkb_sector_low", conf.get("sector_context", {}).get("level") == "low", f"sector_context={conf.get('sector_context', {}).get('level')!r}"))
+            results.append(check("brkb_sector_high", conf.get("sector_context", {}).get("level") == "high", f"sector_context={conf.get('sector_context', {}).get('level')!r}"))
             astate = packet.get("action_state") or {}
-            results.append(check("brkb_do_not_touch_state", astate.get("deployment_status") == "DO_NOT_TOUCH", f"deployment_status={astate.get('deployment_status')!r}"))
+            non_deployable = {"DO_NOT_TOUCH", "EVIDENCE_REPAIR", "BELOW_STOP_OR_INVALIDATION", "BLOCKED"}
+            results.append(check("brkb_non_deployable_state", astate.get("deployment_status") in non_deployable, f"deployment_status={astate.get('deployment_status')!r}"))
             results.append(check("brkb_no_execution_in_next_action", packet.get("recommended_next_action", {}).get("execution_authorized") is False, "recommended_next_action must not authorize execution."))
     return results
 
@@ -823,7 +945,12 @@ def write_packet(ticker: str, packet: dict[str, Any]) -> Path:
     return path
 
 
-def build_summary(results_by_ticker: list[dict[str, Any]], requested: list[str], validation: list[dict[str, Any]] | None) -> dict[str, Any]:
+def build_summary(
+    results_by_ticker: list[dict[str, Any]],
+    requested: list[str],
+    validation: list[dict[str, Any]] | None,
+    sql_canon_context: dict[str, Any],
+) -> dict[str, Any]:
     built = [r for r in results_by_ticker if r["status"] == "built"]
     failed = [r for r in results_by_ticker if r["status"] != "built"]
     errors = [c for c in (validation or []) if not c["passed"] and c.get("severity") == "error"]
@@ -834,13 +961,18 @@ def build_summary(results_by_ticker: list[dict[str, Any]], requested: list[str],
         "review_only": True,
         "status": "pass" if not failed and not errors else "fail",
         "authority_boundary": dict(REVIEW_ONLY_AUTHORITY_BOUNDARY),
+        "route_contract": dict(COMPATIBILITY_ROUTE_CONTRACT),
         "summary": {
             "requested": len(requested),
             "built": len(built),
             "failed": len(failed),
             "validation_errors": len(errors),
+            "sql_canon_scope_status": sql_canon_context.get("status"),
+            "sql_canon_production_answer_count": sql_canon_context.get("sql_canon_production_answer_count"),
+            "sql_canon_production_scope_diff": sql_canon_context.get("production_scope_diff"),
         },
         "field_contract": PACKET_ANSWER_FIELDS,
+        "sql_canon_scope": sql_canon_context,
         "results": results_by_ticker,
         "validation_checks": validation or [],
         "stop_lines": [
@@ -855,7 +987,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build ticker_answer_packet_v1 review-only consolidated answer packets.")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--ticker", type=str, help="Build a single ticker, e.g. BRK.B")
-    group.add_argument("--all-from-coverage", action="store_true", help="Build all production_current_42 coverage tickers.")
+    group.add_argument("--all-from-coverage", action="store_true", help="Build all strategic production coverage tickers.")
     parser.add_argument("--write", action="store_true", help="Write legacy compatibility packet JSON.")
     parser.add_argument(
         "--allow-legacy-write",
@@ -870,6 +1002,7 @@ def main(argv: list[str] | None = None) -> int:
             "status": "blocked",
             "reason": "legacy_packet_write_requires_explicit_allow_legacy_write",
             "preferred_writer": "scripts\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate",
+            "route_contract": dict(COMPATIBILITY_ROUTE_CONTRACT),
             "archive_delete_apply_allowed": False,
         }))
         return 2
@@ -881,6 +1014,9 @@ def main(argv: list[str] | None = None) -> int:
             return 1
     else:
         requested = [args.ticker.strip().upper()]
+
+    sql_canon_context = sql_canon_packet_context(requested, require_production_scope=args.all_from_coverage)
+    sql_checks = sql_canon_validation_checks(sql_canon_context)
 
     packets: dict[str, dict[str, Any]] = {}
     results_by_ticker: list[dict[str, Any]] = []
@@ -908,8 +1044,8 @@ def main(argv: list[str] | None = None) -> int:
             })
         packets[ticker] = packet
 
-    validation = validate_packets(packets) if args.validate else None
-    summary = build_summary(results_by_ticker, requested, validation)
+    validation = [*(validate_packets(packets) if args.validate else []), *sql_checks] if args.validate else None
+    summary = build_summary(results_by_ticker, requested, validation, sql_canon_context)
     if args.write:
         BUILD_SUMMARY_PATH.parent.mkdir(parents=True, exist_ok=True)
         BUILD_SUMMARY_PATH.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -920,3 +1056,5 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

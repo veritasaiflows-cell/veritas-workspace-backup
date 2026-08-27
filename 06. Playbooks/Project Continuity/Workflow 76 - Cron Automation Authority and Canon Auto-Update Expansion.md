@@ -16,6 +16,7 @@
   - `scripts/bounded_auto_archive.py`
 - WF70/WF66 evidence-spine generation/validation is now wired into `scripts/chain_manifest.py` after official capture/reconciliation and before downstream official bridge validation.
 - The Sunday WF72/WF74 maintenance loop was manually proof-run successfully. CLI scheduling via `openclaw cron add` was blocked by Gateway pairing/scope-upgrade approval, so the job was scheduled through the first-class cron tool instead: `bd1c1f4d-b2e1-4307-9130-36f635f2a56c`.
+- 2026-06-19 finance SQL/JSON cutover proof: finance cron contracts are drift-free after the internal decision-canon cutover. `Finance - WF78 Daily Freshness and Promotion Proof` already points at `wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded`; rerun proof is `ok`. `cron_patch_manager.py --name "Finance - WF78 Daily Freshness and Promotion Proof" --write --validate` produced `diffs=0` with expected `empty_patch` warning, so no live finance schedule mutation is recommended now.
 
 ## Authority Tiers
 
@@ -86,12 +87,32 @@
 - `tmp/cron-automation-authority-contract.json/.md`
 - `scripts/cron_authority_matrix_validator.py`
 - `scripts/bounded_auto_archive.py`
+- `scripts/handoff_first_proof_gate.py`
+- `tmp/main-session-handoff-first-proof.json`
 - `tmp/cron-automation-authority-matrix-proposal.json/.md`
 - `tmp/cron-broadening-job-designs.json/.md`
 - `tmp/financial-canon-cron-authority-scan.json/.md`
 - `scripts/chain_manifest.py`
 - `06. Playbooks/Cron Job Protocol.md`
 - `06. Playbooks/Cron Run Ledger.md`
+
+## Handoff First-Proof Gate / Main-Session Cron Pickup - 2026-06-18
+
+- Implemented `scripts/handoff_first_proof_gate.py` as the deterministic first-proof classifier for the Command Center handoff pills: weekday research, morning, post-close, Sunday weekly, and Sunday research.
+- The gate writes `tmp/main-session-handoff-first-proof.json` with lane states `PROVED`, `BLOCKED`, `MISSING`, `STALE`, or `PENDING_FIRST_PROOF`, plus a `repair_lane_packet` for cron/main-session pickup. It does not run finance producers, mutate cron schedules, mutate canon/portfolio, or infer approval.
+- Wired the gate into:
+  - `scripts/dashboard_payload.py`
+  - `scripts/cron_control_packet.py`
+  - `scripts/cron_freshness_spine.py`
+  - `scripts/main_session_escalation_consumer.py`
+  - `scripts/main_session_action_executor.py`
+- Updated live Gateway cron jobs:
+  - `e467754a-9f5c-4c58-a5ba-016eb7339616` / `Cron - Main Session Auto-Green Watchdog`
+  - `6ab3d7e6-424a-418b-9c40-9cdba230c5e6` / `Operating Leverage - Escalation Trigger Check`
+  - `8d64de93-6a13-4eba-9065-09e7a1637f04` / `PM - Main Session Continuation Dispatcher`
+- Current proof state: first-proof gate is `warning`, with weekday research proved and four target repair lanes: morning, post-close, Sunday weekly, and Sunday research. This is intentional truth-routing: the mismatch is now actionable repair input, not passive queue residue.
+- Validation passed: `test_handoff_first_proof_gate.py`, `test_main_session_escalation_consumer.py`, `test_main_session_action_executor.py`, `test_dashboard_handoff_sql.py`, `test_dashboard_acceptance.py`, `cron_contract_validator.py --write --validate`, `cron_control_packet.py --write --validate`, and `handoff_first_proof_gate.py --write --validate`.
+- Stop lines held: no cron schedule cadence change beyond approved job prompt/contract updates, no finance producer forced rerun, no canon/portfolio/cash/sizing/risk mutation, no paper/live/brokerage/account action, no capital deployment, no customer/external delivery, and no owner approval inference.
 
 
 ## Proposed Sunday Maintenance Job Card
@@ -106,6 +127,16 @@
 - Boundary: review/proof only; no canonical note/canon/portfolio mutation; no archive apply; no deletes; no config/auth/channel/service/runtime mutation; no owner approval inference; no live/paper order or brokerage/account action.
 - Current status: scheduled through first-class cron tool as job `bd1c1f4d-b2e1-4307-9130-36f635f2a56c`; CLI `openclaw cron add` still requires Gateway pairing/scope approval if that route is needed later.
 - DB lifecycle cadence: `python scripts\db_lifecycle_manifest.py --write --validate` is part of the weekly hygiene route so unlabeled SQLite residue reappears as a validator warning/critical instead of silently accumulating. Scan scope now includes `tmp/**/*.sqlite`, `state/**/*.sqlite`, and archived DB lifecycle files; `state/finance/finance-canon.sqlite` is protected live state. Archive apply remains outside cron and requires explicit owner approval plus `db_lifecycle_archive_apply.py` proof.
+
+## 2026-08-22 Harness V2 Wave 1 - semantic-memory contract truth
+
+- Randall approved Wave 1 only. The durable cross-workflow plan is `06. Playbooks/Project Continuity/Veritas Harness V2 - Governance and Efficiency Upgrade Plan - 2026-08-22.md`; later waves remain unapproved.
+- Added `state/cron-contracts/runtime-semantic-memory-cache-maintenance.json` for the existing `Runtime - Semantic Memory Cache Maintenance` job. The declaration records the existing job id, schedule, timezone, isolated command, timeout, no-delivery posture, and expected artifact `tmp/semantic-memory-maintenance.json`.
+- Targeted contract validation reports zero drift and zero missing required fields. The refreshed freshness spine now classifies this job `fresh`, `required_artifacts_fresh`, and `quiet_success`.
+- No scheduler, cadence, payload, enabled state, service, or runtime configuration was changed.
+- Current remaining cron truth is still blocked overall: 17 jobs are blocked/urgent, comprising seven repeated scheduler-failure cases and ten artifact-blocked/authority-widened cases. Wave 1 classifies rather than mutates those jobs.
+- Proof: `tmp/cron-contract-validator-wave1-semantic-memory.json` and `tmp/cron-freshness-spine.json`.
+- Boundary held: no finance/canon/portfolio mutation, delete/archive, skill apply, owner-approval inference, or route-efficiency credit without job-scoped usage proof.
 
 
 ## Lean-OS archive cadence hardening - 2026-05-24 15:18 MST

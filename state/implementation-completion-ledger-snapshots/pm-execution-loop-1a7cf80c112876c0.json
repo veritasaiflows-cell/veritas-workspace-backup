@@ -1,0 +1,159 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-21T06:02:13Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-ticker-card-refresh-refresh-artifact"
+  },
+  "summary": {
+    "queue_job_count": 18,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-ticker-card-refresh-refresh-artifact"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 0,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-ticker-card-refresh-refresh-artifact",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-ticker-card-refresh-refresh-artifact",
+      "rank": 1,
+      "priority": "P1",
+      "title": "Run ticker-card refresh gate and classify repair queue",
+      "implementation_class": "ticker_card_refresh_gate",
+      "owner_surface": "WF77/WF78 ticker-card refresh gate",
+      "collision_group": "wf77_ticker_card_refresh",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 2,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "scripts/finance_ticker_card_refresh_gate.py",
+        "scripts/ticker_intelligence_card.py",
+        "tmp/finance-ticker-card-refresh-gate.json",
+        "tmp/ticker-card-refresh-gate-card-build-summary.json",
+        "tmp/finance-intelligence-state-stale-tickers.json"
+      ],
+      "proof_commands": [
+        "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode changed",
+        "python scripts\\automation_stack_hardening_pass.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-ticker-card-refresh-refresh-artifact:proof[0]",
+      "command": "python scripts\\finance_ticker_card_refresh_gate.py --write --validate --skip-provider-refresh --full-answer-mode changed",
+      "started_at_utc": "2026-06-21T06:01:50Z",
+      "completed_at_utc": "2026-06-21T06:02:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "ment_readiness\",\n        \"stale:price_band_stop\",\n        \"stale:recommendation_support\",\n        \"stale:technical_posture\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"UNP\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/URI.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"stale:catalyst_earnings_state\",\n        \"stale:deployment_readiness\",\n        \"stale:price_band_stop\",\n        \"stale:recommendation_support\",\n        \"stale:technical_posture\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"URI\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/V.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"stale:catalyst_earnings_state\",\n        \"stale:deployment_readiness\",\n        \"stale:price_band_stop\",\n        \"stale:recommendation_support\",\n        \"stale:technical_posture\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"V\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    },\n    {\n      \"card_path\": \"tmp/ticker-intelligence-cards/WMT.current.json\",\n      \"production_answer_path_member\": false,\n      \"repair_scope\": \"thin_monitor_expected_context\",\n      \"stale_reasons\": [\n        \"stale:catalyst_earnings_state\",\n        \"stale:deployment_readiness\",\n        \"stale:price_band_stop\",\n        \"stale:recommendation_support\",\n        \"stale:technical_posture\"\n      ],\n      \"thin_monitor_row\": true,\n      \"ticker\": \"WMT\",\n      \"tier\": \"C\",\n      \"universe_scope\": \"review_100_monitor\"\n    }\n  ],\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"1 production answer-path ticker card(s) differ from fresher WF77 price-state rows\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-ticker-card-refresh-refresh-artifact:proof[1]",
+      "command": "python scripts\\automation_stack_hardening_pass.py --write --validate",
+      "started_at_utc": "2026-06-21T06:02:12Z",
+      "completed_at_utc": "2026-06-21T06:02:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "atus\": \"ok\"\n  },\n  \"wf78_event_triggered_rerouting_hardening\": {\n    \"action_count\": 53,\n    \"exists\": true,\n    \"next_safe_action\": \"Repair evidence and reroute labels only; prepare owner review cards only after freshness blockers clear.\",\n    \"owner_action_required_count\": 3,\n    \"path\": \"tmp/wf78-event-triggered-rerouting.json\",\n    \"status\": \"ok\",\n    \"top_action\": {\n      \"action_type\": \"prepare_owner_card\",\n      \"apply_allowed\": false,\n      \"capital_deployment_approved\": false,\n      \"current_route\": \"A-READY\",\n      \"owner_action_required\": true,\n      \"paper_or_live_execution_allowed\": false,\n      \"priority\": 90,\n      \"proposed_route\": \"OWNER_CARD_PREP_ONLY\",\n      \"queue_rank\": 1,\n      \"reason\": \"Candidate has no local freshness blockers; prepare a non-executing owner review card only.\",\n      \"source_artifacts\": [\n        \"tmp/intraday-alerts/quote-snapshot-proof.json\",\n        \"tmp/market-execution-readiness-cron-hardening.json\",\n        \"tmp/post-close-final-quote-ledger.json\",\n        \"tmp/ticker-intelligence-cards/GOOG.current.json\",\n        \"tmp/wf78-auto-tier-routing.json\",\n        \"tmp/wf78-capital-review-queue.json\",\n        \"tmp/wf78-production-tier-adjudication.json\",\n        \"tmp/wf78-routing-delta.json\"\n      ],\n      \"ticker\": \"GOOG\",\n      \"trade_or_execution_approved\": false,\n      \"trigger\": \"capital_candidate_review_ready\"\n    },\n    \"validation_status\": \"ok\"\n  },\n  \"wf78_reputation_hardening\": {\n    \"current_baseline_count\": 200,\n    \"exists\": true,\n    \"future_validation_required_count\": 2,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"path\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"tier_a_production_eligible_count\": 0,\n    \"validation_status\": \"ok\"\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-ticker-card-refresh-refresh-artifact:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-21T06:02:12Z",
+      "completed_at_utc": "2026-06-21T06:02:13Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "1,\n        \"model_quality_validation\": \"ok\",\n        \"otel_daily_vs_weekly_event_rate_ratio\": 0.9647,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"ok\",\n        \"otel_field_depth_packet_status\": \"approved_enabled\",\n        \"recommended_budget\": \"major\",\n        \"recommended_validator_count\": 65,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 1,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 7,\n        \"validator_elapsed_seconds\": 3.118,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 30\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

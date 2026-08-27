@@ -5,6 +5,7 @@ import os
 import re
 import csv
 import io
+import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -115,6 +116,42 @@ def atomic_write_json(
 ) -> None:
     with atomic_open_for_write(path, mode="w", encoding="utf-8") as fh:
         json.dump(obj, fh, indent=indent, default=default, ensure_ascii=ensure_ascii)
+
+
+def backup_sqlite_database(source: str | Path, destination: str | Path) -> Path:
+    """Write a complete, self-contained SQLite backup of `source`.
+
+    Uses the online backup API, then checkpoints and closes the destination so
+    the resulting file stands alone. Callers must not also copy the source's
+    `-wal`/`-shm` sidecars next to it: those belong to the source database, and
+    a restore that carries them over can shadow the backup's own content.
+
+    Returns the destination path. Raises on failure rather than leaving a
+    partial file, so a caller can never record a backup that did not complete.
+    """
+    src_path = Path(source)
+    dst_path = Path(destination)
+    dst_path.parent.mkdir(parents=True, exist_ok=True)
+    # A stale destination would otherwise be backed into rather than replaced.
+    for leftover in (dst_path, Path(f"{dst_path}-wal"), Path(f"{dst_path}-shm")):
+        leftover.unlink(missing_ok=True)
+
+    src = sqlite3.connect(f"{src_path.resolve().as_uri()}?mode=ro", uri=True)
+    try:
+        dst = sqlite3.connect(dst_path)
+        try:
+            src.backup(dst)
+            dst.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            if dst.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+                raise sqlite3.DatabaseError(f"backup failed integrity_check: {dst_path}")
+        finally:
+            dst.close()
+    finally:
+        src.close()
+
+    for residue in (Path(f"{dst_path}-wal"), Path(f"{dst_path}-shm")):
+        residue.unlink(missing_ok=True)
+    return dst_path
 
 
 def load_json_artifact(path: str | Path) -> Any | None:

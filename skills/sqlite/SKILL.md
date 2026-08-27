@@ -1,8 +1,10 @@
 ---
-name: SQLite
-description: Use SQLite correctly with proper concurrency, pragmas, and type handling.
+name: "SQLite"
+description: "Use SQLite correctly with proper concurrency, pragmas, and type handling."
 metadata: {"clawdbot":{"emoji":"🪶","requires":{"bins":["sqlite3"]},"os":["linux","darwin","win32"]}}
 ---
+
+# SQLite
 
 ## Concurrency (Biggest Gotcha)
 

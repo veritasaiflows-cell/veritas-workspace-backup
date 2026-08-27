@@ -251,7 +251,7 @@ def fetch_daily_close_change(yf_ticker: str) -> dict[str, Any]:
         return row
 
 
-def fetch_treasury_curve_2y(reference_date: str | None) -> tuple[float | None, str | None, str | None, str | None]:
+def fetch_treasury_curve_value(reference_date: str | None, field_name: str, label: str) -> tuple[float | None, str | None, str | None, str | None]:
     if not reference_date:
         return None, None, None, "missing market reference date"
     try:
@@ -273,13 +273,35 @@ def fetch_treasury_curve_2y(reference_date: str | None) -> tuple[float | None, s
             date_text = str(values.get("NEW_DATE") or "")[:10]
             if date_text != reference_date:
                 continue
-            value = values.get("BC_2YEAR")
+            value = values.get(field_name)
             if value in (None, ""):
                 continue
             return round(float(value), 4), date_text, "official Treasury daily yield curve XML", None
-        return None, None, None, f"official Treasury yield curve has no 2Y row for {reference_date}"
+        return None, None, None, f"official Treasury yield curve has no {label} row for {reference_date}"
     except Exception as exc:
         return None, None, None, f"official Treasury yield curve fetch error: {exc}"
+
+
+def fetch_treasury_curve_2y(reference_date: str | None) -> tuple[float | None, str | None, str | None, str | None]:
+    return fetch_treasury_curve_value(reference_date, "BC_2YEAR", "2Y")
+
+
+def same_day_treasury_fallback(
+    *,
+    current_value: float | None,
+    current_date: str | None,
+    reference_date: str | None,
+    field_name: str,
+    label: str,
+    current_source: str,
+) -> tuple[float | None, str | None, str | None, str | None]:
+    if current_value is not None and (not reference_date or current_date == reference_date):
+        return current_value, current_date, current_source, None
+    fallback_value, fallback_date, fallback_source, fallback_error = fetch_treasury_curve_value(reference_date, field_name, label)
+    if fallback_value is not None and fallback_date == reference_date:
+        note = f"{current_source} missing or date-mismatched at {current_date or 'missing'}; using same-day official Treasury yield curve."
+        return fallback_value, fallback_date, fallback_source, note
+    return current_value, current_date, current_source if current_value is not None else None, fallback_error
 
 
 def fetch_2y_treasury(reference_date: str | None) -> tuple[float | None, str | None, str | None, str | None, str | None]:
@@ -591,6 +613,28 @@ def main() -> None:
     dxy, dxy_date = results["dxy"]
     brent, brent_date = results["brent"]
     wti, wti_date = results["wti"]
+    y10_source = "yfinance ^TNX" if y10 is not None else None
+    y3m_source = "yfinance ^IRX" if y3m is not None else None
+    y10_note: str | None = None
+    y3m_note: str | None = None
+    y10, y10_date, y10_source, y10_note = same_day_treasury_fallback(
+        current_value=y10,
+        current_date=y10_date,
+        reference_date=market_reference_date,
+        field_name="BC_10YEAR",
+        label="10Y",
+        current_source="yfinance ^TNX",
+    )
+    y3m, y3m_date, y3m_source, y3m_note = same_day_treasury_fallback(
+        current_value=y3m,
+        current_date=y3m_date,
+        reference_date=market_reference_date,
+        field_name="BC_3MONTH",
+        label="3M",
+        current_source="yfinance ^IRX",
+    )
+    results["y10"] = (y10, y10_date)
+    results["y3m"] = (y3m, y3m_date)
 
     curve_3m10y_bps: float | None = None
     curve_2s10s_bps: float | None = None
@@ -638,6 +682,16 @@ def main() -> None:
             freshness_notes.append("2y_source_date_lag")
         if y2_source not in {"yfinance 2YY=F", "official Treasury daily yield curve XML"} and not expected_dgs2_lag:
             warnings.append(y2_note)
+    if y10_note:
+        if y10_source == "official Treasury daily yield curve XML":
+            freshness_notes.append("10y_same_day_official_treasury_fallback")
+        else:
+            warnings.append(y10_note)
+    if y3m_note:
+        if y3m_source == "official Treasury daily yield curve XML":
+            freshness_notes.append("3m_same_day_official_treasury_fallback")
+        else:
+            warnings.append(y3m_note)
     if y2 is not None and y10 is None:
         warnings.append("2Y populated but 10Y failed, so 2s10s spread could not be derived.")
     if policy_artifact_used:
@@ -799,14 +853,16 @@ def main() -> None:
                 "2y_note": y2_error if y2 is None else y2_note,
                 "10y": y10,
                 "10y_as_of": y10_date,
-                "10y_source": "yfinance ^TNX" if y10 is not None else None,
+                "10y_source": y10_source,
+                "10y_note": y10_note,
                 "3m_tbill": y3m,
                 "3m_as_of": y3m_date,
-                "3m_source": "yfinance ^IRX" if y3m is not None else None,
+                "3m_source": y3m_source,
+                "3m_note": y3m_note,
                 "curve_2s10s_bps": curve_2s10s_bps,
-                "curve_2s10s_note": f"Derived from {y2_source} and yfinance ^TNX" if curve_2s10s_bps is not None else "2s10s unavailable without both 2Y and 10Y",
+                "curve_2s10s_note": f"Derived from {y2_source} and {y10_source}" if curve_2s10s_bps is not None else "2s10s unavailable without both 2Y and 10Y",
                 "curve_3m10y_bps": curve_3m10y_bps,
-                "curve_3m10y_note": "Derived from yfinance ^IRX and ^TNX" if curve_3m10y_bps is not None else "3M-10Y unavailable without both 3M and 10Y",
+                "curve_3m10y_note": f"Derived from {y3m_source} and {y10_source}" if curve_3m10y_bps is not None else "3M-10Y unavailable without both 3M and 10Y",
             },
             "volatility": {
                 "vix": vix,

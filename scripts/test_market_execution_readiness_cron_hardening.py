@@ -78,10 +78,221 @@ def test_retry_quote_snapshot_if_needed_clears_after_refresh() -> None:
     assert result["final_reasons"] == [], result
 
 
+def test_effective_probe_prefers_enabled_silent_job() -> None:
+    ledger = {
+        "jobs": [
+            {
+                "name": hardening.LEGACY_TIER_A_INTRADAY_JOB,
+                "enabled": False,
+                "payload": {"message": "python scripts\\finance_market_deployment_operating_loop.py --send"},
+            },
+            {
+                "name": hardening.SILENT_TIER_A_INTRADAY_JOB,
+                "enabled": True,
+                "payload": {"message": "python scripts\\finance_market_deployment_operating_loop.py --write --validate"},
+            },
+        ]
+    }
+
+    job = hardening.effective_probe_job(
+        ledger,
+        hardening.SILENT_TIER_A_INTRADAY_JOB,
+        hardening.LEGACY_TIER_A_INTRADAY_JOB,
+    )
+
+    assert job["name"] == hardening.SILENT_TIER_A_INTRADAY_JOB
+    assert "--send" not in hardening.job_command_text(job)
+
+
+def test_effective_wf68_prefers_consolidated_digest_job() -> None:
+    ledger = {
+        "jobs": [
+            {
+                "name": hardening.LEGACY_WF68_INTRADAY_JOB,
+                "enabled": False,
+                "schedule": {"expr": "0 7 * * 1-5"},
+            },
+            {
+                "name": hardening.WF68_CONSOLIDATED_JOB,
+                "enabled": True,
+                "schedule": {"expr": "5 7 * * 1-5"},
+                "payload": {"message": "python scripts\\wf68_alert_digest_consolidated_runner.py --write --validate"},
+            },
+        ]
+    }
+
+    job = hardening.effective_wf68_job(ledger)
+
+    assert job["name"] == hardening.WF68_CONSOLIDATED_JOB
+    assert "wf68_alert_digest_consolidated_runner.py" in hardening.job_command_text(job)
+
+
+def test_deployment_intraday_symbols_are_actionable_subset() -> None:
+    auto_router = {
+        "rows": [
+            {"ticker": "NVDA", "auto_tier": "Tier A", "auto_state": "A-READY"},
+            {"ticker": "VAW", "auto_tier": "Tier A", "auto_state": "A-CHALLENGED"},
+            {"ticker": "CME", "auto_tier": "Tier A", "auto_state": "A-WATCH"},
+        ]
+    }
+    capital_queue = {"rows": [{"ticker": "GOOG"}]}
+
+    symbols = hardening.deployment_intraday_symbols(auto_router, capital_queue)
+
+    assert symbols == ["GOOG", "NVDA"], symbols
+
+
+def test_closed_market_quote_gate_uses_actionable_subset() -> None:
+    required_market_date = hardening.date(2026, 6, 23)
+    snapshots = [
+        {
+            "symbol": "NVDA",
+            "source_timestamp_utc": "2026-06-23T19:59:00Z",
+            "calendar_freshness_status": "current_last_completed_session",
+        },
+        {
+            "symbol": "GOOG",
+            "source_timestamp_utc": "2026-06-23T19:59:00Z",
+            "calendar_freshness_status": "current_last_completed_session",
+        },
+        {
+            "symbol": "VAW",
+            "source_timestamp_utc": "2026-06-22T19:59:00Z",
+            "calendar_freshness_status": "stale_unexpected",
+        },
+    ]
+    calendar_status_by_symbol = {
+        hardening.normalize_symbol(row["symbol"]): row["calendar_freshness_status"]
+        for row in snapshots
+    }
+    actionable_rows = [
+        row for row in snapshots
+        if hardening.normalize_symbol(row["symbol"]) in {"GOOG", "NVDA"}
+    ]
+
+    actionable_source_current = all(
+        (parsed := hardening.parse_utc(row.get("source_timestamp_utc"))) is not None
+        and parsed.astimezone(hardening.LOCAL_TZ).date() == required_market_date
+        for row in actionable_rows
+    )
+    actionable_calendar_current = all(
+        calendar_status_by_symbol.get(hardening.normalize_symbol(row.get("symbol"))) in {
+            "fresh_intraday",
+            "current_last_completed_session",
+            "market_closed_expected_stale",
+        }
+        for row in actionable_rows
+    )
+
+    assert actionable_source_current is True
+    assert actionable_calendar_current is True
+
+
+def test_closed_market_quote_gate_allows_no_actionable_subset() -> None:
+    assert hardening.actionable_quote_snapshot_gate_ok(
+        market_is_open=False,
+        intraday_required_symbols=[],
+        intraday_required_snapshot_fresh_intraday=False,
+        intraday_required_snapshot_calendar_current=False,
+        intraday_required_snapshot_source_dates_current=False,
+    ) is True
+
+
+def test_market_date_gate_allows_stale_nonrequired_row_when_required_set_is_current() -> None:
+    required_market_date = hardening.date(2026, 8, 7)
+
+    assert hardening.quote_snapshot_market_date_gate_ok(
+        market_is_open=False,
+        quote_local_date=hardening.date(2026, 8, 8),
+        required_market_date=required_market_date,
+        required_snapshot_rows=[{"symbol": "NVDA"}],
+        required_snapshot_source_dates_current=True,
+        snapshot_source_date_current=False,
+        required_snapshot_calendar_current=True,
+        snapshot_calendar_current=False,
+    ) is True
+
+
+def test_market_date_gate_rejects_stale_required_set() -> None:
+    required_market_date = hardening.date(2026, 8, 7)
+
+    assert hardening.quote_snapshot_market_date_gate_ok(
+        market_is_open=False,
+        quote_local_date=hardening.date(2026, 8, 8),
+        required_market_date=required_market_date,
+        required_snapshot_rows=[{"symbol": "NVDA"}],
+        required_snapshot_source_dates_current=False,
+        snapshot_source_date_current=True,
+        required_snapshot_calendar_current=False,
+        snapshot_calendar_current=True,
+    ) is False
+
+
+def test_market_date_gate_without_required_rows_uses_all_snapshot_fallback() -> None:
+    required_market_date = hardening.date(2026, 8, 7)
+    kwargs = {
+        "market_is_open": False,
+        "quote_local_date": hardening.date(2026, 8, 8),
+        "required_market_date": required_market_date,
+        "required_snapshot_rows": [],
+        "required_snapshot_source_dates_current": False,
+        "required_snapshot_calendar_current": False,
+    }
+
+    assert hardening.quote_snapshot_market_date_gate_ok(
+        **kwargs,
+        snapshot_source_date_current=True,
+        snapshot_calendar_current=True,
+    ) is True
+    assert hardening.quote_snapshot_market_date_gate_ok(
+        **kwargs,
+        snapshot_source_date_current=False,
+        snapshot_calendar_current=False,
+    ) is False
+
+
+def test_market_date_gate_does_not_use_generated_date_alone_during_market_hours() -> None:
+    required_market_date = hardening.date(2026, 8, 7)
+
+    assert hardening.quote_snapshot_market_date_gate_ok(
+        market_is_open=True,
+        quote_local_date=required_market_date,
+        required_market_date=required_market_date,
+        required_snapshot_rows=[{"symbol": "NVDA"}],
+        required_snapshot_source_dates_current=False,
+        snapshot_source_date_current=False,
+        required_snapshot_calendar_current=True,
+        snapshot_calendar_current=True,
+    ) is False
+
+
+def test_market_date_gate_allows_prior_completed_session_preopen() -> None:
+    assert hardening.quote_snapshot_market_date_gate_ok(
+        market_is_open=False,
+        quote_local_date=hardening.date(2026, 8, 10),
+        required_market_date=hardening.date(2026, 8, 10),
+        required_snapshot_rows=[{"symbol": "NVDA"}],
+        required_snapshot_source_dates_current=False,
+        snapshot_source_date_current=False,
+        required_snapshot_calendar_current=True,
+        snapshot_calendar_current=True,
+    ) is True
+
+
 def main() -> int:
     test_quote_snapshot_retry_reasons_are_market_hours_only()
     test_quote_snapshot_validation_gap_triggers_retry()
     test_retry_quote_snapshot_if_needed_clears_after_refresh()
+    test_effective_probe_prefers_enabled_silent_job()
+    test_effective_wf68_prefers_consolidated_digest_job()
+    test_deployment_intraday_symbols_are_actionable_subset()
+    test_closed_market_quote_gate_uses_actionable_subset()
+    test_closed_market_quote_gate_allows_no_actionable_subset()
+    test_market_date_gate_allows_stale_nonrequired_row_when_required_set_is_current()
+    test_market_date_gate_rejects_stale_required_set()
+    test_market_date_gate_without_required_rows_uses_all_snapshot_fallback()
+    test_market_date_gate_does_not_use_generated_date_alone_during_market_hours()
+    test_market_date_gate_allows_prior_completed_session_preopen()
     print("market_execution_readiness_cron_hardening targeted tests passed")
     return 0
 

@@ -1,78 +1,45 @@
 {
-  "generated_at_utc": "2026-05-10T03:38:14.806438+00:00",
-  "status": "partial",
+  "generated_at_utc": "2026-08-27T13:14:16.634342+00:00",
+  "status": "ok",
   "stale_after_hours": 36,
   "expected_update_window": "Refresh after the close for next-session regime work and before weekly macro outputs.",
-  "last_trading_day": "2026-05-08",
+  "last_trading_day": "2026-08-25",
   "source_last_trading_day": {
-    "ig_oas": null,
-    "hy_oas": null,
-    "proxy_hyg": "2026-05-08",
-    "proxy_jnk": "2026-05-08",
-    "proxy_lqd": "2026-05-08"
+    "ig_oas": "2026-08-25",
+    "hy_oas": "2026-08-25"
   },
   "freshness_notes": [
     "fred_ice_bofa_series_can_lag_one_trading_day",
     "direction_labels_use_latest_vs_5d_and_20d_observation_comparison"
   ],
-  "warnings": [
-    "IG OAS fetch failed for BAMLC0A0CM. FRED_API_KEY not set",
-    "HY OAS fetch failed for BAMLH0A0HYM2. FRED_API_KEY not set",
-    "Direct OAS coverage is incomplete; using proxy basket to preserve directional context."
-  ],
+  "warnings": [],
   "data": {
     "source_label": "FRED ICE BofA OAS",
-    "source_mode": "fallback",
+    "source_mode": "primary",
     "investment_grade_oas": {
-      "value": null,
+      "value": 0.81,
       "unit": "percent",
       "series": "BAMLC0A0CM",
-      "as_of": null
+      "as_of": "2026-08-25"
     },
     "high_yield_oas": {
-      "value": null,
+      "value": 2.7,
       "unit": "percent",
       "series": "BAMLH0A0HYM2",
-      "as_of": null
+      "as_of": "2026-08-25"
     },
-    "hy_minus_ig_spread": null,
+    "hy_minus_ig_spread": 1.89,
     "direction": {
-      "ig_5d": "tightening",
+      "ig_5d": "flat",
       "ig_20d": "flat",
-      "hy_5d": "widening",
+      "hy_5d": "tightening",
       "hy_20d": "tightening"
     },
     "stress_regime": "benign",
-    "fallback_proxies": [
-      {
-        "ticker": "HYG",
-        "label": "iShares iBoxx $ High Yield Corporate Bond ETF",
-        "last_close": 80.14,
-        "as_of": "2026-05-08",
-        "change_5d_pct": 0.0999,
-        "change_20d_pct": 0.2251
-      },
-      {
-        "ticker": "JNK",
-        "label": "SPDR Bloomberg High Yield Bond ETF",
-        "last_close": 96.52,
-        "as_of": "2026-05-08",
-        "change_5d_pct": 0.1245,
-        "change_20d_pct": 0.2909
-      },
-      {
-        "ticker": "LQD",
-        "label": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
-        "last_close": 109.2,
-        "as_of": "2026-05-08",
-        "change_5d_pct": 0.5525,
-        "change_20d_pct": 0.0
-      }
-    ],
+    "fallback_proxies": [],
     "notes": [
       "Stress regime is a heuristic credit-state classification, not a licensed credit model.",
-      "Direction labels use latest versus 5-trading-day and 20-trading-day prior observations with a 3bp flat threshold for direct OAS series.",
-      "Fallback proxies use HYG, JNK, and LQD relative behavior when direct OAS coverage is incomplete."
+      "Direction labels use latest versus 5-trading-day and 20-trading-day prior observations with a 3bp flat threshold for direct OAS series."
     ]
   }
 }

@@ -3,11 +3,26 @@
   "workflow_id": "WF70-WF66",
   "display_name": "Official Evidence Spine",
   "tier": "P1",
-  "effective_status": "route_only",
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Registry/latest-selector migration complete; official earnings/reconciliation routes have no-drift proof.",
   "next_action": "Monitor validators; capture/roll forward only for active finance/product goals.",
-  "helper_safe": true,
+  "authoritative_next_action": "Monitor validators; capture/roll forward only for active finance/product goals.",
+  "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "evidence-only; no portfolio/trade authority",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 70 - Official Company Source Capture and Reconciliation.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [],
   "stop_lines": [
     "No invented values, no bridge-present-equals-reconciled shortcut, no portfolio/canon/trade authority from evidence alone, no owner approval inference."
@@ -26,6 +41,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

@@ -3,11 +3,26 @@
   "workflow_id": "WF-BOARD-CANON-GUARDRAILS",
   "display_name": "Board / Canon Guardrails Monitor",
   "tier": "P2",
-  "effective_status": "route_only",
+  "priority": "P2",
+  "lifecycle": "monitor",
+  "readiness": "monitor_only",
+  "effective_status": "monitor_only",
+  "current_state": "Monitor: board/canon/stale/proposal artifacts.",
   "next_action": "Escalate on critical contradiction, widened authority flag, or proposal implying self-apply.",
-  "helper_safe": true,
+  "authoritative_next_action": "Escalate on critical contradiction, widened authority flag, or proposal implying self-apply.",
+  "helper_safe": false,
   "owner_action_required": false,
   "authority_boundary": "monitor-only; cron proposes, main applies bounded",
+  "authority_class": "monitor_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": null,
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
   "blockers": [],
   "stop_lines": [
     "Cron may propose; main applies only bounded freshness/status sync or exact gated maintenance."
@@ -22,6 +37,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

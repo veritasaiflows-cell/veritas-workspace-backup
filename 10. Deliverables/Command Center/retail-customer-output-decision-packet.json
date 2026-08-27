@@ -1,0 +1,171 @@
+{
+  "schema": "veritas.retail_customer_output_decision_packet.v1",
+  "generated_at_utc": "2026-06-18T21:50:10Z",
+  "status": "blocked",
+  "workflow_id": "WF-RETAIL-ROUTING",
+  "resume_scope": "internal_answer_safety_only",
+  "decision": "customer_output_blocked",
+  "internal_answer_safety_ready": true,
+  "customer_output_allowed": false,
+  "customer_output_blockers": [
+    "owner_launch_approval",
+    "source_licensing_review",
+    "privacy_customer_data_policy",
+    "legal_compliance_review",
+    "disclaimer_language_approved",
+    "personalization_policy",
+    "external_delivery_channel",
+    "security_runtime_exposure"
+  ],
+  "next_safe_action": "Use the retail router internally as an answer-safety gate. Do not produce customer output until every customer-output launch gate has a separate approved artifact.",
+  "internal_answer_safety_gates": [
+    {
+      "gate_id": "truth_routing_contract_clean",
+      "label": "Retail truth routing contract",
+      "status": "pass",
+      "required_for": "internal_answer_safety",
+      "detail": "Route contract must be ok before any retail answer path can be trusted."
+    },
+    {
+      "gate_id": "answer_harness_clean",
+      "label": "Retail answer harness",
+      "status": "pass",
+      "required_for": "internal_answer_safety",
+      "detail": "Clean and seeded-bad answer cases must validate."
+    },
+    {
+      "gate_id": "automation_control_plane_clean",
+      "label": "Retail automation control plane",
+      "status": "pass",
+      "required_for": "internal_answer_safety",
+      "detail": "Operator visibility and safety packet must be clean."
+    },
+    {
+      "gate_id": "seeded_bad_customer_prompts_block",
+      "label": "Seeded-bad retail prompts",
+      "status": "pass",
+      "required_for": "internal_answer_safety",
+      "detail": "Unsafe customer, stale-source, guaranteed-return, and brokerage/action prompts must block."
+    },
+    {
+      "gate_id": "customer_route_blocked",
+      "label": "Customer-safe output route",
+      "status": "pass",
+      "required_for": "internal_answer_safety",
+      "detail": "Customer output route must remain blocked until launch gates clear."
+    }
+  ],
+  "customer_output_launch_gates": [
+    {
+      "gate_id": "owner_launch_approval",
+      "label": "Owner launch approval",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "Randall has not approved customer/external output."
+    },
+    {
+      "gate_id": "source_licensing_review",
+      "label": "Source licensing review",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "No approval that source terms permit customer-facing redistribution."
+    },
+    {
+      "gate_id": "privacy_customer_data_policy",
+      "label": "Privacy and customer-data policy",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "No approved real-customer data, PII, suitability, tax, retirement, or account handling policy."
+    },
+    {
+      "gate_id": "legal_compliance_review",
+      "label": "Legal/compliance review",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "No legal/compliance readiness approval for retail investor output."
+    },
+    {
+      "gate_id": "disclaimer_language_approved",
+      "label": "Disclaimer language",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "Required customer-facing disclaimers are not approved for launch."
+    },
+    {
+      "gate_id": "personalization_policy",
+      "label": "Personalization/suitability boundary",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "No approved boundary for personalized advice, allocation, or suitability handling."
+    },
+    {
+      "gate_id": "external_delivery_channel",
+      "label": "External delivery channel",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "No approved public, customer, email, chat, or API delivery channel."
+    },
+    {
+      "gate_id": "security_runtime_exposure",
+      "label": "Security/runtime exposure",
+      "status": "missing",
+      "required_for": "customer_output",
+      "detail": "No approved customer-facing runtime, auth, logging, or data-retention posture."
+    }
+  ],
+  "required_before_customer_output": [
+    "Randall exact customer-output approval",
+    "source licensing review",
+    "privacy/customer-data policy",
+    "legal/compliance review",
+    "approved disclaimer language",
+    "personalization/suitability boundary",
+    "external delivery/channel approval",
+    "security/runtime exposure approval"
+  ],
+  "source_artifacts": [
+    {
+      "path": "tmp/retail-truth-routing-contract.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "mtime_utc": "2026-06-18T21:18:41Z"
+    },
+    {
+      "path": "tmp/retail-answer-harness.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "mtime_utc": "2026-06-18T21:49:52Z"
+    },
+    {
+      "path": "tmp/retail-automation-control-plane.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "mtime_utc": "2026-06-18T21:50:01Z"
+    }
+  ],
+  "authority_boundary": {
+    "customer_output_allowed": false,
+    "external_delivery_allowed": false,
+    "real_customer_data_allowed": false,
+    "personalized_advice_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "sql_first_answer_allowed": false,
+    "sql_write_or_import_allowed": false,
+    "sql_source_of_truth_promotion_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "review_only": true
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

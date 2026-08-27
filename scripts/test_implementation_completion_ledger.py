@@ -170,6 +170,44 @@ def test_pm_dry_run_source_is_not_completion() -> None:
         assert report["summary"]["new_entry_count"] == 0
 
 
+def test_completion_ledger_declares_status_surface_refresh_contract() -> None:
+    names = [name for name, _parts in ledger.STATUS_SURFACE_REFRESH_COMMANDS]
+    commands = [" ".join(parts) for _name, parts in ledger.STATUS_SURFACE_REFRESH_COMMANDS]
+
+    assert names == ["startup_brief_packet", "status_card_packet"]
+    assert any("scripts\\startup_brief_packet.py --write --validate" in command for command in commands)
+    assert any("scripts\\status_card_packet.py --write --validate" in command for command in commands)
+
+
+def test_status_surface_refresh_failure_is_warning_not_ledger_blocker() -> None:
+    report = {
+        "status": "ok",
+        "summary": {
+            "status_surface_refresh_required": True,
+            "next_safe_action": "test",
+        },
+        "validation": {
+            "status": "ok",
+            "errors": [],
+            "warnings": [],
+        },
+    }
+    steps = [
+        {"name": "startup_brief_packet", "ok": False, "returncode": 1},
+        {"name": "status_card_packet", "ok": True, "returncode": 0},
+    ]
+
+    refreshed = ledger.apply_status_surface_refresh(report, steps)
+
+    assert refreshed["status"] == "ok"
+    assert refreshed["validation"]["status"] == "ok"
+    assert refreshed["validation"]["errors"] == []
+    assert refreshed["summary"]["status_surface_refresh_failed_count"] == 1
+    assert refreshed["summary"]["status_surface_refresh_attention_required"] is True
+    assert refreshed["status_surface_refresh_result"]["failed_steps"] == ["startup_brief_packet"]
+    assert "status_surface_refresh_attention:startup_brief_packet" in refreshed["validation"]["warnings"]
+
+
 def test_manual_completed_jobs_source_records_each_job() -> None:
     with tempfile.TemporaryDirectory() as td:
         root = Path(td)

@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "e467754a-9f5c-4c58-a5ba-016eb7339616",
+  "name": "Cron - Main Session Auto-Green Watchdog",
+  "required": true,
+  "owner_workflow": "WF73/WF76",
+  "contract_reason": "Disabled in Phase 1 cron reduction after Cron Reduction - Control Fail-Closed Dispatcher was added as the consolidated replacement.",
+  "description": "Morning/afternoon isolated Mini proof-refresh for auto-green watchdog gauges. Refreshes cron ledger/freshness/scorecard/escalation/control/first-proof artifacts and classifies escalation residue for main pickup; no repairs, no finance/account/execution/config authority.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "10 7,14 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "model": "ollama-cloud/minimax-m3:cloud",
+    "thinking": "high",
+    "timeoutSeconds": 360,
+    "lightContext": false,
+    "message": "QUIET CRON OUTPUT RULE (hard): this job uses delivery.mode=none. When the success/no-action path says NO_REPLY, your entire final response must be exactly NO_REPLY and nothing else. Do not add a preface, explanation, markdown, status sentence, tool summary, or trailing note. If blocked, report only the explicit blocked-report fields named below."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext",
+    "payload.message"
+  ],
+  "expected_artifacts": [
+    "tmp/cron-operator-ledger.json",
+    "tmp/cron-freshness-spine.json",
+    "tmp/cron-signal-scorecard.json",
+    "tmp/escalation-trigger.json",
+    "tmp/cron-control-packet.json",
+    "tmp/main-session-handoff-first-proof.json",
+    "tmp/main-session-escalation-consumer.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "proof_refresh_only": true,
+    "repair_execution_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-06-29T02:58:53Z",
+  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback."
+}

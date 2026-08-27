@@ -17,6 +17,7 @@ DEFAULT_GUARD = ROOT / "tmp" / "alpaca-paper-readiness" / "paper-execution-guard
 
 SCHEMA = "veritas.wf87_position_sizing_runtime_check.v1"
 MAX_INPUT_AGE_SECONDS = 24 * 60 * 60
+MAX_POLICY_AGE_SECONDS = 30 * 24 * 60 * 60
 DEFAULT_MAX_ENTRY_TO_STOP_RISK_PCT = 0.25
 
 AUTHORITY_BOUNDARY = {
@@ -98,18 +99,27 @@ def load_json(path: Path, findings: list[dict[str, Any]], code: str) -> dict[str
     return payload
 
 
-def check_fresh(payload: dict[str, Any] | None, path: Path, code: str, findings: list[dict[str, Any]], now: datetime) -> None:
+def check_fresh(
+    payload: dict[str, Any] | None,
+    path: Path,
+    code: str,
+    findings: list[dict[str, Any]],
+    now: datetime,
+    *,
+    max_age_seconds: int = MAX_INPUT_AGE_SECONDS,
+    severity: str = "critical",
+) -> None:
     if payload is None:
         return
     generated = parse_utc(payload.get("generated_at_utc") or payload.get("created_at_utc"))
     if generated is None:
-        findings.append({"severity": "critical", "code": f"{code}_missing_timestamp", "path": rel(path)})
+        findings.append({"severity": severity, "code": f"{code}_missing_timestamp", "path": rel(path)})
         return
     age = (now - generated).total_seconds()
     if age < 0:
-        findings.append({"severity": "critical", "code": f"{code}_timestamp_in_future", "path": rel(path), "timestamp": utc_stamp(generated)})
-    elif age > MAX_INPUT_AGE_SECONDS:
-        findings.append({"severity": "critical", "code": f"{code}_expired", "path": rel(path), "age_seconds": int(age)})
+        findings.append({"severity": severity, "code": f"{code}_timestamp_in_future", "path": rel(path), "timestamp": utc_stamp(generated)})
+    elif age > max_age_seconds:
+        findings.append({"severity": severity, "code": f"{code}_expired", "path": rel(path), "age_seconds": int(age)})
 
 
 def policy_caps(policy: dict[str, Any]) -> dict[str, Any]:
@@ -143,14 +153,14 @@ def policy_authority_ok(policy: dict[str, Any] | None, findings: list[dict[str, 
             findings.append({"severity": "critical", "code": "policy_authority_not_false", "field": field, "value": authority.get(field)})
 
 
-def guard_ok(guard: dict[str, Any] | None, findings: list[dict[str, Any]]) -> None:
+def guard_ok(guard: dict[str, Any] | None, findings: list[dict[str, Any]], *, severity: str = "critical") -> None:
     if guard is None:
         return
     if guard.get("status") != "ok":
-        findings.append({"severity": "critical", "code": "wf67_guard_not_ok", "status": guard.get("status")})
+        findings.append({"severity": severity, "code": "wf67_guard_not_ok", "status": guard.get("status")})
     for field in ("live_trading_allowed", "money_movement_allowed"):
         if guard.get(field) is not False:
-            findings.append({"severity": "critical", "code": "wf67_guard_authority_not_false", "field": field, "value": guard.get(field)})
+            findings.append({"severity": severity, "code": "wf67_guard_authority_not_false", "field": field, "value": guard.get(field)})
 
 
 def candidate_date(value: dict[str, Any], fallback: str) -> str:
@@ -280,15 +290,17 @@ def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[
     assisted = load_json(assisted_path, findings, "assisted_order_cards")
     queue = load_json(queue_path, findings, "capital_review_queue")
     guard = load_json(guard_path, findings, "wf67_guard_validation")
-    for code, path, payload in (
-        ("policy", policy_path, policy),
-        ("assisted_order_cards", assisted_path, assisted),
-        ("capital_review_queue", queue_path, queue),
-        ("wf67_guard_validation", guard_path, guard),
+    candidates = collect_candidates(assisted, queue, findings)
+    candidate_present = bool(candidates)
+    for code, path, payload, max_age, severity in (
+        ("policy", policy_path, policy, MAX_POLICY_AGE_SECONDS, "critical" if candidate_present else "warning"),
+        ("assisted_order_cards", assisted_path, assisted, MAX_INPUT_AGE_SECONDS, "critical"),
+        ("capital_review_queue", queue_path, queue, MAX_INPUT_AGE_SECONDS, "critical"),
+        ("wf67_guard_validation", guard_path, guard, MAX_INPUT_AGE_SECONDS, "critical" if candidate_present else "warning"),
     ):
-        check_fresh(payload, path, code, findings, now)
+        check_fresh(payload, path, code, findings, now, max_age_seconds=max_age, severity=severity)
     policy_authority_ok(policy, findings)
-    guard_ok(guard, findings)
+    guard_ok(guard, findings, severity="critical" if candidate_present else "warning")
 
     caps = policy_caps(policy or {})
     max_notional = to_float(caps.get("max_notional_per_order_usd"))
@@ -303,9 +315,8 @@ def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[
         findings.append({"severity": "critical", "code": "policy_missing_max_same_ticker_orders_per_day"})
     max_risk_pct = to_float(risk_caps(policy or {}).get("max_entry_to_stop_risk_pct")) or DEFAULT_MAX_ENTRY_TO_STOP_RISK_PCT
 
-    candidates = collect_candidates(assisted, queue, findings)
     if not candidates:
-        findings.append({"severity": "critical", "code": "no_order_candidates"})
+        findings.append({"severity": "info", "code": "no_order_candidates"})
     rows = [check_candidate(candidate, max_notional, max_risk_pct) for candidate in candidates]
     today = now.date().isoformat()
     todays = [row for row in rows if candidate_date(row, today) == today]
@@ -322,7 +333,12 @@ def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[
 
     candidate_blockers = sum(1 for row in rows if row["status"] != "ok")
     critical = sum(1 for item in findings if item.get("severity") == "critical") + candidate_blockers
-    status = "ok" if critical == 0 else "blocked"
+    status = "idle_no_candidates" if not rows and critical == 0 else ("ok" if critical == 0 else "blocked")
+    next_safe_action = (
+        "No current order candidate is present; keep execution disabled and rerun after a fresh review card exists."
+        if status == "idle_no_candidates"
+        else "Keep paper execution blocked when this report status is blocked."
+    )
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_stamp(now),
@@ -339,7 +355,7 @@ def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[
             "candidate_count": len(rows),
             "blocked_candidate_count": candidate_blockers,
             "critical_finding_count": critical,
-            "next_safe_action": "Keep paper execution blocked when this report status is blocked.",
+            "next_safe_action": next_safe_action,
         },
         "candidates": rows,
         "findings": findings,

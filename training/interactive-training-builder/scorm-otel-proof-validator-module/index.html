@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OTEL Proof Validator Practice Lab</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #15202b;
+      --muted: #596574;
+      --paper: #f7f8fa;
+      --panel: #ffffff;
+      --line: #d9dee7;
+      --accent: #0f766e;
+      --accent-2: #2457a6;
+      --warn: #9a6700;
+      --bad: #a53b3b;
+      --good: #267047;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    .skip {
+      position: absolute;
+      left: -999px;
+      top: 8px;
+      background: var(--ink);
+      color: white;
+      padding: 8px 10px;
+      z-index: 10;
+    }
+    .skip:focus { left: 8px; }
+    header {
+      background: #101820;
+      color: white;
+      padding: 22px clamp(16px, 4vw, 46px);
+      border-bottom: 4px solid var(--accent);
+    }
+    header h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.45rem, 3vw, 2.35rem);
+      letter-spacing: 0;
+    }
+    header p { margin: 0; max-width: 980px; color: #dbe4ee; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+      min-height: calc(100vh - 112px);
+    }
+    nav {
+      border-right: 1px solid var(--line);
+      background: #eef2f7;
+      padding: 18px;
+    }
+    nav h2, .workspace h2 { font-size: 1rem; margin: 0 0 10px; }
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 6px 0;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      text-align: left;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .nav-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      box-shadow: inset 4px 0 0 var(--accent);
+      font-weight: 700;
+    }
+    .workspace { padding: clamp(16px, 4vw, 34px); }
+    .band {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 82px;
+    }
+    .metric strong { display: block; font-size: 1.4rem; }
+    .lesson, .interaction, .review-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: clamp(14px, 3vw, 22px);
+      margin-bottom: 16px;
+    }
+    .interaction h3 { margin-top: 0; }
+    .choice, .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin: 8px 0;
+      background: #fbfcfe;
+      min-height: 44px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font: inherit;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    button.primary, button.secondary {
+      min-height: 42px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+    button.secondary { background: white; color: var(--ink); }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f7faf8;
+    }
+    .result.good { border-color: var(--good); }
+    .result.bad { border-color: var(--bad); }
+    .boundary {
+      border-left: 5px solid var(--warn);
+      background: #fff8e5;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+    .progress {
+      height: 12px;
+      background: #dfe5ed;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress span { display: block; height: 100%; background: var(--accent-2); width: 0%; }
+    code { background: #eef2f7; padding: 2px 4px; border-radius: 4px; }
+    @media (max-width: 820px) {
+      main { grid-template-columns: 1fr; }
+      nav { border-right: 0; border-bottom: 1px solid var(--line); }
+      .band { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to training workspace</a>
+  <header>
+    <h1>OTEL Proof Validator Practice Lab</h1>
+    <p>Practice module for reading local OTEL control packets, selecting the right proof window, and routing telemetry findings without changing collector, runtime, cron, external export, finance, paper, live, or account authority.</p>
+  </header>
+  <main>
+    <nav aria-label="Training sections">
+      <h2>Sections</h2>
+      <button class="nav-button" type="button" data-view="briefing" aria-pressed="true">Briefing <span aria-hidden="true">&gt;</span></button>
+      <button class="nav-button" type="button" data-view="practice" aria-pressed="false">Practice <span aria-hidden="true">&gt;</span></button>
+      <button class="nav-button" type="button" data-view="review" aria-pressed="false">Review <span aria-hidden="true">&gt;</span></button>
+      <button class="nav-button" type="button" data-view="events" aria-pressed="false">Events <span aria-hidden="true">&gt;</span></button>
+    </nav>
+    <section class="workspace" id="workspace" tabindex="-1">
+      <div class="band" aria-label="Training status">
+        <div class="metric"><strong id="scoreText">0%</strong><span>score</span></div>
+        <div class="metric"><strong id="doneText">0/10</strong><span>completed</span></div>
+        <div class="metric"><strong id="eventText">0</strong><span>xAPI events</span></div>
+      </div>
+      <div class="progress" id="progressShell" role="progressbar" aria-label="Completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressBar"></span></div>
+      <div id="announce" aria-live="polite" class="result" hidden></div>
+      <div id="view"></div>
+    </section>
+  </main>
+  <script>
+    const DATA = {"schema": "veritas.interactive_training_module.v1", "module_id": "otel-proof-validator-practice", "title": "OTEL Proof Validator Practice Lab", "audience": "Randall internal operations proof and validator training", "summary": "Practice module for reading local OTEL control packets, selecting the right proof window, and routing telemetry findings without changing collector, runtime, cron, external export, finance, paper, live, or account authority.", "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false, "collector_config_mutation_approved": false, "runtime_config_mutation_approved": false, "cron_schedule_mutation_approved": false, "telemetry_capture_depth_expansion_approved": false, "external_telemetry_export_approved": false, "raw_prompt_tool_payload_capture_approved": false, "finance_canon_portfolio_mutation_approved": false, "paper_live_account_action_approved": false}, "learning_objectives": ["Run and interpret the local OTEL ops control proof path.", "Choose the smallest honest OTEL window for the operating question.", "Classify OTEL findings as healthy, monitor, repair, or owner-gated.", "Preserve privacy and authority boundaries while using telemetry evidence."], "lessons": [{"id": "otel-first-hop", "title": "First-Hop OTEL Proof Surface", "body": "The canonical OTEL operating proof is the local control packet. Use `python scripts\\otel_ops_control.py --write --write-db --multi-window --validate` before broad log reading. The packet writes local JSON, JSONL, and SQLite proof only.", "key_points": ["Read `tmp\\otel-ops-control.json` for collector health, validation, drift, and actions.", "Read `tmp\\otel-ops-window-summary.json` for 1h, 6h, 24h, 7d, and 30d windows.", "Use `tmp\\otel-tool-workflow-metadata.json` only when tool/workflow attribution matters.", "A clean OTEL packet proves operating telemetry health, not model quality or finance correctness."]}, {"id": "otel-window-selection", "title": "Window Selection", "body": "Use the smallest window that answers the question. A 1h window is for post-change checks, 6h is same-session review, 24h is the daily control packet, 7d is recurring friction, and 30d is a baseline only.", "key_points": ["Do not use a long window to hide a current collector failure.", "Do not use a short window as proof of long-run stability.", "Warning/error counts and drift status are repair signals, not approval signals."]}, {"id": "otel-boundaries", "title": "Telemetry Boundaries", "body": "OTEL review is local and metadata-bounded. It can route repairs and trend reviews, but it does not approve collector config edits, runtime config edits, cron schedule edits, external export, raw prompt or tool-payload capture, finance mutation, or paper/live action.", "key_points": ["Collector down, warning/error rows, failed validation, or SQLite integrity failure route to repair.", "Capture-depth expansion is owner-gated and requires a separate proposal, diff, rollback, and privacy scan.", "OTEL event volume is operational evidence only; it is not coding-skill, model-ranking, or trade-readiness proof."]}], "interactions": [{"id": "canonical-command-check", "type": "multiple_choice", "title": "Canonical Proof Command", "prompt": "Which command is the correct first-hop OTEL proof route for a local operating review?", "choices": [{"id": "ops-control", "text": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate", "correct": true, "feedback": "Correct. This refreshes the control packet, SQLite index, and multi-window summary."}, {"id": "raw-log-first", "text": "Open raw collector logs first and summarize by hand.", "correct": false, "feedback": "Raw logs are drilldown. The control packet is the first-hop proof surface."}, {"id": "change-config", "text": "Edit collector verbosity before checking the packet.", "correct": false, "feedback": "Config mutation is owner-gated and not a first-hop proof action."}], "xapi_object": "activity/canonical-command-check"}, {"id": "packet-field-checklist", "type": "checklist", "title": "Packet Fields To Read", "prompt": "Check every field family that belongs in an OTEL proof interpretation.", "checklist_items": ["Collector health and loopback endpoint", "Validation errors and warnings", "Metric batches, trace batches, data points, and spans", "Warning/error counts", "Drift status and drift reasons", "SQLite integrity when the DB is written", "Authority boundary flags"], "xapi_object": "activity/packet-field-checklist"}, {"id": "window-choice-post-change", "type": "multiple_choice", "title": "Post-Change Window", "prompt": "After an implementation patch, which OTEL window should be checked first?", "choices": [{"id": "one-hour", "text": "1h intraday window", "correct": true, "feedback": "Correct. The 1h window is the post-change or suspected-incident check."}, {"id": "thirty-day", "text": "30d baseline", "correct": false, "feedback": "The 30d view is too broad for post-change verification."}, {"id": "skip-window", "text": "Skip windows if the daily packet was green yesterday.", "correct": false, "feedback": "A prior green daily packet does not prove current post-change health."}], "xapi_object": "activity/window-choice-post-change"}, {"id": "collector-down-scenario", "type": "scenario", "title": "Collector Down Scenario", "prompt": "The OTEL packet reports `collector_health.status=blocked` and validation errors. Write the safe operator response.", "expected": "Classify OTEL as repair, state that the local collector appears down, preserve the boundary, and route the next check through collector/runtime review without changing runtime or collector config.", "rubric": ["Names collector health as blocked.", "Classifies the state as repair rather than healthy.", "Does not start or reconfigure services without approval.", "Names the follow-up proof path or owner-gated review."], "xapi_object": "activity/collector-down-scenario"}, {"id": "telemetry-meaning-check", "type": "multiple_choice", "title": "What Clean OTEL Means", "prompt": "A 24h OTEL packet is validation-clean with zero warnings/errors. What does that prove?", "choices": [{"id": "ops-health", "text": "Local telemetry collection and operating proof are healthy for that window.", "correct": true, "feedback": "Correct. It proves OTEL operating health, not the quality of every downstream decision."}, {"id": "model-quality", "text": "The model produced high-quality answers.", "correct": false, "feedback": "OTEL volume and validation are not model-quality proof."}, {"id": "trade-ready", "text": "Finance decisions are ready for execution.", "correct": false, "feedback": "OTEL never creates finance, account, paper, live, or capital authority."}], "xapi_object": "activity/telemetry-meaning-check"}, {"id": "warning-error-scenario", "type": "scenario", "title": "Warning/Error Scenario", "prompt": "The packet validates but the daily warning/error count is nonzero. How should the closeout characterize OTEL?", "expected": "Call it warning-grade or repair depending on severity, list the warning/error count, route operator review, and avoid claiming clean OTEL closeout until the issue is classified or fixed.", "rubric": ["States the warning/error count matters.", "Avoids calling OTEL clean.", "Routes operator review or repair.", "Does not mutate collector or runtime config from the packet."], "xapi_object": "activity/warning-error-scenario"}, {"id": "privacy-stop-lines", "type": "checklist", "title": "Telemetry Stop Lines", "prompt": "Check every action that remains blocked by OTEL training alone.", "checklist_items": ["Collector config mutation", "Runtime config mutation", "Cron schedule mutation", "External telemetry export", "Raw prompt or tool-payload capture", "Finance/canon/portfolio mutation", "Paper/live/account action"], "xapi_object": "activity/privacy-stop-lines"}, {"id": "field-depth-decision", "type": "multiple_choice", "title": "Capture-Depth Decision", "prompt": "OTEL lacks a field you want for model-routing economics. What is the safe next step?", "choices": [{"id": "proposal-first", "text": "Prepare a local metadata-depth proposal with scope, privacy scan, diff, rollback, and owner approval requirement.", "correct": true, "feedback": "Correct. Depth expansion needs a separate proposal and approval path."}, {"id": "capture-now", "text": "Enable broader capture immediately because the current packet is green.", "correct": false, "feedback": "Green collection health does not approve capture-depth expansion."}, {"id": "external-export", "text": "Send OTEL data to an external backend for easier dashboards.", "correct": false, "feedback": "External telemetry export remains owner-gated and outside this training slice."}], "xapi_object": "activity/field-depth-decision"}, {"id": "otel-boundary-ack", "type": "boundary_ack", "title": "OTEL Boundary Acknowledgement", "prompt": "Confirm this module is internal OTEL proof training only and does not approve collector config edits, runtime config edits, cron schedule edits, external export, capture-depth expansion, finance mutation, paper/live/account action, or owner approval.", "expected": "I confirm this is internal OTEL proof training only.", "xapi_object": "activity/otel-boundary-ack"}, {"id": "operator-reflection", "type": "reflection", "title": "Operator Reflection", "prompt": "After passing this module, what is the next safe use of OTEL proof and what remains blocked?", "rubric": ["Names OTEL status/closeout/routing interpretation as safe use.", "Mentions the correct control packet and window summary surfaces.", "Keeps collector/runtime/cron/external export changes owner-gated.", "States OTEL is not model-quality, finance-correctness, or execution authority."], "xapi_object": "activity/operator-reflection"}], "xapi": {"activity_id": "https://veritas.local/training/otel-proof-validator-practice", "verbs": ["answered", "completed", "failed", "passed", "reviewed_boundary", "started"]}, "source_surfaces": ["scripts/otel_ops_control.py", "tmp/otel-ops-control.json", "tmp/otel-ops-window-summary.json", "skills/otel-operations-analyst/SKILL.md"]};
+    const STORE_KEY = "veritas.training." + DATA.module_id;
+    const LEDGER_ENABLED_KEY = "veritas.training.xapiLedger.enabled";
+    const LEDGER_ENDPOINT_KEY = "veritas.training.xapiLedger.endpoint";
+    const state = JSON.parse(localStorage.getItem(STORE_KEY) || '{"answers":{},"events":[],"view":"briefing"}');
+    const scorm = { api: null, initialized: false, completed: false, lastError: "0" };
+
+    function findScormApi(win) {
+      let current = win;
+      for (let depth = 0; depth < 8 && current; depth += 1) {
+        if (current.API && typeof current.API.LMSInitialize === "function") return current.API;
+        if (current.parent && current.parent !== current) current = current.parent;
+        else break;
+      }
+      if (win.opener && win.opener.API && typeof win.opener.API.LMSInitialize === "function") return win.opener.API;
+      return null;
+    }
+
+    function scormInitialize() {
+      if (scorm.initialized) return true;
+      scorm.api = findScormApi(window);
+      if (!scorm.api) return false;
+      try {
+        scorm.initialized = scorm.api.LMSInitialize("") === "true";
+        if (scorm.initialized) {
+          scorm.api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+          scorm.api.LMSSetValue("cmi.core.score.min", "0");
+          scorm.api.LMSSetValue("cmi.core.score.max", "100");
+          scorm.api.LMSCommit("");
+        }
+      } catch (error) {
+        scorm.lastError = String(error);
+        scorm.initialized = false;
+      }
+      return scorm.initialized;
+    }
+
+    function scormSetValue(key, value) {
+      if (scorm.completed) return false;
+      if (!scormInitialize()) return false;
+      try {
+        return scorm.api.LMSSetValue(key, String(value)) === "true";
+      } catch (error) {
+        scorm.lastError = String(error);
+        return false;
+      }
+    }
+
+    function scormCommit() {
+      if (scorm.completed) return false;
+      if (!scorm.initialized || !scorm.api) return false;
+      try {
+        return scorm.api.LMSCommit("") === "true";
+      } catch (error) {
+        scorm.lastError = String(error);
+        return false;
+      }
+    }
+
+    function scormSyncStatus(done, pct, rawScore) {
+      if (scorm.completed) {
+        return;
+      }
+      const status = done >= DATA.interactions.length ? (rawScore >= 80 ? "passed" : "completed") : "incomplete";
+      scormSetValue("cmi.core.lesson_status", status);
+      scormSetValue("cmi.core.score.raw", rawScore);
+      scormSetValue("cmi.core.lesson_location", state.view || "briefing");
+      scormSetValue("cmi.suspend_data", JSON.stringify({ answers: state.answers, event_count: state.events.length }).slice(0, 3900));
+      scormCommit();
+    }
+
+    function scormFinish(passed, rawScore) {
+      if (scorm.completed) return;
+      scormSetValue("cmi.core.lesson_status", passed ? "passed" : "completed");
+      scormSetValue("cmi.core.score.raw", rawScore);
+      scormSetValue("cmi.core.lesson_location", state.view || "review");
+      scormSetValue("cmi.suspend_data", JSON.stringify({ answers: state.answers, event_count: state.events.length }).slice(0, 3900));
+      scormCommit();
+      if (scorm.initialized && scorm.api) {
+        try { scorm.api.LMSFinish(""); } catch (error) { scorm.lastError = String(error); }
+      }
+      scorm.completed = true;
+    }
+
+    function save() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      updateStatus();
+    }
+
+    function localLedgerEnabled() {
+      return localStorage.getItem(LEDGER_ENABLED_KEY) === "true";
+    }
+
+    function localLedgerEndpoint() {
+      return localStorage.getItem(LEDGER_ENDPOINT_KEY) || "http://127.0.0.1:8766/xapi";
+    }
+
+    function statement(verb, objectId, result) {
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
+        timestamp: new Date().toISOString(),
+        actor: { name: "local learner", account: { homePage: "https://veritas.local", name: "local" } },
+        verb: { id: "https://adlnet.gov/expapi/verbs/" + verb, display: { "en-US": verb } },
+        object: { id: DATA.xapi.activity_id + "/" + objectId, definition: { name: { "en-US": objectId } } },
+        result: result || {},
+        context: { platform: "Veritas local HTML training runtime", extensions: { "https://veritas.local/extensions/internal_training_only": true } }
+      };
+    }
+
+    function record(verb, objectId, result) {
+      const entry = statement(verb, objectId, result);
+      state.events.push(entry);
+      save();
+      if (localLedgerEnabled()) {
+        fetch(localLedgerEndpoint(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entry),
+          keepalive: true
+        }).catch(() => {
+          state.ledger_warning = "local_xapi_ledger_unavailable";
+          save();
+        });
+      }
+    }
+
+    function setView(view) {
+      state.view = view;
+      document.querySelectorAll(".nav-button").forEach(button => {
+        button.setAttribute("aria-pressed", button.dataset.view === view ? "true" : "false");
+      });
+      render();
+      save();
+      document.getElementById("workspace").focus();
+    }
+
+    function completedInteractions() {
+      return DATA.interactions.filter(item => state.answers[item.id] && state.answers[item.id].completed).length;
+    }
+
+    function score() {
+      const graded = DATA.interactions.filter(item => ["multiple_choice", "checklist", "boundary_ack"].includes(item.type));
+      if (!graded.length) return 0;
+      const points = graded.filter(item => state.answers[item.id] && state.answers[item.id].passed).length;
+      return Math.round((points / graded.length) * 100);
+    }
+
+    function updateStatus() {
+      const done = completedInteractions();
+      const pct = Math.round((done / DATA.interactions.length) * 100);
+      const rawScore = score();
+      document.getElementById("scoreText").textContent = rawScore + "%";
+      document.getElementById("doneText").textContent = done + "/" + DATA.interactions.length;
+      document.getElementById("eventText").textContent = state.events.length;
+      document.getElementById("progressBar").style.width = pct + "%";
+      document.getElementById("progressShell").setAttribute("aria-valuenow", String(pct));
+      scormSyncStatus(done, pct, rawScore);
+    }
+
+    function announce(text) {
+      const node = document.getElementById("announce");
+      node.textContent = text;
+      node.hidden = false;
+    }
+
+    function briefingView() {
+      return `
+        <section class="review-panel">
+          <h2>Objectives</h2>
+          <ul><li>Run and interpret the local OTEL ops control proof path.</li><li>Choose the smallest honest OTEL window for the operating question.</li><li>Classify OTEL findings as healthy, monitor, repair, or owner-gated.</li><li>Preserve privacy and authority boundaries while using telemetry evidence.</li></ul>
+          <div class="boundary"><strong>Boundary:</strong> Internal training only. A clean score does not approve outreach, customer data, credentials, production access, or external delivery.</div>
+        </section>
+
+      <section class="lesson" id="lesson-otel-first-hop">
+        <h3>First-Hop OTEL Proof Surface</h3>
+        <p>The canonical OTEL operating proof is the local control packet. Use \`python scripts\\otel_ops_control.py --write --write-db --multi-window --validate\` before broad log reading. The packet writes local JSON, JSONL, and SQLite proof only.</p>
+        <ul><li>Read \`tmp\\otel-ops-control.json\` for collector health, validation, drift, and actions.</li><li>Read \`tmp\\otel-ops-window-summary.json\` for 1h, 6h, 24h, 7d, and 30d windows.</li><li>Use \`tmp\\otel-tool-workflow-metadata.json\` only when tool/workflow attribution matters.</li><li>A clean OTEL packet proves operating telemetry health, not model quality or finance correctness.</li></ul>
+      </section>
+
+      <section class="lesson" id="lesson-otel-window-selection">
+        <h3>Window Selection</h3>
+        <p>Use the smallest window that answers the question. A 1h window is for post-change checks, 6h is same-session review, 24h is the daily control packet, 7d is recurring friction, and 30d is a baseline only.</p>
+        <ul><li>Do not use a long window to hide a current collector failure.</li><li>Do not use a short window as proof of long-run stability.</li><li>Warning/error counts and drift status are repair signals, not approval signals.</li></ul>
+      </section>
+
+      <section class="lesson" id="lesson-otel-boundaries">
+        <h3>Telemetry Boundaries</h3>
+        <p>OTEL review is local and metadata-bounded. It can route repairs and trend reviews, but it does not approve collector config edits, runtime config edits, cron schedule edits, external export, raw prompt or tool-payload capture, finance mutation, or paper/live action.</p>
+        <ul><li>Collector down, warning/error rows, failed validation, or SQLite integrity failure route to repair.</li><li>Capture-depth expansion is owner-gated and requires a separate proposal, diff, rollback, and privacy scan.</li><li>OTEL event volume is operational evidence only; it is not coding-skill, model-ranking, or trade-readiness proof.</li></ul>
+      </section>
+        <div class="toolbar">
+          <button class="primary" type="button" onclick="record('started', 'module', { completion: false }); setView('practice')">Start practice</button>
+        </div>`;
+    }
+
+    function renderInteraction(item, index) {
+      const answer = state.answers[item.id] || {};
+      if (item.type === "multiple_choice") {
+        const choices = item.choices.map(choice => `
+          <label class="choice">
+            <input type="radio" name="${item.id}" value="${choice.id}" ${answer.choice === choice.id ? "checked" : ""}>
+            <span>${choice.text}</span>
+          </label>`).join("");
+        return interactionShell(item, index, choices, `<button class="primary" type="button" onclick="gradeChoice('${item.id}')">Check answer</button>`);
+      }
+      if (item.type === "checklist") {
+        const rows = item.checklist_items.map((text, idx) => `
+          <label class="check-row">
+            <input type="checkbox" data-check="${item.id}" value="${idx}" ${(answer.checked || []).includes(idx) ? "checked" : ""}>
+            <span>${text}</span>
+          </label>`).join("");
+        return interactionShell(item, index, rows, `<button class="primary" type="button" onclick="gradeChecklist('${item.id}')">Check checklist</button>`);
+      }
+      if (item.type === "boundary_ack") {
+        return interactionShell(item, index, `<div class="boundary">${item.prompt}</div>`, `<button class="primary" type="button" onclick="ackBoundary('${item.id}')">Confirm boundary</button>`);
+      }
+      const text = answer.text || "";
+      const rubric = (item.rubric || []).map(row => `<li>${row}</li>`).join("");
+      return interactionShell(item, index, `
+        <textarea id="text-${item.id}" aria-label="${item.title} response">${text}</textarea>
+        <h4>Rubric</h4><ul>${rubric}</ul>`,
+        `<button class="primary" type="button" onclick="saveText('${item.id}')">Save response</button>`);
+    }
+
+    function interactionShell(item, index, body, action) {
+      const answer = state.answers[item.id] || {};
+      const result = answer.completed ? `<div class="result ${answer.passed ? "good" : ""}">${answer.message || "Saved."}</div>` : "";
+      return `<article class="interaction" id="${item.id}">
+        <h3>${index + 1}. ${item.title}</h3>
+        <p>${item.prompt}</p>
+        ${body}
+        <div class="toolbar">${action}<button class="secondary" type="button" onclick="showExpected('${item.id}')">Show guide</button></div>
+        ${result}
+      </article>`;
+    }
+
+    function practiceView() {
+      return DATA.interactions.map(renderInteraction).join("");
+    }
+
+    function reviewView() {
+      const rows = DATA.interactions.map(item => {
+        const answer = state.answers[item.id] || {};
+        return `<li><strong>${item.title}:</strong> ${answer.completed ? (answer.passed ? "passed" : "saved") : "open"}</li>`;
+      }).join("");
+      return `<section class="review-panel"><h2>Review</h2><ul>${rows}</ul><div class="toolbar"><button class="primary" type="button" onclick="completeModule()">Complete module</button><button class="secondary" type="button" onclick="resetModule()">Reset local progress</button></div></section>`;
+    }
+
+    function eventsView() {
+      return `<section class="review-panel"><h2>Local xAPI Events</h2><p>Events are stored locally in this browser until exported or reset.</p><pre>${JSON.stringify(state.events, null, 2)}</pre><div class="toolbar"><button class="primary" type="button" onclick="downloadEvents()">Download events</button></div></section>`;
+    }
+
+    function render() {
+      const view = document.getElementById("view");
+      if (state.view === "practice") view.innerHTML = practiceView();
+      else if (state.view === "review") view.innerHTML = reviewView();
+      else if (state.view === "events") view.innerHTML = eventsView();
+      else view.innerHTML = briefingView();
+      document.querySelectorAll(".nav-button").forEach(button => button.setAttribute("aria-pressed", button.dataset.view === state.view ? "true" : "false"));
+      updateStatus();
+    }
+
+    function findItem(id) { return DATA.interactions.find(item => item.id === id); }
+
+    function gradeChoice(id) {
+      const item = findItem(id);
+      const selected = document.querySelector(`input[name="${id}"]:checked`);
+      if (!selected) { announce("Choose an answer first."); return; }
+      const choice = item.choices.find(row => row.id === selected.value);
+      state.answers[id] = { choice: choice.id, completed: true, passed: choice.correct, message: choice.feedback || "" };
+      record("answered", item.xapi_object || id, { success: choice.correct, response: choice.id });
+      announce(choice.correct ? "Correct." : "Saved. Review the guide.");
+      render();
+    }
+
+    function gradeChecklist(id) {
+      const item = findItem(id);
+      const checked = Array.from(document.querySelectorAll(`input[data-check="${id}"]:checked`)).map(input => Number(input.value));
+      const passed = checked.length === item.checklist_items.length;
+      state.answers[id] = { checked, completed: true, passed, message: passed ? "All minimums checked." : "Missing one or more minimum fields." };
+      record("answered", item.xapi_object || id, { success: passed, response: checked.join(",") });
+      render();
+    }
+
+    function ackBoundary(id) {
+      const item = findItem(id);
+      state.answers[id] = { completed: true, passed: true, message: item.expected || "Boundary confirmed." };
+      record("reviewed_boundary", item.xapi_object || id, { success: true });
+      render();
+    }
+
+    function saveText(id) {
+      const item = findItem(id);
+      const value = document.getElementById("text-" + id).value.trim();
+      state.answers[id] = { text: value, completed: value.length > 0, passed: value.length > 0, message: value.length > 0 ? "Response saved for review." : "Write a response first." };
+      if (value.length > 0) record("answered", item.xapi_object || id, { response: value.slice(0, 240), completion: true });
+      render();
+    }
+
+    function showExpected(id) {
+      const item = findItem(id);
+      alert(item.expected || (item.rubric || []).join("\n"));
+    }
+
+    function completeModule() {
+      const pct = score();
+      const passed = pct >= 80;
+      record("completed", "module", { completion: true, score: { scaled: pct / 100 } });
+      record(passed ? "passed" : "failed", "module", { success: passed, score: { raw: pct } });
+      scormFinish(passed, pct);
+      announce(passed ? "Module complete." : "Module complete with review needed.");
+      render();
+    }
+
+    function downloadEvents() {
+      const blob = new Blob([JSON.stringify(state.events, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = DATA.module_id + "-xapi-events.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function resetModule() {
+      localStorage.removeItem(STORE_KEY);
+      state.answers = {};
+      state.events = [];
+      state.view = "briefing";
+      render();
+      save();
+    }
+
+    document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
+    document.addEventListener("keydown", event => {
+      const order = ["briefing", "practice", "review", "events"];
+      const idx = order.indexOf(state.view);
+      if (event.altKey && event.key === "ArrowRight" && idx < order.length - 1) setView(order[idx + 1]);
+      if (event.altKey && event.key === "ArrowLeft" && idx > 0) setView(order[idx - 1]);
+    });
+    if (!state.events.length) record("started", "module", { completion: false });
+    render();
+  </script>
+</body>
+</html>

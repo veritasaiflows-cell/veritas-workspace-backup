@@ -10,11 +10,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 OUT = TMP / "wf85-paper-deployment-telegram-cron-runner.json"
+MORNING_CARDS = TMP / "morning-paper-deployment-recommendation-cards.json"
+BAND_INTEGRITY = TMP / "capital-deployment-band-integrity-validator.json"
+QUOTE_PROOF = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+
+SURFACED_BLOCKER_STEP_NAMES = {
+    "morning_paper_deployment_recommendation_builder",
+    "wf85_paper_deployment_notification_digest",
+}
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -72,7 +81,7 @@ def classify_validation(
     notifier_status = notifier.get("status")
 
     for step in failed:
-        if step.get("name") == "wf85_paper_deployment_notification_digest" and blocker_surfaced:
+        if step.get("name") in SURFACED_BLOCKER_STEP_NAMES and blocker_surfaced:
             warnings.append("digest_blocked_surfaced_by_telegram")
             continue
         errors.append(f"required_step_failed:{step['name']}")
@@ -127,6 +136,64 @@ def load_dict(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def parse_utc(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def artifact_age_minutes(path: Path, generated_at: Any = None) -> int | None:
+    parsed = parse_utc(generated_at)
+    if parsed is None and path.exists():
+        parsed = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    if parsed is None:
+        return None
+    return max(0, int((datetime.now(timezone.utc) - parsed).total_seconds() // 60))
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive readiness guard
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
 def run_step(name: str, command: list[str], timeout: int, required: bool = True) -> dict[str, Any]:
     started = utc_now()
     try:
@@ -162,9 +229,70 @@ def py(*args: str) -> list[str]:
     return [sys.executable, *args]
 
 
+def morning_builder_command(*, full_refresh: bool = False) -> list[str]:
+    command = [
+        "scripts\\morning_paper_deployment_recommendation_builder.py",
+        "--write",
+        "--write-md",
+        "--validate",
+    ]
+    if not full_refresh:
+        command.insert(1, "--ledger-only")
+    return py(*command)
+
+
+def pre_digest_quote_refresh_command() -> list[str]:
+    """Refresh the display dependency immediately before the digest is built."""
+    return py("scripts\\intraday_quote_snapshot_proof.py")
+
+
 def build_runner(args: argparse.Namespace) -> dict[str, Any]:
     steps: list[dict[str, Any]] = []
+    if args.skip_builder:
+        steps.append({
+            "name": "morning_paper_deployment_recommendation_builder",
+            "command": [],
+            "started_at_utc": utc_now(),
+            "completed_at_utc": utc_now(),
+            "returncode": 0,
+            "ok": True,
+            "required": True,
+            "skipped": True,
+            "reason": "skip_builder_uses_fresh_existing_morning_cards",
+            "stdout_tail": "",
+            "stderr_tail": "",
+        })
+    else:
+        steps.append(
+            run_step(
+                "morning_paper_deployment_recommendation_builder",
+                morning_builder_command(full_refresh=args.full_builder_refresh),
+                1800 if args.full_builder_refresh else 1200,
+            )
+        )
+    steps.append(
+        run_step(
+            "capital_deployment_band_integrity_validator",
+            py(
+                "scripts\\capital_deployment_band_integrity_validator.py",
+                "--write",
+                "--write-md",
+                "--validate",
+            ),
+            120,
+        )
+    )
     steps.append(run_step("wf67_autonomous_paper_manager", py("scripts\\wf67_autonomous_paper_manager.py", "--write", "--validate"), 180))
+    # A failed quote probe must not hide the watch-only alert; the digest uses
+    # its own fail-safe display guard and will omit all numeric market fields.
+    steps.append(
+        run_step(
+            "intraday_quote_snapshot_proof_pre_digest",
+            pre_digest_quote_refresh_command(),
+            90,
+            required=False,
+        )
+    )
     steps.append(run_step("wf85_paper_deployment_notification_digest", py("scripts\\wf85_paper_deployment_notification_digest.py", "--write", "--validate"), 120))
     notifier_command = [
         "scripts\\wf85_paper_deployment_telegram_notifier.py",
@@ -172,6 +300,8 @@ def build_runner(args: argparse.Namespace) -> dict[str, Any]:
         "--validate",
         "--max-age-minutes",
         str(args.max_age_minutes),
+        "--alert-window",
+        args.alert_window,
     ]
     if not args.allow_after_hours:
         notifier_command.append("--market-hours-only")
@@ -185,6 +315,10 @@ def build_runner(args: argparse.Namespace) -> dict[str, Any]:
 
     digest = load_dict(TMP / "wf85-paper-deployment-notification-digest.json")
     notifier = load_dict(TMP / "wf85-paper-deployment-telegram-notifier.json")
+    morning_cards = load_dict(MORNING_CARDS)
+    band_integrity = load_dict(BAND_INTEGRITY)
+    quote_proof = load_dict(QUOTE_PROOF)
+    sql_health = sql_canon_health()
     failed = [step for step in steps if step["required"] and not step["ok"]]
     status, operator_action, validation_errors, validation_warnings, delivery_confirmation = classify_validation(
         steps,
@@ -192,6 +326,35 @@ def build_runner(args: argparse.Namespace) -> dict[str, Any]:
         notifier,
         send=bool(args.send),
     )
+    if sql_health.get("status") != "ok":
+        validation_errors.append(f"sql_canon_guard_blocked:{sql_health.get('status')}")
+    card_age_minutes = artifact_age_minutes(MORNING_CARDS, morning_cards.get("generated_at_utc"))
+    band_age_minutes = artifact_age_minutes(BAND_INTEGRITY, band_integrity.get("generated_at_utc"))
+    if args.skip_builder:
+        if not morning_cards:
+            validation_errors.append("skip_builder_missing_morning_cards")
+        elif card_age_minutes is None or card_age_minutes > args.max_age_minutes:
+            validation_errors.append(f"skip_builder_stale_morning_cards:{card_age_minutes}")
+        if not band_integrity:
+            validation_errors.append("skip_builder_missing_band_integrity")
+        elif band_age_minutes is None or band_age_minutes > args.max_age_minutes:
+            validation_errors.append(f"skip_builder_stale_band_integrity:{band_age_minutes}")
+    sql_boundary = sql_health.get("authority_boundary") if isinstance(sql_health.get("authority_boundary"), dict) else {}
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            validation_errors.append(f"sql_canon_authority_{key}_not_false")
+    if validation_errors and operator_action == "NO_REPLY":
+        operator_action = "BLOCKED"
+    if validation_errors:
+        status = "blocked"
 
     return {
         "schema": "veritas.wf85_paper_deployment_telegram_cron_runner.v1",
@@ -209,12 +372,46 @@ def build_runner(args: argparse.Namespace) -> dict[str, Any]:
             "near_deployment_count": digest.get("summary", {}).get("near_deployment_count"),
             "execution_ready_count": digest.get("summary", {}).get("execution_ready_count"),
             "wf67_guard_status": digest.get("summary", {}).get("wf67_guard_status"),
+            "morning_cards_status": morning_cards.get("status"),
+            "morning_cards_age_minutes": card_age_minutes,
+            "morning_cards_validation": (
+                morning_cards.get("validation", {}).get("status")
+                if isinstance(morning_cards.get("validation"), dict)
+                else None
+            ),
+            "band_integrity_status": band_integrity.get("status"),
+            "band_integrity_age_minutes": band_age_minutes,
+            "band_integrity_mismatch_tickers": (
+                band_integrity.get("summary", {}).get("mismatch_tickers")
+                if isinstance(band_integrity.get("summary"), dict)
+                else None
+            ),
+            "band_integrity_warning_tickers": (
+                band_integrity.get("summary", {}).get("warning_tickers")
+                if isinstance(band_integrity.get("summary"), dict)
+                else None
+            ),
             "notifier_status": notifier.get("status"),
             "notifier_sent_count": notifier.get("sent_count"),
             "notifier_blockers": notifier.get("blockers"),
+            "notifier_alert_window": notifier.get("alert_window"),
+            "notifier_duplicate": notifier.get("duplicate"),
+            "sql_canon_status": sql_health.get("status"),
+            "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
+            "skip_builder": args.skip_builder,
+            "quote_snapshot_proof_status": quote_proof.get("status"),
+            "quote_snapshot_proof_age_minutes": artifact_age_minutes(QUOTE_PROOF, quote_proof.get("generated_at_utc")),
         },
+        "sql_canon_health": sql_health,
         "delivery_confirmation": delivery_confirmation,
         "steps": steps,
+        "source_artifacts": {
+            "morning_paper_deployment_recommendation_cards": rel(MORNING_CARDS),
+            "capital_deployment_band_integrity_validator": rel(BAND_INTEGRITY),
+            "quote_snapshot_proof": rel(QUOTE_PROOF),
+            "wf85_paper_deployment_notification_digest": "tmp/wf85-paper-deployment-notification-digest.json",
+            "wf85_paper_deployment_telegram_notifier": "tmp/wf85-paper-deployment-telegram-notifier.json",
+        },
         "validation": {
             "status": "ok" if not validation_errors else "blocked",
             "errors": validation_errors,
@@ -230,7 +427,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--send", action="store_true")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--allow-after-hours", action="store_true")
+    parser.add_argument("--skip-builder", action="store_true", help="Reuse existing fresh paper-deployment card artifacts instead of rebuilding them inline.")
+    parser.add_argument(
+        "--full-builder-refresh",
+        action="store_true",
+        help="Run the full morning paper-card builder inline. Default keeps provider/card generation off but still runs SQL-first market-open preflight before digesting.",
+    )
     parser.add_argument("--max-age-minutes", type=int, default=240)
+    parser.add_argument("--alert-window", default="unspecified")
     parser.add_argument("--output", type=Path, default=OUT)
     return parser.parse_args(argv)
 

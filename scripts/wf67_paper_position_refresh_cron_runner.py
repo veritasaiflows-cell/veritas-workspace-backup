@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 from market_data_utils import atomic_write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,10 +57,14 @@ def run_command(args: tuple[str, ...]) -> dict[str, Any]:
 
 def build_packet(results: list[dict[str, Any]]) -> dict[str, Any]:
     failed = [result for result in results if result.get("returncode") != 0]
+    sql_canon_context = finance_sql_canon_guard_context(consumer="scripts/wf67_paper_position_refresh_cron_runner.py")
+    validation_errors = [f"command_failed:{(result.get('args') or ['unknown'])[1] if len(result.get('args') or []) > 1 else 'unknown'}" for result in failed]
+    if sql_canon_context.get("status") != "ok":
+        validation_errors.append("sql_canon_guard_blocked")
     return {
         "schema_version": 1,
         "generated_at_utc": utc_now(),
-        "status": "ok" if not failed else "error",
+        "status": "ok" if not validation_errors else "error",
         "authority_boundary": {
             "review_only": True,
             "paper_position_sql_state_only": True,
@@ -74,10 +79,16 @@ def build_packet(results: list[dict[str, Any]]) -> dict[str, Any]:
             "portfolio_mutation_allowed": False,
             "owner_approval_inferred": False,
         },
+        "sql_canon_context": sql_canon_context,
         "commands": results,
         "summary": {
             "commands": len(results),
             "failed": len(failed),
+        },
+        "validation": {
+            "status": "ok" if not validation_errors else "error",
+            "errors": validation_errors,
+            "warnings": [],
         },
     }
 

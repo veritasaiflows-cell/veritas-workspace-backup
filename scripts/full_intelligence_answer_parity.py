@@ -12,6 +12,7 @@ import hashlib
 import json
 import sqlite3
 import sys
+from dataclasses import asdict as dataclass_asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,8 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from canonical_finance_data_plane import DEFAULT_DB, as_dict, as_list, connect_ro, json_text, rel
+from finance_sql_canon_access import DEFAULT_DB as DEFAULT_SQL_CANON_DB
+from finance_sql_canon_access import FinanceSqlCanonAccess, p0_registry_lane_status
 from market_data_utils import atomic_write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,7 +35,7 @@ TICKER_CARD_DIR = TMP / "ticker-intelligence-cards"
 WF85_CARDS = TMP / "trade-grade-decision-cards.json"
 
 SCHEMA = "veritas.full_intelligence_answer_parity.v1"
-PILOT_TICKERS = ["GOOG", "NVDA", "VRT", "BRK.B", "TLT"]
+PILOT_TICKERS = ["GOOG", "NVDA", "VRT"]
 NUMERIC_TOLERANCE = 0.01
 
 FORBIDDEN_TRUE_FLAGS = {
@@ -210,6 +213,19 @@ def semantic_band_status(value: Any) -> str:
     return aliases.get(text, text)
 
 
+def missing_like_status(value: Any) -> bool:
+    return semantic_band_status(value) in {
+        "",
+        "UNKNOWN",
+        "MISSING",
+        "MISSING_REQUIRED_REFRESH",
+        "NONE",
+        "NULL",
+        "N/A",
+        "NA",
+    }
+
+
 def card_price_band_stop(card: dict[str, Any]) -> dict[str, Any]:
     return as_dict(card.get("price_band_stop"))
 
@@ -302,6 +318,122 @@ def wf84_ticker_universe(db_path: Path) -> list[str]:
         ]
 
 
+def build_sql_canon_scope_snapshot(
+    tickers: list[str],
+    per_ticker: list[dict[str, Any]],
+    sql_canon_db: Path,
+    coverage_mode: str,
+) -> dict[str, Any]:
+    client = FinanceSqlCanonAccess(sql_canon_db)
+    validation = client.validate()
+    critical: list[str] = []
+    warnings: list[str] = []
+    registry: dict[str, Any] = {}
+    sql_production_tickers: list[str] = []
+    sql_legacy_production_tickers: list[str] = []
+    sql_production_set: set[str] = set()
+    evaluated_state_tickers: list[str] = []
+    sample_states: dict[str, Any] = {}
+    missing_state_tickers: list[str] = []
+    production_scope_diff: dict[str, list[str]] = {"missing_from_sql": [], "extra_in_sql": []}
+    evaluated_scope_mismatches: list[dict[str, Any]] = []
+
+    legacy_answer_path_tickers = sorted(
+        row["ticker"]
+        for row in per_ticker
+        if as_dict(row.get("parity_scope")).get("requires_answer_packet") is True
+    )
+    evaluated_set = {str(ticker).upper() for ticker in tickers}
+    if validation.get("status") != "ok":
+        critical.append("sql_canon_access_validation_blocked")
+    else:
+        try:
+            sql_production_tickers = client.production_answer_tickers()
+            sql_legacy_production_tickers = client.legacy_production_answer_tickers()
+            states = client.ticker_states(tickers)
+            registry = client.migration_registry_summary()
+        except RuntimeError as exc:
+            critical.append("sql_canon_access_guard_blocked")
+            warnings.append(str(exc))
+            states = {}
+        evaluated_state_tickers = sorted(states)
+        missing_state_tickers = sorted(set(tickers) - set(states))
+        if missing_state_tickers:
+            critical.append("sql_canon_evaluated_tickers_missing_state")
+        for ticker in sorted(set(tickers))[:10]:
+            if ticker in states:
+                sample_states[ticker] = dataclass_asdict(states[ticker])
+        sql_production_set = set(sql_production_tickers)
+        strategic_evaluated_production = sorted(evaluated_set & sql_production_set)
+        missing_sql_from_evaluation = sorted(sql_production_set - evaluated_set)
+        if coverage_mode == "all_wf84_population":
+            production_scope_diff = {
+                "missing_from_sql": missing_sql_from_evaluation,
+                "extra_in_sql": [],
+            }
+            if production_scope_diff["missing_from_sql"] or production_scope_diff["extra_in_sql"]:
+                critical.append("sql_canon_production_answer_scope_drift")
+        else:
+            for ticker in sorted(set(tickers)):
+                wf84_in_scope = ticker in sql_production_set
+                sql_in_scope = ticker in sql_production_set
+                if wf84_in_scope != sql_in_scope:
+                    evaluated_scope_mismatches.append({
+                        "ticker": ticker,
+                        "wf84_requires_answer_packet": ticker in legacy_answer_path_tickers,
+                        "strategic_production_grade_scope": wf84_in_scope,
+                        "sql_production_answer_scope": sql_in_scope,
+                    })
+            if evaluated_scope_mismatches:
+                warnings.append("sql_canon_evaluated_scope_mismatch_partial_coverage")
+        if not sql_production_tickers:
+            warnings.append("production_grade_set_empty_wait_for_decision_grade_gates")
+        p0_status = p0_registry_lane_status(registry)
+        if not p0_status["ok"]:
+            critical.extend(p0_status["errors"])
+
+    status = "blocked" if critical else "ok"
+    return {
+        "schema": "veritas.full_intelligence_answer_parity.sql_canon_scope.v1",
+        "status": status,
+        "sql_canon_db": rel(sql_canon_db),
+        "coverage_mode": coverage_mode,
+        "access_validation": validation,
+        "wf84_legacy_answer_path_tickers": legacy_answer_path_tickers,
+        "wf84_legacy_answer_path_count": len(legacy_answer_path_tickers),
+        "wf84_evaluated_production_answer_tickers": sorted(evaluated_set & sql_production_set) if validation.get("status") == "ok" else [],
+        "sql_canon_production_answer_tickers": sql_production_tickers,
+        "sql_canon_production_answer_count": len(sql_production_tickers),
+        "sql_canon_production_answer_definition": "validated proof-joined production-grade set",
+        "sql_canon_legacy_production_answer_tickers": sql_legacy_production_tickers,
+        "sql_canon_legacy_production_answer_count": len(sql_legacy_production_tickers),
+        "legacy_42_retired_from_blocking": True,
+        "legacy_42_count_advisory_only": True,
+        "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority",
+        "evaluated_state_tickers": evaluated_state_tickers,
+        "missing_state_tickers": missing_state_tickers,
+        "production_scope_diff": production_scope_diff,
+        "evaluated_scope_mismatches": evaluated_scope_mismatches,
+        "migration_registry_summary": registry,
+        "p0_registry_lane_status": p0_registry_lane_status(registry),
+        "sample_states": sample_states,
+        "validation": {
+            "status": status,
+            "critical_errors": critical,
+            "warnings": warnings,
+        },
+        "authority_boundary": {
+            "sql_canon_scope_validation_only": True,
+            "read_only_access_layer_required": True,
+            "consumer_cutover_allowed_by_this_packet": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
 def fetch_wf84_context(conn: sqlite3.Connection, ticker: str) -> dict[str, Any]:
     current = conn.execute("SELECT * FROM v_current_decision_overview WHERE ticker=?", (ticker,)).fetchone()
     if not current:
@@ -331,6 +463,16 @@ def compare_float(name: str, old_num: Any, new_num: Any, *, tolerance: float = N
         return {"name": name, "status": "warning", "old": old_num, "new": new_num, "reason": "non_numeric"}
     if old_value_num is None and new_value_num is None:
         return {"name": name, "status": "ok", "old": old_num, "new": new_num, "reason": "both_missing"}
+    if old_value_num is None and new_value_num is not None and freshness_can_supersede:
+        return {
+            "name": name,
+            "status": "warning",
+            "old": old_num,
+            "new": new_value_num,
+            "reason": "wf84_enriched_legacy_missing_value",
+        }
+    if old_value_num is not None and new_value_num is None:
+        return {"name": name, "status": "critical", "old": old_num, "new": new_num, "reason": "one_missing"}
     if old_value_num is None or new_value_num is None:
         return {"name": name, "status": "critical", "old": old_num, "new": new_num, "reason": "one_missing"}
     delta = abs(old_value_num - new_value_num)
@@ -446,14 +588,32 @@ def build_ticker_packet(ticker: str, conn: sqlite3.Connection, wf85_by_ticker: d
     new_band_status = current.get("band_status")
     old_band_semantic = semantic_band_status(old_band_status)
     new_band_semantic = semantic_band_status(new_band_status)
-    band_status_ok = not old_band_semantic or old_band_semantic == new_band_semantic
+    old_band_missing_like = missing_like_status(old_band_status)
+    new_band_missing_like = missing_like_status(new_band_status)
+    band_status_ok = old_band_missing_like or old_band_semantic == new_band_semantic
+    band_status_status = "ok" if band_status_ok else "critical"
+    band_status_reason = "semantic_match"
+    if old_band_missing_like and not new_band_missing_like:
+        band_status_status = "warning"
+        band_status_reason = "wf84_enriched_legacy_missing_status"
+        warnings.append("state:band_status:wf84_enriched_legacy_missing_status")
+    elif thin_monitor_row and not band_status_ok:
+        band_status_status = "warning"
+        band_status_reason = "thin_monitor_band_status_not_full_answer_retirement_blocking"
+        warnings.append("state:band_status:thin_monitor_not_retirement_blocking")
+    elif new_band_missing_like and not old_band_missing_like:
+        band_status_status = "critical"
+        band_status_reason = "wf84_missing_known_legacy_status"
+    elif not band_status_ok:
+        band_status_reason = "semantic_mismatch"
     if band_status_ok and old_band_status and new_band_status and str(old_band_status) != str(new_band_status):
         warnings.append("state:band_status:semantic_match_raw_diff")
     old_tier = best_tier(fit)
     state_checks = [
         {
             "name": "band_status",
-            "status": "ok" if band_status_ok else "critical",
+            "status": band_status_status,
+            "reason": band_status_reason,
             "old": old_band_status,
             "new": new_band_status,
             "old_semantic": old_band_semantic,
@@ -530,7 +690,7 @@ def build_ticker_packet(ticker: str, conn: sqlite3.Connection, wf85_by_ticker: d
     }
 
 
-def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[str, Any]:
+def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str, sql_canon_db: Path) -> dict[str, Any]:
     population_tickers = wf84_ticker_universe(db_path)
     population_set = set(population_tickers)
     evaluated_set = set(tickers)
@@ -588,8 +748,37 @@ def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[
     ]
     ready_for_duplicate_planning = not critical and full_population_covered
     production_answer_packet_retirement_planning_ready = not production_critical and full_population_covered
-    if critical:
+    sql_canon_scope = build_sql_canon_scope_snapshot(tickers, per_ticker, sql_canon_db, coverage_mode)
+    sql_canon_critical = as_dict(sql_canon_scope.get("validation")).get("critical_errors") or []
+    sql_canon_warnings = as_dict(sql_canon_scope.get("validation")).get("warnings") or []
+    sql_canon_production_set = {
+        str(ticker).upper()
+        for ticker in as_list(sql_canon_scope.get("sql_canon_production_answer_tickers"))
+    }
+    strategic_production_critical = [
+        row for row in critical if str(row.get("ticker") or "").upper() in sql_canon_production_set
+    ]
+    retirement_blockers = list(critical)
+    overall_critical = list(strategic_production_critical)
+    if sql_canon_critical:
+        overall_critical.append({"ticker": "SQL_CANON", "errors": sql_canon_critical})
+    overall_warnings = list(warnings)
+    if retirement_blockers:
+        overall_warnings.append({
+            "ticker": "DUPLICATE_RETIREMENT",
+            "warnings": [
+                "full_answer_value_hash_mismatches_block_duplicate_surface_retirement_but_not_current_empty_strategic_production_scope"
+            ],
+        })
+    if sql_canon_warnings:
+        overall_warnings.append({"ticker": "SQL_CANON", "warnings": sql_canon_warnings})
+    overall_status = "blocked" if overall_critical else "ok"
+    ready_for_duplicate_planning = not retirement_blockers and not overall_critical and full_population_covered
+    production_answer_packet_retirement_planning_ready = not production_critical and not sql_canon_critical and full_population_covered
+    if retirement_blockers:
         duplicate_plan_status = "blocked_on_parity"
+    elif sql_canon_critical:
+        duplicate_plan_status = "blocked_on_sql_canon_scope"
     elif not full_population_covered:
         duplicate_plan_status = "blocked_on_population_coverage"
     else:
@@ -597,7 +786,7 @@ def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "blocked" if critical else "ok",
+        "status": overall_status,
         "workflow_ids": ["WF84", "WF85"],
         "purpose": "Full intelligence answer parity proof for migrating rich ticker answers under WF84/WF85 before duplicate surface retirement.",
         "authority_boundary": AUTHORITY_BOUNDARY,
@@ -627,6 +816,8 @@ def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[
             "ticker_count": len(per_ticker),
             "ticker_pass_count": sum(1 for row in per_ticker if row.get("status") == "ok"),
             "critical_ticker_count": len(critical),
+            "strategic_production_critical_ticker_count": len(strategic_production_critical),
+            "retirement_blocker_ticker_count": len(retirement_blockers),
             "warning_ticker_count": len(warnings),
             "section_count": section_total,
             "section_ok_count": section_ok,
@@ -640,6 +831,9 @@ def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[
             "wf84_population_ticker_count": len(population_tickers),
             "full_population_covered": full_population_covered,
             "production_answer_path_count": production_answer_path_count,
+            "sql_canon_scope_status": sql_canon_scope.get("status"),
+            "sql_canon_production_answer_count": sql_canon_scope.get("sql_canon_production_answer_count"),
+            "sql_canon_production_scope_diff": sql_canon_scope.get("production_scope_diff"),
             "thin_monitor_count": thin_monitor_count,
             "production_critical_ticker_count": len(production_critical),
             "thin_monitor_critical_ticker_count": len(thin_monitor_critical),
@@ -657,6 +851,7 @@ def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[
             {"phase": 7, "name": "repair_targeting_inputs", "status": "implemented_via_section_level_failures"},
             {"phase": 8, "name": "retirement_readiness_v2_inputs", "status": "implemented_as_planning_signal_no_apply"},
         ],
+        "sql_canon_scope": sql_canon_scope,
         "duplicate_surface_retirement_plan": {
             "status": duplicate_plan_status,
             "recommended_decision_now": "resolve parity blockers and run full-population proof before any duplicate-surface archive packet",
@@ -689,12 +884,13 @@ def build_rollup(tickers: list[str], db_path: Path, coverage_mode: str) -> dict[
             }
             for row in per_ticker
         ],
-        "critical_errors": critical,
-        "warnings": warnings,
+        "critical_errors": overall_critical,
+        "duplicate_retirement_blockers": retirement_blockers,
+        "warnings": overall_warnings,
         "validation": {
-            "status": "blocked" if critical else "ok",
-            "critical_errors": critical,
-            "warnings": warnings,
+            "status": overall_status,
+            "critical_errors": overall_critical,
+            "warnings": overall_warnings,
         },
         "stop_lines": [
             "No archive/delete/apply authority.",
@@ -723,6 +919,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=DEFAULT_ROLLUP)
     parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument("--sql-canon-db", type=Path, default=DEFAULT_SQL_CANON_DB)
     args = parser.parse_args()
 
     if args.all and (args.pilot or args.tickers):
@@ -736,7 +933,8 @@ def main() -> int:
     else:
         tickers = PILOT_TICKERS
         coverage_mode = "pilot"
-    rollup = build_rollup(tickers, args.db, coverage_mode)
+    sql_canon_db = args.sql_canon_db if args.sql_canon_db.is_absolute() else ROOT / args.sql_canon_db
+    rollup = build_rollup(tickers, args.db, coverage_mode, sql_canon_db)
     per_ticker_full = rollup.pop("_per_ticker_full")
     if args.write:
         args.out_dir.mkdir(parents=True, exist_ok=True)

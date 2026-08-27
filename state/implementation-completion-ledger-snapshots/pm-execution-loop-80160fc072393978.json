@@ -1,0 +1,156 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-20T17:04:24Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-wf74-followup-autonomy-spine-dependency-rollup"
+  },
+  "summary": {
+    "queue_job_count": 17,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-wf74-followup-autonomy-spine-dependency-rollup"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 0,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-wf74-followup-autonomy-spine-dependency-rollup",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-wf74-followup-autonomy-spine-dependency-rollup",
+      "rank": 6,
+      "priority": "P1",
+      "title": "AUTONOMY-SPINE followup: Continue scheduled accrual and daylight/reconciliation proof.",
+      "implementation_class": "wf74_dependency_rollup",
+      "owner_surface": "Veritas main session",
+      "collision_group": "workflow_followup_autonomy-spine",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 3,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "tmp/autonomy-spine-promotion-contract.json",
+        "tmp/autonomy-spine-readiness-rollup.json",
+        "tmp/workflow-blocker-followups.json",
+        "tmp/workflow-implementation-followup-ledger.json"
+      ],
+      "proof_commands": [
+        "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
+        "python scripts\\workflow_advancement_scorecard.py --write --validate",
+        "python scripts\\wf74_autonomy_work_router.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        "listed acceptance validators pass or the followup carries an exact blocker",
+        "workflow advancement scorecard updates the blocker state",
+        "no execution/capital/runtime authority expands from measurement proof"
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-wf74-followup-autonomy-spine-dependency-rollup:proof[0]",
+      "command": "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
+      "started_at_utc": "2026-06-20T17:04:22Z",
+      "completed_at_utc": "2026-06-20T17:04:23Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"status\": \"ok\",\n  \"summary\": {\n    \"final_state\": \"continue_accrual\",\n    \"owner_approval_required\": true,\n    \"wf55_measurement_state\": \"accruing\",\n    \"shadow_decisions\": {\n      \"done\": 15,\n      \"required\": 20,\n      \"pct\": 75.0,\n      \"met\": false\n    },\n    \"shadow_sessions\": {\n      \"done\": 5,\n      \"required\": 5,\n      \"pct\": 100.0,\n      \"met\": true\n    },\n    \"reconciliation_mature\": false,\n    \"wf87_runtime_clean\": false,\n    \"cron_clean\": true,\n    \"sql_canon_status\": \"ok\",\n    \"sql_canon_production_answer_count\": 3,\n    \"workflow_advancement_advanced_count\": 2,\n    \"workflow_advancement_blocked_count\": 3,\n    \"wf71_active_lane_count\": 0,\n    \"wf74_improvement_candidate_count\": null,\n    \"blockers\": [\n      \"shadow_threshold_not_met\",\n      \"reconciliation_maturity_not_met\",\n      \"wf87_runtime_gates_not_clean\"\n    ],\n    \"next_safe_action\": \"Continue scheduled accrual and daylight/reconciliation proof.\"\n  },\n  \"validation\": {\n    \"status\": \"warning\",\n    \"errors\": [],\n    \"warnings\": [\n      \"source_validation_not_ok:wf55_outcome_ledger:warning\",\n      \"source_validation_not_ok:workflow_advancement:warning\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf74-followup-autonomy-spine-dependency-rollup:proof[1]",
+      "command": "python scripts\\workflow_advancement_scorecard.py --write --validate",
+      "started_at_utc": "2026-06-20T17:04:23Z",
+      "completed_at_utc": "2026-06-20T17:04:23Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"status\": \"ok\",\n  \"summary\": {\n    \"signal_counts\": {\n      \"advanced\": 2,\n      \"blocked\": 3\n    },\n    \"advanced_count\": 2,\n    \"blocked_count\": 3,\n    \"owner_needed_count\": 0,\n    \"cron_update_recommended\": false,\n    \"next_safe_action\": \"Use cron for read-only advancement proof; keep execution/apply authority gated.\"\n  },\n  \"validation\": {\n    \"status\": \"warning\",\n    \"errors\": [],\n    \"warnings\": [\n      \"source_validation_not_ok:wf55_outcome_ledger:warning\",\n      \"source_validation_not_ok:autonomy_spine_rollup:warning\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf74-followup-autonomy-spine-dependency-rollup:proof[2]",
+      "command": "python scripts\\wf74_autonomy_work_router.py --write --validate",
+      "started_at_utc": "2026-06-20T17:04:23Z",
+      "completed_at_utc": "2026-06-20T17:04:23Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"kpis\": {\n    \"average_age_of_top_open_improvement_hours\": 85.37,\n    \"high_priority_overdue_count\": 1,\n    \"planning_followthrough_clean_rate\": 0.5031,\n    \"pm_job_closure_rate_source\": \"pm implementation completion ledger\",\n    \"recommendation_to_route_conversion_rate\": 1.0,\n    \"route_to_pm_job_conversion_rate\": 1.0,\n    \"success_target\": {\n      \"high_priority_overdue_count\": 0,\n      \"planning_followthrough_clean_rate_minimum\": 0.75,\n      \"stale_active_lanes\": 0,\n      \"unrouted_recurring_blockers\": 0\n    }\n  },\n  \"status\": \"ok\",\n  \"summary\": {\n    \"cron_blocked_count\": 0,\n    \"cron_escalation_signal_count\": 0,\n    \"cron_migration_routable_count\": 1,\n    \"cron_repair_plan_count\": 1,\n    \"cron_should_wake_main_session\": false,\n    \"cron_signal_classification\": \"green_residue_repair_plan_required\",\n    \"high_priority_overdue_count\": 1,\n    \"opportunity_count\": 7,\n    \"planning_followthrough_clean_rate\": 0.5031,\n    \"planning_followthrough_gap_count\": 239,\n    \"planning_followthrough_job_count\": 1,\n    \"planning_quality_routable_count\": 1,\n    \"pm_auto_main_executable_job_count_before_router\": null,\n    \"pm_job_candidate_count\": 7,\n    \"recommendation_to_route_conversion_rate\": 1.0,\n    \"routable_opportunity_count\": 4,\n    \"route_to_pm_job_conversion_rate\": 1.0,\n    \"routed_categories\": [\n      \"cron_migration\",\n      \"planning_quality\",\n      \"workflow_maturity\"\n    ],\n    \"routed_opportunity_count\": 4,\n    \"top_improvement_age_hours\": 85.37,\n    \"workflow_followup_count\": 3,\n    \"workflow_maturity_routable_count\": 2\n  },\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  },\n  \"write_result\": {\n    \"appended_history_event_count\": 0,\n    \"cron_repair_plan\": \"tmp/cron-migration-repair-plan.json\",\n    \"followup_history\": \"state/workflow-implementation-followup-ledger.jsonl\",\n    \"followup_ledger\": \"tmp/workflow-implementation-followup-ledger.json\",\n    \"out\": \"tmp/wf74-autonomy-work-router.json\"\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-wf74-followup-autonomy-spine-dependency-rollup:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-20T17:04:23Z",
+      "completed_at_utc": "2026-06-20T17:04:24Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": ",\n        \"model_quality_validation\": \"ok\",\n        \"otel_daily_vs_weekly_event_rate_ratio\": 7.0,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"review\",\n        \"otel_field_depth_packet_status\": \"approved_enabled\",\n        \"recommended_budget\": \"major\",\n        \"recommended_validator_count\": 65,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 2,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 7,\n        \"validator_elapsed_seconds\": 2.639,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 30\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

@@ -55,7 +55,7 @@ If one gate fails, the name is not deployable yet.
 | Ticker | Thesis status | Macro fit | Technical trigger | Catalyst blocker | Invalidation | Size tier | Action state | Why |
 |---|---|---|---|---|---|---|---|---|
 | ETN | Intact, with post-earnings evidence accepted enough for owner-approved conditional deployment | Strong fit with AI power, electrification, and industrial capex, but macro/trust warnings still argue against forcing size | **In band at 401.51** inside the **395.59–420.31** refreshed band; acceptable only as a disciplined lower-half-band setup, not a chase above **420.31** | **May 5 earnings reported / interpreted with follow-up** — secondary evidence constructive; owner promoted ETN on 2026-05-09 after the fresh entry-band rerun confirmed the setup remained in band | Lose **383.23** or break the 50-day / band-support cluster | Tier 2 | **Deployable now** | Owner-approved conditional add. Use Tier 2 sizing discipline, keep stop/invalidation explicit, no automatic execution, and no chase above the written band. |
-| JPM | Intact | Good fit in selective risk-on with stable credit and curve backdrop | **In band at 306.82 to 318.12**; cleaner adds still favor pullbacks toward **300 to 306**, but explicit owner approval now allows deployable-now status in the owner layer | No immediate earnings blocker | Lose **301.17** and the 200-day/higher-low structure | Tier 1 | **Deployable now** | Close **314.90** is inside the refreshed band. Explicit owner approval was granted on 2026-05-07; JPM remains the Tier 1 deployable-now name alongside ETN's Tier 2 conditional add. Keep normal size discipline and do not treat this as automatic execution. |
+| JPM | Intact | Good fit in selective risk-on with stable credit and curve backdrop | Owner-approved Tier 1 setup, but the latest machine close **302.10** is now **below** the formal **306.82–318.12** band and only modestly above the **301.17** invalidation line; require reclaim of the band or an explicit band review before treating the trigger as live again | No immediate earnings blocker | Lose **301.17** and the 200-day/higher-low structure | Tier 1 | **Almost deployable** | Explicit owner approval was granted on 2026-05-07, but the current 2026-05-08 close no longer satisfies the written live trigger band. Approval remains recorded; deployment readiness fails closed until price reclaims the band or the band is deliberately revised. |
 | GOOG | Intact | Good fit for quality large-cap exposure | Pullback into **341.96 to 362.08** with the post-print structure holding; no chase after the post-print extension | No near-term event block. The Apr 29 report is now explicitly reviewed; next earnings **Jul 23** is still a provider estimate, not primary-confirmed canon. | Lose **331.90** or fail the post-print breakout shelf | Tier 1 | **Almost deployable** | Earnings review is now complete and the thesis is confirmed, but close **395.14** is still extended above the written band. |
 | MSFT | Intact | Good fit for quality AI platform exposure | Pullback into **389.64 to 412.56** with support holding, or stronger repair that can reclaim the 200-day cleanly | No near-term event block. The Apr 29 report is now explicitly reviewed; next earnings **Jul 29** is still a provider estimate, not primary-confirmed canon. The live issue is technical repair, not unresolved earnings. | Lose **378.18** or fail the recovery structure | Tier 1 | **Almost deployable** | Azure and AI monetization confirmed the thesis, but close **413.96** is slightly above band and the stock remains below the 200-day. Better than blocked, still not clean enough to force. |
 | LMT | Intact but event-sensitive | Defense fit remains valid | No trigger until after a fresh post-event base forms; mechanical reference band is **548.51 to 582.27** only | **Post-earnings repair mode**. Old setup already failed before the print, so the name stays blocked until a new structure exists | Lose **531.63** or fail to rebuild support after earnings | Tier 1 only after repair | **Do not touch** | The old setup is invalidated and close **514.26** remains below stop / below all major MAs. This is a repair workflow, not an immediate re-entry case |
@@ -68,16 +68,16 @@ If one gate fails, the name is not deployable yet.
 ## Current priority order
 
 ### Deployable now
-- **JPM** — explicit owner approval on 2026-05-07 promotes the in-band setup to deployable-now in the owner layer; keep normal size discipline and no automatic execution.
-- **ETN** — owner-promoted on 2026-05-09 after the fresh entry-band rerun confirmed ETN remained in band at 401.51; use Tier 2 sizing, stop at 383.23, and no chase above 420.31.
+- **ETN** — owner-promoted on 2026-05-09 after the fresh entry-band rerun confirmed ETN remained in band at 401.51; use Tier 2 discipline, stop at 383.23, and no chase above 420.31.
 
 ### Promotion review / wait — no full deployable-now authority yet
 1. **NVDA** — above band, crowded, Tier 2, and timing-sensitive into May 20; wait for a pullback into band or post-earnings reset
 
 ### Almost deployable — explicit promotion still required
-1. **GOOG** — constructive thesis, still extended above band
-2. **GS** — above band and useful tactically, but secondary to JPM and still ALMOST / owner-decision-dependent
-3. **MSFT** — slightly above band and still needs stronger repair / explicit promotion
+1. **JPM** — owner approval is recorded, but the 2026-05-08 close at 302.10 is below the formal 306.82–318.12 band and too close to 301.17 invalidation to keep the live trigger green without reclaim or explicit band review
+2. **GOOG** — constructive thesis, still extended above band
+3. **GS** — above band and useful tactically, but secondary to JPM and still ALMOST / owner-decision-dependent
+4. **MSFT** — slightly above band and still needs stronger repair / explicit promotion
 
 ### Post-earnings follow-through — not deployable yet
 1. **GOOG** — scorecard complete; strong report, but still extended above the post-print band
@@ -106,7 +106,8 @@ A spot on the watchlist is not enough.
 
 ## Current recommendation
 
-- **Deployable now:** JPM and ETN — JPM remains the Tier 1 financial add with explicit owner approval; ETN is now owner-promoted as a Tier 2 conditional add after the 2026-05-09 entry-band rerun confirmed it remained inside the written band.
+- **Deployable now:** ETN only — owner-promoted as a Tier 2 conditional add after the 2026-05-09 entry-band rerun confirmed it remained inside the written band.
+- **Owner-approved but trigger not live:** JPM — approval remains recorded, but the latest machine close at 302.10 is below the formal 306.82–318.12 band and close enough to 301.17 invalidation that the artifact layer must fail closed until reclaim or explicit band review.
 - **Wait / no chase:** NVDA — the 2026-05-09 entry-band rerun put NVDA above the written band at 215.20 while the May 20 timing window and Tech concentration cap remain active.
 - **Post-earnings follow-through — not deployable yet:** GOOG (scorecard complete; still extended above band), MSFT (scorecard complete; slightly above band and still needs cleaner repair / promotion).
 - **Additional near-deployable name, but still subordinate to a stronger peer:** GS (above band, still ALMOST and tactical secondary versus JPM for primary bank exposure; the posture is resolved, but the entry problem is not).
@@ -116,10 +117,10 @@ A spot on the watchlist is not enough.
 
 ## Freshness and update policy
 
-- Last updated: 2026-05-09
+- Last updated: 2026-05-10
 - Data as of: 2026-05-08 close with fresh ETN / NVDA entry-band rerun outputs in `tmp/entry-band-data/`; broader note-layer reconciliation remains selective rather than full-rewrite.
 - Refresh cadence: after weekly technical refreshes, after tracked earnings, after material macro regime change, or when a name clearly changes action state
-- Next refresh due: after BRK.B is interpreted and its stale machine-layer May 2 next-date is cleared or manually held, after Eaton primary-source post-earnings follow-up lands, or when MSFT / GOOG / VRT / GS follow-on note sync changes a real action state
+- Next refresh due: after BRK.B is interpreted and its stale machine-layer May 2 next-date is cleared or manually held, after Eaton primary-source post-earnings follow-up lands, after JPM either reclaims the written band or receives an explicit band review, or when MSFT / GOOG / VRT / GS follow-on note sync changes a real action state
 - Refresh policy: update action states, triggers, blockers, and size logic only when the evidence materially changes. Do not churn wording just to restate the same setup. Version 1 script output should inform this note, not overwrite judgment.
 
 ## Data-quality note
@@ -132,4 +133,4 @@ A spot on the watchlist is not enough.
 - Treat rate and policy context as directional, not precision timing input, even after the stale manual-policy warnings are retired.
 - `AMD`, `AMZN`, `CAT`, `CVX`, `LLY`, `LNG`, `PLTR`, and `RTX` remain machine-tracked watch-lane names, but they are **not** part of the execution board in this note. Their current validation warnings are ownership residue, not a hidden promotion into deployable status.
 - Treat **NVDA** as the main still-unresolved timing-sensitive next-earnings mismatch affecting deployment trust today, with a forced re-check due by the first post-close chain on **2026-05-13** if cleaner confirmation still has not landed. **BRK.B** timing is now homepage-level confirmed for May 2, but the machine layer still needs a post-report next-date cleanup so Workflow 9 does not inherit stale catalyst framing. XOM is no longer a "write the first interpretation" case; it is now a post-print follow-through case. GOOG and MSFT are no longer pending earnings review; they are now post-print entry-discipline cases.
-- **Deployable now** means the gates line up on paper; it does **not** cancel residual date-confirmation caution, crowding risk, or normal size discipline.
+- **Deployable now** means the gates line up on paper; it does **not** cancel residual date-confirmation caution, crowding risk, normal size discipline, or later price movement out of the written trigger zone.

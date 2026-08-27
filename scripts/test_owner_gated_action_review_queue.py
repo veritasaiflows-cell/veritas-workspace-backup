@@ -73,6 +73,36 @@ def main() -> int:
         item_boundary = item.get("authority_boundary", {})
         for flag in FALSE_FLAGS:
             expect(item_boundary.get(flag) is False, f"item boundary must stay false: {item.get('item_id')} {flag}", errors)
+    capital_items = [item for item in payload.get("review_items", []) if item.get("gate") == "capital_deployment"]
+    expect(capital_items, "expected capital deployment review items", errors)
+    for item in capital_items:
+        if item.get("risk") == "review_advance_approved_execution_blocked":
+            title = str(item.get("title") or "")
+            recommendation = str(item.get("recommendation") or "")
+            expect("approved for review advance" in title, "review-approved item title must be plain", errors)
+            expect("exact order card" in recommendation, "review-approved item must block execution until exact order card", errors)
+            expect(item.get("decision_state") == "owner_review_advance_approved_execution_blocked", "review-approved item must remain execution-blocked", errors)
+            expect(
+                "exact ticker/side/quantity-or-notional/order-type/TIF/limit owner approval" in item.get("required_before_apply", []),
+                "review-approved item must require exact order terms",
+                errors,
+            )
+        elif item.get("risk") == "wf78_wf85_decision_contract_conflict":
+            title = str(item.get("title") or "")
+            recommendation = str(item.get("recommendation") or "")
+            expect("Routing candidate needs WF85 decision reconciliation" in title, "conflict title must be explicit", errors)
+            expect("approval-ready" in recommendation, "conflict recommendation must name blocked approval-ready language", errors)
+            expect(
+                "WF85 decision_state and decision-grade gate must clear" in item.get("required_before_apply", []),
+                "conflict item must require WF85 gate clearance",
+                errors,
+            )
+        else:
+            expect(
+                "Capital review card ready" not in str(item.get("title") or "") or item.get("risk") == "capital_review_only",
+                "card-ready language must be reserved for capital_review_only items",
+                errors,
+            )
     expect(md.exists(), "markdown output missing", errors)
 
     if errors:

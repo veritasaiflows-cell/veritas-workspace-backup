@@ -15,9 +15,11 @@ DEFAULT_POSITIONS = ROOT / "tmp" / "finance-intelligence-state-paper-positions.j
 DEFAULT_GUARD = ROOT / "tmp" / "alpaca-paper-readiness" / "paper-execution-guard-validation.json"
 DEFAULT_ORDER_HISTORY = ROOT / "tmp" / "alpaca-paper-readiness" / "paper-order-history-classifier.json"
 DEFAULT_HALT_STATUS = ROOT / "tmp" / "paper-autotrader" / "market-anomaly-halt-status.json"
+DEFAULT_INTRADAY_MONITOR = ROOT / "tmp" / "wf87-intraday-monitor.json"
 
 SCHEMA = "veritas.wf87_portfolio_circuit_breakers.v1"
 MAX_INPUT_AGE_SECONDS = 8 * 60 * 60
+MAX_POLICY_AGE_SECONDS = 30 * 24 * 60 * 60
 DEFAULT_DAILY_LOSS_CAP_USD = 1500.0
 DEFAULT_GROSS_EXPOSURE_CAP_PCT = 0.25
 DEFAULT_CONCENTRATION_CAP_PCT = 0.10
@@ -102,7 +104,15 @@ def load_json(path: Path, findings: list[dict[str, Any]], code: str, *, required
     return payload
 
 
-def check_fresh(payload: dict[str, Any] | None, path: Path, code: str, findings: list[dict[str, Any]], now: datetime) -> None:
+def check_fresh(
+    payload: dict[str, Any] | None,
+    path: Path,
+    code: str,
+    findings: list[dict[str, Any]],
+    now: datetime,
+    *,
+    max_age_seconds: int = MAX_INPUT_AGE_SECONDS,
+) -> None:
     if payload is None:
         return
     generated = parse_utc(payload.get("generated_at_utc") or payload.get("created_at_utc"))
@@ -112,7 +122,7 @@ def check_fresh(payload: dict[str, Any] | None, path: Path, code: str, findings:
     age = (now - generated).total_seconds()
     if age < 0:
         findings.append({"severity": "critical", "code": f"{code}_timestamp_in_future", "path": rel(path), "timestamp": utc_stamp(generated)})
-    elif age > MAX_INPUT_AGE_SECONDS:
+    elif age > max_age_seconds:
         findings.append({"severity": "critical", "code": f"{code}_expired", "path": rel(path), "age_seconds": int(age)})
 
 
@@ -125,7 +135,16 @@ def authority_ok(payload: dict[str, Any] | None, fields: list[str], code: str, f
         return
     authority = as_dict(payload.get("authority_boundary") or payload.get("authority"))
     for field in fields:
-        if authority.get(field) is not False and payload.get(field) is not False:
+        aliases = {
+            "paper_order_execution_allowed": ("paper_or_live_execution_allowed", "paper_submit_allowed"),
+            "live_trade_or_account_action_allowed": ("live_endpoint_detected", "live_endpoint_allowed"),
+            "trade_or_account_action_allowed": ("brokerage_or_account_action_allowed",),
+            "portfolio_mutation_allowed": ("portfolio_or_canon_mutation_allowed",),
+        }.get(field, ())
+        values = [authority.get(field), payload.get(field)]
+        values.extend(authority.get(alias) for alias in aliases)
+        values.extend(payload.get(alias) for alias in aliases)
+        if not any(value is False for value in values):
             findings.append({"severity": "critical", "code": f"{code}_authority_not_false", "field": field, "value": authority.get(field, payload.get(field))})
 
 
@@ -143,7 +162,7 @@ def position_rows(positions: dict[str, Any]) -> list[dict[str, Any]]:
 def check_halt_status(payload: dict[str, Any] | None, findings: list[dict[str, Any]]) -> dict[str, Any]:
     if payload is None:
         findings.append({"severity": "critical", "code": "missing_anomaly_halt_status"})
-        return {"status": "missing", "halted": True, "anomaly_count": None, "halt_count": None}
+        return {"status": "missing", "halted": True, "anomaly_count": None, "halt_count": None, "source": None}
     status = str(payload.get("status") or "").lower()
     anomalies = as_list(payload.get("anomalies"))
     halts = as_list(payload.get("halts") or payload.get("halted_symbols"))
@@ -154,7 +173,35 @@ def check_halt_status(payload: dict[str, Any] | None, findings: list[dict[str, A
         findings.append({"severity": "critical", "code": "market_anomalies_present", "count": len(anomalies)})
     if halts or circuit_open:
         findings.append({"severity": "critical", "code": "market_halt_or_circuit_open", "halt_count": len(halts), "circuit_open": circuit_open})
-    return {"status": payload.get("status"), "halted": bool(halts or circuit_open), "anomaly_count": len(anomalies), "halt_count": len(halts)}
+    return {
+        "status": payload.get("status"),
+        "halted": bool(halts or circuit_open),
+        "anomaly_count": len(anomalies),
+        "halt_count": len(halts),
+        "source": payload.get("source"),
+    }
+
+
+def halt_status_from_intraday_monitor(payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    if payload is None:
+        return None
+    signals = as_dict(payload.get("signals"))
+    anomalies = as_list(signals.get("anomaly_halts"))
+    if not anomalies:
+        return {
+            "generated_at_utc": payload.get("generated_at_utc"),
+            "status": "ok",
+            "anomalies": [],
+            "halts": [],
+            "source": "wf87_intraday_monitor",
+        }
+    return {
+        "generated_at_utc": payload.get("generated_at_utc"),
+        "status": "halt",
+        "anomalies": anomalies,
+        "halts": [],
+        "source": "wf87_intraday_monitor",
+    }
 
 
 def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[str, Any]:
@@ -165,21 +212,25 @@ def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[
     guard_path = resolve(Path(args.guard_validation))
     order_history_path = resolve(Path(args.order_history))
     halt_path = resolve(Path(args.halt_status))
+    intraday_monitor_path = resolve(Path(args.intraday_monitor))
 
     policy = load_json(policy_path, findings, "policy")
     positions = load_json(positions_path, findings, "paper_positions")
     guard = load_json(guard_path, findings, "wf67_guard_validation")
     order_history = load_json(order_history_path, findings, "order_history_classifier")
     halt_status = load_json(halt_path, findings, "anomaly_halt_status", required=False)
+    intraday_monitor = load_json(intraday_monitor_path, findings, "intraday_monitor", required=False)
+    if halt_status is None:
+        halt_status = halt_status_from_intraday_monitor(intraday_monitor)
 
-    for code, path, payload in (
-        ("policy", policy_path, policy),
-        ("paper_positions", positions_path, positions),
-        ("wf67_guard_validation", guard_path, guard),
-        ("order_history_classifier", order_history_path, order_history),
-        ("anomaly_halt_status", halt_path, halt_status),
+    for code, path, payload, max_age in (
+        ("policy", policy_path, policy, MAX_POLICY_AGE_SECONDS),
+        ("paper_positions", positions_path, positions, MAX_INPUT_AGE_SECONDS),
+        ("wf67_guard_validation", guard_path, guard, MAX_INPUT_AGE_SECONDS),
+        ("order_history_classifier", order_history_path, order_history, MAX_INPUT_AGE_SECONDS),
+        ("anomaly_halt_status", halt_path if halt_path.exists() else intraday_monitor_path, halt_status, MAX_INPUT_AGE_SECONDS),
     ):
-        check_fresh(payload, path, code, findings, now)
+        check_fresh(payload, path, code, findings, now, max_age_seconds=max_age)
 
     authority_ok(policy, [
         "autonomous_paper_execution_allowed_now",
@@ -255,7 +306,7 @@ def build_report(args: argparse.Namespace, now: datetime | None = None) -> dict[
             "next_safe_action": "Keep paper execution blocked when this report status is blocked.",
         },
         "findings": findings,
-        "source_artifacts": [rel(policy_path), rel(positions_path), rel(guard_path), rel(order_history_path), rel(halt_path)],
+        "source_artifacts": [rel(policy_path), rel(positions_path), rel(guard_path), rel(order_history_path), rel(halt_path), rel(intraday_monitor_path)],
         "validation": {
             "status": "ok" if all(value is False for key, value in AUTHORITY_BOUNDARY.items() if key not in {"review_only", "runtime_guard_only"}) else "error",
             "errors": [],
@@ -276,6 +327,7 @@ def main() -> int:
     parser.add_argument("--guard-validation", default=str(DEFAULT_GUARD))
     parser.add_argument("--order-history", default=str(DEFAULT_ORDER_HISTORY))
     parser.add_argument("--halt-status", default=str(DEFAULT_HALT_STATUS))
+    parser.add_argument("--intraday-monitor", default=str(DEFAULT_INTRADAY_MONITOR))
     parser.add_argument("--output", default=str(OUT))
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")

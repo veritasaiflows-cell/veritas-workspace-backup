@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>WF53 Sector Dashboard Suite</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --panel2: #172033;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --border: #334155;
+  --good: #22c55e;
+  --warn: #f59e0b;
+  --bad: #ef4444;
+  --accent: #38bdf8;
+}
+body { margin: 0; font-family: Segoe UI, Arial, sans-serif; background: var(--bg); color: var(--text); }
+main { max-width: 1500px; margin: 0 auto; padding: 28px; }
+h1 { margin: 0 0 8px; font-size: 28px; }
+h2 { margin-top: 32px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.subtitle { color: var(--muted); margin-bottom: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.card .value { margin-top: 8px; font-size: 18px; line-height: 1.35; }
+.badge { display: inline-block; border-radius: 999px; padding: 3px 9px; font-weight: 700; font-size: 12px; }
+.badge.good { background: rgba(34,197,94,.18); color: #86efac; }
+.badge.warn { background: rgba(245,158,11,.18); color: #fcd34d; }
+.badge.bad { background: rgba(239,68,68,.18); color: #fca5a5; }
+.badge.neutral { background: rgba(56,189,248,.16); color: #7dd3fc; }
+.table-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 8px; }
+table.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.table th { background: var(--panel2); color: #cbd5e1; position: sticky; top: 0; z-index: 1; }
+table.table th, table.table td { border-bottom: 1px solid var(--border); padding: 8px 10px; vertical-align: top; text-align: left; }
+table.table tr:hover td { background: rgba(56,189,248,.06); }
+ul { margin-top: 8px; }
+.footer { color: var(--muted); margin-top: 28px; font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>WF53 Sector Dashboard Suite</h1>
+  <div class="subtitle">Where is sector leadership improving, where are we underexposed, and which names deserve promotion review?</div>
+
+  <div class="grid">
+    <div class="card"><div class="label">Status</div><div class="value"><span class="badge warn">degraded</span> &nbsp; as of 2026-06-18</div></div>
+    <div class="card"><div class="label">Authority</div><div class="value"><span class="badge good">review_only</span><br><small>Unexpected true flags: None</small></div></div>
+    <div class="card"><div class="label">Leadership improving</div><div class="value">Financials, Industrials, Technology</div></div>
+    <div class="card"><div class="label">Underexposed sectors</div><div class="value">Communication Services, Consumer Discretionary, Consumer Staples, Health Care, Materials, Real Estate, Utilities</div></div>
+    <div class="card"><div class="label">Pending promotion-review candidates</div><div class="value">CAT, GS, LLY, NVDA<br><small>Approved/promoted: ETN, JPM</small></div></div>
+    <div class="card"><div class="label">Concentration warning</div><div class="value">Direct Technology is at cap at 25% vs 25% cap; AI-power correlated sleeve is 32% including ETN.</div></div>
+  </div>
+
+  <h2>Sector board</h2>
+  <div class="table-wrap"><table class="dataframe table sectors">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ETF</th>
+      <th>Sector</th>
+      <th>Leadership</th>
+      <th>Last</th>
+      <th>5DMA</th>
+      <th>20DMA</th>
+      <th>Price vs 5DMA %</th>
+      <th>Price vs 20DMA %</th>
+      <th>5DMA vs 20DMA %</th>
+      <th>5/20 Signal</th>
+      <th>5/20 Warning</th>
+      <th>Above 50DMA</th>
+      <th>Rel 1D vs SPY %</th>
+      <th>Rel 5D vs SPY %</th>
+      <th>Rel 20D vs SPY %</th>
+      <th>Sector 20D %</th>
+      <th>Exposure %</th>
+      <th>Exposure Status</th>
+      <th>Underexposed</th>
+      <th>Tracked Candidates</th>
+      <th>Promotion Queue Names</th>
+      <th>Warnings</th>
+      <th>Owner-Gated Next Review Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>XLY</td>
+      <td>Consumer Discretionary</td>
+      <td>deteriorating</td>
+      <td>117.16</td>
+      <td>117.256</td>
+      <td>117.6885</td>
+      <td>-0.0819</td>
+      <td>-0.4491</td>
+      <td>-0.3675</td>
+      <td>short_term_repair_needed</td>
+      <td>5DMA is below 20DMA; short-term trend needs repair before aggressive deployment.</td>
+      <td>No</td>
+      <td>0.6659</td>
+      <td>-0.4777</td>
+      <td>-1.4020</td>
+      <td>-0.6614</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>BKNG</td>
+      <td></td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+    <tr>
+      <td>XLRE</td>
+      <td>Real Estate</td>
+      <td>deteriorating</td>
+      <td>43.86</td>
+      <td>44.656</td>
+      <td>44.4180</td>
+      <td>-1.7825</td>
+      <td>-1.2562</td>
+      <td>0.5358</td>
+      <td>momentum_cooling</td>
+      <td>Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim.</td>
+      <td>No</td>
+      <td>-1.0303</td>
+      <td>-3.5770</td>
+      <td>-2.0235</td>
+      <td>-1.2829</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+    <tr>
+      <td>XLP</td>
+      <td>Consumer Staples</td>
+      <td>deteriorating</td>
+      <td>83.30</td>
+      <td>84.774</td>
+      <td>83.9155</td>
+      <td>-1.7387</td>
+      <td>-0.7335</td>
+      <td>1.0231</td>
+      <td>momentum_cooling</td>
+      <td>Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim.</td>
+      <td>No</td>
+      <td>-1.2342</td>
+      <td>-3.5275</td>
+      <td>-3.3365</td>
+      <td>-2.5959</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+    <tr>
+      <td>XLC</td>
+      <td>Communication Services</td>
+      <td>deteriorating</td>
+      <td>109.45</td>
+      <td>110.962</td>
+      <td>113.1140</td>
+      <td>-1.3626</td>
+      <td>-3.2392</td>
+      <td>-1.9025</td>
+      <td>short_term_repair_needed</td>
+      <td>5DMA is below 20DMA; short-term trend needs repair before aggressive deployment.</td>
+      <td>No</td>
+      <td>-0.5512</td>
+      <td>-3.5986</td>
+      <td>-6.4684</td>
+      <td>-5.7278</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>META, NFLX, XLC</td>
+      <td></td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+    <tr>
+      <td>XLE</td>
+      <td>Energy</td>
+      <td>deteriorating</td>
+      <td>53.77</td>
+      <td>55.380</td>
+      <td>57.2540</td>
+      <td>-2.9072</td>
+      <td>-6.0852</td>
+      <td>-3.2731</td>
+      <td>short_term_repair_needed</td>
+      <td>5DMA is below 20DMA; short-term trend needs repair before aggressive deployment.</td>
+      <td>No</td>
+      <td>-2.4263</td>
+      <td>-7.0820</td>
+      <td>-10.8242</td>
+      <td>-10.0836</td>
+      <td>10.0</td>
+      <td>within_limit</td>
+      <td>No</td>
+      <td>CVX, LNG, XLE, XOM</td>
+      <td></td>
+      <td></td>
+      <td>Maintain review-only monitoring; no canonical mutation or capital action.</td>
+    </tr>
+    <tr>
+      <td>XLK</td>
+      <td>Technology</td>
+      <td>improving_leadership</td>
+      <td>191.44</td>
+      <td>188.054</td>
+      <td>186.7580</td>
+      <td>1.8005</td>
+      <td>2.5070</td>
+      <td>0.6939</td>
+      <td>short_term_confirmed</td>
+      <td>Short-term tape confirms; still subordinate to band, stop, thesis, and concentration checks.</td>
+      <td>Yes</td>
+      <td>2.2554</td>
+      <td>3.2749</td>
+      <td>7.3321</td>
+      <td>8.0727</td>
+      <td>25.0</td>
+      <td>at_cap</td>
+      <td>No</td>
+      <td>AMD, AMZN, GOOG, MSFT, NVDA, PLTR, SMCI</td>
+      <td>NVDA</td>
+      <td>Direct Technology is at cap at 25% vs 25% cap; AI-power correlated sleeve is 32% including ETN.</td>
+      <td>Review concentration/correlation warning before any owner-gated promotion review; no sizing or deployment authority.</td>
+    </tr>
+    <tr>
+      <td>XLI</td>
+      <td>Industrials</td>
+      <td>improving_leadership</td>
+      <td>180.91</td>
+      <td>179.044</td>
+      <td>174.9035</td>
+      <td>1.0422</td>
+      <td>3.4342</td>
+      <td>2.3673</td>
+      <td>short_term_confirmed</td>
+      <td>Short-term tape confirms; still subordinate to band, stop, thesis, and concentration checks.</td>
+      <td>Yes</td>
+      <td>-0.0507</td>
+      <td>2.0714</td>
+      <td>5.2220</td>
+      <td>5.9626</td>
+      <td>7.0</td>
+      <td>within_limit</td>
+      <td>No</td>
+      <td>CAT, ETN, PH, VRT, XLI</td>
+      <td>ETN, CAT</td>
+      <td></td>
+      <td>Existing exposure with queued candidates: keep promotion review owner-gated and check risk/sizing before any change.</td>
+    </tr>
+    <tr>
+      <td>XLF</td>
+      <td>Financials</td>
+      <td>improving_leadership</td>
+      <td>53.57</td>
+      <td>53.774</td>
+      <td>52.3095</td>
+      <td>-0.3794</td>
+      <td>2.4097</td>
+      <td>2.7997</td>
+      <td>constructive_pullback</td>
+      <td>Normal pullback inside short-term uptrend; watch for reclaim rather than chase.</td>
+      <td>Yes</td>
+      <td>-1.6682</td>
+      <td>0.5882</td>
+      <td>2.9567</td>
+      <td>3.6973</td>
+      <td>21.0</td>
+      <td>near_cap</td>
+      <td>No</td>
+      <td>GS, JPM, XLF</td>
+      <td>JPM, GS</td>
+      <td></td>
+      <td>Review concentration/correlation warning before any owner-gated promotion review; no sizing or deployment authority.</td>
+    </tr>
+    <tr>
+      <td>XLB</td>
+      <td>Materials</td>
+      <td>mixed</td>
+      <td>51.81</td>
+      <td>52.246</td>
+      <td>51.2045</td>
+      <td>-0.8345</td>
+      <td>1.1825</td>
+      <td>2.0340</td>
+      <td>constructive_pullback</td>
+      <td>Normal pullback inside short-term uptrend; watch for reclaim rather than chase.</td>
+      <td>Yes</td>
+      <td>-1.1838</td>
+      <td>-0.0653</td>
+      <td>3.4629</td>
+      <td>4.2035</td>
+      <td>0.0</td>
+      <td>within_limit</td>
+      <td>Yes</td>
+      <td>LIN, VAW, XLB</td>
+      <td></td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+    <tr>
+      <td>XLV</td>
+      <td>Health Care</td>
+      <td>mixed</td>
+      <td>149.40</td>
+      <td>151.950</td>
+      <td>150.8240</td>
+      <td>-1.6782</td>
+      <td>-0.9441</td>
+      <td>0.7466</td>
+      <td>momentum_cooling</td>
+      <td>Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim.</td>
+      <td>Yes</td>
+      <td>-1.6493</td>
+      <td>-4.2609</td>
+      <td>0.8023</td>
+      <td>1.5429</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>LLY</td>
+      <td>LLY</td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+    <tr>
+      <td>XLU</td>
+      <td>Utilities</td>
+      <td>repair_needed</td>
+      <td>44.76</td>
+      <td>44.710</td>
+      <td>44.3985</td>
+      <td>0.1118</td>
+      <td>0.8142</td>
+      <td>0.7016</td>
+      <td>short_term_confirmed</td>
+      <td>Short-term tape confirms; still subordinate to band, stop, thesis, and concentration checks.</td>
+      <td>No</td>
+      <td>-0.1053</td>
+      <td>0.3946</td>
+      <td>-0.1789</td>
+      <td>0.5617</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+  <h2>Leadership / underexposure pivot</h2>
+  <div class="table-wrap"><table class="dataframe table leadership-pivot">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Underexposed</th>
+      <th>Leadership</th>
+      <th>No</th>
+      <th>Yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th></th>
+      <td>deteriorating</td>
+      <td>1</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th></th>
+      <td>improving_leadership</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th></th>
+      <td>mixed</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th></th>
+      <td>repair_needed</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table></div>
+
+  <h2>Exposure pivot</h2>
+  <div class="table-wrap"><table class="dataframe table exposure-pivot">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Sector</th>
+      <th>ETF</th>
+      <th>Exposure %</th>
+      <th>Exposure Status</th>
+      <th>Underexposed</th>
+      <th>Rel 20D vs SPY %</th>
+      <th>5/20 Signal</th>
+      <th>5/20 Warning</th>
+      <th>Tracked Candidates</th>
+      <th>Promotion Queue Names</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Technology</td>
+      <td>XLK</td>
+      <td>25.0</td>
+      <td>at_cap</td>
+      <td>No</td>
+      <td>7.3321</td>
+      <td>short_term_confirmed</td>
+      <td>Short-term tape confirms; still subordinate to band, stop, thesis, and concentration checks.</td>
+      <td>AMD, AMZN, GOOG, MSFT, NVDA, PLTR, SMCI</td>
+      <td>NVDA</td>
+    </tr>
+    <tr>
+      <td>Financials</td>
+      <td>XLF</td>
+      <td>21.0</td>
+      <td>near_cap</td>
+      <td>No</td>
+      <td>2.9567</td>
+      <td>constructive_pullback</td>
+      <td>Normal pullback inside short-term uptrend; watch for reclaim rather than chase.</td>
+      <td>GS, JPM, XLF</td>
+      <td>JPM, GS</td>
+    </tr>
+    <tr>
+      <td>Energy</td>
+      <td>XLE</td>
+      <td>10.0</td>
+      <td>within_limit</td>
+      <td>No</td>
+      <td>-10.8242</td>
+      <td>short_term_repair_needed</td>
+      <td>5DMA is below 20DMA; short-term trend needs repair before aggressive deployment.</td>
+      <td>CVX, LNG, XLE, XOM</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Industrials</td>
+      <td>XLI</td>
+      <td>7.0</td>
+      <td>within_limit</td>
+      <td>No</td>
+      <td>5.2220</td>
+      <td>short_term_confirmed</td>
+      <td>Short-term tape confirms; still subordinate to band, stop, thesis, and concentration checks.</td>
+      <td>CAT, ETN, PH, VRT, XLI</td>
+      <td>ETN, CAT</td>
+    </tr>
+    <tr>
+      <td>Materials</td>
+      <td>XLB</td>
+      <td>0.0</td>
+      <td>within_limit</td>
+      <td>Yes</td>
+      <td>3.4629</td>
+      <td>constructive_pullback</td>
+      <td>Normal pullback inside short-term uptrend; watch for reclaim rather than chase.</td>
+      <td>LIN, VAW, XLB</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Health Care</td>
+      <td>XLV</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>0.8023</td>
+      <td>momentum_cooling</td>
+      <td>Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim.</td>
+      <td>LLY</td>
+      <td>LLY</td>
+    </tr>
+    <tr>
+      <td>Utilities</td>
+      <td>XLU</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>-0.1789</td>
+      <td>short_term_confirmed</td>
+      <td>Short-term tape confirms; still subordinate to band, stop, thesis, and concentration checks.</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Consumer Discretionary</td>
+      <td>XLY</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>-1.4020</td>
+      <td>short_term_repair_needed</td>
+      <td>5DMA is below 20DMA; short-term trend needs repair before aggressive deployment.</td>
+      <td>BKNG</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Real Estate</td>
+      <td>XLRE</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>-2.0235</td>
+      <td>momentum_cooling</td>
+      <td>Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim.</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Consumer Staples</td>
+      <td>XLP</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>-3.3365</td>
+      <td>momentum_cooling</td>
+      <td>Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim.</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Communication Services</td>
+      <td>XLC</td>
+      <td>0.0</td>
+      <td>unrepresented</td>
+      <td>Yes</td>
+      <td>-6.4684</td>
+      <td>short_term_repair_needed</td>
+      <td>5DMA is below 20DMA; short-term trend needs repair before aggressive deployment.</td>
+      <td>META, NFLX, XLC</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table></div>
+
+  <h2>Promotion-review queue context</h2>
+  <div class="table-wrap"><table class="dataframe table promotions">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Candidate</th>
+      <th>Sector</th>
+      <th>ETF</th>
+      <th>Proposed Lane</th>
+      <th>Blocking Gate</th>
+      <th>Queue Judgment</th>
+      <th>Next Action</th>
+      <th>Owner Approval Granted</th>
+      <th>Watchlist Promotion Allowed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>JPM</td>
+      <td>Financials</td>
+      <td>XLF</td>
+      <td>execution conditional add</td>
+      <td>near current band / band review required</td>
+      <td>approval recorded; trigger not live</td>
+      <td>Fresh ticker monitoring on 2026-06-15 has JPM at 319.40 as near current band / band review required. Keep any prior owner approval or review history recorded, but do not treat it as deployable-now until price/band context is re-cleared or an explicit band review updates the gate.</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>GS</td>
+      <td>Financials</td>
+      <td>XLF</td>
+      <td>execution</td>
+      <td>risk/sizing / peer priority</td>
+      <td>hold in promotion review</td>
+      <td>Keep secondary to JPM unless explicit review says otherwise</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>LLY</td>
+      <td>Health Care</td>
+      <td>XLV</td>
+      <td>execution review prep</td>
+      <td>sizing / explicit promotion judgment</td>
+      <td>hold in promotion review</td>
+      <td>Owner-layer technical coverage is now explicit; keep watch-lane only until pullback quality and explicit promotion/sizing review justify a real lane change</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>ETN</td>
+      <td>Industrials</td>
+      <td>XLI</td>
+      <td>execution conditional add</td>
+      <td>size/correlation discipline</td>
+      <td>approved conditional add</td>
+      <td>Explicit owner promotion granted 2026-05-09 after fresh band proof showed ETN inside the 395.59–420.31 band. Manual-only; no chase above 420.31 and no automatic execution.</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>CAT</td>
+      <td>Industrials</td>
+      <td>XLI</td>
+      <td>execution review prep</td>
+      <td>technical drift / sizing</td>
+      <td>hold in promotion review</td>
+      <td>Refreshed owner-layer band now exists; keep watch-lane only until pullback quality and explicit promotion/sizing review justify a real lane change</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>NVDA</td>
+      <td>Technology</td>
+      <td>XLK</td>
+      <td>execution promotion review</td>
+      <td>band calibration / AI-power crowding / starter sizing</td>
+      <td>hold in promotion review</td>
+      <td>Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate.</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table></div>
+
+  <h2>Warnings and limits</h2>
+  <div class="card"><ul><li>sector_correlation_check status=degraded</li><li>daily review source freshness requires review; artifact remains review-only.</li><li>band proposals status=needs_review; band context is review debt only.</li></ul></div>
+
+  <div class="footer">Generated from tmp/sector-expansion-board.json. Presentation-only; no canonical mutation, portfolio/deployment mutation, watchlist promotion, sizing/allocation recommendation, trade execution, owner approval inference, or probability/modeling authority.</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "25aef99b-7b2b-40a9-823c-2cfff7d5493d",
+  "name": "Finance - Research Freshness and Opportunity Review",
+  "required": true,
+  "owner_workflow": "WF60/WF61",
+  "contract_reason": "High-token WF60 research opportunity cron converted from agentTurn to direct command. Drift can reintroduce large prompt cost, remove changed-only skip behavior, or weaken review-only authority boundaries.",
+  "description": "Weekday post-close WF60/WF61 deterministic research freshness/opportunity command wrapper with changed-only skip support. Review-only/no capital or portfolio authority.",
+  "enabled": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "5 14 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts\\research_freshness_opportunity_cron_runner.py",
+      "--window",
+      "post-close",
+      "--changed-only",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 600
+  },
+  "compare_fields": [
+    "enabled",
+    "deleteAfterRun",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/research-freshness-opportunity-cron-runner.json",
+    "tmp/research-freshness-opportunity-cron-cache.json",
+    "tmp/research-freshness-opportunity-review.json",
+    "tmp/small-mid-cap-regime-feed.json",
+    "tmp/json-sql-promotion-index.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "changed_only_skip_allowed": true,
+    "promotion_queue_stale_band_prose_reconciliation_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-06-26T23:16:00Z",
+  "contract_update_reason": "Randall-approved token optimization: convert WF60/WF61 research freshness cron from model agentTurn wrapper to deterministic direct command payload while preserving schedule, changed-only skip, and review-only boundaries."
+}

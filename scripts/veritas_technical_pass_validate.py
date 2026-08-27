@@ -31,6 +31,17 @@ REQUIRED_DATA_REQUIREMENTS = [
     "stop or invalidation threshold",
 ]
 
+ROUTE_CONTRACT = {
+    "default_route_role": "skill_contract_sidecar_validator",
+    "run_when": "veritas-technical-pass skill edits or explicit technical-pass validation",
+    "finance_data_readiness_owner": False,
+    "routine_wf85_wf88_runtime_owner": False,
+    "delete_allowed": False,
+    "archive_allowed": False,
+    "apply_allowed": False,
+    "owner_approval_inferred": False,
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -115,6 +126,7 @@ def build_result(skill_path: Path) -> dict[str, Any]:
             "missing": missing_data_requirements,
         },
         "issues": issues,
+        "route_contract": dict(ROUTE_CONTRACT),
         "validator_note": "Bounded sidecar validator pilot: proves the skill's required local file contract and core technical-output contract still exist. This does not validate live market data or end-to-end workflow quality.",
     }
 

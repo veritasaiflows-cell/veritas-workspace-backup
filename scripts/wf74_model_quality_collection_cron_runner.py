@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from lib.pm_control_reader import pm_implementation_job_queue
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,28 @@ AUTHORITY_BOUNDARY = {
     "brokerage_or_account_action_allowed": False,
 }
 
+NON_BLOCKING_STEP_NAMES = {
+    "cron_control_packet",
+    "finance_response_quality_slice",
+    "wf74_outcome_feedback_ingestor",
+    "wf74_prompt_variant_ledger",
+    "otel_ops_control",
+    "veritas_harness_scorecard_fast",
+    "wf74_self_prompt_generator",
+    "wf74_telemetry_critique_engine",
+    "wf74_proposal_dispatcher",
+}
+
+DOMAIN_ATTENTION_STEP_NAMES = {
+    "finance_response_quality_slice",
+}
+
+DOMAIN_NONFATAL_CRITICAL_DETAILS = {
+    "one or more collection steps blocked",
+    "learning environment runner status is blocked",
+    "finance response quality slice has source/technical or unclassified blockers that still block WF74 collection.",
+}
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -57,8 +80,113 @@ def as_dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def as_int(value: Any) -> int:
+    try:
+        return int(value or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
 def tail(text: str, limit: int = 1200) -> str:
     return text[-limit:] if len(text) > limit else text
+
+
+def is_non_blocking_step(name: str) -> bool:
+    return name in NON_BLOCKING_STEP_NAMES
+
+
+def step_attention_class(name: str) -> str:
+    return "domain_quality" if name in DOMAIN_ATTENTION_STEP_NAMES else "diagnostic"
+
+
+def classify_step_status(name: str, returncode: int | None) -> str:
+    if returncode == 0:
+        return "ok"
+    return "attention" if is_non_blocking_step(name) else "blocked"
+
+
+def is_blocking_step_failure(step: dict[str, Any]) -> bool:
+    return step.get("status") != "ok" and step.get("blocking") is not False
+
+
+def classified_domain_blocker_reason(payload: dict[str, Any]) -> str | None:
+    summary = as_dict(payload.get("summary"))
+    blocking_steps = summary.get("blocking_step_names") or []
+    technical_steps = summary.get("technical_blocking_steps") or []
+    if blocking_steps != ["model_quality_scorecard"] or not set(technical_steps).issubset({"model_quality_scorecard"}):
+        return None
+    if (
+        as_int(summary.get("finance_repair_conveyor_implementation_blocker_count")) != 0
+        or as_int(summary.get("finance_repair_conveyor_control_plane_blocker_count")) != 0
+    ):
+        return None
+    source_blocker_count = (
+        as_int(summary.get("finance_response_quality_source_open_blocked_count"))
+        + as_int(summary.get("finance_response_quality_source_freshness_blocked_count"))
+    )
+    if source_blocker_count > 0 and summary.get("finance_response_quality_recommended_repair_route") in {
+            "wf78_wf85_source_open_repair",
+            "wf78_wf85_source_freshness_repair",
+            "wf78_wf85_source_freshness_and_source_open_repair",
+    }:
+        return "classified_finance_response_source_open_repair"
+    decision_readiness_count = (
+        as_int(summary.get("finance_response_quality_primary_state_blocked_count"))
+        + as_int(summary.get("finance_response_quality_below_stop_blocked_count"))
+    )
+    if (
+        source_blocker_count == 0
+        and decision_readiness_count > 0
+        and as_int(summary.get("finance_response_quality_technical_gap_count")) == 0
+        and as_int(summary.get("finance_response_quality_remediation_tracks_needing_repair")) == 0
+    ):
+        return "classified_finance_response_decision_readiness_debt"
+    return None
+
+
+def is_classified_domain_blocker(payload: dict[str, Any]) -> bool:
+    return classified_domain_blocker_reason(payload) is not None
+
+
+def scheduler_exit_decision(
+    payload: dict[str, Any],
+    validation: dict[str, Any],
+    *,
+    allow_domain_blocked_exit_zero: bool,
+) -> dict[str, Any]:
+    critical_details = [
+        str(finding.get("detail"))
+        for finding in validation.get("findings", [])
+        if as_dict(finding).get("severity") == "critical"
+    ]
+    if not critical_details:
+        return {
+            "status": "ok",
+            "returncode": 0,
+            "reason": "no_critical_validation_findings",
+            "critical_details": [],
+            "domain_blocked_nonfatal": False,
+        }
+    if (
+        allow_domain_blocked_exit_zero
+        and classified_domain_blocker_reason(payload)
+        and set(critical_details).issubset(DOMAIN_NONFATAL_CRITICAL_DETAILS)
+    ):
+        reason = classified_domain_blocker_reason(payload)
+        return {
+            "status": "domain_blocked_nonfatal",
+            "returncode": 0,
+            "reason": reason,
+            "critical_details": critical_details,
+            "domain_blocked_nonfatal": True,
+        }
+    return {
+        "status": "critical",
+        "returncode": 1,
+        "reason": "technical_or_unclassified_critical_validation_findings",
+        "critical_details": critical_details,
+        "domain_blocked_nonfatal": False,
+    }
 
 
 def command_plan(include_harness: bool) -> list[tuple[str, list[str], int]]:
@@ -66,17 +194,40 @@ def command_plan(include_harness: bool) -> list[tuple[str, list[str], int]]:
         ("otel_tool_workflow_metadata", [sys.executable, "scripts\\otel_tool_workflow_metadata.py", "--write", "--write-md", "--validate"], 90),
         ("otel_ops_control", [sys.executable, "scripts\\otel_ops_control.py", "--write", "--write-db", "--multi-window", "--validate"], 180),
         ("otel_runtime_metadata_probe", [sys.executable, "scripts\\otel_runtime_metadata_probe.py", "--write", "--write-md", "--validate"], 90),
-        ("changed_file_validator_router", [sys.executable, "scripts\\changed_file_validator_router.py", "--write", "--validate"], 90),
+        ("changed_file_validator_router", [sys.executable, "scripts\\changed_file_validator_router.py", "--validate"], 90),
         ("coding_outcome_ledger", [sys.executable, "scripts\\coding_outcome_ledger.py", "--write", "--validate"], 90),
         ("validator_timing_ledger_normal", [sys.executable, "scripts\\validator_timing_ledger.py", "--profile", "normal", "--write", "--validate"], 240),
         ("coding_runtime_kpi_probe", [sys.executable, "scripts\\coding_runtime_kpi_probe.py", "--write", "--write-md", "--validate"], 90),
         ("cron_spark_canary_monitor", [sys.executable, "scripts\\cron_spark_canary_monitor.py", "--write", "--validate"], 120),
-        ("model_run_ledger", [sys.executable, "scripts\\model_run_ledger.py", "--write", "--write-md", "--validate"], 120),
-        ("token_usage_ledger", [sys.executable, "scripts\\token_usage_ledger.py", "--write", "--write-md", "--validate"], 90),
+        (
+            "model_run_ledger",
+            [
+                sys.executable,
+                "scripts\\model_run_ledger.py",
+                "--write",
+                "--write-md",
+                "--validate",
+                "--cron-job-limit",
+                "8",
+                "--cron-run-limit",
+                "2",
+                "--cron-list-timeout",
+                "15",
+                "--cron-runs-timeout",
+                "8",
+            ],
+            120,
+        ),
+        ("token_usage_ledger", [sys.executable, "scripts\\token_usage_ledger.py", "--write", "--write-md", "--validate", "--skip-isolated-agent-usage-cost"], 240),
         (
             "finance_recommendation_correctness_ledger",
             [sys.executable, "scripts\\finance_recommendation_correctness_ledger.py", "--write", "--write-md", "--validate"],
             120,
+        ),
+        (
+            "wf78_source_open_patch_orchestrator",
+            [sys.executable, "scripts\\wf78_source_open_patch_orchestrator.py", "--write", "--validate"],
+            180,
         ),
         (
             "finance_response_quality_slice",
@@ -86,6 +237,10 @@ def command_plan(include_harness: bool) -> list[tuple[str, list[str], int]]:
         ("model_learning_metadata_ledger", [sys.executable, "scripts\\model_learning_metadata_ledger.py", "--write", "--write-md", "--validate"], 120),
         ("otel_learning_loop", [sys.executable, "scripts\\otel_learning_loop.py", "--write", "--write-md", "--validate"], 90),
         ("model_quality_scorecard", [sys.executable, "scripts\\model_quality_scorecard.py", "--write", "--write-md", "--validate"], 120),
+        ("workflow_advancement_scorecard", [sys.executable, "scripts\\workflow_advancement_scorecard.py", "--write", "--validate"], 120),
+        ("cron_operator_ledger", [sys.executable, "scripts\\cron_operator_ledger.py", "--write", "--validate"], 180),
+        ("wf74_cron_duplication_audit", [sys.executable, "scripts\\wf74_cron_duplication_audit.py", "--write", "--validate"], 90),
+        ("cron_control_packet", [sys.executable, "scripts\\cron_control_packet.py", "--write", "--validate"], 180),
         (
             "wf74_improvement_opportunity_queue",
             [sys.executable, "scripts\\wf74_improvement_opportunity_queue.py", "--write", "--write-md", "--validate"],
@@ -103,8 +258,49 @@ def command_plan(include_harness: bool) -> list[tuple[str, list[str], int]]:
             90,
         ),
         (
+            "wf74_telemetry_critique_engine",
+            [sys.executable, "scripts\\wf74_telemetry_critique_engine.py", "--write", "--validate"],
+            90,
+        ),
+        (
+            "wf74_self_prompt_generator",
+            [sys.executable, "scripts\\wf74_self_prompt_generator.py", "--write", "--validate"],
+            90,
+        ),
+        (
+            "wf74_prompt_variant_ledger",
+            [sys.executable, "scripts\\wf74_prompt_variant_ledger.py", "--write", "--validate"],
+            90,
+        ),
+        (
+            "wf74_outcome_feedback_ingestor",
+            [sys.executable, "scripts\\wf74_outcome_feedback_ingestor.py", "--write", "--validate"],
+            90,
+        ),
+        (
+            "otel_recommendation_closeout",
+            [sys.executable, "scripts\\otel_recommendation_closeout.py", "--write", "--write-md", "--validate"],
+            90,
+        ),
+        ("wf74_autonomy_work_router", [sys.executable, "scripts\\wf74_autonomy_work_router.py", "--write", "--validate"], 90),
+        (
+            "pm_implementation_job_queue",
+            [sys.executable, "scripts\\pm_implementation_job_queue.py", "--write", "--write-db", "--validate"],
+            90,
+        ),
+        (
             "owner_gated_action_review_queue",
             [sys.executable, "scripts\\owner_gated_action_review_queue.py", "--write", "--write-md", "--validate"],
+            90,
+        ),
+        (
+            "wf74_decision_docket",
+            [sys.executable, "scripts\\wf74_decision_docket.py", "--write", "--write-md", "--validate"],
+            90,
+        ),
+        (
+            "wf74_proposal_dispatcher",
+            [sys.executable, "scripts\\wf74_proposal_dispatcher.py", "--write", "--write-md", "--validate"],
             90,
         ),
         ("artifact_index_incremental", [sys.executable, "scripts\\artifact_index.py", "incremental"], 180),
@@ -113,16 +309,13 @@ def command_plan(include_harness: bool) -> list[tuple[str, list[str], int]]:
     if include_harness:
         plan.append(("veritas_harness_scorecard_fast", [sys.executable, "scripts\\veritas_harness_scorecard.py", "--fast", "--write", "--validate"], 240))
         plan.append(("model_quality_scorecard_after_harness", [sys.executable, "scripts\\model_quality_scorecard.py", "--write", "--write-md", "--validate"], 120))
-    plan.extend([
-        ("cron_operator_ledger", [sys.executable, "scripts\\cron_operator_ledger.py", "--write", "--validate"], 180),
-        ("wf74_cron_duplication_audit", [sys.executable, "scripts\\wf74_cron_duplication_audit.py", "--write", "--validate"], 90),
-        ("cron_control_packet", [sys.executable, "scripts\\cron_control_packet.py", "--write", "--validate"], 180),
-    ])
+    plan.append(("pm_control_packet", [sys.executable, "scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"], 180))
     return plan
 
 
-def run_step(name: str, command: list[str], timeout: int) -> dict[str, Any]:
+def run_step(name: str, command: list[str], timeout: int, step_index: int | None = None) -> dict[str, Any]:
     started = time.perf_counter()
+    started_at = utc_now()
     try:
         completed = subprocess.run(
             command,
@@ -134,21 +327,37 @@ def run_step(name: str, command: list[str], timeout: int) -> dict[str, Any]:
             timeout=timeout,
         )
     except subprocess.TimeoutExpired as exc:
+        status = classify_step_status(name, None)
         return {
+            "step_index": step_index,
             "name": name,
             "command": command,
-            "status": "blocked",
+            "status": status,
+            "blocking": not is_non_blocking_step(name),
             "returncode": None,
+            "failure_kind": "timeout",
+            "attention_class": step_attention_class(name) if status == "attention" else None,
+            "timeout_seconds": timeout,
+            "started_at_utc": started_at,
+            "completed_at_utc": utc_now(),
             "duration_ms": round((time.perf_counter() - started) * 1000, 3),
             "error": f"timeout after {timeout}s",
             "stdout_tail": tail(exc.stdout or ""),
             "stderr_tail": tail(exc.stderr or ""),
         }
+    status = classify_step_status(name, completed.returncode)
     return {
+        "step_index": step_index,
         "name": name,
         "command": command,
-        "status": "ok" if completed.returncode == 0 else "blocked",
+        "status": status,
+        "blocking": not is_non_blocking_step(name),
         "returncode": completed.returncode,
+        "failure_kind": None if completed.returncode == 0 else "nonzero_returncode",
+        "attention_class": step_attention_class(name) if status == "attention" else None,
+        "timeout_seconds": timeout,
+        "started_at_utc": started_at,
+        "completed_at_utc": utc_now(),
         "duration_ms": round((time.perf_counter() - started) * 1000, 3),
         "stdout_tail": tail(completed.stdout or ""),
         "stderr_tail": tail(completed.stderr or ""),
@@ -168,7 +377,13 @@ def artifact_status(path: str) -> dict[str, Any]:
 
 
 def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
-    blocked = [step for step in steps if step.get("status") != "ok"]
+    blocked = [step for step in steps if is_blocking_step_failure(step)]
+    attention = [step for step in steps if step.get("status") != "ok" and step.get("blocking") is False]
+    domain_attention = [step for step in attention if step.get("attention_class") == "domain_quality"]
+    diagnostic_attention = [step for step in attention if step.get("attention_class") != "domain_quality"]
+    timed_out = [step for step in steps if step.get("failure_kind") == "timeout"]
+    completed_steps = [step for step in steps if step.get("status") == "ok"]
+    last_completed_step = completed_steps[-1] if completed_steps else None
     artifacts = [
         artifact_status("tmp/otel-ops-control.json"),
         artifact_status("tmp/otel-ops-window-summary.json"),
@@ -192,9 +407,22 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
         artifact_status("tmp/improvement-ledger-current.json"),
         artifact_status("tmp/wf74-reflection-to-proposal-autopilot.json"),
         artifact_status("tmp/wf74-auto-patch-proposer.json"),
+        artifact_status("tmp/wf74-telemetry-critique.json"),
+        artifact_status("tmp/wf74-self-prompt-review-packet.json"),
+        artifact_status("tmp/wf74-prompt-variant-ledger.json"),
+        artifact_status("tmp/wf74-feedback-ingest.json"),
+        artifact_status("tmp/workflow-advancement-scorecard.json"),
+        artifact_status("tmp/workflow-blocker-followups.json"),
+        artifact_status("tmp/otel-recommendation-closeout.json"),
+        artifact_status("tmp/wf74-autonomy-work-router.json"),
+        artifact_status("tmp/cron-migration-repair-plan.json"),
+        artifact_status("tmp/workflow-implementation-followup-ledger.json"),
         artifact_status("tmp/owner-gated-action-review-queue.json"),
+        artifact_status("tmp/wf74-decision-docket.json"),
+        artifact_status("tmp/wf74-proposal-dispatcher.json"),
         artifact_status("tmp/wf74-cron-duplication-audit.json"),
         artifact_status("tmp/cron-control-packet.json"),
+        artifact_status("tmp/pm-control-packet.json"),
     ]
     model_run = as_dict(load_json_artifact(TMP / "model-run-ledger-current.json"))
     token_usage = as_dict(load_json_artifact(TMP / "token-usage-ledger-current.json"))
@@ -224,18 +452,128 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
     improvement_ledger = as_dict(load_json_artifact(TMP / "improvement-ledger-current.json"))
     proposal_autopilot = as_dict(load_json_artifact(TMP / "wf74-reflection-to-proposal-autopilot.json"))
     auto_patch_proposer = as_dict(load_json_artifact(TMP / "wf74-auto-patch-proposer.json"))
+    prompt_variant_ledger = as_dict(load_json_artifact(TMP / "wf74-prompt-variant-ledger.json"))
+    outcome_feedback = as_dict(load_json_artifact(TMP / "wf74-feedback-ingest.json"))
+    workflow_scorecard = as_dict(load_json_artifact(TMP / "workflow-advancement-scorecard.json"))
+    workflow_followups = as_dict(load_json_artifact(TMP / "workflow-blocker-followups.json"))
+    otel_recommendation_closeout = as_dict(load_json_artifact(TMP / "otel-recommendation-closeout.json"))
+    autonomy_router = as_dict(load_json_artifact(TMP / "wf74-autonomy-work-router.json"))
+    pm_control = as_dict(load_json_artifact(TMP / "pm-control-packet.json"))
+    pm_job_queue = pm_implementation_job_queue()
     owner_gated_queue = as_dict(load_json_artifact(TMP / "owner-gated-action-review-queue.json"))
+    decision_docket = as_dict(load_json_artifact(TMP / "wf74-decision-docket.json"))
+    proposal_dispatcher = as_dict(load_json_artifact(TMP / "wf74-proposal-dispatcher.json"))
     coding_runtime_kpis = as_dict(coding_runtime_probe.get("kpis"))
     coding_outcome_summary = as_dict(coding_outcome.get("ledger_summary"))
+    planning_signal = as_dict(coding_outcome_summary.get("planning_quality_signal"))
     opportunity_summary = as_dict(opportunity_queue.get("summary"))
     improvement_ledger_summary = as_dict(improvement_ledger.get("summary"))
+    improvement_kpis = as_dict(improvement_ledger.get("learning_loop_kpis"))
     proposal_summary = as_dict(proposal_autopilot.get("summary"))
     auto_patch_summary = as_dict(auto_patch_proposer.get("summary"))
+    prompt_variant_summary = as_dict(prompt_variant_ledger.get("summary"))
+    outcome_feedback_summary = as_dict(outcome_feedback.get("summary"))
+    workflow_scorecard_summary = as_dict(workflow_scorecard.get("summary"))
+    workflow_followup_summary = as_dict(workflow_followups.get("summary"))
+    closeout_summary = as_dict(otel_recommendation_closeout.get("summary"))
+    autonomy_router_summary = as_dict(autonomy_router.get("summary"))
+    autonomy_router_kpis = as_dict(autonomy_router.get("kpis"))
+    pm_job_queue_summary = as_dict(pm_job_queue.get("summary"))
+    pm_control_summary = as_dict(pm_control.get("summary"))
     owner_gated_summary = as_dict(owner_gated_queue.get("summary"))
+    decision_docket_summary = as_dict(decision_docket.get("summary"))
+    proposal_dispatcher_summary = as_dict(proposal_dispatcher.get("summary"))
     otel_windows = [row for row in otel_window_summary.get("windows", []) if isinstance(row, dict)]
     otel_drift = as_dict(otel_ops.get("drift"))
     otel_tool_workflow_summary = as_dict(otel_tool_workflow.get("summary"))
     otel_learning_summary = as_dict(otel_learning_loop.get("learning_summaries"))
+    readiness_gates = [
+        gate for gate in (model_quality.get("readiness_gates") or [])
+        if isinstance(gate, dict)
+    ]
+    blocked_quality_gates = [
+        gate.get("gate") for gate in readiness_gates
+        if gate.get("status") == "blocked"
+    ]
+    claim_gated_quality_gates = [
+        gate.get("gate") for gate in readiness_gates
+        if gate.get("status") in {"claim_maturity_gated", "evidence_maturity_gated"}
+    ]
+    runner_status = "blocked" if blocked else ("attention" if attention else "ok")
+    quality_gate_status = "blocked" if blocked_quality_gates else ("claim_gated" if claim_gated_quality_gates else "ok")
+    backlog_status = str(improvement_ledger_summary.get("escalation_level") or "unknown")
+    anti_theater_status = str(improvement_kpis.get("anti_theater_status") or "unknown")
+    decision_quality_status = (
+        "blocked"
+        if "wf55_outcome_grades" in blocked_quality_gates
+        else (
+            "active_measurement_only"
+            if "wf55_outcome_grades" in claim_gated_quality_gates
+            else "active"
+        )
+    )
+    learning_environment_status = {
+        "schema": "wf74.learning_environment_status.v1",
+        "runner_status": runner_status,
+        "quality_gate_status": quality_gate_status,
+        "blocked_quality_gates": blocked_quality_gates,
+        "claim_gated_quality_gates": claim_gated_quality_gates,
+        "backlog_status": backlog_status,
+        "anti_theater_status": anti_theater_status,
+        "closure_rate": improvement_kpis.get("closure_rate"),
+        "applied_fix_closure_rate": improvement_kpis.get("applied_fix_closure_rate"),
+        "signal_absence_closure_rate": improvement_kpis.get("signal_absence_closure_rate"),
+        "latest_open_count": improvement_kpis.get("latest_open_count"),
+        "latest_closed_count": improvement_kpis.get("latest_closed_count"),
+        "recurring_open_count": improvement_kpis.get("recurring_open_count"),
+        "high_priority_overdue_open_count": improvement_kpis.get("high_priority_overdue_open_count"),
+        "model_attribution_status": "partial" if model_summary.get("model_attribution_coverage") else "missing",
+        "coding_ex_post_status": "graded" if coding_outcome_summary.get("ex_post_graded_count") else "pending",
+        "planning_quality_status": planning_signal.get("status") or "missing",
+        "decision_quality_status": decision_quality_status,
+        "semantic_outcome_claim_status": (
+            "maturity_gated"
+            if "wf55_outcome_grades" in claim_gated_quality_gates
+            else "ready" if decision_quality_status == "active" else "blocked"
+        ),
+        "meaning": (
+            "Runner health, decision-quality gates, and improvement backlog are separate. "
+            "WF74 is a real learning environment only when it keeps evidence flowing, "
+            "preserves authority boundaries, and tracks proposal closure instead of only producing more proposals. "
+            "WF55 measurement activates the scorecard now; semantic/predictive claims remain gated separately."
+        ),
+    }
+    source_open_blocked_count = as_int(finance_response_summary.get("source_open_blocked_count"))
+    source_freshness_blocked_count = as_int(finance_response_summary.get("source_freshness_blocked_count"))
+    primary_state_blocked_count = as_int(finance_response_summary.get("primary_state_blocked_count"))
+    below_stop_blocked_count = as_int(finance_response_summary.get("below_stop_blocked_count"))
+    tier_c_thin_monitor_non_blocking_count = as_int(finance_response_summary.get("tier_c_thin_monitor_non_blocking_count"))
+    scoped_thin_monitor_not_required_non_blocking_count = as_int(finance_response_summary.get("scoped_thin_monitor_not_required_non_blocking_count"))
+    blocker_category_counts = as_dict(finance_response_summary.get("blocker_category_counts"))
+    finance_source_open_blocker_chain: list[str] = []
+    recommended_department = None
+    recommended_repair_route = None
+    recommended_pm_job_title = None
+    if source_open_blocked_count or source_freshness_blocked_count:
+        finance_source_open_blocker_chain = [
+            "wf74_model_quality_collection_cron_runner",
+            "model_quality_scorecard",
+            "finance_response_quality_slice",
+            f"source_freshness_blocked_count={source_freshness_blocked_count}",
+            f"source_open_blocked_count={source_open_blocked_count}",
+            f"primary_state_blocked_count={primary_state_blocked_count}",
+            f"below_stop_blocked_count={below_stop_blocked_count}",
+            f"tier_c_thin_monitor_non_blocking_count={tier_c_thin_monitor_non_blocking_count}",
+            f"scoped_thin_monitor_not_required_non_blocking_count={scoped_thin_monitor_not_required_non_blocking_count}",
+        ]
+        recommended_department = "finance_wf78_wf84_wf85"
+        if source_open_blocked_count and source_freshness_blocked_count:
+            recommended_repair_route = "wf78_wf85_source_freshness_and_source_open_repair"
+        elif source_open_blocked_count:
+            recommended_repair_route = "wf78_wf85_source_open_repair"
+        else:
+            recommended_repair_route = "wf78_wf85_source_freshness_repair"
+        recommended_pm_job_title = "Clear finance response quality source blockers so WF74 scorecard can pass"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -243,8 +581,18 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
         "posture": "scheduled_review_only_collection",
         "summary": {
             "steps_total": len(steps),
-            "steps_ok": len(steps) - len(blocked),
+            "steps_ok": len([step for step in steps if step.get("status") == "ok"]),
             "steps_blocked": len(blocked),
+            "steps_attention": len(attention),
+            "non_blocking_attention_steps": [step.get("name") for step in attention],
+            "blocking_step_names": [step.get("name") for step in blocked],
+            "technical_blocking_steps": [step.get("name") for step in blocked if step.get("attention_class") != "domain_quality"],
+            "domain_attention_steps": [step.get("name") for step in domain_attention],
+            "diagnostic_attention_steps": [step.get("name") for step in diagnostic_attention],
+            "timed_out_steps": [step.get("name") for step in timed_out],
+            "last_completed_step": last_completed_step.get("name") if last_completed_step else None,
+            "last_step_name": steps[-1].get("name") if steps else None,
+            "collection_runtime_budget_seconds": sum(int(step.get("timeout_seconds") or 0) for step in steps),
             "model_run_rows": model_summary.get("row_count"),
             "model_attribution_coverage": model_summary.get("model_attribution_coverage"),
             "session_attribution_coverage": model_summary.get("session_attribution_coverage"),
@@ -271,6 +619,16 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "finance_response_quality_technical_gap_count": finance_response_summary.get("technical_posture_missing_both_count"),
             "finance_response_quality_source_freshness_blocked_count": finance_response_summary.get("source_freshness_blocked_count"),
             "finance_response_quality_source_open_blocked_count": finance_response_summary.get("source_open_blocked_count"),
+            "finance_response_quality_primary_state_blocked_count": finance_response_summary.get("primary_state_blocked_count"),
+            "finance_response_quality_below_stop_blocked_count": finance_response_summary.get("below_stop_blocked_count"),
+            "finance_response_quality_tier_c_thin_monitor_non_blocking_count": finance_response_summary.get("tier_c_thin_monitor_non_blocking_count"),
+            "finance_response_quality_scoped_thin_monitor_not_required_non_blocking_count": finance_response_summary.get("scoped_thin_monitor_not_required_non_blocking_count"),
+            "finance_response_quality_blocker_category_counts": blocker_category_counts,
+            "finance_response_quality_scorecard_blocker_semantics": finance_response_summary.get("scorecard_blocker_semantics"),
+            "finance_response_quality_blocker_chain": finance_source_open_blocker_chain,
+            "finance_response_quality_recommended_department": recommended_department,
+            "finance_response_quality_recommended_repair_route": recommended_repair_route,
+            "finance_response_quality_recommended_pm_job_title": recommended_pm_job_title,
             "finance_response_quality_negative_canary_pass_count": finance_response_summary.get("negative_canary_pass_count"),
             "finance_response_quality_remediation_tracks_needing_repair": finance_response_summary.get("remediation_tracks_needing_repair"),
             "finance_repair_conveyor_status": repair_conveyor.get("status"),
@@ -321,6 +679,19 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "coding_outcome_model_attributed_count": coding_outcome_summary.get("model_attributed_count"),
             "coding_outcome_validator_proxy_passed_count": coding_outcome_summary.get("validator_proxy_passed_count"),
             "coding_outcome_total_retry_count": coding_outcome_summary.get("total_retry_count"),
+            "coding_outcome_reviewable_code_row_count": coding_outcome_summary.get("reviewable_code_row_count"),
+            "coding_outcome_ex_post_graded_count": coding_outcome_summary.get("ex_post_graded_count"),
+            "coding_outcome_later_review_pending_count": coding_outcome_summary.get("later_review_pending_count"),
+            "coding_outcome_rework_required_count": coding_outcome_summary.get("rework_required_count"),
+            "coding_outcome_regression_observed_count": coding_outcome_summary.get("regression_observed_count"),
+            "coding_outcome_first_pass_clean_count": coding_outcome_summary.get("first_pass_clean_count"),
+            "coding_outcome_first_pass_clean_rate": coding_outcome_summary.get("first_pass_clean_rate"),
+            "planning_quality_signal_status": planning_signal.get("status"),
+            "planning_quality_tracked_lane_count": planning_signal.get("tracked_lane_count"),
+            "planning_quality_contract_present_count": planning_signal.get("plan_contract_present_count"),
+            "planning_quality_followthrough_clean_count": planning_signal.get("plan_followthrough_clean_count"),
+            "planning_quality_followthrough_gap_count": planning_signal.get("plan_followthrough_gap_count"),
+            "planning_quality_followthrough_clean_rate": planning_signal.get("plan_followthrough_clean_rate"),
             "improvement_opportunity_queue_status": opportunity_queue.get("status"),
             "improvement_opportunity_count": opportunity_summary.get("opportunity_count"),
             "improvement_high_priority_count": opportunity_summary.get("high_priority_count"),
@@ -330,6 +701,15 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "improvement_ledger_rows": improvement_ledger_summary.get("ledger_row_count"),
             "improvement_ledger_appended_event_count": improvement_ledger_summary.get("appended_event_count"),
             "improvement_ledger_latest_open_count": improvement_ledger_summary.get("latest_open_count"),
+            "improvement_ledger_latest_closed_count": improvement_ledger_summary.get("latest_closed_count"),
+            "improvement_ledger_recurring_open_count": improvement_ledger_summary.get("recurring_open_count"),
+            "improvement_ledger_closure_rate": improvement_kpis.get("closure_rate"),
+            "improvement_ledger_applied_fix_closed_count": improvement_kpis.get("applied_fix_closed_count"),
+            "improvement_ledger_signal_absence_closed_count": improvement_kpis.get("signal_absence_closed_count"),
+            "improvement_ledger_other_closed_count": improvement_kpis.get("other_closed_count"),
+            "improvement_ledger_applied_fix_closure_rate": improvement_kpis.get("applied_fix_closure_rate"),
+            "improvement_ledger_signal_absence_closure_rate": improvement_kpis.get("signal_absence_closure_rate"),
+            "improvement_ledger_anti_theater_status": improvement_kpis.get("anti_theater_status"),
             "improvement_ledger_high_priority_open_count": improvement_ledger_summary.get("high_priority_open_count"),
             "improvement_ledger_overdue_open_count": improvement_ledger_summary.get("overdue_open_count"),
             "improvement_ledger_due_soon_open_count": improvement_ledger_summary.get("due_soon_open_count"),
@@ -349,16 +729,75 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "auto_patch_owner_gated_plan_count": auto_patch_summary.get("owner_gated_plan_count"),
             "auto_patch_auto_apply_candidate_count": auto_patch_summary.get("auto_apply_candidate_count"),
             "auto_patch_auto_apply_count": auto_patch_summary.get("auto_apply_count"),
+            "prompt_variant_ledger_status": prompt_variant_ledger.get("status"),
+            "prompt_variant_ledger_validation": as_dict(prompt_variant_ledger.get("validation")).get("status"),
+            "prompt_variant_ledger_existing_event_count": prompt_variant_summary.get("existing_event_count"),
+            "prompt_variant_ledger_appended_event_count": prompt_variant_summary.get("appended_event_count"),
+            "prompt_variant_ledger_current_prompt_id": prompt_variant_summary.get("current_prompt_id"),
+            "prompt_variant_ledger_current_variant_id": prompt_variant_summary.get("current_variant_id"),
+            "prompt_variant_ledger_eval_failed_count": prompt_variant_summary.get("eval_failed_count"),
+            "prompt_variant_ledger_auto_apply_count": prompt_variant_summary.get("auto_apply_count"),
+            "outcome_feedback_ingest_status": outcome_feedback.get("status"),
+            "outcome_feedback_ingest_validation": as_dict(outcome_feedback.get("validation")).get("status"),
+            "outcome_feedback_candidate_case_count": outcome_feedback_summary.get("candidate_case_count"),
+            "outcome_feedback_append_case_count": outcome_feedback_summary.get("append_case_count"),
+            "outcome_feedback_merged_case_count": outcome_feedback_summary.get("merged_case_count"),
+            "workflow_advancement_scorecard_status": workflow_scorecard.get("status"),
+            "workflow_advancement_scorecard_validation": as_dict(workflow_scorecard.get("validation")).get("status"),
+            "workflow_advancement_advanced_count": workflow_scorecard_summary.get("advanced_count"),
+            "workflow_advancement_blocked_count": workflow_scorecard_summary.get("blocked_count"),
+            "workflow_advancement_owner_needed_count": workflow_scorecard_summary.get("owner_needed_count"),
+            "workflow_advancement_cron_update_recommended": workflow_scorecard_summary.get("cron_update_recommended"),
+            "workflow_blocker_followups_status": workflow_followups.get("status"),
+            "workflow_blocker_followups_validation": as_dict(workflow_followups.get("validation")).get("status"),
+            "workflow_blocker_followup_count": workflow_followup_summary.get("followup_count"),
+            "otel_recommendation_closeout_status": otel_recommendation_closeout.get("status"),
+            "otel_recommendation_closeout_validation": as_dict(otel_recommendation_closeout.get("validation")).get("status"),
+            "otel_recommendation_closeout_closed_count": closeout_summary.get("closed_count"),
+            "otel_recommendation_closeout_open_count": closeout_summary.get("open_count"),
+            "wf74_autonomy_router_status": autonomy_router.get("status"),
+            "wf74_autonomy_router_validation": as_dict(autonomy_router.get("validation")).get("status"),
+            "wf74_autonomy_router_pm_job_candidate_count": autonomy_router_summary.get("pm_job_candidate_count"),
+            "wf74_autonomy_router_workflow_followup_count": autonomy_router_summary.get("workflow_followup_count"),
+            "wf74_recommendation_to_route_conversion_rate": autonomy_router_kpis.get("recommendation_to_route_conversion_rate"),
+            "wf74_route_to_pm_job_conversion_rate": autonomy_router_kpis.get("route_to_pm_job_conversion_rate"),
+            "wf74_high_priority_overdue_count": autonomy_router_kpis.get("high_priority_overdue_count"),
+            "wf74_average_age_of_top_open_improvement_hours": autonomy_router_kpis.get("average_age_of_top_open_improvement_hours"),
+            "pm_implementation_job_queue_status": pm_job_queue.get("status"),
+            "pm_implementation_job_queue_validation": as_dict(pm_job_queue.get("validation")).get("status"),
+            "pm_implementation_job_count": pm_job_queue_summary.get("job_count"),
+            "pm_implementation_wf74_router_job_count": pm_job_queue_summary.get("wf74_router_job_count"),
+            "pm_implementation_auto_main_executable_job_count": pm_job_queue_summary.get("auto_main_executable_job_count"),
+            "pm_implementation_auto_cron_executable_job_count": pm_job_queue_summary.get("auto_cron_executable_job_count"),
+            "pm_control_packet_status": pm_control.get("status"),
+            "pm_control_packet_readiness_band": as_dict(pm_control_summary.get("pm_readiness")).get("readiness_band"),
             "owner_gated_review_status": owner_gated_queue.get("status"),
             "owner_gated_review_validation": as_dict(owner_gated_queue.get("validation")).get("status"),
             "owner_gated_item_count": owner_gated_summary.get("item_count"),
             "owner_gated_decision_required_count": owner_gated_summary.get("owner_decision_required_count"),
             "owner_gated_top_gate": owner_gated_summary.get("top_gate"),
             "owner_gated_top_title": owner_gated_summary.get("top_title"),
+            "wf74_decision_docket_status": decision_docket.get("status"),
+            "wf74_decision_docket_validation": as_dict(decision_docket.get("validation")).get("status"),
+            "wf74_decision_docket_row_count": decision_docket_summary.get("row_count"),
+            "wf74_decision_docket_fix_now_count": decision_docket_summary.get("fix_now_count"),
+            "wf74_decision_docket_hard_stop_count": decision_docket_summary.get("hard_stop_count"),
+            "wf74_proposal_dispatcher_status": proposal_dispatcher.get("status"),
+            "wf74_proposal_dispatcher_validation": as_dict(proposal_dispatcher.get("validation")).get("status"),
+            "wf74_dispatch_row_count": proposal_dispatcher_summary.get("dispatch_row_count"),
+            "wf74_dispatch_pm_job_count": proposal_dispatcher_summary.get("pm_job_dispatch_count"),
+            "wf74_dispatch_skill_workshop_proposal_count": proposal_dispatcher_summary.get("skill_workshop_proposal_count"),
+            "wf74_dispatch_owner_gated_packet_count": proposal_dispatcher_summary.get("owner_gated_packet_count"),
+            "wf74_dispatch_validator_ticket_count": proposal_dispatcher_summary.get("validator_ticket_count"),
+            "wf74_dispatch_monitor_only_count": proposal_dispatcher_summary.get("monitor_only_count"),
+            "wf74_dispatch_blocked_no_dispatch_count": proposal_dispatcher_summary.get("blocked_no_dispatch_count"),
+            "wf74_dispatch_pm_ledger_suppression_ticket_count": proposal_dispatcher_summary.get("pm_ledger_suppression_ticket_count"),
+            "wf74_dispatch_auto_apply_count": proposal_dispatcher_summary.get("auto_apply_count"),
             "otel_window_count": len(otel_windows),
             "otel_window_ids": [row.get("window_id") for row in otel_windows],
             "wf74_duplicate_cron_collectors": duplication_summary.get("recurring_component_collectors_outside_owner_count"),
             "wf74_one_shot_component_reminders": duplication_summary.get("one_shot_component_collectors_outside_owner_count"),
+            "learning_environment_status": learning_environment_status,
         },
         "steps": steps,
         "artifacts": artifacts,
@@ -370,6 +809,18 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "owner_surface": "WF74 / cron-automation-manager / future session packet",
             "what_changed": "WF74 scheduled collection refreshed model/run, finance-correctness, scorecard, artifact-index, harness, cron, and duplication-audit proof.",
             "warnings_or_blockers": [
+                *(
+                    ["cron control packet reports scheduler attention"]
+                    if any(step.get("name") == "cron_control_packet" for step in attention)
+                    else []
+                ),
+                *(["decision quality still blocked on WF55 outcome grades"] if learning_environment_status["decision_quality_status"] == "blocked" else []),
+                *(
+                    ["semantic decision-outcome claims remain WF55 maturity-gated"]
+                    if learning_environment_status["semantic_outcome_claim_status"] == "maturity_gated"
+                    else []
+                ),
+                *(["high-priority improvement backlog is overdue"] if learning_environment_status["high_priority_overdue_open_count"] else []),
                 *([] if model_summary.get("session_attribution_coverage") else ["session attribution coverage missing"]),
                 *([] if model_summary.get("cost_rows") else ["cost fields unavailable"]),
                 *([] if duplication_summary.get("expected_owner_ok") is not False else ["WF74 cron owner duplication risk"]),
@@ -380,7 +831,8 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "actionability": "monitor",
         },
         "next_safe_action": (
-            "Stamp session_id/run_id/model_path at cron/helper/PM producers; keep WF55 outcome grading gated."
+            "Use the WF74 router recommendation/action ledger to route domain quality residue into PM jobs; "
+            "keep cron technical health separate from finance answer readiness and do not mutate schedules."
         ),
     }
 
@@ -392,37 +844,59 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
             findings.append({"severity": "critical", "detail": f"authority boundary mismatch: {key}"})
     if as_dict(payload.get("summary")).get("steps_blocked", 0):
         findings.append({"severity": "critical", "detail": "one or more collection steps blocked"})
+    if as_dict(payload.get("summary")).get("steps_attention", 0):
+        findings.append({"severity": "warning", "detail": "one or more non-blocking diagnostic steps need attention"})
     if as_dict(payload.get("summary")).get("finance_response_quality_status") not in {None, "ok"}:
-        findings.append({"severity": "critical", "detail": "finance response quality slice is not ok"})
+        findings.append({
+            "severity": "warning",
+            "detail": "finance response quality slice is not ok; classify as domain repair residue, not an OTEL cron runner failure",
+        })
     if int(as_dict(payload.get("summary")).get("finance_repair_conveyor_implementation_blocker_count") or 0):
         findings.append({"severity": "critical", "detail": "finance repair conveyor reported implementation blockers"})
     if int(as_dict(payload.get("summary")).get("finance_repair_conveyor_control_plane_blocker_count") or 0):
         findings.append({"severity": "critical", "detail": "finance repair conveyor reported control-plane blockers"})
-    if as_dict(payload.get("summary")).get("tier_a_b_band_cron_guard_validation") == "error":
+    summary = as_dict(payload.get("summary"))
+    tier_guard_validation = summary.get("tier_a_b_band_cron_guard_validation")
+    stale_band_context_count = int(summary.get("tier_a_b_stale_complete_band_context_count") or 0)
+    if tier_guard_validation == "error":
         findings.append({"severity": "critical", "detail": "Tier A/B band freshness cron guard failed"})
     if as_dict(payload.get("summary")).get("token_usage_validation") == "critical":
         findings.append({"severity": "critical", "detail": "token usage ledger validation is critical"})
     if int(as_dict(payload.get("summary")).get("token_usage_event_count") or 0) <= 0:
         findings.append({"severity": "warning", "detail": "token usage ledger has no token-bearing rows"})
-    if int(as_dict(payload.get("summary")).get("tier_a_b_stale_complete_band_context_count") or 0):
-        findings.append({"severity": "critical", "detail": "Tier A/B complete band context is stale"})
+    if stale_band_context_count:
+        if tier_guard_validation == "warning":
+            findings.append({"severity": "warning", "detail": "Tier A/B complete band context is finance-domain repair debt"})
+        else:
+            findings.append({"severity": "critical", "detail": "Tier A/B complete band context is stale"})
     for artifact in payload.get("artifacts", []):
         if not artifact.get("exists"):
             findings.append({"severity": "critical", "detail": f"missing artifact: {artifact.get('path')}"})
     if as_dict(payload.get("summary")).get("otel_window_count") != 5:
         findings.append({"severity": "critical", "detail": "OTEL multi-window summary must expose five windows"})
-    if as_dict(payload.get("summary")).get("otel_field_depth_packet_status") != "owner_decision_required":
-        findings.append({"severity": "critical", "detail": "OTEL field-depth packet must remain owner-gated"})
+    if as_dict(payload.get("summary")).get("otel_field_depth_packet_status") not in {"owner_decision_required", "approved_enabled"}:
+        findings.append({"severity": "critical", "detail": "OTEL field-depth packet status must be owner-gated or approved-enabled"})
     if int(as_dict(payload.get("summary")).get("coding_outcome_ledger_rows") or 0) <= 0:
         findings.append({"severity": "critical", "detail": "coding outcome ledger must provide per-lane rows"})
+    if as_dict(payload.get("summary")).get("planning_quality_signal_status") in {None, "missing"}:
+        findings.append({"severity": "warning", "detail": "planning quality signal is missing"})
     if as_dict(payload.get("summary")).get("improvement_opportunity_queue_status") not in {None, "ok", "warning"}:
         findings.append({"severity": "critical", "detail": "WF74 improvement opportunity queue is not ok"})
     if as_dict(payload.get("summary")).get("improvement_ledger_validation") != "ok":
-        findings.append({"severity": "critical", "detail": "improvement ledger validation is not ok"})
+        findings.append({"severity": "warning", "detail": "improvement ledger validation is not ok"})
     if int(as_dict(payload.get("summary")).get("improvement_ledger_latest_open_count") or 0) <= 0:
         findings.append({"severity": "warning", "detail": "improvement ledger has no open carry-forward rows"})
     if int(as_dict(payload.get("summary")).get("improvement_ledger_high_priority_overdue_open_count") or 0):
         findings.append({"severity": "warning", "detail": "improvement ledger has overdue high-priority carry-forward rows"})
+    learning_environment = as_dict(as_dict(payload.get("summary")).get("learning_environment_status"))
+    if not learning_environment:
+        findings.append({"severity": "critical", "detail": "learning environment status split is missing"})
+    if learning_environment.get("runner_status") == "blocked":
+        findings.append({"severity": "critical", "detail": "learning environment runner status is blocked"})
+    if learning_environment.get("quality_gate_status") == "blocked":
+        findings.append({"severity": "warning", "detail": "learning environment has blocked quality gates"})
+    if learning_environment.get("anti_theater_status") == "proposal_loop_active_no_closure_proof":
+        findings.append({"severity": "warning", "detail": "learning loop has no closure proof"})
     if int(as_dict(payload.get("summary")).get("reflection_proposal_count") or 0) <= 0:
         findings.append({"severity": "critical", "detail": "WF74 proposal autopilot produced no proposals"})
     if int(as_dict(payload.get("summary")).get("reflection_auto_apply_count") or 0):
@@ -431,10 +905,65 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         findings.append({"severity": "critical", "detail": "WF74 auto-patch proposer is not ok"})
     if int(as_dict(payload.get("summary")).get("auto_patch_auto_apply_count") or 0):
         findings.append({"severity": "critical", "detail": "WF74 auto-patch proposer must not auto-apply"})
+    if as_dict(payload.get("summary")).get("prompt_variant_ledger_validation") not in {None, "ok"}:
+        findings.append({"severity": "warning", "detail": "WF74 prompt variant ledger validation is not ok"})
+    if int(as_dict(payload.get("summary")).get("prompt_variant_ledger_auto_apply_count") or 0):
+        findings.append({"severity": "critical", "detail": "WF74 prompt variant ledger observed auto-apply activity"})
+    if as_dict(payload.get("summary")).get("outcome_feedback_ingest_validation") not in {None, "ok", "warning"}:
+        findings.append({"severity": "warning", "detail": "WF74 outcome feedback ingest validation is not ok or warning"})
+    if as_dict(payload.get("summary")).get("workflow_advancement_scorecard_validation") not in {"ok", "warning"}:
+        findings.append({"severity": "critical", "detail": "workflow advancement scorecard validation is not ok or warning"})
+    elif as_dict(payload.get("summary")).get("workflow_advancement_scorecard_validation") == "warning":
+        findings.append({"severity": "warning", "detail": "workflow advancement scorecard has warning-level source residue"})
+    if as_dict(payload.get("summary")).get("workflow_blocker_followups_validation") != "ok":
+        findings.append({"severity": "critical", "detail": "workflow blocker followup validation is not ok"})
+    if as_dict(payload.get("summary")).get("otel_recommendation_closeout_validation") not in {"ok", "warning"}:
+        findings.append({"severity": "critical", "detail": "OTEL recommendation closeout validation is not ok or warning"})
+    elif as_dict(payload.get("summary")).get("otel_recommendation_closeout_validation") == "warning":
+        findings.append({"severity": "warning", "detail": "OTEL recommendation closeout has owner-gated or hygiene residue"})
+    router_validation = as_dict(payload.get("summary")).get("wf74_autonomy_router_validation")
+    router_candidates = int(as_dict(payload.get("summary")).get("wf74_autonomy_router_pm_job_candidate_count") or 0)
+    router_route_rate = as_dict(payload.get("summary")).get("wf74_recommendation_to_route_conversion_rate")
+    if router_validation not in {"ok", "warning"}:
+        findings.append({"severity": "critical", "detail": "WF74 autonomy work router validation is not ok or warning"})
+    elif router_validation == "warning":
+        if router_candidates > 0 and router_route_rate in {1.0, None}:
+            findings.append({"severity": "warning", "detail": "WF74 autonomy router has warning-level routed source residue"})
+        else:
+            findings.append({"severity": "critical", "detail": "WF74 autonomy work router warning lacks routed PM proof"})
+    if int(as_dict(payload.get("summary")).get("wf74_autonomy_router_pm_job_candidate_count") or 0) <= 0:
+        findings.append({"severity": "critical", "detail": "WF74 autonomy work router produced no PM job candidates"})
+    if as_dict(payload.get("summary")).get("wf74_recommendation_to_route_conversion_rate") not in {1.0, None}:
+        findings.append({"severity": "critical", "detail": "WF74 routable recommendations were not fully routed"})
+    if as_dict(payload.get("summary")).get("pm_implementation_job_queue_validation") != "ok":
+        findings.append({"severity": "critical", "detail": "PM implementation job queue validation is not ok"})
+    if int(as_dict(payload.get("summary")).get("pm_implementation_wf74_router_job_count") or 0) <= 0:
+        findings.append({"severity": "critical", "detail": "PM implementation queue did not ingest WF74 router jobs"})
+    if int(as_dict(payload.get("summary")).get("pm_implementation_auto_main_executable_job_count") or 0) <= 0:
+        findings.append({"severity": "warning", "detail": "PM implementation queue has no auto-main executable jobs"})
+    if int(as_dict(payload.get("summary")).get("pm_implementation_auto_cron_executable_job_count") or 0) <= 0:
+        findings.append({"severity": "warning", "detail": "PM implementation queue has no auto-cron executable jobs"})
     if as_dict(payload.get("summary")).get("owner_gated_review_validation") != "ok":
         findings.append({"severity": "critical", "detail": "owner-gated action review queue validation is not ok"})
     if int(as_dict(payload.get("summary")).get("owner_gated_decision_required_count") or 0) <= 0:
         findings.append({"severity": "warning", "detail": "owner-gated action review queue has no decision items"})
+    if as_dict(payload.get("summary")).get("wf74_decision_docket_validation") not in {"ok", "warning"}:
+        findings.append({"severity": "critical", "detail": "WF74 decision docket validation is not ok or warning"})
+    if int(as_dict(payload.get("summary")).get("wf74_decision_docket_row_count") or 0) <= 0:
+        findings.append({"severity": "warning", "detail": "WF74 decision docket produced no rows"})
+    if int(as_dict(payload.get("summary")).get("wf74_decision_docket_hard_stop_count") or 0):
+        findings.append({"severity": "warning", "detail": "WF74 decision docket has hard-stop rows"})
+    dispatcher_validation = as_dict(payload.get("summary")).get("wf74_proposal_dispatcher_validation")
+    if dispatcher_validation not in {"ok", "warning"}:
+        findings.append({"severity": "critical", "detail": "WF74 proposal dispatcher validation is not ok or warning"})
+    if int(as_dict(payload.get("summary")).get("wf74_dispatch_row_count") or 0) <= 0:
+        findings.append({"severity": "warning", "detail": "WF74 proposal dispatcher produced no rows"})
+    if int(as_dict(payload.get("summary")).get("wf74_dispatch_auto_apply_count") or 0):
+        findings.append({"severity": "critical", "detail": "WF74 proposal dispatcher observed auto-apply activity"})
+    if int(as_dict(payload.get("summary")).get("wf74_dispatch_blocked_no_dispatch_count") or 0):
+        findings.append({"severity": "warning", "detail": "WF74 proposal dispatcher has blocked/no-dispatch rows"})
+    if int(as_dict(payload.get("summary")).get("wf74_dispatch_pm_ledger_suppression_ticket_count") or 0):
+        findings.append({"severity": "warning", "detail": "WF74 proposal dispatcher surfaced PM completion-ledger suppression tickets"})
     if as_dict(payload.get("summary")).get("wf74_duplicate_cron_collectors") not in {0, None}:
         findings.append({"severity": "critical", "detail": "duplicate WF74 cron component collectors detected"})
     if as_dict(payload.get("summary")).get("wf74_one_shot_component_reminders") not in {0, None}:
@@ -451,16 +980,23 @@ def render_md(payload: dict[str, Any]) -> str:
         "",
         f"- Generated: {payload.get('generated_at_utc')}",
         f"- Status: {payload.get('status')}",
-        f"- Steps ok/blocked: {summary.get('steps_ok')} / {summary.get('steps_blocked')}",
+        f"- Steps ok/blocked/attention: {summary.get('steps_ok')} / {summary.get('steps_blocked')} / {summary.get('steps_attention')}",
         f"- Model attribution coverage: {summary.get('model_attribution_coverage')}",
         f"- Session attribution coverage: {summary.get('session_attribution_coverage')}",
         f"- Token usage: {summary.get('token_usage_total_tokens')} tokens / events {summary.get('token_usage_event_count')} / pricing {summary.get('token_usage_pricing_status')}",
         f"- Finance correctness rows: {summary.get('finance_correctness_rows')}",
         f"- Finance response quality: {summary.get('finance_response_quality_status')} ({summary.get('finance_response_quality_average_score')})",
         f"- OTEL learning loop: {summary.get('otel_learning_loop_status')} / privacy {summary.get('otel_learning_loop_privacy_scan')} / recs {summary.get('otel_learning_loop_recommendation_count')}",
+        f"- Coding ex-post: graded {summary.get('coding_outcome_ex_post_graded_count')} / pending {summary.get('coding_outcome_later_review_pending_count')} / first-pass-clean {summary.get('coding_outcome_first_pass_clean_rate')}",
+        f"- Planning quality: {summary.get('planning_quality_signal_status')} / clean-rate {summary.get('planning_quality_followthrough_clean_rate')} / gaps {summary.get('planning_quality_followthrough_gap_count')}",
         f"- Improvement ledger: {summary.get('improvement_ledger_status')} / rows {summary.get('improvement_ledger_rows')} / open {summary.get('improvement_ledger_latest_open_count')}",
+        f"- Closure split: applied-fix {summary.get('improvement_ledger_applied_fix_closed_count')} / signal-absence {summary.get('improvement_ledger_signal_absence_closed_count')} / other {summary.get('improvement_ledger_other_closed_count')}",
+        f"- Autonomy router: {summary.get('wf74_autonomy_router_status')} / PM candidates {summary.get('wf74_autonomy_router_pm_job_candidate_count')} / route-rate {summary.get('wf74_recommendation_to_route_conversion_rate')}",
+        f"- PM bridge: jobs {summary.get('pm_implementation_job_count')} / WF74 jobs {summary.get('pm_implementation_wf74_router_job_count')} / auto-main {summary.get('pm_implementation_auto_main_executable_job_count')} / auto-cron {summary.get('pm_implementation_auto_cron_executable_job_count')}",
+        f"- Learning environment: {as_dict(summary.get('learning_environment_status')).get('runner_status')} / quality {as_dict(summary.get('learning_environment_status')).get('quality_gate_status')} / anti-theater {as_dict(summary.get('learning_environment_status')).get('anti_theater_status')}",
         f"- Improvement SLA: overdue {summary.get('improvement_ledger_overdue_open_count')} / due soon {summary.get('improvement_ledger_due_soon_open_count')} / escalation {summary.get('improvement_ledger_escalation_level')}",
         f"- Owner-gated decisions: {summary.get('owner_gated_decision_required_count')} / top {summary.get('owner_gated_top_gate')}: {summary.get('owner_gated_top_title')}",
+        f"- WF74 dispatcher: rows {summary.get('wf74_dispatch_row_count')} / PM {summary.get('wf74_dispatch_pm_job_count')} / validators {summary.get('wf74_dispatch_validator_ticket_count')} / owner {summary.get('wf74_dispatch_owner_gated_packet_count')} / monitor {summary.get('wf74_dispatch_monitor_only_count')} / blocked {summary.get('wf74_dispatch_blocked_no_dispatch_count')} / auto-apply {summary.get('wf74_dispatch_auto_apply_count')}",
         f"- WF74 active tracks: {', '.join(summary.get('wf74_active_tracks') or [])}",
     ]
     return "\n".join(lines) + "\n"
@@ -474,18 +1010,45 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--include-harness", action="store_true")
     parser.add_argument("--json-out", default=str(DEFAULT_JSON))
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--cron-nonblocking-domain-exit",
+        action="store_true",
+        help=(
+            "When --validate is set, return exit 0 for fully classified domain blockers "
+            "while preserving the blocked artifact. Technical or unclassified criticals still fail."
+        ),
+    )
     args = parser.parse_args(argv)
 
     steps: list[dict[str, Any]] = []
-    for name, command, timeout in command_plan(args.include_harness):
-        step = run_step(name, command, timeout)
+    for index, (name, command, timeout) in enumerate(command_plan(args.include_harness), start=1):
+        step = run_step(name, command, timeout, index)
         steps.append(step)
-        if step["status"] != "ok":
+        if is_blocking_step_failure(step):
             break
 
     payload = build_payload(steps)
     validation = validate(payload)
     payload["validation"] = validation
+    domain_reason = classified_domain_blocker_reason(payload)
+    scheduler_exit = scheduler_exit_decision(
+        payload,
+        validation,
+        allow_domain_blocked_exit_zero=bool(
+            args.validate
+            and (
+                args.cron_nonblocking_domain_exit
+                or domain_reason == "classified_finance_response_decision_readiness_debt"
+            )
+        ),
+    )
+    payload["scheduler_exit"] = scheduler_exit
+    payload["summary"]["scheduler_exit_status"] = scheduler_exit["status"]
+    payload["summary"]["scheduler_exit_reason"] = scheduler_exit["reason"]
+    payload["summary"]["scheduler_exit_domain_blocked_nonfatal"] = scheduler_exit["domain_blocked_nonfatal"]
+    if scheduler_exit["status"] == "domain_blocked_nonfatal":
+        payload["status"] = "domain_attention"
+        payload["summary"]["domain_attention_status"] = "nonfatal"
     out = Path(args.json_out)
     if args.write:
         atomic_write_json(out, payload)
@@ -497,13 +1060,14 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"status={payload['status']} validation={validation['status']} "
             f"steps_ok={summary.get('steps_ok')} steps_blocked={summary.get('steps_blocked')} "
-            f"model_attr={summary.get('model_attribution_coverage')} finance_rows={summary.get('finance_correctness_rows')}"
+            f"model_attr={summary.get('model_attribution_coverage')} finance_rows={summary.get('finance_correctness_rows')} "
+            f"scheduler_exit={scheduler_exit['status']}"
         )
         for finding in validation["findings"]:
             print(f"  [{finding['severity']}] {finding['detail']}")
 
-    if args.validate and validation["status"] == "critical":
-        return 1
+    if args.validate:
+        return int(scheduler_exit["returncode"])
     return 0
 
 

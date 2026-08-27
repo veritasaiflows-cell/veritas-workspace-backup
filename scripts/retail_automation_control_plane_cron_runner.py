@@ -117,6 +117,8 @@ def command_plan() -> list[tuple[str, list[str], int]]:
         ("retail_truth_routing_contract", [sys.executable, "scripts\\retail_truth_routing_contract.py", "--write", "--validate"], 180),
         ("retail_answer_harness", [sys.executable, "scripts\\retail_answer_harness.py", "--write", "--validate"], 180),
         ("retail_saas_fixture_demo_seeded_bad", [sys.executable, "scripts\\retail_saas_fixture_demo.py", "--write-seeded-bad"], 180),
+        ("wf75_renderer_export_regression", [sys.executable, "scripts\\wf75_renderer_export_regression.py", "--write", "--validate"], 300),
+        ("retail_customer_output_decision_packet", [sys.executable, "scripts\\retail_customer_output_decision_packet.py", "--write", "--validate"], 180),
         ("wf78_phase_runner_all_safe", [sys.executable, "scripts\\wf78_phase_runner.py", "--phase", "all-safe", "--write", "--validate"], 420),
         ("intraday_quote_snapshot_proof", [sys.executable, "scripts\\intraday_quote_snapshot_proof.py"], 180),
         ("market_execution_readiness_cron_hardening", [sys.executable, "scripts\\market_execution_readiness_cron_hardening.py", "--write", "--validate"], 180),
@@ -125,7 +127,7 @@ def command_plan() -> list[tuple[str, list[str], int]]:
         ("cron_freshness_spine", [sys.executable, "scripts\\cron_freshness_spine.py", "--write", "--validate"], 180),
         ("automation_stack_hardening_pass", [sys.executable, "scripts\\automation_stack_hardening_pass.py", "--write"], 240),
         ("retail_automation_control_plane", [sys.executable, "scripts\\retail_automation_control_plane.py", "--write", "--validate"], 240),
-        ("pm_program_state", [sys.executable, "scripts\\pm_program_state.py", "--write", "--write-db", "--validate"], 240),
+        ("pm_program_state", [sys.executable, "scripts\\pm_program_state.py", "--write", "--validate"], 240),
         ("pm_cockpit_validate", ["node", "--experimental-strip-types", "apps\\pm-control-cockpit\\src\\server.ts", "--validate"], 240),
     ]
 
@@ -146,6 +148,7 @@ def build_summary() -> dict[str, Any]:
     contract = load(TMP / "retail-truth-routing-contract.json")
     harness = load(TMP / "retail-answer-harness.json")
     control = load(TMP / "retail-automation-control-plane.json")
+    renderer = load(TMP / "wf75-renderer-export-regression.json")
     hardening = load(TMP / "automation-stack-hardening-pass.json")
     phase = load(TMP / "wf78-phase-runner-current.json")
     queue = load(TMP / "wf78-capital-review-queue.json")
@@ -160,6 +163,10 @@ def build_summary() -> dict[str, Any]:
         "answer_harness_seeded_bad_cases": as_dict(harness.get("summary")).get("seeded_bad_cases"),
         "retail_control_status": control.get("status"),
         "retail_control_validation": as_dict(control.get("validation")).get("status"),
+        "renderer_export_status": renderer.get("status"),
+        "renderer_export_validation": as_dict(renderer.get("validation")).get("status"),
+        "renderer_pilot_count": as_dict(renderer.get("router_renderer_export_guard")).get("pilot_count"),
+        "renderer_external_delivery_allowed": as_dict(renderer.get("router_renderer_export_guard")).get("customer_or_external_delivery_allowed"),
         "quiet_cron_mode": as_dict(control.get("quiet_cron_summary")).get("mode"),
         "automation_hardening_status": hardening.get("status"),
         "automation_hardening_validation": as_dict(hardening.get("validation")).get("status"),
@@ -193,6 +200,7 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         "retail_contract_validation",
         "answer_harness_validation",
         "retail_control_validation",
+        "renderer_export_validation",
         "automation_hardening_validation",
         "market_readiness_validation",
         "pm_program_validation",
@@ -207,6 +215,10 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("capital_review_queue_capital_approved_nonzero")
     if int_or_zero(summary.get("trade_execution_approved_count")) != 0:
         errors.append("capital_review_queue_trade_execution_approved_nonzero")
+    if int_or_zero(summary.get("renderer_pilot_count")) < 3:
+        errors.append("renderer_pilot_count_below_3")
+    if summary.get("renderer_external_delivery_allowed") is not False:
+        errors.append("renderer_external_delivery_authority_widened")
     if summary.get("quiet_cron_mode") not in {"NO_REPLY", None}:
         warnings.append(f"retail_control_quiet_cron_mode:{summary.get('quiet_cron_mode')}")
     return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
@@ -225,6 +237,7 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             artifact("tmp/retail-truth-routing-contract.json"),
             artifact("tmp/retail-answer-harness.json"),
             artifact("tmp/retail-automation-control-plane.json"),
+            artifact("tmp/wf75-renderer-export-regression.json"),
             artifact("tmp/automation-stack-hardening-pass.json"),
             artifact("tmp/wf78-phase-runner-current.json"),
             artifact("tmp/wf78-capital-review-queue.json"),

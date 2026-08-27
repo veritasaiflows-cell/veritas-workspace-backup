@@ -6595,6 +6595,132 @@
       "reference_count_at_delete": 0,
       "live_reference_count_at_delete": 0,
       "deleted_at_utc": "2026-05-31T08:18:28Z"
+    },
+    {
+      "path": "tmp/research-automation/intake-packet-samples.json",
+      "bytes": 4881,
+      "sha256": "8f7fb1241094da5fa220ed51e18d49a874f6a24c21a87cd0acac1671f4c808d4",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/intake-packet-samples.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/freshness-pilot-2026-05-03.json",
+      "bytes": 4183,
+      "sha256": "c6211b6f7e2ee65394fdee1c932a318466e757bdcd9adcefae6eca94112889a8",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/freshness-pilot-2026-05-03.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/intake-packets-20260504-051443.json",
+      "bytes": 8952,
+      "sha256": "56dcb016b9b0a78bf8fe74c4d68c9ec0a584cab70856913dd37f73a2f25ad10c",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/intake-packets-20260504-051443.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/intake-packets-20260506-021940.json",
+      "bytes": 21280,
+      "sha256": "c283441f4dd1f450f2cfdd32d8335f3954ecf9277cd5f634bd5f756a19b6e932",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/intake-packets-20260506-021940.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/raw-events-wf21-phase1-2026-05-05.json",
+      "bytes": 8199,
+      "sha256": "9d6f047868da05402d2cfa7018e60ada71aabf59e6e17e43dc05fde665bd64a1",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/raw-events-wf21-phase1-2026-05-05.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/intake-packets-20260506-152048.json",
+      "bytes": 21144,
+      "sha256": "d5599caa246d5c7a1d185262e5737cc4a362439701daa4cbff7875c73db5bc15",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/intake-packets-20260506-152048.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/raw-events-wf21-sunday-phase2-2026-05-06.json",
+      "bytes": 7769,
+      "sha256": "f0b80084c1063a38543bc15e38769fcb89c3ff297be731828064945a836a08db",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/raw-events-wf21-sunday-phase2-2026-05-06.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/freshness-patch-candidates-20260506-204259.json",
+      "bytes": 3321,
+      "sha256": "2bb5f400c9a093d1984701d66306c33155162126913d128b2f1ddaf922ec65c2",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/freshness-patch-candidates-20260506-204259.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
+    },
+    {
+      "path": "tmp/research-automation/wf22-phase2-etn-dry-run-input-20260506.json",
+      "bytes": 2655,
+      "sha256": "7c172785ab7987ff6f8c94e2714632c79f3a3bf863b27101fa38778330bb40ef",
+      "proposal_phase": "phase_6_candidate_after_family_review",
+      "proposal_class": "unreferenced_tmp_machine_artifact",
+      "reference_count_at_delete": 0,
+      "active_reference_count_at_delete": 0,
+      "wf88_microbatch": "tmp_stale_research_automation_samples",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "rollback_copy": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z/tmp/research-automation/wf22-phase2-etn-dry-run-input-20260506.json",
+      "deleted_at_utc": "2026-06-27T07:02:50Z"
     }
   ],
   "runs": [
@@ -6693,7 +6819,67 @@
         "tombstone_records_added": 24
       },
       "report": "tmp/tmp-lifecycle-phase2-6-delete-apply-report.json"
+    },
+    {
+      "generated_at_utc": "2026-06-27T07:02:50Z",
+      "status": "applied_wf88_tmp_delete_microbatch",
+      "approval_reference": "Randall Telegram message 5101, 2026-06-26 23:54:47 MST: approved WF88 deletion/cleanup; Veritas scoped approval to the 9-file tmp microbatch in tmp/wf88-delete-readiness-packet.json.",
+      "source_packet": "tmp/wf88-delete-readiness-packet.json",
+      "report": "tmp/wf88-delete-microbatch-apply-report.json",
+      "rollback_dir": "state/tmp-lifecycle-rollback/wf88-tmp-delete-microbatch/20260627T070250Z",
+      "summary": {
+        "deleted_count": 9,
+        "deleted_bytes": 82384,
+        "rollback_copy_count": 9,
+        "active_reference_count_at_delete": 0,
+        "script_delete_count": 0,
+        "db_archive_count": 0,
+        "cron_mutation_count": 0
+      }
     }
   ],
-  "updated_at_utc": "2026-05-31T08:18:28Z"
+  "updated_at_utc": "2026-06-27T16:12:58Z",
+  "events": [
+    {
+      "event": "wf88_db_duplicate_source_delete",
+      "generated_at_utc": "2026-06-27T16:12:58Z",
+      "dry_run": false,
+      "approval_reference": "Telegram message 5128, 2026-06-27 09:06:35 MST: \"Yes, approved to fully delete and continue with additional scripts.\"",
+      "records": [
+        {
+          "path": "tmp/wf72-entry-stop-sql-activation-rollback-drill.sqlite",
+          "archive_destination": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-drill/wf72-entry-stop-sql-activation-rollback-drill.sqlite",
+          "expected_sha256": "3412c0d9b056047a42783ce040e699a024bc79654a8d33a0a6258f30ccb2703e",
+          "sha256_before": "3412c0d9b056047a42783ce040e699a024bc79654a8d33a0a6258f30ccb2703e",
+          "size_bytes": 21667840,
+          "rollback_copy": "state/tmp-lifecycle-rollback/wf88-db-duplicate-source-delete/20260627T161258Z/tmp/wf72-entry-stop-sql-activation-rollback-drill.sqlite",
+          "deleted": true,
+          "verified_missing_after": true,
+          "error": null
+        },
+        {
+          "path": "tmp/wf72-entry-stop-sql-activation-rollback-drill.sqlite-wal",
+          "archive_destination": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-drill/wf72-entry-stop-sql-activation-rollback-drill.sqlite-wal",
+          "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sha256_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0,
+          "rollback_copy": "state/tmp-lifecycle-rollback/wf88-db-duplicate-source-delete/20260627T161258Z/tmp/wf72-entry-stop-sql-activation-rollback-drill.sqlite-wal",
+          "deleted": true,
+          "verified_missing_after": true,
+          "error": null
+        },
+        {
+          "path": "tmp/wf72-entry-stop-sql-activation-rollback-drill.sqlite-shm",
+          "archive_destination": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-drill/wf72-entry-stop-sql-activation-rollback-drill.sqlite-shm",
+          "expected_sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+          "sha256_before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+          "size_bytes": 32768,
+          "rollback_copy": "state/tmp-lifecycle-rollback/wf88-db-duplicate-source-delete/20260627T161258Z/tmp/wf72-entry-stop-sql-activation-rollback-drill.sqlite-shm",
+          "deleted": true,
+          "verified_missing_after": true,
+          "error": null
+        }
+      ]
+    }
+  ]
 }

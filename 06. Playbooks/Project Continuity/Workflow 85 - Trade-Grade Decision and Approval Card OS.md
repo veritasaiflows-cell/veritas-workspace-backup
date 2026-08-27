@@ -22,6 +22,54 @@ Owner scripts:
 
 WF85 consumes WF84 as read-only input. It does not replace WF84, WF78, WF67, canonical notes, or owner approval.
 
+## 2026-06-26 Decision OS Review Packet
+
+Randall approved the narrow WF85 review/proof implementation slice after PM classified the original WF85 implementation job as completed-by-ledger. The useful next layer is now a compact read-only review packet, not a reopened broad build.
+
+Implemented `scripts/wf85_decision_os_review_packet.py` and `scripts/test_wf85_decision_os_review_packet.py`.
+
+Current output:
+- `tmp/wf85-decision-os-review-packet.json`
+- `tmp/wf85-decision-os-review-packet.md`
+
+Current live packet state:
+- Status: warning-only.
+- WF85 cards: 300.
+- Full-answer parity surface: 300 built answers, 17 required sections, 0 validation errors.
+- Approval-card drafts: 0.
+- Capital-review candidates: 0.
+- Authority violations: 0.
+- Repair rows: 300 finance-domain rows, 0 implementation blockers.
+- Tier A/B rows: 59.
+- Tier A/B timing buckets: 1 review-ready waiting fresh quote, 19 repair-first, 7 review-ready suppressed, 13 wait/no-chase, 19 below-stop or invalidation blocked.
+- Ranked next action: refresh quote/evidence context for XLB, then source-open/owner-lineage repair for the highest-value Tier A/B repair names.
+
+Validation proof:
+- `python scripts\trade_grade_decision_cards.py --write --validate`
+- `python scripts\trade_grade_repair_conveyor.py --write --validate`
+- `python scripts\wf85_deployment_timing_gate.py --write --validate`
+- `python scripts\trade_grade_full_answer_assembler.py --all-wf84 --write --validate`
+- `python scripts\test_wf85_decision_os_review_packet.py`
+- `python scripts\wf85_decision_os_review_packet.py --write --write-md --validate`
+- `python scripts\workflow_router.py WF85 --answer all --validate`
+- `python scripts\pm_control_packet.py --write --write-db --validate`
+
+Release-contract limit: broad implementation closeout remains blocked by pre-existing Go implementation-profile residue: SQL/source-lineage warning residue and missing UTC `memory/2026-06-27.md` expectation. This is separate release/SQL metadata cleanup, not part of the WF85 review packet.
+
+Boundary: this packet ranks review and repair work only. It generates no approval-card drafts, makes no canon/portfolio/cash/sizing/risk-rule mutation, submits no paper/live/brokerage/account action, and does not infer Randall approval.
+
+## 2026-06-19 SQL/JSON internal decision-canon cutover
+
+WF85 is now wired for the guarded internal SQL/JSON decision-canon posture: internal review-only consumers prefer `state/finance/finance-canon.sqlite` through `scripts/finance_sql_canon_access.py` plus JSON proof packets, while WF84 remains the normalized data plane and WF78 remains the non-capital freshness/tier-routing feeder.
+
+Current proof:
+- `python scripts\trade_grade_full_answer_assembler.py --all-wf84 --write --validate` passed for `200/200` tickers with validation errors `0`.
+- `python scripts\trade_grade_decision_cards.py --write --validate` passed with authority validation clean.
+- `python scripts\trade_grade_os_freshness_cron_runner.py --write --validate` passed `27/27` steps with validation ok. WF78 tier-weighted true-freshness is `195/200` against the `160` threshold, so trade-grade data readiness is green.
+- WF85 review-ready count remains `0`, approval-card draft count `0`, and repair candidates `0`; this is correct fail-closed decision behavior and not owner approval or execution authority.
+
+Decision rule: SQL/JSON cutover makes the internal route cleaner and more durable, and the current data-readiness gate is green. It still does not make trade-grade decisions deployable while WF85 has no review-ready rows or approval drafts. Generated cards/full answers remain review-only; no card, score, SQL row, or draft is Randall approval.
+
 Challenger review was integrated into the contract on 2026-06-08. The key Phase 1 rule is now fail-closed: `decision_queue_state.primary_state` wins over optimistic `routing_state_current.auto_state`. `A-READY` cannot become `review_ready` or `approval_card_draft` while primary state is `blocked_missing_freshness`, and below-stop/invalidation states cannot become approval-card drafts even when other evidence is fresh.
 
 Phase 1 builder/gate implementation landed on 2026-06-08. Current proof emits 200 review-only cards, 0 approval-card drafts, 0 authority/vocabulary violations, and a fail-closed source/freshness posture. The first run classifies 9 below-stop/invalidation rows, 162 missing-band/source-open repair rows, and 29 freshness-blocked rows; WF67 paper guard context is stale, so request/draft handoff remains blocked.
@@ -424,6 +472,19 @@ python scripts\changed_file_validator_router.py --write --validate
 - Cron freshness contract now requires `tmp/finance-market-deployment-operating-loop.json` for both Tier A intraday and late-session probes, so the individual jobs cannot look green while the unified trade-readiness chain is unproven.
 - Current live local proof after creation: `final_market_deployment_state=watch_repair_or_wait`, `operator_action=NO_REPLY`, validation `ok`; this means scheduled probes should continue, but no capital-deployment opportunity is clean enough for owner-review execution prep right now.
 - Boundary preserved: autonomous tier movement remains non-capital derived routing only. The loop grants no capital approval, paper/live execution, account action, money movement, portfolio/canon/cash/sizing/risk-rule mutation, kill-switch lifecycle authority, or owner approval inference.
+
+## 2026-06-19 UTC Capital-Deployment Band Integrity Repair
+
+- Randall escalated the recurring NVDA/GOOG/VRT band drift class after the band integrity validator became critical on GOOG, NVDA, and VRT.
+- Root cause was downstream artifact lifecycle drift, not a bad current WF78 band: refreshed WF78 and decision-factory bands were correct, while older owner-card/WF67 request/recommendation surfaces could retain stale bands and still appear usable.
+- Hardened owner-card prep so stale cards and WF67 request artifacts are explicitly superseded when current WF78 gate state changes or request generation is blocked.
+- Hardened WF67 request generation so embedded promotion-gate bands must exactly match the current owner-card risk band before any request artifact is written.
+- Hardened the capital recommendation validator so `band_source=wf78_capital_review_queue` becomes a checked contract against the current WF78 queue.
+- Hardened the band integrity validator so superseded artifacts remain audit-visible but no longer keep live domain status in warning.
+- Rebuilt WF78 queue, owner-card prep, capital recommendation packets, decision factory, and final band integrity proof.
+- Final proof: `tmp/capital-deployment-band-integrity-validator.json` reports `status=ok`, `critical_count=0`, `warning_count=0`, and `mismatch_tickers=[]`.
+- Current decision factory proof: `tmp/finance-decision-factory.json` status `ok`, candidates `3`, ready `0`, deferred `3`; no capital/execution approval was created.
+- Boundary preserved: no capital deployment approval, no paper/live order, no brokerage/account action, no money movement, no portfolio/canon/cash/sizing/risk-rule mutation, and no owner approval inference.
 
 ## Stop Lines
 

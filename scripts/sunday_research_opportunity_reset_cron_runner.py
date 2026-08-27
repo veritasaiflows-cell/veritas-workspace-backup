@@ -20,6 +20,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -320,6 +321,8 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         "json_sql_index": sql_index,
     }.items():
         errors.extend(false_flag_errors(label, authority_map(artifact_payload)))
+    if as_dict(payload.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
 
     return {
         "status": "error" if errors else "warning" if warnings else "ok",
@@ -335,6 +338,7 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
         "status": "draft",
         "operator_action": "NO_REPLY",
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_context": finance_sql_canon_guard_context(consumer="scripts/sunday_research_opportunity_reset_cron_runner.py"),
         "summary": build_summary(),
         "steps": steps,
         "artifacts": [artifact(path) for path in REQUIRED_ARTIFACTS],

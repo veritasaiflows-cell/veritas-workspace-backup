@@ -1,0 +1,68 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "47b3a105-b0c7-4f34-b93b-3db1da1b22c5",
+  "name": "Finance - Intraday Ticker Data Repair Controller",
+  "required": true,
+  "owner_workflow": "WF78/WF84/WF85 data-quality resilience",
+  "contract_reason": "A bounded same-day repair coordinator prevents a ticker-level data mismatch from obscuring fresh independent market work while preserving a fail-closed source-open path for the affected data.",
+  "description": "Review-only 15-minute same-day data-quality controller. Consolidates ticker repair proof and runs only the existing bounded quote-proof recheck when stale quote evidence exists. No fundamental source mapping, canon, portfolio, capital, trade, paper/live, brokerage, account, or approval action.",
+  "enabled": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "*/15 6-13 * * 1-5",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts/ticker_data_repair_controller.py",
+      "--execute-safe",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 360
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/ticker-data-repair-controller.json",
+    "tmp/fundamental-metrics-validation.json",
+    "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "tmp/intraday-alerts/quote-snapshot-proof-validation.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "fundamental_source_mapping_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-11T03:33:32Z",
+  "contract_update_reason": "Initial contract for approved review-only intraday data-quality resilience cadence."
+}

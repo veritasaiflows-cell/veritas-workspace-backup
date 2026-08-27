@@ -258,6 +258,70 @@ def base_templates() -> list[dict[str, Any]]:
     ]
 
 
+def pm_job_workflow_id(job: dict[str, Any]) -> str:
+    lane_id = str(job.get("lane_id") or "")
+    implementation_class = str(job.get("implementation_class") or "")
+    if lane_id in {"trade_grade_decision_os"} or implementation_class == "trade_grade_decision_os":
+        return "WF85"
+    if lane_id in {"finance_os_data_model", "finance_engine"} or implementation_class == "canonical_finance_data_plane":
+        return "WF84"
+    if lane_id.startswith("wf78") or implementation_class.startswith("wf78") or lane_id in {"ticker_card_refresh", "tier_promotion_review"}:
+        return "WF78"
+    if lane_id.startswith("wf75") or lane_id in {"smb_workflow_clarity", "retail_truth_routing"}:
+        return "WF75"
+    if lane_id == "parallel_lane_orchestration":
+        return "WF73"
+    return "PM"
+
+
+def pm_job_templates(pm_queue: dict[str, Any]) -> list[dict[str, Any]]:
+    templates: list[dict[str, Any]] = []
+    for job in as_list(pm_queue.get("jobs")):
+        job_dict = as_dict(job)
+        capabilities = as_dict(job_dict.get("automation_capabilities"))
+        if job_dict.get("status") != "ready_for_main_or_helper":
+            continue
+        department = str(job_dict.get("department") or "")
+        if capabilities.get("owner_gate_required") is True:
+            continue
+        if capabilities.get("helper_lane_allowed") is not True:
+            continue
+        job_id = str(job_dict.get("job_id") or "")
+        if not job_id:
+            continue
+        target_files = [normalize_path(str(path)) for path in as_list(job_dict.get("target_files")) if str(path).strip()]
+        proof_artifact = f"tmp/parallel-lanes/{job_id}.json"
+        allowed_writes = [proof_artifact, *target_files]
+        read_first = target_files[:8] or [normalize_path(str(path)) for path in as_list(job_dict.get("owner_surface"))]
+        workflow_id = pm_job_workflow_id(job_dict)
+        templates.append({
+            "workflow_id": workflow_id,
+            "workstream_id": job_id,
+            "title": str(job_dict.get("title") or job_id),
+            "reason": "PM implementation queue job is ready for main/helper pickup and has explicit capability flags, target files, proof commands, and stop lines.",
+            "read_first": read_first,
+            "allowed_writes": allowed_writes,
+            "acceptance_commands": [str(command) for command in as_list(job_dict.get("proof_commands"))],
+            "deliverable": str(job_dict.get("objective") or job_dict.get("title") or "Complete bounded PM implementation job."),
+            "from_pm_job": True,
+            "pm_job_id": job_id,
+            "department": department,
+            "department_owner": job_dict.get("department_owner"),
+            "owner_workflow": job_dict.get("owner_workflow"),
+            "accountable_integrator": job_dict.get("accountable_integrator"),
+            "allowed_execution_mode": job_dict.get("allowed_execution_mode"),
+            "implementation_class": job_dict.get("implementation_class"),
+            "collision_group": job_dict.get("collision_group"),
+            "validation_budget": job_dict.get("validation_budget"),
+            "closeout_mode": job_dict.get("closeout_mode"),
+            "helper_packet": job_dict.get("helper_packet"),
+            "stop_lines": job_dict.get("stop_lines"),
+            "automation_capabilities": capabilities,
+            "reopen_on_stale_inputs": True,
+        })
+    return templates
+
+
 def pm_context_jobs(pm_queue: dict[str, Any]) -> list[dict[str, Any]]:
     jobs = []
     for job in as_list(pm_queue.get("jobs")):
@@ -270,6 +334,10 @@ def pm_context_jobs(pm_queue: dict[str, Any]) -> list[dict[str, Any]]:
                 "rank": job_dict.get("rank"),
                 "title": job_dict.get("title"),
                 "collision_group": job_dict.get("collision_group"),
+                "department": job_dict.get("department"),
+                "department_owner": job_dict.get("department_owner"),
+                "accountable_integrator": job_dict.get("accountable_integrator"),
+                "allowed_execution_mode": job_dict.get("allowed_execution_mode"),
                 "target_file_count": len(as_list(job_dict.get("target_files"))),
                 "proof_command_count": len(as_list(job_dict.get("proof_commands"))),
             }
@@ -291,7 +359,11 @@ def score_template(
     collisions = {path: write_owners[path] for path in allowed_writes if path in write_owners}
     forbidden = [{"path": path, "pattern": forbidden_write(path)} for path in allowed_writes if forbidden_write(path)]
     missing_read_first = [path for path in as_list(template.get("read_first")) if not (ROOT / normalize_path(str(path))).exists()]
-    route_safe = route.get("safe_for_helper_lane") is True
+    from_pm_job = template.get("from_pm_job") is True
+    department = str(template.get("department") or "")
+    route_safe = route.get("safe_for_helper_lane") is True or (
+        from_pm_job and as_dict(template.get("automation_capabilities")).get("helper_lane_allowed") is True
+    )
     route_owner_gated = route.get("owner_action_required") is True
     completion = completion_freshness(template, completed_lanes.get(lane_id))
     completion_state = str(completion.get("state") or "")
@@ -317,6 +389,10 @@ def score_template(
     score -= 50 * len(forbidden)
     score -= 3 * len(missing_read_first)
     score -= max(0, len(allowed_writes) - 1) * 5
+    if from_pm_job:
+        score += 15
+    if from_pm_job and not department:
+        score -= 100
     return {
         **template,
         "score": score,
@@ -328,13 +404,44 @@ def score_template(
         "collisions": collisions,
         "forbidden_writes": forbidden,
         "missing_read_first": missing_read_first,
+        "department_missing": from_pm_job and not department,
         "already_completed": already_completed,
         "completion_state": completion_state,
         "completion_reopen_reason": completion_reopen_reason,
         "stale_completion_inputs": completion.get("stale_inputs", []),
         "missing_completion_proofs": completion.get("missing_proofs", []),
-        "eligible": score > 0 and not collisions and not forbidden and route_safe and not already_completed,
+        "eligible": score > 0 and not collisions and not forbidden and route_safe and not already_completed and not (from_pm_job and not department),
     }
+
+
+def lane_contracts(eligible: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    used_departments: set[str] = set()
+    used_collisions: set[str] = set()
+    for row in eligible:
+        department = str(row.get("department") or "main_session_veritas")
+        collision_group = str(row.get("collision_group") or row.get("workstream_id") or "")
+        if department in used_departments or collision_group in used_collisions:
+            continue
+        used_departments.add(department)
+        if collision_group:
+            used_collisions.add(collision_group)
+        selected.append({
+            "workflow_id": row.get("workflow_id"),
+            "workstream_id": row.get("workstream_id"),
+            "title": row.get("title"),
+            "pm_job_id": row.get("pm_job_id"),
+            "department": department,
+            "department_owner": row.get("department_owner"),
+            "owner_workflow": row.get("owner_workflow"),
+            "accountable_integrator": row.get("accountable_integrator") or "main_session_veritas",
+            "allowed_execution_mode": row.get("allowed_execution_mode"),
+            "collision_group": collision_group,
+            "allowed_writes": row.get("allowed_writes"),
+            "acceptance_commands": row.get("acceptance_commands"),
+            "score": row.get("score"),
+        })
+    return selected
 
 
 def make_task(candidate: dict[str, Any]) -> str:
@@ -352,7 +459,7 @@ def make_task(candidate: dict[str, Any]) -> str:
         f"{allowed}\n\n"
         "Acceptance commands:\n"
         f"{commands}\n\n"
-        "Stop lines: no canon/portfolio/ticker-card/SQL-canon mutation, no customer/public output, no cron/config/auth/runtime mutation, no capital deployment, no trade/order execution, no paper/live/brokerage/account action, no money movement, no owner approval inference. Return a concise summary and the proof artifact path."
+        "Stop lines: no canon/portfolio/ticker-card/SQL-canon mutation unless the PM job explicitly allows a bounded local artifact patch, no customer/public output, no cron/config/auth/runtime mutation, no capital deployment, no trade/order execution, no paper/live/brokerage/account action, no money movement, no owner approval inference. Return a concise summary and the proof artifact path."
     )
 
 
@@ -366,13 +473,14 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
     routes = [as_dict(route) for route in as_list(workflow_index.get("routes"))]
     write_owners = active_lane_writes(register)
     completed_lanes = completed_lane_states(register)
-    templates = base_templates()
+    templates = pm_job_templates(pm_queue) + base_templates()
     if prefer_workflow:
         wanted = prefer_workflow.upper()
         templates = [template for template in templates if str(template.get("workflow_id") or "").upper() == wanted] or templates
     scored = [score_template(template, routes, write_owners, completed_lanes) for template in templates]
     scored.sort(key=lambda row: (-int(row.get("score") or 0), str(row.get("workflow_id")), str(row.get("workstream_id"))))
     eligible = [row for row in scored if row.get("eligible")]
+    contracts = lane_contracts(eligible)
     all_candidates_complete = bool(scored) and all(row.get("already_completed") for row in scored)
     top = eligible[0] if eligible else (scored[0] if scored else {})
     owner = f"helper-{str(top.get('workflow_id') or 'wf').lower()}-{str(top.get('workstream_id') or 'lane').replace('_', '-').replace(' ', '-')}"
@@ -419,9 +527,23 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
         top,
         "critical" if top.get("forbidden_writes") or top.get("collisions") else "warning",
     )
-    check("top_candidate_one_output", len(as_list(top.get("allowed_writes"))) == 1, top.get("allowed_writes"))
+    check(
+        "top_candidate_one_output_or_pm_explicit_targets",
+        len(as_list(top.get("allowed_writes"))) == 1 or top.get("from_pm_job") is True,
+        top.get("allowed_writes"),
+    )
     check("top_candidate_no_collisions", not as_dict(top.get("collisions")), top.get("collisions"))
     check("top_candidate_no_forbidden_writes", not as_list(top.get("forbidden_writes")), top.get("forbidden_writes"))
+    contract_departments = [str(row.get("department") or "") for row in contracts]
+    contract_collisions = [str(row.get("collision_group") or "") for row in contracts if row.get("collision_group")]
+    check("lane_contracts_unique_departments", len(contract_departments) == len(set(contract_departments)), contracts)
+    check("lane_contracts_unique_collision_groups", len(contract_collisions) == len(set(contract_collisions)), contracts)
+    for contract in contracts:
+        check(
+            f"lane_contract_integrator:{contract.get('workstream_id')}",
+            contract.get("accountable_integrator") == "main_session_veritas",
+            contract,
+        )
     for flag in REQUIRED_TRUE_FLAGS:
         check(f"authority_{flag}_true", AUTHORITY_BOUNDARY.get(flag) is True, AUTHORITY_BOUNDARY.get(flag))
     for flag in REQUIRED_FALSE_FLAGS:
@@ -450,11 +572,17 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
         "summary": {
             "candidate_count": len(scored),
             "eligible_candidate_count": len(eligible),
+            "lane_contract_count": len(contracts),
+            "eligible_department_count": len({str(row.get("department") or "unknown") for row in eligible}),
             "completed_candidate_count": len([row for row in scored if row.get("already_completed")]),
             "all_candidates_complete": all_candidates_complete,
             "active_lane_count": as_dict(register.get("summary")).get("active_lane_count", 0),
             "completed_lane_count": len(completed_lanes),
             "pm_ready_job_count": len(pm_context_jobs(pm_queue)),
+            "pm_ready_department_counts": {
+                department: len([row for row in pm_context_jobs(pm_queue) if row.get("department") == department])
+                for department in sorted({str(row.get("department") or "unknown") for row in pm_context_jobs(pm_queue)})
+            },
             "wf78_event_action_count": as_dict(wf78_event_queue.get("summary")).get("action_count"),
             "automation_hardening_status": hardening.get("status"),
             "top_workflow": top.get("workflow_id"),
@@ -473,6 +601,7 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
             "complete_command_template": complete_command_template,
         },
         "ranked_candidates": scored,
+        "lane_contracts": contracts,
         "pm_ready_jobs_context": pm_context_jobs(pm_queue)[:5],
         "validation": {
             "status": "ok" if not critical else "error",

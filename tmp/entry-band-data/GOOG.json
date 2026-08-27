@@ -1,38 +1,14 @@
 {
   "ticker": "GOOG",
   "name": "Alphabet Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 36.73,
-      "h": 36.86,
-      "l": 33.16,
-      "c": 34.6,
-      "v": 787.25
-    },
-    {
-      "d": "2016-07",
-      "o": 34.61,
-      "h": 38.93,
-      "l": 34.41,
-      "c": 38.44,
-      "v": 598.3
-    },
-    {
-      "d": "2016-08",
-      "o": 38.05,
-      "h": 39.49,
-      "l": 38.05,
-      "c": 38.35,
-      "v": 527.71
-    },
     {
       "d": "2016-09",
       "o": 38.46,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 377.98,
-      "h": 398.37,
-      "l": 375.26,
-      "c": 397.05,
-      "v": 127.14
+      "h": 404.47,
+      "l": 374.3,
+      "c": 376.43,
+      "v": 387.67
+    },
+    {
+      "d": "2026-06",
+      "o": 372.58,
+      "h": 374.6,
+      "l": 333.69,
+      "c": 353.33,
+      "v": 576.88
+    },
+    {
+      "d": "2026-07",
+      "o": 354.61,
+      "h": 374.35,
+      "l": 314.89,
+      "c": 356.65,
+      "v": 438.2
+    },
+    {
+      "d": "2026-08",
+      "o": 365.3,
+      "h": 381.81,
+      "l": 336.17,
+      "c": 341.75,
+      "v": 247.87
     }
   ],
   "macro_regimes": {
@@ -1025,34 +1025,36 @@
     }
   },
   "preferred_band": {
-    "low": 341.96,
-    "high": 362.08,
-    "stop": 331.9,
-    "set": "2026-05-06",
-    "label": "341.96–362.08"
+    "low": 354.25,
+    "high": 369.69,
+    "stop": 341.07,
+    "set": "2026-06-18",
+    "label": "354.25–369.69"
   },
   "current_quote": {
-    "close": 397.05,
-    "ma20": 355.0,
-    "ma50": 322.07,
-    "ma200": 286.07,
-    "data_date": "2026-05-08"
+    "close": 341.75,
+    "ma20": 346.82,
+    "ma50": 350.16,
+    "ma200": 331.81,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_MA_CONSTRAINED",
-    "type": "PULLBACK",
-    "status": "ABOVE_BAND_WAIT",
-    "trend_stack": "BULLISH_20_50_200",
-    "suggested_low": 341.3,
-    "suggested_high": 361.75,
-    "suggested_stop": 321.62,
-    "sma_envelope_low": 318.5,
-    "sma_envelope_high": 352.02,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 326.46,
+    "suggested_high": 348.13,
+    "suggested_stop": 314.42,
+    "sma_envelope_low": 331.77,
+    "sma_envelope_high": 366.69,
     "earnings_state": "CLEAR",
-    "band_confidence": 4,
-    "needs_review": true,
-    "canonical_apply_eligible": false
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
+    "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:33+00:00"
+  "generated_at": "2026-08-21T20:32:18+00:00"
 }

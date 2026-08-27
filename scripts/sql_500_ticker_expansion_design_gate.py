@@ -2,9 +2,9 @@
 """Build the SQL/finance-intelligence 500-ticker expansion readiness gate.
 
 Report-only design proof. It checks the current WF78 scaleout baseline, keeps
-the production 42-card answer path locked, proves review-monitor/pilot
-separation, and emits the phased shard/freshness plan before any 500-name
-import or consumer migration.
+the retired production answer path empty under SQL-first routing, proves
+review-monitor/pilot separation, and emits the phased shard/freshness plan
+before any 500-name import or consumer migration.
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ PROVIDER_PROOF = TMP / "wf78-100-ticker-provider-runtime-proof.json"
 REFRESH_100 = TMP / "finance-intelligence-state-refresh-100.json"
 SOURCE_OPEN_CLEANUP = TMP / "wf78-review-monitor-source-open-cleanup-queue.json"
 
-EXPECTED_PRODUCTION = 42
+EXPECTED_DEPRECATED_PRODUCTION = 0
 SUPPORTED_ACTIVE_COUNTS = {100, 200, 300, 400, 500}
 SUPPORTED_REVIEW_MONITOR_COUNTS = {58, 158, 258, 358, 458}
 EXPECTED_LIVE_PILOT = 25
@@ -199,8 +199,8 @@ def phased_approach() -> list[dict[str, Any]]:
         {
             "phase": "500-S0 baseline and authority freeze",
             "implementation_status": "implemented",
-            "scope": "100 active SQL rows, 42 production cards, 58 review-monitor thin rows",
-            "acceptance": ["all 100 rows routable", "production cards remain 42", "no authority widening"],
+            "scope": "supported SQL-first active rows; retired production cards/path remain empty; review-monitor thin rows remain supported",
+            "acceptance": ["all active rows routable", "retired production answer path remains empty", "no authority widening"],
         },
         {
             "phase": "500-S1 enrichment and source-open cleanup gate",
@@ -243,7 +243,7 @@ def shard_design() -> dict[str, Any]:
             "preserve_a_b_before_c_d": True,
             "batch_size_default": 25,
             "max_parallel_provider_lanes": 4,
-            "circuit_breaker": "open on provider/error-budget failure; never degrade production 42 answer path",
+            "circuit_breaker": "open on provider/error-budget failure; never degrade SQL-first routing or resurrect retired production answer path",
             "source_open_required_before_material_claims": True,
         },
     }
@@ -290,8 +290,26 @@ def build_report() -> dict[str, Any]:
         check("state_db_exists", counts.get("exists") is True, counts.get("state_db")),
         check("state_db_integrity_ok", counts.get("integrity_check") == "ok", counts.get("integrity_check")),
         check("active_sql_rows_supported_scaleout_count", active_count_supported(counts.get("all_ticker_sql_rows")), {"actual": counts.get("all_ticker_sql_rows"), "supported": sorted(SUPPORTED_ACTIVE_COUNTS)}),
-        check("production_locked_42", counts.get("production_current_cards") == EXPECTED_PRODUCTION, counts.get("production_current_cards")),
-        check("production_answer_path_rows_42", counts.get("production_answer_path_rows") == EXPECTED_PRODUCTION, counts.get("production_answer_path_rows")),
+        check(
+            "production_current_cards_empty_sql_first_wait_state",
+            counts.get("production_current_cards") == EXPECTED_DEPRECATED_PRODUCTION,
+            {
+                "actual": counts.get("production_current_cards"),
+                "expected": EXPECTED_DEPRECATED_PRODUCTION,
+                "empty_production_scope_is_valid_wait_state": True,
+                "source": "sql_first_300_cutover",
+            },
+        ),
+        check(
+            "production_answer_path_rows_empty_sql_first_wait_state",
+            counts.get("production_answer_path_rows") == EXPECTED_DEPRECATED_PRODUCTION,
+            {
+                "actual": counts.get("production_answer_path_rows"),
+                "expected": EXPECTED_DEPRECATED_PRODUCTION,
+                "empty_production_scope_is_valid_wait_state": True,
+                "source": "sql_first_300_cutover",
+            },
+        ),
         check("review_monitor_thin_rows_supported_scaleout_count", review_monitor_count_supported(counts.get("review_monitor_thin_rows")), {"actual": counts.get("review_monitor_thin_rows"), "supported": sorted(SUPPORTED_REVIEW_MONITOR_COUNTS)}),
         check("fundamental_rows_for_supported_scaleout", active_count_supported(counts.get("fundamental_snapshot_rows")), {"actual": counts.get("fundamental_snapshot_rows"), "supported": sorted(SUPPORTED_ACTIVE_COUNTS)}),
         check("analyst_rows_for_supported_scaleout", active_count_supported(counts.get("analyst_snapshot_rows")), {"actual": counts.get("analyst_snapshot_rows"), "supported": sorted(SUPPORTED_ACTIVE_COUNTS)}),

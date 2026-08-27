@@ -1,39 +1,39 @@
 {
-  "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
-  "status": "partial",
+  "generated_at_utc": "2026-08-21T20:32:38.027020+00:00",
+  "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Run after trigger_sheet_refresh.py and before post-earnings note targeting or post-earnings vault edits.",
-  "last_trading_day": "2026-05-08",
+  "last_trading_day": "2026-08-21",
   "source_last_trading_day": {
-    "trigger": "2026-05-08",
-    "technical": "2026-05-08",
-    "deployment": "2026-05-08",
-    "market_state": "2026-05-08",
+    "trigger": "2026-08-21",
+    "technical": "2026-08-21",
+    "deployment": "2026-08-21",
+    "market_state": "2026-08-21",
     "earnings": null
   },
   "freshness": {
     "trigger_file": {
       "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\trigger-sheet.json",
-      "generated_at_utc": "2026-05-10T03:38:38.994425+00:00",
+      "generated_at_utc": "2026-08-21T20:32:33.863837+00:00",
       "age_hours": 0.0,
       "age_label": "0m old",
       "is_stale": false
     },
     "earnings_file": {
       "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\earnings-calendar.json",
-      "generated_at_utc": "2026-05-10T03:38:12.276624+00:00",
-      "age_hours": 0.01,
-      "age_label": "0m old",
+      "generated_at_utc": "2026-08-21T20:20:09.013890+00:00",
+      "age_hours": 0.21,
+      "age_label": "12m old",
       "is_stale": false
     }
   },
   "macro_context": {
-    "status": "partial",
-    "spx": 7398.9302,
-    "vix": 17.19,
-    "brent": 101.29,
-    "wti": 95.42,
-    "summary": "S&P 500 7398.9302, VIX 17.19, Brent 101.29, WTI 95.42"
+    "status": "ok",
+    "spx": 7674.3701,
+    "vix": 15.13,
+    "brent": 93.94,
+    "wti": 86.72,
+    "summary": "S&P 500 7674.3701, VIX 15.13, Brent 93.94, WTI 86.72"
   },
   "window": {
     "back_days": 11,
@@ -41,13 +41,72 @@
     "forward_days": 14
   },
   "warnings": [
-    "2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
-    "Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
-    "Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
-    "Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
-    "Only 7/8 live fields populated.",
-    "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
-    "Non-blocking watchlist/date mismatches remain outside the active timing window."
+    "Generic fallback post-earnings config used for: SAIC. Add ticker-specific watch items if this is a material tracked name."
   ],
-  "packets": []
+  "earnings_lifecycle": {
+    "source": "tmp/earnings-calendar.json",
+    "closeouts": [],
+    "authority": {
+      "review_only": true,
+      "portfolio_mutation_allowed": false,
+      "canonical_note_mutation_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "fallback_config_tickers": [
+    "SAIC"
+  ],
+  "packets": [
+    {
+      "ticker": "SAIC",
+      "priority": "monitor",
+      "stage": "upcoming",
+      "phase": "pre_earnings",
+      "days_to_or_from_earnings": 10,
+      "next_earnings_date": "2026-08-31",
+      "source_class": "provider_estimate",
+      "primary_confirmed": false,
+      "earnings_lifecycle": {},
+      "fallback_config": true,
+      "watch_items": [
+        "revenue and EPS versus expectations",
+        "guidance change and management tone",
+        "margin quality and cash-flow implications",
+        "price reaction versus written band/stop",
+        "sector or portfolio read-through"
+      ],
+      "sector_read_through": "Generic tracked-name earnings packet for SAIC; agent must interpret source evidence before any conclusion.",
+      "note_targets": [
+        "05. Intelligence/Event Calendar.md",
+        "05. Intelligence/Weekly Intelligence Brief.md",
+        "03. Portfolio/Execution Board.md"
+      ],
+      "technical_context": {
+        "close": null,
+        "ma_posture": null,
+        "in_entry_band": null,
+        "below_stop": null,
+        "data_date": null
+      },
+      "deployment_context": {
+        "action_state": null,
+        "reason": null
+      },
+      "trigger_context": {
+        "action_state": null,
+        "technical_trigger": null,
+        "catalyst_blocker": null,
+        "why": null,
+        "invalidation": null,
+        "size_tier": null
+      },
+      "interpretation_slots": {
+        "what_happened": null,
+        "what_it_means": null,
+        "what_we_do_now": null,
+        "evidence_status": "pending post-earnings evidence"
+      }
+    }
+  ]
 }

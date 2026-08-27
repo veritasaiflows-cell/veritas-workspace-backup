@@ -37,6 +37,16 @@ APPROVED_FIELDS = [
     "reference_level_source_sha256",
     "reference_level_owner_source_path",
 ]
+REQUIRED_SQL_SUPPORT_SCRIPTS = [
+    "sql_canon_field_family_preflight.py",
+    "wf72_entry_stop_sql_activate.py",
+]
+FORBIDDEN_RECURRING_SQL_CHURN_SCRIPTS = {
+    "sql_first_consumer_wiring_preflight.py",
+    "sql_retail_grade_validation_bundle.py",
+    "sql_retail_expansion_phase_gate.py",
+    "sql_500_ticker_expansion_design_gate.py",
+}
 
 FALSE_FLAGS = {
     "sql_writes_performed": False,
@@ -166,30 +176,34 @@ def chain_manifest_probe() -> dict[str, Any]:
         steps = manifest_steps(window)
         scripts = [step["script"] for step in steps]
         drift_step = next((step for step in steps if step["script"] == "canon_drift_freshness_gate.py"), {})
-        scheduled_sql_scripts = sorted(
-            set(scripts)
-            & {
-                "sql_canon_field_family_preflight.py",
-                "wf72_entry_stop_sql_activate.py",
-                "sql_first_consumer_wiring_preflight.py",
-                "sql_retail_grade_validation_bundle.py",
-                "sql_retail_expansion_phase_gate.py",
-                "sql_500_ticker_expansion_design_gate.py",
-            }
+        forbidden_sql_churn_scripts = sorted(set(scripts) & FORBIDDEN_RECURRING_SQL_CHURN_SCRIPTS)
+        indexes = {script: scripts.index(script) for script in scripts}
+        required_support_present = all(script in indexes for script in REQUIRED_SQL_SUPPORT_SCRIPTS)
+        support_order_ok = (
+            required_support_present
+            and "canon_volatile_execution_board_sync.py" in indexes
+            and "canon_drift_freshness_gate.py" in indexes
+            and indexes["canon_volatile_execution_board_sync.py"]
+            < indexes["sql_canon_field_family_preflight.py"]
+            < indexes["wf72_entry_stop_sql_activate.py"]
+            < indexes["canon_drift_freshness_gate.py"]
         )
         checks = {
-            "recurring_sql_retail_churn_absent": not scheduled_sql_scripts,
+            "required_sql_support_scripts_present": required_support_present,
+            "sql_support_before_canon_drift": support_order_ok,
+            "recurring_sql_retail_churn_absent": not forbidden_sql_churn_scripts,
             "canon_drift_no_longer_depends_on_sql_preflight": "sql_first_consumer_wiring_preflight.py" not in (drift_step.get("depends_on") or []),
-            "canon_drift_no_longer_depends_on_wf72_activation": "wf72_entry_stop_sql_activate.py" not in (drift_step.get("depends_on") or []),
+            "canon_drift_depends_on_wf72_activation": "wf72_entry_stop_sql_activate.py" in (drift_step.get("depends_on") or []),
         }
         per_window[window] = {
             "status": "ok" if all(checks.values()) else "blocked",
             "checks": checks,
-            "scheduled_sql_scripts": scheduled_sql_scripts,
+            "required_sql_support_scripts": [script for script in REQUIRED_SQL_SUPPORT_SCRIPTS if script in scripts],
+            "forbidden_sql_churn_scripts": forbidden_sql_churn_scripts,
         }
     return {
         "status": "ok" if all(row["status"] == "ok" for row in per_window.values()) else "blocked",
-        "posture": "on_demand_change_triggered_sql_support_mode",
+        "posture": "recurring_bounded_sql_first_support_before_canon_drift_no_retail_expansion_churn",
         "windows": per_window,
     }
 
@@ -231,9 +245,9 @@ def build_payload(sample_tickers: list[str]) -> dict[str, Any]:
             "scope": "prove finance_intelligence_state and question router SQL-first entry/stop reference metadata wiring",
         },
         {
-            "phase": "phase_5b_chain_churn_removed",
-            "status": "implemented_by_chain_manifest_when_sql_retail_churn_is_absent_from_recurring_windows",
-            "scope": "keep SQL support-mode validation on-demand/change-triggered instead of every recurring finance chain",
+            "phase": "phase_5b_recurring_sql_first_support_proof",
+            "status": "implemented_by_chain_manifest_when_bounded_sql_support_precedes_canon_drift",
+            "scope": "run low-risk SQL-canon field-family preflight and WF72 entry/stop SQL activation before canon drift, while keeping retail/expansion SQL churn out of recurring chains",
         },
         {
             "phase": "phase_5c_exact_apply_review",

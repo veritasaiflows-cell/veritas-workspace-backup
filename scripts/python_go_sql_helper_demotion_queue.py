@@ -42,6 +42,15 @@ def add(findings: list[dict[str, Any]], check: str, ok: bool, severity: str, det
     findings.append({"check": check, "ok": ok, "severity": "info" if ok else severity, "detail": detail})
 
 
+def gate_clean_or_warning(payload: dict[str, Any]) -> bool:
+    summary = as_dict(payload.get("summary"))
+    return (
+        payload.get("status") in {"ok", "warning"}
+        and as_dict(payload.get("validation")).get("status") == "ok"
+        and int(summary.get("critical") or 0) == 0
+    )
+
+
 def candidate_by_path(rows: list[dict[str, Any]], path: str) -> dict[str, Any]:
     for row in rows:
         if row.get("path") == path:
@@ -110,7 +119,9 @@ def build_report() -> dict[str, Any]:
         and int(readiness_summary.get("critical") or 0) == 0
     )
     add(findings, "readiness_gate_ok", readiness_clean, "critical", {"status": readiness.get("status"), "summary": readiness_summary})
-    add(findings, "controlled_router_ok", router.get("status") == "ok", "critical", router.get("status"))
+    add(findings, "controlled_router_ok", gate_clean_or_warning(router), "critical", {"status": router.get("status"), "summary": router_summary})
+    if router.get("status") == "warning":
+        add(findings, "controlled_router_expected_fail_closed_warning", False, "warning", router_summary)
     add(findings, "first_candidate_present", bool(first), "critical", FIRST_DEMOTION_PATH)
     add(
         findings,
@@ -187,7 +198,7 @@ def build_report() -> dict[str, Any]:
             "durable_output_candidates": sum(1 for row in next_queue if row["durable_output"]),
             "existing_go_covered_remaining": sum(1 for row in next_queue if row["candidate_kind"] == "existing_go_covered"),
             "retire_python_now": 0,
-            "queue_signal": "first_controlled_demotion_recorded_rest_ready_for_contract_gates" if not critical else "not_ready",
+            "queue_signal": "expected_fail_closed_not_ready_for_demotion" if warnings and not critical else "first_controlled_demotion_recorded_rest_ready_for_contract_gates" if not critical else "not_ready",
         },
         "first_controlled_demotion": first_demotion,
         "next_demotion_queue": next_queue,

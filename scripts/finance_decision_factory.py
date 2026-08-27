@@ -2,11 +2,12 @@
 """Finance Decision Factory: one repeatable candidate-to-card operating spine.
 
 This locks the WF78 capital-review candidate flow (e.g. NVDA / VRT / GOOG) into
-a single repeatable runner that chains the pieces that already exist:
+a single repeatable ledger. Producer jobs are explicit so implementation
+closeout can validate the ledger without rerunning the upstream refresh chain:
 
-  1. refresh + candidate prep  (parallel_repeatable_work_orchestrator.py)
-  2. evidence-debt burn-down    (wf78_evidence_repair_batch_runner.py)
-  3. optional control closeout  (control_closeout_bundle.py)
+  1. optional refresh + candidate prep  (parallel_repeatable_work_orchestrator.py)
+  2. optional evidence-debt burn-down   (wf78_evidence_repair_batch_runner.py)
+  3. optional control closeout          (control_closeout_bundle.py)
 
 It then joins the capital-review queue, the owner-card-prep loop, and the chief
 intelligence promotion gate into one normalized decision ledger. Each candidate
@@ -35,6 +36,11 @@ OUT = TMP / "finance-decision-factory.json"
 CAPITAL_REVIEW_QUEUE = TMP / "wf78-capital-review-queue.json"
 OWNER_CARD_PREP = TMP / "wf78-owner-card-prep-loop.json"
 PROMOTION_GATE = TMP / "chief-intelligence-promotion-gate.json"
+RESEARCH_OPPORTUNITY_REVIEW = TMP / "research-freshness-opportunity-review.json"
+BAND_PROPOSALS = TMP / "band-proposals.json"
+BAND_HYGIENE_CONTROLLER = TMP / "band-hygiene-freshness-controller.json"
+TECHNICAL_REFRESH = TMP / "technical-refresh.json"
+DEPLOYMENT_READINESS_SURFACE = TMP / "deployment-readiness-surface.json"
 EVIDENCE_REDUCTION = TMP / "wf78-evidence-drag-reduction.json"
 EVIDENCE_REPAIR_BATCH = TMP / "wf78-evidence-repair-batch.json"
 CONTROL_CLOSEOUT = TMP / "control-closeout-bundle.json"
@@ -42,6 +48,11 @@ PARALLEL_LANE_RECOMMENDATION = TMP / "parallel-lane-recommendation.json"
 POST_CLOSE_FINAL_QUOTES = TMP / "post-close-final-quote-ledger.json"
 
 SCHEMA = "veritas.finance_decision_factory.v1"
+CANDIDATE_PREP_STEP = "candidate_prep_orchestrator"
+EVIDENCE_REPAIR_STEP = "evidence_repair_batch"
+CONTROL_CLOSEOUT_STEP = "control_closeout_bundle"
+LEDGER_STEP = "ledger"
+STEP_CHOICES = [CANDIDATE_PREP_STEP, EVIDENCE_REPAIR_STEP, CONTROL_CLOSEOUT_STEP, LEDGER_STEP]
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -88,16 +99,69 @@ def load_dict(path: Path) -> dict[str, Any]:
     return as_dict(load_json_artifact(path))
 
 
+def parse_dt(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def artifact_generated_at(path: Path) -> str | None:
+    payload = load_dict(path)
+    value = payload.get("generated_at_utc") or payload.get("generated_at") or payload.get("as_of_utc")
+    return str(value) if value else None
+
+
+def promotion_gate_input_freshness() -> dict[str, Any]:
+    gate = load_dict(PROMOTION_GATE)
+    gate_generated = gate.get("generated_at_utc")
+    gate_dt = parse_dt(gate_generated)
+    inputs = [
+        RESEARCH_OPPORTUNITY_REVIEW,
+        BAND_PROPOSALS,
+        BAND_HYGIENE_CONTROLLER,
+        TECHNICAL_REFRESH,
+        DEPLOYMENT_READINESS_SURFACE,
+    ]
+    newer_inputs: list[dict[str, Any]] = []
+    for path in inputs:
+        generated = artifact_generated_at(path)
+        generated_dt = parse_dt(generated)
+        newer = bool(gate_dt and generated_dt and generated_dt > gate_dt)
+        if newer:
+            newer_inputs.append({
+                "path": rel(path),
+                "generated_at_utc": generated,
+            })
+    return {
+        "promotion_gate_path": rel(PROMOTION_GATE),
+        "promotion_gate_generated_at_utc": gate_generated,
+        "stale_relative_to_inputs": bool(newer_inputs),
+        "newer_input_artifacts": newer_inputs,
+    }
+
+
 def py_cmd(*parts: str) -> list[str]:
     return [sys.executable, *parts]
 
 
 def run_step(name: str, command: list[str], timeout: int) -> dict[str, Any]:
     started = utc_now()
+    print(f"running {name} timeout={timeout}s command={' '.join(command)}", file=sys.stderr, flush=True)
     try:
         proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=timeout)
         return {
             "name": name,
+            "executed": True,
+            "skipped": False,
             "command": command,
             "started_at_utc": started,
             "completed_at_utc": utc_now(),
@@ -109,6 +173,8 @@ def run_step(name: str, command: list[str], timeout: int) -> dict[str, Any]:
     except subprocess.TimeoutExpired as exc:
         return {
             "name": name,
+            "executed": True,
+            "skipped": False,
             "command": command,
             "started_at_utc": started,
             "completed_at_utc": utc_now(),
@@ -118,6 +184,31 @@ def run_step(name: str, command: list[str], timeout: int) -> dict[str, Any]:
             "stdout_preview": (exc.stdout or "")[-2500:] if isinstance(exc.stdout, str) else "",
             "stderr_preview": (exc.stderr or "")[-1500:] if isinstance(exc.stderr, str) else "",
         }
+
+
+def skipped_step(name: str, reason: str, command: list[str] | None = None) -> dict[str, Any]:
+    return {
+        "name": name,
+        "executed": False,
+        "skipped": True,
+        "skip_reason": reason,
+        "command": command or [],
+        "ok": True,
+        "returncode": 0,
+    }
+
+
+def selected_steps(args: argparse.Namespace) -> set[str]:
+    explicit = set(as_list(getattr(args, "step", [])))
+    if getattr(args, "full", False):
+        explicit.update({CANDIDATE_PREP_STEP, EVIDENCE_REPAIR_STEP})
+    if getattr(args, "refresh_prep", False):
+        explicit.add(CANDIDATE_PREP_STEP)
+    if getattr(args, "repair_evidence", False):
+        explicit.add(EVIDENCE_REPAIR_STEP)
+    if getattr(args, "closeout", False):
+        explicit.add(CONTROL_CLOSEOUT_STEP)
+    return explicit
 
 
 def gate_index() -> dict[str, dict[str, Any]]:
@@ -130,6 +221,9 @@ def gate_index() -> dict[str, dict[str, Any]]:
             out[ticker] = {
                 "verdict": cand.get("chief_intelligence_verdict"),
                 "vetoes": cand.get("vetoes") or [],
+                "veto_details": cand.get("veto_details") or [],
+                "root_cause_blockers": cand.get("root_cause_blockers") or [],
+                "plain_english_blockers": cand.get("plain_english_blockers") or [],
                 "cautions": cand.get("cautions") or [],
                 "rank": cand.get("rank"),
                 "chief_intelligence_score": cand.get("chief_intelligence_score"),
@@ -156,10 +250,27 @@ def card_prep_index() -> dict[str, dict[str, Any]]:
     return out
 
 
+def plain_english_for_gate_verdict(ticker: str, verdict: Any, gate: dict[str, Any]) -> str:
+    verdict_text = str(verdict or "unknown")
+    cautions = [str(item) for item in as_list(gate.get("cautions")) if str(item).strip()]
+    caution_text = f" Cautions: {'; '.join(cautions[:3])}." if cautions else ""
+    if verdict_text == "watch_for_reclaim_or_pullback":
+        return (
+            f"{ticker} is not promotion-ready yet; the promotion gate says to watch for a reclaim or pullback "
+            f"before owner-review promotion.{caution_text}"
+        )
+    if verdict_text == "monitor_only":
+        return f"{ticker} is monitor-only; it is not clean enough for owner-review promotion.{caution_text}"
+    if verdict_text == "reject_currently":
+        return f"{ticker} is rejected by the current promotion gate and should remain blocked until the source issue is repaired.{caution_text}"
+    return f"{ticker} is blocked by promotion gate verdict {verdict_text}.{caution_text}"
+
+
 def build_ledger() -> list[dict[str, Any]]:
     queue = load_dict(CAPITAL_REVIEW_QUEUE)
     gates = gate_index()
     cards = card_prep_index()
+    gate_freshness = promotion_gate_input_freshness()
     ledger: list[dict[str, Any]] = []
     for row in as_list(queue.get("rows")):
         row = as_dict(row)
@@ -173,12 +284,28 @@ def build_ledger() -> list[dict[str, Any]]:
         card_preparable = bool(row.get("capital_review_card_preparable"))
 
         promote_ok = (not verdict) or verdict == "promote_for_owner_review"
+        root_cause_blockers = [str(item) for item in as_list(gate.get("root_cause_blockers")) if str(item).strip()]
+        plain_english_blockers = [str(item) for item in as_list(gate.get("plain_english_blockers")) if str(item).strip()]
+        if verdict and verdict != "promote_for_owner_review" and not root_cause_blockers:
+            root_cause_blockers.append(f"promotion_gate_{verdict}")
+            plain_english_blockers.append(plain_english_for_gate_verdict(ticker, verdict, gate))
+        if gate_freshness.get("stale_relative_to_inputs"):
+            root_cause_blockers.append("promotion_gate_stale_relative_to_inputs")
+            newer = ", ".join(
+                f"{item.get('path')} ({item.get('generated_at_utc')})"
+                for item in as_list(gate_freshness.get("newer_input_artifacts"))
+            )
+            plain_english_blockers.append(
+                "Promotion gate verdict may be stale: the gate was generated at "
+                f"{gate_freshness.get('promotion_gate_generated_at_utc')}, but newer input artifacts exist"
+                f"{f' ({newer})' if newer else ''}. Refresh the promotion gate/factory before final blocker interpretation."
+            )
         if wf67_status == "ok" and card.get("wf67_request_path") and promote_ok:
             disposition = "owner_card_and_wf67_request_ready"
             blocked_reason = None
         elif verdict and verdict != "promote_for_owner_review":
             disposition = "gate_deferred"
-            blocked_reason = f"promotion gate verdict={verdict}; vetoes={gate.get('vetoes')}"
+            blocked_reason = plain_english_blockers[0] if plain_english_blockers else f"promotion gate verdict={verdict}; vetoes={gate.get('vetoes')}"
         elif card.get("card_path"):
             disposition = "owner_card_ready_wf67_blocked"
             blocked_reason = (card.get("wf67_stderr_preview") or card.get("wf67_stdout_preview") or "WF67 request not generated")[-300:]
@@ -197,6 +324,10 @@ def build_ledger() -> list[dict[str, Any]]:
             "queue_state": row.get("queue_state"),
             "gate_verdict": verdict,
             "gate_vetoes": gate.get("vetoes"),
+            "gate_veto_details": gate.get("veto_details") or [],
+            "root_cause_blockers": sorted(set(root_cause_blockers)),
+            "plain_english_blockers": plain_english_blockers,
+            "promotion_gate_input_freshness": gate_freshness,
             "card_preparable": card_preparable,
             "current_price": row.get("current_price"),
             "current_band_status": row.get("current_band_status"),
@@ -269,32 +400,56 @@ def parallel_qa_lane(requested: bool, steps: list[dict[str, Any]]) -> dict[str, 
 
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     steps: list[dict[str, Any]] = []
+    selected = selected_steps(args)
+    selected_producer_steps = selected - {LEDGER_STEP}
 
-    if not args.ledger_only:
-        orch_cmd = py_cmd("scripts\\parallel_repeatable_work_orchestrator.py", "--write", "--validate")
-        if args.skip_provider_refresh:
-            orch_cmd.append("--skip-provider-refresh")
-        steps.append(run_step("candidate_prep_orchestrator", orch_cmd, 900))
+    orch_cmd = py_cmd("scripts\\parallel_repeatable_work_orchestrator.py", "--write", "--validate")
+    if args.skip_provider_refresh:
+        orch_cmd.append("--skip-provider-refresh")
+    if CANDIDATE_PREP_STEP in selected:
+        steps.append(run_step(CANDIDATE_PREP_STEP, orch_cmd, 900))
+    else:
+        steps.append(skipped_step(
+            CANDIDATE_PREP_STEP,
+            "producer_not_requested_default_ledger_only",
+            orch_cmd,
+        ))
 
-        repair_cmd = py_cmd(
-            "scripts\\wf78_evidence_repair_batch_runner.py",
-            "--tier", args.repair_tier,
-            "--limit", str(args.repair_limit),
-            "--cursor", str(args.repair_cursor),
-            "--write", "--validate",
-        )
-        steps.append(run_step("evidence_repair_batch", repair_cmd, 240))
+    repair_cmd = py_cmd(
+        "scripts\\wf78_evidence_repair_batch_runner.py",
+        "--tier", args.repair_tier,
+        "--limit", str(args.repair_limit),
+        "--cursor", str(args.repair_cursor),
+        "--write", "--validate",
+    )
+    if EVIDENCE_REPAIR_STEP in selected:
+        steps.append(run_step(EVIDENCE_REPAIR_STEP, repair_cmd, 240))
+    else:
+        steps.append(skipped_step(
+            EVIDENCE_REPAIR_STEP,
+            "producer_not_requested_default_ledger_only",
+            repair_cmd,
+        ))
 
-        if args.closeout:
-            steps.append(run_step(
-                "control_closeout_bundle",
-                py_cmd("scripts\\control_closeout_bundle.py", "--write", "--validate"),
-                900,
-            ))
+    closeout_cmd = py_cmd("scripts\\control_closeout_bundle.py", "--write", "--validate")
+    if CONTROL_CLOSEOUT_STEP in selected:
+        steps.append(run_step(CONTROL_CLOSEOUT_STEP, closeout_cmd, 900))
+    elif args.closeout:
+        steps.append(skipped_step(
+            CONTROL_CLOSEOUT_STEP,
+            "closeout_flag_not_selected",
+            closeout_cmd,
+        ))
 
     qa_lane = parallel_qa_lane(args.recommend_qa_lane, steps)
 
-    failed_steps = [s["name"] for s in steps if not s.get("ok")]
+    failed_steps = [s["name"] for s in steps if s.get("executed") and not s.get("ok")]
+    executed_steps = [s["name"] for s in steps if s.get("executed")]
+    skipped_steps = [
+        {"name": s["name"], "reason": s.get("skip_reason")}
+        for s in steps
+        if s.get("skipped")
+    ]
     ledger = build_ledger()
 
     queue = load_dict(CAPITAL_REVIEW_QUEUE)
@@ -316,7 +471,13 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "purpose": "Repeatable candidate-to-card factory: prep + evidence burn-down + normalized decision ledger.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "parameters": {
-            "ledger_only": bool(args.ledger_only),
+            "default_mode": "ledger_only",
+            "ledger_only": not bool(selected_producer_steps),
+            "producer_steps_requested": sorted(selected_producer_steps),
+            "full": bool(args.full),
+            "refresh_prep": bool(args.refresh_prep),
+            "repair_evidence": bool(args.repair_evidence),
+            "step": sorted(set(as_list(args.step))),
             "skip_provider_refresh": bool(args.skip_provider_refresh),
             "repair_tier": args.repair_tier,
             "repair_limit": args.repair_limit,
@@ -331,6 +492,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "ready_tickers": [e["ticker"] for e in ready],
             "deferred_tickers": [e["ticker"] for e in deferred],
             "failed_steps": failed_steps,
+            "executed_steps": executed_steps,
+            "skipped_steps": skipped_steps,
             "evidence_stale_ticker_count": as_dict(reduction.get("summary")).get("stale_ticker_count"),
             "evidence_repair_resume": as_dict(repair.get("resume")),
             "next_safe_action": (
@@ -368,7 +531,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Finance Decision Factory candidate-to-card spine.")
     parser.add_argument("--write", action="store_true", help="Write the factory artifact.")
     parser.add_argument("--validate", action="store_true", help="Return non-zero when status is blocked.")
-    parser.add_argument("--ledger-only", action="store_true", help="Skip refresh/repair steps; rebuild ledger from existing artifacts.")
+    parser.add_argument("--ledger-only", action="store_true", help="Deprecated compatibility flag; ledger-only is the default.")
+    parser.add_argument("--full", action="store_true", help="Run candidate prep and evidence repair before rebuilding the ledger.")
+    parser.add_argument("--refresh-prep", action="store_true", help="Run candidate prep before rebuilding the ledger.")
+    parser.add_argument("--repair-evidence", action="store_true", help="Run evidence repair before rebuilding the ledger.")
+    parser.add_argument("--step", choices=STEP_CHOICES, action="append", default=[], help="Run one named producer/debug step before rebuilding the ledger. Can be repeated.")
     parser.add_argument("--skip-provider-refresh", action="store_true", help="Pass through to the candidate-prep orchestrator (local evidence only).")
     parser.add_argument("--repair-tier", choices=["A", "B", "C", "all"], default="A", help="Evidence repair batch tier (default A).")
     parser.add_argument("--repair-limit", type=positive_int, default=10, help="Evidence repair batch size (default 10).")
@@ -377,6 +544,8 @@ def main() -> int:
     parser.add_argument("--recommend-qa-lane", action="store_true", help="Refresh and surface the safe parallel read-only QA lane (does not spawn).")
     parser.add_argument("--out", type=Path, default=OUT, help="Output artifact path.")
     args = parser.parse_args()
+    if args.ledger_only and (args.full or args.refresh_prep or args.repair_evidence or args.closeout or args.step):
+        parser.error("--ledger-only cannot be combined with producer flags; omit --ledger-only or remove producer flags")
 
     report = build_report(args)
     if args.write:

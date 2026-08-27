@@ -1,0 +1,230 @@
+{
+  "schema": "veritas.interactive_training_module.v1",
+  "module_id": "sec-evidence-review-practice",
+  "title": "SEC Evidence Review Practice Lab",
+  "audience": "Randall internal finance research operator training",
+  "summary": "Practice module for reviewing SEC/EDGAR evidence packets without treating filings, tool output, or training completion as portfolio, canon, trade, account, or capital authority.",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "live_sec_retrieval_approved": false,
+    "venv_rebuild_approved": false,
+    "portfolio_canon_mutation_approved": false,
+    "trade_account_action_approved": false,
+    "capital_deployment_approved": false
+  },
+  "learning_objectives": [
+    "Classify SEC filings by evidence use without overstating decision authority.",
+    "Check SEC environment readiness before any evidence packet run.",
+    "Separate official-source evidence from portfolio/canon mutation or trade approval.",
+    "Identify freshness, source, and User-Agent failures that block evidence use."
+  ],
+  "lessons": [
+    {
+      "id": "sec-evidence-role",
+      "title": "What SEC Evidence Can And Cannot Do",
+      "body": "SEC filings are official-source evidence for research. They can support a later finance review, but they do not approve portfolio-note edits, capital deployment, paper/live orders, account action, or owner approval.",
+      "key_points": [
+        "10-K and 10-Q filings support fundamentals and risk review.",
+        "8-K filings support event freshness and material updates.",
+        "DEF 14A, 13D/13G, and insider filings support governance and ownership review.",
+        "Evidence packets are inputs to judgment, not execution authority."
+      ]
+    },
+    {
+      "id": "sec-environment-gate",
+      "title": "Environment Gate",
+      "body": "Before relying on SEC evidence tooling, run the local environment audit. It proves the SEC venv exists, imports work, expected methods are exposed, the User-Agent is real, and the docs preserve the review-only boundary.",
+      "key_points": [
+        "Use `python scripts\\sec_env_audit_validator.py --write --validate` before packet generation.",
+        "The expected User-Agent is `Veritas OpenClaw Research veritasaiflows@gmail.com`.",
+        "A clean audit still does not approve live retrieval, finance mutation, or account action."
+      ]
+    },
+    {
+      "id": "review-lane-handoff",
+      "title": "Review Lane Handoff",
+      "body": "A clean SEC evidence packet should move into a review lane with source freshness, filing type, conflict notes, and downstream authority flags. If evidence is stale, missing, contradictory, or produced with a broken environment, stop and repair proof first.",
+      "key_points": [
+        "Name the ticker, filing type, filing date, source URL, and producer proof.",
+        "Mark stale or contradictory evidence as review debt, not as a recommendation.",
+        "Keep trade/account/capital and canon mutation flags false unless a separate gate applies."
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "filing-purpose-match",
+      "type": "multiple_choice",
+      "title": "Match Filing To Use",
+      "prompt": "Which filing is the best first source for annual audited business, risk, and financial statement review?",
+      "choices": [
+        {
+          "id": "ten-k",
+          "text": "10-K",
+          "correct": true,
+          "feedback": "Correct. The 10-K is the annual audited filing and a primary fundamentals/risk source."
+        },
+        {
+          "id": "eight-k",
+          "text": "8-K",
+          "correct": false,
+          "feedback": "8-Ks are important for material events, but not the first annual fundamentals source."
+        },
+        {
+          "id": "def-fourteen-a",
+          "text": "DEF 14A",
+          "correct": false,
+          "feedback": "Proxy statements are useful for governance, compensation, and voting matters."
+        }
+      ],
+      "xapi_object": "activity/filing-purpose-match"
+    },
+    {
+      "id": "environment-preflight",
+      "type": "checklist",
+      "title": "SEC Evidence Preflight",
+      "prompt": "Check each item that must be true before treating a local SEC packet as usable review evidence.",
+      "checklist_items": [
+        "SEC venv exists and imports cleanly",
+        "Expected SEC methods are exposed",
+        "User-Agent is real and not a placeholder",
+        "Packet includes filing date and source lineage",
+        "Authority flags remain review-only"
+      ],
+      "xapi_object": "activity/environment-preflight"
+    },
+    {
+      "id": "authority-boundary-check",
+      "type": "multiple_choice",
+      "title": "Authority Boundary Check",
+      "prompt": "A packet finds a fresh 10-Q and clean company facts. What does that approve?",
+      "choices": [
+        {
+          "id": "research-only",
+          "text": "Review-only research evidence for a later finance judgment.",
+          "correct": true,
+          "feedback": "Correct. Evidence supports judgment but does not approve mutation or execution."
+        },
+        {
+          "id": "portfolio-edit",
+          "text": "Immediate portfolio/canon edits because the source is official.",
+          "correct": false,
+          "feedback": "Official source quality does not bypass the separate gated apply path."
+        },
+        {
+          "id": "trade-order",
+          "text": "A paper or live trade because SEC data is fresh.",
+          "correct": false,
+          "feedback": "Fresh evidence never creates paper/live/account authority."
+        }
+      ],
+      "xapi_object": "activity/authority-boundary-check"
+    },
+    {
+      "id": "stale-evidence-scenario",
+      "type": "scenario",
+      "title": "Stale Evidence Scenario",
+      "prompt": "You open an SEC packet and see the latest 10-Q field is missing while the summary still claims the evidence is ready. Write the safe operator response.",
+      "expected": "Mark the packet as blocked or warning-grade, identify the missing 10-Q evidence, rerun or repair the SEC proof path, and do not use it for a material recommendation until source freshness is clean.",
+      "rubric": [
+        "Names the missing or stale evidence.",
+        "Blocks or downgrades the packet instead of smoothing it over.",
+        "Calls for rerun/repair proof before material use.",
+        "Does not infer finance, canon, or execution authority."
+      ],
+      "xapi_object": "activity/stale-evidence-scenario"
+    },
+    {
+      "id": "conflict-review-scenario",
+      "type": "scenario",
+      "title": "Conflict Review Scenario",
+      "prompt": "A generated summary says revenue accelerated, but the 10-Q source line shows a decline. What should the review note say?",
+      "expected": "Treat the official filing/source line as the evidence anchor, flag the generated summary conflict, and route the item for review or repair before it influences a recommendation.",
+      "rubric": [
+        "Uses official filing/source line as anchor.",
+        "Flags generated-summary conflict explicitly.",
+        "Routes repair or review before recommendation use.",
+        "Avoids hiding uncertainty."
+      ],
+      "xapi_object": "activity/conflict-review-scenario"
+    },
+    {
+      "id": "user-agent-check",
+      "type": "multiple_choice",
+      "title": "User-Agent Gate",
+      "prompt": "Which User-Agent state is acceptable before SEC evidence retrieval is considered?",
+      "choices": [
+        {
+          "id": "real-contact",
+          "text": "Veritas OpenClaw Research veritasaiflows@gmail.com",
+          "correct": true,
+          "feedback": "Correct. The workspace expects a real research identity and contact."
+        },
+        {
+          "id": "placeholder",
+          "text": "my-app",
+          "correct": false,
+          "feedback": "Placeholder identity is not acceptable for SEC retrieval."
+        },
+        {
+          "id": "blank",
+          "text": "Blank or omitted User-Agent",
+          "correct": false,
+          "feedback": "Blank identity fails the SEC environment gate."
+        }
+      ],
+      "xapi_object": "activity/user-agent-check"
+    },
+    {
+      "id": "boundary-ack",
+      "type": "boundary_ack",
+      "title": "SEC Boundary Acknowledgement",
+      "prompt": "Confirm this module is internal SEC evidence review training only and does not approve live SEC retrieval, venv rebuild, portfolio/canon mutation, capital deployment, paper/live orders, account action, or owner approval.",
+      "expected": "I confirm this is internal SEC evidence review training only.",
+      "xapi_object": "activity/boundary-ack"
+    },
+    {
+      "id": "handoff-checklist",
+      "type": "checklist",
+      "title": "Review Handoff Checklist",
+      "prompt": "Check every field that belongs in a clean SEC evidence handoff.",
+      "checklist_items": [
+        "Ticker or entity identifier",
+        "Filing type and filing date",
+        "Source URL or accession pointer",
+        "Producer script/proof path",
+        "Freshness/conflict status",
+        "Review-only authority flags"
+      ],
+      "xapi_object": "activity/handoff-checklist"
+    },
+    {
+      "id": "operator-reflection",
+      "type": "reflection",
+      "title": "Operator Reflection",
+      "prompt": "After passing this module, what is the next safe use of SEC evidence and what remains blocked?",
+      "rubric": [
+        "Names review packet or finance research support as safe use.",
+        "States live retrieval requires its own approved run path.",
+        "Keeps portfolio/canon mutation and paper/live/account action blocked.",
+        "Mentions freshness/conflict proof before material recommendations."
+      ],
+      "xapi_object": "activity/operator-reflection"
+    }
+  ],
+  "xapi": {
+    "activity_id": "https://veritas.local/training/sec-evidence-review-practice",
+    "verbs": [
+      "answered",
+      "completed",
+      "failed",
+      "passed",
+      "reviewed_boundary",
+      "started"
+    ]
+  }
+}

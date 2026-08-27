@@ -2,7 +2,7 @@
 """Regression checks for Tier A/B decision-grade band coverage policy."""
 from __future__ import annotations
 
-from wf78_missing_band_context_repair import card_uses_repair_context, decision_grade_band_missing
+from wf78_missing_band_context_repair import card_uses_repair_context, decision_grade_band_missing, yfinance_symbol
 
 
 def main() -> int:
@@ -36,6 +36,8 @@ def main() -> int:
         "current_price": {"source": "tmp/other.json"},
         "stop_or_invalidation": {"source_path": "tmp/other.json"},
     }) is False
+    assert yfinance_symbol("BRK.B") == "BRK-B"
+    assert yfinance_symbol("GOOG") == "GOOG"
     print("wf78_missing_band_context_repair_policy: ok")
     return 0
 

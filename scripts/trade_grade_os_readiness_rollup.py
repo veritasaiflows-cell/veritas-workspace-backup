@@ -26,6 +26,9 @@ SCHEMA = "veritas.trade_grade_os_readiness_rollup.v1"
 APPROVED_TELEGRAM_OWNER = "telegram:8650152206"
 APPROVED_OWNER_NAME = "Randall"
 
+DECISION_SLICE_TIERS = ("Tier A", "Tier B")
+DECISION_READY_RATIO = 0.8
+
 AUTHORITY_BOUNDARY = {
     "review_only": True,
     "decision_support_only": True,
@@ -282,25 +285,271 @@ def telegram_approval_rollup() -> dict[str, Any]:
     }
 
 
-def trade_grade_data_readiness_rollup(ticker_freshness_ledger: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(ticker_freshness_ledger.get("summary"))
-    counts = as_dict(summary.get("freshness_state_counts"))
-    ticker_count = int_or_zero(summary.get("ticker_count"))
-    true_fresh_count = int_or_zero(counts.get("fresh"))
-    threshold = max(1, int(ticker_count * 0.8)) if ticker_count else 0
-    ready = bool(ticker_count and true_fresh_count >= threshold)
+def trade_grade_data_readiness_rollup(
+    ticker_freshness_ledger: dict[str, Any],
+    tier_weighted: dict[str, Any],
+) -> dict[str, Any]:
+    """Measure decision readiness on the Tier A/B slice only.
+
+    Tier C rows are monitor-grade by contract (decision_grade_entry_stop_allowed
+    is false), so scoring them against a decision-readiness threshold produced a
+    verdict that could never clear on the flat ledger and one that read green on
+    the tier-weighted count. The decision slice is the only honest denominator.
+    """
+    ledger_summary = as_dict(ticker_freshness_ledger.get("summary"))
+    counts = as_dict(ledger_summary.get("freshness_state_counts"))
+    universe_count = int_or_zero(ledger_summary.get("ticker_count"))
+    raw_true_fresh_count = int_or_zero(counts.get("fresh"))
+
+    slice_rows = [
+        row
+        for row in (as_dict(item) for item in as_list(tier_weighted.get("rows")))
+        if str(row.get("auto_tier") or "").strip() in DECISION_SLICE_TIERS
+    ]
+    slice_count = len(slice_rows)
+    resolved_count = sum(1 for row in slice_rows if row.get("tier_weighted_resolved") is True)
+    unresolved_tickers = sorted(
+        str(row.get("ticker") or "").strip().upper()
+        for row in slice_rows
+        if row.get("tier_weighted_resolved") is not True and str(row.get("ticker") or "").strip()
+    )
+    threshold = max(1, int(slice_count * DECISION_READY_RATIO)) if slice_count else 0
+    source_ok = tier_weighted.get("status") == "ok"
+    ready = bool(source_ok and slice_count and resolved_count >= threshold)
+
+    if not source_ok:
+        reason = "tier_weighted_resolution_not_ok"
+    elif not slice_count:
+        reason = "decision_slice_empty"
+    elif ready:
+        reason = "tier_a_b_resolved_count_meets_threshold"
+    else:
+        reason = "tier_a_b_resolved_count_below_threshold"
+
     return {
         "status": "data_ready" if ready else "data_not_ready",
         "ready_for_trade_grade_decisions": ready,
-        "ticker_count": ticker_count,
-        "true_fresh_ticker_count": true_fresh_count,
-        "true_fresh_threshold": threshold,
-        "true_fresh_ratio": round(true_fresh_count / ticker_count, 4) if ticker_count else None,
-        "freshness_state_counts": counts,
-        "top_stale_families": as_list(summary.get("top_stale_families")),
-        "source_artifact": "tmp/wf78-ticker-freshness-ledger.json",
+        "readiness_basis": "tier_a_b_decision_slice",
+        "reason": reason,
+        "decision_slice_tiers": list(DECISION_SLICE_TIERS),
+        "decision_slice_ticker_count": slice_count,
+        "decision_slice_resolved_count": resolved_count,
+        "decision_slice_threshold": threshold,
+        "decision_slice_ratio": round(resolved_count / slice_count, 4) if slice_count else None,
+        "decision_slice_unresolved_count": slice_count - resolved_count,
+        "decision_slice_unresolved_tickers": unresolved_tickers,
+        "universe_reference": {
+            "ticker_count": universe_count,
+            "raw_true_fresh_ticker_count": raw_true_fresh_count,
+            "raw_true_fresh_ratio": (
+                round(raw_true_fresh_count / universe_count, 4) if universe_count else None
+            ),
+            "freshness_state_counts": counts,
+            "top_stale_families": as_list(ledger_summary.get("top_stale_families")),
+            "note": (
+                "Full-universe flat freshness is reference only; Tier C rows are monitor-grade "
+                "and are never decision-grade evidence."
+            ),
+        },
+        "source_artifacts": [
+            "tmp/wf78-tier-weighted-freshness-resolution.json",
+            "tmp/wf78-ticker-freshness-ledger.json",
+        ],
         "disclosure_rule": "Do not describe WF84/WF85 as decision-data-ready unless this status is data_ready.",
     }
+
+
+def decision_depth_rollup(
+    cards_payload: dict[str, Any],
+    full_answer: dict[str, Any],
+    tier_weighted: dict[str, Any],
+    repair_conveyor: dict[str, Any],
+    approval_gate: dict[str, Any],
+) -> dict[str, Any]:
+    """Separate structural coverage from current decision-grade evidence depth."""
+    cards_by_ticker = {
+        str(as_dict(card).get("ticker") or "").upper(): as_dict(card)
+        for card in as_list(cards_payload.get("cards"))
+        if str(as_dict(card).get("ticker") or "").strip()
+    }
+    answers_by_ticker = {
+        str(as_dict(result).get("ticker") or as_dict(result).get("symbol") or "").upper(): as_dict(result)
+        for result in as_list(full_answer.get("results"))
+        if str(as_dict(result).get("ticker") or as_dict(result).get("symbol") or "").strip()
+    }
+    tier_by_ticker = {
+        str(as_dict(row).get("ticker") or "").upper(): as_dict(row)
+        for row in as_list(tier_weighted.get("rows"))
+        if str(as_dict(row).get("ticker") or "").strip()
+    }
+    repair_by_ticker = {
+        str(as_dict(row).get("ticker") or "").upper(): as_dict(row)
+        for row in as_list(repair_conveyor.get("rows"))
+        if str(as_dict(row).get("ticker") or "").strip()
+    }
+    approval_drafts = {
+        str(as_dict(row).get("ticker") or "").upper()
+        for row in as_list(approval_gate.get("approval_card_drafts"))
+        if str(as_dict(row).get("ticker") or "").strip()
+    }
+    approval_authority = as_dict(approval_gate.get("authority_boundary"))
+    approval_authority_fail_closed = bool(
+        approval_authority.get("review_only") is True
+        and approval_authority.get("decision_support_only") is True
+        and approval_authority.get("approval_card_draft_allowed") is True
+        and all(
+            approval_authority.get(key) is False
+            for key in (
+            "capital_deployment_approved",
+            "trade_or_execution_approved",
+            "paper_or_live_execution_allowed",
+            "brokerage_or_account_action_allowed",
+            "money_movement_allowed",
+            "customer_or_external_delivery_allowed",
+            "canon_or_portfolio_mutation_allowed",
+            "cash_sizing_or_risk_rule_mutation_allowed",
+            "customer_account_pii_or_suitability_data_allowed",
+            "owner_approval_inferred",
+            )
+        )
+    )
+    tickers = sorted(
+        set(cards_by_ticker)
+        | set(answers_by_ticker)
+        | set(tier_by_ticker)
+        | set(repair_by_ticker)
+        | approval_drafts
+    )
+    rows: list[dict[str, Any]] = []
+    tier_a_b_repair_needed_count = 0
+    for symbol in tickers:
+        card = cards_by_ticker.get(symbol, {})
+        tier = tier_by_ticker.get(symbol, {})
+        repair = repair_by_ticker.get(symbol, {})
+        auto_tier = tier.get("auto_tier") or card.get("auto_tier") or repair.get("auto_tier")
+        stale_families = [str(item) for item in as_list(tier.get("stale_families"))]
+        decision_state = card.get("decision_state")
+        repair_lane = repair.get("repair_lane")
+        source_open_status = repair.get("source_open_status")
+        freshness_status = repair.get("freshness_status")
+        resolution_state = tier.get("resolution_state")
+
+        approval_card_draft_candidate = symbol in approval_drafts and approval_authority_fail_closed
+        # A draft is review-only. This compiler never infers exact owner
+        # approval; any future owner state needs a separate owner-gated proof.
+        owner_card_candidate = False
+        review_card_candidate = (
+            repair_lane == "fresh_quote_review_ready_pilot_candidate"
+            or decision_state == "review_ready"
+        )
+        fresh_decision_context = bool(
+            resolution_state == "fresh"
+            and not stale_families
+            and source_open_status == "verified"
+            and freshness_status == "fresh"
+        )
+        thin_monitor = bool(
+            auto_tier in {"C", "Tier C"}
+            and resolution_state == "resolved_thin_monitor_current"
+        )
+        coverage_floor = bool(card or answers_by_ticker.get(symbol))
+
+        if approval_card_draft_candidate:
+            depth_state = "approval_card_draft_candidate"
+        elif review_card_candidate:
+            depth_state = "review_card_candidate"
+        elif fresh_decision_context:
+            depth_state = "fresh_decision_context"
+        elif thin_monitor:
+            depth_state = "thin_monitor"
+        elif coverage_floor:
+            depth_state = "coverage_floor"
+        else:
+            depth_state = "blocked"
+
+        if auto_tier in {"A", "B", "Tier A", "Tier B"} and depth_state in {"coverage_floor", "blocked"}:
+            tier_a_b_repair_needed_count += 1
+
+        rows.append(
+            {
+                "ticker": symbol,
+                "auto_tier": auto_tier,
+                "depth_state": depth_state,
+                "coverage_floor": coverage_floor,
+                "thin_monitor": thin_monitor,
+                "fresh_decision_context": fresh_decision_context,
+                "review_card_candidate": review_card_candidate,
+                "approval_card_draft_candidate": approval_card_draft_candidate,
+                "owner_card_candidate": owner_card_candidate,
+                "stale_families": stale_families,
+                "repair_lane": repair_lane,
+                "decision_state": decision_state,
+                "source_open_status": source_open_status,
+                "freshness_status": freshness_status,
+            }
+        )
+
+    depth_state_counts = dict(Counter(str(row["depth_state"]) for row in rows))
+    decision_grade_count = sum(
+        depth_state_counts.get(state, 0)
+        for state in ("fresh_decision_context",)
+    )
+    review_pipeline_candidate_count = sum(
+        depth_state_counts.get(state, 0)
+        for state in ("review_card_candidate", "approval_card_draft_candidate")
+    )
+    return {
+        "rows": rows,
+        "summary": {
+            "ticker_count": len(rows),
+            "depth_state_counts": depth_state_counts,
+            "coverage_floor_count": sum(1 for row in rows if row["coverage_floor"]),
+            "coverage_only_count": depth_state_counts.get("coverage_floor", 0),
+            "thin_monitor_count": depth_state_counts.get("thin_monitor", 0),
+            "fresh_decision_context_count": depth_state_counts.get("fresh_decision_context", 0),
+            "review_card_candidate_count": depth_state_counts.get("review_card_candidate", 0),
+            "approval_card_draft_candidate_count": depth_state_counts.get("approval_card_draft_candidate", 0),
+            "owner_card_candidate_count": depth_state_counts.get("owner_card_candidate", 0),
+            "review_pipeline_candidate_count": review_pipeline_candidate_count,
+            "tier_a_b_repair_needed_count": tier_a_b_repair_needed_count,
+            "production_or_decision_grade_count": decision_grade_count,
+            "headline_state": (
+                "decision_grade_depth_ready"
+                if decision_grade_count
+                else "coverage_only_no_decision_grade_depth"
+            ),
+            "next_safe_action": (
+                "Use qualifying rows for review-only decision support; exact owner approval remains required."
+                if decision_grade_count
+                else "Repair source, freshness, and tier-resolution gaps before treating coverage as decision-grade depth."
+            ),
+        },
+        "authority_boundary": {
+            "review_only": True,
+            "capital_deployment_approved": False,
+            "trade_or_execution_approved": False,
+            "customer_or_external_delivery_allowed": False,
+            "canon_or_portfolio_mutation_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
+def tier_a_b_guard_findings(tier_readiness: dict[str, Any]) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    validation_status = str(tier_readiness.get("validation_status") or "")
+    stale_count = int_or_zero(tier_readiness.get("stale_complete_band_context_count"))
+    if validation_status == "error":
+        errors.append("tier_a_b_guard_validation_error")
+    elif stale_count:
+        if validation_status == "warning":
+            warnings.append("tier_a_b_stale_complete_band_context_finance_domain_debt_present")
+        else:
+            errors.append("tier_a_b_stale_complete_band_context_count_nonzero")
+    elif validation_status == "warning":
+        warnings.append("tier_a_b_guard_finance_domain_debt_present")
+    return errors, warnings
 
 
 def build_payload() -> dict[str, Any]:
@@ -311,6 +560,8 @@ def build_payload() -> dict[str, Any]:
     full_answer = load(TMP / "trade-grade-full-answer-assembler.json")
     tier_guard = load(TMP / "tier-ab-band-freshness-cron-guard.json")
     ticker_freshness_ledger = load(TMP / "wf78-ticker-freshness-ledger.json")
+    tier_weighted = load(TMP / "wf78-tier-weighted-freshness-resolution.json")
+    repair_conveyor = load(TMP / "trade-grade-repair-conveyor.json")
     shadow = load(TMP / "paper-autotrader" / "shadow-decisions.json")
     assisted = load(TMP / "paper-autotrader" / "assisted-order-cards.json")
     execution_result = load(TMP / "alpaca-paper-readiness" / "paper-execution-result.vrt-wf86-assisted-approved.json")
@@ -337,7 +588,17 @@ def build_payload() -> dict[str, Any]:
             "forbidden_authority_true_count": wf84_summary.get("forbidden_authority_true_count"),
         },
         "wf85_decision_os": wf85_semantic_rollup(cards, approval_gate, full_answer),
-        "trade_grade_data_readiness": trade_grade_data_readiness_rollup(ticker_freshness_ledger),
+        "trade_grade_data_readiness": trade_grade_data_readiness_rollup(
+            ticker_freshness_ledger,
+            tier_weighted,
+        ),
+        "decision_depth": decision_depth_rollup(
+            cards,
+            full_answer,
+            tier_weighted,
+            repair_conveyor,
+            approval_gate,
+        ),
         "tier_a_b_readiness": {
             "guard_status": tier_guard.get("status"),
             "validation_status": as_dict(tier_guard.get("validation")).get("status"),
@@ -360,6 +621,8 @@ def build_payload() -> dict[str, Any]:
             "wf85_approval_gate": "tmp/trade-grade-approval-card-gate.json",
             "wf85_full_answer": "tmp/trade-grade-full-answer-assembler.json",
             "wf78_ticker_freshness_ledger": "tmp/wf78-ticker-freshness-ledger.json",
+            "wf78_tier_weighted_freshness_resolution": "tmp/wf78-tier-weighted-freshness-resolution.json",
+            "trade_grade_repair_conveyor": "tmp/trade-grade-repair-conveyor.json",
             "tier_ab_guard": "tmp/tier-ab-band-freshness-cron-guard.json",
             "wf86_shadow": "tmp/paper-autotrader/shadow-decisions.json",
             "wf86_assisted": "tmp/paper-autotrader/assisted-order-cards.json",
@@ -381,16 +644,20 @@ def build_payload() -> dict[str, Any]:
         errors.append("approved_telegram_owner_not_in_owner_allow_from")
     if payload["wf84_data_plane"]["forbidden_authority_true_count"] not in {0, None}:
         errors.append("wf84_forbidden_authority_true_count_nonzero")
-    if payload["tier_a_b_readiness"]["stale_complete_band_context_count"] not in {0, None}:
-        errors.append("tier_a_b_stale_complete_band_context_count_nonzero")
+    tier_errors, tier_warnings = tier_a_b_guard_findings(payload["tier_a_b_readiness"])
+    errors.extend(tier_errors)
+    warnings.extend(tier_warnings)
     if payload["trade_grade_data_readiness"]["ready_for_trade_grade_decisions"] is not True:
         warnings.append(
             "trade_grade_data_not_ready:"
-            f"{payload['trade_grade_data_readiness']['true_fresh_ticker_count']}/"
-            f"{payload['trade_grade_data_readiness']['ticker_count']}"
+            f"{payload['trade_grade_data_readiness']['decision_slice_resolved_count']}/"
+            f"{payload['trade_grade_data_readiness']['decision_slice_ticker_count']}"
+            f"_tier_a_b_threshold_{payload['trade_grade_data_readiness']['decision_slice_threshold']}"
         )
     if payload["wf85_decision_os"]["approval_card_eligible_count"] > 0:
         warnings.append("approval_card_eligible_requires_exact_owner_approval_before_wf67_request")
+    if payload["decision_depth"]["summary"]["production_or_decision_grade_count"] == 0:
+        warnings.append("decision_grade_depth_empty")
     if errors:
         payload["status"] = "blocked"
         payload["validation"]["status"] = "error"

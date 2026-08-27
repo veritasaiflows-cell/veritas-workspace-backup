@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veritas Local Training Catalog</title>
+  <style>
+    :root { color-scheme: light; --ink:#17202a; --muted:#5a6472; --line:#d8dde6; --paper:#f6f7f9; --panel:#fff; --green:#0b6b4f; --blue:#2457a6; --amber:#9a5b00; --red:#a33a2a; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Segoe UI, Arial, sans-serif; background:var(--paper); color:var(--ink); line-height:1.45; }
+    header, main { max-width:1180px; margin:0 auto; padding:24px; }
+    header { padding-top:28px; }
+    h1 { margin:0 0 8px; font-size:clamp(28px, 4vw, 44px); letter-spacing:0; }
+    h2 { margin:0 0 8px; font-size:22px; letter-spacing:0; }
+    p { margin:0 0 12px; color:var(--muted); }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:18px; }
+    .summary div, .ledger, .module-card { background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+    .summary div { padding:14px; }
+    .summary strong { display:block; font-size:24px; }
+    .ledger { padding:16px; margin:4px 0 18px; }
+    .ledger-grid { display:grid; grid-template-columns:minmax(180px, 1fr) auto auto; gap:10px; align-items:end; }
+    label { display:block; color:var(--muted); font-size:13px; margin-bottom:4px; }
+    input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font:inherit; }
+    code { background:#edf0f5; padding:2px 5px; border-radius:4px; }
+    .module-grid { display:grid; gap:14px; }
+    .module-card { padding:18px; }
+    .module-main { display:grid; grid-template-columns:1fr auto; gap:16px; align-items:start; }
+    .eyebrow { margin:0 0 6px; color:var(--blue); font-weight:700; font-size:13px; }
+    .status-stack { display:flex; flex-direction:column; gap:6px; align-items:flex-end; color:var(--muted); white-space:nowrap; }
+    .badge { display:inline-block; min-width:64px; text-align:center; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700; }
+    .badge.ok { color:#fff; background:var(--green); }
+    .badge.warn { color:#fff; background:var(--amber); }
+    .facts { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:14px 0; }
+    .facts div { border:1px solid var(--line); border-radius:6px; padding:10px; }
+    dt { color:var(--muted); font-size:13px; }
+    dd { margin:4px 0 0; font-weight:700; }
+    .actions, .proof-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .button { display:inline-flex; align-items:center; min-height:38px; padding:8px 12px; border-radius:6px; border:1px solid var(--line); background:#fff; color:var(--ink); text-decoration:none; font-weight:700; cursor:pointer; }
+    .button.primary { background:var(--blue); color:#fff; border-color:var(--blue); }
+    .button.danger { border-color:var(--red); color:var(--red); }
+    .proof-links a { color:var(--blue); }
+    .note { color:var(--muted); margin-top:10px; }
+    @media (max-width:680px) { header, main { padding:18px; } .module-main, .ledger-grid { grid-template-columns:1fr; } .status-stack { align-items:flex-start; } .button { width:100%; justify-content:center; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Veritas Local Training Catalog</h1>
+    <p>Internal training launcher for local HTML modules, QA proof, SCORM packages, and optional loopback xAPI capture.</p>
+    <section class="summary" aria-label="Catalog summary">
+      <div><span>Modules</span><strong>4</strong></div>
+      <div><span>Lessons</span><strong>11</strong></div>
+      <div><span>Interactions</span><strong>39</strong></div>
+      <div><span>Catalog status</span><strong>OK</strong></div>
+    </section>
+  </header>
+  <main>
+    <section class="ledger" aria-label="Local xAPI ledger controls">
+      <h2>Local xAPI Ledger</h2>
+      <p>Optional. Start the collector in PowerShell, then enable capture here. Events stay on this machine.</p>
+      <p><code>python scripts\interactive_training_xapi_ledger.py --serve --ledger-path training/interactive-training-builder/xapi-ledger/local-events.jsonl</code></p>
+      <div class="ledger-grid">
+        <div><label for="endpoint">Endpoint</label><input id="endpoint" value="http://127.0.0.1:8766/xapi"></div>
+        <button class="button primary" type="button" id="toggleLedger">Enable ledger</button>
+        <button class="button" type="button" id="exportProgress">Export local progress</button>
+      </div>
+      <p class="note" id="ledgerState">Ledger capture is off.</p>
+    </section>
+    <section class="ledger" aria-label="Authoring resources">
+      <h2>Authoring Resources</h2>
+      <p>Use these local files when creating the next schema-backed module.</p>
+      <div class="actions">
+        <a class="button" href="interactive-training-builder/authoring-checklist.md">Authoring checklist</a>
+        <a class="button" href="interactive-training-builder/component-library.md">Component library</a>
+        <a class="button" href="interactive-training-builder/component-library.json">Component JSON</a>
+        <a class="button" href="interactive-training-builder/standards-upgrade-evaluation.json">Standards evaluation</a>
+      </div>
+    </section>
+    <section class="module-grid" aria-label="Training modules">
+
+    <article class="module-card" data-module="wf75-boundary-practice">
+      <div class="module-main">
+        <div>
+          <p class="eyebrow">Randall internal operator training</p>
+          <h2>WF75 Boundary Practice Lab</h2>
+          <p>Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.</p>
+        </div>
+        <div class="status-stack">
+          <span class="badge ok">OK</span>
+          <span>2 lessons</span>
+          <span>5 interactions</span>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt>QA</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>SCORM</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>Local progress</dt><dd><span id="progress-wf75-boundary-practice">Not started</span></dd></div>
+        <div><dt>Events</dt><dd><span id="events-wf75-boundary-practice">0</span></dd></div>
+      </dl>
+      <div class="actions">
+        <a class="button primary" href="interactive-training-builder/sample-wf75-boundary-module.html">Launch</a>
+        <a class="button" href="interactive-training-builder/sample-wf75-boundary-module-scorm.zip" download>Download SCORM</a>
+        <a class="button" href="interactive-training-builder/sample-wf75-boundary-module-manifest.json">Manifest</a>
+        <a class="button" href="interactive-training-builder/sample-wf75-boundary-module.xapi.json">xAPI seed</a>
+        <a class="button" href="interactive-training-builder/sample-wf75-boundary-module.json">Source JSON</a>
+      </div>
+      <div class="proof-links"><a href="interactive-training-builder/qa-screenshots/wf75-boundary-practice-desktop.png">desktop screenshot</a> <a href="interactive-training-builder/qa-screenshots/wf75-boundary-practice-mobile.png">mobile screenshot</a> <a href="interactive-training-builder/scorm-smoke-screenshots/wf75-boundary-practice-scorm-smoke.png">SCORM smoke screenshot</a></div>
+    </article>
+
+    <article class="module-card" data-module="wf75-hvac-prospect-outreach-practice">
+      <div class="module-main">
+        <div>
+          <p class="eyebrow">Randall internal operator training</p>
+          <h2>WF75 HVAC Prospect Outreach Practice Lab</h2>
+          <p>Practice module converted from the HVAC prospect outreach training stack. It trains offer clarity, claim discipline, data boundaries, channel boundaries, and exact owner-approval separation.</p>
+        </div>
+        <div class="status-stack">
+          <span class="badge ok">OK</span>
+          <span>3 lessons</span>
+          <span>15 interactions</span>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt>QA</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>SCORM</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>Local progress</dt><dd><span id="progress-wf75-hvac-prospect-outreach-practice">Not started</span></dd></div>
+        <div><dt>Events</dt><dd><span id="events-wf75-hvac-prospect-outreach-practice">0</span></dd></div>
+      </dl>
+      <div class="actions">
+        <a class="button primary" href="interactive-training-builder/wf75-hvac-outreach-module.html">Launch</a>
+        <a class="button" href="interactive-training-builder/wf75-hvac-outreach-module-scorm.zip" download>Download SCORM</a>
+        <a class="button" href="interactive-training-builder/wf75-hvac-outreach-module-manifest.json">Manifest</a>
+        <a class="button" href="interactive-training-builder/wf75-hvac-outreach-module.xapi.json">xAPI seed</a>
+        <a class="button" href="interactive-training-builder/wf75-hvac-outreach-module.json">Source JSON</a>
+      </div>
+      <div class="proof-links"><a href="interactive-training-builder/qa-screenshots/wf75-hvac-prospect-outreach-practice-desktop.png">desktop screenshot</a> <a href="interactive-training-builder/qa-screenshots/wf75-hvac-prospect-outreach-practice-mobile.png">mobile screenshot</a> <a href="interactive-training-builder/scorm-smoke-screenshots/wf75-hvac-prospect-outreach-practice-scorm-smoke.png">SCORM smoke screenshot</a></div>
+    </article>
+
+    <article class="module-card" data-module="sec-evidence-review-practice">
+      <div class="module-main">
+        <div>
+          <p class="eyebrow">Randall internal finance research operator training</p>
+          <h2>SEC Evidence Review Practice Lab</h2>
+          <p>Practice module for reviewing SEC/EDGAR evidence packets without treating filings, tool output, or training completion as portfolio, canon, trade, account, or capital authority.</p>
+        </div>
+        <div class="status-stack">
+          <span class="badge ok">OK</span>
+          <span>3 lessons</span>
+          <span>9 interactions</span>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt>QA</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>SCORM</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>Local progress</dt><dd><span id="progress-sec-evidence-review-practice">Not started</span></dd></div>
+        <div><dt>Events</dt><dd><span id="events-sec-evidence-review-practice">0</span></dd></div>
+      </dl>
+      <div class="actions">
+        <a class="button primary" href="interactive-training-builder/sec-evidence-review-module.html">Launch</a>
+        <a class="button" href="interactive-training-builder/sec-evidence-review-module-scorm.zip" download>Download SCORM</a>
+        <a class="button" href="interactive-training-builder/sec-evidence-review-module-manifest.json">Manifest</a>
+        <a class="button" href="interactive-training-builder/sec-evidence-review-module.xapi.json">xAPI seed</a>
+        <a class="button" href="interactive-training-builder/sec-evidence-review-module.json">Source JSON</a>
+      </div>
+      <div class="proof-links"><a href="interactive-training-builder/qa-screenshots/sec-evidence-review-practice-desktop.png">desktop screenshot</a> <a href="interactive-training-builder/qa-screenshots/sec-evidence-review-practice-mobile.png">mobile screenshot</a> <a href="interactive-training-builder/scorm-smoke-screenshots/sec-evidence-review-practice-scorm-smoke.png">SCORM smoke screenshot</a></div>
+    </article>
+
+    <article class="module-card" data-module="otel-proof-validator-practice">
+      <div class="module-main">
+        <div>
+          <p class="eyebrow">Randall internal operations proof and validator training</p>
+          <h2>OTEL Proof Validator Practice Lab</h2>
+          <p>Practice module for reading local OTEL control packets, selecting the right proof window, and routing telemetry findings without changing collector, runtime, cron, external export, finance, paper, live, or account authority.</p>
+        </div>
+        <div class="status-stack">
+          <span class="badge ok">OK</span>
+          <span>3 lessons</span>
+          <span>10 interactions</span>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt>QA</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>SCORM</dt><dd><span class="badge ok">OK</span></dd></div>
+        <div><dt>Local progress</dt><dd><span id="progress-otel-proof-validator-practice">Not started</span></dd></div>
+        <div><dt>Events</dt><dd><span id="events-otel-proof-validator-practice">0</span></dd></div>
+      </dl>
+      <div class="actions">
+        <a class="button primary" href="interactive-training-builder/otel-proof-validator-module.html">Launch</a>
+        <a class="button" href="interactive-training-builder/otel-proof-validator-module-scorm.zip" download>Download SCORM</a>
+        <a class="button" href="interactive-training-builder/otel-proof-validator-module-manifest.json">Manifest</a>
+        <a class="button" href="interactive-training-builder/otel-proof-validator-module.xapi.json">xAPI seed</a>
+        <a class="button" href="interactive-training-builder/otel-proof-validator-module.json">Source JSON</a>
+      </div>
+      <div class="proof-links"><a href="interactive-training-builder/qa-screenshots/otel-proof-validator-practice-desktop.png">desktop screenshot</a> <a href="interactive-training-builder/qa-screenshots/otel-proof-validator-practice-mobile.png">mobile screenshot</a> <a href="interactive-training-builder/scorm-smoke-screenshots/otel-proof-validator-practice-scorm-smoke.png">SCORM smoke screenshot</a></div>
+    </article>
+    </section>
+    <p class="note">Boundary: local/internal only. No external LMS/LRS, public delivery, customer data, outreach, payment, credentials, or production access is approved by this catalog.</p>
+  </main>
+  <script>
+    const CATALOG = {"schema": "veritas.interactive_training_catalog.v1", "generated_at_utc": "2026-07-04T14:39:43Z", "status": "ok", "modules": [{"module_id": "wf75-boundary-practice", "title": "WF75 Boundary Practice Lab", "summary": "Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.", "audience": "Randall internal operator training", "lessons": 2, "interactions": 5, "generated_at_utc": "2026-07-04T14:38:07Z", "status": "ok", "errors": [], "links": {"launch": "interactive-training-builder/sample-wf75-boundary-module.html", "source_json": "interactive-training-builder/sample-wf75-boundary-module.json", "manifest": "interactive-training-builder/sample-wf75-boundary-module-manifest.json", "xapi_seed": "interactive-training-builder/sample-wf75-boundary-module.xapi.json", "scorm_zip": "interactive-training-builder/sample-wf75-boundary-module-scorm.zip"}, "qa": {"status": "ok", "severe_axe_violations": 0, "console_errors": 0, "overflow": 0, "screenshots": [{"viewport": "desktop", "href": "interactive-training-builder/qa-screenshots/wf75-boundary-practice-desktop.png"}, {"viewport": "mobile", "href": "interactive-training-builder/qa-screenshots/wf75-boundary-practice-mobile.png"}]}, "scorm": {"status": "ok", "runtime_initialized": true, "runtime_finished": true, "lesson_status": "completed", "screenshot": "interactive-training-builder/scorm-smoke-screenshots/wf75-boundary-practice-scorm-smoke.png"}, "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false}}, {"module_id": "wf75-hvac-prospect-outreach-practice", "title": "WF75 HVAC Prospect Outreach Practice Lab", "summary": "Practice module converted from the HVAC prospect outreach training stack. It trains offer clarity, claim discipline, data boundaries, channel boundaries, and exact owner-approval separation.", "audience": "Randall internal operator training", "lessons": 3, "interactions": 15, "generated_at_utc": "2026-07-04T14:38:07Z", "status": "ok", "errors": [], "links": {"launch": "interactive-training-builder/wf75-hvac-outreach-module.html", "source_json": "interactive-training-builder/wf75-hvac-outreach-module.json", "manifest": "interactive-training-builder/wf75-hvac-outreach-module-manifest.json", "xapi_seed": "interactive-training-builder/wf75-hvac-outreach-module.xapi.json", "scorm_zip": "interactive-training-builder/wf75-hvac-outreach-module-scorm.zip"}, "qa": {"status": "ok", "severe_axe_violations": 0, "console_errors": 0, "overflow": 0, "screenshots": [{"viewport": "desktop", "href": "interactive-training-builder/qa-screenshots/wf75-hvac-prospect-outreach-practice-desktop.png"}, {"viewport": "mobile", "href": "interactive-training-builder/qa-screenshots/wf75-hvac-prospect-outreach-practice-mobile.png"}]}, "scorm": {"status": "ok", "runtime_initialized": true, "runtime_finished": true, "lesson_status": "completed", "screenshot": "interactive-training-builder/scorm-smoke-screenshots/wf75-hvac-prospect-outreach-practice-scorm-smoke.png"}, "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false, "customer_outreach_approved": false, "payment_collection_approved": false, "crm_import_approved": false, "phone_sms_approved": false, "bulk_automation_approved": false}}, {"module_id": "sec-evidence-review-practice", "title": "SEC Evidence Review Practice Lab", "summary": "Practice module for reviewing SEC/EDGAR evidence packets without treating filings, tool output, or training completion as portfolio, canon, trade, account, or capital authority.", "audience": "Randall internal finance research operator training", "lessons": 3, "interactions": 9, "generated_at_utc": "2026-07-04T14:38:08Z", "status": "ok", "errors": [], "links": {"launch": "interactive-training-builder/sec-evidence-review-module.html", "source_json": "interactive-training-builder/sec-evidence-review-module.json", "manifest": "interactive-training-builder/sec-evidence-review-module-manifest.json", "xapi_seed": "interactive-training-builder/sec-evidence-review-module.xapi.json", "scorm_zip": "interactive-training-builder/sec-evidence-review-module-scorm.zip"}, "qa": {"status": "ok", "severe_axe_violations": 0, "console_errors": 0, "overflow": 0, "screenshots": [{"viewport": "desktop", "href": "interactive-training-builder/qa-screenshots/sec-evidence-review-practice-desktop.png"}, {"viewport": "mobile", "href": "interactive-training-builder/qa-screenshots/sec-evidence-review-practice-mobile.png"}]}, "scorm": {"status": "ok", "runtime_initialized": true, "runtime_finished": true, "lesson_status": "completed", "screenshot": "interactive-training-builder/scorm-smoke-screenshots/sec-evidence-review-practice-scorm-smoke.png"}, "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false, "live_sec_retrieval_approved": false, "venv_rebuild_approved": false, "portfolio_canon_mutation_approved": false, "trade_account_action_approved": false, "capital_deployment_approved": false}}, {"module_id": "otel-proof-validator-practice", "title": "OTEL Proof Validator Practice Lab", "summary": "Practice module for reading local OTEL control packets, selecting the right proof window, and routing telemetry findings without changing collector, runtime, cron, external export, finance, paper, live, or account authority.", "audience": "Randall internal operations proof and validator training", "lessons": 3, "interactions": 10, "generated_at_utc": "2026-07-04T14:38:08Z", "status": "ok", "errors": [], "links": {"launch": "interactive-training-builder/otel-proof-validator-module.html", "source_json": "interactive-training-builder/otel-proof-validator-module.json", "manifest": "interactive-training-builder/otel-proof-validator-module-manifest.json", "xapi_seed": "interactive-training-builder/otel-proof-validator-module.xapi.json", "scorm_zip": "interactive-training-builder/otel-proof-validator-module-scorm.zip"}, "qa": {"status": "ok", "severe_axe_violations": 0, "console_errors": 0, "overflow": 0, "screenshots": [{"viewport": "desktop", "href": "interactive-training-builder/qa-screenshots/otel-proof-validator-practice-desktop.png"}, {"viewport": "mobile", "href": "interactive-training-builder/qa-screenshots/otel-proof-validator-practice-mobile.png"}]}, "scorm": {"status": "ok", "runtime_initialized": true, "runtime_finished": true, "lesson_status": "completed", "screenshot": "interactive-training-builder/scorm-smoke-screenshots/otel-proof-validator-practice-scorm-smoke.png"}, "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false, "collector_config_mutation_approved": false, "runtime_config_mutation_approved": false, "cron_schedule_mutation_approved": false, "telemetry_capture_depth_expansion_approved": false, "external_telemetry_export_approved": false, "raw_prompt_tool_payload_capture_approved": false, "finance_canon_portfolio_mutation_approved": false, "paper_live_account_action_approved": false}}], "authoring_resources": {"authoring_checklist": "interactive-training-builder/authoring-checklist.md", "component_library": "interactive-training-builder/component-library.json", "component_library_md": "interactive-training-builder/component-library.md", "standards_evaluation": "interactive-training-builder/standards-upgrade-evaluation.json"}, "proof": {"builder": "tmp/interactive-training-builder-proof.json", "qa": "tmp/interactive-training-qa-validation.json", "scorm": "tmp/interactive-training-scorm-smoke-validation.json", "ledger": "tmp/interactive-training-xapi-ledger-proof.json"}, "xapi_ledger": {"optional": true, "default_endpoint": "http://127.0.0.1:8766/xapi", "serve_command": "python scripts\\interactive_training_xapi_ledger.py --serve --ledger-path training/interactive-training-builder/xapi-ledger/local-events.jsonl", "external_lrs_configured": false}, "counts": {"modules": 4, "lessons": 11, "interactions": 39, "qa_ok": 4, "scorm_ok": 4}, "validation": {"errors": [], "warnings": []}, "authority_boundary": {"local_files_only": true, "external_lms_lrs_configured": false, "learner_data_external_transport": false, "customer_data_allowed": false, "public_delivery_approved": false, "owner_approval_inferred": false}};
+    const LEDGER_ENABLED_KEY = 'veritas.training.xapiLedger.enabled';
+    const LEDGER_ENDPOINT_KEY = 'veritas.training.xapiLedger.endpoint';
+    const endpoint = document.getElementById('endpoint');
+    const toggle = document.getElementById('toggleLedger');
+    const ledgerState = document.getElementById('ledgerState');
+    endpoint.value = localStorage.getItem(LEDGER_ENDPOINT_KEY) || CATALOG.xapi_ledger.default_endpoint;
+    function ledgerEnabled() { return localStorage.getItem(LEDGER_ENABLED_KEY) === 'true'; }
+    function saveLedgerState(enabled) { localStorage.setItem(LEDGER_ENABLED_KEY, enabled ? 'true' : 'false'); localStorage.setItem(LEDGER_ENDPOINT_KEY, endpoint.value); renderLedgerState(); }
+    function renderLedgerState() { const enabled = ledgerEnabled(); toggle.textContent = enabled ? 'Disable ledger' : 'Enable ledger'; ledgerState.textContent = enabled ? 'Ledger capture is on for modules opened from this browser.' : 'Ledger capture is off.'; }
+    function moduleState(moduleId) { try { return JSON.parse(localStorage.getItem('veritas.training.' + moduleId) || '{}'); } catch { return {}; } }
+    function renderProgress() { CATALOG.modules.forEach(module => { const state = moduleState(module.module_id); const answers = state.answers || {}; const done = Object.values(answers).filter(row => row && row.completed).length; const progress = document.getElementById('progress-' + module.module_id); const events = document.getElementById('events-' + module.module_id); if (progress) progress.textContent = done ? done + '/' + module.interactions + ' complete' : 'Not started'; if (events) events.textContent = String((state.events || []).length); }); }
+    function exportProgress() { const payload = { exported_at_utc: new Date().toISOString(), modules: CATALOG.modules.map(module => ({ module_id: module.module_id, title: module.title, state: moduleState(module.module_id) })) }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'veritas-training-local-progress.json'; link.click(); URL.revokeObjectURL(link.href); }
+    toggle.addEventListener('click', () => saveLedgerState(!ledgerEnabled()));
+    endpoint.addEventListener('change', () => localStorage.setItem(LEDGER_ENDPOINT_KEY, endpoint.value));
+    document.getElementById('exportProgress').addEventListener('click', exportProgress);
+    renderLedgerState(); renderProgress(); window.addEventListener('storage', renderProgress);
+  </script>
+</body>
+</html>

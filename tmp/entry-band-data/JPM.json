@@ -1,38 +1,14 @@
 {
   "ticker": "JPM",
   "name": "JPMorgan Chase & Co.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 64.76,
-      "h": 65.92,
-      "l": 57.05,
-      "c": 62.14,
-      "v": 394.7
-    },
-    {
-      "d": "2016-07",
-      "o": 61.66,
-      "h": 64.98,
-      "l": 58.76,
-      "c": 63.97,
-      "v": 283.88
-    },
-    {
-      "d": "2016-08",
-      "o": 64.15,
-      "h": 67.77,
-      "l": 63.38,
-      "c": 67.5,
-      "v": 263.31
-    },
     {
       "d": "2016-09",
       "o": 67.64,
@@ -965,9 +941,33 @@
       "d": "2026-05",
       "o": 313.95,
       "h": 316.3,
-      "l": 300.5,
-      "c": 302.1,
-      "v": 55.59
+      "l": 293.67,
+      "c": 299.31,
+      "v": 171.05
+    },
+    {
+      "d": "2026-06",
+      "o": 297.69,
+      "h": 343.45,
+      "l": 295.27,
+      "c": 327.33,
+      "v": 205.96
+    },
+    {
+      "d": "2026-07",
+      "o": 328.37,
+      "h": 359.3,
+      "l": 325.01,
+      "c": 351.79,
+      "v": 210.99
+    },
+    {
+      "d": "2026-08",
+      "o": 353.75,
+      "h": 366.5,
+      "l": 350.37,
+      "c": 351.58,
+      "v": 84.88
     }
   ],
   "macro_regimes": {
@@ -1025,34 +1025,36 @@
     }
   },
   "preferred_band": {
-    "low": 306.82,
-    "high": 318.12,
-    "stop": 301.17,
-    "set": "2026-05-01",
-    "label": "306.82–318.12"
+    "low": 304.96,
+    "high": 315.95,
+    "stop": 296.21,
+    "set": "2026-06-18",
+    "label": "304.96–315.95"
   },
   "current_quote": {
-    "close": 302.1,
-    "ma20": 310.61,
-    "ma50": 299.3,
-    "ma200": 302.76,
-    "data_date": "2026-05-08"
+    "close": 351.58,
+    "ma20": 357.08,
+    "ma50": 343.5,
+    "ma200": 313.83,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "DUAL_MA_RECLAIM",
-    "type": "VAULT_RECLAIM",
-    "status": "RECLAIM_ONLY",
-    "trend_stack": "BELOW_ALL_MAS",
-    "suggested_low": 304.58,
-    "suggested_high": 312.27,
-    "suggested_stop": 298.43,
-    "sma_envelope_low": 289.35,
-    "sma_envelope_high": 319.81,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 342.95,
+    "suggested_high": 356.74,
+    "suggested_stop": 335.29,
+    "sma_envelope_low": 326.55,
+    "sma_envelope_high": 360.93,
     "earnings_state": "CLEAR",
-    "band_confidence": 2,
-    "needs_review": true,
-    "canonical_apply_eligible": false
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
+    "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:33+00:00"
+  "generated_at": "2026-08-21T20:32:17+00:00"
 }

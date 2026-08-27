@@ -3,11 +3,26 @@
   "workflow_id": "WF63",
   "display_name": "Paper Readiness Monitor",
   "tier": "P2",
-  "effective_status": "route_only",
+  "priority": "P2",
+  "lifecycle": "monitor",
+  "readiness": "monitor_only",
+  "effective_status": "monitor_only",
+  "current_state": "Monitor: paper readiness / no-submit guard.",
   "next_action": "Escalate on readiness/no-submit guard warning/critical or live endpoint/credential exposure.",
-  "helper_safe": true,
+  "authoritative_next_action": "Escalate on readiness/no-submit guard warning/critical or live endpoint/credential exposure.",
+  "helper_safe": false,
   "owner_action_required": false,
   "authority_boundary": "monitor-only",
+  "authority_class": "monitor_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 63 - Alpaca Paper Trading Readiness.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
   "blockers": [],
   "stop_lines": [
     "No live endpoint/credentials, money movement/account changes, or submit/cancel outside WF67."
@@ -22,6 +37,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

@@ -1,0 +1,48 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF57",
+  "display_name": "Composite Regime and Sector Positioning PDF Visual Enhancement",
+  "tier": "P4",
+  "priority": "P4",
+  "lifecycle": "gated",
+  "readiness": "monitor_only",
+  "effective_status": "monitor_only",
+  "current_state": "Closed internal polished PDF product lane; retained as review-only packaging history.",
+  "next_action": "Use current WF75/WF85 deliverable packaging only for internal review unless a separate customer/public gate is approved.",
+  "authoritative_next_action": "Use current WF75/WF85 deliverable packaging only for internal review unless a separate customer/public gate is approved.",
+  "helper_safe": false,
+  "owner_action_required": false,
+  "authority_boundary": "review-only historical packaging route",
+  "authority_class": "monitor_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 57 - Composite Regime and Sector Positioning PDF Visual Enhancement.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
+  "blockers": [
+    "Public/customer packaging remains gated"
+  ],
+  "stop_lines": [
+    "No public/customer delivery, legal/compliance/readiness claim, portfolio/canon mutation, capital deployment, or execution authority."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 57 - Composite Regime and Sector Positioning PDF Visual Enhancement.md",
+  "primary_route_artifact": "06. Playbooks/Project Continuity/Workflow 57 - Composite Regime and Sector Positioning PDF Visual Enhancement.md",
+  "secondary_artifacts": [],
+  "validator_commands": [],
+  "default_resume_command": "python scripts\\workflow_router.py WF57 --answer all",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

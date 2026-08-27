@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, atomic_write_text
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -41,6 +42,7 @@ EXECUTION_BOARD = WORKSPACE / "03. Portfolio" / "Execution Board.md"
 AUDIT_PATH = TMP / "auto-band-apply.json"
 LOG_PATH = TMP / "auto-band-apply.md"
 WF72_WORKER = TMP / "wf72-entry-stop-sql-activation-pilot-worker.json"
+REFERENCE_LEVELS_APPLY_OUT = TMP / "reference-levels-derived-refresh-apply-result.json"
 
 ALLOWED_METHODS = {"KELTNER_PRIMARY", "KELTNER_MA_CONSTRAINED", "DUAL_MA_RECLAIM", "SMA_ENVELOPE_AUDIT"}
 ALLOWED_BAND_STATUSES = {"IN_BAND", "NEAR_BAND"}
@@ -52,6 +54,10 @@ REQUIRED_TABLE_COLUMNS = {
     "Blocker/condition",
     "Authority note",
     "Source/freshness",
+}
+THIN_BOARD_REPAIRABLE_BLOCKER_NAMES = {
+    "trade_grade_freshness_status",
+    "trade_grade_freshness_validation",
 }
 POST_APPLY_REFRESH_STEPS = [
     {
@@ -128,6 +134,54 @@ POST_APPLY_REFRESH_STEPS = [
     },
 ]
 
+SQL_REFERENCE_POST_APPLY_REFRESH_STEPS = [
+    {
+        "name": "finance_sql_canon_access",
+        "args": ["scripts\\finance_sql_canon_access.py", "--write", "--validate"],
+        "timeout_seconds": 180,
+    },
+    {
+        "name": "canonical_finance_data_plane",
+        "args": ["scripts\\canonical_finance_data_plane.py", "--write", "--write-db", "--validate"],
+        "timeout_seconds": 300,
+    },
+    {
+        "name": "trade_grade_decision_cards",
+        "args": ["scripts\\trade_grade_decision_cards.py", "--write", "--validate"],
+        "timeout_seconds": 300,
+    },
+    {
+        "name": "trade_grade_full_answer_assembler",
+        "args": ["scripts\\trade_grade_full_answer_assembler.py", "--write", "--validate", "--out", "tmp\\trade-grade-full-answer-assembler-delta.json"],
+        "timeout_seconds": 240,
+        "tickers_arg": "--tickers",
+        "delta_scope": True,
+    },
+    {
+        "name": "canonical_finance_data_plane_post_wf85_delta",
+        "args": ["scripts\\canonical_finance_data_plane.py", "--write", "--write-db", "--validate"],
+        "timeout_seconds": 300,
+    },
+    {
+        "name": "canonical_finance_data_plane_phase6_10",
+        "args": ["scripts\\canonical_finance_data_plane_phase6_10.py", "--write", "--validate"],
+        "timeout_seconds": 300,
+    },
+    {
+        "name": "full_intelligence_answer_parity_delta",
+        "args": ["scripts\\full_intelligence_answer_parity.py", "--write", "--validate", "--out", "tmp\\full-answer-parity\\full-answer-parity-delta.json"],
+        "timeout_seconds": 240,
+        "tickers_arg": "--tickers",
+        "delta_scope": True,
+    },
+    {
+        "name": "cache_dependency_manifest",
+        "args": ["scripts\\cache_dependency_manifest.py", "--write", "--validate"],
+        "timeout_seconds": 180,
+        "tickers_arg": "--tickers",
+    },
+]
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Auto-apply scoped eligible entry-band maintenance proposals.")
@@ -155,6 +209,35 @@ def sha256_file(path: Path) -> str | None:
 
 def tail(text: str | None, limit: int) -> str:
     return (text or "").strip()[-limit:]
+
+
+def thin_board_contract_allows_sql_reference_repair(thin_contract: dict[str, Any]) -> bool:
+    if thin_contract.get("sql_first_thin_board_allowed"):
+        return True
+    if not thin_contract.get("sql_first_thin_board_detected"):
+        return False
+    errors = thin_contract.get("errors") or []
+    error_names = {str(item.get("name") or "") for item in errors if isinstance(item, dict)}
+    if not error_names:
+        return False
+    return error_names.issubset(THIN_BOARD_REPAIRABLE_BLOCKER_NAMES)
+
+
+def thin_board_repair_override_summary(thin_contract: dict[str, Any]) -> dict[str, Any]:
+    errors = thin_contract.get("errors") or []
+    error_names = sorted({str(item.get("name") or "") for item in errors if isinstance(item, dict)})
+    return {
+        "enabled": bool(error_names),
+        "reason": "thin-board contract blocked only by trade-grade freshness proof this SQL reference apply path can repair",
+        "blocked_check_names": error_names,
+        "authority": {
+            "sql_reference_level_repair_only": True,
+            "capital_action_allowed": False,
+            "owner_approval_inferred": False,
+            "trade_or_account_authority": False,
+            "paper_or_live_execution_allowed": False,
+        },
+    }
 
 
 def py_cmd(step: dict[str, Any], tickers: list[str] | None = None) -> list[str]:
@@ -291,6 +374,94 @@ def run_post_apply_refresh(applied: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def run_sql_reference_levels_apply(*, apply: bool) -> dict[str, Any]:
+    command = [
+        sys.executable,
+        "scripts\\reference_levels_derived_refresh_apply.py",
+        "--changes",
+        str(AUDIT_PATH),
+        "--out",
+        str(REFERENCE_LEVELS_APPLY_OUT),
+        "--write",
+        "--validate",
+    ]
+    if apply:
+        command.append("--apply")
+    started = datetime.now(timezone.utc).isoformat()
+    try:
+        proc = subprocess.run(
+            command,
+            cwd=WORKSPACE,
+            text=True,
+            capture_output=True,
+            timeout=180,
+        )
+    except subprocess.TimeoutExpired as exc:
+        return {
+            "status": "timeout",
+            "ok": False,
+            "command": command,
+            "started_at_utc": started,
+            "completed_at_utc": datetime.now(timezone.utc).isoformat(),
+            "timeout_seconds": 180,
+            "stdout_preview": tail(exc.stdout if isinstance(exc.stdout, str) else "", 3000),
+            "stderr_preview": tail(exc.stderr if isinstance(exc.stderr, str) else "", 1800),
+            "artifact": str(REFERENCE_LEVELS_APPLY_OUT.relative_to(WORKSPACE)),
+        }
+    payload = load_json(REFERENCE_LEVELS_APPLY_OUT, "reference levels SQL apply result") if REFERENCE_LEVELS_APPLY_OUT.exists() else {}
+    return {
+        "status": payload.get("status") or ("ok" if proc.returncode == 0 else "blocked"),
+        "ok": proc.returncode == 0 and (payload.get("validation", {}).get("status") == "ok"),
+        "command": command,
+        "started_at_utc": started,
+        "completed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "returncode": proc.returncode,
+        "stdout_preview": tail(proc.stdout, 3000),
+        "stderr_preview": tail(proc.stderr, 1800),
+        "artifact": str(REFERENCE_LEVELS_APPLY_OUT.relative_to(WORKSPACE)),
+        "apply_executed": payload.get("apply_executed"),
+        "affected_tickers": payload.get("affected_tickers") or [],
+        "affected_count": payload.get("affected_count"),
+        "rollback_path": payload.get("rollback_path"),
+        "rollback_drill_status": payload.get("rollback_drill_status"),
+        "validation": payload.get("validation"),
+    }
+
+
+def run_sql_reference_post_apply_refresh(applied: list[dict[str, Any]]) -> dict[str, Any]:
+    if not applied:
+        return {
+            "status": "skipped_no_applied_changes",
+            "reason": "No SQL reference-level changes were applied.",
+            "steps": [],
+        }
+    changed_tickers = sorted({str(item.get("ticker") or "").upper() for item in applied if item.get("ticker")})
+    steps: list[dict[str, Any]] = []
+    for step in SQL_REFERENCE_POST_APPLY_REFRESH_STEPS:
+        result = run_refresh_step(step, changed_tickers)
+        steps.append(result)
+        if not result.get("ok"):
+            break
+    status = (
+        "ok"
+        if all(step.get("ok") for step in steps) and len(steps) == len(SQL_REFERENCE_POST_APPLY_REFRESH_STEPS)
+        else "blocked_needs_sql_reference_post_apply_refresh"
+    )
+    return {
+        "status": status,
+        "applied_tickers": changed_tickers,
+        "required_order": [step["name"] for step in SQL_REFERENCE_POST_APPLY_REFRESH_STEPS],
+        "steps": steps,
+        "authority": {
+            "review_only_sql_json_refresh": True,
+            "capital_action_allowed": False,
+            "owner_approval_inferred": False,
+            "trade_or_account_authority": False,
+            "paper_or_live_execution_allowed": False,
+        },
+    }
+
+
 def resolve_applied_date(proposals: list[dict[str, Any]]) -> str:
     dates = sorted({str(p.get("data_date")) for p in proposals if p.get("data_date")})
     if dates:
@@ -324,17 +495,87 @@ def proposal_skip_reason(proposal: dict[str, Any]) -> str | None:
     return None
 
 
-def eligible_proposals(proposals: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    eligible: list[dict[str, Any]] = []
+def proposal_reference_only_reason(proposal: dict[str, Any]) -> str | None:
+    """Return None if a proposal is eligible for SQL reference-level refresh only.
+
+    Reference-level refreshes are broader than execution-band updates:
+    they keep the Command Center reference band current even when price is
+    above/below the execution band, but they do not mutate owner execution bands.
+    """
+    ticker = proposal.get("ticker") or "UNKNOWN"
+    if proposal.get("skip_reason"):
+        return f"skip_reason={proposal.get('skip_reason')}"
+    if proposal.get("reference_band_apply_eligible") is not True:
+        return "reference_band_apply_eligible is not true"
+    method = proposal.get("entry_band_method")
+    if method in BLOCKED_METHODS:
+        return f"blocked method {method}"
+    if method not in ALLOWED_METHODS:
+        return f"unsupported method {method}"
+    if proposal.get("earnings_state") != "CLEAR":
+        return f"earnings_state={proposal.get('earnings_state')}"
+    for field in ("suggested_band_low", "suggested_band_high", "suggested_stop"):
+        if proposal.get(field) is None:
+            return f"missing {field}"
+    if not ticker or not re.match(r"^[A-Z][A-Z0-9.\-]*$", str(ticker)):
+        return "invalid ticker"
+    return None
+
+
+def eligible_proposals(
+    proposals: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    execution_eligible: list[dict[str, Any]] = []
+    reference_only_eligible: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
     for proposal in proposals:
-        reason = proposal_skip_reason(proposal)
-        if reason:
-            if proposal.get("needs_review"):
-                skipped.append({"ticker": proposal.get("ticker"), "reason": reason})
-        else:
-            eligible.append(proposal)
-    return eligible, skipped
+        exec_reason = proposal_skip_reason(proposal)
+        if exec_reason is None:
+            execution_eligible.append(proposal)
+            continue
+        ref_reason = proposal_reference_only_reason(proposal)
+        if ref_reason is None:
+            reference_only_eligible.append(proposal)
+            continue
+        if proposal.get("needs_review"):
+            skipped.append({"ticker": proposal.get("ticker"), "reason": f"exec:{exec_reason}; ref:{ref_reason}"})
+    return execution_eligible, reference_only_eligible, skipped
+
+
+def build_reference_changes(
+    proposals: list[dict[str, Any]], applied_date: str
+) -> list[dict[str, Any]]:
+    """Build change dicts for reference-level-only band refreshes.
+
+    These do not mutate portfolio-config.json or the Execution Board; they are
+    applied only to SQL reference_levels by reference_levels_derived_refresh_apply.py.
+    """
+    changes: list[dict[str, Any]] = []
+    for proposal in proposals:
+        ticker = str(proposal["ticker"])
+        low = round(float(proposal["suggested_band_low"]), 2)
+        high = round(float(proposal["suggested_band_high"]), 2)
+        stop = round(float(proposal["suggested_stop"]), 2)
+        changes.append(
+            {
+                "ticker": ticker,
+                "old_low": proposal.get("current_band_low"),
+                "old_high": proposal.get("current_band_high"),
+                "old_stop": proposal.get("current_stop"),
+                "new_low": low,
+                "new_high": high,
+                "new_stop": stop,
+                "method": proposal.get("entry_band_method"),
+                "band_status": proposal.get("band_status"),
+                "close": proposal.get("close"),
+                "data_date": proposal.get("data_date"),
+                "coverage_lane": proposal.get("coverage_lane"),
+                "workflow_state": proposal.get("workflow_state"),
+                "reasons": proposal.get("reasons") or [],
+                "reference_only": True,
+            }
+        )
+    return changes
 
 
 def format_num(value: Any) -> str:
@@ -565,9 +806,11 @@ def main() -> int:
     proposals_data = load_json(proposals_path, "band proposals")
     config = load_json(config_path, "portfolio config")
     proposals = proposals_data.get("proposals") or []
-    eligible, skipped = eligible_proposals(proposals)
-    applied_date = resolve_applied_date(eligible)
-    config_changes = update_config(config, eligible, applied_date) if eligible else []
+    execution_eligible, reference_only_eligible, skipped = eligible_proposals(proposals)
+    applied_date = resolve_applied_date(execution_eligible + reference_only_eligible)
+    config_changes = update_config(config, execution_eligible, applied_date) if execution_eligible else []
+    reference_changes = build_reference_changes(reference_only_eligible, applied_date)
+    all_applied = config_changes + reference_changes
 
     audit = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -586,7 +829,9 @@ def main() -> int:
             "execution_board": str(technical_sheet.relative_to(WORKSPACE) if technical_sheet.is_relative_to(WORKSPACE) else technical_sheet),
         },
         "applied_date": applied_date,
-        "applied": config_changes,
+        "applied": all_applied,
+        "execution_applied": config_changes,
+        "reference_only_applied": reference_changes,
         "skipped": skipped,
         "missing_table_rows": [],
         "missing_note_sections": [],
@@ -599,12 +844,70 @@ def main() -> int:
             "status": "not_run",
             "reason": "Post-apply refresh runs only after --apply writes at least one owner-surface change.",
         },
+        "technical_sheet_mode": "legacy_markdown_table",
+        "sql_first_thin_board_contract": {},
+        "writes_performed": {
+            "portfolio_config": False,
+            "execution_board": False,
+            "sql_canon": False,
+        },
     }
 
     new_text: str | None = None
-    if config_changes:
+    if all_applied:
         if not technical_sheet.exists():
             raise SystemExit(f"ERROR: Execution Board missing at {technical_sheet}")
+        thin_contract = evaluate_sql_first_thin_board_contract(technical_sheet)
+        audit["sql_first_thin_board_contract"] = thin_contract
+        if thin_contract.get("sql_first_thin_board_detected"):
+            audit["technical_sheet_mode"] = "sql_first_thin_board"
+            audit["board_preflight"] = {
+                "checked": True,
+                "would_change": False,
+                "mode": "sql_first_thin_board",
+                "reason": "Execution Board is intentionally thin; SQL/JSON proof owns current ticker rows.",
+            }
+            thin_sql_reference_repair_allowed = thin_board_contract_allows_sql_reference_repair(thin_contract)
+            if not thin_sql_reference_repair_allowed:
+                audit["status"] = "blocked_sql_first_thin_board_contract"
+                audit["post_apply_refresh"] = {
+                    "status": "not_run",
+                    "reason": "SQL-first thin-board contract is blocked; no owner-surface or SQL writes performed.",
+                }
+                atomic_write_json(AUDIT_PATH, audit, indent=2, ensure_ascii=False)
+                write_markdown_log(audit)
+                print(f"auto_band_apply_status={audit['status']} mode={audit['mode']} applied_execution={len(config_changes)} applied_reference={len(reference_changes)} skipped={len(skipped)}")
+                print(f"audit={AUDIT_PATH.relative_to(WORKSPACE)}")
+                return 1
+            if not thin_contract.get("sql_first_thin_board_allowed"):
+                audit["sql_first_thin_board_contract_repair_override"] = thin_board_repair_override_summary(thin_contract)
+            atomic_write_json(AUDIT_PATH, audit, indent=2, ensure_ascii=False)
+            write_markdown_log(audit)
+            reference_apply = run_sql_reference_levels_apply(apply=args.apply)
+            audit["reference_levels_apply"] = reference_apply
+            if args.apply:
+                if reference_apply.get("ok"):
+                    audit["status"] = "ok"
+                    audit["writes_performed"]["sql_canon"] = bool(reference_apply.get("apply_executed"))
+                    audit["post_apply_refresh"] = run_sql_reference_post_apply_refresh(all_applied)
+                    if audit["post_apply_refresh"].get("status") != "ok":
+                        audit["status"] = "blocked_needs_sql_reference_post_apply_refresh"
+                else:
+                    audit["status"] = "blocked_sql_first_reference_levels_apply_failed"
+                    audit["post_apply_refresh"] = {
+                        "status": "not_run",
+                        "reason": "SQL reference_levels apply failed or did not validate.",
+                    }
+            else:
+                audit["post_apply_refresh"] = {
+                    "status": "not_run_dry_run",
+                    "reason": "Dry-run wrote SQL reference-level proof only; no SQL rows changed.",
+                }
+            atomic_write_json(AUDIT_PATH, audit, indent=2, ensure_ascii=False)
+            write_markdown_log(audit)
+            print(f"auto_band_apply_status={audit['status']} mode={audit['mode']} applied_execution={len(config_changes)} applied_reference={len(reference_changes)} skipped={len(skipped)}")
+            print(f"audit={AUDIT_PATH.relative_to(WORKSPACE)}")
+            return 0 if audit["status"] == "ok" or not args.apply else 1
         old_text = technical_sheet.read_text(encoding="utf-8")
         new_text, missing = sync_technical_sheet(old_text, config_changes, applied_date)
         audit["missing_table_rows"] = missing["missing_table_rows"]
@@ -622,9 +925,11 @@ def main() -> int:
 
     if args.apply and config_changes:
         atomic_write_json(config_path, config, indent=2, ensure_ascii=True)
+        audit["writes_performed"]["portfolio_config"] = True
         if new_text is None:
             raise SystemExit("ERROR: internal preflight failure; board text was not prepared")
         atomic_write_text(technical_sheet, new_text, encoding="utf-8")
+        audit["writes_performed"]["execution_board"] = True
         audit["post_apply_refresh"] = run_post_apply_refresh(config_changes)
         if audit["post_apply_refresh"].get("status") != "ok":
             audit["status"] = "blocked_needs_sql_reference_refresh"

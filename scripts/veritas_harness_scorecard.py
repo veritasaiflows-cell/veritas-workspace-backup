@@ -69,7 +69,7 @@ ARTIFACT_CHECKS = [
     ("python_go_sql_migration_candidates", TMP / "python-go-sql-migration-candidates.json", "status", {"ok", "warning"}),
     ("go_sql_source_truth_manifest", TMP / "go-sql-source-truth-authority-manifest.json", "status", {"ready_for_phase2_parity_scaffold"}),
     ("python_go_source_truth_manifest_parity", TMP / "python-go-source-truth-manifest-parity.json", "status", {"ok"}),
-    ("go_source_truth_parity_validator", TMP / "go-source-truth-parity-validation.json", "status", {"phase2_parity_green_for_entry_stop_reference_metadata"}),
+    ("go_source_truth_parity_validator", TMP / "go-source-truth-parity-validation.json", "status", {"phase2_parity_green_for_entry_stop_reference_metadata", "phase2_sql_first_thin_board_contract_ok"}),
     ("python_go_source_truth_parity_validator_parity", TMP / "python-go-source-truth-parity-validator-parity.json", "status", {"ok"}),
     ("go_sql_500_expansion_gate", TMP / "go-sql-500-ticker-expansion-design-gate.json", "status", {"ready_for_source_open_cleanup"}),
     ("python_go_sql_500_expansion_gate_parity", TMP / "python-go-sql-500-expansion-gate-parity.json", "status", {"ok"}),
@@ -157,6 +157,56 @@ EXPECTED_PENDING_GATES: dict[str, dict[str, Any]] = {
         "pending_work": "In-process SQL driver promotion (compiled-binary default route).",
         "expected_command_returncode": 2,
     },
+    "python_go_sql_consumer_authority_guard_parity": {
+        "reason": (
+            "Live A2 SQL consumer guard is intentionally fail-closed while clean "
+            "fixtures prove parity. Validation is ok and critical count is zero."
+        ),
+        "artifact": TMP / "python-go-sql-consumer-authority-guard-parity.json",
+        "pending_work": "Resolve live A2 stale/unsafe read posture before promoting beyond fail-closed proof.",
+    },
+    "python_go_sql_consumer_authority_dashboard_ab": {
+        "reason": (
+            "Dashboard A/B gate intentionally reports expected fail-closed live "
+            "posture while synthetic clean fixtures pass."
+        ),
+        "artifact": TMP / "python-go-sql-consumer-authority-dashboard-ab.json",
+        "pending_work": "Accrue longer clean A/B history before any default-route promotion.",
+    },
+    "python_go_sql_consumer_authority_demotion_dry_run": {
+        "reason": (
+            "Demotion dry-run is proof-only and intentionally warning until live "
+            "A2 is ready for Go-primary read without widening authority."
+        ),
+        "artifact": TMP / "python-go-sql-consumer-authority-demotion-dry-run.json",
+        "pending_work": "Keep Python fallback retained and resolve live fail-closed posture.",
+    },
+    "python_go_sql_consumer_authority_controlled_router": {
+        "reason": (
+            "Controlled router remains proof-only; warning means live A2 is safely "
+            "fail-closed and not ready for default promotion."
+        ),
+        "artifact": TMP / "python-go-sql-consumer-authority-controlled-router.json",
+        "pending_work": "Keep default route Python-owned until controlled history is clean.",
+    },
+    "python_go_sql_helper_demotion_queue": {
+        "reason": (
+            "Demotion queue records the expected fail-closed first helper state; "
+            "this is migration backlog, not a harness break."
+        ),
+        "artifact": TMP / "python-go-sql-helper-demotion-queue.json",
+        "pending_work": "Work the queued helper contracts before any Python retirement.",
+    },
+    "go_source_truth_parity_validator": {
+        "reason": (
+            "Source-truth parity validator still targets Markdown Execution Board rows, "
+            "but the board is intentionally SQL-first/thin during migration. This is a "
+            "known source-truth migration backlog item, not a retail truth-routing break."
+        ),
+        "artifact": TMP / "go-source-truth-parity-validation.json",
+        "pending_work": "Retarget the Go source-truth parity validator to SQL-native reference/source lineage proof before using it as a hard promotion gate.",
+        "expected_command_returncodes": {1, 2},
+    },
 }
 
 
@@ -184,6 +234,55 @@ EXPECTED_PENDING_PREDICATES = {
 }
 
 
+def source_truth_parity_sql_first_pending(payload: Any) -> bool:
+    if isinstance(payload, dict) and payload.get("status") == "phase2_sql_first_thin_board_contract_ok":
+        return True
+    if not isinstance(payload, dict) or payload.get("status") != "phase2_parity_not_ready":
+        return False
+    summary = as_dict(payload.get("summary"))
+    return (
+        int(summary.get("markdown_rows") or 0) == 0
+        and int(summary.get("finance_sql_rows") or 0) > 0
+        and int(summary.get("canon_cache_tickers") or 0) > 0
+        and int(summary.get("mismatch_rows") or 0) == 0
+        and int(summary.get("missing_finance_rows") or 0) == 0
+        and int(summary.get("missing_canon_rows") or 0) == 0
+    )
+
+
+def expected_fail_closed_warning(payload: Any) -> bool:
+    if not isinstance(payload, dict) or payload.get("status") != "warning":
+        return False
+    summary = as_dict(payload.get("summary"))
+    validation = as_dict(payload.get("validation"))
+    if validation.get("status") != "ok" or int(summary.get("critical") or 0) != 0:
+        return False
+    signal = (
+        summary.get("demotion_readiness_signal")
+        or summary.get("dry_run_signal")
+        or summary.get("controlled_router_signal")
+        or summary.get("queue_signal")
+        or summary.get("demotion_gate_signal")
+        or ""
+    )
+    if str(signal).startswith("expected_fail_closed"):
+        return True
+    findings = [row for row in as_list(payload.get("findings")) if isinstance(row, dict)]
+    return any(row.get("severity") == "warning" and "expected_fail_closed" in str(row.get("check") or "") for row in findings)
+
+
+for gate_name in (
+    "python_go_sql_consumer_authority_guard_parity",
+    "python_go_sql_consumer_authority_dashboard_ab",
+    "python_go_sql_consumer_authority_demotion_dry_run",
+    "python_go_sql_consumer_authority_controlled_router",
+    "python_go_sql_helper_demotion_queue",
+):
+    EXPECTED_PENDING_PREDICATES[gate_name] = expected_fail_closed_warning
+
+EXPECTED_PENDING_PREDICATES["go_source_truth_parity_validator"] = source_truth_parity_sql_first_pending
+
+
 def apply_expected_pending(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Reclassify failing checks that are known intentional / not-yet-promoted
     gates from 'fail' to 'expected_pending' so they do not force the scorecard to
@@ -198,8 +297,13 @@ def apply_expected_pending(checks: list[dict[str, Any]]) -> list[dict[str, Any]]
         payload = load_json_artifact(cfg["artifact"])
         if predicate is None or not predicate(payload):
             continue
-        if row.get("type") == "command" and row.get("returncode") != cfg.get("expected_command_returncode"):
-            continue
+        if row.get("type") == "command":
+            expected_returncodes = cfg.get("expected_command_returncodes")
+            if expected_returncodes is not None:
+                if row.get("returncode") not in expected_returncodes:
+                    continue
+            elif row.get("returncode") != cfg.get("expected_command_returncode"):
+                continue
         row["status"] = "expected_pending"
         row["expected_pending_reason"] = cfg["reason"]
         row["pending_work"] = cfg["pending_work"]
@@ -376,6 +480,7 @@ def fast_command_checks() -> list[dict[str, Any]]:
     checks: list[dict[str, Any]] = [
         run_command("python_compile_harness_classifier", [sys.executable, "-m", "py_compile", "scripts\\veritas_harness_failure_classifier.py"]),
         run_command("python_compile_harness_scorecard", [sys.executable, "-m", "py_compile", "scripts\\veritas_harness_scorecard.py"]),
+        run_command("artifact_index_incremental", [sys.executable, "scripts\\artifact_index.py", "incremental"], timeout=180),
         run_command("artifact_index_validate", [sys.executable, "scripts\\artifact_index.py", "validate"], timeout=180),
     ]
     if (ROOT / "scripts" / "wf74_clawhub_inspect.mjs").exists():

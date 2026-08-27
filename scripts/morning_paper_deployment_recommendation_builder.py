@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
+import stale_paper_card_reference_guard as stale_card_guard
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -46,6 +47,7 @@ SYNC_SPINE = TMP / "finance-decision-sync-spine.json"
 WF84_DB = TMP / "canonical-finance-data-plane.sqlite"
 WF84_PHASE = TMP / "canonical-finance-data-plane-phase6-10.json"
 BAND_INTEGRITY = TMP / "capital-deployment-band-integrity-validator.json"
+STALE_CARD_GUARD = TMP / "stale-paper-card-reference-guard.json"
 
 SCHEMA = "veritas.morning_paper_deployment_recommendation_cards.v1"
 
@@ -124,6 +126,15 @@ def age_seconds(value: Any) -> int | None:
     return max(0, int((datetime.now(timezone.utc) - parsed).total_seconds()))
 
 
+def artifact_age_seconds(path: Path, generated_at: Any = None) -> int | None:
+    parsed = parse_utc(generated_at)
+    if parsed is None and path.exists():
+        parsed = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    if parsed is None:
+        return None
+    return max(0, int((datetime.now(timezone.utc) - parsed).total_seconds()))
+
+
 def run_step(name: str, command: list[str], timeout: int, *, allow_failure: bool = True) -> dict[str, Any]:
     started = utc_now()
     try:
@@ -159,17 +170,24 @@ def py_cmd(*parts: str) -> list[str]:
     return [sys.executable, *parts]
 
 
-def refresh_steps(args: argparse.Namespace) -> list[dict[str, Any]]:
-    if args.ledger_only:
-        return [
-            run_step(
-                "finance_decision_factory_ledger_only",
-                py_cmd("scripts\\finance_decision_factory.py", "--ledger-only", "--write", "--validate"),
-                240,
-            )
-        ]
+HARD_PREFLIGHT_STEPS = {
+    "finance_sql_canon_access",
+    "market_execution_readiness_cron_hardening",
+    "wf78_intelligence_routing_pre_market_repair_v2",
+    "canonical_finance_data_plane",
+    "canonical_finance_data_plane_phase6_10",
+    "trade_grade_os_freshness_cron_runner",
+}
 
+
+def sql_first_market_open_preflight_steps(args: argparse.Namespace) -> list[dict[str, Any]]:
     steps = [
+        run_step(
+            "finance_sql_canon_access",
+            py_cmd("scripts\\finance_sql_canon_access.py", "--write", "--validate"),
+            180,
+            allow_failure=False,
+        ),
         run_step(
             "intraday_quote_snapshot_proof",
             py_cmd("scripts\\intraday_quote_snapshot_proof.py"),
@@ -179,8 +197,93 @@ def refresh_steps(args: argparse.Namespace) -> list[dict[str, Any]]:
             "market_execution_readiness_cron_hardening",
             py_cmd("scripts\\market_execution_readiness_cron_hardening.py", "--write", "--validate"),
             90,
+            allow_failure=False,
         ),
     ]
+    if args.skip_routing_preflight:
+        steps.append({
+            "name": "wf78_intelligence_routing_pre_market_repair_v2",
+            "command": [],
+            "started_at_utc": utc_now(),
+            "completed_at_utc": utc_now(),
+            "returncode": 0,
+            "ok": True,
+            "allowed_failure": False,
+            "skipped": True,
+            "reason": "upstream_pre_market_repair_cron_already_owns_tier_a_b_c_repair",
+            "stdout_preview": "",
+            "stderr_preview": "",
+        })
+    else:
+        steps.append(
+            run_step(
+                "wf78_intelligence_routing_pre_market_repair_v2",
+                py_cmd("scripts\\wf78_intelligence_routing_v2.py", "--layer", "pre_market_repair_v2", "--fail-on-budget-exceeded", "--write", "--validate"),
+                1800,
+                allow_failure=False,
+            )
+        )
+    steps.extend([
+        run_step(
+            "canonical_finance_data_plane",
+            py_cmd("scripts\\canonical_finance_data_plane.py", "--write", "--write-db", "--validate"),
+            300,
+            allow_failure=False,
+        ),
+        run_step(
+            "canonical_finance_data_plane_phase6_10",
+            py_cmd("scripts\\canonical_finance_data_plane_phase6_10.py", "--write", "--validate"),
+            180,
+            allow_failure=False,
+        ),
+        run_step(
+            "trade_grade_os_freshness_cron_runner",
+            py_cmd(
+                "scripts\\trade_grade_os_freshness_cron_runner.py",
+                "--component",
+                "all",
+                "--full-answer-mode",
+                "changed",
+                "--write",
+                "--write-md",
+                "--validate",
+            ),
+            900,
+            allow_failure=False,
+        ),
+    ])
+    return steps
+
+
+def refresh_steps(args: argparse.Namespace) -> list[dict[str, Any]]:
+    # The Telegram runner uses --ledger-only as a bounded status refresh before
+    # its separate, 90-second final quote probe. It must not expand into the
+    # full SQL/WF78/card preflight or outlive that cron's timeout budget.
+    if getattr(args, "ledger_only", False):
+        return [
+            run_step(
+                "finance_decision_factory_ledger_only",
+                py_cmd("scripts\\finance_decision_factory.py", "--ledger-only", "--write", "--validate"),
+                240,
+            )
+        ]
+    if args.artifact_only:
+        return [{
+            "name": "refresh_steps",
+            "command": [],
+            "started_at_utc": utc_now(),
+            "completed_at_utc": utc_now(),
+            "returncode": 0,
+            "ok": True,
+            "allowed_failure": True,
+            "skipped": True,
+            "reason": "artifact_only_fast_path_uses_existing_upstream_proof",
+            "stdout_preview": "",
+            "stderr_preview": "",
+        }]
+
+    steps = sql_first_market_open_preflight_steps(args)
+
     if args.skip_provider_refresh and not args.include_band_hygiene_refresh:
         steps.append({
             "name": "band_hygiene_freshness_controller",
@@ -216,6 +319,25 @@ def refresh_steps(args: argparse.Namespace) -> list[dict[str, Any]]:
             py_cmd("scripts\\wf78_capital_review_queue.py", "--write", "--write-db", "--validate"),
             120,
         )
+    )
+    steps.extend(
+        [
+            run_step(
+                "portfolio_mutation_proposal_generator",
+                py_cmd("scripts\\portfolio_mutation_proposal_generator.py", "--window", "morning", "--write"),
+                180,
+            ),
+            run_step(
+                "capital_deployment_recommendation_report",
+                py_cmd("scripts\\capital_deployment_recommendation_report.py", "--write-md"),
+                120,
+            ),
+            run_step(
+                "capital_deployment_recommendation_validator",
+                py_cmd("scripts\\capital_deployment_recommendation_validator.py", "--write"),
+                120,
+            ),
+        ]
     )
     if not args.skip_card_refresh:
         orch = py_cmd("scripts\\parallel_repeatable_work_orchestrator.py", "--write", "--validate")
@@ -308,6 +430,22 @@ def connect_ro(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
+def report_status(errors: list[str], clean_cards: list[dict[str, Any]], warning_conditions: bool) -> str:
+    if errors:
+        return "blocked"
+    if clean_cards and not warning_conditions:
+        return "ok"
+    return "warning"
+
+
+def next_safe_action(clean_cards: list[dict[str, Any]], errors: list[str], blocked_cards: list[dict[str, Any]]) -> str:
+    if clean_cards:
+        return "Present clean approval cards to Randall for exact approval; no execution is authorized."
+    if errors or blocked_cards:
+        return "Do not ask for approval yet; repair/freshness/posture blockers remain."
+    return "No paper-deployment approval cards generated; continue scheduled refresh and repair cadence."
+
+
 def wf84_switch_enabled() -> bool:
     phase = load_dict(WF84_PHASE)
     summary = as_dict(phase.get("summary"))
@@ -362,7 +500,80 @@ def price_fresh_clean(snapshot: dict[str, Any]) -> bool:
     )
 
 
-def effective_band_fields(item: dict[str, Any], canonical: dict[str, Any]) -> dict[str, Any]:
+def quote_display_context(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Return the public display posture for one quote snapshot.
+
+    Card artifacts are later consumed by notification code.  A decision-factory
+    fallback or an old quote proof may still be useful for internal diagnosis,
+    but it is never safe to expose as a current market price, band, or stop.
+    """
+    fresh = price_fresh_clean(snapshot)
+    return {
+        "price_display_allowed": fresh,
+        "price_display_reason": (
+            "fresh_intraday_quote_proof"
+            if fresh
+            else "fresh_intraday_quote_proof_required"
+        ),
+    }
+
+
+def fnum(value: Any) -> float | None:
+    try:
+        if value in (None, ""):
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def classify_band_status(price: Any, low: Any, high: Any, stop: Any) -> str | None:
+    price_f = fnum(price)
+    if price_f is None:
+        return None
+    stop_f = fnum(stop)
+    low_f = fnum(low)
+    high_f = fnum(high)
+    if stop_f is not None and price_f < stop_f:
+        return "BELOW_STOP"
+    if low_f is not None and price_f < low_f:
+        return "BELOW_BAND"
+    if high_f is not None and price_f > high_f:
+        return "ABOVE_BAND"
+    if low_f is not None and high_f is not None:
+        return "IN_BAND"
+    return None
+
+
+def normalized_band_status(value: Any) -> str:
+    raw = str(value or "").upper()
+    if raw == "ABOVE_BAND_WAIT":
+        return "ABOVE_BAND"
+    return raw
+
+
+def prior_reclaim_band(item: dict[str, Any], current: dict[str, Any]) -> dict[str, Any] | None:
+    prior_low = fnum(item.get("entry_band_low"))
+    prior_high = fnum(item.get("entry_band_high"))
+    prior_stop = fnum(item.get("stop_or_invalidation"))
+    current_low = fnum(current.get("entry_band_low"))
+    current_high = fnum(current.get("entry_band_high"))
+    current_stop = fnum(current.get("stop_or_invalidation"))
+    if prior_low is None or prior_high is None:
+        return None
+    if (prior_low, prior_high, prior_stop) == (current_low, current_high, current_stop):
+        return None
+    return {
+        "band_status": item.get("current_band_status"),
+        "entry_band_low": prior_low,
+        "entry_band_high": prior_high,
+        "stop_or_invalidation": prior_stop,
+        "source": "decision_factory_legacy_compatibility_prior_reclaim_filter",
+        "role": "prior_reclaim_filter_not_current_reference_band",
+    }
+
+
+def effective_band_fields(item: dict[str, Any], canonical: dict[str, Any], current_price: Any = None) -> dict[str, Any]:
     """Prefer the validated WF84 overlay when it exists.
 
     The WF78/owner-card chain can contain pre-apply band values when band
@@ -370,20 +581,42 @@ def effective_band_fields(item: dict[str, Any], canonical: dict[str, Any]) -> di
     the fresher route after the default switch gate has passed.
     """
     if canonical:
-        return {
-            "band_status": canonical.get("band_status") or item.get("current_band_status"),
+        out = {
+            "source_band_status": canonical.get("band_status") or item.get("current_band_status"),
             "entry_band_low": canonical.get("entry_band_low") if canonical.get("entry_band_low") is not None else item.get("entry_band_low"),
             "entry_band_high": canonical.get("entry_band_high") if canonical.get("entry_band_high") is not None else item.get("entry_band_high"),
             "stop_or_invalidation": canonical.get("stop_or_invalidation") if canonical.get("stop_or_invalidation") is not None else item.get("stop_or_invalidation"),
             "source": "wf84_canonical_overlay",
         }
-    return {
-        "band_status": item.get("current_band_status"),
-        "entry_band_low": item.get("entry_band_low"),
-        "entry_band_high": item.get("entry_band_high"),
-        "stop_or_invalidation": item.get("stop_or_invalidation"),
-        "source": "decision_factory",
-    }
+    else:
+        out = {
+            "source_band_status": item.get("current_band_status"),
+            "entry_band_low": item.get("entry_band_low"),
+            "entry_band_high": item.get("entry_band_high"),
+            "stop_or_invalidation": item.get("stop_or_invalidation"),
+            "source": "decision_factory",
+        }
+    computed = classify_band_status(
+        current_price,
+        out.get("entry_band_low"),
+        out.get("entry_band_high"),
+        out.get("stop_or_invalidation"),
+    )
+    source_status = out.get("source_band_status")
+    out["computed_band_status"] = computed
+    out["band_status"] = computed or source_status
+    out["band_display_conflict"] = bool(
+        computed
+        and source_status
+        and normalized_band_status(computed) != normalized_band_status(source_status)
+    )
+    prior = prior_reclaim_band(item, out)
+    if prior:
+        out["prior_reclaim_band"] = prior
+        price = fnum(current_price)
+        if price is not None and fnum(prior.get("entry_band_low")) is not None:
+            out["prior_reclaim_not_met"] = price < float(prior["entry_band_low"])
+    return out
 
 
 def authority_flags_clean(row: dict[str, Any]) -> bool:
@@ -423,8 +656,13 @@ def classify_candidate(
     gate_vetoes = as_list(row.get("gate_vetoes")) or as_list(gate.get("vetoes"))
     if gate_vetoes:
         blockers.append("promotion_gate_vetoes_present")
-    band_fields = effective_band_fields(row, canonical)
+    current_price = snapshot.get("price") if snapshot.get("price") is not None else row.get("current_price")
+    band_fields = effective_band_fields(row, canonical, current_price)
     effective_band_status = str(band_fields.get("band_status") or "").upper()
+    if band_fields.get("band_display_conflict"):
+        blockers.append("band_display_conflict")
+    if band_fields.get("prior_reclaim_not_met"):
+        blockers.append("prior_reclaim_band_not_reclaimed")
     if effective_band_status != "IN_BAND":
         blockers.append(f"band_status_not_clean:{band_fields.get('band_status')}")
     if not price_fresh_clean(snapshot):
@@ -510,33 +748,42 @@ def build_cards() -> list[dict[str, Any]]:
         band_hygiene = band_hygiene_rows.get(symbol, {})
         band_integrity = band_integrity_rows.get(symbol, {})
         status, blockers, warnings = classify_candidate(item, snapshot, gate, router, canonical, conf, band_posture, band_hygiene, band_integrity)
-        band_fields = effective_band_fields(item, canonical)
+        reference_price = snapshot.get("price") if snapshot.get("price") is not None else item.get("current_price")
+        band_fields = effective_band_fields(item, canonical, reference_price)
+        display_context = quote_display_context(snapshot)
+        display_allowed = display_context["price_display_allowed"] is True
         cards.append({
             "ticker": symbol,
             "status": status,
             "clean_for_randall_approval_review": status == "approval_card_clean_ready_for_randall_review",
             "blockers": blockers,
             "warnings": warnings,
-            "current_price": snapshot.get("price") if snapshot.get("price") is not None else item.get("current_price"),
+            "current_price": snapshot.get("price") if display_allowed else None,
+            **display_context,
             "quote_snapshot": {
-                "price": snapshot.get("price"),
-                "bid": snapshot.get("bid"),
-                "ask": snapshot.get("ask"),
+                "price": snapshot.get("price") if display_allowed else None,
+                "bid": snapshot.get("bid") if display_allowed else None,
+                "ask": snapshot.get("ask") if display_allowed else None,
                 "freshness_status": snapshot.get("freshness_status"),
                 "age_seconds": snapshot.get("age_seconds"),
                 "source_timestamp_utc": snapshot.get("source_timestamp_utc"),
                 "received_at_utc": snapshot.get("received_at_utc"),
             },
-            "band_status": band_fields.get("band_status"),
-            "entry_band_low": band_fields.get("entry_band_low"),
-            "entry_band_high": band_fields.get("entry_band_high"),
-            "stop_or_invalidation": band_fields.get("stop_or_invalidation"),
+            "band_status": band_fields.get("band_status") if display_allowed else "FRESH_QUOTE_REQUIRED",
+            "computed_band_status": band_fields.get("computed_band_status") if display_allowed else None,
+            "source_band_status": band_fields.get("source_band_status"),
+            "band_display_conflict": band_fields.get("band_display_conflict") if display_allowed else False,
+            "entry_band_low": band_fields.get("entry_band_low") if display_allowed else None,
+            "entry_band_high": band_fields.get("entry_band_high") if display_allowed else None,
+            "stop_or_invalidation": band_fields.get("stop_or_invalidation") if display_allowed else None,
             "band_field_source": band_fields.get("source"),
+            "prior_reclaim_band": band_fields.get("prior_reclaim_band") if display_allowed else None,
+            "prior_reclaim_not_met": band_fields.get("prior_reclaim_not_met") is True if display_allowed else False,
             "decision_factory_band_snapshot": {
                 "band_status": item.get("current_band_status"),
-                "entry_band_low": item.get("entry_band_low"),
-                "entry_band_high": item.get("entry_band_high"),
-                "stop_or_invalidation": item.get("stop_or_invalidation"),
+                "entry_band_low": item.get("entry_band_low") if display_allowed else None,
+                "entry_band_high": item.get("entry_band_high") if display_allowed else None,
+                "stop_or_invalidation": item.get("stop_or_invalidation") if display_allowed else None,
             },
             "gate_verdict": item.get("gate_verdict") or gate.get("chief_intelligence_verdict"),
             "gate_vetoes": as_list(item.get("gate_vetoes")) or as_list(gate.get("vetoes")),
@@ -563,11 +810,11 @@ def build_cards() -> list[dict[str, Any]]:
                 "primary_state": canonical.get("primary_state"),
                 "queue_state": canonical.get("queue_state"),
                 "actionability": canonical.get("actionability"),
-                "latest_known_price": canonical.get("latest_known_price"),
+                "latest_known_price": canonical.get("latest_known_price") if display_allowed else None,
                 "band_status": canonical.get("band_status"),
-                "entry_band_low": canonical.get("entry_band_low"),
-                "entry_band_high": canonical.get("entry_band_high"),
-                "stop_or_invalidation": canonical.get("stop_or_invalidation"),
+                "entry_band_low": canonical.get("entry_band_low") if display_allowed else None,
+                "entry_band_high": canonical.get("entry_band_high") if display_allowed else None,
+                "stop_or_invalidation": canonical.get("stop_or_invalidation") if display_allowed else None,
                 "owner_action_required": bool(canonical.get("owner_action_required")) if canonical else None,
                 "authority_flags_false": (
                     not any(int(canonical.get(key) or 0) for key in (
@@ -610,8 +857,109 @@ def validate_authority() -> list[str]:
     return errors
 
 
+def attach_stale_card_reference_guard(report: dict[str, Any]) -> dict[str, Any]:
+    guard = stale_card_guard.build_report(current_payload_overrides={"morning_paper_cards": report})
+    guard_validation = as_dict(guard.get("validation"))
+    guard_summary = as_dict(guard.get("summary"))
+    report.setdefault("source_artifacts", {})["stale_paper_card_reference_guard"] = rel(STALE_CARD_GUARD)
+    report["stale_paper_card_reference_guard"] = {
+        "path": rel(STALE_CARD_GUARD),
+        "status": guard.get("status"),
+        "summary": guard_summary,
+        "validation": guard_validation,
+        "source_policy": as_dict(guard.get("source_policy")),
+    }
+    report["_stale_card_reference_guard_payload"] = guard
+
+    summary = as_dict(report.get("summary"))
+    summary["stale_wf67_current_surface_violation_count"] = guard_summary.get("current_surface_violation_count")
+    summary["stale_wf67_historical_artifact_count"] = guard_summary.get("historical_artifact_count")
+    summary["stale_wf67_historical_artifact_older_than_current_window_count"] = guard_summary.get(
+        "historical_artifact_older_than_current_window_count"
+    )
+    report["summary"] = summary
+
+    validation = as_dict(report.get("validation"))
+    errors = list(as_list(validation.get("errors")))
+    warnings = list(as_list(validation.get("warnings")))
+    errors.extend(f"stale_paper_card_reference_guard:{item}" for item in as_list(guard_validation.get("errors")))
+    warnings.extend(f"stale_paper_card_reference_guard:{item}" for item in as_list(guard_validation.get("warnings")))
+    validation["errors"] = sorted(set(errors))
+    validation["warnings"] = sorted(set(warnings))
+    validation["status"] = "error" if validation["errors"] else "ok"
+    report["validation"] = validation
+    if validation["errors"]:
+        report["status"] = "blocked"
+    elif report.get("status") == "ok" and validation["warnings"]:
+        report["status"] = "warning"
+    return guard
+
+
+def artifact_freshness_records(max_age_minutes: int) -> tuple[list[dict[str, Any]], list[str], list[str]]:
+    required_artifacts = {
+        "quote_snapshot_proof": QUOTE_PROOF,
+        "market_execution_readiness": MARKET_HARDENING,
+        "finance_decision_factory": DECISION_FACTORY,
+        "promotion_gate": PROMOTION_GATE,
+        "auto_router": AUTO_ROUTER,
+        "confidence_gate": CONFIDENCE_GATE,
+        "band_proposals": BAND_PROPOSALS,
+        "band_hygiene_freshness_controller": HYGIENE_CONTROLLER,
+        "finance_decision_sync_spine": SYNC_SPINE,
+        "wf84_phase6_10_switch_proof": WF84_PHASE,
+        "capital_deployment_band_integrity_validator": BAND_INTEGRITY,
+    }
+    max_age_seconds = max_age_minutes * 60
+    records: list[dict[str, Any]] = []
+    errors: list[str] = []
+    warnings: list[str] = []
+    for name, path in required_artifacts.items():
+        payload = load_dict(path)
+        generated_at = payload.get("generated_at_utc") if payload else None
+        age = artifact_age_seconds(path, generated_at)
+        exists = path.exists()
+        stale = age is None or age > max_age_seconds
+        validation = as_dict(payload.get("validation")) if payload else {}
+        status = payload.get("status") if payload else ("missing" if not exists else "unparseable")
+        records.append({
+            "name": name,
+            "path": rel(path),
+            "exists": exists,
+            "status": status,
+            "validation_status": validation.get("status"),
+            "generated_at_utc": generated_at,
+            "age_seconds": age,
+            "max_age_seconds": max_age_seconds,
+            "stale": stale,
+        })
+        if not exists or not payload:
+            errors.append(f"artifact_only_missing:{name}")
+        elif stale:
+            warnings.append(f"artifact_only_stale:{name}")
+        elif validation.get("status") in {"blocked", "error"}:
+            warnings.append(f"artifact_only_validation_not_ok:{name}:{validation.get('status')}")
+    return records, errors, warnings
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     steps = refresh_steps(args)
+    # The early market-open preflight also consumes quote proof, but several
+    # card-preparation steps may run afterward.  Refresh it again at the last
+    # possible boundary so no later card can present an old session price.
+    if not getattr(args, "ledger_only", False):
+        steps.append(
+            run_step(
+                "intraday_quote_snapshot_proof_final",
+                py_cmd("scripts\\intraday_quote_snapshot_proof.py"),
+                90,
+                allow_failure=True,
+            )
+        )
+    freshness_records: list[dict[str, Any]] = []
+    freshness_errors: list[str] = []
+    freshness_warnings: list[str] = []
+    if args.artifact_only:
+        freshness_records, freshness_errors, freshness_warnings = artifact_freshness_records(args.artifact_only_max_age_minutes)
     cards = build_cards()
     clean_cards = [card for card in cards if card.get("clean_for_randall_approval_review")]
     blocked_cards = [card for card in cards if not card.get("clean_for_randall_approval_review")]
@@ -622,8 +970,12 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     soft_step_failures = [step["name"] for step in steps if not step.get("ok") and step.get("allowed_failure")]
     authority_errors = validate_authority()
     wf84_errors = [] if canonical_overlay_count == len(cards) else ["wf84_canonical_overlay_missing_for_candidates"]
-    errors = list(hard_step_failures) + authority_errors + wf84_errors
-    warnings = list(soft_step_failures)
+    stale_freshness_warnings = [item for item in freshness_warnings if item.startswith("artifact_only_stale:")]
+    if args.artifact_only and cards and stale_freshness_warnings:
+        freshness_errors.extend(stale_freshness_warnings)
+        freshness_warnings = [item for item in freshness_warnings if item not in stale_freshness_warnings]
+    errors = list(hard_step_failures) + authority_errors + wf84_errors + freshness_errors
+    warnings = list(soft_step_failures) + freshness_warnings
     band_integrity = load_dict(BAND_INTEGRITY)
     band_integrity_summary = as_dict(band_integrity.get("summary"))
     band_integrity_status = band_integrity.get("status")
@@ -634,8 +986,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     if skipped_band_hygiene and (band_hygiene_artifact_age_seconds is None or band_hygiene_artifact_age_seconds > 3600):
         warnings.append("band_hygiene_fast_path_used_with_stale_or_unknown_artifact")
     warning_conditions = bool(clean_cards_with_warnings) or band_integrity_status == "warning" or bool(warnings)
-    status = "ok" if clean_cards and not errors and not warning_conditions else "warning" if cards and not errors else "blocked"
-    return {
+    status = report_status(errors, clean_cards, warning_conditions)
+    report = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
         "status": status,
@@ -645,6 +997,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "intended_window": "weekday premarket after morning freshness producers and before regular-session open",
             "timezone": "America/Phoenix",
             "clean_card_requires_fresh_quote_seconds": 900,
+            "numeric_price_band_stop_display_requires_fresh_intraday_quote": True,
         },
         "summary": {
             "candidate_count": len(cards),
@@ -659,16 +1012,17 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "wf84_canonical_default_overlay_count": canonical_overlay_count,
             "wf84_canonical_default_switch_enabled": wf84_switch_enabled(),
             "soft_step_failures": soft_step_failures,
+            "fresh_quote_display_count": len([card for card in cards if card.get("price_display_allowed") is True]),
+            "fresh_quote_display_suppressed_count": len([card for card in cards if card.get("price_display_allowed") is not True]),
             "skipped_steps": [step["name"] for step in steps if step.get("skipped")],
+            "artifact_only": args.artifact_only,
+            "artifact_only_max_age_minutes": args.artifact_only_max_age_minutes if args.artifact_only else None,
+            "artifact_only_stale_count": len([record for record in freshness_records if record.get("stale")]),
             "band_hygiene_artifact_age_seconds": band_hygiene_artifact_age_seconds,
             "band_integrity_status": band_integrity_status,
             "band_integrity_critical_tickers": as_list(band_integrity_summary.get("mismatch_tickers")),
             "band_integrity_warning_tickers": as_list(band_integrity_summary.get("warning_tickers")),
-            "next_safe_action": (
-                "Present clean approval cards to Randall for exact approval; no execution is authorized."
-                if clean_cards
-                else "Do not ask for approval yet; repair/freshness/posture blockers remain."
-            ),
+            "next_safe_action": next_safe_action(clean_cards, errors, blocked_cards),
         },
         "cards": cards,
         "source_artifacts": {
@@ -687,6 +1041,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "wf84_phase6_10_switch_proof": rel(WF84_PHASE),
             "capital_deployment_band_integrity_validator": rel(BAND_INTEGRITY),
         },
+        "artifact_freshness_records": freshness_records,
         "steps": steps,
         "validation": {
             "status": "ok" if not errors else "error",
@@ -697,9 +1052,11 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "This cron produces recommendation approval cards only.",
             "Clean means ready for Randall review, not approved.",
             "No paper/live submit, cancel, sell, modify, replace, close-position, account action, money movement, capital deployment, canon/portfolio mutation, or owner approval inference is allowed.",
-            "Any exact paper order still requires Randall approval plus WF67 wrapper, fresh kill switch, and clean guard validation.",
+            "Any exact paper order or execution still requires Randall approval plus WF67 wrapper, fresh kill switch, and clean guard validation.",
         ],
     }
+    attach_stale_card_reference_guard(report)
+    return report
 
 
 def markdown(report: dict[str, Any]) -> str:
@@ -758,11 +1115,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--write-md", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--ledger-only", action="store_true", help="Only rebuild from current artifacts.")
+    parser.add_argument("--artifact-only", action="store_true", help="Build cards from current upstream artifacts without rerunning producer refresh steps.")
+    parser.add_argument("--artifact-only-max-age-minutes", type=int, default=360, help="Maximum upstream artifact age allowed in artifact-only mode.")
     parser.add_argument("--skip-card-refresh", action="store_true", help="Do not regenerate owner cards/WF67 request artifacts.")
     parser.add_argument("--skip-provider-refresh", action="store_true", help="Pass local-only mode to the owner-card prep orchestrator.")
+    parser.add_argument("--skip-routing-preflight", action="store_true", help="Assume upstream WF78 pre_market_repair_v2 cron already refreshed Tier A/B/C repair surfaces.")
     parser.add_argument("--include-band-hygiene-refresh", action="store_true", help="Run the heavy band-hygiene controller even in local skip-provider mode.")
     parser.add_argument("--band-hygiene-timeout-seconds", type=int, default=300)
-    parser.add_argument("--card-refresh-timeout-seconds", type=int, default=300)
+    parser.add_argument("--card-refresh-timeout-seconds", type=int, default=720)
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--md-out", type=Path, default=MD_OUT)
     return parser.parse_args()
@@ -773,15 +1133,25 @@ def main() -> int:
     out = args.out if args.out.is_absolute() else ROOT / args.out
     md_out = args.md_out if args.md_out.is_absolute() else ROOT / args.md_out
     report = build_report(args)
+    stale_guard_payload = as_dict(report.pop("_stale_card_reference_guard_payload", None))
     if args.write:
         atomic_write_json(out, report)
+        if stale_guard_payload:
+            atomic_write_json(STALE_CARD_GUARD, stale_guard_payload)
     if args.write_md:
         atomic_write_text(md_out, markdown(report))
     sync_step = None
-    if args.write:
+    brief_step = None
+    if args.write and not args.artifact_only:
         sync_step = run_step(
             "finance_decision_sync_spine",
             py_cmd("scripts\\finance_decision_sync_spine.py", "--write", "--write-md", "--validate"),
+            120,
+            allow_failure=False,
+        )
+        brief_step = run_step(
+            "veritas_finance_brief",
+            py_cmd("scripts\\veritas_finance_brief.py", "--write", "--write-md", "--validate"),
             120,
             allow_failure=False,
         )
@@ -792,10 +1162,13 @@ def main() -> int:
         "summary": report["summary"],
         "validation": report["validation"],
         "sync_spine": sync_step,
+        "veritas_finance_brief": brief_step,
     }, indent=2, sort_keys=True))
     if args.validate and as_dict(report.get("validation")).get("status") != "ok":
         return 1
     if args.validate and sync_step is not None and not sync_step.get("ok"):
+        return 1
+    if args.validate and brief_step is not None and not brief_step.get("ok"):
         return 1
     return 0
 

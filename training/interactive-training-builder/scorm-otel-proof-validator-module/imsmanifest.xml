@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="otel-proof-validator-practice" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+  <organizations default="org-otel-proof-validator-practice">
+    <organization identifier="org-otel-proof-validator-practice">
+      <title>OTEL Proof Validator Practice Lab</title>
+      <item identifier="item-otel-proof-validator-practice" identifierref="res-otel-proof-validator-practice">
+        <title>OTEL Proof Validator Practice Lab</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="res-otel-proof-validator-practice" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html" />
+      <file href="module.json" />
+      <file href="xapi-seed.json" />
+    </resource>
+  </resources>
+</manifest>

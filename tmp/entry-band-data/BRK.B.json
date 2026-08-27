@@ -1,38 +1,14 @@
 {
   "ticker": "BRK.B",
   "name": "Berkshire Hathaway Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 140.97,
-      "h": 146.0,
-      "l": 136.65,
-      "c": 144.79,
-      "v": 89.91
-    },
-    {
-      "d": "2016-07",
-      "o": 144.59,
-      "h": 146.99,
-      "l": 140.95,
-      "c": 144.27,
-      "v": 60.47
-    },
-    {
-      "d": "2016-08",
-      "o": 144.62,
-      "h": 150.9,
-      "l": 142.92,
-      "c": 150.49,
-      "v": 62.48
-    },
     {
       "d": "2016-09",
       "o": 150.7,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 475.08,
-      "h": 479.87,
+      "h": 489.42,
       "l": 464.34,
-      "c": 475.94,
-      "v": 39.1
+      "c": 474.48,
+      "v": 99.75
+    },
+    {
+      "d": "2026-06",
+      "o": 473.05,
+      "h": 500.58,
+      "l": 467.96,
+      "c": 500.39,
+      "v": 122.19
+    },
+    {
+      "d": "2026-07",
+      "o": 501.83,
+      "h": 513.44,
+      "l": 486.06,
+      "c": 511.54,
+      "v": 89.99
+    },
+    {
+      "d": "2026-08",
+      "o": 514.93,
+      "h": 537.74,
+      "l": 495.68,
+      "c": 495.82,
+      "v": 63.79
     }
   ],
   "macro_regimes": {
@@ -1025,34 +1025,36 @@
     }
   },
   "preferred_band": {
-    "low": 471.93,
-    "high": 484.15,
-    "stop": 465.81,
-    "set": "2026-05-01",
-    "label": "471.93–484.15"
+    "low": 489.78,
+    "high": 498.19,
+    "stop": 483.05,
+    "set": "2026-05-13",
+    "label": "489.78-498.19"
   },
   "current_quote": {
-    "close": 475.94,
-    "ma20": 472.76,
-    "ma50": 479.91,
-    "ma200": 489.76,
-    "data_date": "2026-05-08"
+    "close": 495.82,
+    "ma20": 509.79,
+    "ma50": 500.39,
+    "ma200": 492.12,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "DUAL_MA_RECLAIM",
-    "type": "VAULT_RECLAIM",
-    "status": "BELOW_STOP",
-    "trend_stack": "BELOW_200",
-    "suggested_low": 489.76,
-    "suggested_high": 497.66,
-    "suggested_stop": 483.44,
-    "sma_envelope_low": 454.93,
-    "sma_envelope_high": 502.81,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 488.39,
+    "suggested_high": 506.98,
+    "suggested_stop": 478.07,
+    "sma_envelope_low": 475.26,
+    "sma_envelope_high": 525.28,
     "earnings_state": "CLEAR",
-    "band_confidence": 2,
-    "needs_review": true,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:34+00:00"
+  "generated_at": "2026-08-21T20:32:19+00:00"
 }

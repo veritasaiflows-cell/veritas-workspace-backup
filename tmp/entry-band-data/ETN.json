@@ -1,38 +1,14 @@
 {
   "ticker": "ETN",
   "name": "Eaton Corporation plc",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 61.22,
-      "h": 63.57,
-      "l": 54.3,
-      "c": 59.73,
-      "v": 53.01
-    },
-    {
-      "d": "2016-07",
-      "o": 59.63,
-      "h": 64.85,
-      "l": 58.28,
-      "c": 63.41,
-      "v": 45.32
-    },
-    {
-      "d": "2016-08",
-      "o": 63.43,
-      "h": 68.2,
-      "l": 62.63,
-      "c": 66.54,
-      "v": 54.12
-    },
     {
       "d": "2016-09",
       "o": 66.66,
@@ -965,9 +941,33 @@
       "d": "2026-05",
       "o": 435.0,
       "h": 435.43,
-      "l": 388.26,
-      "c": 401.51,
-      "v": 24.3
+      "l": 367.64,
+      "c": 400.6,
+      "v": 60.31
+    },
+    {
+      "d": "2026-06",
+      "o": 396.08,
+      "h": 436.74,
+      "l": 375.04,
+      "c": 426.12,
+      "v": 53.22
+    },
+    {
+      "d": "2026-07",
+      "o": 419.99,
+      "h": 423.45,
+      "l": 358.13,
+      "c": 415.2,
+      "v": 52.14
+    },
+    {
+      "d": "2026-08",
+      "o": 413.94,
+      "h": 478.0,
+      "l": 410.15,
+      "c": 419.2,
+      "v": 28.68
     }
   ],
   "macro_regimes": {
@@ -1025,18 +1025,18 @@
     }
   },
   "preferred_band": {
-    "low": 395.59,
-    "high": 420.31,
-    "stop": 383.23,
-    "set": "2026-04-30",
-    "label": "395.59–420.31"
+    "low": 387.67,
+    "high": 404.02,
+    "stop": 367.6,
+    "set": "2026-06-15",
+    "label": "387.67–404.02"
   },
   "current_quote": {
-    "close": 401.51,
-    "ma20": 410.59,
-    "ma50": 381.8,
-    "ma200": 361.25,
-    "data_date": "2026-05-08"
+    "close": 419.2,
+    "ma20": 429.09,
+    "ma50": 415.52,
+    "ma200": 377.23,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
@@ -1044,15 +1044,17 @@
     "type": "WATCH",
     "status": "IN_BAND",
     "trend_stack": "ABOVE_200_BELOW_20_50",
-    "suggested_low": 378.22,
-    "suggested_high": 409.81,
-    "suggested_stop": 360.67,
-    "sma_envelope_low": 369.88,
-    "sma_envelope_high": 408.82,
+    "suggested_low": 385.98,
+    "suggested_high": 434.4,
+    "suggested_stop": 363.96,
+    "sma_envelope_low": 397.73,
+    "sma_envelope_high": 439.59,
     "earnings_state": "CLEAR",
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
     "band_confidence": 3,
-    "needs_review": true,
+    "needs_review": false,
     "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:33+00:00"
+  "generated_at": "2026-08-21T20:32:17+00:00"
 }

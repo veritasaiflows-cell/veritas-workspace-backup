@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WF75 Academy Simulation Deck</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #132235; background: #f5f7fb; }
+  main { min-height: 100vh; display: grid; grid-template-rows: 1fr auto; }
+  .slide { padding: 8vh 8vw; display: grid; align-content: center; gap: 22px; }
+  .kicker { text-transform: uppercase; letter-spacing: .14em; color: #667b91; font-size: 13px; font-weight: 700; }
+  h1 { font-size: clamp(34px, 6vw, 72px); line-height: 1; margin: 0; max-width: 980px; }
+  p { font-size: clamp(20px, 2.4vw, 32px); line-height: 1.25; max-width: 940px; margin: 0; }
+  .prompt { border-left: 6px solid #12345c; background: white; padding: 20px 24px; font-size: clamp(18px, 2vw, 24px); max-width: 980px; }
+  .controls { display: flex; justify-content: space-between; align-items: center; padding: 18px 8vw; background: #0f294a; color: white; }
+  button { border: 1px solid rgba(255,255,255,.45); background: transparent; color: white; padding: 10px 16px; font-size: 16px; cursor: pointer; }
+  button:disabled { opacity: .4; cursor: default; }
+</style>
+</head>
+<body>
+<main>
+  <section class="slide">
+    <div class="kicker" id="count"></div>
+    <h1 id="title"></h1>
+    <p id="body"></p>
+    <div class="prompt" id="prompt"></div>
+  </section>
+  <nav class="controls">
+    <button id="prev">Previous</button>
+    <div>Internal practice only / fake scenarios only</div>
+    <button id="next">Next</button>
+  </nav>
+</main>
+<script>
+const slides = [{"title": "WF75 Academy Simulation Deck", "body": "Updated 2026-06-20T20:22:24Z. This deck now starts each available lesson with actual training content, worked examples, and practice checks.", "prompt": "Press Next. Read the lesson slide, answer the worked-example prompt out loud, then bring your explain-back to chat for scoring."}, {"title": "Lesson: SMB Service-Led Offer Basics", "body": "Small businesses often do not need a new SaaS platform first. They need someone to show them where the current workflow is leaking attention, leads, follow-up, appointments, quotes, or cash. Our first service is a manual Workflow Clarity packet. We inspect a sanitized or fake scenario, map what is happening, identify where work stalls, and produce a practical owner-facing packet.", "prompt": "Practice: State the customer pain in one sentence. State what we produce in one sentence. State what we do not do yet. State the next step: a sanitized intake or fake-scenario review."}, {"title": "Worked Example: Day 1", "body": "Weak: We use AI to automate your whole business and recover lost revenue fast. Better: We help you see where calls, forms, quotes, and follow-ups are slipping through the cracks. First we create a clear manual packet showing who needs attention, what status each lead is in, what message or callback should happen next, and which simple tools could support the workflow. We do not need your credentials or customer-system access for the first review.", "prompt": "Self-check: Did I avoid promising revenue? Did I avoid saying we will implement everything? Did I avoid asking for credentials? Did I explain the manual packet clearly? Did I give a concrete next step?"}, {"title": "Day 1: SMB Service-Led Offer Basics", "body": "Scenario: Desert Peak HVAC lead follow-up packet", "prompt": "Activity: Explain the offer in 90 seconds without saying implementation, guaranteed revenue, or AI magic. Acceptance: Randall can state scope, exclusions, and next step clearly."}, {"title": "Lesson: Workflow Diagnosis: Trigger To Outcome", "body": "A workflow is not just a task list. It is the path from something happening to a result being achieved. Most SMB workflow problems happen at handoffs and wait states: nobody owns the next touch, the status is unclear, or the same work is tracked in too many places.", "prompt": "Practice: Name the trigger. List each handoff. Mark each wait state. Assign an owner to the next touch. Define the outcome."}, {"title": "Worked Example: Day 2", "body": "Weak: You need a CRM. Better: The issue appears to be quote follow-up and invoice timing. We should map owner, due date, and next touch before recommending a tool.", "prompt": "Self-check: Did I identify the trigger? Did I find at least one wait state? Did I assign ownership? Did I avoid tool-first thinking?"}, {"title": "Day 2: Workflow Diagnosis: Trigger To Outcome", "body": "Scenario: small contractor job-control packet", "prompt": "Activity: Map one fake contractor admin workflow from first customer request to invoice. Acceptance: Randall can identify trigger, bottleneck, owner, and next action."}, {"title": "Day 3: Zapier Fundamentals", "body": "Scenario: cleaning company website lead intake", "prompt": "Activity: Design a fake Zap: website form -> owner alert -> Google Sheet row. Acceptance: Randall can explain a Zap without touching real accounts."}, {"title": "Day 4: Make Fundamentals", "body": "Scenario: med spa inquiry routing", "prompt": "Activity: Design a fake Make scenario that routes med-spa inquiries by treatment interest. Acceptance: Randall can explain one Make scenario and its failure mode."}, {"title": "Day 5: Simple CRM / Sheet Control Plane", "body": "Scenario: auto repair quote follow-up list", "prompt": "Activity: Create fake columns for lead status, next touch, priority, source, owner, and due date. Acceptance: Randall can explain a simple tracking table before recommending CRM."}, {"title": "Day 6: Phone/SMS Workflow Tools", "body": "Scenario: plumbing missed-call queue", "prompt": "Activity: Write a safe internal recommendation for missed-call callback priority without sending texts. Acceptance: Randall can separate tool recommendation from message sending."}, {"title": "Day 7: Customer Packet QA", "body": "Scenario: Lead Rescue customer preview", "prompt": "Activity: Review one fake customer preview and mark unsafe lines. Acceptance: Randall catches unsafe claims before delivery."}, {"title": "Rollout Week 1: Internal demo and approval preparation", "body": "Choose the first vertical, pick the demo path, rehearse the offer, and draft the approval card.", "prompt": "Practice: explain the Lead Rescue offer in 90 seconds choose the HVAC / plumbing / electrical demo path write the no-outreach approval card state every stop line out loud Mock scenarios: smb-missed-call-capture-v1, smb-owner-attention-dashboard-v1"}, {"title": "Rollout Week 2: Warm-list and conversation rehearsal", "body": "Practice discovery, objection handling, and sanitized intake boundaries before any real contact.", "prompt": "Practice: run a discovery roleplay ask for sanitized workflow description only answer common objections without hype mark bad-fit conversations cleanly Mock scenarios: smb-lead-intake-routing-v1, smb-follow-up-sequences-v1"}, {"title": "Rollout Week 3: Paid pilot delivery rehearsal", "body": "Run the manual delivery flow against fake inputs before a real paid pilot is approved.", "prompt": "Practice: build a lead-flow map build an owner attention queue draft follow-up examples for human review write the automation blueprint handoff Mock scenarios: smb-lead-status-tracking-v1, smb-script-message-pack-v1"}, {"title": "Rollout Week 4: Closeout, proof, and retainer offer rehearsal", "body": "Practice pilot recap, no-hype proof framing, retainer-fit judgment, and next-step recommendation.", "prompt": "Practice: write a pilot closeout summary separate observations from ROI claims choose continue, retainer, or no-fit name the next safe experiment Mock scenarios: smb-sales-pipeline-cleanup-v1, smb-tool-stack-recommendation-v1"}];
+let i = 0;
+const title = document.getElementById('title');
+const body = document.getElementById('body');
+const prompt = document.getElementById('prompt');
+const count = document.getElementById('count');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+function render() {
+  const s = slides[i];
+  count.textContent = `Slide ${i + 1} of ${slides.length}`;
+  title.textContent = s.title;
+  body.textContent = s.body;
+  prompt.textContent = s.prompt;
+  prev.disabled = i === 0;
+  next.disabled = i === slides.length - 1;
+}
+prev.addEventListener('click', () => { if (i > 0) { i--; render(); } });
+next.addEventListener('click', () => { if (i < slides.length - 1) { i++; render(); } });
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowRight' && i < slides.length - 1) { i++; render(); }
+  if (event.key === 'ArrowLeft' && i > 0) { i--; render(); }
+});
+render();
+</script>
+</body>
+</html>

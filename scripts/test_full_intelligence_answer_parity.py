@@ -57,17 +57,32 @@ def main() -> int:
         },
         {
             "auto_tier": "Tier A",
-            "auto_state": "A-CHALLENGED",
-            "decision_state": "blocked_missing_freshness",
+            "auto_state": "A-WATCH",
+            "decision_state": "monitor_only",
+            "entry_band": {"band_status": "IN_BAND"},
+            "current_price": {"quote_freshness_status": "post_close_final_quote_available_for_non_executing_review"},
+            "authority_boundary": {
+                "capital_deployment_approved": False,
+                "trade_or_execution_approved": False,
+                "paper_or_live_execution_allowed": False,
+                "brokerage_or_account_action_allowed": False,
+                "money_movement_allowed": False,
+                "owner_approval_inferred": False,
+            },
         },
     )
     expect(fit.get("wf78_auto_tier") == "Tier A", "portfolio fit should expose current route tier", errors)
     expect(fit.get("current_route_tier") == "Tier A", "portfolio fit should label current route tier", errors)
     expect(fit.get("prior_card_wf78_auto_tier") == "Tier C", "portfolio fit should preserve prior card tier", errors)
-    expect(fit.get("wf85_decision_state") == "blocked_missing_freshness", "portfolio fit should carry WF85 decision state", errors)
+    expect(fit.get("wf85_decision_state") == "monitor_only", "portfolio fit should carry WF85 decision state", errors)
+    expect(fit.get("timing_state") == "in_band_review_only_quote", "portfolio fit should separate timing state", errors)
+    expect(fit.get("trade_readiness_state") == "not_trade_ready_in_band_monitor_only", "portfolio fit should separate trade readiness", errors)
+    expect(fit.get("authority_state") == "review_only_no_capital_or_execution_authority", "portfolio fit should separate authority state", errors)
     fit_summary = section_summary({"raw": fit})
-    expect("current route: Tier A" in fit_summary, "human portfolio-fit summary should surface current route tier", errors)
-    expect("prior card: Tier C" in fit_summary, "human portfolio-fit summary should surface prior card tier", errors)
+    expect("route: Tier A / A-WATCH" in fit_summary, "human portfolio-fit summary should surface current route tier/state", errors)
+    expect("timing: in_band_review_only_quote" in fit_summary, "human portfolio-fit summary should surface timing state", errors)
+    expect("trade readiness: not_trade_ready_in_band_monitor_only" in fit_summary, "human portfolio-fit summary should surface trade-readiness state", errors)
+    expect("prior card" not in fit_summary, "human portfolio-fit summary should not lead with stale prior-card labels", errors)
     if errors:
         print("full_intelligence_answer_parity_tests_failed")
         for error in errors:

@@ -1,0 +1,91 @@
+{
+  "schema": "veritas.wf73.postgres_shadow_pilot.v1",
+  "generated_at_utc": "2026-07-08T15:21:11Z",
+  "status": "ok",
+  "mode": "json_shadow_projection",
+  "sources": {
+    "json_lane_register": "lanes",
+    "ddl_contract_review": "tmp/wf73-postgres-ddl-contract-review.json",
+    "parity_spec_review": "tmp/wf73-postgres-parity-validator-spec-review.json",
+    "failure_drills_review": "tmp/wf73-postgres-failure-drills-review.json",
+    "go_no_go_review": "tmp/wf73-postgres-go-no-go-review.json"
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "shadow_projection_only": true,
+    "json_lane_register_primary": true,
+    "postgres_connection_required": false,
+    "postgres_service_install_allowed": false,
+    "docker_install_or_runtime_change_allowed": false,
+    "native_service_change_allowed": false,
+    "network_or_port_exposure_allowed": false,
+    "credential_or_secret_change_allowed": false,
+    "config_or_startup_mutation_allowed": false,
+    "sql_execution_allowed": false,
+    "sql_first_control_authority_allowed": false,
+    "lane_claim_authority_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "shadow_projection": {
+    "sessions": [],
+    "workflow_lanes": [],
+    "file_leases": [],
+    "write_intents": [],
+    "validation_runs": [],
+    "proof_artifacts": [],
+    "closeout_events": [],
+    "lease_heartbeats": [],
+    "postgres_health_checks": [
+      {
+        "health_check_id": "e2b7556e26036e9b1934344c",
+        "checked_at_utc": "2026-07-08T15:21:11Z",
+        "endpoint": "not_configured",
+        "loopback_only": true,
+        "db_available": false,
+        "json_fallback_available": true,
+        "last_pg_dump_at_utc": null,
+        "last_restore_test_at_utc": null,
+        "status": "ok",
+        "summary_json": {
+          "mode": "json_shadow_projection",
+          "postgres_runtime_dependency": false,
+          "postgres_connection_attempted": false
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "json_primary": true,
+    "postgres_runtime_dependency": false,
+    "postgres_connection_attempted": false,
+    "postgres_available": false,
+    "shadow_projection_available": true,
+    "lane_count": 0,
+    "active_lane_count": 0,
+    "row_counts": {
+      "sessions": 0,
+      "workflow_lanes": 0,
+      "file_leases": 0,
+      "write_intents": 0,
+      "validation_runs": 0,
+      "proof_artifacts": 0,
+      "closeout_events": 0,
+      "lease_heartbeats": 0,
+      "postgres_health_checks": 1
+    },
+    "total_shadow_rows": 1,
+    "active_write_lease_rows": 0,
+    "proof_rows_with_existing_files": 0,
+    "proof_rows_missing_files": 0,
+    "elapsed_ms": 0.172
+  },
+  "operator_recommendation": "Use this as passive WF73 coordination telemetry only. JSON remains primary; do not promote Postgres or require DB availability without separate owner approval.",
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

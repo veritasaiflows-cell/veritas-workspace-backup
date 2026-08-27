@@ -119,6 +119,23 @@ MODE_DELIVERABLES = {
     "all": list(DELIVERABLES.keys()),
 }
 
+DELIVERY_SERIES_GATE = {
+    "automation_status": "paused_manual_gate",
+    "paused_at": "2026-06-17T23:00:00-07:00",
+    "pause_reason": "Randall paused recurring cron generation; keep package as SaaS deliverable gate.",
+    "manual_generation_allowed": True,
+    "cron_generation_allowed": False,
+    "saas_gate_role": "Internal quality gate for future SaaS PDF/Excel/CSV deliverables.",
+    "gate_requires": [
+        "source_freshness_proof",
+        "no_leak_no_claim_review",
+        "authority_boundary_visible",
+        "operator_review",
+        "source_licensing_posture",
+        "legal_compliance_decision_before_external_delivery",
+    ],
+}
+
 REQUIRED_FALSE_AUTHORITY = [key for key, value in AUTHORITY_BOUNDARY.items() if value is False]
 
 
@@ -376,6 +393,32 @@ def build_scenarios(market_read: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def build_deliverable_catalog() -> dict[str, dict[str, Any]]:
+    catalog: dict[str, dict[str, Any]] = {}
+    for deliverable_id, spec in DELIVERABLES.items():
+        html_path = spec["html"]
+        pdf_path = spec["pdf"]
+        catalog[deliverable_id] = {
+            "title": spec["title"],
+            "cadence": spec["cadence"],
+            "depth": spec["depth"],
+            "automation_status": DELIVERY_SERIES_GATE["automation_status"],
+            "html": rel(html_path),
+            "pdf": rel(pdf_path),
+            "latest_html_exists": html_path.exists(),
+            "latest_pdf_exists": pdf_path.exists(),
+            "latest_html_modified_utc": (
+                datetime.fromtimestamp(html_path.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+                if html_path.exists() else None
+            ),
+            "latest_pdf_modified_utc": (
+                datetime.fromtimestamp(pdf_path.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+                if pdf_path.exists() else None
+            ),
+        }
+    return catalog
+
+
 def build_payload(mode: str = "all") -> dict[str, Any]:
     sources = load_sources()
     market_read = build_market_read(sources)
@@ -393,19 +436,23 @@ def build_payload(mode: str = "all") -> dict[str, Any]:
         "selected_deliverables": selected,
         "authority_boundary": AUTHORITY_BOUNDARY,
         "delivery_program": {
+            "automation_status": DELIVERY_SERIES_GATE["automation_status"],
+            "pause_reason": DELIVERY_SERIES_GATE["pause_reason"],
             "daily_depth": "concise",
             "weekly_depth": "concise",
             "monthly_depth": "deep",
             "format_standard": "JSON proof + enhanced Excel workbook + HTML/PDF internal review packets",
             "paper_pilot_posture": "readiness_reporting_only_until_WF87_WF67_owner_gates_clear",
+            "saas_deliverable_gate": DELIVERY_SERIES_GATE,
         },
         "cadence": [
-            {"id": "daily_market_read", "cadence": "weekdays 06:50 America/Phoenix", "depth": "concise"},
-            {"id": "weekly_market_read", "cadence": "Sundays 17:05 America/Phoenix", "depth": "concise"},
-            {"id": "weekly_investments_performance", "cadence": "Fridays 17:20 America/Phoenix", "depth": "concise"},
-            {"id": "monthly_investment_direction", "cadence": "first Saturday 08:30 America/Phoenix", "depth": "deep"},
-            {"id": "monthly_market_deep_dive", "cadence": "first Saturday 08:30 America/Phoenix", "depth": "deep"},
+            {"id": "daily_market_read", "cadence": "paused; was weekdays 06:50 America/Phoenix", "depth": "concise", "automation_status": DELIVERY_SERIES_GATE["automation_status"]},
+            {"id": "weekly_market_read", "cadence": "paused; was Sundays 17:05 America/Phoenix", "depth": "concise", "automation_status": DELIVERY_SERIES_GATE["automation_status"]},
+            {"id": "weekly_investments_performance", "cadence": "paused; was Fridays 17:20 America/Phoenix", "depth": "concise", "automation_status": DELIVERY_SERIES_GATE["automation_status"]},
+            {"id": "monthly_investment_direction", "cadence": "paused; was first Saturday 08:30 America/Phoenix", "depth": "deep", "automation_status": DELIVERY_SERIES_GATE["automation_status"]},
+            {"id": "monthly_market_deep_dive", "cadence": "paused; was first Saturday 08:30 America/Phoenix", "depth": "deep", "automation_status": DELIVERY_SERIES_GATE["automation_status"]},
         ],
+        "deliverable_catalog": build_deliverable_catalog(),
         "market_read": market_read,
         "investments_performance": investments,
         "fundamentals_bo_yoy_finance": fundamentals,
@@ -422,7 +469,7 @@ def build_payload(mode: str = "all") -> dict[str, Any]:
                 if key in selected
             },
         },
-        "next_safe_action": "Use this series as Randall's internal finance intelligence delivery program; keep execution/paper/customer actions gated.",
+        "next_safe_action": "Use this series manually as the SaaS deliverable quality gate; do not restore cron generation without a new explicit approval.",
     }
     payload["validation"] = validate_payload(payload)
     payload["status"] = "ok" if payload["validation"]["status"] == "ok" else "blocked"

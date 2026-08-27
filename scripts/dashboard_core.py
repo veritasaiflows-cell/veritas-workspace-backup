@@ -326,6 +326,7 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
     status = "fresh"
     raw_status = src.get("status", "ok")
     generated_at = src.get("generated_at_utc")
+    portfolio_manual_contract = name == "portfolio" and bool(src.get("manual_review_policy") or src.get("manual_review_fields"))
 
     now = datetime.now(timezone.utc)
     session = get_market_session(now)
@@ -344,7 +345,13 @@ def assess_source(name: str, src: dict | None) -> dict[str, Any]:
 
     ah = age_hours(generated_at)
     fresh = ah < stale_after_hours
-    if not fresh:
+    if not fresh and portfolio_manual_contract:
+        tags.extend(["manual", "manual_review_policy"])
+        issues.append(
+            f"portfolio generated_at age {round(ah, 1)}h exceeds {stale_after_hours}h; "
+            "manual review policy controls this source until portfolio/risk/universe inputs change"
+        )
+    elif not fresh:
         status = status_worse(status, "stale")
         tags.append("stale")
         issues.append(f"age {round(ah, 1)}h exceeds {stale_after_hours}h freshness window ({session} mode)")

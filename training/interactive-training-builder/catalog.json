@@ -1,0 +1,254 @@
+{
+  "schema": "veritas.interactive_training_catalog.v1",
+  "generated_at_utc": "2026-07-04T14:39:43Z",
+  "status": "ok",
+  "modules": [
+    {
+      "module_id": "wf75-boundary-practice",
+      "title": "WF75 Boundary Practice Lab",
+      "summary": "Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.",
+      "audience": "Randall internal operator training",
+      "lessons": 2,
+      "interactions": 5,
+      "generated_at_utc": "2026-07-04T14:38:07Z",
+      "status": "ok",
+      "errors": [],
+      "links": {
+        "launch": "interactive-training-builder/sample-wf75-boundary-module.html",
+        "source_json": "interactive-training-builder/sample-wf75-boundary-module.json",
+        "manifest": "interactive-training-builder/sample-wf75-boundary-module-manifest.json",
+        "xapi_seed": "interactive-training-builder/sample-wf75-boundary-module.xapi.json",
+        "scorm_zip": "interactive-training-builder/sample-wf75-boundary-module-scorm.zip"
+      },
+      "qa": {
+        "status": "ok",
+        "severe_axe_violations": 0,
+        "console_errors": 0,
+        "overflow": 0,
+        "screenshots": [
+          {
+            "viewport": "desktop",
+            "href": "interactive-training-builder/qa-screenshots/wf75-boundary-practice-desktop.png"
+          },
+          {
+            "viewport": "mobile",
+            "href": "interactive-training-builder/qa-screenshots/wf75-boundary-practice-mobile.png"
+          }
+        ]
+      },
+      "scorm": {
+        "status": "ok",
+        "runtime_initialized": true,
+        "runtime_finished": true,
+        "lesson_status": "completed",
+        "screenshot": "interactive-training-builder/scorm-smoke-screenshots/wf75-boundary-practice-scorm-smoke.png"
+      },
+      "authority_boundary": {
+        "internal_training_only": true,
+        "external_delivery_approved": false,
+        "customer_data_allowed": false,
+        "credential_access_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "module_id": "wf75-hvac-prospect-outreach-practice",
+      "title": "WF75 HVAC Prospect Outreach Practice Lab",
+      "summary": "Practice module converted from the HVAC prospect outreach training stack. It trains offer clarity, claim discipline, data boundaries, channel boundaries, and exact owner-approval separation.",
+      "audience": "Randall internal operator training",
+      "lessons": 3,
+      "interactions": 15,
+      "generated_at_utc": "2026-07-04T14:38:07Z",
+      "status": "ok",
+      "errors": [],
+      "links": {
+        "launch": "interactive-training-builder/wf75-hvac-outreach-module.html",
+        "source_json": "interactive-training-builder/wf75-hvac-outreach-module.json",
+        "manifest": "interactive-training-builder/wf75-hvac-outreach-module-manifest.json",
+        "xapi_seed": "interactive-training-builder/wf75-hvac-outreach-module.xapi.json",
+        "scorm_zip": "interactive-training-builder/wf75-hvac-outreach-module-scorm.zip"
+      },
+      "qa": {
+        "status": "ok",
+        "severe_axe_violations": 0,
+        "console_errors": 0,
+        "overflow": 0,
+        "screenshots": [
+          {
+            "viewport": "desktop",
+            "href": "interactive-training-builder/qa-screenshots/wf75-hvac-prospect-outreach-practice-desktop.png"
+          },
+          {
+            "viewport": "mobile",
+            "href": "interactive-training-builder/qa-screenshots/wf75-hvac-prospect-outreach-practice-mobile.png"
+          }
+        ]
+      },
+      "scorm": {
+        "status": "ok",
+        "runtime_initialized": true,
+        "runtime_finished": true,
+        "lesson_status": "completed",
+        "screenshot": "interactive-training-builder/scorm-smoke-screenshots/wf75-hvac-prospect-outreach-practice-scorm-smoke.png"
+      },
+      "authority_boundary": {
+        "internal_training_only": true,
+        "external_delivery_approved": false,
+        "customer_data_allowed": false,
+        "credential_access_allowed": false,
+        "owner_approval_inferred": false,
+        "customer_outreach_approved": false,
+        "payment_collection_approved": false,
+        "crm_import_approved": false,
+        "phone_sms_approved": false,
+        "bulk_automation_approved": false
+      }
+    },
+    {
+      "module_id": "sec-evidence-review-practice",
+      "title": "SEC Evidence Review Practice Lab",
+      "summary": "Practice module for reviewing SEC/EDGAR evidence packets without treating filings, tool output, or training completion as portfolio, canon, trade, account, or capital authority.",
+      "audience": "Randall internal finance research operator training",
+      "lessons": 3,
+      "interactions": 9,
+      "generated_at_utc": "2026-07-04T14:38:08Z",
+      "status": "ok",
+      "errors": [],
+      "links": {
+        "launch": "interactive-training-builder/sec-evidence-review-module.html",
+        "source_json": "interactive-training-builder/sec-evidence-review-module.json",
+        "manifest": "interactive-training-builder/sec-evidence-review-module-manifest.json",
+        "xapi_seed": "interactive-training-builder/sec-evidence-review-module.xapi.json",
+        "scorm_zip": "interactive-training-builder/sec-evidence-review-module-scorm.zip"
+      },
+      "qa": {
+        "status": "ok",
+        "severe_axe_violations": 0,
+        "console_errors": 0,
+        "overflow": 0,
+        "screenshots": [
+          {
+            "viewport": "desktop",
+            "href": "interactive-training-builder/qa-screenshots/sec-evidence-review-practice-desktop.png"
+          },
+          {
+            "viewport": "mobile",
+            "href": "interactive-training-builder/qa-screenshots/sec-evidence-review-practice-mobile.png"
+          }
+        ]
+      },
+      "scorm": {
+        "status": "ok",
+        "runtime_initialized": true,
+        "runtime_finished": true,
+        "lesson_status": "completed",
+        "screenshot": "interactive-training-builder/scorm-smoke-screenshots/sec-evidence-review-practice-scorm-smoke.png"
+      },
+      "authority_boundary": {
+        "internal_training_only": true,
+        "external_delivery_approved": false,
+        "customer_data_allowed": false,
+        "credential_access_allowed": false,
+        "owner_approval_inferred": false,
+        "live_sec_retrieval_approved": false,
+        "venv_rebuild_approved": false,
+        "portfolio_canon_mutation_approved": false,
+        "trade_account_action_approved": false,
+        "capital_deployment_approved": false
+      }
+    },
+    {
+      "module_id": "otel-proof-validator-practice",
+      "title": "OTEL Proof Validator Practice Lab",
+      "summary": "Practice module for reading local OTEL control packets, selecting the right proof window, and routing telemetry findings without changing collector, runtime, cron, external export, finance, paper, live, or account authority.",
+      "audience": "Randall internal operations proof and validator training",
+      "lessons": 3,
+      "interactions": 10,
+      "generated_at_utc": "2026-07-04T14:38:08Z",
+      "status": "ok",
+      "errors": [],
+      "links": {
+        "launch": "interactive-training-builder/otel-proof-validator-module.html",
+        "source_json": "interactive-training-builder/otel-proof-validator-module.json",
+        "manifest": "interactive-training-builder/otel-proof-validator-module-manifest.json",
+        "xapi_seed": "interactive-training-builder/otel-proof-validator-module.xapi.json",
+        "scorm_zip": "interactive-training-builder/otel-proof-validator-module-scorm.zip"
+      },
+      "qa": {
+        "status": "ok",
+        "severe_axe_violations": 0,
+        "console_errors": 0,
+        "overflow": 0,
+        "screenshots": [
+          {
+            "viewport": "desktop",
+            "href": "interactive-training-builder/qa-screenshots/otel-proof-validator-practice-desktop.png"
+          },
+          {
+            "viewport": "mobile",
+            "href": "interactive-training-builder/qa-screenshots/otel-proof-validator-practice-mobile.png"
+          }
+        ]
+      },
+      "scorm": {
+        "status": "ok",
+        "runtime_initialized": true,
+        "runtime_finished": true,
+        "lesson_status": "completed",
+        "screenshot": "interactive-training-builder/scorm-smoke-screenshots/otel-proof-validator-practice-scorm-smoke.png"
+      },
+      "authority_boundary": {
+        "internal_training_only": true,
+        "external_delivery_approved": false,
+        "customer_data_allowed": false,
+        "credential_access_allowed": false,
+        "owner_approval_inferred": false,
+        "collector_config_mutation_approved": false,
+        "runtime_config_mutation_approved": false,
+        "cron_schedule_mutation_approved": false,
+        "telemetry_capture_depth_expansion_approved": false,
+        "external_telemetry_export_approved": false,
+        "raw_prompt_tool_payload_capture_approved": false,
+        "finance_canon_portfolio_mutation_approved": false,
+        "paper_live_account_action_approved": false
+      }
+    }
+  ],
+  "authoring_resources": {
+    "authoring_checklist": "interactive-training-builder/authoring-checklist.md",
+    "component_library": "interactive-training-builder/component-library.json",
+    "component_library_md": "interactive-training-builder/component-library.md",
+    "standards_evaluation": "interactive-training-builder/standards-upgrade-evaluation.json"
+  },
+  "proof": {
+    "builder": "tmp/interactive-training-builder-proof.json",
+    "qa": "tmp/interactive-training-qa-validation.json",
+    "scorm": "tmp/interactive-training-scorm-smoke-validation.json",
+    "ledger": "tmp/interactive-training-xapi-ledger-proof.json"
+  },
+  "xapi_ledger": {
+    "optional": true,
+    "default_endpoint": "http://127.0.0.1:8766/xapi",
+    "serve_command": "python scripts\\interactive_training_xapi_ledger.py --serve --ledger-path training/interactive-training-builder/xapi-ledger/local-events.jsonl",
+    "external_lrs_configured": false
+  },
+  "counts": {
+    "modules": 4,
+    "lessons": 11,
+    "interactions": 39,
+    "qa_ok": 4,
+    "scorm_ok": 4
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "local_files_only": true,
+    "external_lms_lrs_configured": false,
+    "learner_data_external_transport": false,
+    "customer_data_allowed": false,
+    "public_delivery_approved": false,
+    "owner_approval_inferred": false
+  }
+}

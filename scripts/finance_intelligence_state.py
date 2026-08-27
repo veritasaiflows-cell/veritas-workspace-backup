@@ -13,6 +13,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -22,9 +23,10 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import FinanceSqlCanonAccess, connect_readonly as connect_sql_canon_ro, strategic_answer_route_context
 from trade_grade_full_answer_assembler import build_full_answer
 from wf72_entry_stop_reference_helper import build_entry_stop_reference_metadata
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -34,6 +36,7 @@ DATA = ROOT / "data"
 # from source artifacts; rollback is to rerun the previous validated sources or restore the
 # tmp artifact from normal workspace backup, never to promote this DB as canon.
 DEFAULT_DB = TMP / "finance-intelligence-state.sqlite"
+CANON_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 DEFAULT_VALIDATION = TMP / "finance-intelligence-state-validation.json"
 DEFAULT_TICKER_PACKET = TMP / "finance-intelligence-state-ticker-packet.json"
 DEFAULT_PREOPEN_PACKET = TMP / "finance-intelligence-state-preopen-packet.json"
@@ -59,17 +62,22 @@ TRADE_GRADE_FULL_ANSWER_DIR = TMP / "trade-grade-full-answer"
 TRADE_GRADE_FULL_ANSWER_ROLLUP = TMP / "trade-grade-full-answer-assembler.json"
 CANON_CACHE_DB = TMP / "veritas-canon-cache.sqlite"
 ROUTER_QA_PATH = TMP / "finance-intelligence-router-qa-sql-canon-archive-apply.json"
+WF78_AUTO_TIER_ROUTING = TMP / "wf78-auto-tier-routing.json"
+TIER_A_COVERAGE_GATE = TMP / "tier-a-trade-grade-coverage-gate.json"
 PAPER_POSITION_DB = TMP / "wf67-paper-position-state.sqlite"
 LEGACY_42_TIER_SHADOW_DB = TMP / "wf78-legacy-42-tier-state-shadow.sqlite"
 CANONICAL_FINANCE_DATA_PLANE_DB = TMP / "canonical-finance-data-plane.sqlite"
 CANONICAL_FINANCE_DATA_PLANE_PHASE = TMP / "canonical-finance-data-plane-phase6-10.json"
 
 SCHEMA_VERSION = 2
-EXPECTED_CURRENT_TICKERS = 42
+EXPECTED_STRICT_PRODUCTION_TICKERS = 0
 SUPPORTED_ACTIVE_TICKER_COUNTS = {100, 200, 300, 400, 500}
 SUPPORTED_REVIEW_MONITOR_COUNTS = {58, 158, 258, 358, 458}
-PRODUCTION_SCOPE = "production_current_42"
+SUPPORTED_CURRENT_SCOPE_COUNTS = SUPPORTED_ACTIVE_TICKER_COUNTS | SUPPORTED_REVIEW_MONITOR_COUNTS
+ACTIVE_INTERNAL_SCOPE = "active_internal_universe"
+PRODUCTION_SCOPE = "strategic_production_grade"
 REVIEW_100_SCOPE = "review_100_monitor"
+SUPPORTED_UNIVERSE_SCOPES = {ACTIVE_INTERNAL_SCOPE, PRODUCTION_SCOPE, REVIEW_100_SCOPE}
 PILOT_SCOPE = "pilot_fixture"
 AUTHORITY_FALSE_KEYS = {
     "canonical_note_mutation_allowed",
@@ -116,6 +124,50 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def stale_tier_a_packet_tickers(router: dict[str, Any]) -> set[str]:
+    summary = as_dict(router.get("summary"))
+    tickers = {
+        str(ticker).upper()
+        for ticker in as_list(summary.get("tier_a_stale_packet_tickers"))
+        if str(ticker).strip()
+    }
+    if tickers:
+        return tickers
+    return {
+        str(row.get("ticker") or "").upper()
+        for row in as_list(router.get("rows"))
+        if isinstance(row, dict)
+        and row.get("tier_a_packet_freshness_status") == "stale"
+        and str(row.get("ticker") or "").strip()
+    }
+
+
+def suppress_stale_packet_approval_language(
+    ticker: str,
+    reco: dict[str, Any],
+    blockers: list[Any],
+    stale_packet_tickers: set[str],
+    decision_grade_allowed_count: int,
+) -> tuple[dict[str, Any], list[Any]]:
+    posture_key = str(reco.get("posture_key") or "")
+    if (
+        ticker.upper() not in stale_packet_tickers
+        or decision_grade_allowed_count != 0
+        or posture_key not in {"approval_ready_if_fresh", "promotion_review", "deployable_now"}
+    ):
+        return reco, blockers
+    updated = dict(reco)
+    updated["prior_posture"] = reco.get("posture")
+    updated["prior_posture_key"] = posture_key
+    updated["posture"] = "stale final-promotion packet ignored; monitor only until regenerated"
+    updated["posture_key"] = "stale_packet_monitor_only"
+    updated["actionability"] = "not_decision_grade"
+    updated["support_level"] = "stale_packet_ignored"
+    updated["stale_packet_approval_language_suppressed"] = True
+    updated["decision_grade_allowed_count_at_suppression"] = decision_grade_allowed_count
+    return updated, sorted(set([*blockers, "stale_final_promotion_packet_ignored"]))
+
+
 def fnum(value: Any) -> float | None:
     try:
         if value in (None, ""):
@@ -159,6 +211,27 @@ def packet_header(artifact_type: str, db_path: Path) -> dict[str, Any]:
             "must_not_infer_approval_or_execution_authority": True,
             "must_disclose_stale_or_conflicting_rows": True,
         },
+        "sql_canon_migration": {
+            "standing_local_sql_canon_migration_approved": True,
+            "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+            "typed_access_layer": "scripts/finance_sql_canon_access.py",
+            "internal_sql_canon_primary_guarded": True,
+            "internal_current_state_field_families_promoted": [
+                "answer_path_scope",
+                "evidence_freshness",
+                "reference_levels",
+                "source_lineage",
+                "tier_routing_state",
+                "universe_membership",
+            ],
+            "retail_or_customer_sql_first_allowed": False,
+            "this_tmp_db_is_compatibility_cache": True,
+            "sql_canon_authority_expanded": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
     }
 
 
@@ -190,6 +263,140 @@ def rows(conn: sqlite3.Connection, sql: str, params: tuple[Any, ...] = ()) -> li
 def scalar(conn: sqlite3.Connection, sql: str, params: tuple[Any, ...] = ()) -> Any:
     row = conn.execute(sql, params).fetchone()
     return row[0] if row else None
+
+
+def sqlite_object_names(conn: sqlite3.Connection) -> set[str]:
+    return {str(row["name"]) for row in rows(conn, "SELECT name FROM sqlite_master")}
+
+
+def reference_level_as_entry_stop_row(row: dict[str, Any]) -> dict[str, Any]:
+    complete = all(
+        row.get(field) is not None
+        for field in (
+            "reference_price_low",
+            "reference_price_high",
+            "reference_invalidation_level",
+        )
+    )
+    return {
+        "ticker": row.get("ticker"),
+        "entry_band_low": row.get("reference_price_low"),
+        "entry_band_high": row.get("reference_price_high"),
+        "stop_or_invalidation": row.get("reference_invalidation_level"),
+        "band_source": row.get("fallback_rule"),
+        "stop_source": row.get("fallback_rule"),
+        "freshness_status": "current" if complete else "missing_reference_level",
+        "validation_status": "ok" if complete else "blocked",
+        "owner_note_path": None,
+        "source_artifact_path": row.get("source_artifact_path"),
+        "source_artifact_hash": row.get("source_artifact_sha256"),
+        "source_timestamp": row.get("source_generated_at_utc"),
+        "raw_json": row.get("raw_json"),
+        "reference_source_surface": "state/finance/finance-canon.sqlite:reference_levels",
+        "authority_class": row.get("authority_class"),
+    }
+
+
+def entry_stop_reference_rows(
+    conn: sqlite3.Connection,
+    *,
+    ticker: str | None = None,
+    limit: int = 100,
+) -> list[dict[str, Any]]:
+    objects = sqlite_object_names(conn)
+    if "latest_valid_entry_stop_refs" in objects:
+        if ticker:
+            return rows(
+                conn,
+                "SELECT * FROM latest_valid_entry_stop_refs WHERE ticker=? ORDER BY ticker LIMIT ?",
+                (ticker.upper(), limit),
+            )
+        return rows(conn, "SELECT * FROM latest_valid_entry_stop_refs ORDER BY ticker LIMIT ?", (limit,))
+    if "reference_levels" in objects:
+        params: tuple[Any, ...]
+        if ticker:
+            params = (ticker.upper(), limit)
+            query = """
+                SELECT *
+                FROM reference_levels
+                WHERE ticker=?
+                  AND reference_price_low IS NOT NULL
+                  AND reference_price_high IS NOT NULL
+                  AND reference_invalidation_level IS NOT NULL
+                ORDER BY ticker
+                LIMIT ?
+            """
+        else:
+            params = (limit,)
+            query = """
+                SELECT *
+                FROM reference_levels
+                WHERE reference_price_low IS NOT NULL
+                  AND reference_price_high IS NOT NULL
+                  AND reference_invalidation_level IS NOT NULL
+                ORDER BY ticker
+                LIMIT ?
+            """
+        return [reference_level_as_entry_stop_row(row) for row in rows(conn, query, params)]
+    return []
+
+
+def disciplined_entry_band(ticker: str) -> dict[str, Any]:
+    """Additive read of the disciplined (written) buy zone from the SQL-canon companion table.
+
+    The disciplined band is canon-owned, so this reads ``state/finance/finance-canon.sqlite``
+    directly rather than the derived tmp proof DB. It is the canonical, event-driven written
+    band the no-chase gate binds to, deliberately separate from ``entry_stop_reference`` /
+    ``reference_levels`` (the daily-refreshed tracking band, proximity/alert only). This reader
+    never changes the tracking ``entry_band_low`` mapping; it exposes the disciplined band
+    alongside it so consumers stop treating the chasing tracking band as the buy zone.
+    """
+    if not CANON_DB.exists():
+        return {
+            "present": False,
+            "ticker": ticker,
+            "reason": "canon_db_absent",
+            "is_written_buy_zone": True,
+            "distinct_from_tracking_band": True,
+        }
+    with connect_ro(CANON_DB) as conn:
+        if "disciplined_reference_levels" not in sqlite_object_names(conn):
+            return {
+                "present": False,
+                "ticker": ticker,
+                "reason": "disciplined_reference_levels_table_absent",
+                "is_written_buy_zone": True,
+                "distinct_from_tracking_band": True,
+            }
+        row = conn.execute(
+            "SELECT * FROM disciplined_reference_levels WHERE ticker=?", (ticker,)
+        ).fetchone()
+    if row is None:
+        return {
+            "present": False,
+            "ticker": ticker,
+            "reason": "no_disciplined_row_for_ticker",
+            "is_written_buy_zone": True,
+            "distinct_from_tracking_band": True,
+        }
+    row = dict(row)
+    return {
+        "present": True,
+        "ticker": row.get("ticker"),
+        "disciplined_band_low": row.get("disciplined_band_low"),
+        "disciplined_band_high": row.get("disciplined_band_high"),
+        "disciplined_stop": row.get("disciplined_stop"),
+        "band_state": row.get("band_state"),
+        "levels_set_at": row.get("disciplined_levels_set_at"),
+        "level_trigger": row.get("disciplined_level_trigger"),
+        "source_artifact_path": row.get("disciplined_source_artifact_path"),
+        "source_artifact_hash": row.get("disciplined_source_sha256"),
+        "authority_class": row.get("authority_class"),
+        "is_written_buy_zone": True,
+        "distinct_from_tracking_band": True,
+        "levels_move_only_through_entry_band_gate": True,
+        "reference_source_surface": "state/finance/finance-canon.sqlite:disciplined_reference_levels",
+    }
 
 
 def card_path(ticker: str) -> Path:
@@ -227,6 +434,118 @@ def authority_forbidden_true(*objects: Any) -> list[str]:
     return sorted(set(found))
 
 
+def public_entry_stop_reference(row: dict[str, Any]) -> dict[str, Any]:
+    """Expose current entry/stop fields without dumping legacy raw cache JSON."""
+    public = dict(row)
+    raw_json = public.pop("raw_json", None)
+    if raw_json:
+        public["legacy_raw_json_omitted"] = True
+        public["legacy_raw_json_role"] = "compatibility_lineage_only_not_current_state"
+    return public
+
+
+def entry_stop_legacy_lineage(row: dict[str, Any]) -> dict[str, Any]:
+    if not row:
+        return {}
+    return {
+        "cache_role": "legacy_compatibility_cache_lineage_not_current_state",
+        "source_artifact_path": row.get("source_artifact_path"),
+        "source_artifact_hash": row.get("source_artifact_hash"),
+        "source_timestamp": row.get("source_timestamp"),
+        "freshness_status": row.get("freshness_status"),
+        "validation_status": row.get("validation_status"),
+        "raw_json_omitted_from_front_door": bool(row.get("raw_json")),
+    }
+
+
+def sql_canon_state_context(ticker: str | None = None) -> dict[str, Any]:
+    route = strategic_answer_route_context(consumer="finance_intelligence_state")
+    critical: list[str] = list(as_dict(route.get("validation")).get("errors") or [])
+    warnings: list[Any] = list(as_dict(route.get("validation")).get("warnings") or [])
+    registry: dict[str, Any] = {}
+    field_family_summary: dict[str, Any] = {}
+    production_tickers: list[str] = list(route.get("production_answer_tickers") or [])
+    legacy_production_tickers: list[str] = list(route.get("legacy_production_answer_tickers") or [])
+    ticker_state: dict[str, Any] | None = None
+    reference_level: dict[str, Any] | None = None
+    evidence_freshness: dict[str, Any] | None = None
+    validation = {"status": route.get("access_validation_status")}
+
+    if route.get("status") == "ok":
+        try:
+            client = FinanceSqlCanonAccess()
+            registry = client.migration_registry_summary()
+            field_family_summary = client.field_family_summary()
+            if ticker:
+                state = client.ticker_state(ticker)
+                reference = client.reference_level(ticker)
+                freshness = client.evidence_freshness(ticker)
+                ticker_state = asdict(state) if state else None
+                reference_level = asdict(reference) if reference else None
+                evidence_freshness = asdict(freshness) if freshness else None
+        except RuntimeError as exc:
+            critical.append("sql_canon_access_guard_blocked")
+            warnings.append(str(exc))
+        if ticker and ticker_state is None:
+            critical.append("sql_canon_ticker_state_missing")
+
+    status = "blocked" if critical else "ok"
+    return {
+        "schema": "veritas.finance_intelligence_state.sql_canon_context.v1",
+        "status": status,
+        "access_validation_status": route.get("access_validation_status"),
+        "sql_canon_db": "state/finance/finance-canon.sqlite",
+        "production_answer_count": len(production_tickers),
+        "production_answer_tickers": production_tickers,
+        "production_answer_definition": route.get("production_answer_definition"),
+        "legacy_production_answer_count": len(legacy_production_tickers),
+        "legacy_production_answer_tickers": legacy_production_tickers,
+        "legacy_production_answer_definition": route.get("legacy_production_answer_definition"),
+        "legacy_42_retired_from_blocking": route.get("legacy_42_retired_from_blocking"),
+        "legacy_42_count_advisory_only": route.get("legacy_42_count_advisory_only"),
+        "compatibility_scope_active": False,
+        "migration_registry_summary": registry,
+        "p0_registry_lane_status": route.get("p0_registry_lane_status"),
+        "answer_route_policy": route.get("answer_route_policy"),
+        "field_family_summary": field_family_summary,
+        "ticker_state": ticker_state,
+        "reference_level": reference_level,
+        "evidence_freshness": evidence_freshness,
+        "validation": {"status": status, "critical_errors": critical, "warnings": warnings},
+        "authority_boundary": {
+            "durable_sql_canon_current_state": True,
+            "internal_sql_canon_primary_guarded": True,
+            "read_only_access_layer_required": True,
+            "tmp_finance_intelligence_state_is_compatibility_cache": True,
+            "source_open_required_before_material_finance_claims": True,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
+def sql_canon_reference_overlay(ticker: str) -> dict[str, Any]:
+    context = sql_canon_state_context(ticker)
+    reference = as_dict(context.get("reference_level"))
+    return {
+        "ticker": ticker.upper(),
+        "status": "ok" if context.get("status") == "ok" and reference else "blocked",
+        "sql_canon_db": context.get("sql_canon_db"),
+        "reference_level": reference,
+        "validation": context.get("validation"),
+        "authority_boundary": {
+            "reference_metadata_only": True,
+            "not_recommendation_or_execution_authority": True,
+            "source_open_required_before_material_claims": True,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
 def canon_cache_rows() -> dict[tuple[str, str], dict[str, Any]]:
     if not CANON_CACHE_DB.exists():
         return {}
@@ -240,6 +559,42 @@ def canon_cache_rows() -> dict[tuple[str, str], dict[str, Any]]:
 def canon_value(cache: dict[tuple[str, str], dict[str, Any]], ticker: str, field: str) -> dict[str, Any]:
     row = cache.get((ticker.upper(), field))
     return row if row else {}
+
+
+def sql_canon_reference_level_map(tickers: list[str] | None = None) -> dict[str, dict[str, Any]]:
+    """Return guarded SQL-canon reference levels keyed by ticker.
+
+    The tmp finance-state DB is a compatibility cache. When the durable SQL
+    canon guard is clean, reference_levels must be the current entry/stop
+    source and legacy cache rows stay lineage only.
+    """
+
+    client = FinanceSqlCanonAccess()
+    validation = client.validate()
+    if validation.get("status") != "ok":
+        return {}
+    wanted = sorted({str(symbol).upper() for symbol in (tickers or []) if str(symbol).strip()})
+    params: tuple[Any, ...] = ()
+    where = """
+        reference_price_low IS NOT NULL
+        AND reference_price_high IS NOT NULL
+        AND reference_invalidation_level IS NOT NULL
+    """
+    if wanted:
+        placeholders = ",".join("?" for _ in wanted)
+        where = f"ticker IN ({placeholders}) AND {where}"
+        params = tuple(wanted)
+    query = f"""
+        SELECT *
+        FROM reference_levels
+        WHERE {where}
+        ORDER BY ticker
+    """
+    with connect_sql_canon_ro(client.db_path) as conn:
+        return {
+            str(row["ticker"]).upper(): reference_level_as_entry_stop_row(dict(row))
+            for row in conn.execute(query, params)
+        }
 
 
 def init_schema(conn: sqlite3.Connection) -> None:
@@ -567,14 +922,18 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
     coverage = as_dict(load_json(COVERAGE_PATH, {}))
     coverage_by_ticker = as_dict(coverage.get("ticker_coverage"))
     router_qa = as_dict(load_json(ROUTER_QA_PATH, {}))
+    auto_router = as_dict(load_json(WF78_AUTO_TIER_ROUTING, {}))
+    coverage_gate = as_dict(load_json(TIER_A_COVERAGE_GATE, {}))
+    stale_packet_tickers = stale_tier_a_packet_tickers(auto_router)
+    decision_grade_allowed_count = int(as_dict(coverage_gate.get("summary")).get("decision_grade_allowed_count") or 0)
     canon_cache = canon_cache_rows()
-    migrated_legacy_tickers = set(legacy_42_tier_tickers())
+    production_scope_compat_tickers = set(production_scope_tickers())
     entries = [
         row for row in as_list(universe.get("entries"))
         if isinstance(row, dict)
         and row.get("ticker")
         and row.get("active") is not False
-        and row.get("universe_scope", PRODUCTION_SCOPE) in {PRODUCTION_SCOPE, REVIEW_100_SCOPE}
+        and row.get("universe_scope", ACTIVE_INTERNAL_SCOPE) in SUPPORTED_UNIVERSE_SCOPES
     ]
     pilot_entries = [
         row for row in as_list(universe.get("entries"))
@@ -582,6 +941,7 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
         and row.get("ticker")
         and row.get("universe_scope") == PILOT_SCOPE
     ]
+    sql_reference_rows = sql_canon_reference_level_map([str(row.get("ticker") or "") for row in entries])
 
     with connect(db_path) as conn:
         init_schema(conn)
@@ -627,8 +987,8 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             )
         for entry in entries:
             ticker = str(entry["ticker"]).upper()
-            universe_scope = entry.get("universe_scope", PRODUCTION_SCOPE)
-            production_member = ticker in migrated_legacy_tickers if migrated_legacy_tickers else universe_scope == PRODUCTION_SCOPE
+            universe_scope = entry.get("universe_scope", ACTIVE_INTERNAL_SCOPE)
+            production_member = ticker in production_scope_compat_tickers if production_scope_compat_tickers else universe_scope == PRODUCTION_SCOPE
             thin_monitor = universe_scope == REVIEW_100_SCOPE
             card = as_dict(load_json(card_path(ticker), {}))
             card_meta = source_meta(card_path(ticker))
@@ -640,7 +1000,7 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             reco = as_dict(card.get("recommendation_support"))
             missing_or_stale = as_list(card.get("missing_or_stale_evidence"))
             coverage_row = as_dict(coverage_by_ticker.get(ticker))
-            if entry.get("universe_scope", PRODUCTION_SCOPE) == REVIEW_100_SCOPE:
+            if entry.get("universe_scope", ACTIVE_INTERNAL_SCOPE) == REVIEW_100_SCOPE:
                 missing_or_stale = sorted(set(
                     [str(item) for item in as_list(coverage_row.get("missing_families"))]
                     + [f"stale:{item}" for item in as_list(coverage_row.get("stale_families"))]
@@ -716,8 +1076,31 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             canon_owner = canon_value(canon_cache, ticker, "reference_level_owner_source_path")
             canon_hash = canon_value(canon_cache, ticker, "reference_level_source_sha256")
             canon_ts = canon_value(canon_cache, ticker, "reference_level_source_timestamp")
-            freshness = canon_low.get("freshness_status") or "missing"
-            validator = canon_low.get("validator_status") or "missing"
+            sql_ref = sql_reference_rows.get(ticker, {})
+            if sql_ref:
+                entry_band_low = sql_ref.get("entry_band_low")
+                entry_band_high = sql_ref.get("entry_band_high")
+                stop_or_invalidation = sql_ref.get("stop_or_invalidation")
+                band_source = sql_ref.get("reference_source_surface")
+                stop_source = sql_ref.get("reference_source_surface")
+                freshness = sql_ref.get("freshness_status") or "current"
+                validator = sql_ref.get("validation_status") or "ok"
+                owner_path = canon_owner.get("field_value") or entry.get("owner_note_path") or "04. Research/Coverage and Watchlist.md"
+                source_path = sql_ref.get("source_artifact_path")
+                source_hash = sql_ref.get("source_artifact_hash")
+                source_ts = sql_ref.get("source_timestamp")
+            else:
+                entry_band_low = canon_low.get("field_value") if canon_low else price.get("entry_band_low")
+                entry_band_high = canon_high.get("field_value") if canon_high else price.get("entry_band_high")
+                stop_or_invalidation = canon_stop.get("field_value") if canon_stop else price.get("stop_or_invalidation")
+                band_source = price.get("band_source") or canon_low.get("source_artifact_path")
+                stop_source = price.get("stop_source") or canon_stop.get("source_artifact_path")
+                freshness = canon_low.get("freshness_status") or "missing"
+                validator = canon_low.get("validator_status") or "missing"
+                owner_path = canon_owner.get("field_value") or canon_low.get("owner_mirror_note_path") or entry.get("owner_note_path") or "04. Research/Coverage and Watchlist.md"
+                source_path = canon_low.get("source_artifact_path")
+                source_hash = canon_hash.get("field_value") or canon_low.get("source_artifact_hash")
+                source_ts = canon_ts.get("field_value")
             if thin_monitor:
                 freshness = "missing_required_refresh"
                 validator = "thin_monitor_missing_required_evidence"
@@ -725,18 +1108,18 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
                 "INSERT INTO entry_stop_reference VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (
                     ticker,
-                    fnum(canon_low.get("field_value") if canon_low else price.get("entry_band_low")),
-                    fnum(canon_high.get("field_value") if canon_high else price.get("entry_band_high")),
-                    fnum(canon_stop.get("field_value") if canon_stop else price.get("stop_or_invalidation")),
-                    price.get("band_source") or canon_low.get("source_artifact_path"),
-                    price.get("stop_source") or canon_stop.get("source_artifact_path"),
+                    fnum(entry_band_low),
+                    fnum(entry_band_high),
+                    fnum(stop_or_invalidation),
+                    band_source,
+                    stop_source,
                     freshness,
                     validator,
-                    canon_owner.get("field_value") or canon_low.get("owner_mirror_note_path") or entry.get("owner_note_path") or "04. Research/Coverage and Watchlist.md",
-                    canon_low.get("source_artifact_path"),
-                    canon_hash.get("field_value") or canon_low.get("source_artifact_hash"),
-                    canon_ts.get("field_value"),
-                    json_text({"card_price_band_stop": price, "canon_cache_rows": {
+                    owner_path,
+                    source_path,
+                    source_hash,
+                    source_ts,
+                    json_text({"card_price_band_stop": price, "sql_canon_reference_level": sql_ref, "canon_cache_rows": {
                         "low": canon_low, "high": canon_high, "stop": canon_stop,
                     }, "thin_missing_context": thin_missing_context if thin_monitor else {}}),
                 ),
@@ -804,6 +1187,13 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
                     "official_fundamentals_required_if_promoted",
                     "risk_register_required_if_promoted",
                 ]))
+            reco, blockers = suppress_stale_packet_approval_language(
+                ticker,
+                reco,
+                blockers,
+                stale_packet_tickers,
+                decision_grade_allowed_count,
+            )
             posture_key = str(reco.get("posture_key") or "")
             pending_approval_count = 0 if thin_monitor else (1 if posture_key in {"approval_ready_if_fresh", "promotion_review", "deployable_now"} else 0)
             conn.execute(
@@ -860,7 +1250,8 @@ def refresh_100_packet(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
         "status": "ok" if validation.get("status") == "ok" and coverage_proc.returncode == 0 else "blocked",
         "refresh_scope": {
             "active_tickers": summary.get("universe_rows"),
-            "production_decision_grade_rows": EXPECTED_CURRENT_TICKERS,
+            "strict_production_grade_rows": summary.get("production_answer_path_rows"),
+            "expected_strict_production_grade_rows": EXPECTED_STRICT_PRODUCTION_TICKERS,
             "review_monitor_thin_rows": summary.get("review_monitor_thin_rows"),
             "supported_active_ticker_counts": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS),
             "source": rel(UNIVERSE_PATH),
@@ -889,6 +1280,20 @@ def authority_boundary() -> dict[str, Any]:
     return {
         "review_only": True,
         "database_path": rel(DEFAULT_DB),
+        "standing_local_sql_canon_migration_approved": True,
+        "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+        "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+        "internal_sql_canon_primary_guarded": True,
+        "internal_sql_canon_current_state_field_families": [
+            "answer_path_scope",
+            "evidence_freshness",
+            "reference_levels",
+            "source_lineage",
+            "tier_routing_state",
+            "universe_membership",
+        ],
+        "retail_or_customer_sql_first_allowed": False,
+        "tmp_database_is_compatibility_cache": True,
         "database_path_migration_performed": False,
         "tmp_database_promotion_performed": False,
         "full_sql_canon_migration_allowed": False,
@@ -927,19 +1332,42 @@ def validate_db(conn: sqlite3.Connection, expected_tickers: int | None, router_q
     add("foreign_key_check_ok", len(fk_rows) == 0, {"rows": len(fk_rows)})
     universe_count = int(scalar(conn, "SELECT COUNT(*) FROM universe") or 0)
     active_sql_rows = int(scalar(conn, "SELECT COUNT(*) FROM all_ticker_sql_rows") or 0)
+    production_answer_path_rows = int(scalar(conn, "SELECT COUNT(*) FROM universe WHERE production_answer_path_member=1") or 0)
+    current_card_rows = int(scalar(conn, "SELECT COUNT(*) FROM current_ticker_cards") or 0)
+    latest_valid_entry_stop_rows = int(scalar(conn, "SELECT COUNT(*) FROM latest_valid_entry_stop_refs") or 0)
     review_monitor_rows = int(scalar(conn, "SELECT COUNT(*) FROM universe WHERE universe_scope=? AND thin_monitor_row=1 AND decision_grade_eligible=0", (REVIEW_100_SCOPE,)) or 0)
     if expected_tickers is not None:
         add("universe_count_matches_expected", universe_count == expected_tickers, {"expected": expected_tickers, "actual": universe_count})
     else:
-        add("universe_count_supported_scaleout", universe_count in SUPPORTED_ACTIVE_TICKER_COUNTS, {"actual": universe_count, "supported": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS)})
-    add("active_sql_rows_supported_scaleout_count", active_sql_rows in SUPPORTED_ACTIVE_TICKER_COUNTS, {"actual": active_sql_rows, "supported": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS)})
-    add("current_42_present", scalar(conn, "SELECT COUNT(*) FROM current_ticker_cards") == EXPECTED_CURRENT_TICKERS, {"actual": scalar(conn, "SELECT COUNT(*) FROM current_ticker_cards")})
-    add("cards_exist_for_current_42", scalar(conn, "SELECT COUNT(*) FROM card_registry c JOIN universe u ON u.ticker=c.ticker WHERE u.production_answer_path_member=1 AND c.card_exists=0") == 0, {"missing": scalar(conn, "SELECT COUNT(*) FROM card_registry c JOIN universe u ON u.ticker=c.ticker WHERE u.production_answer_path_member=1 AND c.card_exists=0")})
+        add("universe_count_supported_scaleout", universe_count in SUPPORTED_CURRENT_SCOPE_COUNTS, {"actual": universe_count, "supported": sorted(SUPPORTED_CURRENT_SCOPE_COUNTS)})
+    add("active_sql_rows_supported_scaleout_count", active_sql_rows in SUPPORTED_CURRENT_SCOPE_COUNTS, {"actual": active_sql_rows, "supported": sorted(SUPPORTED_CURRENT_SCOPE_COUNTS)})
+    add(
+        "current_ticker_cards_match_production_scope",
+        current_card_rows == production_answer_path_rows,
+        {
+            "actual": current_card_rows,
+            "expected_production_scope": production_answer_path_rows,
+            "expected_strict_production_scope": EXPECTED_STRICT_PRODUCTION_TICKERS,
+            "dynamic_scope_source": "sql_first_universe_production_answer_path_member",
+            "empty_production_scope_is_wait_state": production_answer_path_rows == 0,
+        },
+    )
+    add("cards_exist_for_dynamic_production_scope", scalar(conn, "SELECT COUNT(*) FROM card_registry c JOIN universe u ON u.ticker=c.ticker WHERE u.production_answer_path_member=1 AND c.card_exists=0") == 0, {"missing": scalar(conn, "SELECT COUNT(*) FROM card_registry c JOIN universe u ON u.ticker=c.ticker WHERE u.production_answer_path_member=1 AND c.card_exists=0")})
     add("review_monitor_thin_rows_supported_scaleout_count", review_monitor_rows in SUPPORTED_REVIEW_MONITOR_COUNTS, {"actual": review_monitor_rows, "supported": sorted(SUPPORTED_REVIEW_MONITOR_COUNTS)})
     add("entry_stop_rows_for_all_tickers", scalar(conn, "SELECT COUNT(*) FROM entry_stop_reference") == universe_count, {"expected": universe_count, "actual": scalar(conn, "SELECT COUNT(*) FROM entry_stop_reference")})
     add("fundamental_rows_for_all_tickers", scalar(conn, "SELECT COUNT(*) FROM fundamental_snapshot") == universe_count, {"expected": universe_count, "actual": scalar(conn, "SELECT COUNT(*) FROM fundamental_snapshot")})
     add("analyst_rows_for_all_tickers", scalar(conn, "SELECT COUNT(*) FROM analyst_snapshot") == universe_count, {"expected": universe_count, "actual": scalar(conn, "SELECT COUNT(*) FROM analyst_snapshot")})
-    add("latest_valid_entry_stop_refs_42", scalar(conn, "SELECT COUNT(*) FROM latest_valid_entry_stop_refs") == EXPECTED_CURRENT_TICKERS, {"actual": scalar(conn, "SELECT COUNT(*) FROM latest_valid_entry_stop_refs")})
+    add(
+        "latest_valid_entry_stop_refs_cover_dynamic_production_scope",
+        production_answer_path_rows == 0 or latest_valid_entry_stop_rows >= production_answer_path_rows,
+        {
+            "valid_reference_rows": latest_valid_entry_stop_rows,
+            "strict_production_scope_rows": production_answer_path_rows,
+            "expected_strict_production_scope": EXPECTED_STRICT_PRODUCTION_TICKERS,
+            "dynamic_scope_source": "sql_first_universe_production_answer_path_member",
+            "empty_production_scope_is_wait_state": production_answer_path_rows == 0,
+        },
+    )
     add("pilot_fixtures_excluded_from_production_cards", scalar(conn, "SELECT COUNT(*) FROM pilot_fixture_registry WHERE ticker IN (SELECT ticker FROM current_ticker_cards)") == 0, {"rows": scalar(conn, "SELECT COUNT(*) FROM pilot_fixture_registry WHERE ticker IN (SELECT ticker FROM current_ticker_cards)")})
     add("pilot_fixtures_thin_on_demand_only", scalar(conn, "SELECT COUNT(*) FROM pilot_fixture_registry WHERE production_answer_path_member!=0 OR decision_grade_eligible!=0 OR thin_row_only!=1 OR on_demand_card_required_before_claim!=1") == 0, {"rows": scalar(conn, "SELECT COUNT(*) FROM pilot_fixture_registry WHERE production_answer_path_member!=0 OR decision_grade_eligible!=0 OR thin_row_only!=1 OR on_demand_card_required_before_claim!=1")})
     add("no_forbidden_authority_in_cards", scalar(conn, "SELECT COUNT(*) FROM card_registry WHERE authority_forbidden_true_json!='[]'") == 0, {"rows": scalar(conn, "SELECT COUNT(*) FROM card_registry WHERE authority_forbidden_true_json!='[]'")})
@@ -970,15 +1398,32 @@ def validate_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             "current_pilot_fixtures": scalar(conn, "SELECT COUNT(*) FROM current_pilot_fixtures"),
             "canon_conflict_candidates": scalar(conn, "SELECT COUNT(*) FROM canon_conflict_candidates"),
         }
+    sql_canon_context = sql_canon_state_context()
+    sql_canon_errors = as_dict(sql_canon_context.get("validation")).get("critical_errors") or []
+    checks = [
+        *validation["checks"],
+        {
+            "name": "durable_sql_canon_access_ok",
+            "ok": sql_canon_context.get("status") == "ok",
+            "detail": sql_canon_context,
+            "severity": "error",
+        },
+    ]
+    checks.extend(
+        {"name": f"sql_canon:{item}", "ok": False, "detail": sql_canon_context, "severity": "error"}
+        for item in sql_canon_errors
+    )
+    status = "ok" if validation["status"] == "ok" and not sql_canon_errors else "blocked"
     report = {
         "schema_version": SCHEMA_VERSION,
         "generated_at_utc": utc_now(),
         "artifact_type": "finance_intelligence_state_validation",
         "db_path": rel(db_path),
-        "status": validation["status"],
+        "status": status,
         "summary": summary,
+        "sql_canon_state": sql_canon_context,
         "authority_boundary": authority_boundary(),
-        "checks": validation["checks"],
+        "checks": checks,
     }
     atomic_write_json(DEFAULT_VALIDATION, report)
     return report
@@ -1133,10 +1578,17 @@ def wf84_entry_stop_reference(ticker: str) -> dict[str, Any]:
 
 
 def entry_stop_cache_freshness_guard(ticker: str, finance_entry_row: dict[str, Any]) -> dict[str, Any]:
-    """Fail closed when entry/stop caches no longer match the owner source hash."""
+    """Report legacy entry/stop cache drift without letting it outrank SQL-canon."""
     ticker = ticker.upper()
     owner_hash = sha256_file(EXECUTION_BOARD)
     wf84_entry_row = wf84_entry_stop_reference(ticker)
+    sql_canon_context = sql_canon_state_context(ticker)
+    sql_reference = as_dict(sql_canon_context.get("reference_level"))
+    sql_reference_row = {
+        "entry_band_low": sql_reference.get("reference_price_low"),
+        "entry_band_high": sql_reference.get("reference_price_high"),
+        "stop_or_invalidation": sql_reference.get("reference_invalidation_level"),
+    }
 
     def values_match(left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
         checks: list[dict[str, Any]] = []
@@ -1210,9 +1662,49 @@ def entry_stop_cache_freshness_guard(ticker: str, finance_entry_row: dict[str, A
         check_layer("wf84_canonical_data_plane", wf84_entry_row),
     ]
     value_consistency = values_match(finance_entry_row, wf84_entry_row)
+    sql_reference_available = sql_canon_context.get("status") == "ok" and bool(sql_reference)
+    if sql_reference_available:
+        finance_sql_consistency = values_match(finance_entry_row, sql_reference_row)
+        wf84_sql_consistency = values_match(wf84_entry_row, sql_reference_row)
+        sql_reference_consistency = {
+            "status": "authoritative",
+            "reference_source": "state/finance/finance-canon.sqlite:reference_levels",
+            "sql_canon_reference": sql_reference_row,
+            "finance_state_vs_sql_canon": finance_sql_consistency,
+            "wf84_vs_sql_canon": wf84_sql_consistency,
+            "legacy_value_mismatch_blocks_front_door": False,
+        }
+    else:
+        sql_reference_consistency = {
+            "status": "blocked",
+            "reason": "sql_canon_reference_missing_or_guard_blocked",
+            "sql_canon_status": sql_canon_context.get("status"),
+            "sql_canon_validation": sql_canon_context.get("validation"),
+        }
     statuses = {layer["status"] for layer in layers}
     status = "ok" if statuses == {"ok"} and value_consistency["status"] == "ok" else "blocked"
-    if "stale" in statuses:
+    hash_only_legacy_warning = (
+        "stale" in statuses
+        and statuses <= {"ok", "stale"}
+        and value_consistency["status"] == "ok"
+        and sql_reference_available
+    )
+    legacy_decoupled_warning = (
+        sql_reference_available
+        and (
+            statuses != {"ok"}
+            or value_consistency["status"] != "ok"
+            or as_dict(sql_reference_consistency.get("finance_state_vs_sql_canon")).get("status") != "ok"
+            or as_dict(sql_reference_consistency.get("wf84_vs_sql_canon")).get("status") != "ok"
+        )
+    )
+    if sql_reference_available and legacy_decoupled_warning:
+        status = "ok_sql_canon_authoritative_legacy_decoupled"
+    elif sql_reference_available:
+        status = "ok_sql_canon_authoritative"
+    elif hash_only_legacy_warning:
+        status = "ok_legacy_cache_hash_warning"
+    elif "stale" in statuses:
         status = "stale_cache_blocked"
     elif "blocked" in statuses:
         status = "blocked"
@@ -1227,10 +1719,43 @@ def entry_stop_cache_freshness_guard(ticker: str, finance_entry_row: dict[str, A
         "owner_source_sha256": owner_hash,
         "layers": layers,
         "value_consistency": value_consistency,
+        "sql_canon_reference_consistency": sql_reference_consistency,
+        "legacy_compatibility_hash_warning": {
+            "present": hash_only_legacy_warning or legacy_decoupled_warning,
+            "reason": (
+                "legacy compatibility entry/stop cache trails SQL-canon current-state references; "
+                "recorded as lineage drift only and not allowed to block the front door"
+                if legacy_decoupled_warning
+                else "legacy tmp compatibility cache source hashes trail the current owner-file hash, but SQL-canon, finance-state, and WF84 reference values match"
+            ),
+            "warning_layers": [layer for layer in layers if layer.get("status") == "stale"],
+            "blocks_front_door": False if (hash_only_legacy_warning or legacy_decoupled_warning) else None,
+        },
+        "legacy_compatibility_value_warning": {
+            "present": legacy_decoupled_warning,
+            "finance_state_vs_wf84": value_consistency,
+            "finance_state_vs_sql_canon": as_dict(sql_reference_consistency.get("finance_state_vs_sql_canon")),
+            "wf84_vs_sql_canon": as_dict(sql_reference_consistency.get("wf84_vs_sql_canon")),
+            "blocks_front_door": False if legacy_decoupled_warning else None,
+        },
+        "sql_canon_reference_authority": {
+            "current_state_authority": sql_reference_available,
+            "reference_source": "state/finance/finance-canon.sqlite:reference_levels",
+            "json_proof_required_before_material_claims": True,
+            "legacy_42_entry_stop_retirement_ready": sql_reference_available,
+        },
         "front_door_policy": {
-            "prefer_wf85_full_answer": status == "ok",
-            "source_open_required_before_material_claims": status != "ok",
-            "stale_entry_stop_cache_blocks_generated_answer": status in {"stale_cache_blocked", "cross_layer_value_mismatch_blocked"},
+            "prefer_wf85_full_answer": status in {
+                "ok",
+                "ok_legacy_cache_hash_warning",
+                "ok_sql_canon_authoritative",
+                "ok_sql_canon_authoritative_legacy_decoupled",
+            },
+            "source_open_required_before_material_claims": True,
+            "stale_entry_stop_cache_blocks_generated_answer": False
+            if sql_reference_available
+            else status in {"stale_cache_blocked", "cross_layer_value_mismatch_blocked"},
+            "legacy_compatibility_blocks_front_door": False if sql_reference_available else None,
         },
     }
 
@@ -1390,16 +1915,51 @@ def ticker_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, Any]:
         entry_stop_reference = entry_stop_rows[0] if entry_stop_rows else {}
         entry_stop_guard = entry_stop_cache_freshness_guard(ticker, entry_stop_reference)
         answer_route = resolve_answer_packet(ticker)
+        try:
+            import finance_cache_frontdoor
+
+            cache_frontdoor_payload = finance_cache_frontdoor.load_or_build_payload()
+            cache_frontdoor_row = finance_cache_frontdoor.row_by_ticker(cache_frontdoor_payload, ticker)
+            cache_frontdoor_context = {
+                "status": cache_frontdoor_payload.get("status"),
+                "path": "tmp/finance-cache-frontdoor.json",
+                "generated_at_utc": cache_frontdoor_payload.get("generated_at_utc"),
+                "row": cache_frontdoor_row,
+                "route_readiness": as_dict(cache_frontdoor_row.get("route_readiness")),
+                "routing_tier": cache_frontdoor_row.get("routing_tier"),
+                "routing_state": cache_frontdoor_row.get("routing_state"),
+                "timing_state": cache_frontdoor_row.get("timing_state"),
+                "decision_state": cache_frontdoor_row.get("decision_state"),
+                "trade_readiness_state": cache_frontdoor_row.get("trade_readiness_state"),
+                "authority_state": cache_frontdoor_row.get("authority_state"),
+                "summary": cache_frontdoor_payload.get("summary"),
+            }
+        except Exception as exc:
+            cache_frontdoor_context = {
+                "status": "unavailable",
+                "path": "tmp/finance-cache-frontdoor.json",
+                "reason": str(exc),
+            }
         canonical_overlay = canonical_data_plane_overlay(ticker)
         canonical_switch = canonical_data_plane_switch_gate()
         full_parity = full_answer_parity_status(ticker)
         trade_grade_answer = trade_grade_full_answer_status(ticker)
-        entry_stop_cache_ok = entry_stop_guard.get("status") == "ok"
-        canonical_default = canonical_switch.get("status") == "enabled" and canonical_overlay.get("status") == "ok" and entry_stop_cache_ok
+        sql_canon_context = sql_canon_state_context(ticker)
+        entry_stop_policy = as_dict(entry_stop_guard.get("front_door_policy"))
+        entry_stop_cache_ok = entry_stop_policy.get("prefer_wf85_full_answer") is True
+        sql_canon_ok = sql_canon_context.get("status") == "ok"
+        canonical_default = canonical_switch.get("status") == "enabled" and canonical_overlay.get("status") == "ok" and entry_stop_cache_ok and sql_canon_ok
         if canonical_default and trade_grade_answer.get("status") == "ok":
             preferred_answer_source = "wf85_full_answer_assembler"
         elif canonical_default:
             preferred_answer_source = "wf84_canonical_data_plane"
+        elif not sql_canon_ok:
+            preferred_answer_source = "source_open_required_due_sql_canon_guard"
+            trade_grade_answer = {
+                **trade_grade_answer,
+                "claim_mode": "blocked_by_sql_canon_guard",
+                "sql_canon_guard_status": sql_canon_context.get("status"),
+            }
         elif not entry_stop_cache_ok:
             preferred_answer_source = "source_open_required_due_entry_stop_cache_guard"
             trade_grade_answer = {
@@ -1410,14 +1970,19 @@ def ticker_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, Any]:
         else:
             preferred_answer_source = answer_route["preferred_source"]
         answer_contract = {
-            "default_ticker_info_front_door": "python scripts\\finance_intelligence_state.py ticker <TICKER> --pretty",
+            "default_ticker_info_front_door": "python scripts\\finance_cache_frontdoor.py ticker <TICKER> --read-only --pretty",
+            "deeper_ticker_envelope": "python scripts\\finance_intelligence_state.py ticker <TICKER> --pretty",
             "ticker_card_is_current_evidence_cache": True,
+            "finance_cache_frontdoor_is_chat_read_facade": True,
+            "sql_first_truth_production_cache_first_chat_consumption": True,
             "wf85_full_answer_assembler_is_default_full_answer_path": True,
             "answer_packet_is_legacy_compatibility_snapshot": True,
             "wf78_operational_surfaces_are_escalation_only": True,
             "wf72_sql_cache_is_support_only": True,
             "wf72_finance_answer_front_door_allowed": False,
             "may_answer_from_sql_for_inventory_or_routing": True,
+            "durable_sql_canon_required_for_current_state": True,
+            "finance_intelligence_state_sqlite_is_compatibility_cache": True,
             "prefer_answer_packet_when_present_and_fresh": False,
             "prefer_wf84_canonical_data_plane_when_phase_switch_enabled": True,
             "prefer_wf85_full_answer_assembler_when_available": True,
@@ -1433,14 +1998,15 @@ def ticker_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             "schema_version": SCHEMA_VERSION,
             "generated_at_utc": utc_now(),
             "artifact_type": "finance_intelligence_state_ticker_packet",
-            "status": "ok",
+            "status": "ok" if sql_canon_ok else "blocked",
             "ticker": ticker,
             "db_path": rel(db_path),
             "front_door_role": {
                 "default_for_ticker_questions": True,
                 "purpose": "single ticker finance intelligence lookup envelope",
-                "route_chain": "ticker request -> finance_intelligence_state -> WF84 data plane -> WF85 full answer/card -> source-open fallback when stale",
+                "route_chain": "ticker request -> finance_cache_frontdoor -> WF84 data plane -> WF85 full answer/card -> source-open fallback when material or stale",
                 "source_hierarchy": [
+                    "Finance cache front door for lightweight chat answers and source-open/material-claim flags",
                     "WF85 full-answer assembler for section-level JSON plus human answer text when WF84/WF85 gates are clean",
                     "WF84 canonical data-plane overlay for read-only normalized routing/decision joins when available",
                     "WF72 entry/stop SQL cache as support/index infrastructure only, never the answer front door",
@@ -1451,6 +2017,8 @@ def ticker_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, Any]:
                 "not_a_new_source_of_truth": True,
             },
             "preferred_answer_source": preferred_answer_source,
+            "finance_cache_frontdoor": cache_frontdoor_context,
+            "sql_canon_state": sql_canon_context,
             "answer_packet": answer_route,
             "canonical_data_plane_overlay": canonical_overlay,
             "entry_stop_cache_freshness_guard": entry_stop_guard,
@@ -1460,6 +2028,7 @@ def ticker_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, Any]:
                 "preferred_source_when_enabled": "wf85_full_answer_assembler",
                 "fallback_preferred_source": answer_route["preferred_source"],
                 "entry_stop_cache_guard_status": entry_stop_guard.get("status"),
+                "sql_canon_guard_status": sql_canon_context.get("status"),
                 "source_open_required_before_material_claims": True,
                 "does_not_authorize_capital_or_execution": True,
             },
@@ -1467,7 +2036,9 @@ def ticker_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             "trade_grade_full_answer": trade_grade_answer,
             "current": current[0],
             "family_status": rows(conn, "SELECT * FROM ticker_family_status WHERE ticker=? ORDER BY family_id", (ticker,)),
-            "entry_stop_reference": entry_stop_reference,
+            "entry_stop_reference": public_entry_stop_reference(entry_stop_reference),
+            "disciplined_entry_band": disciplined_entry_band(ticker),
+            "entry_stop_legacy_lineage": entry_stop_legacy_lineage(entry_stop_reference),
             "provenance": rows(conn, "SELECT * FROM artifact_provenance_map WHERE ticker=? ORDER BY source_kind, source_path", (ticker,)),
             "authority_boundary": authority_boundary(),
             "answer_contract": answer_contract,
@@ -1572,33 +2143,45 @@ def source_proof_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, An
 
 
 def entry_stop_refs_packet(db_path: Path = DEFAULT_DB, ticker: str | None = None, limit: int = 100) -> dict[str, Any]:
+    canon_context = sql_canon_state_context(ticker)
     with connect_ro(db_path) as conn:
-        if ticker:
-            ref_rows = rows(conn, "SELECT * FROM latest_valid_entry_stop_refs WHERE ticker=? ORDER BY ticker LIMIT ?", (ticker.upper(), limit))
-        else:
-            ref_rows = rows(conn, "SELECT * FROM latest_valid_entry_stop_refs ORDER BY ticker LIMIT ?", (limit,))
-    trimmed = [
-        {
+        ref_rows = entry_stop_reference_rows(conn, ticker=ticker, limit=limit)
+    trimmed = []
+    for row in ref_rows:
+        guard = entry_stop_cache_freshness_guard(row["ticker"], row)
+        trimmed.append({
             "ticker": row["ticker"],
             "entry_band_low": row["entry_band_low"],
             "entry_band_high": row["entry_band_high"],
             "stop_or_invalidation": row["stop_or_invalidation"],
+            "sql_canon_reference_overlay": sql_canon_reference_overlay(row["ticker"]),
             "sql_first_reference_metadata": build_entry_stop_reference_metadata(row["ticker"]),
             "freshness_status": row["freshness_status"],
             "validation_status": row["validation_status"],
             "owner_note_path": row["owner_note_path"],
             "source_artifact_path": row["source_artifact_path"],
             "source_artifact_hash": row["source_artifact_hash"],
+            "current_owner_source_hash": guard.get("owner_source_sha256"),
+            "compatibility_source_hash_status": guard.get("status"),
+            "compatibility_source_hash_blocks_front_door": as_dict(guard.get("front_door_policy")).get("stale_entry_stop_cache_blocks_generated_answer"),
+            "legacy_source_hash_warning": as_dict(guard.get("legacy_compatibility_hash_warning")).get("present") is True,
+            "legacy_source_hash_warning_reason": as_dict(guard.get("legacy_compatibility_hash_warning")).get("reason"),
             "source_timestamp": row["source_timestamp"],
-        }
-        for row in ref_rows
+            "reference_source_surface": row.get("reference_source_surface") or "tmp/finance-intelligence-state.sqlite:latest_valid_entry_stop_refs",
+        })
+    blocked_overlays = [
+        row["ticker"]
+        for row in trimmed
+        if as_dict(row.get("sql_canon_reference_overlay")).get("status") != "ok"
     ]
     packet = {
         **packet_header("finance_intelligence_state_entry_stop_refs_packet", db_path),
-        "status": "ok",
+        "status": "ok" if not blocked_overlays else "blocked",
         "ticker": ticker.upper() if ticker else None,
         "count": len(trimmed),
-        "sql_first_read_scope": "42 production ticker valid entry/stop reference metadata only; all 100 have SQL rows but review-monitor rows remain thin/missing until promoted.",
+        "sql_first_read_scope": "Durable SQL-canon reference_levels/evidence_freshness/source_lineage are the guarded internal current-state layer for the dynamic active universe. Legacy WF72/finance-intelligence compatibility caches are support-only lineage; stale whole-file source hashes do not block the front door when SQL-canon, WF84, and finance-state reference values match. Review-monitor rows still require source-open proof before material finance claims.",
+        "sql_canon_field_family_summary": canon_context.get("field_family_summary"),
+        "sql_canon_reference_overlay_blocked": blocked_overlays,
         "sql_first_consumer_migration_performed": True,
         "markdown_owner_fallback_required": True,
         "entry_stop_refs": trimmed,
@@ -1658,7 +2241,7 @@ def pilot_fixtures_packet(db_path: Path = DEFAULT_DB, limit: int = 50) -> dict[s
         "pilot_boundary": {
             "thin_sql_rows_only": True,
             "on_demand_cards_required_before_material_claims": True,
-            "excluded_from_current_42_production_cards": production_overlap == 0,
+            "excluded_from_dynamic_production_cards": production_overlap == 0,
             "provider_telemetry_required_before_live_pilot": True,
             "no_broad_import_or_production_overwrite": True,
             "pilot_fixtures_may_be_converted_to_review_100_monitor_scope": True,
@@ -1695,7 +2278,7 @@ def live_pilot_packet(db_path: Path = DEFAULT_DB, limit: int = 50) -> dict[str, 
                 },
                 "live_pilot_boundary": {
                     "isolated_sql_surface_only": True,
-                    "production_42_answer_path_unchanged": True,
+                    "dynamic_production_answer_path_unchanged": True,
                     "material_claim_requires_source_open": True,
                 },
             }
@@ -1734,7 +2317,7 @@ def live_pilot_packet(db_path: Path = DEFAULT_DB, limit: int = 50) -> dict[str, 
         "validation": {"status": "ok" if not failed else "blocked", "checks": checks, "failed_checks": failed},
         "live_pilot_boundary": {
             "isolated_sql_surface_only": True,
-            "production_42_answer_path_unchanged": production_overlap == 0,
+            "dynamic_production_answer_path_unchanged": production_overlap == 0,
             "thin_or_on_demand_only": True,
             "material_claim_requires_source_open": True,
             "no_canon_portfolio_or_execution_authority": True,
@@ -1909,7 +2492,7 @@ def phase3_qc_packet(db_path: Path = DEFAULT_DB, sample_tickers: list[str] | Non
     add("preopen_packet_ok", preopen.get("status") == "ok" and len(preopen.get("queue") or []) > 0, {"rows": len(preopen.get("queue") or [])})
     add("pending_packet_ok", pending.get("status") == "ok", {"rows": pending.get("count")})
     add("validator_packet_ok", validators.get("status") == "ok", {"error_failures": validators.get("error_failures")})
-    add("entry_stop_refs_complete", entry_refs.get("count") == EXPECTED_CURRENT_TICKERS, {"rows": entry_refs.get("count")})
+    add("entry_stop_refs_packet_has_rows", entry_refs.get("status") == "ok" and int(entry_refs.get("count") or 0) > 0, {"rows": entry_refs.get("count")})
     add("pilot_fixtures_packet_ok", pilot_fixtures.get("status") == "ok", {"rows": pilot_fixtures.get("count"), "production_overlap_count": pilot_fixtures.get("production_overlap_count")})
     add("source_proof_packets_ok", all(packet.get("status") == "ok" for packet in source_proofs.values()), {ticker: packet.get("status") for ticker, packet in source_proofs.items()})
 
@@ -1953,7 +2536,7 @@ def phase3_qc_packet(db_path: Path = DEFAULT_DB, sample_tickers: list[str] | Non
             "live_pilot": rel(DEFAULT_LIVE_PILOT_PACKET),
             "paper_positions": rel(DEFAULT_PAPER_POSITIONS_PACKET),
         },
-        "scope_boundary": "Read-only query surface over existing WF78 SQL current-state prototype. No database path move, no tmp promotion, no full SQL-canon migration, no authority expansion.",
+        "scope_boundary": "Read-only query surface over internal SQL-canon primary guarded current-state plus the legacy compatibility cache where still required. No database path move, no tmp promotion, no retail/customer activation, and no capital/execution authority expansion.",
     }
     return write_packet(DEFAULT_PHASE3_QC, packet)
 

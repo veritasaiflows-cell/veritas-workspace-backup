@@ -17,6 +17,7 @@ BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
 AUTO_BAND_APPLY_PATH = TMP / "auto-band-apply.json"
 RESEARCH_FRESHNESS_OPPORTUNITY_PATH = TMP / "research-freshness-opportunity-review.json"
 WEEKLY_POSITIONING_REVIEW_PATH = WORKSPACE / "05. Intelligence" / "Weekly Positioning Review.md"
+WF85_TIMING_PATH = TMP / "wf85-deployment-timing-gate.json"
 OUT_PATH = TMP / "deployment-readiness-surface.json"
 RUN_SUMMARY_GLOB = "run-summary-*.json"
 SCHEMA_VERSION = 1
@@ -126,6 +127,34 @@ def load_json(path: Path, required: bool = True) -> dict[str, Any] | None:
             raise FileNotFoundError(path)
         return None
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
+def rows_by_ticker(payload: dict[str, Any] | None, key: str = "rows") -> dict[str, dict[str, Any]]:
+    output: dict[str, dict[str, Any]] = {}
+    for row in as_list(as_dict(payload).get(key)):
+        if not isinstance(row, dict):
+            continue
+        ticker = str(row.get("ticker") or "").upper()
+        if ticker:
+            output[ticker] = row
+    return output
+
+
+def band_label(low: Any, high: Any) -> str | None:
+    if low is None or high is None:
+        return None
+    try:
+        return f"{float(low):.2f}-{float(high):.2f}"
+    except (TypeError, ValueError):
+        return f"{low}-{high}"
 
 
 def parse_iso_ts(value: str | None) -> datetime | None:
@@ -243,6 +272,121 @@ def fmt_band_position(record: dict[str, Any]) -> str:
     return f"{pct:.1f}% below band low"
 
 
+def merge_wf85_context(record: dict[str, Any], wf85_row: dict[str, Any] | None) -> dict[str, Any]:
+    if not wf85_row:
+        return dict(record)
+
+    merged = dict(record)
+    entry_band = as_dict(wf85_row.get("entry_band"))
+    stop = as_dict(wf85_row.get("stop_or_invalidation"))
+    earnings = as_dict(wf85_row.get("earnings"))
+    current_price = wf85_row.get("current_price")
+    band_status = entry_band.get("band_status")
+    price_gate = str(wf85_row.get("price_band_gate") or "")
+
+    if current_price is not None:
+        merged["close"] = current_price
+    if entry_band:
+        low = entry_band.get("low")
+        high = entry_band.get("high")
+        merged["entry_band"] = {
+            **as_dict(merged.get("entry_band")),
+            "low": low,
+            "high": high,
+            "label": entry_band.get("label") or band_label(low, high),
+            "source_path": entry_band.get("source_path"),
+            "source_timestamp": entry_band.get("source_timestamp"),
+            "validation_status": entry_band.get("validation_status"),
+        }
+        if band_status:
+            merged["band_status"] = band_status
+    if stop:
+        merged["stop_or_invalidation"] = stop
+        merged["stop"] = stop.get("level")
+    if band_status:
+        merged["below_stop"] = str(band_status).upper() == "BELOW_STOP"
+    elif price_gate == "below_stop_block":
+        merged["below_stop"] = True
+    if earnings:
+        merged["next_earnings_date"] = earnings.get("next_earnings_date") or merged.get("next_earnings_date")
+        if earnings.get("days_to_earnings") is not None:
+            merged["days_to_earnings"] = earnings.get("days_to_earnings")
+    merged["wf85_context_applied"] = True
+    return merged
+
+
+def synthesize_wf85_record(wf85_row: dict[str, Any]) -> dict[str, Any]:
+    ticker = str(wf85_row.get("ticker") or "").upper()
+    record = {
+        "ticker": ticker,
+        "workflow_state": "WATCH",
+        "deployment_state": "WATCH",
+        "action_state": "WATCH",
+        "why": f"WF85 timing gate: {wf85_row.get('final_timing_state')}",
+        "_trigger_sheet_present": False,
+    }
+    return merge_wf85_context(record, wf85_row)
+
+
+def wf85_surface_overlay(
+    wf85_row: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if not wf85_row:
+        return None
+
+    final_state = str(wf85_row.get("final_timing_state") or "")
+    decision_state = str(wf85_row.get("decision_state") or "")
+    price_gate = str(wf85_row.get("price_band_gate") or "")
+    final_reasons = [str(item) for item in as_list(wf85_row.get("final_timing_reasons"))]
+    reconciliation_required = decision_state == "below_stop_or_invalidation" and price_gate != "below_stop_block"
+    reconciliation_reasons: list[str] = []
+    if reconciliation_required:
+        reconciliation_reasons.append(
+            f"decision_state=below_stop_or_invalidation conflicts with price_band_gate={price_gate or 'missing'}"
+        )
+
+    surface_state: str | None = None
+    review_route = final_state or "missing_wf85_final_timing_state"
+    reason = f"wf85_final_timing_state={final_state or 'missing'}"
+
+    if final_state == "blocked_below_stop_or_invalidation" or decision_state == "below_stop_or_invalidation":
+        surface_state = "DO NOT TOUCH"
+        reason = "wf85_below_stop_or_invalidation"
+    elif final_state == "wait_no_chase":
+        surface_state = "ALMOST DEPLOYABLE"
+        reason = "wf85_wait_no_chase"
+    elif final_state == "wait_for_band_reclaim":
+        surface_state = "WATCH / RESEARCH NEEDED"
+        reason = "wf85_wait_for_band_reclaim"
+    elif final_state == "repair_first":
+        surface_state = "WATCH / RESEARCH NEEDED"
+        reason = "wf85_repair_first"
+    elif final_state == "review_ready_wait_fresh_quote":
+        surface_state = "ALMOST DEPLOYABLE"
+        reason = "wf85_pending_fresh_quote_source_open"
+    elif final_state == "review_ready_suppressed":
+        surface_state = "ALMOST / NEAR-EARNINGS CAUTION" if any("earnings_gate=" in item for item in final_reasons) else "BLOCKED"
+        reason = "wf85_review_ready_suppressed"
+    elif final_state == "review_ready_wait_approval":
+        surface_state = "PROMOTION REVIEW"
+        reason = "wf85_review_ready_wait_owner_approval"
+    elif final_state == "thin_monitor_only":
+        surface_state = "WATCH / RESEARCH NEEDED"
+        reason = "wf85_thin_monitor_only"
+
+    if not surface_state:
+        return None
+
+    return {
+        "surface_state": surface_state,
+        "override_rule": "WF85",
+        "override_reason": reason,
+        "wf85_review_route": review_route,
+        "reconciliation_required": reconciliation_required,
+        "reconciliation_reasons": reconciliation_reasons,
+    }
+
+
 def map_macro_gate(run_summary: dict[str, Any] | None, validation: dict[str, Any] | None = None) -> str:
     """Map macro-source readiness without letting non-macro owner gates leak in.
 
@@ -343,6 +487,8 @@ def main() -> int:
     research_raw = load_json(RESEARCH_FRESHNESS_OPPORTUNITY_PATH, required=False) or {}
     research_by_ticker = research_reviews_by_ticker(research_raw)
     weekly_positioning_text = safe_read_text(WEEKLY_POSITIONING_REVIEW_PATH)
+    wf85_payload = load_json(WF85_TIMING_PATH, required=False) or {}
+    wf85_by_ticker = rows_by_ticker(wf85_payload)
 
     stop_line = should_hold_system(run_summary)
     fallback_used = bool(((run_summary or {}).get("fallback_state") or {}).get("used"))
@@ -370,8 +516,35 @@ def main() -> int:
                 f"run-summary ({run_generated.isoformat()}) predates the trigger surface ({trigger_generated.isoformat()}) by {timestamp_gap_hours}h"
             )
 
+    trigger_records = [rec for rec in trigger.get("records", []) or [] if isinstance(rec, dict)]
+    records: list[dict[str, Any]] = []
+    trigger_tickers: set[str] = set()
+    for rec in trigger_records:
+        ticker = str(rec.get("ticker") or "").upper()
+        if not ticker:
+            continue
+        normalized = dict(rec)
+        normalized["ticker"] = ticker
+        normalized["_trigger_sheet_present"] = True
+        trigger_tickers.add(ticker)
+        records.append(normalized)
+
+    wf85_synthetic_tickers: list[str] = []
+    for ticker, wf85_row in sorted(wf85_by_ticker.items()):
+        if ticker in trigger_tickers:
+            continue
+        if wf85_row.get("tier_scope") != "tier_a_b_decision_layer":
+            continue
+        records.append(synthesize_wf85_record(wf85_row))
+        wf85_synthetic_tickers.append(ticker)
+
     grouped: dict[str, list[dict[str, Any]]] = {state: [] for state in STATE_ORDER}
-    for record in trigger.get("records", []) or []:
+    wf85_overlay_applied_count = 0
+    wf85_reconciliation_required_tickers: list[str] = []
+    for raw_record in records:
+        ticker = str(raw_record.get("ticker") or "").upper()
+        wf85_row = wf85_by_ticker.get(ticker)
+        record = merge_wf85_context(raw_record, wf85_row)
         base_state, override_rule, override_reason = surface_state_for(
             record,
             fallback_used=fallback_used,
@@ -379,6 +552,15 @@ def main() -> int:
             stale_band_tickers=stale_band_tickers,
         )
         surface_state = qualify_surface(base_state, record)
+        wf85_overlay = wf85_surface_overlay(wf85_row)
+        if wf85_overlay:
+            surface_state = wf85_overlay["surface_state"]
+            base_state = wf85_overlay["surface_state"]
+            override_rule = wf85_overlay["override_rule"]
+            override_reason = wf85_overlay["override_reason"]
+            wf85_overlay_applied_count += 1
+            if wf85_overlay["reconciliation_required"]:
+                wf85_reconciliation_required_tickers.append(ticker)
         conflict = authority_conflict(record, research_by_ticker.get(str(record.get("ticker") or "").upper()), weekly_positioning_text)
         if conflict:
             surface_state = conflict["surface_state"]
@@ -391,6 +573,9 @@ def main() -> int:
         out = {
             "ticker": record.get("ticker"),
             "close": record.get("close"),
+            "entry_band": record.get("entry_band"),
+            "band_status": record.get("band_status"),
+            "stop_or_invalidation": record.get("stop_or_invalidation") or ({"level": record.get("stop")} if record.get("stop") is not None else None),
             "band_position": fmt_band_position(record),
             "days_to_earnings": record.get("days_to_earnings"),
             "near_earnings_caution": surface_state == "ALMOST / NEAR-EARNINGS CAUTION",
@@ -410,8 +595,21 @@ def main() -> int:
             "macro_gate": macro_gate,
             "override_rule": override_rule,
             "override_reason": override_reason,
-            "source_artifact_path": "tmp/trigger-sheet.json",
-            "source_generated_at_utc": trigger.get("generated_at_utc"),
+            "source_artifact_path": "tmp/wf85-deployment-timing-gate.json" if wf85_overlay else "tmp/trigger-sheet.json",
+            "source_generated_at_utc": wf85_payload.get("generated_at_utc") if wf85_overlay else trigger.get("generated_at_utc"),
+            "trigger_sheet_present": bool(record.get("_trigger_sheet_present", True)),
+            "trigger_sheet_source_artifact_path": "tmp/trigger-sheet.json" if record.get("_trigger_sheet_present", True) else None,
+            "trigger_sheet_generated_at_utc": trigger.get("generated_at_utc") if record.get("_trigger_sheet_present", True) else None,
+            "wf85_overlay_applied": bool(wf85_overlay),
+            "wf85_source_artifact_path": "tmp/wf85-deployment-timing-gate.json" if wf85_row else None,
+            "wf85_generated_at_utc": wf85_payload.get("generated_at_utc") if wf85_row else None,
+            "wf85_final_timing_state": wf85_row.get("final_timing_state") if wf85_row else None,
+            "wf85_final_timing_reasons": wf85_row.get("final_timing_reasons") if wf85_row else None,
+            "wf85_decision_state": wf85_row.get("decision_state") if wf85_row else None,
+            "wf85_price_band_gate": wf85_row.get("price_band_gate") if wf85_row else None,
+            "wf85_review_route": (wf85_overlay or {}).get("wf85_review_route"),
+            "reconciliation_required": bool((wf85_overlay or {}).get("reconciliation_required")),
+            "reconciliation_reasons": (wf85_overlay or {}).get("reconciliation_reasons") or [],
             "why": record.get("why"),
             "trigger": record.get("technical_trigger"),
             "catalyst_blocker": record.get("catalyst_blocker"),
@@ -456,11 +654,18 @@ def main() -> int:
             "validation_generated_at_utc": validation_generated_at_utc,
             "validation_staleness_warning": validation_staleness_warning,
             "stale_earnings_blocks": stale_blocks,
-            "timestamp_gap_hours": timestamp_gap_hours,
-            "timestamp_gap_warning": timestamp_gap_warning,
-            "run_summary_generated_at_utc": (run_summary or {}).get("generated_at_utc"),
-            "trigger_generated_at_utc": trigger.get("generated_at_utc"),
-        },
+                "timestamp_gap_hours": timestamp_gap_hours,
+                "timestamp_gap_warning": timestamp_gap_warning,
+                "run_summary_generated_at_utc": (run_summary or {}).get("generated_at_utc"),
+                "trigger_generated_at_utc": trigger.get("generated_at_utc"),
+                "wf85_overlay_source_artifact_path": "tmp/wf85-deployment-timing-gate.json",
+                "wf85_generated_at_utc": wf85_payload.get("generated_at_utc"),
+                "wf85_overlay_applied_count": wf85_overlay_applied_count,
+                "wf85_synthetic_record_count": len(wf85_synthetic_tickers),
+                "wf85_synthetic_tickers": wf85_synthetic_tickers,
+                "wf85_reconciliation_required_count": len(wf85_reconciliation_required_tickers),
+                "wf85_reconciliation_required_tickers": sorted(wf85_reconciliation_required_tickers),
+            },
         "summary": summary,
         "groups": grouped,
     }

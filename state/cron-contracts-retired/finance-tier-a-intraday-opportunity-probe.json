@@ -1,0 +1,65 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "e05ce666-e745-4697-acd8-1d6b9146017f",
+  "name": "Finance - Tier A Intraday Opportunity Probe",
+  "required": true,
+  "owner_workflow": "WF78/WF84/WF85/WF87",
+  "contract_reason": "Disabled after Randall requested capital-deployment Telegram alerts consolidate to WF85 paper-deployment radar only at 06:42 and 11:30 America/Phoenix.",
+  "description": "Market-weekday Tier A first settled opportunity probe at 06:42 Phoenix. Runs the unified review-only market deployment operating loop after the open has settled. Review/prep only; no order/account/money/canon/portfolio authority.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "42 6 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel_note": "previous non-delivery channel metadata: last"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "QUIET CRON OUTPUT RULE (hard): this job uses delivery.mode=none. When the success/no-action path says NO_REPLY, your entire final response must be exactly NO_REPLY and nothing else. Do not add a preface, explanation, markdown, status sentence, tool summary, or trailing note. If blocked, report only the explicit blocked-report fields named below.",
+    "model": "ollama-cloud/minimax-m3:cloud",
+    "timeoutSeconds": 900,
+    "thinking": "high"
+  },
+  "compare_fields": [
+    "enabled",
+    "deleteAfterRun",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-market-deployment-operating-loop.json",
+    "tmp/finance-market-deployment-operating-loop.md",
+    "tmp/tier-a-intraday-opportunity-probe.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-06-29T02:58:53Z",
+  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback."
+}

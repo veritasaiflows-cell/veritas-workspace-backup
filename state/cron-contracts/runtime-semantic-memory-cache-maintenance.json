@@ -1,0 +1,78 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "declarationKey": "veritas.semantic-memory-maintenance.v1",
+  "job_id": "e1ec05d7-f87c-4a82-b194-4103fed8afc0",
+  "name": "Runtime - Semantic Memory Cache Maintenance",
+  "required": true,
+  "owner_workflow": "WF76",
+  "contract_reason": "Wave 1 governance-truth repair: bind the existing deterministic semantic-memory maintenance job to its exact local command and expected artifact without changing scheduler state, schedule, payload, delivery, or runtime configuration.",
+  "description": "Deterministic local-only semantic-memory cache validation and conditional rebuild. Runs four times daily in Phoenix time; preserves known stale finance-derived summaries as warnings until their upstream review artifacts refresh. No external delivery, config/auth/runtime, finance/canon/portfolio, paper/live/account, or approval authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "15 6,12,18,22 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts/semantic_memory_maintenance.py",
+      "--max-seconds",
+      "600",
+      "--batch-size",
+      "16",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 660
+  },
+  "compare_fields": [
+    "declarationKey",
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/semantic-memory-maintenance.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "local_deterministic_maintenance_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_lines": [
+    "Contract validation only; do not add, update, remove, enable, disable, reschedule, or force-run the cron job from this artifact.",
+    "No config, auth, credential, channel, service, startup, plugin, network, or runtime mutation.",
+    "No finance, canon, portfolio, cash, sizing, capital, paper/live, brokerage, account, or execution action.",
+    "No deletion, archive, external delivery, skill application, or owner approval inference."
+  ],
+  "created_at_utc": "2026-08-22T15:42:23Z",
+  "updated_at_utc": "2026-08-22T15:42:23Z",
+  "contract_update_reason": "Initial local contract added under Randall's Wave 1 authorization; live scheduler object intentionally unchanged."
+}

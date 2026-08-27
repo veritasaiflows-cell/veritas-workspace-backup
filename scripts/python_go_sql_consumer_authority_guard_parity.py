@@ -57,6 +57,10 @@ def check_map(report: dict[str, Any]) -> dict[str, bool]:
     return {str(row.get("name")): bool(row.get("ok")) for row in as_list(report.get("checks")) if isinstance(row, dict)}
 
 
+def _expected_go_status(python_status: Any) -> str:
+    return "ok" if python_status == "ok" else "fail_closed"
+
+
 def compare(python_report: dict[str, Any], go_report: dict[str, Any]) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
 
@@ -77,10 +81,35 @@ def compare(python_report: dict[str, Any], go_report: dict[str, Any]) -> list[di
         "canon_stage_incomplete_review_only_rows": python_report.get("canon_stage_incomplete_review_only_rows"),
     }
     go_summary = as_dict(go_report.get("summary"))
-    expected_status = "ok" if as_dict(go_report.get("fallback_read")).get("exists") is True else "blocked"
-    expected_go_status = "ok" if expected_status == "ok" else "fail_closed"
-    add("python_expected_fallback_posture", python_report.get("status") == expected_status and python_report.get("sql_read_allowed") is (expected_status == "ok"), "critical", {"status": python_report.get("status"), "sql_read_allowed": python_report.get("sql_read_allowed"), "expected": expected_status})
-    add("go_expected_fallback_posture", go_report.get("status") == expected_go_status and go_report.get("sql_read_allowed") is (expected_status == "ok"), "critical", {"status": go_report.get("status"), "sql_read_allowed": go_report.get("sql_read_allowed"), "expected": expected_go_status})
+    python_status = python_report.get("status")
+    python_read_allowed = python_report.get("sql_read_allowed")
+    expected_read_allowed = python_status == "ok"
+    expected_go_status = _expected_go_status(python_status)
+    add(
+        "python_expected_fallback_posture",
+        python_status in {"ok", "blocked"} and python_read_allowed is expected_read_allowed,
+        "critical",
+        {"status": python_status, "sql_read_allowed": python_read_allowed, "expected_read_allowed": expected_read_allowed},
+    )
+    add(
+        "go_expected_fallback_posture",
+        go_report.get("status") == expected_go_status and go_report.get("sql_read_allowed") is expected_read_allowed,
+        "critical",
+        {"status": go_report.get("status"), "sql_read_allowed": go_report.get("sql_read_allowed"), "expected": expected_go_status, "expected_read_allowed": expected_read_allowed},
+    )
+    if expected_read_allowed is False and go_report.get("status") == "fail_closed" and go_report.get("sql_read_allowed") is False:
+        add(
+            "live_a2_expected_fail_closed_posture",
+            False,
+            "warning",
+            {
+                "python_status": python_status,
+                "go_status": go_report.get("status"),
+                "sql_read_allowed": False,
+                "cache_stale_or_unsafe_rows": go_summary.get("cache_stale_or_unsafe_rows"),
+                "meaning": "live A2 SQL consumer guard refused an unsafe read; this is readiness debt, not authority widening",
+            },
+        )
     for key in (
         "approved_keys",
         "active_entry_stop_reference_keys",

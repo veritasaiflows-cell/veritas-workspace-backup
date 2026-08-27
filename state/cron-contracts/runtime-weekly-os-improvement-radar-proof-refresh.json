@@ -1,0 +1,81 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "a9d1978a-7d52-4790-bfe4-ab211e49f560",
+  "name": "Runtime - Weekly OS Improvement Radar Proof Refresh",
+  "required": true,
+  "owner_workflow": "RUNTIME",
+  "contract_reason": "Weekly isolated Luna proof refresh 20 minutes before the main OS-improvement review so Main receives a closed Saturday-ending seven-day agent-fleet report plus fresh control proof.",
+  "description": "Weekly isolated Luna proof refresh before the main OS improvement radar review. Refreshes six-agent usage, attribution, budget, efficiency, status, staleness, lane, validator, worktree, cron contract, PM, and cron control artifacts only; no implementation, scheduler/config/auth/runtime mutation, raw content capture, or finance/account/execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "10 16 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "model": "openai/gpt-5.6-luna",
+    "thinking": "low",
+    "timeoutSeconds": 600,
+    "lightContext": false,
+    "message": "QUIET CRON OUTPUT RULE (hard): delivery.mode=none; on clean success/no-action reply exactly NO_REPLY and nothing else; if blocked, report only proof path, failed command, validation errors, and next repair owner. Work in C:\\Users\\Veritas\\.openclaw\\workspace. Objective: refresh the closed Saturday-ending seven-day isolated-agent and weekly OS improvement proof before Main review. Execute exactly these commands in order: 1. python scripts\\cron_efficiency_review_runner.py --write --validate; 2. python scripts\\implementation_token_attribution_bridge.py --write --write-md --validate; 3. python scripts\\artifact_staleness_explainer.py --write --validate; 4. python scripts\\lane_collision_preflight.py --write --validate; 5. python scripts\\validator_bundle_router.py --max-budget shared --write --validate; 6. python scripts\\worktree_checkpoint_planner.py --write --validate; 7. python scripts\\cron_contract_validator.py --require-contracts --fail-on-drift --write --validate; 8. python scripts\\pm_control_packet.py --write --write-db --validate; 9. python scripts\\cron_control_packet.py --write --validate. Proof refresh only; no implementation, cron/config/runtime mutation, raw prompt/response/tool capture, skill update, finance/canon/portfolio mutation, external delivery, or approval inference."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext",
+    "payload.message"
+  ],
+  "expected_artifacts": [
+    "tmp/token-usage-ledger-current.json",
+    "tmp/token-budget-status.json",
+    "tmp/token-efficiency-scorecard.json",
+    "tmp/cron-efficiency-review-runner.json",
+    "tmp/implementation-token-attribution-bridge.json",
+    "tmp/veritas-status-card.json",
+    "tmp/artifact-staleness-explainer.json",
+    "tmp/lane-collision-preflight.json",
+    "tmp/validator-bundle-router.json",
+    "tmp/worktree-checkpoint-planner.json",
+    "tmp/cron-contract-validator.json",
+    "tmp/pm-control-packet.json",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "proof_refresh_only": true,
+    "implementation_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "skill_update_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-09T17:31:00Z",
+  "contract_update_reason": "Moved proof refresh to 16:10 Phoenix and prepended the six-agent usage/attribution chain so the 16:30 Main review receives fresh closed-week efficiency and outcome proof."
+}

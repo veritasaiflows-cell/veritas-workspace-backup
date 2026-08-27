@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -49,9 +50,10 @@ def render_panel(panel: dict[str, Any]) -> str:
     return f"""
     <article class="panel {esc(panel.get('tone') or 'info')}">
       <div class="panel-head">
-        <h2>{esc(panel.get('headline'))}</h2>
+        <h2>{esc(panel.get('label') or panel.get('headline'))}</h2>
         {badge(panel.get('severity'), panel.get('tone') or 'info')}
       </div>
+      <p class="summary">{esc(panel.get('headline'))}</p>
       <dl>
         <dt>State</dt><dd>{esc(panel.get('state'))}</dd>
         <dt>Freshness</dt><dd>{esc(panel.get('freshness'))}</dd>
@@ -73,6 +75,8 @@ def render_html(model: dict[str, Any]) -> str:
     summary = as_dict(model.get("summary"))
     panels = [as_dict(panel) for panel in as_list(model.get("panels"))]
     metadata = as_list(model.get("metadata_strip"))
+    actionability = as_dict(model.get("daily_actionability"))
+    pm_route = as_dict(model.get("pm_cockpit_route"))
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,8 +108,10 @@ dd {{ margin:0; overflow-wrap:anywhere; }}
 .badge {{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:10px; font-weight:700; text-transform:uppercase; }}
 .badge.info {{ color:var(--info); background:rgba(56,189,248,.12); }} .badge.warn {{ color:var(--warn); background:rgba(245,158,11,.12); }}
 .badge.bad {{ color:var(--bad); background:rgba(239,68,68,.12); }} .badge.ok {{ color:var(--ok); background:rgba(16,185,129,.12); }}
+.summary {{ margin:0 0 12px; color:var(--muted); font-size:12px; line-height:1.45; }}
 .mini {{ margin-top:10px; padding-top:8px; border-top:1px solid rgba(148,163,184,.14); color:var(--muted); font-size:11px; line-height:1.45; overflow-wrap:anywhere; }}
 .meta {{ margin-top:16px; color:var(--muted); font-size:11px; line-height:1.5; }}
+a {{ color:var(--info); }}
 @media(max-width:720px) {{ header,.wrap {{ padding-left:14px; padding-right:14px; }} dl {{ grid-template-columns:1fr; }} }}
 </style>
 </head>
@@ -117,9 +123,13 @@ dd {{ margin:0; overflow-wrap:anywhere; }}
 <main class="wrap">
   <section class="strip">
     <div class="metric">Panels<b>{esc(summary.get('panel_count'))}</b></div>
+    <div class="metric">Actionability<b>{esc(actionability.get('actionability_status'))}</b></div>
+    <div class="metric">Window<b>{esc(actionability.get('operating_window'))}</b></div>
     <div class="metric">Warnings<b>{esc(summary.get('warning'))}</b></div>
     <div class="metric">Critical<b>{esc(summary.get('critical'))}</b></div>
-    <div class="metric">DTO / Payload<b>{esc(summary.get('compact_dto_pct_of_payload'))}%</b></div>
+  </section>
+  <section class="meta">
+    Finance actionability snapshot: {esc(actionability.get('snapshot'))}. Workflows and non-finance operating state: <a href="{esc(pm_route.get('url'))}">{esc(pm_route.get('label'))}</a>.
   </section>
   <section class="grid">
     {''.join(render_panel(panel) for panel in panels)}
@@ -139,15 +149,23 @@ def validate(model: dict[str, Any], html_text: str) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
     if "dashboard-data.json" in html_text:
         findings.append({"severity": "warning", "issue": "html_mentions_legacy_payload_ref_for_drilldown"})
-    forbidden = ("undefined", "nan", "paper orders ready", "trading is enabled", "owner approved")
+    forbidden = ("undefined", "paper orders ready", "trading is enabled", "owner approved")
     lowered = html_text.lower()
     for phrase in forbidden:
         if phrase in lowered:
             findings.append({"severity": "critical", "issue": "forbidden_phrase_in_renderer", "phrase": phrase})
+    if re.search(r"(?<![a-z0-9])nan(?![a-z0-9])", lowered):
+        findings.append({"severity": "critical", "issue": "forbidden_phrase_in_renderer", "phrase": "nan"})
     if "review-only" not in lowered:
         findings.append({"severity": "critical", "issue": "review_only_boundary_missing"})
-    if len(as_list(model.get("panels"))) < 8:
+    if len(as_list(model.get("panels"))) != 7:
         findings.append({"severity": "critical", "issue": "missing_panels"})
+    if "workflow_pm" in html_text:
+        findings.append({"severity": "critical", "issue": "workflow_pm_rendered_in_finance_route"})
+    if "finance-daily-actionability-snapshot.json" not in html_text:
+        findings.append({"severity": "critical", "issue": "actionability_snapshot_missing"})
+    if "127.0.0.1:8765" not in html_text:
+        findings.append({"severity": "critical", "issue": "pm_cockpit_route_missing"})
     return findings
 
 

@@ -108,6 +108,20 @@ def test_missing_data_fails_closed(tmp_path: Path) -> None:
     assert any(item["code"] == "missing_policy" for item in report["findings"])
 
 
+def test_no_current_candidate_is_idle_not_runtime_blocked(tmp_path: Path) -> None:
+    args = argparse.Namespace(
+        policy=str(write_json(tmp_path / "policy.json", policy(ts="2026-06-01T03:00:00Z"))),
+        assisted_cards=str(write_json(tmp_path / "assisted.json", {"generated_at_utc": "2026-06-12T03:06:00Z", "cards": []})),
+        capital_queue=str(write_json(tmp_path / "queue.json", {"generated_at_utc": "2026-06-12T03:00:00Z", "rows": []})),
+        guard_validation=str(write_json(tmp_path / "guard.json", {"generated_at_utc": "2026-06-01T03:00:00Z", "status": "blocked", "live_trading_allowed": False, "money_movement_allowed": False})),
+    )
+    report = sizing.build_report(args, NOW)
+    assert report["status"] == "idle_no_candidates"
+    assert report["summary"]["candidate_count"] == 0
+    assert report["summary"]["critical_finding_count"] == 0
+    assert any(item["code"] == "no_order_candidates" and item["severity"] == "info" for item in report["findings"])
+
+
 def test_authority_flags_false(tmp_path: Path) -> None:
     report = sizing.build_report(base_files(tmp_path), NOW)
     for key, value in report["authority_boundary"].items():
@@ -118,6 +132,8 @@ def test_authority_flags_false(tmp_path: Path) -> None:
 if __name__ == "__main__":
     with TemporaryDirectory() as raw:
         test_missing_data_fails_closed(Path(raw))
+    with TemporaryDirectory() as raw:
+        test_no_current_candidate_is_idle_not_runtime_blocked(Path(raw))
     with TemporaryDirectory() as raw:
         test_pass_case(Path(raw))
     with TemporaryDirectory() as raw:

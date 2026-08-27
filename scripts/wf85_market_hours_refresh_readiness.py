@@ -19,6 +19,7 @@ SCRIPTS = Path(__file__).resolve().parent
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+from finance_sql_canon_access import DEFAULT_DB as SQL_CANON_DB, strategic_answer_route_context
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,6 +65,7 @@ OK_STATUS_VALUES = {"ok", "ready_for_repair_execution", None}
 MARKET_OPEN_AZ = time(6, 30)
 MARKET_CLOSE_AZ = time(13, 0)
 STALE_HOURS = 6.0
+LEGACY_PRODUCTION_COMPATIBILITY_COUNT = 42
 
 
 def utc_now() -> str:
@@ -113,6 +115,10 @@ def int_or_zero(value: Any) -> int:
 def load(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
+
+
+def finance_sql_canon_context() -> dict[str, Any]:
+    return strategic_answer_route_context(consumer="wf85_market_hours_refresh_readiness", db_path=SQL_CANON_DB)
 
 
 def validation_status(payload: dict[str, Any]) -> str | None:
@@ -252,10 +258,13 @@ def classify(
     records: list[dict[str, Any]],
     trust: dict[str, Any],
     session: dict[str, Any],
+    finance_sql_canon: dict[str, Any],
     now: datetime,
 ) -> tuple[str, list[str], list[str]]:
     blockers: list[str] = []
     reasons: list[str] = []
+    if finance_sql_canon.get("status") != "ok":
+        blockers.append("finance_sql_canon_guard_blocked")
     for record in records:
         if not record["exists"] or not record["parseable_json"]:
             blockers.append(f"artifact_missing_or_unparseable:{record['name']}")
@@ -329,7 +338,8 @@ def build_payload(now: datetime | None = None) -> dict[str, Any]:
     records = [artifact_record(name, path, artifacts[name], now) for name, path in ARTIFACTS.items()]
     trust = source_trust_summary(artifacts)
     session = market_session(now)
-    classification, blockers, reasons = classify(records, trust, session, now)
+    finance_sql_canon = finance_sql_canon_context()
+    classification, blockers, reasons = classify(records, trust, session, finance_sql_canon, now)
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -339,6 +349,7 @@ def build_payload(now: datetime | None = None) -> dict[str, Any]:
         "authority_flags": AUTHORITY_FLAGS,
         "market_session": session,
         "source_trust_summary": trust,
+        "finance_sql_canon_context": finance_sql_canon,
         "blockers": blockers,
         "refresh_usefulness_reasons": reasons,
         "next_safe_command_suggestions_text_only": next_safe_commands(classification),

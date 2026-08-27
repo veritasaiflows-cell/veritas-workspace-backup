@@ -3,11 +3,26 @@
   "workflow_id": "WF64-WF56",
   "display_name": "Portfolio/Canon Maintenance",
   "tier": "P1",
-  "effective_status": "route_only",
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Proposal/semantic preview/gated apply architecture active; scoped routine entry-band maintenance is system-owned inside its gate, while broader applies remain exact-gated.",
   "next_action": "Keep validators clean; use scoped band maintenance for eligible entry-band/stop refresh and exact standing/scoped approval artifacts for broader categories.",
+  "authoritative_next_action": "Keep validators clean; use scoped band maintenance for eligible entry-band/stop refresh and exact standing/scoped approval artifacts for broader categories.",
   "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "scoped entry-band maintenance allowed; broader proposal/preview/gated-apply only",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 64 - Bounded Portfolio Agent Cron Architecture.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [
     "Broader applies remain exact-gated"
   ],
@@ -28,6 +43,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

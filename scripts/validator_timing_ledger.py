@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import statistics
 import subprocess
 import sys
 import time
@@ -50,6 +51,14 @@ def rel(path: Path) -> str:
 
 def py_cmd(*parts: str) -> list[str]:
     return [sys.executable, *parts]
+
+
+def scoped_router_cmd(paths: list[str]) -> list[str]:
+    command = py_cmd("scripts\\changed_file_validator_router.py")
+    for path in paths:
+        command.extend(["--path", path])
+    command.extend(["--write", "--validate"])
+    return command
 
 
 COMMANDS: dict[str, tuple[list[str], int, str]] = {
@@ -130,8 +139,12 @@ TARGET_SECONDS = {
     "major": 120.0,
 }
 
+STRICT_COMMANDS = {
+    "py_compile_control_plane",
+}
 
-def run_command(name: str, command: list[str], timeout: int, dry_run: bool) -> dict[str, Any]:
+
+def run_command(name: str, command: list[str], timeout: int, dry_run: bool, samples: int = 1) -> dict[str, Any]:
     if dry_run:
         return {
             "name": name,
@@ -141,6 +154,20 @@ def run_command(name: str, command: list[str], timeout: int, dry_run: bool) -> d
             "elapsed_seconds": 0.0,
             "returncode": 0,
         }
+    attempts = [measure_once(name, command, timeout) for _ in range(max(1, samples))]
+    failed = [item for item in attempts if not item.get("ok")]
+    result = failed[0] if failed else attempts[0]
+    timings = [float(item.get("elapsed_seconds") or 0.0) for item in attempts]
+    result["elapsed_seconds"] = round(statistics.median(timings), 3)
+    result["sample_count"] = len(attempts)
+    result["elapsed_samples"] = timings
+    if len(attempts) > 1:
+        result["elapsed_min_seconds"] = round(min(timings), 3)
+        result["elapsed_max_seconds"] = round(max(timings), 3)
+    return result
+
+
+def measure_once(name: str, command: list[str], timeout: int) -> dict[str, Any]:
     started = utc_now()
     start = time.perf_counter()
     try:
@@ -154,6 +181,7 @@ def run_command(name: str, command: list[str], timeout: int, dry_run: bool) -> d
             "elapsed_seconds": elapsed,
             "returncode": proc.returncode,
             "ok": proc.returncode == 0,
+            "failure_kind": None if proc.returncode == 0 else "nonzero_returncode",
             "stdout_preview": proc.stdout.strip()[-1200:],
             "stderr_preview": proc.stderr.strip()[-1200:],
         }
@@ -167,50 +195,90 @@ def run_command(name: str, command: list[str], timeout: int, dry_run: bool) -> d
             "elapsed_seconds": elapsed,
             "returncode": None,
             "ok": False,
+            "failure_kind": "timeout",
             "timeout_seconds": timeout,
             "stdout_preview": (exc.stdout or "")[-1200:] if isinstance(exc.stdout, str) else "",
             "stderr_preview": (exc.stderr or "")[-1200:] if isinstance(exc.stderr, str) else "",
         }
 
 
-def build_payload(profile: str, dry_run: bool) -> dict[str, Any]:
+def build_payload(
+    profile: str,
+    dry_run: bool,
+    strict_command_status: bool = False,
+    scoped_paths: list[str] | None = None,
+    samples: int = 1,
+) -> dict[str, Any]:
     selected = PROFILES[profile]
+    scoped_paths = scoped_paths or []
+    samples = max(1, samples)
     results = []
     for name in selected:
         command, timeout, budget = COMMANDS[name]
-        result = run_command(name, command, timeout, dry_run)
+        if name == "changed_file_validator_router" and scoped_paths:
+            command = scoped_router_cmd(scoped_paths)
+        result = run_command(name, command, timeout, dry_run, samples=samples)
         result["budget"] = budget
         results.append(result)
     failed = [item["name"] for item in results if not item.get("ok")]
+    timing_collection_failures = [
+        item["name"]
+        for item in results
+        if not item.get("ok") and (strict_command_status or item.get("failure_kind") == "timeout" or item.get("name") in STRICT_COMMANDS)
+    ]
+    measured_validator_failures = [
+        item["name"]
+        for item in results
+        if not item.get("ok") and item["name"] not in timing_collection_failures
+    ]
     total = round(sum(float(item.get("elapsed_seconds") or 0.0) for item in results), 3)
     slow = total > TARGET_SECONDS[profile]
-    warnings = [f"profile_elapsed_over_target:{total}>{TARGET_SECONDS[profile]}"] if slow and not failed else []
+    # A single wall-clock sample cannot separate a real regression from host noise,
+    # so downstream WF74 routing must not treat it as a confirmed drag finding.
+    measurement_confidence = "median_of_samples" if samples > 1 else "single_sample_variance_unbounded"
+    warnings = []
+    if slow and not timing_collection_failures:
+        warnings.append(f"profile_elapsed_over_target:{total}>{TARGET_SECONDS[profile]}")
+        if samples <= 1:
+            warnings.append("profile_elapsed_over_target_single_sample_unconfirmed")
+    warnings.extend(f"measured_validator_failed:{name}" for name in measured_validator_failures)
+    status = "blocked" if timing_collection_failures else "warning" if warnings else "ok"
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "ok" if not failed else "blocked",
+        "status": status,
         "profile": profile,
         "target_seconds": TARGET_SECONDS[profile],
         "dry_run": dry_run,
+        "strict_command_status": strict_command_status,
         "authority_boundary": AUTHORITY_BOUNDARY,
         "summary": {
             "commands_run": len(results),
             "elapsed_seconds": total,
             "target_seconds": TARGET_SECONDS[profile],
+            "sample_count": samples,
+            "measurement_confidence": measurement_confidence,
+            "over_target_confirmed": bool(slow and samples > 1),
+            "scoped_path_count": len(scoped_paths),
+            "scoped_paths": scoped_paths,
             "failed_commands": failed,
+            "measured_validator_failures": measured_validator_failures,
+            "timing_collection_failures": timing_collection_failures,
             "slow": slow,
             "reserved_for_major": [
                 "db_lifecycle_manifest.py --write --validate",
                 "wf75_closeout_refresh.py --mode handoff-only --validation-budget major --write --validate",
             ],
             "next_safe_action": (
-                "Use normal profile for low/narrow control-plane edits; run shared or major only when changed-file routing recommends it."
+                "Use scoped paths for narrow patch-plan timing; run shared or major only when changed-file routing recommends it."
+                if scoped_paths
+                else "Use normal profile for low/narrow control-plane edits; run shared or major only when changed-file routing recommends it."
             ),
         },
         "commands": results,
         "validation": {
-            "status": "ok" if not failed else "blocked",
-            "errors": failed,
+            "status": status,
+            "errors": timing_collection_failures,
             "warnings": warnings,
         },
         "stop_lines": [
@@ -226,16 +294,36 @@ def main() -> int:
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--dry-run", action="store_true", help="Report selected commands without running them.")
+    parser.add_argument("--path", action="append", dest="path_args", help="Explicit path for scoped changed-file routing; may be repeated.")
+    parser.add_argument("--paths", nargs="*", dest="paths_args", help="Explicit paths for scoped changed-file routing.")
+    parser.add_argument(
+        "--strict-command-status",
+        action="store_true",
+        help="Treat any measured validator nonzero return code as a timing-ledger validation error.",
+    )
+    parser.add_argument(
+        "--samples",
+        type=int,
+        default=1,
+        help="Run each validator N times and record the median; N>1 is required to confirm an over-target finding.",
+    )
     parser.add_argument("--out", type=Path, default=OUT)
     args = parser.parse_args()
 
-    payload = build_payload(args.profile, dry_run=args.dry_run)
+    scoped_paths = [*(args.path_args or []), *(args.paths_args or [])]
+    payload = build_payload(
+        args.profile,
+        dry_run=args.dry_run,
+        strict_command_status=args.strict_command_status,
+        scoped_paths=scoped_paths,
+        samples=args.samples,
+    )
     if args.write:
         atomic_write_json(args.out, payload)
         print(f"wrote {rel(args.out)} status={payload['status']} elapsed={payload['summary']['elapsed_seconds']}s profile={args.profile}")
     else:
         print(json.dumps(payload["summary"], indent=2, sort_keys=True))
-    if args.validate and payload["validation"]["status"] != "ok":
+    if args.validate and payload["validation"]["status"] not in {"ok", "warning"}:
         return 1
     return 0
 

@@ -1,38 +1,14 @@
 {
   "ticker": "LNG",
   "name": "Cheniere Energy, Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 32.13,
-      "h": 38.15,
-      "l": 31.02,
-      "c": 37.55,
-      "v": 61.39
-    },
-    {
-      "d": "2016-07",
-      "o": 37.34,
-      "h": 42.07,
-      "l": 35.86,
-      "c": 41.83,
-      "v": 48.05
-    },
-    {
-      "d": "2016-08",
-      "o": 41.69,
-      "h": 45.94,
-      "l": 38.75,
-      "c": 42.9,
-      "v": 45.42
-    },
     {
       "d": "2016-09",
       "o": 42.64,
@@ -965,9 +941,33 @@
       "d": "2026-05",
       "o": 274.18,
       "h": 274.97,
-      "l": 236.0,
-      "c": 240.11,
-      "v": 18.39
+      "l": 223.83,
+      "c": 224.86,
+      "v": 47.09
+    },
+    {
+      "d": "2026-06",
+      "o": 227.07,
+      "h": 245.96,
+      "l": 223.7,
+      "c": 239.01,
+      "v": 49.74
+    },
+    {
+      "d": "2026-07",
+      "o": 238.33,
+      "h": 276.9,
+      "l": 236.18,
+      "c": 263.57,
+      "v": 39.9
+    },
+    {
+      "d": "2026-08",
+      "o": 259.6,
+      "h": 281.74,
+      "l": 250.76,
+      "c": 277.51,
+      "v": 22.64
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 275.56,
     "stop": 253.45,
     "set": "2026-05-01",
-    "label": "260.82–275.56"
+    "label": "260.82-275.56"
   },
   "current_quote": {
-    "close": 240.11,
-    "ma20": 260.3,
-    "ma50": 264.78,
-    "ma200": 229.11,
-    "data_date": "2026-05-08"
+    "close": 277.51,
+    "ma20": 264.19,
+    "ma50": 254.87,
+    "ma200": 235.53,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_PRIMARY",
-    "type": "WATCH",
-    "status": "BELOW_BAND",
-    "trend_stack": "ABOVE_200_BELOW_20_50",
-    "suggested_low": 240.43,
-    "suggested_high": 263.88,
-    "suggested_stop": 229.76,
-    "sma_envelope_low": 244.54,
-    "sma_envelope_high": 270.28,
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "NEAR_BAND",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 255.11,
+    "suggested_high": 268.8,
+    "suggested_stop": 245.31,
+    "sma_envelope_low": 246.08,
+    "sma_envelope_high": 271.98,
     "earnings_state": "CLEAR",
-    "band_confidence": 3,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 4,
     "needs_review": true,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:38+00:00"
+  "generated_at": "2026-08-21T20:32:24+00:00"
 }

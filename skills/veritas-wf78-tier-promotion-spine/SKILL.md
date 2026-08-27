@@ -1,181 +1,134 @@
 ---
 name: "veritas-wf78-tier-promotion-spine"
-description: "Automated WF78 non-capital tier routing workflow."
+description: "WF78 current tier authority and tier ladder."
 ---
 
-# Veritas WF78 Tier Promotion Spine
-
-Use this skill when Randall asks to continue WF78 ticker scaleout, Tier A/B routing, Tier B bench expansion, evidence repair, auto-tier routing, approved label registers, label-sync previews, or repeatable non-capital ticker routing automation.
+# WF78 Tier Promotion Spine
 
 ## Purpose
 
-Produce evidence-backed automated Tier A/B/C routing state while preserving the only hard owner approvals that remain: capital deployment, trade/order execution, account action, and other explicitly gated portfolio/cash/sizing mutations.
+Operate WF78 as the non-capital attention and promotion spine for the finance OS. Keep tier answers model-safe by separating current tier membership from repair/readiness, audit-only labels, legacy/shadow migration, and paper-readiness guardrails.
 
-## Current Authority Posture
+WF78 may automate derived non-capital research, routing, tier state, repair packets, and review-only card preparation. It never grants capital deployment, trading, paper/live execution, brokerage/account action, money movement, portfolio/canon mutation, or owner approval.
 
-Randall changed the WF78 routing posture on 2026-06-05 12:30 MST: Veritas should automate ticker movement/routing between non-capital tiers; Randall approval is required for execution of trades and approval for capital deployment.
+## Production Scope Posture
 
-Treat this as standing WF78 routing authority unless a later owner instruction narrows it. Core surfaces (`SOUL.md`, `AGENTS.md`, `USER.md`, Startup Truth Index, Coverage Admission and Promotion Protocol, TOOLS, Active Workflows) have been hardened to match this posture.
+WF78 production scope must be SQL-first and dynamic, not a preserved legacy list.
 
-## Hard Boundary
+- Dynamic production-review scope: current SQL/router Tier A and Tier B names. This is attention/routing scope only.
+- Strict production-grade answer scope: proof-joined SQL Tier A/A-READY rows only when router, coverage, confidence, freshness, and authority gates all clear.
+- Legacy 42: historical compatibility only. It must not be used as active production, readiness, or repair authority.
+- Empty strict production-grade scope is valid and means wait/fail-closed, not fallback to the old 42.
 
-Always preserve these boundaries:
+Do not hardcode roster counts in skill doctrine. Current Tier A/B/C membership must come from live router artifacts.
 
-- Automated tier/routing state is allowed.
-- A clean validator result is not trade approval.
-- Tier A membership is not capital deployment approval.
-- Tier B means research bench only, not deployable.
-- Quote-backed Tier B evidence repair is research context only. It does not create written entry bands, stops, invalidation levels, deployment readiness, or action authority.
-- Tier A means decision-grade roster; use separate deployment states such as A-DEPLOY, A-WATCH, A-READY, A-CHALLENGED, or A-DEMOTE when available.
-- `A-READY` means evidence/routing ready, not an order approval.
-- No capital deployment, paper/live execution, brokerage/account action, money movement, portfolio cash/sizing/sleeve execution, customer/public output, SQL-first/canon authority, or owner approval inference without an exact separate gated approval.
+## Current Truth Rule
 
-## Default Read Path
+Use these as current non-capital routing proof:
 
-Before making claims, inspect the current proof surfaces:
+- `tmp\wf78-auto-tier-routing.json`
+- `tmp\wf78-clean-tier-roster.json`
+- `tmp\canonical-finance-data-plane.json` after WF84 refresh
 
-1. `tmp/wf78-auto-tier-routing.json`
-2. `tmp/wf78-production-tier-adjudication.json`
-3. `tmp/wf78-tier-a-final-promotion-packet.json`
-4. `tmp/wf78-tier-b-final-promotion-packet.json`
-5. `tmp/wf78-tier-b-final-promotion-packet.next-batch.json`
-6. `tmp/wf78-tier-b-final-promotion-packet.next-batch-2.json`
-7. `tmp/wf78-tier-b-final-promotion-packet.next-batch-3.json`
-8. `tmp/wf78-tier-b-evidence-repair.json`
-9. `tmp/wf78-tier-label-decision-register.json`
-10. `tmp/wf78-tier-label-sync-preview.json`
-11. `tmp/wf78-tier-b-research-packets.json`
-12. `tmp/wf78-tier-funnel-promotion-gate.json`
-13. `06. Playbooks/Active Workflows.md`
-14. `TOOLS.md` WF78 section
+Answer current tier membership only from `tmp\wf78-auto-tier-routing.json` and `tmp\wf78-clean-tier-roster.json`.
 
-## Repeatable Auto-Routing Pass
+Use `true_tier_a`, `true_tier_b`, and `true_tier_c` from the clean roster for direct user-facing lists when available.
 
-Run the all-safe chain first:
+Treat `lane_tier` and `review_lane` as the forward route. Flat `auto_tier` remains compatibility for older consumers.
+
+Treat labels such as `A-READY`, `A-CHALLENGED`, `A-REPAIR`, `A-WATCH`, `B-CANDIDATE`, `B-VALIDATED`, `B-STALE`, `C-CANDIDATE`, `C-CANDIDATE-HOLD`, `C-CANDIDATE-REPAIR`, and `C-MONITOR` as tier states/substates inside their parent tier, not separate tiers.
+
+## Truth-Layer Map
+
+Before answering or generating WF78 tier-cleanup work, read `tmp\wf78-truth-layer-map.json` when present.
+
+The map classifies:
+
+- Current authority: `tmp\wf78-auto-tier-routing.json`, `tmp\wf78-clean-tier-roster.json`
+- Repair/readiness: `tmp\wf78-tier-promotion-review-gate.json`, `tmp\deployment-readiness-surface.json`, `tmp\wf78-deployment-readiness-review.json`
+- Audit-only labels: `tmp\wf78-tier-label-sync-preview.json`, `tmp\wf78-tier-label-decision-register.json`
+- Legacy/shadow migration: `tmp\wf78-legacy-42-tier-migration-planner.json`, `tmp\wf78-legacy-42-tier-state-shadow.sqlite`
+- Execution guardrails: `tmp\alpaca-paper-readiness\*`
+
+## Forbidden Merges
+
+Do not merge these layers into current Tier A/B/C membership:
+
+- promotion review queue status
+- deployment readiness/actionability status
+- label-sync preview labels
+- legacy/shadow migration counts or parity language
+- paper readiness or Alpaca execution guardrail artifacts
+- customer-output readiness labels
+- approval-card readiness labels
+
+If surfaces disagree, answer from the current authority layer and route the stale/conflicting surface to repair.
+
+## Tier Ladder
+
+- Tier C: thin monitor by default. Spend only cheap monitor effort unless a named attention trigger, promotion candidate, catalyst, or repair signal exists.
+- Tier B: research bench. Requires source-open/owner-lineage repair, quote/band context, fundamentals, analyst/earnings/technical coverage, and promotion evidence before scarce Tier A attention.
+- Tier A: scarce decision-review bench. Requires current quote, current band/stop, evidence freshness, source-open status, timing gate, and authority proof before owner-facing approval-card review.
+
+Tier A does not mean deployable. A-READY is routing readiness unless the depth and decision gates clear.
+
+## Tier A / A-READY Depth Gate
+
+Before any Tier A readiness, A-READY, production answer, trade-grade coverage, or Retail-Grade Truth Routing claim, run or inspect:
 
 ```powershell
-python scripts\wf78_phase_runner.py --phase all-safe --write --validate
+python scripts\finance_sql_canon_access.py --write --validate
+python scripts\tier_a_trade_grade_coverage_gate.py --write --validate
+python scripts\tier_a_depth_repair_phase_executor.py --write --validate
+python scripts\finance_production_grade_policy_gate.py --write --validate
 ```
 
-For the current routed state alone:
+Interpretation:
+
+- `coverage_floor_ok=true`: structural packet floor exists.
+- `depth_ready_a_ready=false`: A-READY names remain review-only repair candidates.
+- `decision_grade_allowed_count=0`: no decision-grade claims are allowed.
+- `customer_output_allowed=false`: no retail/customer output.
+- `dynamic_production_review_candidate_count>0`: Tier A/B names can be routed for review and repair, but this is not strict production-grade answer eligibility.
+- `production_grade_candidate_count=0`: strict production answer scope remains empty/fail-closed.
+
+Use `tmp\tier-a-depth-repair-phase-execution-packet.json` to route work:
+
+- Phase A: cohort alignment
+- Phase B: source-open thesis synthesis
+- Phase C: quote/band freshness
+- Phase D: competitive moat structuring
+- Phase E: sector/proxy context
+- Phase F: response contract, skills, and retail truth-routing integration
+
+## Required Command Chain
+
+Run as needed in this order for current WF78/WF84/WF85 routing work:
 
 ```powershell
+python scripts\wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate
 python scripts\wf78_auto_tier_router.py --write --validate
+python scripts\wf78_clean_tier_roster.py --write --validate
+python scripts\wf78_truth_layer_map.py --write --validate
+python scripts\wf78_tier_semantics_guard.py --write --validate
+python scripts\wf78_daily_freshness_loop.py --phase tier_routing --write --validate
+python scripts\canonical_finance_data_plane.py --write --write-db --validate
+python scripts\trade_grade_os_freshness_cron_runner.py --write --write-md --validate
+python scripts\trade_grade_decision_cards.py --write --validate
+python scripts\wf85_deployment_timing_gate.py --write --validate
+python scripts\cron_freshness_spine.py --write --validate
 ```
 
-The auto-router writes `tmp/wf78-auto-tier-routing.json` and should classify every active WF78 ticker into `auto_tier` and `auto_state` while keeping these counts at zero:
+`wf78_tier_semantics_guard.py` must fail if any non-authority layer can decide current membership, if the truth-layer map is missing/blocked, if tier states are confused with membership, or if capital/trade flags widen.
 
-- `capital_deployment_approved_count`
-- `trade_or_execution_approved_count`
+## Stale / Historical Surfaces
 
-## Auto-Routing Rules
+Old Tier B evidence lineage, legacy 42 migration packets, deprecated recommendation/adjudication surfaces, stale owner packets, and old source-capture packets are history/compatibility only unless a current workflow explicitly reactivates them.
 
-Use the router output as the live non-capital routing truth.
+Prefer fresh quote/band repair context, current router outputs, current SQL-canon guard, WF84 data plane, and WF85 decision-card/timing gates.
 
-- Tier A packet-eligible names can route automatically into Tier A states.
-- Names in-band with clean Tier A packet evidence can route to `A-READY`.
-- Legacy Tier A names with repair/adjudication concerns can route to `A-CHALLENGED` instead of being treated as current deploy candidates.
-- Approved or previewed Tier B research-bench labels can route automatically into Tier B.
-- Production-bench Tier B names with stronger evidence can route to `B-VALIDATED`.
-- New research-bench names can route to `B-CANDIDATE`.
-- Phase 2-eligible but lower-quality, over-cautioned, or lower-priority names should route to `C-CANDIDATE-HOLD` rather than consuming Tier B capacity.
-- Broad active coverage remains `C-MONITOR` or `C-REPAIR` unless evidence earns a higher state.
+## Boundary
 
-## Tier B Evidence Repair
+This procedure is review-only/non-capital. It grants no universe/canon/portfolio/cash/sizing mutation, no production answer-path promotion by itself, no customer output, no paper/live submit/cancel/sell, no brokerage/account action, no capital deployment, and no owner approval inference.
 
-Use this when Tier B research packets are blocked only by initial technical/price-band context and evidence repair burden.
-
-```powershell
-python scripts\wf78_tier_b_evidence_repair.py --quote TICKER=PRICE --quote-source "<source>" --quote-time-utc "<timestamp>" --write --write-db --validate
-python scripts\wf78_tier_b_research_packet.py --write --write-db --validate
-python scripts\wf78_tier_funnel_promotion_gate.py --requests tmp\wf78-tier-b-research-packet-requests.json --write --validate
-```
-
-When quote repair is needed in the same runner pass, include repeated quote flags:
-
-```powershell
-python scripts\wf78_phase_runner.py --phase all-safe --write --validate --tier-b-repair-quote TICKER=PRICE --tier-b-repair-quote-source "<source>" --tier-b-repair-quote-time-utc "<timestamp>" --tier-b-next-batch-offset <offset>
-```
-
-## Tier B Packet Batching
-
-Build repeatable five-name packets from the Phase 2 eligible queue when diagnostics or audit detail is needed:
-
-```powershell
-python scripts\wf78_tier_b_final_promotion_packet.py --source phase2_eligible --offset 0 --out tmp\wf78-tier-b-final-promotion-packet.next-batch.json --write --validate
-python scripts\wf78_tier_b_final_promotion_packet.py --source phase2_eligible --offset 5 --out tmp\wf78-tier-b-final-promotion-packet.next-batch-2.json --write --validate
-python scripts\wf78_tier_b_final_promotion_packet.py --source phase2_eligible --offset 10 --out tmp\wf78-tier-b-final-promotion-packet.next-batch-3.json --write --validate
-```
-
-These are auto-routing input packets now. Do not ask Randall for manual label-only approval for ordinary tier routing. Use the auto-router to decide route state. Ask Randall only when the next action would approve capital deployment, execute a trade/order, touch account/brokerage, mutate portfolio cash/sizing/sleeve execution, or cross another explicit gated boundary.
-
-## Label Register And Sync Preview
-
-The historical label register and sync preview remain useful audit surfaces, but they are no longer the main operating route for every tier movement.
-
-```powershell
-python scripts\wf78_tier_label_sync_preview.py --write --validate
-```
-
-Use them when:
-
-- auditing prior owner label decisions
-- comparing legacy universe tier metadata to current routed state
-- preparing a future apply path for a formal roster consumer
-
-A future label-sync apply requires a separate exact approval, backup/rollback, diff, validator proof, and post-apply validation if it mutates durable universe/canon/portfolio surfaces.
-
-## Evidence Repair Priority
-
-For C-to-B scaleout queues, repair these first:
-
-- initial technical/price-band context
-- evidence repair burden acceptable
-- source-open proof and freshness where stale
-- written band/stop/invalidation only when evaluating deployability, not ordinary Tier B research-bench routing
-- deployment/sizing context only when evaluating Tier A/deployability
-
-## Current 2026-06-05 Routing Baseline
-
-Latest validated `tmp/wf78-auto-tier-routing.json`:
-
-- 200 active tickers classified.
-- 16 auto Tier A.
-- 27 auto Tier B.
-- 157 Tier C.
-- `GOOG`, `NVDA`, and `VRT` route to `A-READY`.
-- `ALB`, `ALLE`, `AMCR`, `AME`, and `AOS` route to `C-CANDIDATE-HOLD`.
-- 0 capital deployments approved.
-- 0 trade/execution approvals.
-
-## Tier A Policy
-
-Tier A should not mean only current buys. Tier A should mean the best decision-grade roster. Use a deployment substate to avoid confusion:
-
-- `A-DEPLOY`: current in-band, source-open, stop/band valid, sizing/staggering ready, approval-card eligible; still requires exact trade/capital approval before execution.
-- `A-WATCH`: high-quality Tier A roster name, but no-chase, waiting for entry, catalyst, or repair.
-- `A-READY`: evidence clean and routing-ready, not necessarily approved for trade.
-- `A-CHALLENGED`: stale, crowded, weakened, or facing a stronger challenger.
-- `A-DEMOTE`: failed refresh, thesis drift, stop/invalidation break, or lost challenger test.
-
-A paper/live order still requires a separate exact order approval even if a ticker is Tier A or A-DEPLOY.
-
-## Tier B Policy
-
-Tier B is the research bench. Route to Tier B only when the name deserves scarce research time and has enough evidence to support active monitoring/research. Tier B does not mean deployable and should not trigger order generation by itself.
-
-## Downstream Consumer Rule
-
-The next workflow target is to make downstream roster/dashboard consumers read `tmp/wf78-auto-tier-routing.json` as the default non-capital routing truth. Do not keep building manual approval prompts for ordinary Tier A/B label movement.
-
-## Closeout
-
-After meaningful WF78 routing work:
-
-- update `06. Playbooks/Active Workflows.md`
-- append `memory/YYYY-MM-DD.md`
-- update `TOOLS.md` only if routes or global tool posture changed
-- update `scripts/README.md` when a script route is added or materially changed
-- revise the pending Skill Workshop proposal when the reusable procedure changes
-- run the smallest relevant validators
-- state clearly what was automated, what was routed, what was not mutated, and whether any capital/execution decision remains
+Paper order preparation routes through WF67 and still requires exact Randall approval.

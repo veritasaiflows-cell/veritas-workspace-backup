@@ -174,6 +174,7 @@ def classify_source_state(
 
 def classify_dashboard_source(info: dict[str, Any]) -> dict[str, Any]:
     status = str(info.get("status") or "ok")
+    source_key = str(info.get("key") or "unknown")
     classification = {
         "fresh": "fresh",
         "usable_with_caution": "manual_dependency" if (
@@ -183,8 +184,11 @@ def classify_dashboard_source(info: dict[str, Any]) -> dict[str, Any]:
         "stale": "stale",
         "missing": "missing",
     }.get(status, "partial")
+    stale_after_hours = info.get("stale_after_hours")
+    if classification == "manual_dependency" and source_key in PRESENTATION_MANUAL_SOURCE_ALLOWLIST:
+        stale_after_hours = None
     return classify_source_state(
-        source_key=str(info.get("key") or "unknown"),
+        source_key=source_key,
         path=str(info.get("source") or ""),
         required=True,
         criticality="critical" if info.get("critical") else "important",
@@ -192,7 +196,7 @@ def classify_dashboard_source(info: dict[str, Any]) -> dict[str, Any]:
         exists=status != "missing",
         generated_at_utc=info.get("generated_at"),
         status_raw=classification if classification != "fresh" else info.get("raw_status", "ok"),
-        stale_after_hours=info.get("stale_after_hours"),
+        stale_after_hours=stale_after_hours,
         tags=list(info.get("tags") or []),
         issues=list(info.get("issues") or []),
         manual_dependencies=list(info.get("manual_fields") or []),

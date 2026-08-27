@@ -21,6 +21,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from finance_sql_canon_access import DEFAULT_DB as SQL_CANON_DB, strategic_answer_route_context
+
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "tmp" / "workspace-index.sqlite"
 DEFAULT_REPORT = ROOT / "tmp" / "workspace-index-report.json"
@@ -90,6 +92,16 @@ class Doc:
 def utc_iso(ts: float | None = None) -> str:
     dt = datetime.fromtimestamp(ts, tz=timezone.utc) if ts is not None else datetime.now(timezone.utc)
     return dt.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def finance_sql_canon_access_health() -> dict:
+    """Report SQL-canon typed-access health without making the index authoritative."""
+    health = strategic_answer_route_context(consumer="workspace_index", db_path=SQL_CANON_DB)
+    health["db_path"] = str(SQL_CANON_DB.relative_to(ROOT) if SQL_CANON_DB.is_relative_to(ROOT) else SQL_CANON_DB)
+    health["guard_required_for_finance_state_claims"] = True
+    health["workspace_index_is_sql_canon_authority"] = False
+    health["errors"] = health.get("validation", {}).get("errors", [])
+    return health
 
 
 def iter_markdown(root: Path) -> Iterable[Path]:
@@ -541,6 +553,7 @@ def build_index(root: Path, db_path: Path, report_path: Path) -> dict:
         "by_domain": by_domain,
         "canonical_truth_note": "SQLite index is retrieval/cache only; source Markdown notes remain authoritative.",
         "consumer_rule": "Retrieval hit -> open source file(s) before judgment, queue movement, or mutation.",
+        "finance_sql_canon_access": finance_sql_canon_access_health(),
         "artifact_metadata_summary": {
             "status": "discovery-only",
             "source_required": True,

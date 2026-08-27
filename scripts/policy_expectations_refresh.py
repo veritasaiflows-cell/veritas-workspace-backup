@@ -377,6 +377,20 @@ def resolve_current_target_range(
 ) -> tuple[dict[str, Any], list[str], str | None, bool]:
     warnings: list[str] = []
 
+    if not CURRENT_TARGET_AUTO_SOURCE:
+        current_target_range, target_range_warnings, invalid_reason = validate_current_target_range(
+            target_low=CURRENT_TARGET_LOW,
+            target_high=CURRENT_TARGET_HIGH,
+            target_as_of=CURRENT_TARGET_DATE,
+            target_confirmed=CURRENT_TARGET_CONFIRMED,
+            target_source="manual constants in scripts/policy_expectations_refresh.py",
+            today_str=today_str,
+            previous_fomc_date=previous_fomc_date,
+            next_fomc_date=next_fomc_date,
+        )
+        warnings.extend(target_range_warnings)
+        return current_target_range, warnings, invalid_reason, True
+
     if CURRENT_TARGET_AUTO_SOURCE:
         low, low_date, low_error = fetch_fred_latest(CURRENT_TARGET_LOW_SERIES)
         high, high_date, high_error = fetch_fred_latest(CURRENT_TARGET_HIGH_SERIES)

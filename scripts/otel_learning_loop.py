@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,6 +33,10 @@ VALIDATOR_TIMING = TMP / "validator-timing-ledger.json"
 CODING_RUNTIME = TMP / "coding-runtime-kpi-probe.json"
 CHANGED_FILE_ROUTER = TMP / "changed-file-validator-router.json"
 WF74_OPPORTUNITY_QUEUE = TMP / "wf74-improvement-opportunity-queue.json"
+CRON_SIGNAL_SCORECARD = TMP / "cron-signal-scorecard.json"
+WORKFLOW_ADVANCEMENT = TMP / "workflow-advancement-scorecard.json"
+WF87_SHADOW_OUTCOME = TMP / "wf87-shadow-outcome-scorecard.json"
+WF87_READINESS_ROLLUP = TMP / "wf87-v2-readiness-rollup.json"
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -116,6 +121,33 @@ def as_float(value: Any, default: float = 0.0) -> float:
         return default
 
 
+def as_duration_ms(value: Any) -> float | None:
+    """Parse a measured duration without treating absence as zero latency."""
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return None
+    return parsed if math.isfinite(parsed) and parsed >= 0 else None
+
+
+def model_row_scoring_eligible(row: dict[str, Any]) -> bool:
+    """Return whether a model row may influence performance economics.
+
+    Lane-register rows must carry the explicit post-cutover eligibility flag.
+    Non-lane cron/runtime producers retain their independently sourced
+    operational semantics, including legacy artifacts written before the flag
+    existed.
+    """
+    attribution = as_dict(row.get("attribution"))
+    if attribution.get("model_applicable") is not True:
+        return False
+    if row.get("producer") == "concurrent_lane_manager":
+        return attribution.get("telemetry_eligible") is True
+    return attribution.get("telemetry_eligible") is not False
+
+
 def stable_id(*parts: Any) -> str:
     seed = "|".join(str(part or "") for part in parts)
     return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
@@ -163,16 +195,32 @@ def scan_forbidden(value: Any, path: str = "$") -> list[str]:
 
 def model_cost_summary(model_run: dict[str, Any]) -> dict[str, Any]:
     rows = [row for row in as_list(model_run.get("rows")) if isinstance(row, dict)]
-    model_rows = [row for row in rows if as_dict(row.get("attribution")).get("model_applicable")]
+    model_rows = [row for row in rows if model_row_scoring_eligible(row)]
+    uncredited_lane_rows = [
+        row for row in rows
+        if row.get("producer") == "concurrent_lane_manager"
+        and bool(row.get("model_path") or as_dict(row.get("attribution")).get("model_present"))
+        and not model_row_scoring_eligible(row)
+    ]
     token_rows = [row for row in model_rows if row.get("tokens") is not None]
     cost_rows = [row for row in model_rows if row.get("cost") is not None]
-    durations = [as_float(row.get("duration_ms")) for row in model_rows if row.get("duration_ms") is not None]
+    durations = [duration for row in model_rows if (duration := as_duration_ms(row.get("duration_ms"))) is not None]
     by_model: dict[str, dict[str, Any]] = {}
     for row in model_rows:
         model = str(row.get("model_path") or row.get("model_provider") or "unknown")
-        bucket = by_model.setdefault(model, {"count": 0, "duration_ms_total": 0.0, "tokens_rows": 0, "cost_rows": 0, "failure_rows": 0})
+        bucket = by_model.setdefault(model, {
+            "count": 0,
+            "duration_covered_rows": 0,
+            "duration_ms_total": 0.0,
+            "tokens_rows": 0,
+            "cost_rows": 0,
+            "failure_rows": 0,
+        })
         bucket["count"] += 1
-        bucket["duration_ms_total"] += as_float(row.get("duration_ms"))
+        duration = as_duration_ms(row.get("duration_ms"))
+        if duration is not None:
+            bucket["duration_covered_rows"] += 1
+            bucket["duration_ms_total"] += duration
         if row.get("tokens") is not None:
             bucket["tokens_rows"] += 1
         if row.get("cost") is not None:
@@ -180,11 +228,13 @@ def model_cost_summary(model_run: dict[str, Any]) -> dict[str, Any]:
         if str(row.get("status") or "").lower() not in {"ok", "complete", "success", ""}:
             bucket["failure_rows"] += 1
     for bucket in by_model.values():
-        count = max(int(bucket["count"]), 1)
-        bucket["avg_duration_ms"] = round(bucket["duration_ms_total"] / count, 3)
+        covered = int(bucket["duration_covered_rows"])
+        bucket["avg_duration_ms"] = round(bucket["duration_ms_total"] / covered, 3) if covered else None
         del bucket["duration_ms_total"]
     return {
         "model_applicable_rows": len(model_rows),
+        "model_performance_eligible_rows": len(model_rows),
+        "uncredited_lane_audit_rows": len(uncredited_lane_rows),
         "token_coverage_rows": len(token_rows),
         "token_coverage_ratio": round(len(token_rows) / len(model_rows), 4) if model_rows else None,
         "cost_coverage_rows": len(cost_rows),
@@ -196,14 +246,17 @@ def model_cost_summary(model_run: dict[str, Any]) -> dict[str, Any]:
 
 def tool_latency_summary(tool_workflow: dict[str, Any], validator_timing: dict[str, Any], coding_runtime: dict[str, Any]) -> dict[str, Any]:
     rows = [row for row in as_list(tool_workflow.get("rows")) if isinstance(row, dict)]
-    durations = [row for row in rows if row.get("duration_ms") is not None]
+    durations = [row for row in rows if as_duration_ms(row.get("duration_ms")) is not None]
     failures = [row for row in rows if str(row.get("failure_category") or "none") != "none"]
     by_tool: dict[str, dict[str, Any]] = {}
     for row in durations:
         tool = str(row.get("tool_name") or "unknown")
         bucket = by_tool.setdefault(tool, {"count": 0, "duration_ms_total": 0.0, "failure_rows": 0})
         bucket["count"] += 1
-        bucket["duration_ms_total"] += as_float(row.get("duration_ms"))
+        duration = as_duration_ms(row.get("duration_ms"))
+        if duration is None:
+            continue
+        bucket["duration_ms_total"] += duration
         if str(row.get("failure_category") or "none") != "none":
             bucket["failure_rows"] += 1
     for bucket in by_tool.values():
@@ -246,7 +299,78 @@ def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any]) -> dict[s
     }
 
 
-def build_recommendations(cost: dict[str, Any], latency: dict[str, Any], health: dict[str, Any], queue: dict[str, Any]) -> list[dict[str, Any]]:
+def operational_friction_summary(
+    cron_signal: dict[str, Any],
+    workflow_advancement: dict[str, Any],
+    wf87_shadow: dict[str, Any],
+    wf87_rollup: dict[str, Any],
+) -> dict[str, Any]:
+    cron_scorecard = as_dict(cron_signal.get("scorecard"))
+    workflow_summary = as_dict(workflow_advancement.get("summary"))
+    shadow_summary = as_dict(wf87_shadow.get("summary"))
+    phase = as_dict(wf87_rollup.get("phase_readiness"))
+    blocker_taxonomy = as_dict(wf87_rollup.get("blocker_taxonomy"))
+    attention_signals = [
+        {
+            "source": row.get("source"),
+            "artifact": row.get("artifact"),
+            "signal_class": row.get("signal_class"),
+            "status": row.get("status"),
+            "reason": row.get("reason"),
+            "next_action": row.get("next_action"),
+        }
+        for row in as_list(cron_signal.get("signals"))
+        if isinstance(row, dict) and row.get("attention") == "requires_main_attention"
+    ][:8]
+    blocked_workflows = [
+        {
+            "workflow_id": row.get("workflow_id"),
+            "status": row.get("status"),
+            "signal": row.get("signal"),
+            "blockers": row.get("blockers"),
+            "next_action": row.get("next_action"),
+        }
+        for row in as_list(workflow_advancement.get("signals"))
+        if isinstance(row, dict) and row.get("signal") == "blocked"
+    ][:8]
+    return {
+        "cron": {
+            "blocked_count": cron_scorecard.get("blocked_count"),
+            "requires_attention_count": cron_scorecard.get("requires_attention_count"),
+            "enabled_job_count": cron_scorecard.get("enabled_job_count"),
+            "attention_signals": attention_signals,
+        },
+        "workflow_advancement": {
+            "blocked_count": workflow_summary.get("blocked_count"),
+            "owner_needed_count": workflow_summary.get("owner_needed_count"),
+            "cron_update_recommended": workflow_summary.get("cron_update_recommended"),
+            "blocked_workflows": blocked_workflows,
+        },
+        "wf87_shadow_outcomes": {
+            "decision_count": shadow_summary.get("decision_count"),
+            "scoreable_decision_count": shadow_summary.get("scoreable_decision_count"),
+            "pending_regular_session_followup_count": shadow_summary.get("pending_regular_session_followup_count"),
+            "stale_pending_followup_count": shadow_summary.get("stale_pending_followup_count"),
+            "decision_quality_claim_allowed_now": shadow_summary.get("decision_quality_claim_allowed_now"),
+            "model_performance_claim_allowed_now": shadow_summary.get("model_performance_claim_allowed_now"),
+        },
+        "wf87_readiness": {
+            "phase_a_runtime_gates_clean": phase.get("phase_a_runtime_gates_clean"),
+            "phase_b_assisted_round_trip_ready": phase.get("phase_b_assisted_round_trip_ready"),
+            "phase_c_autonomous_paper_buy_ready": phase.get("phase_c_autonomous_paper_buy_ready"),
+            "blocker_counts": as_dict(blocker_taxonomy.get("counts")),
+            "binding_blockers": blocker_taxonomy.get("binding_blockers"),
+        },
+    }
+
+
+def build_recommendations(
+    cost: dict[str, Any],
+    latency: dict[str, Any],
+    health: dict[str, Any],
+    queue: dict[str, Any],
+    friction: dict[str, Any],
+) -> list[dict[str, Any]]:
     recommendations: list[dict[str, Any]] = []
     token_ratio = cost.get("token_coverage_ratio")
     cost_ratio = cost.get("cost_coverage_ratio")
@@ -258,6 +382,14 @@ def build_recommendations(cost: dict[str, Any], latency: dict[str, Any], health:
             "rationale": "Token/cost coverage is too low for reliable model-routing economics.",
             "blocked_capture": ["raw prompts", "raw responses", "tool payloads", "system prompts", "secrets", "headers"],
             "next_action": "If approved later, add local-only token/cost metadata capture with redaction validation and rollback.",
+        })
+    if as_float(cost.get("uncredited_lane_audit_rows")) > 0:
+        recommendations.append({
+            "id": "usage_source_reverification_required",
+            "severity": "warning",
+            "decision": "block_model_economics_claims_for_uncredited_lanes",
+            "rationale": "One or more completed model lanes are audit-visible but lack an independently reverified source-to-lane usage join.",
+            "next_action": "Repair the protected dispatch/source correlation path; do not use these lanes for performance, cost, latency, reliability, or savings comparisons.",
         })
     if latency.get("validator_slow") or as_float(latency.get("validator_elapsed_seconds")) > as_float(latency.get("validator_target_seconds"), 999999):
         recommendations.append({
@@ -283,6 +415,33 @@ def build_recommendations(cost: dict[str, Any], latency: dict[str, Any], health:
             "rationale": "WF74 opportunity queue has high-priority items that can use metadata evidence.",
             "next_action": "Use learning-loop packet as support evidence for repair proposals, not auto-apply authority.",
         })
+    cron = as_dict(friction.get("cron"))
+    if as_float(cron.get("blocked_count")) or as_float(cron.get("requires_attention_count")):
+        recommendations.append({
+            "id": "cron_signal_learning_input",
+            "severity": "warning",
+            "decision": "route_cron_blockers_into_migration_plan",
+            "rationale": "Cron blocked/attention signals are now first-class learning-loop inputs instead of standalone freshness noise.",
+            "next_action": "Produce a dry-run migration plan with contract validation, rollback, and post-change freshness proof before mutating live schedules.",
+        })
+    workflow = as_dict(friction.get("workflow_advancement"))
+    if as_float(workflow.get("blocked_count")) or workflow.get("cron_update_recommended"):
+        recommendations.append({
+            "id": "workflow_advancement_learning_input",
+            "severity": "warning",
+            "decision": "route_workflow_blockers_into_followup_queue",
+            "rationale": "Workflow advancement blockers should create implementation or owner-decision follow-ups, not disappear after a status packet.",
+            "next_action": "Rank blocked workflows in the WF74 opportunity queue and open narrow lanes only when write surfaces are clear.",
+        })
+    shadow = as_dict(friction.get("wf87_shadow_outcomes"))
+    if as_float(shadow.get("pending_regular_session_followup_count")) or shadow.get("decision_quality_claim_allowed_now") is False:
+        recommendations.append({
+            "id": "wf87_outcome_measurement_backlog",
+            "severity": "info",
+            "decision": "keep_shadow_outcomes_as_measurement_backlog",
+            "rationale": "WF87 has shadow outcome data, but low scoreable follow-up means it can calibrate only, not claim decision quality.",
+            "next_action": "Keep collecting regular-session follow-up observations and block performance/execution claims until thresholds are met.",
+        })
     recommendations.append({
         "id": "content_capture_boundary",
         "severity": "policy",
@@ -291,6 +450,140 @@ def build_recommendations(cost: dict[str, Any], latency: dict[str, Any], health:
         "next_action": "Use targeted, owner-approved, redacted review packets if content review is ever needed.",
     })
     return recommendations
+
+
+def build_carry_forward_contract(
+    cost: dict[str, Any],
+    health: dict[str, Any],
+    recommendations: list[dict[str, Any]],
+) -> dict[str, Any]:
+    warning_recommendations = [
+        row for row in recommendations
+        if as_dict(row).get("severity") in {"warning", "policy"}
+    ]
+    return {
+        "status": "attention" if warning_recommendations else "ok",
+        "purpose": "Make OTEL learning-loop state explicit in future-session, startup, status, and evening alert surfaces.",
+        "stale_after_hours": 24,
+        "required_source_packets": [
+            rel(OTEL_CONTROL),
+            rel(OTEL_WINDOWS),
+            rel(OTEL_TOOL_WORKFLOW),
+            rel(MODEL_RUN_LEDGER),
+            rel(WF74_OPPORTUNITY_QUEUE),
+        ],
+        "session_boot_order": [
+            "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
+            "python scripts\\otel_learning_loop.py --write --write-md --validate",
+            "python scripts\\wf74_improvement_opportunity_queue.py --write --validate",
+            "python scripts\\wf74_decision_docket.py --write --write-md --validate",
+            "python scripts\\future_session_enhancement_packet.py --write --write-md --validate",
+        ],
+        "must_surface_in": [
+            "tmp/future-session-enhancement-packet.json",
+            "tmp/startup-brief-packet.json",
+            "tmp/veritas-status-card.json",
+            "tmp/wf74-learning-loop-telegram-digest.json",
+        ],
+        "carry_forward_fields": {
+            "collector_health": health.get("collector_health"),
+            "drift_status": health.get("drift_status"),
+            "token_coverage_ratio": cost.get("token_coverage_ratio"),
+            "cost_coverage_ratio": cost.get("cost_coverage_ratio"),
+            "recommendation_count": len(recommendations),
+            "warning_recommendation_count": len(warning_recommendations),
+        },
+        "next_safe_action": (
+            "Surface this packet in startup/status/evening digest; route implementation through WF74/PM only."
+        ),
+    }
+
+
+def build_auto_implementation_router(recommendations: list[dict[str, Any]], queue: dict[str, Any]) -> dict[str, Any]:
+    queue_summary = as_dict(queue.get("summary"))
+    blocked_actions = [
+        "direct code mutation from OTEL signals alone",
+        "Skill Workshop apply/install/approval",
+        "collector/runtime/cron config mutation",
+        "finance canon, portfolio, cash, sizing, risk, paper, live, account, or external action",
+        "owner approval inference",
+    ]
+    return {
+        "status": "gated_auto_route_no_auto_apply" if recommendations else "monitor_only_no_auto_apply",
+        "auto_apply_allowed": False,
+        "safe_chain": [
+            "OTEL metadata",
+            "WF74 opportunity queue",
+            "WF74 decision docket",
+            "WF74 auto-patch proposer",
+            "PM implementation job/router",
+            "lane register lease",
+            "main-session verification",
+            "closeout/front-door refresh",
+        ],
+        "automatic_actions_allowed_now": [
+            "refresh proof artifacts",
+            "rank and dedupe opportunities",
+            "generate patch/skill/owner-decision plans",
+            "route proof-safe PM work with explicit lane contracts",
+            "send review-only evening alert context",
+        ],
+        "automatic_actions_blocked": blocked_actions,
+        "blocked_actions": blocked_actions,
+        "pm_queue_signal": {
+            "opportunity_count": queue_summary.get("opportunity_count"),
+            "high_priority_count": queue_summary.get("high_priority_count"),
+            "top_opportunity_title": queue_summary.get("top_opportunity_title"),
+        },
+        "next_safe_action": (
+            "Use WF74 auto-patch and decision docket as the implementation router; auto-apply remains zero."
+        ),
+    }
+
+
+def build_parallel_execution_plan() -> list[dict[str, Any]]:
+    return [
+        {
+            "stream": "A",
+            "title": "Telemetry depth and redaction",
+            "owner": "OTEL/WF74",
+            "state": "metadata_ready_owner_gated_depth_for_runtime_capture",
+            "target": "token/cost/latency coverage without raw content capture",
+            "proof": "python scripts\\otel_learning_loop.py --write --write-md --validate",
+        },
+        {
+            "stream": "B",
+            "title": "Carry-forward and session pickup",
+            "owner": "startup/status/future-session packets",
+            "state": "implemented_by_packet_surface",
+            "target": "OTEL state visible to new sessions and shallow status",
+            "proof": "python scripts\\future_session_enhancement_packet.py --write --write-md --validate",
+        },
+        {
+            "stream": "C",
+            "title": "WF74 improvement routing",
+            "owner": "WF74 docket and auto-patch proposer",
+            "state": "gated_auto_route_no_auto_apply",
+            "target": "improvement opportunities become explicit action states",
+            "proof": "python scripts\\wf74_decision_docket.py --write --write-md --validate",
+        },
+        {
+            "stream": "D",
+            "title": "Cron and stage-SLA learning input",
+            "owner": "cron control and WF74 migration routing",
+            "state": "review_only_contract_proof",
+            "target": "cron SLA friction becomes ranked follow-up, not chat residue",
+            "proof": "python scripts\\cron_control_packet.py --write --validate",
+        },
+        {
+            "stream": "E",
+            "title": "Evening alert and learning review",
+            "owner": "WF74 Telegram digest",
+            "state": "review_notification_integrated",
+            "target": "Randall gets OTEL carry-forward and improvement status in evening alert",
+            "proof": "python scripts\\wf74_learning_loop_telegram_digest.py --write --validate --force",
+        },
+    ]
 
 
 def build_payload() -> dict[str, Any]:
@@ -303,11 +596,18 @@ def build_payload() -> dict[str, Any]:
     coding_runtime = as_dict(load_json_artifact(CODING_RUNTIME))
     changed_router = as_dict(load_json_artifact(CHANGED_FILE_ROUTER))
     queue = as_dict(load_json_artifact(WF74_OPPORTUNITY_QUEUE))
+    cron_signal = as_dict(load_json_artifact(CRON_SIGNAL_SCORECARD))
+    workflow_advancement = as_dict(load_json_artifact(WORKFLOW_ADVANCEMENT))
+    wf87_shadow = as_dict(load_json_artifact(WF87_SHADOW_OUTCOME))
+    wf87_rollup = as_dict(load_json_artifact(WF87_READINESS_ROLLUP))
 
     cost = model_cost_summary(model_run)
     latency = tool_latency_summary(tool_workflow, validator_timing, coding_runtime)
     health = otel_health_summary(otel, windows)
-    recommendations = build_recommendations(cost, latency, health, queue)
+    friction = operational_friction_summary(cron_signal, workflow_advancement, wf87_shadow, wf87_rollup)
+    recommendations = build_recommendations(cost, latency, health, queue, friction)
+    carry_forward = build_carry_forward_contract(cost, health, recommendations)
+    auto_router = build_auto_implementation_router(recommendations, queue)
     payload: dict[str, Any] = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -324,6 +624,10 @@ def build_payload() -> dict[str, Any]:
             source_status(CODING_RUNTIME),
             source_status(CHANGED_FILE_ROUTER),
             source_status(WF74_OPPORTUNITY_QUEUE),
+            source_status(CRON_SIGNAL_SCORECARD),
+            source_status(WORKFLOW_ADVANCEMENT),
+            source_status(WF87_SHADOW_OUTCOME),
+            source_status(WF87_READINESS_ROLLUP),
         ],
         "redaction_policy": {
             "allowed": [
@@ -361,8 +665,18 @@ def build_payload() -> dict[str, Any]:
                 "status": changed_router.get("status"),
                 "summary": as_dict(changed_router.get("summary")),
             },
+            "operational_friction": friction,
         },
         "recommendations": recommendations,
+        "carry_forward_contract": carry_forward,
+        "auto_implementation_router": auto_router,
+        "parallel_execution_plan": build_parallel_execution_plan(),
+        "review_loop": {
+            "daily_evening_alert": "python scripts\\wf74_learning_loop_telegram_cron_runner.py --write --validate --send",
+            "new_session_pickup": "python scripts\\future_session_enhancement_packet.py --write --write-md --validate",
+            "status_pickup": "python scripts\\status_card_packet.py --write --validate",
+            "weekly_review": "Review recommendation changes, auto-apply count, and carry-forward warnings before widening automation.",
+        },
         "next_safe_action": "Keep metadata collection in the WF74 runner; prepare a separate owner-gated config patch only for token/cost/latency metadata depth.",
         "blocked_actions": [
             "no raw content capture",

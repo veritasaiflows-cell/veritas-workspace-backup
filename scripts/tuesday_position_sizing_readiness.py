@@ -209,6 +209,57 @@ def tier_from_auto(auto_row: dict[str, Any], ticker: str) -> str:
     return "tier2"
 
 
+def same_money(left: Any, right: Any) -> bool:
+    left_f = fnum(left)
+    right_f = fnum(right)
+    if left_f is None or right_f is None:
+        return left_f is right_f
+    return round(left_f, 2) == round(right_f, 2)
+
+
+def capital_validator_no_candidate_warning(validation: dict[str, Any]) -> bool:
+    """Treat an empty capital packet window as review-only, not a blocker."""
+    if validation.get("status") != "warning":
+        return False
+    summary = validation.get("summary") if isinstance(validation.get("summary"), dict) else {}
+    if int(summary.get("critical") or 0) != 0:
+        return False
+    findings = validation.get("findings") if isinstance(validation.get("findings"), list) else []
+    return any(
+        isinstance(item, dict)
+        and item.get("severity") == "warning"
+        and item.get("issue") == "no capital recommendation packets produced for this window"
+        for item in findings
+    )
+
+
+def load_sql_reference_index(tickers: list[str]) -> dict[str, dict[str, Any]]:
+    try:
+        from finance_sql_canon_access import FinanceSqlCanonAccess
+
+        client = FinanceSqlCanonAccess()
+        validation = client.validate()
+        if validation.get("status") != "ok":
+            return {}
+        refs: dict[str, dict[str, Any]] = {}
+        for symbol in tickers:
+            reference = client.reference_level(symbol)
+            if not reference:
+                continue
+            refs[symbol] = {
+                "reference_price_low": reference.reference_price_low,
+                "reference_price_high": reference.reference_price_high,
+                "reference_invalidation_level": reference.reference_invalidation_level,
+                "reference_confidence": reference.reference_confidence,
+                "reference_band_status": reference.reference_band_status,
+                "authority_class": reference.authority_class,
+                "fallback_rule": reference.fallback_rule,
+            }
+        return refs
+    except Exception:
+        return {}
+
+
 def build() -> dict[str, Any]:
     watch = load(TMP / "tuesday-entry-opportunity-watchlist-2026-05-26.json")
     matrix = load(TMP / "sector-allocation-decision-matrix.json")
@@ -238,6 +289,7 @@ def build() -> dict[str, Any]:
         if str(row.get("auto_tier") or "") in {"Tier A", "Tier B"} or str(row.get("auto_state") or "").startswith(("A-", "B-"))
     ]
     candidate_tickers = sorted(set(PRIORITY_TICKERS) | set(current_tier_tickers) | set(deployment_rows))
+    sql_reference_rows = load_sql_reference_index(candidate_tickers)
     candidates = []
     for ticker in candidate_tickers:
         config_band = band_config(config, ticker)
@@ -249,17 +301,41 @@ def build() -> dict[str, Any]:
             row.update({k: v for k, v in auto.items() if k in {"auto_tier", "auto_state", "route_reason", "route_priority"}})
         if not row and not auto:
             continue
+        sql_reference = sql_reference_rows.get(ticker, {})
         tier = tier_from_auto(auto, ticker)
         close = fnum(row.get("close") if row.get("close") is not None else tech.get("close"))
-        band_low = row.get("band_low") if row.get("band_low") is not None else config_band.get("low")
-        band_high = row.get("band_high") if row.get("band_high") is not None else config_band.get("high")
-        stop = row.get("stop") if row.get("stop") is not None else config_band.get("stop")
+        legacy_band_low = row.get("band_low") if row.get("band_low") is not None else config_band.get("low")
+        legacy_band_high = row.get("band_high") if row.get("band_high") is not None else config_band.get("high")
+        legacy_stop = row.get("stop") if row.get("stop") is not None else config_band.get("stop")
+        band_low = sql_reference.get("reference_price_low")
+        band_high = sql_reference.get("reference_price_high")
+        stop = sql_reference.get("reference_invalidation_level")
+        band_source = "state/finance/finance-canon.sqlite:reference_levels" if any(
+            value is not None for value in (band_low, band_high, stop)
+        ) else "legacy_candidate_or_portfolio_config"
+        band_low = band_low if band_low is not None else legacy_band_low
+        band_high = band_high if band_high is not None else legacy_band_high
+        stop = stop if stop is not None else legacy_stop
         band_status = normalize_band_status(
-            row.get("band_status")
+            classify_band(close, band_low, band_high, stop)
+            or row.get("band_status")
             or row.get("entry_band_status")
             or row.get("band_position")
             or classify_band(close, band_low, band_high, stop)
         )
+        superseded_legacy_band = None
+        if band_source.startswith("state/finance") and not (
+            same_money(legacy_band_low, band_low)
+            and same_money(legacy_band_high, band_high)
+            and same_money(legacy_stop, stop)
+        ):
+            superseded_legacy_band = {
+                "status": "superseded_by_sql_canon_reference",
+                "band_low": legacy_band_low,
+                "band_high": legacy_band_high,
+                "stop": legacy_stop,
+                "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback",
+            }
         row["close"] = close
         row["band_low"] = band_low
         row["band_high"] = band_high
@@ -290,6 +366,9 @@ def build() -> dict[str, Any]:
             "band_low": band_low,
             "band_high": band_high,
             "stop": stop,
+            "band_source": band_source,
+            "sql_canon_reference": sql_reference or None,
+            "superseded_legacy_band_context": superseded_legacy_band,
             "band_status": band_status,
             "wf78_auto_tier": auto.get("auto_tier"),
             "wf78_auto_state": auto.get("auto_state"),
@@ -309,8 +388,12 @@ def build() -> dict[str, Any]:
         })
 
     critical = []
+    warnings = []
     if validation.get("status") != "ok":
-        critical.append("capital deployment validator is not ok")
+        if capital_validator_no_candidate_warning(validation):
+            warnings.append("capital deployment validator has no recommendation packets for this window")
+        else:
+            critical.append("capital deployment validator is not ok")
     if probability.get("verdict") != "NOT_READY":
         # Not a blocker, but this packet intentionally avoids probability language either way.
         pass
@@ -323,7 +406,7 @@ def build() -> dict[str, Any]:
     return {
         "schema_version": 1,
         "generated_at_utc": utc_now(),
-        "status": "ok" if not critical else "critical",
+        "status": "critical" if critical else "review_only_ok" if warnings else "ok",
         "market_day_target": "current review window",
         "purpose": "Owner-gated sizing readiness and paper-order preparation checklist for the current review window; no order execution authority.",
         "capital_framework": {
@@ -346,9 +429,11 @@ def build() -> dict[str, Any]:
             "tmp/wf67-paper-position-state.sqlite",
             "tmp/alpaca-paper-readiness/current-paper-holdings-readonly.json",
             "tmp/portfolio-config.json",
+            "state/finance/finance-canon.sqlite",
         ],
         "trust_state": {
             "capital_deployment_validator": validation.get("status"),
+            "capital_deployment_validator_classification": "no_candidates_review_only" if warnings else "standard",
             "probability_readiness": probability.get("verdict"),
             "paper_account_read_mode": paper.get("method"),
             "paper_positions_seen": list(positions.keys()),
@@ -357,6 +442,7 @@ def build() -> dict[str, Any]:
         "authority": AUTHORITY_FALSE | {"sizing_recommendation_review_allowed": True, "paper_request_preparation_allowed_after_exact_owner_terms": True},
         "candidates": candidates,
         "critical_findings": critical,
+        "warning_findings": warnings,
         "owner_decisions_needed_before_tuesday_orders": [
             "Choose which candidates, if any, should become exact WF67 paper request artifacts.",
             "Confirm paper-only versus live. Live remains blocked here; paper can proceed only through WF67 guards.",
@@ -426,7 +512,7 @@ def main() -> int:
             atomic_write_json(LEGACY_JSON, packet)
             atomic_write_text(LEGACY_MD, render(packet))
     print(json.dumps({"status": packet["status"], "candidates": len(packet["candidates"]), "critical": len(packet["critical_findings"]), "output": args.output}, indent=2))
-    return 0 if packet["status"] == "ok" else 1
+    return 0 if packet["status"] in {"ok", "review_only_ok"} else 1
 
 
 if __name__ == "__main__":

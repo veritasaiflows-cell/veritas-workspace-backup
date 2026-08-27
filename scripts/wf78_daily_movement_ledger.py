@@ -14,6 +14,7 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
@@ -22,7 +23,9 @@ TMP = ROOT / "tmp"
 OUT = TMP / "wf78-daily-movement-ledger.json"
 OUT_MD = TMP / "wf78-daily-movement-ledger.md"
 REPAIR_OUT = TMP / "wf78-repair-priority-queue.json"
+EVENT_LEDGER_JSONL = ROOT / "state" / "workflows" / "wf78-tier-routing-events.jsonl"
 SCHEMA = "veritas.wf78_daily_movement_ledger.v1"
+PHOENIX_TZ = ZoneInfo("America/Phoenix")
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -67,6 +70,61 @@ def as_list(value: Any) -> list[Any]:
 def load_dict(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
+
+
+def parse_utc(value: Any) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def read_jsonl_events(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    events: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict):
+            events.append(value)
+    return events
+
+
+def local_day_event_summary(path: Path, now_utc: datetime | None = None) -> dict[str, Any]:
+    now = now_utc or datetime.now(timezone.utc)
+    local_day = now.astimezone(PHOENIX_TZ).date().isoformat()
+    local_events: list[dict[str, Any]] = []
+    for event in read_jsonl_events(path):
+        observed = parse_utc(event.get("event_observed_at_utc"))
+        if observed is None:
+            continue
+        if observed.astimezone(PHOENIX_TZ).date().isoformat() == local_day:
+            local_events.append(event)
+    promotion_events = [event for event in local_events if event.get("event_type") == "promotion"]
+    return {
+        "local_day": local_day,
+        "local_day_event_count": len(local_events),
+        "local_day_promotion_count": len(promotion_events),
+        "local_day_event_tickers": sorted({str(event.get("ticker") or "") for event in local_events if event.get("ticker")}),
+        "local_day_promotion_tickers": sorted({str(event.get("ticker") or "") for event in promotion_events if event.get("ticker")}),
+        "local_day_recent_events": sorted(
+            local_events,
+            key=lambda event: str(event.get("event_observed_at_utc") or ""),
+        )[-20:],
+    }
 
 
 def by_ticker(rows: list[Any]) -> dict[str, dict[str, Any]]:
@@ -178,9 +236,13 @@ def build_ledger() -> dict[str, Any]:
     freshness_resolution = load_dict(TMP / "wf78-tier-weighted-freshness-resolution.json")
     attention_trigger = load_dict(TMP / "wf78-tier-c-attention-trigger.json")
     promotion_pipeline = load_dict(TMP / "wf78-tier-c-to-b-auto-promotion-pipeline.json")
+    tier_b_research_packets = load_dict(TMP / "wf78-tier-b-research-packets.json")
+    tier_b_phase2_eval = load_dict(TMP / "wf78-tier-b-research-packet-phase2-eval.json")
     deployment_cards = load_dict(TMP / "autonomous-routing-deployment-cards.json")
     decision_cards = load_dict(TMP / "trade-grade-decision-cards.json")
     wf84 = load_dict(TMP / "canonical-finance-data-plane.json")
+    event_ledger = load_dict(TMP / "wf78-tier-routing-event-ledger.json")
+    local_event_summary = local_day_event_summary(EVENT_LEDGER_JSONL)
 
     routes = by_ticker(as_list(auto_router.get("rows")))
     freshness = by_ticker(as_list(freshness_resolution.get("rows")))
@@ -285,12 +347,47 @@ def build_ledger() -> dict[str, Any]:
     repair_rows.sort(key=lambda row: (int(row["priority"]), str(row["ticker"])))
     categories = {
         "moved_today": [r for r in records if r["decision"] in {"promote", "demote", "state_change"}],
+        "recent_tier_routing_events": as_list(event_ledger.get("recent_events")),
         "blocked_today": [r for r in records if r["decision"] == "repair"],
         "newly_hot": [r for r in records if r["decision"] == "newly_hot"],
         "stale_but_important": [r for r in records if r["decision"] == "repair" and r["auto_tier"] in {"Tier A", "Tier B"}],
         "owner_review_candidates": [r for r in records if r["auto_tier"] in {"Tier A", "Tier B"} and r["decision"] not in {"repair", "invalidation_review", "no_chase"}],
         "no_chase_candidates": [r for r in records if r["decision"] == "no_chase"],
         "invalidation_candidates": [r for r in records if r["decision"] == "invalidation_review"],
+    }
+    auto_summary = as_dict(auto_router.get("summary"))
+    research_summary = as_dict(tier_b_research_packets.get("summary"))
+    phase2_summary = as_dict(tier_b_phase2_eval.get("summary"))
+    pipeline_status_counts = Counter(str(row.get("status") or "unknown") for row in pipeline.values())
+    movement_explanation = {
+        "repair_generated": {
+            "repair_queue_count": len(repair_rows),
+            "tier_b_research_packet_count": research_summary.get("packet_count", 0),
+            "tier_b_phase2_ready_count": research_summary.get("phase2_ready_request_count", phase2_summary.get("eligible_for_admission_count", 0)),
+            "tier_c_blocked_pending_repair_count": pipeline_status_counts.get("blocked_pending_repair", 0),
+            "tier_c_pipeline_status_counts": dict(sorted(pipeline_status_counts.items())),
+            "top_repair_tickers": [row["ticker"] for row in repair_rows[:15]],
+        },
+        "ready_but_not_admitted": {
+            "count": auto_summary.get("phase2_ready_but_not_admitted_count", 0),
+            "tickers": auto_summary.get("phase2_ready_but_not_admitted_tickers", []),
+            "meaning": "Evidence packet is ready, but no current Tier B validation, hold, or Tier A competitive route consumed it.",
+        },
+        "admitted": {
+            "tier_b_validated_count": auto_summary.get("phase2_validated_tier_b_count", 0),
+            "tier_b_validated_tickers": auto_summary.get("phase2_validated_tier_b_candidates", []),
+            "tier_a_competitive_admitted_count": auto_summary.get("competitive_gate_auto_tier_a_candidate_count", 0),
+            "tier_a_competitive_admitted_tickers": auto_summary.get("competitive_gate_auto_tier_a_candidates", []),
+            "local_day_promotion_count": local_event_summary["local_day_promotion_count"],
+            "local_day_promotion_tickers": local_event_summary["local_day_promotion_tickers"],
+        },
+        "authority_boundary": {
+            "review_only": True,
+            "capital_deployment_approved": False,
+            "trade_or_execution_approved": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
+        },
     }
 
     repair_packet = {
@@ -315,6 +412,9 @@ def build_ledger() -> dict[str, Any]:
         errors.append("authority boundary widened unexpectedly")
     if auto_router.get("status") not in {None, "ok"}:
         errors.append("auto_router_not_ok")
+    warnings: list[str] = []
+    if event_ledger and event_ledger.get("status") != "ok":
+        warnings.append("tier_routing_event_ledger_not_ok")
 
     return {
         "schema": SCHEMA,
@@ -328,36 +428,62 @@ def build_ledger() -> dict[str, Any]:
             "tier_weighted_freshness_resolution": "tmp/wf78-tier-weighted-freshness-resolution.json",
             "tier_c_attention_trigger": "tmp/wf78-tier-c-attention-trigger.json",
             "tier_c_to_b_auto_promotion_pipeline": "tmp/wf78-tier-c-to-b-auto-promotion-pipeline.json",
+            "tier_b_research_packets": "tmp/wf78-tier-b-research-packets.json",
+            "tier_b_phase2_eval": "tmp/wf78-tier-b-research-packet-phase2-eval.json",
             "autonomous_routing_deployment_cards": "tmp/autonomous-routing-deployment-cards.json",
             "trade_grade_decision_cards": "tmp/trade-grade-decision-cards.json",
             "canonical_finance_data_plane": "tmp/canonical-finance-data-plane.json",
+            "tier_routing_event_ledger": "tmp/wf78-tier-routing-event-ledger.json",
+            "append_only_tier_routing_events": "state/workflows/wf78-tier-routing-events.jsonl",
         },
         "source_freshness": {
             "auto_router_generated_at_utc": auto_router.get("generated_at_utc"),
             "wf84_generated_at_utc": wf84.get("generated_at_utc"),
             "wf85_cards_generated_at_utc": decision_cards.get("generated_at_utc"),
             "freshness_resolution_generated_at_utc": freshness_resolution.get("generated_at_utc"),
+            "tier_b_research_packets_generated_at_utc": tier_b_research_packets.get("generated_at_utc"),
+            "tier_b_phase2_eval_generated_at_utc": tier_b_phase2_eval.get("generated_at_utc"),
+            "tier_routing_event_ledger_generated_at_utc": event_ledger.get("generated_at_utc"),
         },
         "summary": {
             "record_count": len(records),
             "tier_counts": dict(tier_counts),
             "decision_counts": dict(decision_counts),
             "reason_counts": dict(reason_counts),
+            "event_ledger_status": event_ledger.get("status") if event_ledger else "missing",
+            "event_ledger_total_event_count": as_dict(event_ledger.get("summary")).get("total_event_count") if event_ledger else 0,
+            "event_ledger_new_event_count": as_dict(event_ledger.get("summary")).get("new_event_count") if event_ledger else 0,
+            "event_ledger_last_event_at_utc": as_dict(event_ledger.get("summary")).get("last_event_at_utc") if event_ledger else None,
+            "event_ledger_handoff_state": as_dict(event_ledger.get("summary")).get("handoff_state") if event_ledger else "event_ledger_missing",
+            "event_ledger_local_day": local_event_summary["local_day"],
+            "local_day_event_count": local_event_summary["local_day_event_count"],
+            "local_day_promotion_count": local_event_summary["local_day_promotion_count"],
+            "local_day_event_tickers": local_event_summary["local_day_event_tickers"],
+            "local_day_promotion_tickers": local_event_summary["local_day_promotion_tickers"],
             "repair_queue_count": len(repair_rows),
             "top_repair_tickers": [row["ticker"] for row in repair_rows[:15]],
-            "moved_today_count": len(categories["moved_today"]),
+            "current_delta_moved_count": len(categories["moved_today"]),
+            "current_delta_moved_tickers": sorted(row["ticker"] for row in categories["moved_today"]),
+            "moved_today_count": local_event_summary["local_day_event_count"],
+            "moved_today_tickers": local_event_summary["local_day_event_tickers"],
+            "recent_tier_routing_event_count": len(categories["recent_tier_routing_events"]),
             "blocked_today_count": len(categories["blocked_today"]),
             "newly_hot_count": len(categories["newly_hot"]),
             "stale_but_important_count": len(categories["stale_but_important"]),
             "owner_review_candidate_count": len(categories["owner_review_candidates"]),
             "no_chase_candidate_count": len(categories["no_chase_candidates"]),
             "invalidation_candidate_count": len(categories["invalidation_candidates"]),
+            "movement_explanation_available": True,
+            "repair_generated": movement_explanation["repair_generated"],
+            "ready_but_not_admitted": movement_explanation["ready_but_not_admitted"],
+            "admitted": movement_explanation["admitted"],
             "next_safe_action": "Use the repair queue to unlock evidence-constrained promotions; keep capital/execution decisions owner-gated.",
         },
-        "categories": {key: rows[:50] for key, rows in categories.items()},
+        "movement_explanation": movement_explanation,
+        "categories": {**{key: rows[:50] for key, rows in categories.items()}, "local_day_events": local_event_summary["local_day_recent_events"]},
         "records": records,
         "repair_priority_queue": repair_packet,
-        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": []},
+        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": warnings},
         "stop_lines": [
             "Ledger and repair queue are review-only derived artifacts.",
             "No capital deployment, paper/live execution, brokerage/account action, money movement, customer output, canon/portfolio mutation, or owner approval inference.",
@@ -374,6 +500,11 @@ def render_markdown(packet: dict[str, Any]) -> str:
         f"- Generated UTC: {packet.get('generated_at_utc')}",
         f"- Records: {summary.get('record_count')}",
         f"- Repairs: {summary.get('repair_queue_count')}",
+        f"- Tier routing events total: {summary.get('event_ledger_total_event_count')}",
+        f"- Tier routing events new this run: {summary.get('event_ledger_new_event_count')}",
+        f"- Current delta moved: {summary.get('current_delta_moved_count')}",
+        f"- Local-day events ({summary.get('event_ledger_local_day')} Phoenix): {summary.get('local_day_event_count')}",
+        f"- Local-day promotions: {summary.get('local_day_promotion_count')}",
         f"- Newly hot: {summary.get('newly_hot_count')}",
         f"- No-chase: {summary.get('no_chase_candidate_count')}",
         f"- Invalidation: {summary.get('invalidation_candidate_count')}",
@@ -382,6 +513,17 @@ def render_markdown(packet: dict[str, Any]) -> str:
     ]
     for key, value in sorted(as_dict(summary.get("decision_counts")).items()):
         lines.append(f"- {key}: {value}")
+    explanation = as_dict(packet.get("movement_explanation"))
+    repair_generated = as_dict(explanation.get("repair_generated"))
+    ready_but_not_admitted = as_dict(explanation.get("ready_but_not_admitted"))
+    admitted = as_dict(explanation.get("admitted"))
+    lines.extend([
+        "",
+        "## Movement Explanation",
+        f"- Repair generated: queue {repair_generated.get('repair_queue_count')}, Tier B phase2 ready {repair_generated.get('tier_b_phase2_ready_count')}, Tier C blocked pending repair {repair_generated.get('tier_c_blocked_pending_repair_count')}",
+        f"- Ready but not admitted: {ready_but_not_admitted.get('count')} ({', '.join(as_list(ready_but_not_admitted.get('tickers'))[:20])})",
+        f"- Admitted: Tier B validated {admitted.get('tier_b_validated_count')}, Tier A competitive routed {admitted.get('tier_a_competitive_admitted_count')}, local-day promotions {admitted.get('local_day_promotion_count')}",
+    ])
     lines.extend(["", "## Top Repair Queue"])
     for row in as_list(as_dict(packet.get("repair_priority_queue")).get("rows"))[:20]:
         lines.append(f"- {row.get('ticker')}: {row.get('repair_class')} / {row.get('reason_code')} / priority {row.get('priority')}")

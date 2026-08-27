@@ -29,10 +29,18 @@ SOURCE_PATHS = {
     "operator_console": TMP / "wf75-operator-console.json",
     "scenario_library": TMP / "wf75-scenario-template-library.json",
     "renderer_regression": TMP / "wf75-renderer-export-regression.json",
+    "customer_safe_pdf_renderer": TMP / "wf75-customer-safe-pdf-renderer.json",
+    "customer_safe_excel_exporter": TMP / "wf75-customer-safe-excel-exporter.json",
     "pm_readiness_pdf": TMP / "wf75-pm-readiness-brief.json",
     "artifact_handoff": TMP / "wf75-artifact-only-pm-handoff.json",
     "wf75_capsule": ROOT / "state" / "workflows" / "WF75.json",
 }
+
+OPTIONAL_SOURCE_PATHS = {
+    "operator_delivery_gate": TMP / "wf75-operator-delivery-gate.json",
+}
+
+ALL_SOURCE_PATHS = {**SOURCE_PATHS, **OPTIONAL_SOURCE_PATHS}
 
 REQUIRED_FALSE_BOUNDARIES = [
     "public_launch_allowed",
@@ -80,13 +88,13 @@ def artifact_probe(path: Path) -> dict[str, Any]:
     item["parseable_json"] = isinstance(payload, dict)
     if isinstance(payload, dict):
         item["status"] = str(payload.get("status") or as_dict(payload.get("summary")).get("status") or "present")
-        item["validation_status"] = as_dict(payload.get("validation")).get("status")
+        item["validation_status"] = as_dict(payload.get("validation")).get("status") or payload.get("validation_status")
     return item
 
 
 def load_sources() -> dict[str, dict[str, Any]]:
     sources: dict[str, dict[str, Any]] = {}
-    for key, path in SOURCE_PATHS.items():
+    for key, path in ALL_SOURCE_PATHS.items():
         payload = load_json_artifact(path)
         sources[key] = payload if isinstance(payload, dict) else {}
     return sources
@@ -111,15 +119,81 @@ def scenario_rows(sources: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     return cleaned
 
 
+def pdf_contract_ready(manifest: dict[str, Any]) -> bool:
+    if as_dict(manifest.get("validation")).get("status") != "ok":
+        return False
+    if manifest.get("status") not in {"ok_pdf_created", "html_contract_implemented_pdf_unavailable"}:
+        return False
+    if as_dict(manifest.get("customer_export_validation")).get("status") != "ok":
+        return False
+    if as_dict(manifest.get("seeded_bad_status")).get("status") != "ok":
+        return False
+    return as_dict(manifest.get("html_contract")).get("status") == "implemented"
+
+
+def excel_contract_ready(manifest: dict[str, Any]) -> bool:
+    if manifest.get("status") != "ok":
+        return False
+    if manifest.get("validation_status") != "ok":
+        return False
+    if int(manifest.get("row_count") or 0) <= 0:
+        return False
+    counts = as_dict(manifest.get("validation_counts"))
+    if counts.get("critical") not in {0, None} or counts.get("warning") not in {0, None}:
+        return False
+    if int(counts.get("row_scan_errors") or 0) != 0:
+        return False
+    seeded = as_dict(manifest.get("seeded_bad_status"))
+    for key in ("json_validation", "markdown_validation"):
+        item = as_dict(seeded.get(key))
+        if item.get("expected_error") is not True:
+            return False
+    return True
+
+
+def operator_gate_ready(manifest: dict[str, Any]) -> bool:
+    if manifest.get("status") != "ready_for_operator_review_external_blocked":
+        return False
+    if as_dict(manifest.get("validation")).get("status") != "ok":
+        return False
+    if manifest.get("external_delivery_status") != "blocked_policy_source_legal_owner_gates":
+        return False
+    boundary = as_dict(manifest.get("authority_boundary"))
+    for key in (
+        "customer_external_delivery_allowed",
+        "public_launch_allowed",
+        "real_customer_data_allowed",
+        "legal_compliance_source_licensing_ready",
+        "source_licensing_assumed",
+        "personalized_advice_allowed",
+        "advice_execution_brokerage_account_allowed",
+        "paper_or_live_execution_allowed",
+        "portfolio_or_canon_mutation_allowed",
+        "owner_approval_inferred",
+    ):
+        if boundary.get(key) is not False:
+            return False
+    return True
+
+
 def build_plan(sources: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
     sources = sources or load_sources()
     console = sources.get("operator_console") or {}
     service = sources.get("service_state") or {}
     pdf = sources.get("pm_readiness_pdf") or {}
+    customer_pdf = sources.get("customer_safe_pdf_renderer") or {}
+    customer_excel = sources.get("customer_safe_excel_exporter") or {}
+    operator_gate = sources.get("operator_delivery_gate") or {}
     capsule = sources.get("wf75_capsule") or {}
     console_summary = as_dict(console.get("summary"))
     service_summary = as_dict(service.get("summary"))
     pdf_outputs = as_dict(pdf.get("outputs"))
+    customer_pdf_outputs = as_dict(customer_pdf.get("output_paths"))
+    customer_excel_outputs = as_dict(customer_excel.get("output_paths"))
+    operator_gate_outputs = as_dict(operator_gate.get("output_paths"))
+    customer_pdf_ready = pdf_contract_ready(customer_pdf)
+    customer_excel_ready = excel_contract_ready(customer_excel)
+    gate_ready = operator_gate_ready(operator_gate)
 
     deliverables = [
         {
@@ -135,12 +209,12 @@ def build_plan(sources: dict[str, dict[str, Any]] | None = None) -> dict[str, An
         {
             "id": "customer_safe_research_pdf",
             "format": "PDF",
-            "audience": "future customer-safe review packet after gates",
-            "status": "planned_gated",
-            "current_artifact": None,
-            "producer": "future renderer over validated customer-safe export only",
-            "purpose": "Polished anonymous research packet with visible freshness, evidence, risks, and non-advice language.",
-            "next_enhancement": "Promote only after export validator, no-leak checks, source/freshness proof, and operator review are clean.",
+            "audience": "Randall / internal review of future customer-safe packet shape",
+            "status": "implemented_internal_contract" if customer_pdf_ready else "planned_gated",
+            "current_artifact": customer_pdf_outputs.get("pdf") or customer_pdf_outputs.get("html"),
+            "producer": "python scripts\\wf75_customer_safe_pdf_renderer.py --write --validate",
+            "purpose": "Polished anonymous research packet shape with visible freshness, evidence, risks, and non-advice language.",
+            "next_enhancement": "Run operator review and policy/source/legal gates before any future customer or external delivery discussion.",
         },
         {
             "id": "internal_operator_excel",
@@ -155,12 +229,22 @@ def build_plan(sources: dict[str, dict[str, Any]] | None = None) -> dict[str, An
         {
             "id": "customer_safe_excel_export",
             "format": "XLSX/CSV",
-            "audience": "future customer-safe export after gates",
-            "status": "planned_gated",
-            "current_artifact": None,
-            "producer": "future sanitized workbook exporter over customer-safe export JSON only",
+            "audience": "Randall / internal review of future customer-safe export shape",
+            "status": "implemented_internal_contract" if customer_excel_ready else "planned_gated",
+            "current_artifact": customer_excel_outputs.get("xlsx") or customer_excel_outputs.get("csv"),
+            "producer": "python scripts\\wf75_customer_safe_excel_exporter.py --write --validate",
             "purpose": "Structured watchlist/evidence table that hides internal paths, proof traces, and execution language.",
-            "next_enhancement": "Block until export/delete/retention policy, source-licensing posture, and customer-safe validator are approved.",
+            "next_enhancement": "Run operator review and export/delete/retention, source-licensing, and legal/compliance gates before external use.",
+        },
+        {
+            "id": "operator_delivery_gate_packet",
+            "format": "JSON/Markdown",
+            "audience": "Randall / Veritas operator",
+            "status": "implemented_internal_gate_external_blocked" if gate_ready else "planned_gated",
+            "current_artifact": operator_gate_outputs.get("markdown") or operator_gate_outputs.get("manifest"),
+            "producer": "python scripts\\wf75_operator_delivery_gate.py --write --validate",
+            "purpose": "Operator checklist and explicit policy/source/licensing/legal external-delivery gate design.",
+            "next_enhancement": "Use as the manual review packet before drafting any later external-delivery approval request.",
         },
     ]
 
@@ -189,13 +273,13 @@ def build_plan(sources: dict[str, dict[str, Any]] | None = None) -> dict[str, An
         {
             "phase": 2,
             "name": "Customer-safe PDF renderer contract",
-            "status": "next",
+            "status": "implemented_internal_contract" if customer_pdf_ready else "next",
             "acceptance": "Renderer consumes only customer-safe export JSON and no-leak/no-claim validator passes.",
         },
         {
             "phase": 3,
             "name": "Customer-safe Excel/CSV export contract",
-            "status": "next",
+            "status": "implemented_internal_contract" if customer_excel_ready else "next",
             "acceptance": "Structured export includes source/freshness/risk labels, hides internals, and blocks advice/execution language.",
         },
         {
@@ -207,8 +291,8 @@ def build_plan(sources: dict[str, dict[str, Any]] | None = None) -> dict[str, An
         {
             "phase": 5,
             "name": "Operator review and delivery gate",
-            "status": "planned_gated",
-            "acceptance": "No external delivery until policy, source, legal/compliance, and owner approval gates are explicit.",
+            "status": "implemented_internal_gate_external_blocked" if gate_ready else "planned_gated",
+            "acceptance": "Operator checklist exists and external delivery remains blocked until policy, source, legal/compliance, and owner approval gates are explicit.",
         },
     ]
 
@@ -231,12 +315,13 @@ def build_plan(sources: dict[str, dict[str, Any]] | None = None) -> dict[str, An
         },
         "deliverables": deliverables,
         "phases": phases,
-        "artifact_status": {key: artifact_probe(path) for key, path in SOURCE_PATHS.items()},
+        "artifact_status": {key: artifact_probe(path) for key, path in ALL_SOURCE_PATHS.items()},
         "scenario_rows": scenario_rows(sources),
         "authority_boundary": authority,
         "next_safe_action": (
             "Use this as the WF75 deliverable spine: keep internal PM PDF and internal operator Excel live now; "
-            "build customer-safe PDF/Excel only after validator, no-leak, source/freshness, policy, and operator gates are clean."
+            "review the internal customer-safe PDF/Excel contracts, then run operator, source, policy, and legal/compliance gates "
+            "before any customer or external delivery discussion."
         ),
     }
 
@@ -350,6 +435,7 @@ def validate_plan(plan: dict[str, Any], workbook_result: dict[str, Any] | None =
         "customer_safe_research_pdf",
         "internal_operator_excel",
         "customer_safe_excel_export",
+        "operator_delivery_gate_packet",
     }:
         if required not in deliverable_ids:
             errors.append(f"missing_deliverable:{required}")
@@ -360,6 +446,8 @@ def validate_plan(plan: dict[str, Any], workbook_result: dict[str, Any] | None =
     if boundary.get("review_only") is not True or boundary.get("internal_service_led") is not True:
         errors.append("review_only_internal_service_led_not_true")
     for key, item in as_dict(plan.get("artifact_status")).items():
+        if key in OPTIONAL_SOURCE_PATHS and not as_dict(item).get("exists"):
+            continue
         if not as_dict(item).get("exists"):
             errors.append(f"missing_source_artifact:{key}")
         if not as_dict(item).get("parseable_json"):

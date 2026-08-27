@@ -1,10 +1,64 @@
 {
-  "generated_at_utc": "2026-05-10T03:38:26.275254+00:00",
+  "generated_at_utc": "2026-08-27T13:15:43.792576+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh after the close and on FOMC decision days. Re-run whenever any upstream data artifact is updated.",
-  "last_trading_day": "2026-05-10",
+  "last_trading_day": "2026-08-27",
   "warnings": [],
+  "freshness_contract": {
+    "schema_version": 1,
+    "status": "ok",
+    "summary": "Macro inputs are current enough for regime use.",
+    "components": [
+      {
+        "component": "policy",
+        "status": "fresh",
+        "category": "ok",
+        "safe_for_macro_regime": true,
+        "hard_fail_closed": false,
+        "remediation": {
+          "owner": "policy_expectations_refresh.py",
+          "command": "python scripts\\policy_expectations_refresh.py",
+          "follow_on_commands": [
+            "python scripts\\market_state_refresh.py",
+            "python scripts\\macro_regime_refresh.py",
+            "python scripts\\generate_dashboard.py",
+            "python scripts\\validate_dashboard_state.py --write"
+          ],
+          "action": "No action required; policy artifact is current enough for dashboard and macro-regime use."
+        }
+      },
+      {
+        "component": "credit",
+        "status": "ok",
+        "category": "ok",
+        "safe_for_macro_regime": true,
+        "remediation": {
+          "owner": "credit_spread_refresh.py",
+          "command": "python scripts\\credit_spread_refresh.py",
+          "action": "Refresh credit spread artifact if credit pillar is unknown."
+        }
+      },
+      {
+        "component": "breadth",
+        "status": "ok",
+        "category": "ok",
+        "safe_for_macro_regime": true,
+        "remediation": {
+          "owner": "breadth_refresh.py",
+          "command": "python scripts\\breadth_refresh.py",
+          "action": "Refresh breadth artifact if breadth pillar is unknown."
+        }
+      }
+    ],
+    "blocked_pillars": [],
+    "degraded_pillars": [],
+    "routing": {
+      "deployment_surface_blocked": false,
+      "regime_confidence": "normal",
+      "owner_action_required": false
+    }
+  },
   "regime": {
     "key": "restrictive_pause_benign_broad",
     "label": "Restrictive pause, resilient growth, selective risk-on — large-cap quality bias",
@@ -13,42 +67,56 @@
   "pillars": {
     "policy": {
       "key": "restrictive_pause",
-      "label": "Restrictive pause — hold dominant (100%, target 3.50–3.75%)",
-      "source_status": "manual",
-      "implied_rate": 3.625,
-      "hold_probability": 100.0,
+      "label": "Restrictive pause — hold dominant (82%, target 3.50–3.75%)",
+      "source_status": "ok",
+      "freshness_status": "fresh",
+      "freshness_category": "ok",
+      "safe_for_macro_regime": true,
+      "remediation": {
+        "owner": "policy_expectations_refresh.py",
+        "command": "python scripts\\policy_expectations_refresh.py",
+        "follow_on_commands": [
+          "python scripts\\market_state_refresh.py",
+          "python scripts\\macro_regime_refresh.py",
+          "python scripts\\generate_dashboard.py",
+          "python scripts\\validate_dashboard_state.py --write"
+        ],
+        "action": "No action required; policy artifact is current enough for dashboard and macro-regime use."
+      },
+      "implied_rate": 3.67,
+      "hold_probability": 82.0,
       "cut_probability": 0.0,
-      "hike_probability": 0.0,
+      "hike_probability": 18.0,
       "target_range": {
         "low": 3.5,
         "high": 3.75
       },
-      "next_fomc_date": "2026-06-17",
-      "days_until_fomc": 38
+      "next_fomc_date": "2026-09-16",
+      "days_until_fomc": 20
     },
     "credit": {
       "key": "benign",
-      "label": "Benign credit — HY widening",
-      "source_status": "partial",
+      "label": "Benign credit — HY 2.70%, IG 0.81%, HY tightening",
+      "source_status": "ok",
       "stress_regime": "benign",
-      "hy_oas": null,
-      "ig_oas": null,
-      "hy_minus_ig": null,
-      "hy_direction_5d": "widening",
+      "hy_oas": 2.7,
+      "ig_oas": 0.81,
+      "hy_minus_ig": 1.89,
+      "hy_direction_5d": "tightening",
       "hy_direction_20d": "tightening"
     },
     "breadth": {
       "key": "broad_recovering",
-      "label": "Breadth recovering — 8/11 sectors above 50DMA, RSP/SPY -1.68% 5d",
+      "label": "Breadth broad — 9/11 sectors above 50DMA, RSP/SPY +0.41% 5d",
       "source_status": "ok",
-      "breadth_regime": "recovering",
-      "composite_score": 0.5328,
-      "sectors_above_50dma": 8,
+      "breadth_regime": "broad",
+      "composite_score": 0.7533,
+      "sectors_above_50dma": 9,
       "sectors_total": 11,
-      "participation_pct": 72.7,
-      "rsp_spy_ratio": 0.276701,
-      "rsp_spy_direction": "deteriorating",
-      "rsp_spy_5d_change_pct": -1.6838
+      "participation_pct": 81.8,
+      "rsp_spy_ratio": 0.289931,
+      "rsp_spy_direction": "improving",
+      "rsp_spy_5d_change_pct": 0.4073
     }
   },
   "sector_fit": {

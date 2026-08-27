@@ -1,0 +1,55 @@
+{
+  "schema": "veritas.wf75_academy_manifest.v1",
+  "generated_at_utc": "2026-06-20T20:22:29Z",
+  "status": "ready",
+  "outputs": {
+    "json": "training/wf75-academy/wf75-academy-current.json",
+    "markdown": "training/wf75-academy/wf75-academy-current.md",
+    "html_handout": "training/wf75-academy/wf75-academy-handout.html",
+    "pdf_handout": "training/wf75-academy/wf75-academy-handout.pdf",
+    "docx_book": "training/wf75-academy/wf75-academy-book.docx",
+    "pptx_activity_deck": "training/wf75-academy/wf75-academy-activity-deck.pptx",
+    "html_simulation_deck": "training/wf75-academy/wf75-academy-simulation-deck.html",
+    "manifest": "training/wf75-academy/wf75-academy-manifest.json"
+  },
+  "pdf_result": {
+    "status": "ok",
+    "browser": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "returncode": 0,
+    "stdout_tail": "",
+    "stderr_tail": "[29884:34352:0620/132227.561:ERROR:chrome\\browser\\task_manager\\providers\\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a \"Renderer\" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.\n173521 bytes written to file C:\\Users\\Veritas\\.openclaw\\workspace\\training\\wf75-academy\\wf75-academy-handout.pdf\n",
+    "pdf_size_bytes": 173521
+  },
+  "docx_result": {
+    "status": "ok",
+    "docx_size_bytes": 40581
+  },
+  "pptx_result": {
+    "status": "ok",
+    "pptx_size_bytes": 60703
+  },
+  "authority_boundary": {
+    "real_customer_data_allowed": false,
+    "customer_outreach_allowed": false,
+    "external_delivery_allowed": false,
+    "credential_access_allowed": false,
+    "customer_system_implementation_allowed": false,
+    "public_launch_allowed": false,
+    "spend_or_subscription_allowed": false,
+    "guaranteed_revenue_or_roi_claim_allowed": false,
+    "legal_compliance_security_readiness_claim_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "training_posture": {
+    "adult_learning": true,
+    "uses_activities": true,
+    "uses_simulations": true,
+    "reading_only": false,
+    "future_app_candidate": true
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

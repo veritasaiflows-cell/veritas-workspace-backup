@@ -239,6 +239,43 @@ def test_reconciliation_maturity_accepts_classifier_submitted_order_count() -> N
         assert "reconciliation_maturity_not_met" not in payload["blockers"]
 
 
+def test_reconciliation_maturity_accepts_fresh_reconciliation_status() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        paths = make_paths(root)
+        shadow = base_payload()
+        shadow["summary"] = {
+            "clean_shadow_decision_count": 20,
+            "required_clean_decisions": 20,
+            "unique_clean_market_sessions": 5,
+            "required_clean_market_sessions": 5,
+            "shadow_threshold_met": True,
+        }
+        write_json(paths["wf86_shadow"], shadow)
+        write_json(paths["wf86_autotrader"], base_payload("shadow_ready"))
+        write_json(paths["wf86_guard"], base_payload("blocked"))
+        write_json(paths["trade_grade_rollup"], base_payload("warning"))
+        paper_reconciliation = base_payload()
+        paper_reconciliation["freshness"] = {"status": "fresh"}
+        write_json(paths["paper_reconciliation"], paper_reconciliation)
+        order_history = base_payload()
+        order_history["summary"] = {"submitted_order_count": 1, "unresolved_count": 0}
+        write_json(paths["order_history"], order_history)
+        for key in ("circuit_breakers", "ttl", "intraday"):
+            write_json(paths[key], base_payload())
+        write_json(paths["position_sizing"], base_payload("idle_no_candidates"))
+        paths["journal"].write_text(
+            json.dumps({"decision_key": "2026-06-11:VRT", "authority": {"paper_or_live_execution_allowed": False}}) + "\n",
+            encoding="utf-8",
+        )
+        write_phase_b_artifacts(paths)
+        payload = rollup.build_rollup(paths)
+        assert payload["reconciliation_maturity"]["current_reconciliation_freshness_status"] == "fresh"
+        assert payload["reconciliation_maturity"]["mature_for_autonomy"] is True
+        assert "reconciliation_maturity_not_met" not in payload["blockers"]
+        assert payload["phase_readiness"]["phase_a_runtime_gates_clean"] is True
+
+
 def test_blocked_current_reconciliation_blocks_maturity() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -278,5 +315,6 @@ if __name__ == "__main__":
     test_authority_drift_is_validation_error()
     test_fail_closed_phase_a_artifacts_count_as_installed_but_runtime_blocked()
     test_reconciliation_maturity_accepts_classifier_submitted_order_count()
+    test_reconciliation_maturity_accepts_fresh_reconciliation_status()
     test_blocked_current_reconciliation_blocks_maturity()
     print("ok")

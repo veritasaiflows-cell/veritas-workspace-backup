@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WF75 HVAC Outreach Simulation Deck</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #172033; background: #f7f8fb; }
+  .app { min-height: 100vh; display: grid; grid-template-columns: 300px 1fr; }
+  aside { background: #111827; color: #f9fafb; padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+  main { padding: 28px; display: grid; gap: 18px; align-content: start; }
+  h1, h2, h3 { margin: 0; }
+  h1 { font-size: 26px; line-height: 1.1; }
+  h2 { font-size: 28px; }
+  p { line-height: 1.48; }
+  .muted { color: #6b7280; }
+  aside .muted { color: #cbd5e1; }
+  .tabs, .navlist, .scorebar { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { border: 1px solid #cbd5e1; background: #fff; color: #111827; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+  button:hover { border-color: #2563eb; }
+  button.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+  aside button { width: 100%; background: #1f2937; color: #fff; border-color: #374151; text-align: left; }
+  aside button.active { background: #0f766e; border-color: #0f766e; }
+  .card { background: #fff; border: 1px solid #d1d5db; border-radius: 8px; padding: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #e0f2fe; color: #075985; font-size: 12px; font-weight: 700; }
+  .stop { border-left: 6px solid #dc2626; }
+  .good { border-left: 6px solid #16a34a; }
+  .warn { border-left: 6px solid #f59e0b; }
+  .answer { display: none; background: #f8fafc; border: 1px dashed #94a3b8; padding: 14px; border-radius: 8px; white-space: pre-wrap; }
+  .answer.open { display: block; }
+  .meter { height: 12px; border-radius: 999px; background: #374151; overflow: hidden; }
+  .meter div { height: 100%; width: 0%; background: #22c55e; transition: width .2s ease; }
+  .scenario-title { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+  textarea { width: 100%; min-height: 140px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font: 15px Arial, sans-serif; }
+  label { display: flex; gap: 8px; align-items: start; margin: 8px 0; }
+  input[type="checkbox"] { margin-top: 3px; }
+  .svg-wrap svg { width: 100%; max-height: 230px; }
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .grid, .two { grid-template-columns: 1fr; }
+    aside { position: static; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div>
+      <div class="badge">WF75 Academy</div>
+      <h1>HVAC Outreach Simulation</h1>
+      <p class="muted">Internal practice only. Passing this deck does not approve sending.</p>
+    </div>
+    <div>
+      <p class="muted">Progress</p>
+      <div class="meter"><div id="meterFill"></div></div>
+      <p id="progressText" class="muted"></p>
+    </div>
+    <div class="navlist" id="nav"></div>
+    <button id="resetBtn">Reset local scores</button>
+  </aside>
+  <main>
+    <div class="tabs">
+      <button data-tab="briefing" class="active">Briefing</button>
+      <button data-tab="prospects">Prospects</button>
+      <button data-tab="simulator">Simulator</button>
+      <button data-tab="approval">Approval Gate</button>
+    </div>
+    <section id="content"></section>
+  </main>
+</div>
+<script>
+const DATA = {"title": "HVAC Prospect Outreach Simulation Deck", "prospects": [{"rank": 1, "business_name": "Olive Air & Heating", "market": "Gilbert", "website_url": "https://oliveairandheating.com/", "contact_or_booking_url": "https://oliveairandheating.com/contact/", "confidence": "high", "outreach_angle": "Possible fit for an intake-speed and callback-handoff review because the public site leans hard into instant scheduling, live availability, and emergency responsiveness."}, {"rank": 2, "business_name": "Instant Heating and Air", "market": "Phoenix", "website_url": "https://instantheatingandair.com/", "contact_or_booking_url": "https://instantheatingandair.com/book.html", "confidence": "high", "outreach_angle": "Possible fit for reviewing emergency-call handling and estimate handoff because the site advertises immediate booking, instant estimates, and 24/7 response."}, {"rank": 3, "business_name": "Frozen Cactus Air", "market": "Mesa", "website_url": "https://frozencactusair.com/", "contact_or_booking_url": "https://frozencactusair.com/", "confidence": "high", "outreach_angle": "Possible fit for reviewing emergency-intake and direct-tech callback workflows because the company promotes same-day service, multi-city coverage, and direct technician contact."}, {"rank": 5, "business_name": "Cold Stinger Heating & Air Conditioning", "market": "Phoenix", "website_url": "https://coldstingerheatingandairconditioning.com/", "contact_or_booking_url": "https://coldstingerheatingandairconditioning.com/contact-hvac-phoenix-az/", "confidence": "high", "outreach_angle": "Possible fit for a missed-call and follow-up review because the site openly promotes emergency response, maintenance-plan volume, and pricing-related self-serve flows."}, {"rank": 6, "business_name": "Norris Air", "market": "Gilbert", "website_url": "https://norrisair.com/hvac/gilbert-az/", "contact_or_booking_url": "https://norrisair.com/contact-us/", "confidence": "high", "outreach_angle": "Possible fit for a workflow review around modern-system service intake and owner-visible follow-up because the public site pairs older local tenure with newer-system positioning."}], "simulations": [{"id": "truth-surface", "title": "Locate The Truth Surface", "difficulty": "foundation", "scenario": "Randall asks where the current outreach packet is and what it authorizes.", "task": "Answer in 60 seconds. Name the packet location and authority boundary.", "expected": "The packet is in 10. Deliverables/AI Drop-Service OS as the HVAC Private Pilot Outreach Packet. It prepares outreach but does not authorize sending. Real contact requires Randall's exact approval of batch, channel, and copy.", "fail_triggers": ["QA cleared it for sending", "cannot name file family", "omits owner-gated boundary"], "category": "source"}, {"id": "offer-plain-english", "title": "Explain The Offer Without Hype", "difficulty": "foundation", "scenario": "A friend asks what Randall is selling.", "task": "Explain the AI Workflow Clarity Sprint in plain English.", "expected": "It is a 5-day review of one workflow, starting with HVAC missed-call recovery or callback handoffs. The output is a practical map and improvement checklist. It is not a software install, revenue guarantee, credential request, or customer-data project.", "fail_triggers": ["AI will automate everything", "promises more bookings", "implementation included"], "category": "offer"}, {"id": "safe-angle", "title": "Pick The Safe Outreach Angle", "difficulty": "foundation", "scenario": "A prospect's public site emphasizes online booking, fast response, and emergency service.", "task": "Write one safe outreach angle.", "expected": "Possible fit for a workflow review because the public site emphasizes response speed and scheduling, which may make intake clarity and callback handoffs worth reviewing.", "fail_triggers": ["they are losing leads", "their workflow is broken", "they need AI"], "category": "copy"}, {"id": "unsafe-copy-repair", "title": "Repair Unsafe Copy", "difficulty": "core", "scenario": "Unsafe draft: Your HVAC company is probably losing calls and revenue. Our AI can recover those missed opportunities.", "task": "Rewrite it safely.", "expected": "I noticed your public site emphasizes fast HVAC service and scheduling. I am testing a small 5-day workflow review around missed-call recovery, callback handoffs, and intake friction. It is a diagnostic review, not a promise of more bookings or revenue.", "fail_triggers": ["keeps revenue claim", "keeps accusation", "keeps AI can recover"], "category": "copy"}, {"id": "channel-boundary", "title": "Channel Boundary", "difficulty": "core", "scenario": "Randall says: Let's call all 20 tomorrow.", "task": "Respond with the correct boundary.", "expected": "Do not call all 20. The current safe gate is approval of the first 5-prospect batch for manual official-site contact form or official email only. Phone outreach needs separate approval and official-site phone-path validation.", "fail_triggers": ["phone approved", "20 is fine", "bulk automation"], "category": "channel"}, {"id": "send-details", "title": "Prospect Replies: Send Details", "difficulty": "core", "scenario": "After approved outreach, a prospect replies: Sure, send details.", "task": "Draft a safe reply.", "expected": "Thanks. I can send the one-page scope. The review is narrow: one intake or callback workflow, no production access, no credentials, and no customer data. The goal is a practical workflow map and improvement checklist. If that sounds aligned, a 15-minute call can confirm fit.", "fail_triggers": ["sends payment link", "requests CRM access", "offers implementation"], "category": "reply"}, {"id": "recordings-stop", "title": "Prospect Offers Call Recordings", "difficulty": "core", "scenario": "Prospect says they can send call recordings and customer texts.", "task": "Respond safely.", "expected": "Not for this first review. Please do not send call recordings, customer texts, phone numbers, addresses, or private customer details. We can start with a general workflow description and synthetic or redacted examples unless a separate privacy boundary is approved.", "fail_triggers": ["accepts recordings", "asks for transcripts", "uploads customer data"], "category": "data"}, {"id": "discovery-open", "title": "Discovery Call Opening", "difficulty": "core", "scenario": "You are opening a 15-minute discovery call with an HVAC owner.", "task": "Give the first 30 seconds.", "expected": "Thanks for taking the time. The narrow thing I am testing is a 5-day review of one intake or callback workflow. I am not asking for credentials, customer data, recordings, or production access. Today is just to see whether a workflow map and follow-up checklist would be useful.", "fail_triggers": ["starts selling tools", "asks for login", "opens with ROI"], "category": "call"}, {"id": "servicetitan", "title": "Objection: We Already Use ServiceTitan", "difficulty": "advanced", "scenario": "Prospect says they already use ServiceTitan.", "task": "Respond without criticizing their stack.", "expected": "That may be fine. This Sprint is not a replacement for ServiceTitan. It looks at the human workflow around missed calls, callbacks, and handoff status. If that is already clean, the Sprint is probably not needed.", "fail_triggers": ["attacks ServiceTitan", "claims AI improves it", "pushes implementation"], "category": "objection"}, {"id": "revenue-question", "title": "Objection: How Much Revenue Will This Add?", "difficulty": "advanced", "scenario": "Prospect asks how much revenue this will add.", "task": "Answer safely.", "expected": "I cannot promise revenue or booked-job lift. The first Sprint is a diagnostic. It clarifies where follow-up, ownership, or handoff status may be unclear. Any later measurement must be defined separately and treated as evidence, not a guarantee.", "fail_triggers": ["gives a percentage", "says it pays for itself", "guaranteed ROI"], "category": "objection"}, {"id": "scope-classifier", "title": "Qualification Decision", "difficulty": "advanced", "scenario": "A prospect wants text automation, missed-call auto-replies, and after-hours emergency triage.", "task": "Classify the prospect.", "expected": "Interested but out of first-scope. Text automation and emergency triage require separate approval, compliance review, consent and opt-out handling, and implementation scope. The first Sprint can map the workflow but cannot send texts or handle emergency decisions.", "fail_triggers": ["accepts text automation", "includes emergency triage", "skips compliance boundary"], "category": "qualification"}, {"id": "approval-card", "title": "Build The Approval Card", "difficulty": "advanced", "scenario": "Randall wants to proceed with the first batch.", "task": "Fill the minimum approval fields.", "expected": "Decision: approve manual first-batch outreach. Batch: Olive Air, Instant Heating and Air, Frozen Cactus, Cold Stinger, Norris Air. Channel: official-site contact form or official website email only. Copy: approved initial email and one follow-up. Not approved: phone, SMS, bulk send, CRM import, payment link, customer data, credentials, production access, and ROI/revenue/booking claims.", "fail_triggers": ["approval already granted", "omits channel", "omits stop lines"], "category": "approval"}], "authority": {"internal_training_only": true, "customer_outreach_approved": false, "payment_collection_approved": false, "customer_data_collection_approved": false, "channel_binding_approved": false, "crm_import_approved": false, "bulk_automation_approved": false, "phone_sms_approved": false, "credential_or_production_access_approved": false, "owner_approval_inferred": false}, "offer": {"name": "AI Workflow Clarity Sprint", "niche": "HVAC", "wedge": "missed-call recovery, callback handoffs, and intake friction", "plain_english": "A fixed-scope 5-day review of one intake or callback workflow. It returns a practical map and improvement checklist without system access, customer data, production changes, or outcome guarantees.", "included": ["current-state workflow map", "handoff and follow-up gap list", "safe acknowledgement and escalation sketch", "implementation-readiness checklist", "manual status-tracking template"], "not_included": ["guaranteed revenue or booked jobs", "live automation build", "CRM migration", "text automation", "call recording setup", "emergency dispatch coverage", "legal, compliance, or security certification"]}};
+const storeKey = "wf75-hvac-outreach-sim-scores-v1";
+let tab = "briefing";
+let current = 0;
+let scores = JSON.parse(localStorage.getItem(storeKey) || "{}");
+
+function saveScores() {
+  localStorage.setItem(storeKey, JSON.stringify(scores));
+}
+
+function scoreCount() {
+  return Object.keys(scores).filter((id) => scores[id] !== undefined).length;
+}
+
+function updateProgress() {
+  const count = scoreCount();
+  const pct = Math.round((count / DATA.simulations.length) * 100);
+  document.getElementById("meterFill").style.width = pct + "%";
+  document.getElementById("progressText").textContent = count + " of " + DATA.simulations.length + " simulations scored";
+}
+
+function renderNav() {
+  const nav = document.getElementById("nav");
+  nav.innerHTML = "";
+  DATA.simulations.forEach((sim, idx) => {
+    const btn = document.createElement("button");
+    btn.textContent = (idx + 1) + ". " + sim.title + (scores[sim.id] !== undefined ? " [" + scores[sim.id] + "]" : "");
+    btn.className = tab === "simulator" && current === idx ? "active" : "";
+    btn.onclick = () => { tab = "simulator"; current = idx; render(); };
+    nav.appendChild(btn);
+  });
+}
+
+function briefing() {
+  return `
+    <div class="card good">
+      <h2>${DATA.offer.name}</h2>
+      <p>${DATA.offer.plain_english}</p>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>The wedge</h3>
+        <p>${DATA.offer.wedge}</p>
+      </div>
+      <div class="card stop">
+        <h3>Hard boundary</h3>
+        <p>No outreach, calls, SMS, CRM import, payment link, customer data, credentials, production access, or owner approval is created by this training.</p>
+      </div>
+    </div>
+    <div class="card svg-wrap">${flowSvg()}</div>
+  `;
+}
+
+function flowSvg() {
+  return `<svg viewBox="0 0 960 170" role="img" aria-label="Outreach workflow">
+    <rect width="960" height="170" rx="16" fill="#f8fafc"/>
+    ${["Research","Draft","QA","Approve","Manual","Track"].map((label, i) => {
+      const colors = ["#0f766e","#2563eb","#7c3aed","#b45309","#047857","#374151"];
+      const x = 34 + i * 151;
+      const arrow = i < 5 ? `<path d="M${x+123} 77 L${x+154} 77" stroke="#64748b" stroke-width="4"/><path d="M${x+154} 77 l-10 -8 v16 z" fill="#64748b"/>` : "";
+      return `<rect x="${x}" y="45" width="118" height="64" rx="10" fill="${colors[i]}"/><text x="${x+59}" y="82" text-anchor="middle" font-size="17" font-weight="700" fill="white">${label}</text>${arrow}`;
+    }).join("")}
+    <text x="480" y="138" text-anchor="middle" font-size="15" fill="#475569">External contact waits for exact Randall approval.</text>
+  </svg>`;
+}
+
+function prospects() {
+  return `<div class="grid">${DATA.prospects.map((p) => `
+    <article class="card">
+      <span class="badge">#${p.rank} / ${p.market}</span>
+      <h3>${p.business_name}</h3>
+      <p>${p.outreach_angle}</p>
+      <p class="muted">${p.contact_or_booking_url}</p>
+    </article>
+  `).join("")}</div>`;
+}
+
+function simulator() {
+  const sim = DATA.simulations[current];
+  const answerOpen = document.body.dataset.answerOpen === sim.id;
+  return `
+    <div class="card">
+      <div class="scenario-title">
+        <div>
+          <span class="badge">${sim.difficulty} / ${sim.category}</span>
+          <h2>${current + 1}. ${sim.title}</h2>
+        </div>
+        <span class="badge">Score: ${scores[sim.id] ?? "not scored"}</span>
+      </div>
+      <p><strong>Scenario:</strong> ${sim.scenario}</p>
+      <p><strong>Task:</strong> ${sim.task}</p>
+      <textarea placeholder="Write or rehearse your answer here. This stays local in the browser view and is not saved."></textarea>
+      <div class="scorebar">
+        <button onclick="setScore('${sim.id}',0)">0 Unsafe</button>
+        <button onclick="setScore('${sim.id}',1)">1 Needs work</button>
+        <button onclick="setScore('${sim.id}',2)">2 Usable</button>
+        <button onclick="setScore('${sim.id}',3)">3 Ready</button>
+        <button onclick="toggleAnswer('${sim.id}')">${answerOpen ? "Hide" : "Reveal"} standard</button>
+      </div>
+      <div class="answer ${answerOpen ? "open" : ""}">
+        <strong>Expected answer:</strong>
+        <p>${sim.expected}</p>
+        <strong>Fail triggers:</strong>
+        <ul>${sim.fail_triggers.map((x) => `<li>${x}</li>`).join("")}</ul>
+      </div>
+    </div>
+  `;
+}
+
+function approval() {
+  const checks = [
+    "First 5 prospects are exact and approved",
+    "Channel is official-site contact form or official email only",
+    "Copy version is exact and approved",
+    "No phone, SMS, bulk send, CRM import, or payment link",
+    "No customer data, credentials, recordings, or production access",
+    "No ROI, revenue, booking, emergency, legal, compliance, or security claims",
+    "Manual tracking path is ready"
+  ];
+  return `
+    <div class="card warn">
+      <h2>Approval Gate</h2>
+      <p>Use this checklist before any real external contact. Checking boxes here does not approve outreach; it prepares the approval decision.</p>
+      ${checks.map((c, i) => `<label><input type="checkbox" data-approval="${i}"> ${c}</label>`).join("")}
+    </div>
+    <div class="card stop">
+      <h3>Final sentence before sending</h3>
+      <p>Randall approves exact first-batch manual official-site contact using the approved copy: yes or no.</p>
+    </div>
+  `;
+}
+
+function render() {
+  document.querySelectorAll("[data-tab]").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tab === tab);
+  });
+  const content = document.getElementById("content");
+  if (tab === "briefing") content.innerHTML = briefing();
+  if (tab === "prospects") content.innerHTML = prospects();
+  if (tab === "simulator") content.innerHTML = simulator();
+  if (tab === "approval") content.innerHTML = approval();
+  renderNav();
+  updateProgress();
+}
+
+function setScore(id, value) {
+  scores[id] = value;
+  saveScores();
+  render();
+}
+
+function toggleAnswer(id) {
+  document.body.dataset.answerOpen = document.body.dataset.answerOpen === id ? "" : id;
+  render();
+}
+
+document.querySelectorAll("[data-tab]").forEach((btn) => {
+  btn.onclick = () => { tab = btn.dataset.tab; render(); };
+});
+document.getElementById("resetBtn").onclick = () => {
+  scores = {};
+  saveScores();
+  document.body.dataset.answerOpen = "";
+  render();
+};
+document.addEventListener("keydown", (event) => {
+  if (tab !== "simulator") return;
+  if (event.key === "ArrowRight" && current < DATA.simulations.length - 1) { current++; render(); }
+  if (event.key === "ArrowLeft" && current > 0) { current--; render(); }
+});
+render();
+</script>
+</body>
+</html>

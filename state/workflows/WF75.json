@@ -2,24 +2,41 @@
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF75",
   "display_name": "Retail Investor Finance Intelligence SaaS",
-  "tier": "P0",
-  "effective_status": "stale",
-  "next_action": "Run/refine the next anonymous service-state slice and keep the internal PM PDF, operator Excel, and recurring finance delivery series current.",
-  "helper_safe": true,
+  "tier": "P3",
+  "priority": "P3",
+  "lifecycle": "paused",
+  "readiness": "paused",
+  "effective_status": "on_hold",
+  "current_state": "Paused by Randall 2026-06-09; anonymous service-state proof remains internal review evidence.",
+  "next_action": "Do not advance unless Randall resumes WF75.",
+  "authoritative_next_action": "Do not advance unless Randall resumes WF75.",
+  "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "review-only internal/service-led; customer output gated",
+  "authority_class": "paused_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/wf75-service-state-current.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
   "blockers": [
     "Customer/public/account/advice output blocked",
-    "No fake-person product truth"
+    "No fake-person product truth",
+    "Canonical Active Workflows records WF75 as paused by Randall on 2026-06-09; reconcile the routing-only control registry to that existing decision.",
+    "Canonical Active Workflows hold: Paused by Randall 2026-06-09; anonymous service-state proof remains internal review evidence."
   ],
   "stop_lines": [
     "No fake-person product truth, public/customer/account/advice/trading claims, guaranteed return/win-rate/probability claim, source-licensing assumption, or legal/compliance-readiness claim."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md",
-  "primary_route_artifact": "scripts/wf75_training_desk.py",
+  "primary_route_artifact": "tmp/wf75-service-state-current.json",
   "secondary_artifacts": [
+    "scripts/wf75_training_desk.py",
     "tmp/wf75-operator-console.json",
-    "tmp/wf75-service-state-current.json",
     "tmp/wf75-deliverable-packager.json",
     "tmp/wf75-deliverables-workbook.xlsx",
     "tmp/finance-delivery-series.json",
@@ -31,11 +48,23 @@
     "python scripts\\finance_delivery_series_orchestrator.py --mode all --write --validate"
   ],
   "default_resume_command": null,
-  "control_override": null,
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Randall",
+    "set_at_local": "2026-06-09 America/Phoenix",
+    "set_at_utc": "2026-08-14T04:18:17Z",
+    "reason": "Canonical Active Workflows records WF75 as paused by Randall on 2026-06-09; reconcile the routing-only control registry to that existing decision.",
+    "resume_condition": "Resume only when Randall explicitly resumes WF75.",
+    "aliases": [
+      "retail_investor_finance_intelligence_saas",
+      "workflow_75"
+    ],
+    "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+  },
   "pm_action": {
-    "action_id": "wf75_service_state-refresh_artifact",
-    "action_type": "refresh_artifact",
-    "description": "Refresh WF75 service state and readiness plan, then rerun validation.",
+    "action_id": "wf75_service_state-execute_safe_next_step",
+    "action_type": "execute_safe_next_step",
+    "description": "Run the next anonymous service lifecycle slice from the scenario library when main session chooses the slice.",
     "lane_id": "wf75_service_state",
     "authority": "review_only",
     "inline_execution_allowed": false,
@@ -46,27 +75,20 @@
       "no external delivery",
       "no public launch"
     ],
-    "lane_status": "stale",
-    "readiness_score": 45,
-    "rank": 4,
-    "pm_packet_only": true
+    "lane_status": "on_hold",
+    "readiness_score": 90,
+    "rank": 12,
+    "pm_packet_only": true,
+    "source_lane_status": "ready",
+    "superseded_by_route_contract": true
   },
-  "pm_job": {
-    "job_id": "pm-04-wf75-service-state-refresh-artifact",
-    "status": "ready_for_main_or_helper",
-    "validation_budget": {
-      "budget": "narrow",
-      "description": "One owner plus one adjacent consumer or validator.",
-      "closeout_mode": "pm_state",
-      "proof_command_count": 1,
-      "max_default_proof_commands": 3,
-      "phase_count": 3
-    },
-    "closeout_mode": "pm_state",
-    "collision_group": "wf75_service_state"
-  },
+  "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

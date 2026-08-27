@@ -252,6 +252,10 @@ def row_state(
         blockers.append("band_exception_review_required")
         return "exception_owner_review", blockers, True
 
+    if proposal.get("needs_review") is True and proposal.get("blocking_review") is False:
+        blockers.append("monitor_only_band_review")
+        return "monitor_only_review", blockers, owner_review_required
+
     if proposal.get("needs_review") is True and proposal.get("canonical_apply_eligible") is not True:
         blockers.append(skipped.get("reason") or "band_review_not_applyable")
         return "exception_owner_review", blockers, True
@@ -264,6 +268,98 @@ def row_state(
         return "clean_and_fresh", blockers, False
 
     return "freshness_or_context_watch", blockers, owner_review_required
+
+
+def entry_policy_review_candidate(
+    symbol: str,
+    proposal: dict[str, Any],
+    tech: dict[str, Any],
+    state: str,
+    blockers: list[str],
+) -> dict[str, Any]:
+    entry_policy = str(proposal.get("entry_policy") or "").lower()
+    coverage_lane = str(proposal.get("coverage_lane") or "").lower()
+    workflow_state = str(proposal.get("workflow_state") or "").upper()
+    band_status = str(proposal.get("band_status") or "").upper()
+    reasons = [str(item) for item in as_list(proposal.get("reasons"))]
+    has_numeric_band = all(
+        proposal.get(key) is not None
+        for key in ("current_band_low", "current_band_high", "current_stop")
+    )
+    tech_in_band = tech.get("in_entry_band")
+    surface_conflicts: list[str] = []
+    if tech_in_band is False and band_status == "IN_BAND":
+        surface_conflicts.append("technical_refresh_not_in_band_but_band_proposals_in_band")
+    if tech_in_band is None:
+        source_setup_valid = band_status == "IN_BAND"
+    else:
+        source_setup_valid = tech_in_band is True
+    hard_blockers: list[str] = []
+    if tech.get("below_stop") is True or "below_stop_or_invalidation" in blockers:
+        hard_blockers.append("below_stop_or_invalidation")
+    legacy_repair_workflow_blocks = workflow_state == "REPAIR" and state != "monitor_only_review"
+    if legacy_repair_workflow_blocks or entry_policy == "repair_mode":
+        hard_blockers.append("repair_mode_or_repair_workflow")
+
+    policy_metadata_blocked = (
+        entry_policy in {"underdefined", "reference_band", "conditional_requalify", "policy_review_required"}
+        or (coverage_lane and coverage_lane != "execution")
+        or workflow_state == "WATCH"
+        or any("entry policy is not band_defined" in reason for reason in reasons)
+        or any("workflow state is not decision-grade" in reason for reason in reasons)
+    )
+    candidate = bool(
+        has_numeric_band
+        and source_setup_valid
+        and policy_metadata_blocked
+        and not hard_blockers
+        and not surface_conflicts
+    )
+    if candidate:
+        action = "main_review_required"
+    elif hard_blockers:
+        action = "repair_or_reclaim_first"
+    elif not has_numeric_band:
+        action = "missing_numeric_band"
+    elif not source_setup_valid:
+        action = "monitor_until_setup_valid"
+    else:
+        action = "no_entry_policy_review_needed"
+    visibility_reasons: list[str] = []
+    if candidate:
+        visibility_reasons.append("existing_surfaces_show_setup_but_policy_metadata_suppresses_visibility")
+    if coverage_lane and coverage_lane != "execution":
+        visibility_reasons.append(f"coverage_lane={coverage_lane}")
+    if entry_policy:
+        visibility_reasons.append(f"entry_policy={entry_policy}")
+    if workflow_state:
+        visibility_reasons.append(f"workflow_state={workflow_state}")
+    if hard_blockers:
+        visibility_reasons.extend(hard_blockers)
+    if surface_conflicts:
+        visibility_reasons.extend(surface_conflicts)
+    return {
+        "candidate": candidate,
+        "recommended_entry_policy_action": action,
+        "secondary_not_suppressing": True,
+        "source_setup_valid": bool(source_setup_valid),
+        "has_numeric_band_stop": bool(has_numeric_band),
+        "policy_metadata_blocked": bool(policy_metadata_blocked),
+        "hard_blockers": hard_blockers,
+        "surface_conflicts": surface_conflicts,
+        "visibility_reasons": visibility_reasons,
+        "source_fields": {
+            "technical.in_entry_band": tech.get("in_entry_band"),
+            "technical.below_stop": tech.get("below_stop"),
+            "technical.ma_posture": tech.get("ma_posture"),
+            "band.band_status": proposal.get("band_status"),
+            "band.entry_policy": proposal.get("entry_policy"),
+            "band.coverage_lane": proposal.get("coverage_lane"),
+            "band.workflow_state": proposal.get("workflow_state"),
+            "band.canonical_apply_eligible": proposal.get("canonical_apply_eligible"),
+            "hygiene.state": state,
+        },
+    }
 
 
 def build_rows() -> list[dict[str, Any]]:
@@ -281,11 +377,13 @@ def build_rows() -> list[dict[str, Any]]:
         applied_row = applied.get(symbol, {})
         skipped_row = skipped.get(symbol, {})
         state, blockers, owner_review_required = row_state(symbol, proposal, tech, quote, applied_row, skipped_row)
+        entry_policy_review = entry_policy_review_candidate(symbol, proposal, tech, state, blockers)
         rows.append({
             "ticker": symbol,
             "state": state,
             "blockers": blockers,
             "owner_review_required": owner_review_required,
+            "entry_policy_review": entry_policy_review,
             "quote": {
                 "freshness_status": quote.get("freshness_status"),
                 "age_seconds": quote.get("age_seconds"),
@@ -402,6 +500,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     post_apply_open_rows = [row for row in rows if row.get("state") == "post_apply_review_still_open"]
     pending_rows = [row for row in rows if row.get("state") == "eligible_auto_maintenance_pending"]
     clean_rows = [row for row in rows if row.get("state") == "clean_and_fresh"]
+    entry_policy_review_rows = [
+        row for row in rows
+        if as_dict(row.get("entry_policy_review")).get("candidate") is True
+    ]
     status = "blocked" if errors else "needs_review" if exception_rows or post_apply_open_rows or pending_rows else "ok"
     if pending_rows:
         next_safe_action = "Run with --apply-eligible from main-session or approved cron path to clear eligible routine maintenance."
@@ -427,6 +529,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "eligible_auto_maintenance_pending_tickers": [row["ticker"] for row in pending_rows],
             "exception_owner_review_count": len(exception_rows),
             "exception_owner_review_tickers": [row["ticker"] for row in exception_rows],
+            "entry_policy_review_candidate_count": len(entry_policy_review_rows),
+            "entry_policy_review_candidate_tickers": [row["ticker"] for row in entry_policy_review_rows],
             "next_safe_action": next_safe_action,
         },
         "source_artifacts": {

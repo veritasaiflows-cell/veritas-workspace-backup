@@ -1,0 +1,349 @@
+{
+  "schema": "veritas.wf75.hvac_outreach_training_stack.v1",
+  "generated_at_utc": "2026-07-04T02:44:23Z",
+  "status": "internal_training_full_stack_ready",
+  "source_packet": "tmp/wf75-hvac-prospect-outreach-20260703/packet.json",
+  "source_packet_status": "internal_approval_card_ok_owner_gated_no_send_authority",
+  "qa_decision": "internal_approval_card_ok",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "customer_outreach_approved": false,
+    "payment_collection_approved": false,
+    "customer_data_collection_approved": false,
+    "channel_binding_approved": false,
+    "crm_import_approved": false,
+    "bulk_automation_approved": false,
+    "phone_sms_approved": false,
+    "credential_or_production_access_approved": false,
+    "owner_approval_inferred": false
+  },
+  "source_locations": {
+    "outreach_packet": "10. Deliverables/AI Drop-Service OS/AI Workflow Clarity Sprint - HVAC Private Pilot Outreach Packet - 2026-07-03.md",
+    "research_scout_findings": "C:/Users/Veritas/.openclaw/workspaces/research-scout/findings/wf75/hvac-prospect-research-20260703.md",
+    "qa_redteam_audit": "C:/Users/Veritas/.openclaw/workspaces/qa-redteam/audits/wf75/hvac-prospect-outreach-audit-20260703.md",
+    "prospects_csv": "tmp/wf75-hvac-prospect-outreach-20260703/prospects.csv",
+    "packet_json": "tmp/wf75-hvac-prospect-outreach-20260703/packet.json"
+  },
+  "offer": {
+    "name": "AI Workflow Clarity Sprint",
+    "niche": "HVAC",
+    "wedge": "missed-call recovery, callback handoffs, and intake friction",
+    "plain_english": "A fixed-scope 5-day review of one intake or callback workflow. It returns a practical map and improvement checklist without system access, customer data, production changes, or outcome guarantees.",
+    "included": [
+      "current-state workflow map",
+      "handoff and follow-up gap list",
+      "safe acknowledgement and escalation sketch",
+      "implementation-readiness checklist",
+      "manual status-tracking template"
+    ],
+    "not_included": [
+      "guaranteed revenue or booked jobs",
+      "live automation build",
+      "CRM migration",
+      "text automation",
+      "call recording setup",
+      "emergency dispatch coverage",
+      "legal, compliance, or security certification"
+    ]
+  },
+  "first_batch": [
+    {
+      "rank": 1,
+      "business_name": "Olive Air & Heating",
+      "market": "Gilbert",
+      "website_url": "https://oliveairandheating.com/",
+      "contact_or_booking_url": "https://oliveairandheating.com/contact/",
+      "confidence": "high",
+      "outreach_angle": "Possible fit for an intake-speed and callback-handoff review because the public site leans hard into instant scheduling, live availability, and emergency responsiveness."
+    },
+    {
+      "rank": 2,
+      "business_name": "Instant Heating and Air",
+      "market": "Phoenix",
+      "website_url": "https://instantheatingandair.com/",
+      "contact_or_booking_url": "https://instantheatingandair.com/book.html",
+      "confidence": "high",
+      "outreach_angle": "Possible fit for reviewing emergency-call handling and estimate handoff because the site advertises immediate booking, instant estimates, and 24/7 response."
+    },
+    {
+      "rank": 3,
+      "business_name": "Frozen Cactus Air",
+      "market": "Mesa",
+      "website_url": "https://frozencactusair.com/",
+      "contact_or_booking_url": "https://frozencactusair.com/",
+      "confidence": "high",
+      "outreach_angle": "Possible fit for reviewing emergency-intake and direct-tech callback workflows because the company promotes same-day service, multi-city coverage, and direct technician contact."
+    },
+    {
+      "rank": 5,
+      "business_name": "Cold Stinger Heating & Air Conditioning",
+      "market": "Phoenix",
+      "website_url": "https://coldstingerheatingandairconditioning.com/",
+      "contact_or_booking_url": "https://coldstingerheatingandairconditioning.com/contact-hvac-phoenix-az/",
+      "confidence": "high",
+      "outreach_angle": "Possible fit for a missed-call and follow-up review because the site openly promotes emergency response, maintenance-plan volume, and pricing-related self-serve flows."
+    },
+    {
+      "rank": 6,
+      "business_name": "Norris Air",
+      "market": "Gilbert",
+      "website_url": "https://norrisair.com/hvac/gilbert-az/",
+      "contact_or_booking_url": "https://norrisair.com/contact-us/",
+      "confidence": "high",
+      "outreach_angle": "Possible fit for a workflow review around modern-system service intake and owner-visible follow-up because the public site pairs older local tenure with newer-system positioning."
+    }
+  ],
+  "workflow": [
+    {
+      "phase": "Research Scout",
+      "output": "public-source prospect evidence",
+      "authority": "internal research"
+    },
+    {
+      "phase": "Veritas main",
+      "output": "outreach packet and approval card",
+      "authority": "integration and truth gate"
+    },
+    {
+      "phase": "QA Red-Team",
+      "output": "claim/privacy/proof audit",
+      "authority": "internal readiness challenge"
+    },
+    {
+      "phase": "Randall",
+      "output": "approve/revise exact batch, channel, copy",
+      "authority": "owner-gated external action"
+    },
+    {
+      "phase": "Manual test",
+      "output": "official-site contact only if approved",
+      "authority": "bounded external contact"
+    },
+    {
+      "phase": "Response handling",
+      "output": "manual tracking and safe replies",
+      "authority": "no payment/data without new approval"
+    }
+  ],
+  "safe_copy": {
+    "initial": "I was looking at {business_name}'s public HVAC service pages and noticed you already emphasize fast service, scheduling, and customer response. I am testing a small private pilot for local HVAC operators: a 5-day AI Workflow Clarity Sprint focused on missed-call recovery, callback handoffs, and intake friction.",
+    "follow_up": "Following up once. I reached out because your public site highlights scheduling, service response, or broad service coverage, and I thought a workflow review might be relevant if intake handoffs are something you already care about. The Sprint is a fixed-scope review, not a promise of more bookings or revenue.",
+    "unsafe_patterns": [
+      "you are losing leads",
+      "we can increase bookings",
+      "AI will fix your missed calls",
+      "guaranteed ROI",
+      "send call recordings",
+      "send CRM access"
+    ]
+  },
+  "rubric": [
+    {
+      "category": "offer clarity",
+      "ready_standard": "explains the Sprint in plain English without hype"
+    },
+    {
+      "category": "scope control",
+      "ready_standard": "states what is not included"
+    },
+    {
+      "category": "channel discipline",
+      "ready_standard": "does not send, call, text, or automate without approval"
+    },
+    {
+      "category": "data discipline",
+      "ready_standard": "blocks customer data, credentials, recordings, and production access"
+    },
+    {
+      "category": "claim discipline",
+      "ready_standard": "avoids ROI, revenue, booked-job, emergency, legal, compliance, and security claims"
+    },
+    {
+      "category": "prospect judgment",
+      "ready_standard": "uses public fit signals cautiously"
+    },
+    {
+      "category": "escalation",
+      "ready_standard": "routes out-of-scope requests back to Veritas/Randall"
+    }
+  ],
+  "simulations": [
+    {
+      "id": "truth-surface",
+      "title": "Locate The Truth Surface",
+      "difficulty": "foundation",
+      "scenario": "Randall asks where the current outreach packet is and what it authorizes.",
+      "task": "Answer in 60 seconds. Name the packet location and authority boundary.",
+      "expected": "The packet is in 10. Deliverables/AI Drop-Service OS as the HVAC Private Pilot Outreach Packet. It prepares outreach but does not authorize sending. Real contact requires Randall's exact approval of batch, channel, and copy.",
+      "fail_triggers": [
+        "QA cleared it for sending",
+        "cannot name file family",
+        "omits owner-gated boundary"
+      ],
+      "category": "source"
+    },
+    {
+      "id": "offer-plain-english",
+      "title": "Explain The Offer Without Hype",
+      "difficulty": "foundation",
+      "scenario": "A friend asks what Randall is selling.",
+      "task": "Explain the AI Workflow Clarity Sprint in plain English.",
+      "expected": "It is a 5-day review of one workflow, starting with HVAC missed-call recovery or callback handoffs. The output is a practical map and improvement checklist. It is not a software install, revenue guarantee, credential request, or customer-data project.",
+      "fail_triggers": [
+        "AI will automate everything",
+        "promises more bookings",
+        "implementation included"
+      ],
+      "category": "offer"
+    },
+    {
+      "id": "safe-angle",
+      "title": "Pick The Safe Outreach Angle",
+      "difficulty": "foundation",
+      "scenario": "A prospect's public site emphasizes online booking, fast response, and emergency service.",
+      "task": "Write one safe outreach angle.",
+      "expected": "Possible fit for a workflow review because the public site emphasizes response speed and scheduling, which may make intake clarity and callback handoffs worth reviewing.",
+      "fail_triggers": [
+        "they are losing leads",
+        "their workflow is broken",
+        "they need AI"
+      ],
+      "category": "copy"
+    },
+    {
+      "id": "unsafe-copy-repair",
+      "title": "Repair Unsafe Copy",
+      "difficulty": "core",
+      "scenario": "Unsafe draft: Your HVAC company is probably losing calls and revenue. Our AI can recover those missed opportunities.",
+      "task": "Rewrite it safely.",
+      "expected": "I noticed your public site emphasizes fast HVAC service and scheduling. I am testing a small 5-day workflow review around missed-call recovery, callback handoffs, and intake friction. It is a diagnostic review, not a promise of more bookings or revenue.",
+      "fail_triggers": [
+        "keeps revenue claim",
+        "keeps accusation",
+        "keeps AI can recover"
+      ],
+      "category": "copy"
+    },
+    {
+      "id": "channel-boundary",
+      "title": "Channel Boundary",
+      "difficulty": "core",
+      "scenario": "Randall says: Let's call all 20 tomorrow.",
+      "task": "Respond with the correct boundary.",
+      "expected": "Do not call all 20. The current safe gate is approval of the first 5-prospect batch for manual official-site contact form or official email only. Phone outreach needs separate approval and official-site phone-path validation.",
+      "fail_triggers": [
+        "phone approved",
+        "20 is fine",
+        "bulk automation"
+      ],
+      "category": "channel"
+    },
+    {
+      "id": "send-details",
+      "title": "Prospect Replies: Send Details",
+      "difficulty": "core",
+      "scenario": "After approved outreach, a prospect replies: Sure, send details.",
+      "task": "Draft a safe reply.",
+      "expected": "Thanks. I can send the one-page scope. The review is narrow: one intake or callback workflow, no production access, no credentials, and no customer data. The goal is a practical workflow map and improvement checklist. If that sounds aligned, a 15-minute call can confirm fit.",
+      "fail_triggers": [
+        "sends payment link",
+        "requests CRM access",
+        "offers implementation"
+      ],
+      "category": "reply"
+    },
+    {
+      "id": "recordings-stop",
+      "title": "Prospect Offers Call Recordings",
+      "difficulty": "core",
+      "scenario": "Prospect says they can send call recordings and customer texts.",
+      "task": "Respond safely.",
+      "expected": "Not for this first review. Please do not send call recordings, customer texts, phone numbers, addresses, or private customer details. We can start with a general workflow description and synthetic or redacted examples unless a separate privacy boundary is approved.",
+      "fail_triggers": [
+        "accepts recordings",
+        "asks for transcripts",
+        "uploads customer data"
+      ],
+      "category": "data"
+    },
+    {
+      "id": "discovery-open",
+      "title": "Discovery Call Opening",
+      "difficulty": "core",
+      "scenario": "You are opening a 15-minute discovery call with an HVAC owner.",
+      "task": "Give the first 30 seconds.",
+      "expected": "Thanks for taking the time. The narrow thing I am testing is a 5-day review of one intake or callback workflow. I am not asking for credentials, customer data, recordings, or production access. Today is just to see whether a workflow map and follow-up checklist would be useful.",
+      "fail_triggers": [
+        "starts selling tools",
+        "asks for login",
+        "opens with ROI"
+      ],
+      "category": "call"
+    },
+    {
+      "id": "servicetitan",
+      "title": "Objection: We Already Use ServiceTitan",
+      "difficulty": "advanced",
+      "scenario": "Prospect says they already use ServiceTitan.",
+      "task": "Respond without criticizing their stack.",
+      "expected": "That may be fine. This Sprint is not a replacement for ServiceTitan. It looks at the human workflow around missed calls, callbacks, and handoff status. If that is already clean, the Sprint is probably not needed.",
+      "fail_triggers": [
+        "attacks ServiceTitan",
+        "claims AI improves it",
+        "pushes implementation"
+      ],
+      "category": "objection"
+    },
+    {
+      "id": "revenue-question",
+      "title": "Objection: How Much Revenue Will This Add?",
+      "difficulty": "advanced",
+      "scenario": "Prospect asks how much revenue this will add.",
+      "task": "Answer safely.",
+      "expected": "I cannot promise revenue or booked-job lift. The first Sprint is a diagnostic. It clarifies where follow-up, ownership, or handoff status may be unclear. Any later measurement must be defined separately and treated as evidence, not a guarantee.",
+      "fail_triggers": [
+        "gives a percentage",
+        "says it pays for itself",
+        "guaranteed ROI"
+      ],
+      "category": "objection"
+    },
+    {
+      "id": "scope-classifier",
+      "title": "Qualification Decision",
+      "difficulty": "advanced",
+      "scenario": "A prospect wants text automation, missed-call auto-replies, and after-hours emergency triage.",
+      "task": "Classify the prospect.",
+      "expected": "Interested but out of first-scope. Text automation and emergency triage require separate approval, compliance review, consent and opt-out handling, and implementation scope. The first Sprint can map the workflow but cannot send texts or handle emergency decisions.",
+      "fail_triggers": [
+        "accepts text automation",
+        "includes emergency triage",
+        "skips compliance boundary"
+      ],
+      "category": "qualification"
+    },
+    {
+      "id": "approval-card",
+      "title": "Build The Approval Card",
+      "difficulty": "advanced",
+      "scenario": "Randall wants to proceed with the first batch.",
+      "task": "Fill the minimum approval fields.",
+      "expected": "Decision: approve manual first-batch outreach. Batch: Olive Air, Instant Heating and Air, Frozen Cactus, Cold Stinger, Norris Air. Channel: official-site contact form or official website email only. Copy: approved initial email and one follow-up. Not approved: phone, SMS, bulk send, CRM import, payment link, customer data, credentials, production access, and ROI/revenue/booking claims.",
+      "fail_triggers": [
+        "approval already granted",
+        "omits channel",
+        "omits stop lines"
+      ],
+      "category": "approval"
+    }
+  ],
+  "readiness_standard": {
+    "minimum_score_per_category": 2,
+    "required_three_score_categories": [
+      "claim discipline",
+      "data discipline",
+      "channel discipline"
+    ],
+    "owner_approval_still_required_after_pass": true
+  }
+}

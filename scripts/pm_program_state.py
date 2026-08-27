@@ -12,9 +12,10 @@ from __future__ import annotations
 import argparse
 import json
 import sqlite3
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from lib.workflow_control import find_override, is_on_hold, load_registry
 from market_data_utils import atomic_write_json, load_json_artifact
@@ -27,13 +28,29 @@ LANE_SCOREBOARD_JSON = TMP / "pm-lane-scoreboard.json"
 NEXT_ACTIONS_JSON = TMP / "pm-next-actions.json"
 BLOCKER_REGISTER_JSON = TMP / "pm-blocker-register.json"
 DEFAULT_DB = TMP / "pm-program-state.sqlite"
+PM_COCKPIT_SOURCE_REGISTRY = ROOT / "state" / "pm-cockpit-source-registry.json"
 
 SCHEMA = "veritas.pm_program_state.v1"
 LANE_SCOREBOARD_SCHEMA = "veritas.pm_lane_scoreboard.v1"
 NEXT_ACTION_SCHEMA = "veritas.pm_next_actions.v1"
 BLOCKER_SCHEMA = "veritas.pm_blocker_register.v1"
+AZ = ZoneInfo("America/Phoenix")
+MARKET_REFRESH_TIME = time(6, 55)
+NYSE_FULL_HOLIDAYS_2026 = {
+    date(2026, 1, 1),
+    date(2026, 1, 19),
+    date(2026, 2, 16),
+    date(2026, 4, 3),
+    date(2026, 5, 25),
+    date(2026, 6, 19),
+    date(2026, 7, 3),
+    date(2026, 9, 7),
+    date(2026, 11, 26),
+    date(2026, 12, 25),
+}
 
 ACTIVE_WORKFLOWS = ROOT / "06. Playbooks" / "Active Workflows.md"
+SMB_SAAS_PARALLEL_PLAN = ROOT / "09. Archive" / "Legacy Audit Roots - Archived" / "Audit" / "SMB-SaaS-Parallel-Implementation-Plan-2026-06-18.md"
 
 AUTHORITY_FALSE_KEYS = {
     "public_launch_allowed",
@@ -83,6 +100,7 @@ OK_STATUSES = {
     "ready_for_internal_artifact_only_pm_handoff",
     "internal_service_led_readiness_plan_ready",
     "review_only_ok",
+    "ok_no_work",
 }
 
 WARNING_TOKENS = ("warning", "warn", "review", "stale", "partial")
@@ -92,7 +110,22 @@ BLOCKED_TOKENS = ("blocked", "critical", "error", "failed", "missing")
 # status is classified as a transparent "gated" lane state instead of a hard
 # blocker. WF72 A2 is no longer listed here because its fallback-backed Go guard
 # is expected to be green; a blocked A2 guard is now real breakage.
-EXPECTED_GATES: list[dict[str, Any]] = []
+EXPECTED_GATES: list[dict[str, Any]] = [
+    {
+        "path": "tmp/retail-customer-output-decision-packet.json",
+        "field": "status",
+        "value": "blocked",
+        "reason": "Customer output is intentionally blocked while retail routing is resumed for internal answer-safety proof only.",
+        "pending_work": "Owner launch approval, source licensing, privacy/customer-data policy, legal/compliance review, disclaimer approval, personalization policy, external delivery, and runtime exposure gates.",
+    },
+    {
+        "path": "tmp/automation-stack-hardening-pass.json",
+        "field": "status",
+        "value": "warning",
+        "reason": "Retail routing uses the hardening pass as support proof; current warnings are broader cron/handoff optimization work, not retail answer-safety failures.",
+        "pending_work": "Finish the cron enabled-count and morning handoff retirement cleanup before treating the wider automation stack as fully clean.",
+    },
+]
 
 def match_expected_gate(path: str, field: str, value: Any) -> dict[str, Any] | None:
     for gate in EXPECTED_GATES:
@@ -145,6 +178,52 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def normalize_registry_path(value: Any) -> str:
+    return str(value or "").replace("\\", "/")
+
+
+def source_registry_index(registry_path: Path = PM_COCKPIT_SOURCE_REGISTRY) -> dict[str, dict[str, Any]]:
+    registry = load_json(registry_path)
+    index: dict[str, dict[str, Any]] = {}
+    for source in as_list(registry.get("sources")):
+        row = as_dict(source)
+        key = str(row.get("key") or "")
+        path = normalize_registry_path(row.get("path"))
+        if key:
+            index[f"key:{key}"] = row
+        if path:
+            index[f"path:{path}"] = row
+    return index
+
+
+def registry_source_for_artifact(
+    key: str,
+    path: str,
+    registry_index: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    index = registry_index if registry_index is not None else source_registry_index()
+    return index.get(f"key:{key}") or index.get(f"path:{normalize_registry_path(path)}") or {}
+
+
+def registry_probe_metadata(source: dict[str, Any]) -> dict[str, Any]:
+    fields = (
+        "key",
+        "path",
+        "required",
+        "max_age_hours",
+        "group",
+        "role",
+        "freshness_cadence",
+        "market_calendar_grace",
+        "stale_action",
+        "blocks_readiness",
+        "lifecycle",
+        "activation_condition",
+        "stale_classification_note",
+    )
+    return {field: source[field] for field in fields if field in source}
+
+
 def read_text(path: Path) -> str:
     try:
         return path.read_text(encoding="utf-8")
@@ -161,24 +240,57 @@ def nested_get(obj: dict[str, Any], dotted: str) -> Any:
     return current
 
 
+def wf74_finance_source_open_action_override(lane_id: str, status: str, loaded_payloads: list[dict[str, Any]]) -> dict[str, Any]:
+    if lane_id != "wf74_learning_runtime" or status != "blocked":
+        return {}
+    for payload in loaded_payloads:
+        summary = as_dict(payload.get("summary"))
+        if summary.get("finance_response_quality_recommended_repair_route") != "wf78_wf85_source_open_repair":
+            continue
+        source_open_blocked_count = summary.get("finance_response_quality_source_open_blocked_count")
+        return {
+            "action_type": "inspect_blocker",
+            "description": (
+                "Route the WF74 scorecard blocker through the finance source-open repair conveyor: run "
+                "wf78_source_open_repair_executor.py, wf78_source_open_work_packet.py, and "
+                "finance_response_quality_slice.py, then rerun the WF74 collection runner. "
+                f"Current source_open_blocked_count={source_open_blocked_count}."
+            ),
+            "department": "finance_wf78_wf84_wf85",
+            "department_owner": "main-session-veritas-finance",
+            "owner_workflow": "WF78/WF84/WF85",
+            "top_job_id": "pm-wf74-finance-source-open-quality-repair",
+            "top_job_title": "Clear finance response quality source-open blockers so WF74 scorecard can pass",
+            "blocker_chain": summary.get("finance_response_quality_blocker_chain") or [],
+        }
+    return {}
+
+
 def artifact_probe(
     key: str,
     path: Path,
     required: bool = True,
     max_age_hours: int | None = None,
     freshness_basis: str = "generated_at_utc",
+    registry_index: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     payload = load_json_artifact(path)
     now = datetime.now(timezone.utc)
+    relative_path = rel(path)
+    registry_source = registry_source_for_artifact(key, relative_path, registry_index)
+    registry_required = registry_source.get("required")
+    effective_required = registry_required if isinstance(registry_required, bool) else required
     probe: dict[str, Any] = {
         "key": key,
-        "path": rel(path),
-        "required": required,
+        "path": relative_path,
+        "required": effective_required,
         "exists": path.exists(),
         "parseable_json": isinstance(payload, dict),
         "json_expected": True,
         "max_age_hours": max_age_hours,
     }
+    if registry_source:
+        probe["source_registry"] = registry_probe_metadata(registry_source)
     if path.exists():
         probe["mtime_utc"] = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     if isinstance(payload, dict):
@@ -201,10 +313,15 @@ def value_status(value: Any) -> str:
     text = str(value or "").lower()
     if not text:
         return "unknown"
-    if text in OK_STATUSES or text.endswith("_ready"):
+    if text in OK_STATUSES:
         return "ok"
+    normalized = text.replace("-", "_").replace(" ", "_")
+    if normalized in {"notready", "not_ready", "unready"} or normalized.endswith(("_not_ready", "_unready")):
+        return "blocked"
     if any(token in text for token in BLOCKED_TOKENS):
         return "blocked"
+    if text.endswith("_ready"):
+        return "ok"
     if any(token in text for token in WARNING_TOKENS):
         return "warning"
     return "unknown"
@@ -228,29 +345,150 @@ def collect_authority_violations(value: Any, prefix: str = "") -> list[dict[str,
     return violations
 
 
-def artifact_health(artifacts: list[dict[str, Any]]) -> dict[str, Any]:
-    missing = [a for a in artifacts if a["required"] and not a["exists"]]
+def artifact_required_for_readiness(item: dict[str, Any]) -> bool:
+    registry = as_dict(item.get("source_registry"))
+    if isinstance(registry.get("required"), bool):
+        return bool(registry["required"])
+    return bool(item.get("required"))
+
+
+def artifact_status_blocks_readiness(item: dict[str, Any]) -> bool:
+    """Keep inactive historical/future support status visible without blocking.
+
+    Status suppression is intentionally narrower than stale suppression. A
+    source must be explicitly non-required, explicitly non-blocking, and
+    lifecycle-classified as demoted/legacy/historical/future. Required current
+    workflow artifacts continue to block even when their stale cadence is
+    monitor-only or event-triggered.
+    """
+    registry = as_dict(item.get("source_registry"))
+    lifecycle = str(registry.get("lifecycle") or "").strip().lower()
+    inactive_support = (
+        registry.get("required") is False
+        and registry.get("blocks_readiness") is False
+        and any(token in lifecycle for token in ("demoted", "legacy", "historical", "future"))
+    )
+    return not inactive_support
+
+
+def market_window(now: datetime) -> dict[str, Any]:
+    local = now.astimezone(AZ)
+    local_date = local.date()
+    is_weekday = local.weekday() < 5
+    market_holiday = local_date in NYSE_FULL_HOLIDAYS_2026
+    if market_holiday:
+        window = "market_holiday"
+    elif not is_weekday:
+        window = "weekend"
+    elif local.time() < MARKET_REFRESH_TIME:
+        window = "pre_refresh"
+    else:
+        window = "market_refresh_eligible"
+    return {
+        "timezone": "America/Phoenix",
+        "now_local": local.replace(microsecond=0).isoformat(),
+        "window": window,
+        "market_holiday": market_holiday,
+        "weekend": not is_weekday,
+        "closed_market_grace_active": window in {"market_holiday", "weekend", "pre_refresh"},
+    }
+
+
+def next_market_refresh_window(now: datetime) -> str:
+    local = now.astimezone(AZ)
+    candidate = local.date()
+    while True:
+        candidate_dt = datetime.combine(candidate, MARKET_REFRESH_TIME, tzinfo=AZ)
+        if candidate_dt > local and candidate.weekday() < 5 and candidate not in NYSE_FULL_HOLIDAYS_2026:
+            return candidate_dt.replace(microsecond=0).isoformat()
+        candidate += timedelta(days=1)
+
+
+def classify_stale_artifact(item: dict[str, Any], now: datetime) -> dict[str, Any]:
+    registry = as_dict(item.get("source_registry"))
+    cadence = str(registry.get("freshness_cadence") or "").strip().lower()
+    stale_action = str(registry.get("stale_action") or "").strip().lower()
+    role = str(registry.get("role") or "").strip().lower()
+    lifecycle = str(registry.get("lifecycle") or "").strip().lower()
+    market_grace = registry.get("market_calendar_grace") is True
+    blocks_readiness = registry.get("blocks_readiness")
+    if not isinstance(blocks_readiness, bool):
+        blocks_readiness = stale_action in {"refresh_now", "true_blocker"} or not stale_action
+
+    market = market_window(now)
+    bucket = "true_blocker" if blocks_readiness else "monitor_only_stale"
+    if registry.get("required") is False and any(token in lifecycle for token in ("demoted", "legacy", "historical")):
+        bucket = "monitor_only_stale"
+    elif stale_action in {"monitor_only", "monitor_only_stale"}:
+        bucket = "monitor_only_stale"
+    elif stale_action in {"event_triggered", "event_triggered_waiting"}:
+        bucket = "event_triggered_waiting"
+    elif stale_action == "refresh_now":
+        bucket = "refresh_now"
+    elif stale_action == "suppress_until_next_market_open":
+        bucket = "market_closed_grace" if market.get("closed_market_grace_active") else "refresh_now"
+    elif market_grace and market.get("closed_market_grace_active"):
+        bucket = "market_closed_grace"
+    elif cadence in {"event_triggered", "on_demand"}:
+        bucket = "event_triggered_waiting"
+    elif cadence in {"weekly", "weekly_or_on_demand", "monthly", "static_reference"} and not blocks_readiness:
+        bucket = "monitor_only_stale"
+    elif any(token in role for token in ("proposal", "legacy", "historical", "review_only")) and not blocks_readiness:
+        bucket = "monitor_only_stale"
+
+    return {
+        "key": item.get("key"),
+        "path": item.get("path"),
+        "age_hours": item.get("age_hours"),
+        "max_age_hours": item.get("max_age_hours"),
+        "bucket": bucket,
+        "freshness_cadence": cadence or None,
+        "stale_action": stale_action or None,
+        "blocks_readiness": blocks_readiness,
+        "market_calendar_grace": market_grace,
+        "next_eligible_refresh_window": next_market_refresh_window(now) if bucket == "market_closed_grace" else None,
+    }
+
+
+def artifact_health(artifacts: list[dict[str, Any]], now: datetime | None = None) -> dict[str, Any]:
+    now = now or datetime.now(timezone.utc)
+    missing = [a for a in artifacts if artifact_required_for_readiness(a) and not a["exists"]]
     unreadable = [
         a
         for a in artifacts
-        if a["required"]
+        if artifact_required_for_readiness(a)
         and a["exists"]
         and a.get("json_expected") is not False
         and not a["parseable_json"]
     ]
-    stale = [
-        a
-        for a in artifacts
-        if a.get("max_age_hours") is not None
-        and a.get("age_hours") is not None
-        and a["age_hours"] > a["max_age_hours"]
-    ]
+    stale = []
+    suppressed_stale = []
+    for item in artifacts:
+        if (
+            item.get("max_age_hours") is not None
+            and item.get("age_hours") is not None
+            and item["age_hours"] > item["max_age_hours"]
+        ):
+            classification = classify_stale_artifact(item, now)
+            if classification["bucket"] in {"refresh_now", "true_blocker"}:
+                stale.append({**item, "stale_classification": classification})
+            else:
+                suppressed_stale.append({**item, "stale_classification": classification})
     problem = []
     warned = []
     expected = []
+    suppressed_statuses = []
     for item in artifacts:
         for field in ("status", "validation_status"):
             state = value_status(item.get(field))
+            if state in {"blocked", "warning"} and not artifact_status_blocks_readiness(item):
+                suppressed_statuses.append({
+                    "path": item["path"],
+                    "field": field,
+                    "value": item.get(field),
+                    "reason": "registry_non_required_non_blocking_support",
+                })
+                continue
             if state == "blocked":
                 gate = match_expected_gate(item["path"], field, item.get(field))
                 if gate is not None:
@@ -264,15 +502,29 @@ def artifact_health(artifacts: list[dict[str, Any]]) -> dict[str, Any]:
                 else:
                     problem.append({"path": item["path"], "field": field, "value": item.get(field)})
             elif state == "warning":
-                warned.append({"path": item["path"], "field": field, "value": item.get(field)})
+                gate = match_expected_gate(item["path"], field, item.get(field))
+                if gate is not None:
+                    expected.append({
+                        "path": item["path"],
+                        "field": field,
+                        "value": item.get(field),
+                        "reason": gate["reason"],
+                        "pending_work": gate["pending_work"],
+                    })
+                else:
+                    warned.append({"path": item["path"], "field": field, "value": item.get(field)})
     return {
-        "required_count": len([a for a in artifacts if a["required"]]),
+        "required_count": len([a for a in artifacts if artifact_required_for_readiness(a)]),
         "present_count": len([a for a in artifacts if a["exists"]]),
         "missing_required": missing,
         "unreadable_required": unreadable,
         "stale": stale,
+        "suppressed_stale": suppressed_stale,
+        "suppressed_stale_count": len(suppressed_stale),
         "problem_statuses": problem,
         "warning_statuses": warned,
+        "suppressed_statuses": suppressed_statuses,
+        "suppressed_status_count": len(suppressed_statuses),
         "expected_gates": expected,
     }
 
@@ -326,6 +578,7 @@ def build_lane(
     if is_on_hold(hold):
         status = "on_hold"
     next_action = next_action_when_stale if status in {"stale", "needs_validation", "blocked"} else next_action_when_ready
+    action_override = wf74_finance_source_open_action_override(lane_id, status, loaded_payloads)
     if is_on_hold(hold):
         next_action = hold["next_action"]
         action_type = "hold"
@@ -337,6 +590,9 @@ def build_lane(
         action_type = "run_validator"
     else:
         action_type = "execute_safe_next_step"
+    if action_override:
+        next_action = str(action_override.get("description") or next_action)
+        action_type = str(action_override.get("action_type") or action_type)
     blockers = []
     for item in health["missing_required"]:
         blockers.append({"severity": "critical", "kind": "missing_required_artifact", "lane_id": lane_id, "path": item["path"]})
@@ -374,6 +630,7 @@ def build_lane(
             "helper_lane_allowed_from_main_session": action_type in {"refresh_artifact", "run_validator", "execute_safe_next_step"},
             "heartbeat_may_execute": False,
             "stop_lines": stop_lines,
+            **{key: value for key, value in action_override.items() if key not in {"action_type", "description"}},
         },
         "source_artifacts": artifacts,
         "stop_lines": stop_lines,
@@ -385,6 +642,14 @@ def source_artifacts() -> dict[str, dict[str, Any]]:
         "active_workflows": {
             "path": rel(ACTIVE_WORKFLOWS),
             "exists": ACTIVE_WORKFLOWS.exists(),
+            "parseable_json": False,
+            "json_expected": False,
+            "required": True,
+        },
+        "smb_saas_parallel_morning_plan": {
+            "key": "smb_saas_parallel_morning_plan",
+            "path": rel(SMB_SAAS_PARALLEL_PLAN),
+            "exists": SMB_SAAS_PARALLEL_PLAN.exists(),
             "parseable_json": False,
             "json_expected": False,
             "required": True,
@@ -406,7 +671,9 @@ def source_artifacts() -> dict[str, dict[str, Any]]:
         "authority_matrix": artifact_probe("authority_matrix", TMP / "authority-matrix.json", True, 168),
         "automation_stack_hardening_pass": artifact_probe("automation_stack_hardening_pass", TMP / "automation-stack-hardening-pass.json", True, 168),
         "retail_truth_routing_contract": artifact_probe("retail_truth_routing_contract", TMP / "retail-truth-routing-contract.json", True, 168),
+        "retail_answer_harness": artifact_probe("retail_answer_harness", TMP / "retail-answer-harness.json", True, 24),
         "retail_automation_control_plane": artifact_probe("retail_automation_control_plane", TMP / "retail-automation-control-plane.json", True, 24),
+        "retail_customer_output_decision": artifact_probe("retail_customer_output_decision", TMP / "retail-customer-output-decision-packet.json", True, 24),
         "wf75_pm_handoff": artifact_probe("wf75_pm_handoff", TMP / "wf75-artifact-only-pm-handoff.json", True, 48),
         "wf75_pm_weekly_update": artifact_probe("wf75_pm_weekly_update", TMP / "wf75-pm-weekly-update.json", True, 168),
         "wf75_pm_readiness_brief": artifact_probe("wf75_pm_readiness_brief", TMP / "wf75-pm-readiness-brief.json", True, 168),
@@ -619,10 +886,12 @@ def build_lanes(sources: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
         build_lane(
             "retail_truth_routing",
             "Retail Truth Routing System",
-            "Phase 1-4 routing proof plus Phase 4.5-7 automation visibility, customer-safety gate, seeded-bad regression, freshness prompts, internal demo cards, and quiet summary.",
+            "Resumed internal answer-safety routing proof with source-open/review-only/blocked path classification, seeded-bad regression, customer-output decision packet, and customer launch gates preserved.",
             [
                 sources["retail_truth_routing_contract"],
+                sources["retail_answer_harness"],
                 sources["retail_automation_control_plane"],
+                sources["retail_customer_output_decision"],
                 sources["automation_stack_hardening_pass"],
                 sources["go_sql_consumer_authority_guard"],
                 sources["python_go_sql_consumer_authority_guard_parity"],
@@ -630,9 +899,19 @@ def build_lanes(sources: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
                 sources["authority_matrix"],
                 sources["veritas_harness_scorecard"],
             ],
-            "Keep the retail automation control plane green; use the Command Center retail tab for route gates, SQL support health, customer-safety test status, freshness prompts, and internal demo cards.",
-            "Refresh the retail truth routing contract, retail automation control plane, automation hardening pass, A2 guard/parity proof, finance coverage, authority matrix, and harness scorecard.",
-            ["artifact-owned truth", "source-open material claims", "SQL read support only", "PM coordinates but does not own final truth", "no customer output", "no canon/portfolio mutation", "no paper/live/account action", "no owner approval inference"],
+            "Use internally for answer path classification only; keep contract, harness, control plane, and customer-output decision packet green while customer-facing output remains gated.",
+            "Refresh the retail truth routing contract, retail answer harness, customer-output decision packet, automation control plane, automation hardening pass, A2 guard/parity proof, finance coverage, authority matrix, and harness scorecard.",
+            ["artifact-owned truth", "source-open material claims", "SQL read support only", "PM coordinates but does not own final truth", "internal answer-safety only", "no customer output", "no real customer data", "no external delivery", "no canon/portfolio mutation", "no paper/live/account action", "no owner approval inference"],
+        ),
+        build_lane(
+            "smb_saas_parallel_morning_plan",
+            "SMB + SaaS Parallel Morning Sprint",
+            "Morning pickup contract for running WF79-SMB sanitized implementation and WF75 internal SaaS deliverable-gate work in parallel while customer/public delivery remains blocked.",
+            [sources["smb_saas_parallel_morning_plan"], sources["active_workflows"]],
+            "Use the audit plan as first-read, then lease disjoint WF79-SMB and WF75 surfaces for packet/blueprint and deliverable-gate implementation. Keep finance-delivery cron paused.",
+            "Refresh the audit plan and PM packet before starting the parallel morning sprint.",
+            ["no real customer data", "no customer outreach", "no external delivery", "no public SaaS launch", "no cron restart", "no ROI/legal/compliance/security readiness claim", "no account/trading/capital authority"],
+            enforce_authority_scan=False,
         ),
         build_lane(
             "smb_workflow_clarity",
@@ -728,9 +1007,9 @@ def build_lanes(sources: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
         ),
         build_lane(
             "wf78_scaleout",
-            "WF78 500-Ticker Reputation Scaleout",
-            "Repeatable reputation and batch gate for 100->500 review-only scaleout.",
-            [sources["wf78_auto_tier_router"], sources["wf78_evidence_drag_reduction"], sources["wf78_evidence_family_repair"], sources["wf78_source_open_repair_execution"], sources["wf78_source_open_work_packets"], sources["wf78_position_sizing_surface_review"], sources["wf78_deployment_readiness_review"], sources["wf78_source_artifact_capture_review"], sources["wf78_position_sizing_integration_proposal"], sources["wf78_tier_a_owner_readiness_proposals"], sources["wf78_missing_band_context_repair"], sources["wf78_source_capture_requirements_queue"], sources["wf78_official_source_discovery"], sources["wf78_official_registry_proposal"], sources["wf78_promotion_owner_lineage_queue"], sources["wf78_owner_lineage_proposal"], sources["wf78_ph_owner_review_candidate_packet"], sources["wf78_tier_a_invalidation_review_queue"], sources["wf78_official_source_capture_packet"], sources["wf78_next_owner_review_and_source_capture_integration"], sources["wf78_ticker_freshness_ledger"], sources["wf78_tier_weighted_freshness_resolution"], sources["wf78_daily_freshness_loop"], sources["parallel_repeatable_work_orchestration"], sources["wf78_owner_card_prep_loop"], sources["wf78_tier_a_evidence_repair_batch"], sources["macro_event_guard_loop"], sources["repeatable_work_closeout"], sources["wf78_500_reputation_gate"], sources["tier_promotion_review_gate"], sources["tier_b_research_packets"], sources["tier_b_research_packet_phase2_eval"], sources["tier_c_owner_decision_packet"], sources["wf78_routing_dashboard"], sources["wf78_routing_dashboard_sqlite"], sources["go_sql_500_expansion_gate"], sources["python_go_sql_500_expansion_gate_parity"], sources["go_wf78_sql_phase2_readiness_probe"], sources["python_go_wf78_sql_phase2_readiness_parity"]],
+            "WF78 Tier A/B Evidence Repair & Auto-Routing",
+            "Non-capital Tier A/B evidence repair and auto-routing over the 200-row active universe; 201-500 import remains gated/report-only.",
+            [sources["wf78_auto_tier_router"], sources["wf78_evidence_drag_reduction"], sources["wf78_evidence_family_repair"], sources["wf78_source_open_repair_execution"], sources["wf78_source_open_work_packets"], sources["wf78_position_sizing_surface_review"], sources["wf78_deployment_readiness_review"], sources["wf78_source_artifact_capture_review"], sources["wf78_position_sizing_integration_proposal"], sources["wf78_tier_a_owner_readiness_proposals"], sources["wf78_missing_band_context_repair"], sources["wf78_source_capture_requirements_queue"], sources["wf78_official_source_discovery"], sources["wf78_official_registry_proposal"], sources["wf78_promotion_owner_lineage_queue"], sources["wf78_owner_lineage_proposal"], sources["wf78_ph_owner_review_candidate_packet"], sources["wf78_tier_a_invalidation_review_queue"], sources["wf78_official_source_capture_packet"], sources["wf78_next_owner_review_and_source_capture_integration"], sources["wf78_ticker_freshness_ledger"], sources["wf78_tier_weighted_freshness_resolution"], sources["wf78_daily_freshness_loop"], sources["parallel_repeatable_work_orchestration"], sources["wf78_owner_card_prep_loop"], sources["wf78_tier_a_evidence_repair_batch"], sources["macro_event_guard_loop"], sources["wf78_500_reputation_gate"], sources["tier_promotion_review_gate"], sources["tier_b_research_packets"], sources["tier_b_research_packet_phase2_eval"], sources["tier_c_owner_decision_packet"], sources["wf78_routing_dashboard"], sources["wf78_routing_dashboard_sqlite"], sources["go_sql_500_expansion_gate"], sources["python_go_sql_500_expansion_gate_parity"], sources["go_wf78_sql_phase2_readiness_probe"], sources["python_go_wf78_sql_phase2_readiness_parity"]],
             "Use the WF78 auto-router as the live non-capital tier state; use the daily freshness loop, source-open repair execution, work packets, concrete repair reviews, integration proposals, and owner-readiness packets to keep evidence debt routed before owner-card prep.",
             "Run wf78_daily_freshness_loop, then control_closeout_bundle; use tier-weighted freshness resolution for the 200-row answer, owner-lineage proposal for the 10 Tier B rows, and missing-band repair for KTOS/SMCI before PH/invalidation/source-capture review.",
             ["derived non-capital routing only", "no ticker import without owner approval", "no production promotion", "no SQL-first authority", "no capital deployment or execution authority"],
@@ -855,10 +1134,11 @@ def build_lanes(sources: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def choose_next_actions(lanes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    # Hard safety/freshness issues outrank advancement. Once those are clear,
-    # Randall's 2026-06-09 pivot makes the personal Trade-Grade Decision OS
-    # the primary PM goal, with WF84 as its support data plane. SaaS/retail
-    # product lanes remain visible but should not preempt WF85 work while held.
+    # Hard safety/freshness issues outrank advancement. Randall's 2026-06-17
+    # night instruction created a temporary morning pickup lane for SMB plus
+    # internal SaaS deliverable-gate implementation. Finance P0 remains
+    # governance-primary, but this explicit sprint should surface first while
+    # it is ready and review-only.
     status_priority = {
         "blocked": 0,
         "stale": 1,
@@ -870,22 +1150,23 @@ def choose_next_actions(lanes: list[dict[str, Any]]) -> list[dict[str, Any]]:
         "on_hold": 7,
     }
     lane_priority = {
-        "trade_grade_decision_os": 0,
-        "finance_os_data_model": 1,
-        "wf78_scaleout": 2,
-        "ticker_card_refresh": 3,
-        "tier_promotion_review": 4,
-        "finance_engine": 5,
-        "qa_source_trust": 6,
-        "parallel_lane_orchestration": 7,
-        "operator_console": 8,
-        "pm_handoff_pdf": 9,
-        "retail_truth_routing": 10,
-        "wf75_service_state": 11,
-        "smb_workflow_clarity": 12,
-        "alerts_events": 13,
-        "sql_index": 14,
-        "authority": 15,
+        "smb_saas_parallel_morning_plan": 0,
+        "trade_grade_decision_os": 1,
+        "finance_os_data_model": 2,
+        "wf78_scaleout": 3,
+        "ticker_card_refresh": 4,
+        "tier_promotion_review": 5,
+        "finance_engine": 6,
+        "qa_source_trust": 7,
+        "parallel_lane_orchestration": 8,
+        "operator_console": 9,
+        "pm_handoff_pdf": 10,
+        "retail_truth_routing": 11,
+        "wf75_service_state": 12,
+        "smb_workflow_clarity": 13,
+        "alerts_events": 14,
+        "sql_index": 15,
+        "authority": 16,
     }
     actions = [lane["next_action"] | {"lane_status": lane["status"], "readiness_score": lane["readiness_score"]} for lane in lanes]
     actions.sort(

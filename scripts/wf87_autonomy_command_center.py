@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +37,7 @@ DEFAULT_SOURCES = {
     "wf85_timing_gate": TMP / "wf85-deployment-timing-gate.json",
     "morning_cards": TMP / "morning-paper-deployment-recommendation-cards.json",
     "autonomous_routing_cards": TMP / "autonomous-routing-deployment-cards.json",
+    "wf85_visibility_queue": TMP / "wf85-opportunity-visibility-queue.json",
     "cron_freshness": TMP / "cron-freshness-spine.json",
     "cron_control": TMP / "cron-control-packet.json",
 }
@@ -91,6 +93,43 @@ def as_list(value: Any) -> list[Any]:
 def load(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive command-center guard
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
 
 
 def authority_true_paths(value: Any, prefix: str = "") -> list[str]:
@@ -204,6 +243,7 @@ def build_summary(payloads: dict[str, dict[str, Any]]) -> dict[str, Any]:
     timing = payloads["wf85_timing_gate"]
     morning_cards = payloads["morning_cards"]
     autonomous_cards = payloads["autonomous_routing_cards"]
+    wf85_visibility = payloads.get("wf85_visibility_queue", {})
     cron = payloads["cron_freshness"]
     cron_control = payloads["cron_control"]
 
@@ -226,6 +266,7 @@ def build_summary(payloads: dict[str, dict[str, Any]]) -> dict[str, Any]:
     timing_summary = as_dict(timing.get("summary"))
     morning_summary = as_dict(morning_cards.get("summary"))
     autonomous_summary = as_dict(autonomous_cards.get("summary"))
+    visibility_summary = as_dict(wf85_visibility.get("summary"))
     cron_summary = as_dict(cron.get("summary"))
     cron_control_summary = as_dict(cron_control.get("summary"))
 
@@ -313,6 +354,13 @@ def build_summary(payloads: dict[str, dict[str, Any]]) -> dict[str, Any]:
         "autonomous_clean_randall_review_card_count": autonomous_summary.get("clean_randall_review_card_count"),
         "autonomous_card_blocked_or_waiting_count": autonomous_summary.get("blocked_or_waiting_count"),
         "autonomous_card_execution_allowed_now": autonomous_summary.get("autonomous_execution_allowed_now") is True,
+        "wf85_visibility_status": wf85_visibility.get("status"),
+        "wf85_visibility_validation_status": validation_status(wf85_visibility),
+        "wf85_visibility_candidate_count": visibility_summary.get("candidate_count"),
+        "wf85_visibility_owner_review_ready_count": visibility_summary.get("owner_review_ready_count"),
+        "wf85_visibility_market_refresh_pending_count": visibility_summary.get("market_refresh_pending_count"),
+        "wf85_visibility_gate_deferred_count": visibility_summary.get("gate_deferred_count"),
+        "wf85_visibility_repair_or_wait_count": visibility_summary.get("repair_or_wait_count"),
         "cron_status": cron.get("status"),
         "cron_validation_status": validation_status(cron),
         "cron_job_count": cron_summary.get("job_count") or cron_control_summary.get("job_count"),
@@ -353,6 +401,21 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("morning_card_execution_allowed_count_nonzero")
     if summary.get("autonomous_card_execution_allowed_now") is True:
         errors.append("autonomous_routing_card_execution_allowed_now")
+    sql_health = as_dict(payload.get("sql_canon_health"))
+    if sql_health.get("status") != "ok":
+        errors.append(f"sql_canon_guard_blocked:{sql_health.get('status')}")
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            errors.append(f"sql_canon_authority_{key}_not_false")
     return {
         "status": "error" if errors else "warning" if warnings else "ok",
         "errors": errors,
@@ -362,6 +425,7 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
 
 def build_command_center(paths: dict[str, Path]) -> dict[str, Any]:
     payloads = {name: load(path) for name, path in paths.items()}
+    sql_health = sql_canon_health()
     required = {
         "v2_rollup",
         "wf86_daily_runner",
@@ -380,6 +444,8 @@ def build_command_center(paths: dict[str, Path]) -> dict[str, Any]:
         for name, path in paths.items()
     ]
     summary = build_summary(payloads)
+    summary["sql_canon_status"] = sql_health.get("status")
+    summary["sql_canon_production_answer_count"] = sql_health.get("production_answer_count")
     summary["authority_drift_count"] = sum(1 for row in records if row.get("authority_drift_paths"))
     payload = {
         "schema": SCHEMA,
@@ -390,6 +456,7 @@ def build_command_center(paths: dict[str, Path]) -> dict[str, Any]:
         "purpose": "Single review-only command-center packet for WF87 autonomous-paper readiness.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "summary": summary,
+        "sql_canon_health": sql_health,
         "next_actions": next_actions(summary),
         "source_records": records,
         "source_artifacts": {name: rel(path) for name, path in paths.items()},
@@ -434,6 +501,7 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- WF85 timing: `{summary.get('wf85_deployment_timing_gate_status')}`, approval-ready `{summary.get('wf85_review_ready_wait_approval_count')}`, fresh-quote wait `{summary.get('wf85_review_ready_wait_fresh_quote_count')}`, suppressed `{summary.get('wf85_review_ready_suppressed_count')}`",
         f"- Morning cards: `{summary.get('morning_cards_status')}`, clean review `{summary.get('morning_clean_approval_review_card_count')}`, execution-allowed rows `{summary.get('morning_card_execution_allowed_count')}`",
         f"- Autonomous card queue: `{summary.get('autonomous_routing_cards_status')}`, owner-review candidates `{summary.get('autonomous_owner_review_card_candidate_count')}`, blocked/waiting `{summary.get('autonomous_card_blocked_or_waiting_count')}`",
+        f"- WF85 visibility queue: `{summary.get('wf85_visibility_status')}`, owner-review `{summary.get('wf85_visibility_owner_review_ready_count')}`, market-refresh-pending `{summary.get('wf85_visibility_market_refresh_pending_count')}`, gate-deferred `{summary.get('wf85_visibility_gate_deferred_count')}`, repair/wait `{summary.get('wf85_visibility_repair_or_wait_count')}`",
         f"- Cron: `{summary.get('cron_status')}`, blocked `{summary.get('cron_blocked_count')}`, urgent `{summary.get('cron_urgent_attention_count')}`",
         "",
         "Boundary: review-only readiness and operator routing. No paper/live order action.",

@@ -93,9 +93,48 @@ def test_embedded_promotion_gate_drift_is_warning_only_when_core_agrees() -> Non
     with_temp_sources(run)
 
 
+def test_superseded_owner_card_and_request_do_not_create_live_drift() -> None:
+    def run(root: Path) -> None:
+        seed_sources(root, request_low=11, gate_low=11)
+        write_json(
+            root / "cards" / "ABC.owner-card.json",
+            {
+                "generated_at_utc": "2026-06-15T00:00:00Z",
+                "order": {"symbol": "ABC"},
+                "risk_check": {
+                    "status": "blocked_current_gate_above_band_no_chase",
+                    "entry_band_low": 11,
+                    "entry_band_high": 20,
+                    "stop": 8,
+                    "blockers": ["superseded_prior_owner_card_request"],
+                    "sizing_rationale": "Superseded audit-only card.",
+                },
+                "source": {"superseded_by_current_gate": True},
+            },
+        )
+        request = json.loads((root / "requests" / "paper-trade-request.wf78-owner-card-prep-abc.json").read_text(encoding="utf-8"))
+        request["risk_check"]["blockers"] = ["superseded_prior_owner_card_request"]
+        request["source"]["superseded_by_current_gate"] = True
+        write_json(root / "requests" / "paper-trade-request.wf78-owner-card-prep-abc.json", request)
+
+        report = validator.build_report()
+        assert report["status"] == "ok"
+        assert report["validation"]["status"] == "ok"
+        assert report["summary"]["warning_count"] == 0
+        summary = report["ticker_summaries"][0]
+        assert summary["distinct_band_count"] > 1
+        assert summary["distinct_active_band_count"] == 1
+        assert summary["distinct_core_band_count"] == 1
+        assert any(record["source"] == "wf67_owner_card_superseded" for record in summary["records"])
+        assert any(record["source"] == "wf67_request_risk_check_superseded" for record in summary["records"])
+
+    with_temp_sources(run)
+
+
 def main() -> int:
     test_request_risk_check_mismatch_blocks_and_fails_validation()
     test_embedded_promotion_gate_drift_is_warning_only_when_core_agrees()
+    test_superseded_owner_card_and_request_do_not_create_live_drift()
     print("capital_deployment_band_integrity_validator_tests_passed")
     return 0
 

@@ -228,3 +228,15 @@ WF73 owns proposals and implementation plans for:
 - Result: no service pilot now. JSON lane register remains primary. Passive shadow pilot approved for parallel-lane visibility.
 - Shadow pilot active: `scripts/wf73_postgres_shadow_pilot.py` projects the lane register into shadow JSON/metrics after lane-manager writes.
 - Boundary: no Postgres/Docker/native-service install, no config/startup/credential/channel/network mutation, no SQL execution, no lane-claim authority, no finance/canon/portfolio/paper/live/account action, and no owner-approval inference.
+
+## 2026-08-22 Harness V2 Wave 1 - routing and lane-metadata truth
+
+- Randall approved Wave 1 only. The durable cross-workflow plan is `06. Playbooks/Project Continuity/Veritas Harness V2 - Governance and Efficiency Upgrade Plan - 2026-08-22.md`; Waves 2-5 remain unapproved proposals.
+- Refreshed `tmp/workflow-routing-index.json`, `tmp/workflow-routing-index.sqlite`, and `tmp/workflow-routing-index-validation.json`: 43 routes, zero critical findings, zero warnings, SQLite integrity clean. WF71, WF74, and WF88 router summaries resolve again.
+- Updated `scripts/concurrent_lane_manager.py` and focused tests so terminal pre-Wave-1 identity gaps are classified as historical-unavailable rather than fabricated. Fourteen historical rows remain visible in one warning inventory; no missing `parent_job_id`, `attempt_number`, or `retry_count` was backfilled.
+- New and active model-driven rows remain fail-closed under `new_model_lanes_have_parent_phase_attempt_identity`.
+- The one historical cancelled lane lacking `ended_at_utc` has a valid `completed_at_utc`; the validator accepts that as historical terminal proof and records it in the informational fallback inventory. History was not rewritten.
+- First independent QA rejected two real fail-open boundaries: active model rows with missing/invalid creation timestamps could bypass identity validation, and the new `completed_at_utc` fallback was not limited to historical non-complete rows. One bounded repair plus negative tests closed both defects.
+- Focused lane-manager tests, compile proof, the adjacent runtime-metadata suite, SQL-canon exception tests, workflow-routing tests, and semantic-memory maintenance tests pass. Fresh independent read-only QA returned PASS against `scripts/concurrent_lane_manager.py` SHA-256 `fefaf100ece7cc4c8785150a75529566b81ff83997cf8751b29b33ddc48b6411`.
+- Refreshed routing proof remains 43 routes / zero critical / zero warning. Refreshed harness readiness is 3 pass / 4 warning / zero fail; refreshed PM validation is `ok` but PM remains yellow with 3 blocked lanes and 1 stale lane.
+- Boundary held: no schedule/service/runtime/config/auth/finance/canon/portfolio/delete/archive/skill-apply change and no route-efficiency credit without job-scoped usage proof.

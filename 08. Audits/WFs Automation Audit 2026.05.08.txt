@@ -1,0 +1,294 @@
+## Audit verdict
+
+Your OpenClaw finance workflows are **well-governed but still under-autonomous**. The system has strong truth boundaries, validation gates, owner surfaces, and proof discipline. It is not yet a fully autonomous market-intelligence or capital-deployment decision engine because the strongest workflows intentionally stop at **review packets, candidate queues, and owner-approved decisions**, not autonomous thesis mutation, promotion, sizing, or trading.
+
+That is mostly correct. The next step should **not** be “let the agent trade.” The next step should be: **make the agent automatically generate decision-grade review objects every day, rank what matters, escalate only the highest-signal items, and prepare capital-deployment recommendations that still require owner approval.**
+
+## Current workflow state
+
+| Workflow | Status from uploaded notes | Audit read |
+|---|---:|---|
+| WF25 Research Department / Admission | Closed with follow-up | Strong foundation for ticker admission, promotion, demotion, and handoff. Narrow proof only: EOG deferred, GS held tactical. fileciteturn2file0 |
+| WF26 Fresh External Intelligence | Closed with follow-up | Good verification doctrine, but not autonomous enough yet. It explicitly says useful, bounded, review-first, and not enough for standalone cron/wider autonomy. fileciteturn2file1 |
+| WF27 Predictive Analytics | Closed with follow-up | Correctly conservative. Forecasting is blocked from live decision influence until frozen historical state and review-outcome retention exist. fileciteturn2file2 |
+| WF28 Skills Coherence | Closed with follow-up | Important hygiene: state-language cleanup, deployment-readiness inputs, trust disclosures, governance hooks. fileciteturn7file9 |
+| WF29 Machine-Proof Utilities | Closed with follow-up | Strong autonomy enabler: swarm handshake, sidecar validator, machine-readable trust block. Still manual/bounded, not startup-enforced. fileciteturn3file0 |
+| WF30 Queue Truth | Ambiguous in uploaded file | The note reads like a governance contract with unchecked closeout items, but later workflows imply enough handoff happened. Treat WF30 as a **surface-sync risk** until queue/registry/continuity are re-read live. fileciteturn7file12 |
+| WF31 Runtime Continuity | Closed with follow-up | Memory is not “broken”; it is bounded lexical/FTS-only. Scheduled morning/Sunday proof was not strong enough for promotion. fileciteturn3file1 |
+| WF32 Finance Surface Contract | Closed | Very valuable. Canonical state strings, BENCH handling, mutation-gate fields, and pipeline contradiction checker are in place. fileciteturn4file0 |
+| WF33 Declarative Chain | Closed | Strong chain-hardening. Manifest-owned chain definitions reduce hidden drift. fileciteturn3file2 |
+| WF34 Folder Governance | Closed with follow-up | Good boundary cleanup. Helps automation trust where scripts, tmp artifacts, and root exceptions live. fileciteturn5file1 |
+| WF35 Dashboard Truth Surface | Closed with follow-up | Strong truth doctrine: dashboards summarize, route, and warn; they do not become portfolio truth. fileciteturn5file2 |
+| WF36 SQLite Retrieval Layer | Closed with follow-up | Big autonomy enabler for retrieval, but correctly read-only/cache-only. It must open source files before judgment or mutation. fileciteturn6file0 |
+| WF37 Daily Commercial Brief | Paused with follow-up | Good packet + AI-brief architecture, but still missing repeated clean runs and delivery posture decision. fileciteturn4file1 |
+| WF38 Sector Expansion / Promotion Review | Closed with handoff | Strongest capital-deployment funnel so far. Candidate packet, five-gate validation, promotion queue, sector-cap checks, catalyst checks, and entry-band proposal logic exist, but final authority remains manual. fileciteturn4file2 |
+| WF39 Mission / SOP Posture | Closed | Correct operating model: main session as live truth surface/final integrator; helper lanes for substantial work; no trading or automatic canonical mutation added. fileciteturn7file3 |
+| WF40 Cyber Security | Active | Current active lane. Security audit is cron-backed and wrapper-proved, but needs one more boring scheduled run before baseline-stable status. fileciteturn5file0 |
+
+## Main finding
+
+Your system has moved from **chat-based research** to a **controlled finance operating system**. The strongest pieces are:
+
+1. **Research intake and promotion judgment exist.** WF25 created the research queue, admission object, promotion/demotion object, and downstream handoff contract. That is the right base for market-intelligence autonomy. fileciteturn2file0
+
+2. **Fresh intelligence is bounded and verification-first.** WF26 avoids rumor intake, social-noise automation, and fake certainty. It requires source tiers, unresolved-truth handling, and review objects. fileciteturn2file1
+
+3. **Capital-deployment state is less likely to drift.** WF32/WF33 fixed state vocabulary, contradiction detection, stale validation warnings, and manifest-owned finance refresh chains. fileciteturn4file0 fileciteturn3file2
+
+4. **Promotion review is now closer to autonomous recommendation support.** WF38 can surface candidates through candidate packets, promotion queue, shadow-canon checks, five-gate validation, sector/correlation checks, catalyst-window checks, and entry-band proposal logic. It still forbids trade execution and automatic canonical note mutation. fileciteturn4file2
+
+5. **The agent’s mission posture is now right.** Main session should be the final truth integrator; helper lanes should handle substantial research/audit/build work; no automatic trading/account action was authorized. fileciteturn7file3
+
+## Key gaps preventing more autonomy
+
+### 1. Fresh-intelligence automation is still too manual
+
+WF26 explicitly says the lane proved useful but not enough for standalone cron or wider autonomy. That is safe, but it means your agent may still miss market-moving events unless a human triggers review. fileciteturn2file1
+
+**Recommendation:** create a new bounded workflow: **WF41 — Market Intelligence Event Intake and Materiality Router**.
+
+It should run automatically, but only as a **read-only packet generator**. It should not update thesis, promote names, or change deployment state.
+
+Output should be:
+
+```json
+{
+  "event_id": "...",
+  "ticker_or_macro_sleeve": "...",
+  "source_tier": "tier_1 | tier_2 | unresolved",
+  "event_type": "earnings | guidance | macro | geopolitical | rates | sector | management | risk",
+  "materiality_score": 0-5,
+  "thesis_field_impacted": "...",
+  "portfolio_surface_impacted": "...",
+  "recommended_route": "no_route | weekly_review | thesis_review | promotion_review | risk_review | deployment_review",
+  "urgency": "today | this_week | monitor",
+  "blocked_reason": "...",
+  "owner_review_required": true
+}
+```
+
+### 2. Capital deployment lacks a final “recommendation packet” layer
+
+WF38 can generate candidate packets and promotion review checks, but the system still needs one narrow output that answers:
+
+**“Should Randall consider deploying capital now, waiting, or rejecting the setup?”**
+
+The agent should not execute, but it should be able to produce a structured recommendation.
+
+**Recommendation:** add a **Capital Deployment Recommendation Object** downstream of WF38.
+
+It should require:
+
+```text
+Ticker:
+Current state:
+Entry-band status:
+Five-gate status:
+Catalyst window:
+Sector/correlation check:
+Macro regime check:
+Fresh-intelligence flags:
+Risk/invalidation:
+Sizing posture:
+Recommended action:
+  - deploy candidate
+  - wait for band
+  - wait for catalyst clearance
+  - hold promotion review
+  - reject / bench
+Confidence:
+Owner approval required:
+```
+
+This gives your agent more autonomy in **decision preparation**, without crossing into autonomous execution.
+
+### 3. Predictive analytics is correctly blocked, but the unblock path is now clear
+
+WF27 says forecasting should not influence live decisions until state-history and label-retention are hardened. It also forbids treating labels like “deployable now,” “almost deployable,” or “in band” as clean historical targets until point-in-time reconstruction and stale-note handling are defined. fileciteturn2file2
+
+**Recommendation:** do not build ML yet. First build **State History Retention v1**:
+
+```text
+Daily snapshot:
+- ticker
+- canonical state
+- band status
+- macro gate
+- five-gate result
+- source freshness
+- sector exposure
+- review outcome
+- owner decision
+- 1d / 5d / 20d / post-earnings outcome
+```
+
+Only after 60–90 trading days of clean state history should WF27 reopen for baseline models.
+
+### 4. WF37 should be resumed before widening daily intelligence delivery
+
+WF37 has the right architecture: deterministic fact packs plus bounded AI-written review briefs. But it is paused because repeated clean packet + brief proof and delivery posture are still missing. fileciteturn4file1
+
+**Recommendation:** resume WF37 after WF40 stabilizes. Do not jump to daily email/Discord/Telegram delivery yet. First prove:
+
+```text
+5 clean morning packet runs
+5 clean post-close packet runs
+5 lint-passing review-only drafts
+0 authority-drift violations
+0 missing owner-route warnings
+```
+
+Then allow “review-only daily brief generated automatically,” but still not canonical mutation.
+
+### 5. Proof utilities need to become startup/preflight gates
+
+WF29 created very useful proof utilities: swarm completion handshake, sidecar validator, and automation trust block. But the workflow states they are not integrated into `openclaw skills check` or startup hooks yet. fileciteturn3file0
+
+**Recommendation:** create a preflight runner that checks, at session start:
+
+```text
+- skills check
+- workspace boundary check
+- dashboard truth lint
+- pipeline consistency check
+- chain manifest validation
+- latest security audit freshness
+- latest deployment-readiness artifact freshness
+- latest market-intelligence intake freshness
+```
+
+The preflight should output one control artifact:
+
+```json
+{
+  "agent_autonomy_allowed": {
+    "market_intelligence_packets": true,
+    "promotion_review_packets": true,
+    "brief_generation": false,
+    "canonical_note_mutation": false,
+    "capital_deployment_recommendation": true,
+    "trade_execution": false
+  }
+}
+```
+
+## Recommended autonomy ladder
+
+Use this as the operating model.
+
+| Level | Agent may do | Agent may not do | Status |
+|---|---|---|---|
+| Level 1 — Read-only monitor | Fetch/check approved sources, validate artifacts, flag drift | Mutate notes, change states, trade | Ready after WF40 stable |
+| Level 2 — Packet generator | Create event packets, candidate packets, brief packets, risk packets | Promote, size, deploy | Mostly ready |
+| Level 3 — Recommendation engine | Rank opportunities, propose deployment candidates, explain bull/bear/risk | Execute trades or silently update canon | Next target |
+| Level 4 — Owner-approved mutation | Apply approved band updates or owner-approved note changes | Change thesis/deployment without approval | Limited; only exact-gated cases |
+| Level 5 — Execution automation | Place trades, rebalance, execute deployment | Not recommended for this system now | Blocked |
+
+Your near-term target should be **Level 3**, not Level 5.
+
+## Best next workflows to open
+
+### 1. WF41 — Market Intelligence Event Intake and Materiality Router
+
+Purpose: make fresh intelligence autonomous enough to catch important events daily.
+
+Inputs:
+- approved source-tier map from WF26
+- active names
+- promotion-review names
+- macro/geopolitical sleeves
+- sector expansion candidates
+- earnings/calendar events
+
+Outputs:
+- event packets
+- unresolved-truth packets
+- no-route decisions
+- thesis-review candidates
+- risk-review candidates
+- promotion/deployment-review candidates
+
+Authority:
+- read-only
+- packet writes to `tmp/` or review folder only
+- no canonical mutation
+
+### 2. WF42 — Capital Deployment Recommendation Object
+
+Purpose: convert research, technical, macro, risk, and fresh-intelligence evidence into a reviewable deployment recommendation.
+
+Inputs:
+- deployment trigger sheet
+- portfolio snapshot
+- technical entry/invalidation sheet
+- band proposals
+- promotion review queue
+- WF41 event packets
+- sector/correlation checks
+
+Outputs:
+- “deploy / wait / reject / review” packet
+- evidence list
+- confidence
+- invalidation
+- owner approval field
+
+Authority:
+- recommendation only
+- no execution
+- no automatic portfolio mutation
+
+### 3. WF43 — State History and Review Outcome Retention
+
+Purpose: unlock honest predictive analytics later.
+
+Inputs:
+- daily deployment state
+- band status
+- review outcomes
+- owner approvals/rejections
+- realized subsequent outcomes
+
+Outputs:
+- point-in-time history table
+- label-retention rules
+- stale-note handling
+- future WF27 modeling dataset
+
+Authority:
+- append-only historical state
+- no model-driven deployment
+
+### 4. Resume WF37 Phase 6
+
+Purpose: make daily commercial briefs reliable enough to generate automatically as review-only drafts.
+
+Do this after WF40 has one more stable scheduled proof run.
+
+## Practical configuration recommendation for your agent
+
+Set the agent’s default posture like this:
+
+```text
+Default autonomy:
+- Market intelligence: auto-generate packets
+- Fresh evidence: auto-rank and route
+- Candidate review: auto-prepare
+- Capital deployment: auto-recommend, never execute
+- Canonical notes: mutate only after explicit owner approval
+- Portfolio/trade execution: blocked
+- Security/config/auth: blocked unless separate workflow approval exists
+```
+
+## Final judgment
+
+Your workflows are **not overbuilt**; they are building the right control system. The issue is that they currently emphasize safety, provenance, and truth boundaries more than autonomous market coverage. The next improvement is to let the agent act as a **daily market-intelligence chief of staff**:
+
+- watch the right sources,
+- detect material events,
+- route them into the right review object,
+- rank opportunities,
+- prepare deployment recommendations,
+- and stop at owner approval.
+
+That gives you much more autonomy in market intelligence and capital-deployment decision making without creating an unsafe black-box trading system.

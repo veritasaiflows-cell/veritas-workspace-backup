@@ -3,15 +3,32 @@
   "workflow_id": "WF83",
   "display_name": "Product Packaging and Launch Readiness Factory",
   "tier": "P3",
-  "effective_status": "route_only",
-  "next_action": "Do not build launch/readiness matrix unless Randall resumes WF80-WF83. Near-term readiness work should support internal efficiency/proof, not launch packaging.",
-  "helper_safe": true,
+  "priority": "P3",
+  "lifecycle": "paused",
+  "readiness": "paused",
+  "effective_status": "on_hold",
+  "current_state": "On hold. Packaging/readiness factory is intentionally on hold under the WF80-WF83 pause.",
+  "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only.",
+  "authoritative_next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only.",
+  "helper_safe": false,
   "owner_action_required": false,
   "authority_boundary": "review-only packaging/readiness gate",
+  "authority_class": "paused_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 83 - Product Packaging and Launch Readiness Factory.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
   "blockers": [
     "Owner paused WF80-WF83 on 2026-06-06",
     "Readiness matrix/no-go validator not built yet",
-    "Customer/public launch remains blocked"
+    "Customer/public launch remains blocked",
+    "Canonical Active Workflows P3 queue tier marks WF83 paused/resume-later; reconcile routing-only control state.",
+    "Canonical Active Workflows hold: On hold. Packaging/readiness factory is intentionally on hold under the WF80-WF83 pause."
   ],
   "stop_lines": [
     "No public launch, customer delivery, outbound action, spend, credential/account use, customer-data import, legal/compliance/security certification claim, finance advice/customer allocation, or owner approval inference."
@@ -27,11 +44,26 @@
     "python scripts\\workflow_routing_index.py --write --validate"
   ],
   "default_resume_command": "python scripts\\workflow_routing_index.py --route WF83",
-  "control_override": null,
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Veritas reconciliation",
+    "set_at_local": null,
+    "set_at_utc": "2026-08-14T04:24:53Z",
+    "reason": "Canonical Active Workflows P3 queue tier marks WF83 paused/resume-later; reconcile routing-only control state.",
+    "resume_condition": "Resume only when Randall explicitly resumes WF80-WF83.",
+    "aliases": [
+      "workflow_83"
+    ],
+    "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+  },
   "pm_action": null,
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

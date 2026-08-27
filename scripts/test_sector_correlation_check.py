@@ -90,7 +90,7 @@ class TempWorkspace:
         self.root = Path(self.tmp.name)
 
     def __enter__(self) -> Path:
-        for rel in ["tmp", "07. Risk", "03. Portfolio", "02. Markets"]:
+        for rel in ["tmp", "07. Risk", "03. Portfolio", "04. Research", "02. Markets"]:
             (self.root / rel).mkdir(parents=True, exist_ok=True)
         (self.root / "07. Risk/Risk Rules.md").write_text(RISK_RULES, encoding="utf-8")
         (self.root / "03. Portfolio/Portfolio Snapshot.md").write_text(PORTFOLIO_SNAPSHOT, encoding="utf-8")

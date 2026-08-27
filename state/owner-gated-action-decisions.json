@@ -1,0 +1,46 @@
+{
+  "schema": "veritas.owner_gated_action_decisions.v1",
+  "generated_at_utc": "2026-06-21T06:34:00Z",
+  "status": "ok",
+  "purpose": "Review-only owner decision overlay for owner-gated action queues.",
+  "authority_boundary": {
+    "review_only": true,
+    "decision_overlay_only": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "records": [
+    {
+      "decision_id": "wf78-nvda-review-advance-2026-06-21",
+      "ticker": "NVDA",
+      "gate": "capital_deployment",
+      "status": "approved_review_advance_only",
+      "source": "webchat user request 2026-06-20/2026-06-21",
+      "approved_scope": "Allow NVDA to stay/advance in the WF78 routing-to-review candidate path when WF85 freshness/source gates clear.",
+      "conditional_intent": "Randall expressed intent to buy on Monday 2026-06-22 if NVDA is still within band.",
+      "hard_limits": [
+        "No order submission is approved by this record.",
+        "No paper/live execution is approved by this record.",
+        "No brokerage/account action or money movement is approved by this record.",
+        "Exact ticker/side/quantity-or-notional/order-type/TIF/limit approval is still required before any paper action.",
+        "Fresh Monday source/freshness and quote-vs-band proof is required before any approval card."
+      ],
+      "capital_deployment_approved": false,
+      "trade_or_execution_approved": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "money_movement_allowed": false,
+      "owner_approval_inferred": false
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

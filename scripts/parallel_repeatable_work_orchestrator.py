@@ -248,14 +248,109 @@ def build_main_session_card(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def current_gate_snapshot(row: dict[str, Any]) -> dict[str, Any]:
+    band = as_dict(row.get("written_band"))
+    return {
+        "ticker": str(row.get("ticker") or "").upper(),
+        "queue_state": row.get("queue_state"),
+        "current_price": row.get("current_price"),
+        "current_band_status": row.get("current_band_status"),
+        "entry_band_low": band.get("entry_band_low"),
+        "entry_band_high": band.get("entry_band_high"),
+        "stop_or_invalidation": band.get("stop_or_invalidation"),
+        "blockers": as_list(row.get("blockers")),
+        "source_artifact": "tmp/wf78-capital-review-queue.json",
+        "source_generated_at_utc": load_dict(TMP / "wf78-capital-review-queue.json").get("generated_at_utc"),
+    }
+
+
+def supersede_reason(row: dict[str, Any], fallback: str) -> str:
+    blockers = [str(item) for item in as_list(row.get("blockers")) if str(item).strip()]
+    if blockers:
+        return "; ".join(blockers[:3])
+    status = row.get("current_band_status") or row.get("queue_state")
+    if status:
+        return f"current_wf78_gate:{status}"
+    return fallback
+
+
+def supersede_owner_card(row: dict[str, Any], *, checked_at: str, reason: str) -> str | None:
+    symbol = str(row.get("ticker") or "").upper()
+    if not symbol:
+        return None
+    path = CARD_DIR / f"{symbol}.owner-card.json"
+    if not path.exists():
+        return None
+    card = load_dict(path)
+    risk = as_dict(card.get("risk_check"))
+    source = as_dict(card.get("source"))
+    risk["status"] = "superseded_current_wf78_gate"
+    risk["blockers"] = sorted(set(as_list(risk.get("blockers")) + ["superseded_by_current_wf78_gate"]))
+    risk["superseded_at_utc"] = checked_at
+    risk["superseded_reason"] = reason
+    risk["position_size_reviewed"] = False
+    risk["current_wf78_gate"] = current_gate_snapshot(row)
+    source["superseded_by_current_gate"] = True
+    source["current_gate_checked_at_utc"] = checked_at
+    source["owner_or_pilot_scope"] = (
+        f"Superseded {symbol} WF78 owner-card artifact; current gate is "
+        f"{row.get('queue_state') or 'not_review_ready'} / {row.get('current_band_status') or 'unknown'}. "
+        "Audit-only, not approval-card or paper-order context."
+    )
+    card["risk_check"] = risk
+    card["source"] = source
+    card["superseded_by_current_gate"] = True
+    atomic_write_json(path, card)
+    return rel(path)
+
+
+def supersede_wf67_request(row: dict[str, Any], *, checked_at: str, reason: str) -> str | None:
+    symbol = str(row.get("ticker") or "").upper()
+    if not symbol:
+        return None
+    path = REQUEST_DIR / f"paper-trade-request.wf78-owner-card-prep-{slug(symbol)}.json"
+    if not path.exists():
+        return None
+    request = load_dict(path)
+    risk = as_dict(request.get("risk_check"))
+    source = as_dict(request.get("source"))
+    risk["status"] = "superseded_current_wf78_gate"
+    risk["blockers"] = sorted(set(as_list(risk.get("blockers")) + ["superseded_prior_owner_card_request", "superseded_by_current_wf78_gate"]))
+    risk["superseded_at_utc"] = checked_at
+    risk["superseded_reason"] = reason
+    risk["position_size_reviewed"] = False
+    risk["current_wf78_gate"] = current_gate_snapshot(row)
+    source["superseded_by_current_gate"] = True
+    source["current_gate_checked_at_utc"] = checked_at
+    source["owner_or_pilot_scope"] = (
+        f"Superseded {symbol} WF78 paper-request artifact; current gate is "
+        f"{row.get('queue_state') or 'not_review_ready'} / {row.get('current_band_status') or 'unknown'}. "
+        "Audit-only, not approval-card or paper-order context."
+    )
+    request["risk_check"] = risk
+    request["source"] = source
+    request["superseded_by_current_gate"] = True
+    atomic_write_json(path, request)
+    return rel(path)
+
+
+def wf67_request_block_is_review_only(row: dict[str, Any]) -> bool:
+    step = as_dict(row.get("wf67_step"))
+    text = f"{step.get('stdout_preview') or ''}\n{step.get('stderr_preview') or ''}"
+    return "CardError: promotion_gate_" in text
+
+
 def prepare_owner_cards() -> dict[str, Any]:
     queue = load_dict(TMP / "wf78-capital-review-queue.json")
     reducer = load_dict(TMP / "wf78-evidence-drag-reduction.json")
     CARD_DIR.mkdir(parents=True, exist_ok=True)
-    rows = [row for row in as_list(queue.get("rows")) if as_dict(row).get("capital_review_card_preparable")]
+    all_rows = [as_dict(row) for row in as_list(queue.get("rows"))]
+    rows = [row for row in all_rows if row.get("capital_review_card_preparable")]
     prepared: list[dict[str, Any]] = []
+    superseded_cards: list[str] = []
+    superseded_requests: list[str] = []
+    checked_at = utc_now()
     for row in rows:
-        row = as_dict(row)
         symbol = str(row.get("ticker") or "").upper()
         card = build_main_session_card(row)
         card_path = CARD_DIR / f"{symbol}.owner-card.json"
@@ -272,6 +367,14 @@ def prepare_owner_cards() -> dict[str, Any]:
                 "--require-promotion-gate",
             ),
         )
+        if not wf67_step["ok"]:
+            superseded = supersede_wf67_request(
+                row,
+                checked_at=checked_at,
+                reason=f"current_wf67_request_generation_blocked:{symbol}",
+            )
+            if superseded:
+                superseded_requests.append(superseded)
         prepared.append({
             "ticker": symbol,
             "card_path": rel(card_path),
@@ -283,11 +386,39 @@ def prepare_owner_cards() -> dict[str, Any]:
             "paper_or_live_execution_allowed": False,
             "owner_approval_inferred": False,
         })
+    prepared_symbols = {str(row.get("ticker") or "").upper() for row in rows}
+    for row in all_rows:
+        symbol = str(row.get("ticker") or "").upper()
+        if not symbol or symbol in prepared_symbols:
+            continue
+        reason = supersede_reason(row, "current_wf78_row_not_card_preparable")
+        card_path = supersede_owner_card(row, checked_at=checked_at, reason=reason)
+        if card_path:
+            superseded_cards.append(card_path)
+        request_path = supersede_wf67_request(row, checked_at=checked_at, reason=reason)
+        if request_path:
+            superseded_requests.append(request_path)
     blocked = [row for row in prepared if row["wf67_request_generation_status"] != "ok"]
+    hard_blocked = [row for row in blocked if not wf67_request_block_is_review_only(row)]
+    if prepared:
+        status = "ok"
+        validation_errors = [
+            f"wf67_request_generation_unexpected_failure:{row['ticker']}"
+            for row in hard_blocked
+        ]
+        validation_warnings = [
+            f"wf67_request_generation_blocked_review_only:{row['ticker']}"
+            for row in blocked
+            if wf67_request_block_is_review_only(row)
+        ]
+    else:
+        status = "ok_no_work"
+        validation_errors = []
+        validation_warnings = ["no_capital_review_card_preparable_rows"]
     report = {
         "schema": "veritas.wf78_owner_card_prep_loop.v1",
         "generated_at_utc": utc_now(),
-        "status": "ok" if prepared else "blocked",
+        "status": status,
         "purpose": "Prepare non-executing owner cards and WF67 request artifacts where promotion gate allows.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "summary": {
@@ -295,10 +426,22 @@ def prepare_owner_cards() -> dict[str, Any]:
             "owner_cards_written": len(prepared),
             "wf67_request_artifacts_written": len(prepared) - len(blocked),
             "wf67_request_blocked_count": len(blocked),
+            "owner_cards_superseded": len(superseded_cards),
+            "wf67_request_artifacts_superseded": len(superseded_requests),
             "reducer_status": reducer.get("status"),
+            "no_work_reason": "no_capital_review_card_preparable_rows" if not prepared else None,
             "next_safe_action": "Present cards for owner review only; no execution is allowed without exact Randall approval and fresh WF67 guard proof.",
         },
         "prepared": prepared,
+        "superseded": {
+            "owner_cards": sorted(set(superseded_cards)),
+            "wf67_requests": sorted(set(superseded_requests)),
+        },
+        "validation": {
+            "status": "ok" if not hard_blocked else "blocked",
+            "errors": validation_errors,
+            "warnings": validation_warnings,
+        },
         "stop_lines": [
             "Cards and WF67 requests are non-executing review artifacts.",
             "Pending cards do not carry Randall approval metadata.",
@@ -349,7 +492,8 @@ def build_report(skip_provider_refresh: bool) -> dict[str, Any]:
         "owner_card_prep_loop": owner_cards.get("status"),
         "tier_a_evidence_repair_batch": repair_batch.get("status"),
     }
-    blocked = [name for name, status in lane_statuses.items() if status != "ok"]
+    non_blocking_statuses = {"ok", "ok_no_work"}
+    blocked = [name for name, status in lane_statuses.items() if status not in non_blocking_statuses]
     report = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),

@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,19 +66,68 @@ def load(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive readiness guard
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
 def validation_status(payload: dict[str, Any]) -> str | None:
     return as_dict(payload.get("validation")).get("status")
 
 
 def source_record(name: str, path: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    validation = as_dict(payload.get("validation"))
     return {
         "name": name,
         "path": rel(path),
         "exists": path.exists(),
         "status": payload.get("status") if payload else ("missing" if not path.exists() else "unparseable"),
-        "validation_status": validation_status(payload),
+        "validation_status": validation.get("status"),
+        "validation_warnings": as_list(validation.get("warnings")),
         "generated_at_utc": payload.get("generated_at_utc"),
     }
+
+
+def ignorable_self_reference_warning(record: dict[str, Any]) -> bool:
+    if record.get("name") != "workflow_advancement" or record.get("validation_status") != "warning":
+        return False
+    warnings = [str(item) for item in as_list(record.get("validation_warnings"))]
+    return bool(warnings) and all(
+        item == "source_validation_not_ok:autonomy_spine_rollup:warning"
+        for item in warnings
+    )
 
 
 def progress(done: Any, required: Any) -> dict[str, Any]:
@@ -101,10 +151,27 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         if record.get("exists") is not True and record.get("name") not in {"wf74_improvement_queue"}:
             errors.append(f"missing_source:{record.get('name')}")
         if record.get("validation_status") not in {"ok", None}:
+            if ignorable_self_reference_warning(record):
+                continue
             warnings.append(f"source_validation_not_ok:{record.get('name')}:{record.get('validation_status')}")
     if payload.get("summary", {}).get("final_state") == "ready_for_owner_review_of_paper_pilot":
         if payload.get("summary", {}).get("owner_approval_required") is not True:
             errors.append("ready_state_must_require_owner_approval")
+    sql_health = as_dict(payload.get("sql_canon_health"))
+    if sql_health.get("status") != "ok":
+        errors.append(f"sql_canon_guard_blocked:{sql_health.get('status')}")
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            errors.append(f"sql_canon_authority_{key}_not_false")
     return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
 
 
@@ -119,6 +186,7 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
     advancement_summary = as_dict(payloads["workflow_advancement"].get("summary"))
     lane_summary = as_dict(payloads["lane_register"].get("summary"))
     wf74_summary = as_dict(payloads["wf74_improvement_queue"].get("summary"))
+    sql_health = sql_canon_health()
 
     shadow_decisions = progress(
         outcome.get("clean_shadow_decision_count") or shadow.get("clean_shadow_decision_count"),
@@ -128,8 +196,20 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         outcome.get("unique_clean_market_sessions") or shadow.get("unique_clean_market_sessions"),
         outcome.get("required_clean_market_sessions") or shadow.get("required_clean_market_sessions"),
     )
-    cron_clean = all(int(cron_summary.get(key) or 0) == 0 for key in ("blocked_count", "stale_count", "urgent_attention_count", "missing_expected_artifact_contract_count"))
-    reconciliation_mature = bool(reconciliation.get("maturity_met") or reconciliation.get("reconciliation_maturity_met"))
+    cron_hard_blocker_keys = (
+        "blocked_count",
+        "urgent_attention_count",
+        "requires_attention_count",
+        "implementation_attention_count",
+        "missing_expected_artifact_contract_count",
+        "unregistered_enabled_count",
+    )
+    cron_clean = all(int(cron_summary.get(key) or 0) == 0 for key in cron_hard_blocker_keys) and sql_health.get("status") == "ok"
+    reconciliation_mature = bool(
+        reconciliation.get("mature_for_autonomy")
+        or reconciliation.get("maturity_met")
+        or reconciliation.get("reconciliation_maturity_met")
+    )
     wf87_runtime_clean = command.get("phase_a_runtime_gates_clean") is True
     threshold_met = bool(outcome.get("shadow_threshold_met") or shadow.get("threshold_met"))
     final_state = "continue_accrual"
@@ -144,6 +224,8 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         blockers.append("wf87_runtime_gates_not_clean")
     if not cron_clean:
         blockers.append("cron_cadence_not_clean")
+    if sql_health.get("status") != "ok":
+        blockers.append("sql_canon_guard_blocked")
     if not blockers:
         final_state = "ready_for_owner_review_of_paper_pilot"
     payload = {
@@ -162,6 +244,8 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
             "reconciliation_mature": reconciliation_mature,
             "wf87_runtime_clean": wf87_runtime_clean,
             "cron_clean": cron_clean,
+            "sql_canon_status": sql_health.get("status"),
+            "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
             "workflow_advancement_advanced_count": advancement_summary.get("advanced_count"),
             "workflow_advancement_blocked_count": advancement_summary.get("blocked_count"),
             "wf71_active_lane_count": lane_summary.get("active_lane_count"),
@@ -170,6 +254,7 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
             "next_safe_action": "Continue scheduled accrual and daylight/reconciliation proof." if blockers else "Prepare owner-review packet for a separately approved paper-only pilot.",
         },
         "source_records": [source_record(name, path, payloads[name]) for name, path in paths.items()],
+        "sql_canon_health": sql_health,
         "source_artifacts": {name: rel(path) for name, path in paths.items()},
         "stop_lines": [
             "A ready rollup is not execution approval; Randall exact approval is still required for any paper pilot or order.",

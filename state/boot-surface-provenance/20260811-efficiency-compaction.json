@@ -1,0 +1,61 @@
+{
+  "schema": "veritas.boot_surface_compaction_provenance.v1",
+  "captured_at_utc": "2026-08-12T06:32:00Z",
+  "purpose": "Exact pre-compaction provenance for the three separately scoped startup surfaces Randall authorized on 2026-08-11.",
+  "storage": {
+    "kind": "content_addressed_git_blob_with_protecting_ref",
+    "exact_byte_verification": true,
+    "restore_pattern": "git cat-file blob <git_blob_oid>",
+    "workspace_files_rewritten_by_manifest": false
+  },
+  "surfaces": [
+    {
+      "path": "MEMORY.md",
+      "size_bytes": 15809,
+      "sha256": "e31ab25a9b884bd2e2978849a3be98bbd2103dfacea9a0e4f8e69633b85aed39",
+      "git_blob_oid": "ce1725e6c2fae410572f4513e1af71dfcad0216d",
+      "protecting_ref": "refs/veritas/provenance/20260811/memory-before-efficiency-compaction",
+      "lane_scope": "curated_durable_memory_only",
+      "after_size_bytes": 8933,
+      "after_sha256": "695cb2a3f38c892dd2d2d024b31392887c8edd88862020ee96cfa64d443388ed",
+      "result": "compacted_with_exact_preimage_preserved"
+    },
+    {
+      "path": "06. Playbooks/Active Workflows.md",
+      "size_bytes": 24635,
+      "sha256": "dba6a614c48455bb486b338a7665aa578001742f1434f173fc73c42c255af09d",
+      "git_blob_oid": "8a53fcc9c6d97a47687885f9ffd174f93c0cdae7",
+      "protecting_ref": "refs/veritas/provenance/20260811/active-workflows-before-efficiency-compaction",
+      "lane_scope": "live_workflow_route_surface_only",
+      "after_size_bytes": 21684,
+      "after_sha256": "c477c68245947ba37329aa3f1999aed1c78942f86430c8b06856c82b9415b468",
+      "result": "compacted_with_exact_preimage_preserved"
+    },
+    {
+      "path": "06. Playbooks/Automation Orchestration Protocol.md",
+      "size_bytes": 22481,
+      "sha256": "2dd34cae1050ce6c62b20c35e3743eac8d5e3b73ec84b73d5b40d97c9af4a587",
+      "git_blob_oid": "99396020e8838b550566b16724fce436599252c2",
+      "protecting_ref": "refs/veritas/provenance/20260811/orchestration-protocol-before-efficiency-compaction",
+      "lane_scope": "helper_orchestration_route_surface_only",
+      "after_size_bytes": 21515,
+      "after_sha256": "8efe75d75fb2d7acc2bd2168c20a3f860475a41e97812a1d2ef0f2b523e28e89",
+      "result": "compacted_with_exact_preimage_preserved"
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "proof": "tmp/boot-surface-size-guard.json",
+    "before_warning_count": 3,
+    "after_warning_count": 0,
+    "before_total_boot_control_bytes": 117341,
+    "after_total_boot_control_bytes": 106486
+  },
+  "authority_boundary": {
+    "config_auth_channel_runtime_mutation": false,
+    "finance_canon_portfolio_mutation": false,
+    "cron_schedule_mutation": false,
+    "external_mutation": false,
+    "destructive_cleanup": false
+  }
+}

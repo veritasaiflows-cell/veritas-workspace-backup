@@ -10,12 +10,21 @@ import argparse
 import hashlib
 import json
 import sqlite3
+from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
 from market_data_utils import atomic_write_json, atomic_write_text
+from wf88_cleanup_common import (
+    SQLITE_DB_SUFFIXES,
+    SQLITE_SIDECAR_SUFFIXES,
+    iter_orphan_sqlite_sidecars,
+    iter_sqlite_db_files,
+    sqlite_parent_for_sidecar,
+    sqlite_sidecar_kind,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -42,23 +51,41 @@ EXCLUDED_SCAN_DIRS = {
     ".obsidian",
     ".openclaw",
     ".clawhub",
+    ".pytest_cache",
     "__pycache__",
+    "attachments",
+    "backups",
+    "media",
+    "migration-backups",
+    "node_modules",
+    "skills-backup",
+    "training",
 }
+TEXT_SCAN_RELATIVE_ROOTS = (
+    "scripts",
+    "06. Playbooks",
+    "08. Audits",
+    "memory",
+    "wiki",
+)
+MAX_REFERENCE_TEXT_BYTES = 2_000_000
+FULL_INTEGRITY_MAX_BYTES = 1_000_000
+TABLE_ROW_COUNT_MAX_BYTES = 1_000_000
 
 LIVE_STATE = {
     "finance-canon.sqlite": {
-        "owner": "WF78 finance SQL canon candidate",
-        "reason": "durable finance universe and answer-path scope machine-canon candidate",
+        "owner": "Guarded internal finance SQL-canon current-state layer",
+        "reason": "durable internal SQL-primary current-state layer for answer-path scope, evidence freshness, reference levels, source lineage, tier routing, and universe membership; review-only, not approval/execution authority",
         "rebuild": "python scripts\\finance_sql_canon.py --write --validate --approval-reference \"<owner approval reference>\"",
     },
     "veritas-canon-cache.sqlite": {
-        "owner": "WF72 bounded SQL-canon/cache metadata",
-        "reason": "bounded 265-row approved metadata cache; authority-bearing within narrow proof/cache boundary",
+        "owner": "WF72 legacy/support-only bounded metadata cache",
+        "reason": "support-only 265-row metadata cache retained for lineage/fallback compatibility; not the finance front door, not SQL-canon current-state authority, and stale whole-file source hashes are warning-only when SQL-canon/WF84 values match",
         "rebuild": "scripts/artifact_index.py low-risk/WF72 activation paths only after gated approval",
     },
     "finance-intelligence-state.sqlite": {
-        "owner": "WF78 finance intelligence current-state router",
-        "reason": "active 42-ticker current-state/query-packet database",
+        "owner": "Finance intelligence front-door compatibility/query cache",
+        "reason": "rebuilt tmp compatibility DB for ticker query packets; current-state authority routes through SQL-canon/WF84/WF85 and legacy source hashes are labeled support-only lineage",
         "rebuild": "python scripts\\finance_intelligence_state.py build --pretty",
     },
     "wf67-paper-position-state.sqlite": {
@@ -104,10 +131,35 @@ DERIVED = {
         "reason": "rebuildable lookup over PM state, PM queue, heartbeat candidates, and main-session handoff; JSON remains source proof and this does not execute jobs or grant authority",
         "rebuild": "python scripts\\pm_control_packet.py --write --write-db --validate",
     },
+    "current-manifest.sqlite": {
+        "owner": "Human deliverables publisher derived manifest",
+        "reason": "rebuildable SQLite companion for state/deliverables/current-manifest.json; tracks published human-facing deliverable metadata only and is not proof authority, canon, portfolio, account, customer, or execution authority",
+        "rebuild": "python scripts\\deliverables_publisher.py --write --validate",
+    },
     "workflow-routing-index.sqlite": {
         "owner": "WF73 workflow route-control derived index",
         "reason": "rebuildable SQLite lookup over workflow routing JSON proof; Active Workflows and continuity notes remain authority",
         "rebuild": "python scripts\\workflow_routing_index.py --write --write-db --validate",
+    },
+    "generic-workflow-checkpoints.sqlite": {
+        "owner": "Workflow checkpointed execution derived state",
+        "reason": "active checkpoint database for generic checkpointed workflow execution; JSON/source artifacts remain proof, and this DB is not canon, approval, portfolio, account, or execution authority",
+        "rebuild": "rerun the owning checkpointed workflow producer only when the workflow route explicitly requires it",
+    },
+    "wf74-wf88-checkpoints.sqlite": {
+        "owner": "WF74/WF88 checkpointed execution derived state",
+        "reason": "active checkpoint database for WF74/WF88 loop execution and cleanup routing; it preserves resumability and is not archive/delete-ready while the workflow remains active",
+        "rebuild": "python scripts\\wf74_wf88_checkpointed_execution.py --write --validate",
+    },
+    "wf84-wf85-checkpoints.sqlite": {
+        "owner": "WF84/WF85 checkpointed execution derived state",
+        "reason": "active checkpoint database for finance data-plane and decision-OS workflow resumability; not canon, approval, portfolio, account, paper/live, or execution authority",
+        "rebuild": "rerun the owning WF84/WF85 checkpointed producer only when the workflow route explicitly requires it",
+    },
+    "implementation-closeout-checkpoints.sqlite": {
+        "owner": "Implementation closeout checkpointed execution derived state",
+        "reason": "active checkpoint database for AGI-OS/implementation closeout proof-chain resumability; JSON/source artifacts remain proof, and this DB is not canon, approval, portfolio, account, paper/live, or execution authority",
+        "rebuild": "python scripts\\workflow_checkpoint_runner.py --config data\\workflow-checkpoints\\implementation-closeout.json --write --validate",
     },
     "canonical-finance-data-plane.sqlite": {
         "owner": "WF84 canonical finance data-plane derived lookup",
@@ -200,9 +252,9 @@ DERIVED = {
         "rebuild": "python scripts\\wf78_tier_b_evidence_repair.py --out tmp\\wf78-tier-c-top3-evidence-repair.json --db tmp\\wf78-tier-c-top3-evidence-repair.sqlite --write --write-db --validate",
     },
     "wf78-production-tier-adjudication.sqlite": {
-        "owner": "WF78 42-production Tier A/B adjudication derived index",
-        "reason": "rebuildable SQLite companion for the 42-production Tier A/B recommendation packet; review-only and not admission, promotion, apply, portfolio/canon, paper/live/account, or approval authority",
-        "rebuild": "python scripts\\wf78_production_tier_adjudication.py --write --write-db --validate",
+        "owner": "Deprecated WF78 42-production Tier A/B adjudication compatibility index",
+        "reason": "deprecated-for-authority SQLite companion for the retired 42-production Tier A/B recommendation packet; archive candidate only and not active routing, admission, promotion, apply, portfolio/canon, paper/live/account, or approval authority",
+        "rebuild": "deprecated; do not rebuild from wf78_production_tier_adjudication.py; use wf78_auto_tier_router.py plus wf78_clean_tier_roster.py and wf78_tier_semantics_guard.py",
     },
     "wf78-legacy-42-tier-state-shadow.sqlite": {
         "owner": "WF78 legacy-42 to Tier A/B shadow migration reader",
@@ -229,6 +281,56 @@ DERIVED = {
         "reason": "rebuildable GET-only paper-order reconciliation companion for the WF86 assisted VRT proof path; review-only and not submit, cancel, sell, account, money-movement, approval, or execution authority",
         "rebuild": "python scripts\\wf86_daily_shadow_reconciliation_cron_runner.py --write --validate",
     },
+    "vector-memory.sqlite": {
+        "owner": "Protected primary local semantic retrieval cache",
+        "reason": "active compact primary semantic-memory cache; durable notes and compact routing summaries are indexed while raw tmp proof remains on-demand, and this cache never grants canon, approval, portfolio, account, or execution authority",
+        "rebuild": "python scripts\\finance_vector_retrieval_summary.py --write --validate; python scripts\\vector_memory_ollama_job_runner.py start --profile primary --write --validate; then resume --profile primary in bounded slices until complete; after clean validation: python scripts\\vector_memory_ollama_job_runner.py promote --profile primary --write --validate",
+    },
+    "vector-memory-hash-fallback.sqlite": {
+        "owner": "Local vector memory hash fallback cache",
+        "reason": "active fallback SQLite cache for local vector-memory retrieval when embedding/provider routes are unavailable; source files remain durable truth",
+        "rebuild": "python scripts\\vector_memory_index.py --db tmp\\vector-memory-hash-fallback.sqlite --out tmp\\vector-memory-hash-fallback-index.json --source-profile full --embedding-provider hash --write --validate",
+    },
+    "vector-memory-ollama-primary.sqlite": {
+        "owner": "Compact primary Ollama vector-memory staging cache",
+        "reason": "resumable semantic staging cache for the protected primary profile; sources remain durable truth and promotion is gated by clean validation",
+        "rebuild": "python scripts\\finance_vector_retrieval_summary.py --write --validate; python scripts\\vector_memory_ollama_job_runner.py start --profile primary --write --validate; then resume --profile primary in bounded slices until complete",
+    },
+    "vector-memory-ollama-full.sqlite": {
+        "owner": "Local Ollama vector memory full-profile cache",
+        "reason": "active full-profile local vector-memory cache created by the long-work vector memory runner; source files remain durable truth and deletion would force a costly rebuild",
+        "rebuild": "python scripts\\vector_memory_ollama_job_runner.py resume --profile full --write --validate",
+    },
+    "vector-memory-ollama-medium.sqlite": {
+        "owner": "Local Ollama vector memory medium-profile cache",
+        "reason": "active medium-profile local vector-memory cache created by the long-work vector memory runner; source files remain durable truth and deletion would force a rebuild",
+        "rebuild": "python scripts\\vector_memory_ollama_job_runner.py resume --profile medium --write --validate",
+    },
+    "vector-memory-ollama-pilot.sqlite": {
+        "owner": "Local Ollama vector memory pilot cache",
+        "reason": "pilot local vector-memory cache retained as workflow-memory proof and comparison surface; source files remain durable truth",
+        "rebuild": "python scripts\\vector_memory_ollama_job_runner.py status --profile medium --write --validate",
+    },
+    "sql-canon-typed-routing-consumers-workspace-index.sqlite": {
+        "owner": "SQL-canon typed-routing consumer audit derived index",
+        "reason": "rebuildable workspace-index companion for SQL-canon typed-routing consumer proof; review-only and not the active workspace index, finance canon, approval, archive/delete, or execution authority",
+        "rebuild": "python scripts\\sql_canon_typed_routing_consumers.py --write --validate",
+    },
+    "retrieval-live-eval-hash.sqlite": {
+        "owner": "WF88 retrieval live eval hash+FTS index",
+        "reason": "rebuildable isolated hash+FTS database for WF88 live retrieval discrimination proof; evaluation-only and not memory canon, route promotion, model-performance claim, approval, archive/delete, or execution authority",
+        "rebuild": "python scripts\\retrieval_live_eval.py --write --write-md --validate",
+    },
+    "retrieval-live-eval-semantic.sqlite": {
+        "owner": "WF88 retrieval live eval semantic+FTS index",
+        "reason": "rebuildable isolated semantic+FTS database for WF88 live retrieval discrimination proof; evaluation-only and not memory canon, route promotion, model-performance claim, approval, archive/delete, or execution authority",
+        "rebuild": "python scripts\\retrieval_live_eval.py --write --write-md --validate",
+    },
+    "retrieval-live-eval-mutation.sqlite": {
+        "owner": "WF88 retrieval live eval mutation-control database",
+        "reason": "deliberately mutated sensitivity-control database retained only for WF88 retrieval eval proof; never use as retrieval truth and do not delete/archive without an exact evaluator-retirement packet",
+        "rebuild": "python scripts\\retrieval_live_eval.py --write --write-md --validate",
+    },
 }
 
 SNAPSHOT = {
@@ -238,6 +340,27 @@ SNAPSHOT = {
         "rebuild": "python scripts\\finance_stack_snapshot.py --write --validate",
         "decision": "conditional_keep",
         "retention": "conditional keep; regenerate on demand and archive only after a superseding live route is confirmed",
+    },
+    "finance-canon-backup.sqlite": {
+        "owner": "SQL-canon rollback rehearsal backup",
+        "reason": "rollback rehearsal copy retained under tmp/sql-canon-rollback-rehearsal; proof-only and not active finance-canon current state",
+        "rebuild": "python scripts\\finance_sql_canon_rollback_rehearsal.py --write --validate",
+        "decision": "conditional_keep",
+        "retention": "conditional keep with rollback rehearsal bundle; archive/delete only through DB lifecycle approval packet",
+    },
+    "finance-canon-restored-copy.sqlite": {
+        "owner": "SQL-canon rollback rehearsal restored copy",
+        "reason": "rollback rehearsal restored copy retained for backup/restore proof; proof-only and not active finance-canon current state",
+        "rebuild": "python scripts\\finance_sql_canon_rollback_rehearsal.py --write --validate",
+        "decision": "conditional_keep",
+        "retention": "conditional keep with rollback rehearsal bundle; archive/delete only through DB lifecycle approval packet",
+    },
+    "sql-canon-second-slice-preapply-backup.sqlite": {
+        "owner": "SQL-canon second-slice pre-apply backup",
+        "reason": "pre-apply backup retained as rollback proof for SQL-canon second-slice migration; not active finance-canon current state",
+        "rebuild": "rerun the exact second-slice gated apply/rollback path only when scoped and approved",
+        "decision": "conditional_keep",
+        "retention": "conditional keep as migration rollback proof; archive/delete only through DB lifecycle approval packet",
     },
 }
 
@@ -274,8 +397,8 @@ ARCHIVE_CANDIDATE_RULES = {
     },
 }
 
-DB_SUFFIXES = {".sqlite", ".db"}
-SIDECAR_SUFFIXES = (".sqlite-wal", ".sqlite-shm", ".db-wal", ".db-shm")
+DB_SUFFIXES = SQLITE_DB_SUFFIXES
+SIDECAR_SUFFIXES = SQLITE_SIDECAR_SUFFIXES
 REFERENCE_BUCKETS = (
     "active_operational_consumer_references",
     "producer_rebuild_references",
@@ -345,31 +468,16 @@ def sha256_file(path: Path) -> str | None:
 
 
 def iter_db_files() -> Iterable[Path]:
-    files: list[Path] = []
-    for base in (TMP, STATE, ARCHIVE_SCAN_ROOT):
-        if not base.exists():
-            continue
-        for path in base.rglob("*"):
-            if path.is_file() and path.suffix.lower() in DB_SUFFIXES:
-                files.append(path)
-    return sorted(files, key=lambda p: rel(p).lower())
+    return iter_sqlite_db_files((TMP, STATE, ARCHIVE_SCAN_ROOT), db_suffixes=DB_SUFFIXES, root=ROOT)
 
 
 def iter_text_files() -> Iterable[Path]:
-    roots = [
-        ROOT / "scripts",
-        ROOT / "06. Playbooks",
-        ROOT / "08. Audits",
-        ROOT / "memory",
-        ROOT / "tmp",
-        ROOT,
-    ]
     seen: set[Path] = set()
-    for base in roots:
+    for rel_root in TEXT_SCAN_RELATIVE_ROOTS:
+        base = ROOT / rel_root
         if not base.exists():
             continue
-        paths = base.rglob("*") if base.is_dir() else [base]
-        for path in paths:
+        for path in base.rglob("*"):
             if path in seen:
                 continue
             seen.add(path)
@@ -379,8 +487,29 @@ def iter_text_files() -> Iterable[Path]:
                 continue
             if any(part in EXCLUDED_SCAN_DIRS for part in rel_parts):
                 continue
-            if path.is_file() and path.suffix.lower() in TEXT_EXTENSIONS:
-                yield path
+            if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
+                continue
+            try:
+                if path.stat().st_size > MAX_REFERENCE_TEXT_BYTES:
+                    continue
+            except OSError:
+                continue
+            yield path
+
+    if not ROOT.exists():
+        return
+    for path in ROOT.iterdir():
+        if path in seen:
+            continue
+        seen.add(path)
+        if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
+            continue
+        try:
+            if path.stat().st_size > MAX_REFERENCE_TEXT_BYTES:
+                continue
+        except OSError:
+            continue
+        yield path
 
 
 def text_corpus() -> list[tuple[Path, str]]:
@@ -395,6 +524,14 @@ def text_corpus() -> list[tuple[Path, str]]:
 
 def _empty_reference_classification() -> dict[str, list[str]]:
     return {bucket: [] for bucket in REFERENCE_BUCKETS}
+
+
+def _empty_reference_accumulator() -> dict[str, Any]:
+    return {
+        "total": 0,
+        "notes": [],
+        "classification": _empty_reference_classification(),
+    }
 
 
 def _reference_bucket(candidate: Path, reference_path: Path) -> tuple[str, str]:
@@ -424,23 +561,24 @@ def _reference_bucket(candidate: Path, reference_path: Path) -> tuple[str, str]:
 
 
 def reference_details(candidate: Path, corpus: list[tuple[Path, str]]) -> dict[str, Any]:
+    return build_reference_index([candidate], corpus).get(candidate, _finalize_reference(_empty_reference_accumulator()))
+
+
+def _candidate_needles(candidate: Path) -> set[str]:
     rel_path = rel(candidate)
-    win_path = rel_path.replace("/", "\\")
-    basename = candidate.name
-    needles = {rel_path, win_path, basename}
-    total = 0
-    notes: list[str] = []
-    classification = _empty_reference_classification()
-    for path, text in corpus:
-        if path == candidate:
-            continue
-        if not any(needle in text for needle in needles):
-            continue
-        total += 1
-        path_rel = rel(path)
-        bucket, note = _reference_bucket(candidate, path)
-        classification[bucket].append(path_rel)
-        notes.append(f"{path_rel}: {note}")
+    return {rel_path, rel_path.replace("/", "\\"), candidate.name}
+
+
+def _add_reference(accumulator: dict[str, Any], candidate: Path, reference_path: Path) -> None:
+    path_rel = rel(reference_path)
+    bucket, note = _reference_bucket(candidate, reference_path)
+    accumulator["total"] += 1
+    accumulator["classification"][bucket].append(path_rel)
+    accumulator["notes"].append(f"{path_rel}: {note}")
+
+
+def _finalize_reference(accumulator: dict[str, Any]) -> dict[str, Any]:
+    classification = accumulator["classification"]
     for bucket in REFERENCE_BUCKETS:
         classification[bucket] = sorted(set(classification[bucket]))
     operational = len(classification["active_operational_consumer_references"])
@@ -452,23 +590,58 @@ def reference_details(candidate: Path, corpus: list[tuple[Path, str]]) -> dict[s
     return {
         "active_reference_count": active,
         "operational_reference_count": operational,
-        "total_reference_count": total,
+        "total_reference_count": accumulator["total"],
         "reference_classification": {
             "summary": {bucket: len(classification[bucket]) for bucket in REFERENCE_BUCKETS},
             **classification,
         },
-        "reference_notes": sorted(set(notes)),
+        "reference_notes": sorted(set(accumulator["notes"])),
     }
 
 
+def build_reference_index(candidates: list[Path], corpus: list[tuple[Path, str]]) -> dict[Path, dict[str, Any]]:
+    accumulators = {candidate: _empty_reference_accumulator() for candidate in candidates}
+    needle_to_candidates: dict[str, list[Path]] = defaultdict(list)
+    for candidate in candidates:
+        for needle in _candidate_needles(candidate):
+            if needle:
+                needle_to_candidates[needle].append(candidate)
+
+    needles = sorted(needle_to_candidates, key=len, reverse=True)
+    if not needles:
+        return {candidate: _finalize_reference(accumulator) for candidate, accumulator in accumulators.items()}
+
+    markers = (".sqlite", ".db", "-wal", "-shm")
+    for reference_path, text in corpus:
+        if not any(marker in text for marker in markers):
+            continue
+        matched_candidates: set[Path] = set()
+        for needle in needles:
+            if needle not in text:
+                continue
+            for candidate in needle_to_candidates[needle]:
+                if reference_path != candidate:
+                    matched_candidates.add(candidate)
+        for candidate in matched_candidates:
+            _add_reference(accumulators[candidate], candidate, reference_path)
+
+    return {candidate: _finalize_reference(accumulator) for candidate, accumulator in accumulators.items()}
+
+
 def sqlite_probe(path: Path) -> dict[str, Any]:
+    try:
+        size_bytes = path.stat().st_size
+    except OSError:
+        size_bytes = None
     result: dict[str, Any] = {
         "open_status": "unknown",
+        "size_bytes": size_bytes,
         "journal_mode": None,
         "page_size": None,
         "page_count": None,
         "freelist_count": None,
         "integrity_check": None,
+        "integrity_check_mode": None,
         "table_count": None,
         "index_count": None,
         "view_count": None,
@@ -490,7 +663,12 @@ def sqlite_probe(path: Path) -> dict[str, Any]:
         result["page_size"] = conn.execute("PRAGMA page_size").fetchone()[0]
         result["page_count"] = conn.execute("PRAGMA page_count").fetchone()[0]
         result["freelist_count"] = conn.execute("PRAGMA freelist_count").fetchone()[0]
-        result["integrity_check"] = conn.execute("PRAGMA integrity_check").fetchone()[0]
+        if size_bytes is not None and size_bytes > FULL_INTEGRITY_MAX_BYTES:
+            result["integrity_check_mode"] = "skipped_large_db_guard"
+            result["integrity_check"] = "not_run"
+        else:
+            result["integrity_check_mode"] = "full_integrity_check"
+            result["integrity_check"] = conn.execute("PRAGMA integrity_check").fetchone()[0]
         rows = conn.execute(
             """
             SELECT name, type
@@ -511,11 +689,14 @@ def sqlite_probe(path: Path) -> dict[str, Any]:
             if name.startswith("sqlite_"):
                 continue
             entry: dict[str, Any] = {"name": name, "row_count": None}
-            try:
-                quoted = '"' + name.replace('"', '""') + '"'
-                entry["row_count"] = conn.execute(f"SELECT COUNT(*) FROM {quoted}").fetchone()[0]
-            except sqlite3.Error as exc:
-                entry["row_count_error"] = str(exc)
+            if size_bytes is not None and size_bytes > TABLE_ROW_COUNT_MAX_BYTES:
+                entry["row_count_skipped_reason"] = "large_db_guard"
+            else:
+                try:
+                    quoted = '"' + name.replace('"', '""') + '"'
+                    entry["row_count"] = conn.execute(f"SELECT COUNT(*) FROM {quoted}").fetchone()[0]
+                except sqlite3.Error as exc:
+                    entry["row_count_error"] = str(exc)
             tables.append(entry)
         result["tables"] = tables
         try:
@@ -551,6 +732,54 @@ def sidecars_for(path: Path, proposed_db_destination: str | None = None) -> list
             "proposed_destination": destination,
         })
     return out
+
+
+def integrity_check_skipped(sqlite_meta: dict[str, Any]) -> bool:
+    return sqlite_meta.get("integrity_check_mode") == "skipped_large_db_guard"
+
+
+def integrity_check_problem(sqlite_meta: dict[str, Any]) -> bool:
+    if sqlite_meta.get("open_status") != "ok":
+        return True
+    if integrity_check_skipped(sqlite_meta):
+        return False
+    return sqlite_meta.get("integrity_check") != "ok"
+
+
+def orphan_sidecar_record(path: Path, refs: dict[str, Any]) -> dict[str, Any]:
+    parent = sqlite_parent_for_sidecar(path)
+    return {
+        "path": rel(path),
+        "basename": path.name,
+        "lifecycle": "orphan_sidecar",
+        "owner": "unattached SQLite sidecar cleanup review",
+        "status": "orphan_sidecar_review_required",
+        "recommendation": "review parent DB history before any delete; no automatic sidecar cleanup",
+        "archive_ready": False,
+        "delete_ready": False,
+        "owner_approval_required": True,
+        "apply_allowed": False,
+        "proposed_destination": None,
+        "parent_path": rel(parent) if parent and parent.is_relative_to(ROOT) else str(parent) if parent else None,
+        "parent_exists": bool(parent and parent.exists()),
+        "sidecar_kind": sqlite_sidecar_kind(path),
+        "size_bytes": path.stat().st_size,
+        "mtime_utc": path_utc(path),
+        "sha256": sha256_file(path),
+        "active_reference_count": refs["active_reference_count"],
+        "operational_reference_count": refs["operational_reference_count"],
+        "total_reference_count": refs["total_reference_count"],
+        "reference_classification": refs["reference_classification"],
+        "reference_notes": refs["reference_notes"],
+        "evidence": [
+            "sidecar filename matches SQLite WAL/SHM pattern",
+            "parent SQLite database is absent from the scanned DB set",
+            "this row prepares future cleanup review but grants no delete authority",
+        ],
+        "blockers": [
+            "orphan sidecar requires owner-gated sidecar cleanup packet and rollback/tombstone proof before deletion"
+        ],
+    }
 
 
 def rollback_path_for(entry: dict[str, Any]) -> dict[str, Any]:
@@ -642,8 +871,41 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         evidence.append("OpenClaw runtime state backup captured under tmp/backups during approved remediation")
         evidence.append("runtime/control-plane backup; not a live authority database and not safe for automatic cleanup")
         blockers.append("runtime backup provenance requires owner decision before archive/delete")
-        if sqlite_meta.get("integrity_check") != "ok":
+        if integrity_check_problem(sqlite_meta):
             blockers.append("integrity check is not ok; preserve for investigation")
+    elif name.startswith("reference-levels-production-grade-pre-apply-") and name.endswith(".sqlite"):
+        lifecycle = "rollback"
+        owner = "WF72 Tier A/A-READY reference-level SQL apply rollback backup"
+        status = "conditional_keep"
+        recommendation = "retain as rollback proof for the approved 3-row production-grade reference_levels apply"
+        retention_policy = "conditional keep with WF72 apply closeout; archive/delete only through DB lifecycle approval packet"
+        evidence.append("pre-apply backup for the approved Tier A/A-READY reference_levels SQL update")
+        evidence.append("not active finance-canon current state; restore only under explicit rollback instruction")
+        blockers.append("rollback proof retained for approved SQL apply")
+        if integrity_check_problem(sqlite_meta):
+            blockers.append("integrity check is not ok; preserve for rollback investigation")
+    elif name.startswith("reference-levels-derived-refresh-rollback-drill-") and name.endswith(".sqlite"):
+        lifecycle = "rollback"
+        owner = "WF72 SQL reference_levels derived-refresh rollback drill proof"
+        status = "conditional_keep"
+        recommendation = "retain as rollback-drill proof for the SQL reference_levels derived-refresh apply path"
+        retention_policy = "conditional keep with WF72 reference_levels apply closeout; archive/delete only through DB lifecycle approval packet"
+        evidence.append("rollback-drill database created by the dedicated SQL reference_levels derived-refresh apply executor")
+        evidence.append("not active finance-canon current state; restore only under explicit rollback instruction")
+        blockers.append("rollback drill proof retained for SQL reference_levels apply path")
+        if integrity_check_problem(sqlite_meta):
+            blockers.append("integrity check is not ok; preserve for rollback investigation")
+    elif path_rel.startswith("state/tmp-lifecycle-rollback/wf88-db-duplicate-source-delete/"):
+        lifecycle = "rollback"
+        owner = "WF88 DB duplicate-source delete rollback copy"
+        status = "conditional_keep"
+        recommendation = "retain as rollback proof for the approved WF88 duplicate-source tmp DB deletion"
+        retention_policy = "conditional keep with WF88 duplicate-source delete closeout; no archive/delete automation"
+        evidence.append("rollback copy created before deleting the duplicate tmp DB source")
+        evidence.append("archive copy remains under 09. Archive; this state copy is rollback proof, not a new archive candidate")
+        blockers.append("rollback proof retained for WF88 duplicate-source delete")
+        if integrity_check_problem(sqlite_meta):
+            blockers.append("integrity check is not ok; preserve for rollback investigation")
     elif name in ARCHIVE_CANDIDATE_RULES:
         rule = ARCHIVE_CANDIDATE_RULES[name]
         lifecycle = rule["lifecycle"]
@@ -659,10 +921,29 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
             archive_ready = True
         evidence.append(rule["reason"])
         proposed_destination = (ARCHIVE_ROOT / rule["archive_bucket"] / path.name).as_posix()
+        if status == "archive_candidate":
+            destination = ROOT / proposed_destination
+            if destination.exists():
+                source_hash = sha256_file(path)
+                destination_hash = sha256_file(destination)
+                if source_hash and destination_hash and source_hash == destination_hash:
+                    status = "archive_destination_already_present"
+                    recommendation = (
+                        "archive copy already exists with matching hash; do not overwrite; "
+                        "route the tmp duplicate to a separate owner-gated delete-readiness packet"
+                    )
+                    archive_ready = False
+                    evidence.append("archive destination already contains a matching hash")
+                    blockers.append("archive destination exists with same hash; archive-only move would leave tmp duplicate")
+                else:
+                    archive_ready = False
+                    blockers.append("archive destination already exists with different or unreadable hash")
         if status == "archive_candidate" and operational_refs:
             blockers.append("active operational references exist; inspect before archiving")
-        if status == "archive_candidate" and sqlite_meta.get("integrity_check") != "ok":
+        if status == "archive_candidate" and integrity_check_problem(sqlite_meta):
             blockers.append("integrity check is not ok; preserve for investigation instead of cleanup")
+        if status == "archive_candidate" and integrity_check_skipped(sqlite_meta):
+            blockers.append("integrity check skipped by large DB guard; run archive-specific proof before cleanup")
     else:
         evidence.append("no known lifecycle rule matched")
         blockers.append("unclassified database")
@@ -685,8 +966,16 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
 def build_manifest() -> dict[str, Any]:
     corpus = text_corpus()
     entries: list[DbEntry] = []
-    for path in iter_db_files():
-        refs = reference_details(path, corpus)
+    db_files = list(iter_db_files())
+    orphan_sidecar_paths = iter_orphan_sqlite_sidecars(
+        (TMP, STATE, ARCHIVE_SCAN_ROOT),
+        db_files=db_files,
+        sidecar_suffixes=SIDECAR_SUFFIXES,
+        root=ROOT,
+    )
+    refs_by_path = build_reference_index([*db_files, *orphan_sidecar_paths], corpus)
+    for path in db_files:
+        refs = refs_by_path.get(path, _finalize_reference(_empty_reference_accumulator()))
         active_refs = refs["active_reference_count"]
         operational_refs = refs["operational_reference_count"]
         total_refs = refs["total_reference_count"]
@@ -723,17 +1012,24 @@ def build_manifest() -> dict[str, Any]:
                 blockers=classification["blockers"],
             )
         )
+    orphan_sidecars = [
+        orphan_sidecar_record(path, refs_by_path.get(path, _finalize_reference(_empty_reference_accumulator())))
+        for path in orphan_sidecar_paths
+    ]
 
     counts: dict[str, int] = {}
     for entry in entries:
         counts[entry.lifecycle] = counts.get(entry.lifecycle, 0) + 1
     archive_ready = [entry for entry in entries if entry.archive_ready]
     archive_candidates = [entry for entry in entries if entry.status == "archive_candidate"]
+    archive_destination_duplicates = [
+        entry for entry in entries if entry.status == "archive_destination_already_present"
+    ]
     archived_entries = [entry for entry in entries if entry.status == "archived"]
     unknown = [entry for entry in entries if entry.lifecycle == "unknown"]
     integrity_errors = [
         entry for entry in entries
-        if entry.sqlite.get("open_status") != "ok" or entry.sqlite.get("integrity_check") != "ok"
+        if integrity_check_problem(entry.sqlite)
     ]
 
     sidecars = [
@@ -769,9 +1065,12 @@ def build_manifest() -> dict[str, Any]:
         "summary": {
             "database_count": len(entries),
             "sidecar_count": len(sidecars),
+            "orphan_sidecar_count": len(orphan_sidecars),
+            "orphan_sidecar_bytes": sum(int(row.get("size_bytes") or 0) for row in orphan_sidecars),
             "lifecycle_counts": counts,
             "archive_candidate_count": len(archive_candidates),
             "archive_ready_count": len(archive_ready),
+            "archive_destination_duplicate_count": len(archive_destination_duplicates),
             "archived_count": len(archived_entries),
             "archive_candidate_sidecar_count": len(archive_candidate_sidecars),
             "archive_ready_sidecar_count": len(archive_ready_sidecars),
@@ -797,6 +1096,9 @@ def build_manifest() -> dict[str, Any]:
             "archive_after_reference_review": [
                 entry.path for entry in archive_candidates if not entry.archive_ready
             ],
+            "archive_destination_already_present": [
+                entry.path for entry in archive_destination_duplicates
+            ],
             "keep_protected": [
                 entry.path for entry in entries if entry.lifecycle in {"live", "derived"}
             ],
@@ -805,8 +1107,10 @@ def build_manifest() -> dict[str, Any]:
             ],
             "delete_now": [],
             "already_archived": [entry.path for entry in archived_entries],
+            "orphan_sidecars_review_required": [row["path"] for row in orphan_sidecars],
         },
         "entries": [asdict(entry) for entry in entries],
+        "orphan_sidecars": orphan_sidecars,
     }
 
 
@@ -909,15 +1213,30 @@ def validate_manifest(manifest: dict[str, Any]) -> list[str]:
             errors.append(f"{entry.get('path')} archive-ready with active operational references")
         if entry.get("archive_ready") and not entry.get("proposed_destination"):
             errors.append(f"{entry.get('path')} archive-ready without destination")
+        if entry.get("archive_ready") and entry.get("proposed_destination"):
+            destination = ROOT / str(entry.get("proposed_destination"))
+            if destination.exists():
+                errors.append(f"{entry.get('path')} archive-ready but destination already exists")
         if lifecycle in {"live", "derived"} and entry.get("archive_ready"):
             errors.append(f"{entry.get('path')} protected lifecycle marked archive-ready")
         sqlite_meta = entry.get("sqlite") or {}
         if sqlite_meta.get("open_status") != "ok":
             errors.append(f"{entry.get('path')} SQLite open failed: {sqlite_meta.get('error')}")
-        if sqlite_meta.get("integrity_check") != "ok":
+        if integrity_check_problem(sqlite_meta):
             errors.append(f"{entry.get('path')} integrity not ok: {sqlite_meta.get('integrity_check')}")
         if not entry.get("sha256"):
             errors.append(f"{entry.get('path')} missing sha256")
+    for sidecar in manifest.get("orphan_sidecars", []):
+        if sidecar.get("apply_allowed") is not False:
+            errors.append(f"{sidecar.get('path')} orphan sidecar has apply_allowed not false")
+        if sidecar.get("delete_ready"):
+            errors.append(f"{sidecar.get('path')} orphan sidecar unexpectedly delete-ready")
+        if sidecar.get("archive_ready"):
+            errors.append(f"{sidecar.get('path')} orphan sidecar unexpectedly archive-ready")
+        if sidecar.get("parent_exists") is not False:
+            errors.append(f"{sidecar.get('path')} orphan sidecar parent_exists not false")
+        if not sidecar.get("sha256"):
+            errors.append(f"{sidecar.get('path')} orphan sidecar missing sha256")
     return errors
 
 
@@ -929,6 +1248,8 @@ def markdown_report(manifest: dict[str, Any]) -> str:
         f"- Status: `{manifest['status']}`",
         f"- Generated UTC: `{manifest['generated_at_utc']}`",
         f"- Databases: `{summary['database_count']}`",
+        f"- Attached sidecars: `{summary.get('sidecar_count')}`",
+        f"- Orphan sidecars requiring review: `{summary.get('orphan_sidecar_count')}`",
         f"- Archive candidates: `{summary['archive_candidate_count']}` / ready now `{summary['archive_ready_count']}`",
         f"- Delete-ready: `{summary['delete_ready_count']}`",
         f"- Archive candidate bytes: `{summary['archive_candidate_bytes']}`",
@@ -950,6 +1271,12 @@ def markdown_report(manifest: dict[str, Any]) -> str:
     conditional = manifest["recommended_owner_decision"]["conditional_keep"]
     if conditional:
         lines.extend(f"- `{path}`" for path in conditional)
+    else:
+        lines.append("- None")
+    lines.extend(["", "Orphan sidecars requiring review:"])
+    orphan_sidecars = manifest["recommended_owner_decision"].get("orphan_sidecars_review_required") or []
+    if orphan_sidecars:
+        lines.extend(f"- `{path}`" for path in orphan_sidecars)
     else:
         lines.append("- None")
     lines.extend(["", "## Inventory", ""])

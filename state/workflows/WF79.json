@@ -3,11 +3,26 @@
   "workflow_id": "WF79",
   "display_name": "Veritas Command Center V2 UI Infrastructure",
   "tier": "P1",
-  "effective_status": "route_only",
-  "next_action": "Use compact reader/shell as active route; keep legacy full-detail dashboard for Randall drilldown. Optional future work is legacy payload retirement, not a blocking Path B dependency.",
-  "helper_safe": true,
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Compact reader/shell is first-read; full-detail dashboard retained for drilldown/rollback.",
+  "next_action": "Use compact route first; legacy payload retirement is optional.",
+  "authoritative_next_action": "Use compact route first; legacy payload retirement is optional.",
+  "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "review-only local UI",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/presentation-retrieval-route-map.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [],
   "stop_lines": [
     "Local/review-only UI. No canon/portfolio mutation, paper/live/account action, approval inference, public/customer delivery, SQL promotion, proof deletion, sidecar archive/delete, or config/channel/runtime expansion."
@@ -31,6 +46,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

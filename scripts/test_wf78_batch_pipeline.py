@@ -100,8 +100,15 @@ def main() -> int:
     expect(rep["status"] == "ok", "reputation gate should remain ok", errors)
     labels = {row["batch_label"]: row for row in rep["batch_plan"]}
     expect("301-400" in labels, "reputation batch plan must include 301-400", errors)
-    expect(rep["summary"]["row_count"] == 500, "reputation gate must keep 500 rows", errors)
     expect(rep["summary"]["current_baseline_count"] in {200, 300, 400, 500}, "baseline count must stay supported", errors)
+    expect(rep["summary"]["next_batch_tier_c_eligible_count"] in {0, 100}, "next batch must be empty or fully validated", errors)
+    expect(rep["summary"]["row_count"] <= rep["summary"]["target_count"], "reputation row count must not exceed target", errors)
+    if rep["summary"]["row_count"] < rep["summary"]["target_count"]:
+        warning_checks = [
+            row for row in rep["validation"]["checks"]
+            if row["name"] == "full_500_source_capacity_warning" and row["severity"] == "warning"
+        ]
+        expect(bool(warning_checks), "source capacity shortfall must be routed as a warning", errors)
 
     if errors:
         print("wf78_batch_pipeline_tests_failed")

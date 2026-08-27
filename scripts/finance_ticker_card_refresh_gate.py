@@ -18,6 +18,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import FinanceSqlCanonAccess
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -31,16 +33,20 @@ FINANCE_STATE_DB = TMP / "finance-intelligence-state.sqlite"
 PRICE_FRESHNESS_BRIDGE = TMP / "wf77-price-freshness-bridge.json"
 PRICE_STATE_CURRENT = ROOT / "data" / "market" / "price-snapshots" / "wf77-price-state-current.json"
 FINANCE_COVERAGE = TMP / "finance-data-coverage-current.json"
+SQL_CANON_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 PRICE_DRIFT_TOLERANCE = 0.02
 FULL_ANSWER_MODES = {"changed", "always", "never"}
+LEGACY_PRODUCTION_COMPATIBILITY_COUNT = 42
 
 AUTHORITY = {
     "review_only": True,
     "report_only": True,
     "ticker_card_review_artifact_rebuild_allowed": True,
+    "durable_sql_canon_current_state_allowed": True,
     "canon_mutation_allowed": False,
     "portfolio_mutation_allowed": False,
     "sql_first_answer_allowed": False,
+    "sql_canon_mutation_allowed": False,
     "import_apply_allowed": False,
     "production_promotion_allowed": False,
     "customer_or_external_delivery_allowed": False,
@@ -93,8 +99,16 @@ def run_command(args: list[str]) -> dict[str, Any]:
     }
 
 
-def provider_refresh_commands() -> list[list[str]]:
+def provider_refresh_commands(tickers: list[str] | None = None) -> list[list[str]]:
     python = sys.executable
+    shard = list(tickers or [])
+    if shard:
+        return [
+            [python, "scripts\\earnings_calendar_enrichment.py", "--tickers", *shard, "--merge-existing"],
+            [python, "scripts\\wf77_price_freshness_bridge.py", "--write", "--validate"],
+            [python, "scripts\\fundamental_metrics_refresh.py", "--tickers", *shard, "--merge-existing", "--no-history"],
+            [python, "scripts\\analyst_consensus_refresh.py", "--tickers", *shard, "--write", "--validate", "--merge-existing"],
+        ]
     return [
         [python, "scripts\\technical_refresh.py"],
         [python, "scripts\\wf77_price_freshness_bridge.py", "--write", "--validate"],
@@ -103,17 +117,68 @@ def provider_refresh_commands() -> list[list[str]]:
     ]
 
 
-def card_refresh_commands(card_summary: Path) -> list[list[str]]:
+def earnings_rollforward_guard_command(tickers: list[str] | None = None) -> list[str]:
+    """Return the pre-refresh missed-earnings guard command.
+
+    Explicit ticker shards are checked exactly; broad refreshes use the
+    priority/event-sensitive universe so a missed scheduler window is detected
+    before provider refresh and card rebuild.  The guard is review-only and
+    may auto-capture only an explicitly proven parser/source pair.
+    """
+    command = [
+        sys.executable,
+        "scripts\\earnings_rollforward_guard.py",
+        "--auto-capture",
+        "--write",
+        "--validate",
+    ]
+    if tickers:
+        for ticker in tickers:
+            command.extend(["--ticker", ticker])
+    else:
+        command.append("--priority-only")
+    return command
+
+
+def post_earnings_reconciliation_commands() -> list[list[str]]:
+    """Return the one conditional rebuild chain after a new source capture.
+
+    It intentionally does not run on an unchanged guard: source discovery stays
+    cheap, and alerts represent a real unresolved capture/transport failure, not
+    ordinary review-only field reconciliation debt.
+    """
     python = sys.executable
     return [
+        [python, "scripts\\official_capture_period_registry.py", "--write"],
+        [python, "scripts\\fundamental_ir_reconciliation_packets.py", "--write"],
+        [python, "scripts\\validate_fundamental_ir_reconciliation.py", "--write"],
+        [python, "scripts\\official_earnings_bridge.py", "--write"],
+        [python, "scripts\\validate_official_earnings_bridge.py", "--write"],
+    ]
+
+
+def guard_requires_reconciliation(guard: dict[str, Any] | None) -> bool:
+    summary = as_dict((guard or {}).get("summary"))
+    return any(
+        int(summary.get(key) or 0) > 0
+        for key in (
+            "updated_review_only_count",
+            "source_verified_pending_reconciliation_count",
+        )
+    )
+
+
+def card_refresh_commands(card_summary: Path, tickers: list[str] | None = None) -> list[list[str]]:
+    python = sys.executable
+    card_args = [python, "scripts\\ticker_intelligence_card.py"]
+    for ticker in tickers or []:
+        card_args.extend(["--ticker", ticker])
+    if not tickers:
+        card_args.append("--all-from-coverage")
+    card_args.extend(["--summary-output", str(card_summary)])
+    return [
         [python, "scripts\\finance_data_coverage.py", "--validate", "--write-contract"],
-        [
-            python,
-            "scripts\\ticker_intelligence_card.py",
-            "--all-from-coverage",
-            "--summary-output",
-            str(card_summary),
-        ],
+        card_args,
         [python, "scripts\\wf77_price_freshness_bridge.py", "--write", "--validate"],
     ]
 
@@ -128,28 +193,37 @@ def full_answer_command() -> list[str]:
     ]
 
 
-def state_validation_commands() -> list[list[str]]:
+def state_validation_commands(*, refresh_state: bool = True) -> list[list[str]]:
     python = sys.executable
-    return [
-        [python, "scripts\\finance_intelligence_state.py", "refresh-100", "--pretty"],
+    commands: list[list[str]] = []
+    if refresh_state:
+        commands.append([python, "scripts\\finance_intelligence_state.py", "refresh-100", "--pretty"])
+    commands.extend([
         [python, "scripts\\finance_intelligence_state.py", "validate", "--pretty"],
         [python, "scripts\\finance_intelligence_state.py", "stale-tickers", "--pretty", "--limit", "500"],
-    ]
+    ])
+    return commands
 
 
-def build_commands(skip_provider_refresh: bool, card_summary: Path, full_answer_mode: str = "always") -> list[list[str]]:
+def build_commands(
+    skip_provider_refresh: bool,
+    card_summary: Path,
+    full_answer_mode: str = "always",
+    tickers: list[str] | None = None,
+) -> list[list[str]]:
     """Return the static command plan for callers/tests.
 
     ``changed`` is runtime-dependent, so the static plan shows the fast path.
     ``build_packet`` records whether the full-answer command actually ran.
     """
     commands: list[list[str]] = []
+    commands.append(earnings_rollforward_guard_command(tickers))
     if not skip_provider_refresh:
-        commands.extend(provider_refresh_commands())
-    commands.extend(card_refresh_commands(card_summary))
+        commands.extend(provider_refresh_commands(tickers))
+    commands.extend(card_refresh_commands(card_summary, tickers))
     if full_answer_mode == "always":
         commands.append(full_answer_command())
-    commands.extend(state_validation_commands())
+    commands.extend(state_validation_commands(refresh_state=not tickers and not skip_provider_refresh))
     return commands
 
 
@@ -375,6 +449,109 @@ def universe_scope_index(db_path: Path = FINANCE_STATE_DB) -> dict[str, dict[str
     return {str(row["ticker"]).upper(): dict(row) for row in records}
 
 
+DECISION_TIERS = {"A", "B"}
+
+
+def normalize_tier(tier: Any) -> str:
+    """Normalize 'Tier A' / 'a' / 'A' to 'A'."""
+    text = str(tier or "").strip().upper()
+    if text.startswith("TIER"):
+        text = text[4:].strip()
+    return text
+
+
+def is_decision_tier(tier: Any) -> bool:
+    """Tier A/B carry real freshness debt regardless of production answer-path state."""
+    return normalize_tier(tier) in DECISION_TIERS
+
+
+def sql_canon_scope_index(base_scope: dict[str, dict[str, Any]]) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    context: dict[str, Any] = {
+        "schema": "veritas.finance_ticker_card_refresh_gate.sql_canon_scope.v1",
+        "status": "blocked",
+        "sql_canon_db": rel(SQL_CANON_DB),
+        "typed_access_layer": "scripts/finance_sql_canon_access.py",
+        "production_answer_count": None,
+        "base_scope_count": len(base_scope),
+        "missing_from_sql": [],
+        "missing_from_base_scope": [],
+        "scope_diff": {},
+        "registry_summary": {},
+        "validation": {"status": "blocked", "errors": [], "warnings": []},
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+    overlay = {ticker: dict(row) for ticker, row in base_scope.items()}
+    try:
+        client = FinanceSqlCanonAccess(SQL_CANON_DB)
+        validation = client.validate()
+        context["access_validation_status"] = validation.get("status")
+        if validation.get("status") != "ok":
+            context["validation"]["errors"].append({"sql_canon_access_blocked": validation.get("errors")})
+            return context, overlay
+        states = client.ticker_states(base_scope.keys())
+        production = set(client.production_answer_tickers())
+        legacy = set(client.legacy_production_answer_tickers())
+        if not production:
+            context["validation"]["warnings"].append("production_grade_set_empty_wait_for_decision_grade_gates")
+        base_production = {
+            ticker
+            for ticker, row in base_scope.items()
+            if bool(row.get("production_answer_path_member"))
+        }
+        context["production_answer_count"] = len(production)
+        context["legacy_production_answer_count"] = len(legacy)
+        context["effective_production_answer_count"] = len(production)
+        context["legacy_42_retired_from_blocking"] = True
+        context["legacy_42_count_advisory_only"] = True
+        context["registry_summary"] = client.migration_registry_summary()
+        context["missing_from_sql"] = sorted(set(base_scope) - set(states))
+        context["missing_from_base_scope"] = sorted(set(states) - set(base_scope))
+        context["scope_diff"] = {
+            "extra_in_sql_production": sorted(production - base_production),
+            "missing_from_sql_production": sorted(base_production - production),
+            "legacy_base_scope_retired_from_blocking": True,
+        }
+        decision_tier_non_production: list[str] = []
+        for ticker, state in states.items():
+            row = overlay.setdefault(ticker, {})
+            is_production = ticker in production
+            decision_tier = is_decision_tier(state.legacy_tier)
+            base_thin = base_scope.get(ticker, {}).get("thin_monitor_row")
+            # Thin-monitor means Tier C / review-monitor scope. An unopened
+            # production answer path must not silently reclassify Tier A/B as
+            # expected context, which would hide real freshness debt.
+            thin_monitor = (not is_production) if base_thin is None else bool(base_thin)
+            if decision_tier:
+                thin_monitor = False
+                if not is_production:
+                    decision_tier_non_production.append(ticker)
+            row["ticker"] = ticker
+            row["tier"] = state.legacy_tier
+            row["universe_scope"] = state.universe_scope
+            row["production_answer_path_member"] = is_production
+            row["thin_monitor_row"] = thin_monitor
+            row["decision_tier_row"] = decision_tier
+            row["sql_canon_scope_source"] = True
+        context["decision_tier_non_production_count"] = len(decision_tier_non_production)
+        context["decision_tier_non_production_tickers"] = sorted(decision_tier_non_production)
+        errors = context["validation"]["errors"]
+        if context["missing_from_sql"]:
+            errors.append({"base_scope_missing_sql_state": context["missing_from_sql"][:25]})
+        if context["scope_diff"]["extra_in_sql_production"] or context["scope_diff"]["missing_from_sql_production"]:
+            context["validation"]["warnings"].append({"legacy_base_scope_vs_strategic_production_diff": context["scope_diff"]})
+        context["validation"]["status"] = "blocked" if errors else "ok"
+        context["status"] = "blocked" if errors else "ok"
+    except Exception as exc:  # noqa: BLE001 - refresh gate must fail closed on SQL-canon guard errors.
+        context["validation"]["errors"].append({"exception": repr(exc)})
+    return context, overlay
+
+
 def quote_freshness_context_only(item: dict[str, Any]) -> bool:
     reasons = item.get("stale_reasons")
     if not isinstance(reasons, list) or not reasons:
@@ -402,10 +579,12 @@ def classify_repair_queue(repair_queue: list[dict[str, Any]], scope_index: dict[
     expected_context: list[dict[str, Any]] = []
     quote_freshness_context: list[dict[str, Any]] = []
     production_expected_context: list[dict[str, Any]] = []
+    decision_tier_stale: list[str] = []
     for item in repair_queue:
         ticker = str(item.get("ticker") or "").upper()
         scope = scope_index.get(ticker, {})
-        thin_monitor = bool(scope.get("thin_monitor_row"))
+        decision_tier = is_decision_tier(scope.get("tier"))
+        thin_monitor = bool(scope.get("thin_monitor_row")) and not decision_tier
         production_member = bool(scope.get("production_answer_path_member"))
         quote_context = quote_freshness_context_only(item)
         non_blocking_context = context_only(item)
@@ -415,6 +594,7 @@ def classify_repair_queue(repair_queue: list[dict[str, Any]], scope_index: dict[
             "universe_scope": scope.get("universe_scope"),
             "production_answer_path_member": production_member,
             "thin_monitor_row": thin_monitor,
+            "decision_tier_row": decision_tier,
             "repair_scope": (
                 "thin_monitor_expected_context"
                 if thin_monitor and not production_member
@@ -426,6 +606,8 @@ def classify_repair_queue(repair_queue: list[dict[str, Any]], scope_index: dict[
             ),
         }
         enriched.append(enriched_item)
+        if decision_tier:
+            decision_tier_stale.append(ticker)
         if thin_monitor and not production_member:
             expected_context.append(enriched_item)
         elif quote_context:
@@ -444,6 +626,8 @@ def classify_repair_queue(repair_queue: list[dict[str, Any]], scope_index: dict[
         "thin_monitor_expected_context_count": len(expected_context),
         "fresh_quote_required_context_count": len(quote_freshness_context),
         "production_expected_context_count": len(production_expected_context),
+        "decision_tier_stale_count": len(decision_tier_stale),
+        "decision_tier_stale_tickers": sorted(decision_tier_stale),
     }
 
 
@@ -566,10 +750,20 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
 
     command_results: list[dict[str, Any]] = []
     commands: list[list[str]] = []
+    tickers = sorted({str(ticker).upper() for ticker in (args.tickers or []) if str(ticker).strip()})
+    guard_command = earnings_rollforward_guard_command(tickers)
+    commands.append(guard_command)
+    command_results.append(run_command(guard_command))
+    rollforward_guard = load_json(TMP / "earnings-rollforward-guard.json")
+    reconciliation_commands: list[list[str]] = []
+    if guard_requires_reconciliation(rollforward_guard):
+        reconciliation_commands = post_earnings_reconciliation_commands()
+        commands.extend(reconciliation_commands)
+        command_results.extend(run_command(command) for command in reconciliation_commands)
     if not args.skip_provider_refresh:
-        commands.extend(provider_refresh_commands())
-    commands.extend(card_refresh_commands(card_summary_path))
-    command_results.extend(run_command(command) for command in commands)
+        commands.extend(provider_refresh_commands(tickers))
+    commands.extend(card_refresh_commands(card_summary_path, tickers))
+    command_results.extend(run_command(command) for command in commands[1 + len(reconciliation_commands):])
 
     card_summary = load_json(card_summary_path)
     price_bridge = load_json(PRICE_FRESHNESS_BRIDGE)
@@ -583,7 +777,8 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     if full_answer_rebuild["command_run"]:
         command_results.append(run_command(full_answer_command()))
 
-    state_commands = state_validation_commands()
+    state_refresh_requested = not tickers and not args.skip_provider_refresh
+    state_commands = state_validation_commands(refresh_state=state_refresh_requested)
     command_results.extend(run_command(command) for command in state_commands)
 
     finance_validation = load_json(FINANCE_STATE_VALIDATION)
@@ -592,7 +787,8 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     coverage = load_json(FINANCE_COVERAGE)
 
     failed = [result for result in command_results if not result["ok"]]
-    scope_index = universe_scope_index()
+    base_scope_index = universe_scope_index()
+    sql_canon_scope, scope_index = sql_canon_scope_index(base_scope_index)
     stale_rollup = summarize_stale(stale_packet)
     stale_scope = summarize_stale_scope()
     queue_classification = classify_repair_queue(stale_rollup["repair_queue"], scope_index)
@@ -605,16 +801,32 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     stale_tickers = {str(item.get("ticker") or "") for item in queue_classification["production_repair_queue"]}
     card_rollup = summarize_cards(card_summary, stale_tickers)
     coverage_summary = coverage.get("summary") if isinstance(coverage, dict) and isinstance(coverage.get("summary"), dict) else {}
-    expected_card_count = int(coverage_summary.get("ticker_count_indexed") or card_rollup["card_count"] or 0)
+    expected_card_count = (
+        len(tickers)
+        if tickers
+        else int(coverage_summary.get("ticker_count_indexed") or card_rollup["card_count"] or 0)
+    )
 
     validation_errors: list[str] = []
     validation_warnings: list[str] = []
     if failed:
         validation_errors.append(f"{len(failed)} refresh command(s) failed")
+    if not isinstance(rollforward_guard, dict):
+        validation_errors.append("earnings roll-forward guard artifact is missing")
+    else:
+        guard_summary = as_dict(rollforward_guard.get("summary"))
+        if rollforward_guard.get("status") == "blocked" or int(guard_summary.get("critical_finding_count") or 0) > 0:
+            validation_errors.append("earnings roll-forward guard is blocked")
+        elif int(guard_summary.get("unresolved_count") or 0) > 0:
+            validation_warnings.append(
+                f"{guard_summary.get('unresolved_count')} earnings roll-forward item(s) remain manual/catch-up required"
+            )
     if card_rollup["status"] not in {"ok", "missing"}:
         validation_warnings.append(f"card summary status is {card_rollup['status']}")
     if expected_card_count and card_rollup["card_count"] != expected_card_count:
         validation_errors.append(f"expected {expected_card_count} ticker cards, got {card_rollup['card_count']}")
+    if sql_canon_scope.get("status") != "ok":
+        validation_errors.append(f"durable SQL-canon scope guard blocked: {sql_canon_scope.get('validation')}")
     if not isinstance(finance_validation, dict):
         validation_errors.append("finance intelligence validation artifact is missing")
     elif finance_validation.get("status") != "ok":
@@ -636,8 +848,18 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
             f"{card_price_drift['production_price_drift_count']} production answer-path ticker card(s) differ from fresher WF77 price-state rows"
         )
     if stale_scope.get("thin_monitor_stale_count"):
-        stale_scope["thin_monitor_expected_context_count"] = stale_scope["thin_monitor_stale_count"]
+        stale_scope["thin_monitor_expected_context_count"] = queue_classification["thin_monitor_expected_context_count"]
         stale_scope["thin_monitor_expected_context_rule"] = "Tier C/review-monitor absence is expected context and is not production stale debt."
+    stale_scope["decision_tier_stale_count"] = queue_classification["decision_tier_stale_count"]
+    stale_scope["decision_tier_stale_tickers"] = queue_classification["decision_tier_stale_tickers"]
+    stale_scope["decision_tier_stale_rule"] = (
+        "Tier A/B staleness is real freshness debt and is never expected thin-monitor context, "
+        "regardless of whether the production answer path is open."
+    )
+    if queue_classification["decision_tier_stale_count"]:
+        validation_warnings.append(
+            f"{queue_classification['decision_tier_stale_count']} Tier A/B ticker card(s) carry stale evidence"
+        )
     if any(
         AUTHORITY[key]
         for key in (
@@ -697,12 +919,26 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
         "review_scope": "ticker_card_refresh_gate",
         "inputs": {
             "skip_provider_refresh": args.skip_provider_refresh,
+            "tickers": tickers,
+            "technical_refresh_posture": (
+                "not_run_for_explicit_shard_preserves_technical_refresh_entitlement_boundary"
+                if tickers
+                else "full_entitled_universe_refresh"
+            ),
             "full_answer_mode": args.full_answer_mode,
             "card_summary_output": rel(card_summary_path),
             "finance_state_validation": rel(FINANCE_STATE_VALIDATION),
             "stale_tickers": rel(STALE_TICKERS),
             "price_freshness_bridge": rel(PRICE_FRESHNESS_BRIDGE),
             "finance_coverage": rel(FINANCE_COVERAGE),
+            "earnings_rollforward_guard": rel(TMP / "earnings-rollforward-guard.json"),
+            "post_earnings_reconciliation": [" ".join(command) for command in reconciliation_commands],
+            "state_refresh_posture": (
+                "broad_refresh_100_for_entitled_full_gate"
+                if state_refresh_requested
+                else "validate_existing_state_only_for_targeted_or_provider_skipped_gate"
+            ),
+            "durable_sql_canon_db": rel(SQL_CANON_DB),
         },
         "authority": AUTHORITY,
         "commands": command_results,
@@ -716,7 +952,15 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
             "price_bridge": summarize_price_bridge(price_bridge),
             "card_price_drift": card_price_drift,
             "coverage_status": coverage.get("status") if isinstance(coverage, dict) else "missing",
+            "earnings_rollforward_guard": {
+                "status": rollforward_guard.get("status") if isinstance(rollforward_guard, dict) else "missing",
+                "summary": as_dict(rollforward_guard.get("summary")) if isinstance(rollforward_guard, dict) else {},
+                "source": rel(TMP / "earnings-rollforward-guard.json"),
+                "reconciliation_triggered": bool(reconciliation_commands),
+                "reconciliation_command_count": len(reconciliation_commands),
+            },
             "full_answer_rebuild": full_answer_rebuild,
+            "sql_canon_scope": sql_canon_scope,
         },
         "repair_queue": stale_rollup["repair_queue"],
         "production_repair_queue": queue_classification["production_repair_queue"],
@@ -743,6 +987,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--skip-provider-refresh",
         action="store_true",
         help="Rebuild cards from existing local evidence without provider refresh commands.",
+    )
+    parser.add_argument(
+        "--tickers",
+        nargs="+",
+        default=[],
+        help="Optional explicit ticker shard propagated through provider and card refresh commands.",
     )
     parser.add_argument(
         "--full-answer-mode",

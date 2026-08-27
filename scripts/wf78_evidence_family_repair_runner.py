@@ -160,13 +160,25 @@ def family_set(family: str, include_related: bool) -> set[str]:
     return {family}
 
 
+def normalized_family(value: Any) -> str:
+    family = str(value or "").strip()
+    prefix, separator, remainder = family.partition(":")
+    if separator and prefix in {"missing", "stale"}:
+        return remainder
+    return family
+
+
+def row_families(row: dict[str, Any]) -> set[str]:
+    return {normalized_family(item) for item in as_list(row.get("stale_families"))}
+
+
 def queue_measure(queue: list[dict[str, Any]], families: set[str]) -> dict[str, Any]:
     family_counts: Counter[str] = Counter()
     tier_counts: Counter[str] = Counter()
     state_counts: Counter[str] = Counter()
     matching = 0
     for row in queue:
-        stale = set(str(item) for item in as_list(row.get("stale_families")))
+        stale = row_families(row)
         hit = stale & families
         if not hit:
             continue
@@ -222,12 +234,20 @@ def sort_key(row: dict[str, Any]) -> tuple[int, int, int, int, str]:
     )
 
 
-def select_rows(queue: list[dict[str, Any]], families: set[str], tier: str) -> list[dict[str, Any]]:
+def select_rows(
+    queue: list[dict[str, Any]],
+    families: set[str],
+    tier: str,
+    tickers: set[str] | None = None,
+) -> list[dict[str, Any]]:
     rows = []
     for row in queue:
         if tier != "all" and row.get("auto_tier") != f"Tier {tier}":
             continue
-        stale = set(str(item) for item in as_list(row.get("stale_families")))
+        ticker = str(row.get("ticker") or "").upper()
+        if tickers and ticker not in tickers:
+            continue
+        stale = row_families(row)
         matched = stale & families
         if not matched:
             continue
@@ -264,6 +284,14 @@ def build_batch_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+def report_status(errors: list[str], refresh_failed: list[str]) -> str:
+    if errors:
+        return "blocked"
+    if refresh_failed:
+        return "warning"
+    return "ok"
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     queue = load_queue()
     errors: list[str] = []
@@ -272,7 +300,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         errors.append(f"no evidence-drag queue found at {rel(REDUCTION)}")
 
     families = family_set(args.family, args.include_related)
-    selected = select_rows(queue, families, args.tier)
+    requested_tickers = {str(ticker).upper() for ticker in (args.tickers or []) if str(ticker).strip()}
+    selected = select_rows(queue, families, args.tier, requested_tickers)
     cursor = int(args.cursor)
     batch = selected[cursor:cursor + args.limit]
     if queue and not selected:
@@ -295,7 +324,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     mode_counts = Counter(row["repair_mode"] for row in batch_rows)
     next_cursor = cursor + len(batch)
     remaining = max(0, len(selected) - next_cursor)
-    status = "blocked" if errors else "ok"
+    status = report_status(errors, refresh_failed)
 
     return {
         "schema": SCHEMA,
@@ -309,6 +338,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "include_related": bool(args.include_related),
             "family_set": sorted(families),
             "tier": args.tier,
+            "tickers": sorted(requested_tickers),
             "limit": args.limit,
             "cursor": cursor,
             "refresh": bool(args.refresh),
@@ -363,6 +393,7 @@ def main() -> int:
     parser.add_argument("--family", default="price_band_stop", help="Stale family to target (default price_band_stop).")
     parser.add_argument("--include-related", action=argparse.BooleanOptionalAction, default=True, help="Include related family aliases (default true).")
     parser.add_argument("--tier", choices=["A", "B", "C", "all"], default="all", help="Tier filter (default all).")
+    parser.add_argument("--ticker", action="append", dest="tickers", help="Explicit ticker to select. Repeat for a cohort.")
     parser.add_argument("--limit", type=positive_int, default=50, help="Batch size (default 50).")
     parser.add_argument("--cursor", type=non_negative_int, default=0, help="Start index in selected family queue.")
     parser.add_argument("--refresh", action="store_true", help="Run review-only refresh/remeasure chain after selecting the batch.")

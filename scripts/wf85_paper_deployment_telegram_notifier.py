@@ -255,17 +255,39 @@ def telegram_cli_safe_messages(message: str, max_chars: int = 2800) -> list[str]
     return [f"WF85 Paper Deployment Radar alert part {index}/{total}: {chunk}" for index, chunk in enumerate(raw_chunks, start=1)]
 
 
-def message_key(digest: dict[str, Any], kind: str) -> str | None:
+def message_key(digest: dict[str, Any], kind: str, alert_window: str) -> str | None:
     generated = parse_utc(digest.get("generated_at_utc"))
     if generated is None:
         return None
     summary = as_dict(digest.get("summary"))
+    categories = as_dict(digest.get("categories"))
+    watch_tickers = summary.get("watch_tickers")
+    if not isinstance(watch_tickers, list):
+        watch_tickers = [
+            ticker
+            for row in as_list(categories.get("watch"))
+            if isinstance(row, dict)
+            for ticker in [row.get("ticker")]
+            if ticker
+        ]
+    blocked_tickers = summary.get("blocked_or_repair_tickers")
+    if not isinstance(blocked_tickers, list):
+        blocked_tickers = [
+            ticker
+            for row in as_list(categories.get("blocked_or_repair"))
+            if isinstance(row, dict)
+            for ticker in [row.get("ticker")]
+            if ticker
+        ]
     raw = json.dumps(
         {
             "kind": kind,
+            "alert_window": alert_window,
             "day": generated.date().isoformat(),
             "deployment_ready": summary.get("deployment_ready_tickers"),
             "near_deployment": summary.get("near_deployment_tickers"),
+            "watch": watch_tickers,
+            "blocked_or_repair_sample": blocked_tickers,
             "wf67_guard_status": summary.get("wf67_guard_status"),
             "wf85_drafts": summary.get("wf85_approval_card_draft_count"),
             "status": digest.get("status"),
@@ -282,6 +304,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--channel", default=DEFAULT_CHANNEL)
     parser.add_argument("--target", default=DEFAULT_TARGET)
+    parser.add_argument("--alert-window", default="unspecified", help="Dedupe scope for scheduled alert cadence, e.g. morning or midday.")
     parser.add_argument("--max-age-minutes", type=int, default=240)
     parser.add_argument("--send", action="store_true")
     parser.add_argument("--force", action="store_true")
@@ -320,7 +343,8 @@ def main(argv: list[str] | None = None) -> int:
         message, kind = None, "outside_market_hours"
     else:
         message, kind = build_message(digest) if not blockers else (None, "artifact_blocker")
-    key = message_key(digest, kind) if message else None
+    alert_window = str(args.alert_window or "unspecified").strip().lower() or "unspecified"
+    key = message_key(digest, kind, alert_window) if message else None
     sent_keys = state.get("sent_keys") if isinstance(state.get("sent_keys"), dict) else {}
     duplicate = bool(key and key in sent_keys and not args.force)
     if duplicate:
@@ -373,6 +397,7 @@ def main(argv: list[str] | None = None) -> int:
         "channel": args.channel,
         "target": args.target,
         "message_kind": kind,
+        "alert_window": alert_window,
         "dedupe_key": key,
         "duplicate": duplicate,
         "digest_age_minutes": age,

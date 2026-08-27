@@ -54,7 +54,7 @@ ALLOWED_EXACT: dict[str, str] = {
     "band_refresh.py": "owner_config_proposal_generator",
     "watchlist_promotion_radar.py": "intentional_or_across_raw_repair_logic",
     "ticker_monitoring_performance.py": "raw_vocabulary_aggregator",
-    "wf78_production_tier_adjudication.py": "workflow_state_scoring_table",
+    "wf78_production_tier_adjudication.py": "deprecated_for_authority_archive_candidate",
     "canon_drift_freshness_gate.py": "raw_freshness_drift_guard",
     "finance_data_coverage.py": "coverage_field_registry",
     "fundamental_metrics_refresh.py": "owner_metadata_state_propagation",
@@ -65,7 +65,7 @@ ALLOWED_EXACT: dict[str, str] = {
     "sql_source_truth_field_family_decision_packet.py": "sql_source_truth_field_family_packet",
     "stale_intelligence_guardrail.py": "raw_staleness_guardrail",
     "wf78_auto_tier_router.py": "tier_router_workflow_state_input",
-    "wf78_tier_b_final_promotion_packet.py": "tier_promotion_workflow_state_trace",
+    "wf78_tier_b_final_promotion_packet.py": "deprecated_for_authority_archive_candidate",
 }
 
 # Readers/exporters that may remain behaviorally correct, but should be warned
@@ -74,6 +74,7 @@ ALLOWED_EXACT: dict[str, str] = {
 WARNING_EXACT: dict[str, str] = {
     "artifact_index.py": "reader_index_should_prefer_canonical_contract_when_practical",
     "auto_apply_entry_band_maintenance.py": "gated_entry_band_apply_proposal_trace",
+    "band_hygiene_freshness_controller.py": "entry_band_hygiene_proposal_trace",
     "call_log_sync.py": "reader_sync_should_prefer_canonical_contract_when_practical",
     "dashboard_payload.py": "ui_reader_should_prefer_canonical_contract_when_practical",
     "daily_executive_brief.py": "brief_reader_should_prefer_canonical_contract_when_practical",

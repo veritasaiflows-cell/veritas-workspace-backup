@@ -1,32 +1,78 @@
 {
-  "generated_at_utc": "2026-05-10T03:38:39.162675+00:00",
-  "status": "partial",
+  "generated_at_utc": "2026-08-21T20:32:38.940600+00:00",
+  "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Run after post_earnings_prep.py and before any post-earnings note edits.",
-  "last_trading_day": "2026-05-08",
+  "last_trading_day": "2026-08-21",
   "source_last_trading_day": {
-    "trigger": "2026-05-08",
-    "technical": "2026-05-08",
-    "deployment": "2026-05-08",
-    "market_state": "2026-05-08",
+    "trigger": "2026-08-21",
+    "technical": "2026-08-21",
+    "deployment": "2026-08-21",
+    "market_state": "2026-08-21",
     "earnings": null
   },
   "source": {
     "prep_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\post-earnings-prep.json",
-    "generated_at_utc": "2026-05-10T03:38:39.117076+00:00",
+    "generated_at_utc": "2026-08-21T20:32:38.027020+00:00",
     "age_hours": 0.0,
     "is_stale": false,
-    "status": "partial"
+    "status": "ok"
   },
   "warnings": [
-    "2Y Treasury: not populated. Set FRED_API_KEY to use FRED series DGS2 for precision 2s10s spread. (FRED_API_KEY not set)",
-    "Policy expectations artifact still carries manual dependencies; review tmp/policy-expectations.json before macro-sensitive outputs.",
-    "Policy expectations artifact status is manual; treat next-meeting probabilities as usable with caution.",
-    "Policy expectations note: Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set",
-    "Only 7/8 live fields populated.",
-    "True pre-market pricing was not available from current yfinance responses. Use futures and latest cash snapshots as context, not as full pre-market tape.",
-    "Non-blocking watchlist/date mismatches remain outside the active timing window."
+    "Generic fallback post-earnings config used for: SAIC. Add ticker-specific watch items if this is a material tracked name."
   ],
-  "impacted_notes": {},
-  "workflows": []
+  "earnings_lifecycle": {
+    "source": "tmp/earnings-calendar.json",
+    "closeouts": [],
+    "authority": {
+      "review_only": true,
+      "portfolio_mutation_allowed": false,
+      "canonical_note_mutation_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "impacted_notes": {
+    "05. Intelligence/Event Calendar.md": [
+      "SAIC"
+    ],
+    "05. Intelligence/Weekly Intelligence Brief.md": [
+      "SAIC"
+    ],
+    "03. Portfolio/Execution Board.md": [
+      "SAIC"
+    ]
+  },
+  "workflows": [
+    {
+      "ticker": "SAIC",
+      "priority": "monitor",
+      "stage": "upcoming",
+      "next_earnings_date": "2026-08-31",
+      "action_state": null,
+      "candidate_updates": [
+        {
+          "path": "05. Intelligence/Event Calendar.md",
+          "urgency": "normal",
+          "when_rule": "always for material tracked earnings",
+          "intent": "mark reported status, preserve concise what happened / what it means / what we do now line, and clear or roll the catalyst forward",
+          "rationale": "SAIC: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        },
+        {
+          "path": "05. Intelligence/Weekly Intelligence Brief.md",
+          "urgency": "normal",
+          "when_rule": "when the report changes company thesis, sector read-through, or near-term positioning",
+          "intent": "update earnings radar and recommended-actions sections with decision-grade interpretation",
+          "rationale": "SAIC: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        },
+        {
+          "path": "03. Portfolio/Execution Board.md",
+          "urgency": "normal",
+          "when_rule": "when price structure, blocker status, invalidation logic, action state, or trigger logic changed materially after the report",
+          "intent": "rebuild entry zone, stop, and stance only when the earnings reaction materially changed the setup; promote, demote, unblock, or keep blocked with explicit why",
+          "rationale": "SAIC: candidate target because the post-earnings interpretation may change status, read-through, or decision posture"
+        }
+      ]
+    }
+  ]
 }

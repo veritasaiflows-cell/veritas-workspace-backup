@@ -1,0 +1,48 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF51",
+  "display_name": "Daily Fresh Intelligence and Price Trend Promotion Branch",
+  "tier": "P4",
+  "priority": "P4",
+  "lifecycle": "gated",
+  "readiness": "monitor_only",
+  "effective_status": "monitor_only",
+  "current_state": "Closed/superseded daily price-trend promotion branch; useful as history for source freshness and warning-only trend proof.",
+  "next_action": "Use newer WF78/WF84/WF85 finance routing for current ticker decisions; do not use WF51 for deployment claims.",
+  "authoritative_next_action": "Use newer WF78/WF84/WF85 finance routing for current ticker decisions; do not use WF51 for deployment claims.",
+  "helper_safe": false,
+  "owner_action_required": false,
+  "authority_boundary": "review-only historical trend route; superseded by WF78/WF84/WF85",
+  "authority_class": "monitor_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 51 - Daily Fresh Intelligence and Price Trend Promotion Branch.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
+  "blockers": [
+    "Production watchlist candidate generation remains deferred"
+  ],
+  "stop_lines": [
+    "No capital deployment, promotion, paper/live/account action, probability claim, or portfolio/canon mutation from WF51 historical proof."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 51 - Daily Fresh Intelligence and Price Trend Promotion Branch.md",
+  "primary_route_artifact": "06. Playbooks/Project Continuity/Workflow 51 - Daily Fresh Intelligence and Price Trend Promotion Branch.md",
+  "secondary_artifacts": [],
+  "validator_commands": [],
+  "default_resume_command": "python scripts\\workflow_router.py WF51 --answer all",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

@@ -1,0 +1,59 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Monthly Market Deep Dive</title>
+<style>
+@page { size: Letter; margin: .45in; }
+body { font-family: Arial, Helvetica, sans-serif; color:#162033; margin:0; font-size:10px; line-height:1.34; }
+h1 { margin:0; font-size:25px; color:#0f2f55; }
+h2 { margin:14px 0 6px; font-size:16px; color:#0f2f55; border-bottom:1px solid #d8e2ef; padding-bottom:4px; }
+.top { display:flex; justify-content:space-between; gap:20px; border-bottom:3px solid #12345c; padding-bottom:10px; margin-bottom:10px; }
+.kicker { color:#60748c; text-transform:uppercase; letter-spacing:.12em; font-weight:bold; font-size:8px; }
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0; }
+.metric { border:1px solid #d8e2ef; background:#f8fafc; border-radius:8px; padding:8px; min-height:.62in; }
+.label { font-size:7.5px; color:#60748c; text-transform:uppercase; letter-spacing:.08em; }
+.value { font-size:13px; font-weight:bold; margin-top:4px; color:#0f2f55; }
+.panel { border:1px solid #d8e2ef; border-radius:8px; padding:8px; background:#f8fafc; margin:7px 0; }
+.warn { background:#fff8df; border-color:#e0b13a; }
+.badge { border-radius:999px; padding:2px 7px; background:#e8eef7; font-weight:bold; font-size:8px; }
+.badge.good { background:#e4f4ea; color:#176238; } .badge.warn { background:#fff0c6; color:#765200; } .badge.bad { background:#fde8e8; color:#8f1d1d; }
+.bar-row { display:grid; grid-template-columns: 1.4in 1fr .35in; gap:8px; align-items:center; margin:5px 0; }
+.bar-track { height:11px; background:#e6edf5; border-radius:999px; overflow:hidden; } .bar-fill { height:11px; background:#2563a6; }
+table { width:100%; border-collapse:collapse; table-layout:fixed; margin:7px 0; } th,td { border:1px solid #d8e2ef; padding:5px; vertical-align:top; word-wrap:break-word; } th { background:#12345c; color:white; text-align:left; }
+.muted { color:#60748c; }
+li { margin:3px 0; }
+</style></head>
+<body>
+<div class="top"><div><div class="kicker">Deep monthly scenario and analytics read | First weekend of each month</div><h1>Monthly Market Deep Dive</h1><div class="muted">Generated 2026-06-18T21:18:11Z</div></div><div><span class='badge good'>ok</span></div></div>
+<div class="panel"><strong>Boundary:</strong> internal review only. Scenario outlook is not certainty, advice, approval, or execution authority.</div>
+<div class="grid">
+  <div class="metric"><div class="label">Macro posture</div><div class="value">defensive_review_bias</div></div>
+  <div class="metric"><div class="label">Market readiness</div><div class="value"><span class='badge warn'>warning</span></div></div>
+  <div class="metric"><div class="label">Trade-grade</div><div class="value"><span class='badge warn'>warning</span></div></div>
+  <div class="metric"><div class="label">Paper pilot</div><div class="value"><span class='badge bad'>phase_a_hardening_implemented_runtime_blocked</span></div></div>
+</div>
+<h2>Market Read</h2>
+<ul><li>Macro posture: defensive_review_bias</li><li>Market readiness: warning with 0 critical and 2 warning</li><li>Trade-grade state: 200 cards; approval drafts 0</li></ul>
+<div class="grid"><div class="panel"><strong>Macro risk counts</strong><div class='bar-row'><div class='bar-label'>yellow</div><div class='bar-track'><div class='bar-fill' style='width:100%'></div></div><div class='bar-value'>2</div></div>
+<div class='bar-row'><div class='bar-label'>green</div><div class='bar-track'><div class='bar-fill' style='width:100%'></div></div><div class='bar-value'>2</div></div>
+<div class='bar-row'><div class='bar-label'>red</div><div class='bar-track'><div class='bar-fill' style='width:50%'></div></div><div class='bar-value'>1</div></div>
+<div class='bar-row'><div class='bar-label'>unknown</div><div class='bar-track'><div class='bar-fill' style='width:4%'></div></div><div class='bar-value'>0</div></div></div><div class="panel"><strong>Band status</strong><div class='bar-row'><div class='bar-label'>NEAR_BAND</div><div class='bar-track'><div class='bar-fill' style='width:100%'></div></div><div class='bar-value'>13</div></div>
+<div class='bar-row'><div class='bar-label'>BELOW_STOP</div><div class='bar-track'><div class='bar-fill' style='width:76%'></div></div><div class='bar-value'>10</div></div>
+<div class='bar-row'><div class='bar-label'>ABOVE_BAND_WAIT</div><div class='bar-track'><div class='bar-fill' style='width:46%'></div></div><div class='bar-value'>6</div></div>
+<div class='bar-row'><div class='bar-label'>IN_BAND</div><div class='bar-track'><div class='bar-fill' style='width:38%'></div></div><div class='bar-value'>5</div></div>
+<div class='bar-row'><div class='bar-label'>BELOW_BAND</div><div class='bar-track'><div class='bar-fill' style='width:23%'></div></div><div class='bar-value'>3</div></div>
+<div class='bar-row'><div class='bar-label'>RECLAIM_ONLY</div><div class='bar-track'><div class='bar-fill' style='width:7%'></div></div><div class='bar-value'>1</div></div></div><div class="panel"><strong>Deployment status</strong><div class='bar-row'><div class='bar-label'>WATCH / RESEARCH NEEDED</div><div class='bar-track'><div class='bar-fill' style='width:100%'></div></div><div class='bar-value'>12</div></div>
+<div class='bar-row'><div class='bar-label'>BELOW STOP</div><div class='bar-track'><div class='bar-fill' style='width:91%'></div></div><div class='bar-value'>11</div></div>
+<div class='bar-row'><div class='bar-label'>PROMOTION REVIEW</div><div class='bar-track'><div class='bar-fill' style='width:58%'></div></div><div class='bar-value'>7</div></div>
+<div class='bar-row'><div class='bar-label'>ALMOST DEPLOYABLE</div><div class='bar-track'><div class='bar-fill' style='width:33%'></div></div><div class='bar-value'>4</div></div>
+<div class='bar-row'><div class='bar-label'>BENCH</div><div class='bar-track'><div class='bar-fill' style='width:25%'></div></div><div class='bar-value'>3</div></div>
+<div class='bar-row'><div class='bar-label'>ENTRY POLICY REVIEW</div><div class='bar-track'><div class='bar-fill' style='width:8%'></div></div><div class='bar-value'>1</div></div></div><div class="panel"><strong>KPI</strong><br>PM <span class='badge good'>ok</span><br>Cron <span class='badge good'>ok</span><br>Contracts drift 0</div></div>
+
+        <h2>Fundamentals, BO, and YoY Finance</h2>
+        <table><tr><th>ticker</th><th>tier</th><th>decision_state</th><th>fundamentals</th><th>business_outlook</th><th>eps_yoy_pct</th><th>revenue_yoy_pct</th><th>fcf_yoy_pct</th></tr><tr><td>BKNG</td><td>Tier A</td><td>below_stop_or_invalidation</td><td>covered</td><td>review_required</td><td>240.0</td><td>16.17</td><td>-1.71</td></tr><tr><td>CME</td><td>Tier A</td><td>below_stop_or_invalidation</td><td>covered</td><td>review_required</td><td>21.37</td><td>14.48</td><td>12.31</td></tr><tr><td>GOOG</td><td>Tier A</td><td>evidence_repair</td><td>covered</td><td>review_required</td><td>81.85</td><td>21.79</td><td>-46.63</td></tr><tr><td>LMT</td><td>Tier A</td><td>below_stop_or_invalidation</td><td>covered</td><td>review_required</td><td>-11.54</td><td>0.32</td><td>-130.47</td></tr><tr><td>META</td><td>Tier A</td><td>below_stop_or_invalidation</td><td>covered</td><td>review_required</td><td>62.36</td><td>33.08</td><td>19.34</td></tr><tr><td>MSFT</td><td>Tier A</td><td>below_stop_or_invalidation</td><td>covered</td><td>review_required</td><td>23.41</td><td>18.3</td><td>-22.15</td></tr><tr><td>NVDA</td><td>Tier A</td><td>evidence_repair</td><td>covered</td><td>review_required</td><td>214.47</td><td>85.23</td><td>85.54</td></tr><tr><td>RTX</td><td>Tier A</td><td>monitor_only</td><td>covered</td><td>review_required</td><td>32.46</td><td>8.72</td><td>76.02</td></tr><tr><td>VMC</td><td>Tier A</td><td>no_chase</td><td>covered</td><td>review_required</td><td>29.9</td><td>7.42</td><td>-22.63</td></tr><tr><td>VRT</td><td>Tier A</td><td>no_chase</td><td>covered</td><td>review_required</td><td>135.71</td><td>30.13</td><td>146.81</td></tr><tr><td>XOM</td><td>Tier A</td><td>below_stop_or_invalidation</td><td>covered</td><td>review_required</td><td>-43.18</td><td>2.42</td><td>-68.32</td></tr><tr><td>BRK.B</td><td>Tier A</td><td>monitor_only</td><td>covered</td><td>review_required</td><td>119.6</td><td>4.4</td><td>850.96</td></tr><tr><td>ETN</td><td>Tier A</td><td>no_chase</td><td>covered</td><td>review_required</td><td>-9.39</td><td>16.84</td><td>245.05</td></tr><tr><td>GS</td><td>Tier A</td><td>no_chase</td><td>covered</td><td>review_required</td><td>24.29</td><td>14.37</td><td>14.04</td></tr></table>
+        
+        <h2>Scenario Outlook</h2>
+        <table><tr><th>scenario</th><th>probability_view</th><th>setup</th><th>implication</th><th>invalidation</th></tr><tr><td>Base case</td><td>moderate</td><td>defensive_review_bias; selective risk-taking only while warnings remain visible.</td><td>Favor review-ready quality names in band; keep no-chase discipline.</td><td>Macro risk counts worsen or market readiness becomes critical.</td></tr><tr><td>Bull case</td><td>lower until breadth/freshness improves</td><td>Macro warnings fade, breadth improves, and Tier A/B cards move from monitor/no-chase toward review-ready.</td><td>Prepare approval cards, not automatic deployment.</td><td>Freshness or band/stop gates fail.</td></tr><tr><td>Bear case</td><td>meaningful tail risk</td><td>Data warnings, below-stop names, or macro/geopolitical stress expand.</td><td>Raise evidence burden and keep paper pilot fail-closed.</td><td>Risk counts normalize and paper-pilot gates mature.</td></tr></table>
+        <h2>SaaS / SMB Interconnect</h2>
+        <div class='panel'>Finance OS is the internal truth engine; WF75 is the product-delivery wrapper; SMB remains a service-led adjacent monetization lane.</div>
+        <ul><li>Use the finance delivery series as the internal reference standard for what a customer-safe intelligence product should feel like.</li><li>Convert only sanitized, anonymous, source-labeled slices into WF75 customer-safe examples.</li><li>Use SMB workflow deliverables as operational proof of packaging discipline, not as finance advice surfaces.</li><li>Keep real customer identity, suitability, account, tax, retirement, brokerage, and credential data blocked until later gates.</li></ul>
+        
+</body></html>

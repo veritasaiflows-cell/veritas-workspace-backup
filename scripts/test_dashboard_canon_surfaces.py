@@ -69,10 +69,90 @@ def test_coverage_watchlist_current_header_parses() -> None:
     require(rows["JPM"]["source_lineage"] == "Execution lineage", "source lineage column should be retained")
 
 
+def test_coverage_watchlist_missing_row_accepted_when_sql_first_thin_contract_allowed() -> None:
+    thin_contract = {
+        "sql_first_thin_board_detected": True,
+        "sql_first_thin_board_allowed": True,
+    }
+    require(
+        not dashboard_validation._coverage_watchlist_row_warning_required("execution", None, thin_contract),
+        "execution-lane row warnings must be suppressed when SQL-first Coverage and Watchlist contract is accepted",
+    )
+
+
+def test_coverage_watchlist_missing_row_warns_when_sql_first_thin_contract_blocked() -> None:
+    thin_contract = {
+        "sql_first_thin_board_detected": True,
+        "sql_first_thin_board_allowed": False,
+    }
+    require(
+        dashboard_validation._coverage_watchlist_row_warning_required("execution", None, thin_contract),
+        "execution-lane row warnings must remain when SQL-first Coverage and Watchlist contract is blocked",
+    )
+
+
+def test_coverage_watchlist_missing_row_warns_when_legacy_contract_absent() -> None:
+    thin_contract = {
+        "sql_first_thin_board_detected": False,
+        "sql_first_thin_board_allowed": False,
+    }
+    require(
+        dashboard_validation._coverage_watchlist_row_warning_required("execution", None, thin_contract),
+        "execution-lane row warnings must remain when Coverage and Watchlist is not an accepted thin board",
+    )
+
+
+def test_suspended_legacy_weight_is_info_when_accounting_balances() -> None:
+    sources = {
+        "policy": {},
+        "market": {},
+        "credit": {},
+        "breadth": {},
+        "technical": {},
+        "deployment": {"records": [], "summary": {}},
+        "earnings": {},
+        "portfolio": {
+            "portfolio": {
+                "cash": 10,
+                "core": [
+                    {"ticker": "AAA", "weight": 80},
+                    {
+                        "ticker": "LEGACY",
+                        "weight": 0,
+                        "weight_status": "suspended legacy model weight",
+                        "suspended_legacy_weight": 10,
+                    },
+                ],
+                "tactical": [],
+                "speculative": [],
+            },
+        },
+    }
+    validation = dashboard_validation.build_validation(
+        sources=sources,
+        source_status={},
+        technical_rows=[],
+        sector_weights={},
+        last_trade_dt=dashboard_validation.datetime.now(),
+    )
+    suspended = [
+        item
+        for item in validation["warnings"]
+        if item.get("code") == "portfolio_suspended_weight_gap"
+    ]
+    require(len(suspended) == 1, "suspended legacy accounting should remain visible")
+    require(suspended[0]["severity"] == "info", "balanced suspended legacy weight must be info, not warning")
+    require(validation["summary"]["warning"] == 0, "balanced suspended legacy weight must not create warning count")
+
+
 def main() -> int:
     test_dashboard_vault_note_aliases_are_canonical()
     test_guardrail_note_surfaces_are_canonical()
     test_coverage_watchlist_current_header_parses()
+    test_coverage_watchlist_missing_row_accepted_when_sql_first_thin_contract_allowed()
+    test_coverage_watchlist_missing_row_warns_when_sql_first_thin_contract_blocked()
+    test_coverage_watchlist_missing_row_warns_when_legacy_contract_absent()
+    test_suspended_legacy_weight_is_info_when_accounting_balances()
     print("dashboard_canon_surfaces_tests_passed")
     return 0
 

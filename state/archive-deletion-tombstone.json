@@ -1,0 +1,3312 @@
+{
+  "schema_version": "archive_deletion_tombstone.v1",
+  "generated_at_utc": "2026-05-31T07:08:26Z",
+  "approval_reference": "Randall 2026-05-31 00:06 MST approved work in parallel and complete all five phases / full archive deletion",
+  "archive_root": "09. Archive",
+  "deleted_file_count": 658,
+  "authority_boundary": {
+    "archive_delete_apply_script": true,
+    "requires_apply_flag": true,
+    "requires_exact_owner_approval_reference": true,
+    "delete_limited_to_archive_tree": true,
+    "config_auth_channel_runtime_mutation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "money_movement_allowed": false
+  },
+  "deleted_files": [
+    {
+      "path": "09. Archive/01. Dashboards - Archived/Executive Summary - Content Pivot.md",
+      "bytes": 1823,
+      "sha256": "42b9c82a194420c5a933b83dd13e422ab94a02e36b930af9d6a5332dc6553139"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/AI Investment Research Workflow Product - First Execution Plan.md",
+      "bytes": 1775,
+      "sha256": "95d5f3c009a68257b335112da59cc5536a26d70a7ed50630818af1b812ce1288"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/AI Investment Research Workflow Product - Monetization Path.md",
+      "bytes": 1790,
+      "sha256": "1f31c271738260f78aea8ed3346df73dc3ce389d01fca235837d8286483e8d55"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/AI Investment Research Workflow Product - MVP Definition.md",
+      "bytes": 3509,
+      "sha256": "b27b41a558a570973c222ba11c780902e612a9347d1d819a29321c06e083c608"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/AI Investment Research Workflow Product.md",
+      "bytes": 2034,
+      "sha256": "6faf7bffd27b368b0908d4cd430cb7ec5cb9739d8f77aae1bd2863b7152b513d"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/AI Tooling Picks-and-Shovels Watchlist.md",
+      "bytes": 1378,
+      "sha256": "dbbbc4ada331f2e30382d8e01a6794256c27e9026a281e7eeadc468ccfbd97a9"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/Micro Acquisition Search Thesis.md",
+      "bytes": 1437,
+      "sha256": "628e29e45432aa302841217c0418c3f00d18ba245598cbe665d590e322960e01"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/Pipeline.md",
+      "bytes": 1829,
+      "sha256": "8d2b51514cb1ec03aca0250384f746ac0bd5802a64c258f6b449c9b1a5380ec9"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/Scoring Rubric.md",
+      "bytes": 1823,
+      "sha256": "1eaf5d85661ea631004492eea68026dc7a299d2e47481ac0f3e0340f6c1c7e92"
+    },
+    {
+      "path": "09. Archive/02. Opportunities - Archived/Weekly Review.md",
+      "bytes": 738,
+      "sha256": "9531bd1d017e9da1f78d01e17d1229a42cc8ade9bf74c4982a94206bfd732a96"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/1-Week Sprint Structure.md",
+      "bytes": 1805,
+      "sha256": "5a595db5ca5c889d61bfd15ce354c5d85a644e075646f8a8388167cf56135b4b"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Consulting Offer - Draft.md",
+      "bytes": 1590,
+      "sha256": "f95959a6ecccd133412ae58fe49d5e9520530b8c76dcca78675e77900e446210"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Consulting Offer - Narrow Draft.md",
+      "bytes": 2307,
+      "sha256": "b53a079d4fd839e59368ec9e17052c00b119b6b4d1939adca89f34cb9dcd9c6a"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Content Positioning and Pillars.md",
+      "bytes": 2722,
+      "sha256": "67e4cc5e470cbe1a0de0718ea8d313779f58696b912dda1060e10f8bfe39a61a"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Discovery Call Cheat Sheet.md",
+      "bytes": 2819,
+      "sha256": "ee7d04e83ed628e8f0244bac25ee24fcd99a6ba52944237bd69ade19b7d24cc9"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Discovery Call Outline.md",
+      "bytes": 1813,
+      "sha256": "2ca6e9dc9e47a9f35c2f8cf8dea77aed9f7d91f67b68909907f39d90dcf68a41"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Discovery Call Question List.md",
+      "bytes": 2753,
+      "sha256": "9f89a5a81eadb577335639517ea00b1601c3f1b34109b4f32ec8efdd8c9b1842"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/First 20 Short-Form Video Ideas.md",
+      "bytes": 3601,
+      "sha256": "117c5f563c038b512ad1692206b0afd88f3e813beac927f6f7a647d386308b73"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/First 5 Short-Form Draft Scripts.md",
+      "bytes": 4317,
+      "sha256": "6d5626bc80a505dc7b82f18e91c4c6d7bcbc782904b32baa38b320424a6bbeba"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/First Client Profile.md",
+      "bytes": 1871,
+      "sha256": "90a02ea53d25d13052e572d83b6dd89c64112b40f0c0a1f52e2f3750648bb32e"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/First Outreach Message.md",
+      "bytes": 1438,
+      "sha256": "8eaeff41504aec1b18fa97b20ee2c60f08c44b5c9b96283f00faeda553a13ac9"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/First Pilot Call Structure.md",
+      "bytes": 1918,
+      "sha256": "715a5463a227ca2559aa993e99ca78117f6b1dc4c36b2a0494367a2f1bc27491"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Lead Tracker.md",
+      "bytes": 1779,
+      "sha256": "5cd25d885b0c835d2a62ce5ea96ec30f8a156a9cadbe42c8a9e75b308396a29d"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/OpenClaw Role in Delivery.md",
+      "bytes": 2102,
+      "sha256": "ae69f1274efd377e5bc1a77879f9130e452e67eecf5c75b78f86f0453feb573a"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Pilot Client Rules.md",
+      "bytes": 1507,
+      "sha256": "79c5a6b8c1542bf6174544c17d2a8ffa8b4c3fa104e714ae7e2c4aea0d38a34e"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Pilot Offer.md",
+      "bytes": 1783,
+      "sha256": "ee1de78fdf2562f2f35fcc1defbae62cdbc987405648dec3fbf1547e20795744"
+    },
+    {
+      "path": "09. Archive/03. Offers - Archived/Post-Call Recap Template.md",
+      "bytes": 1575,
+      "sha256": "0665c628b1a57270b292296017cd780be6dc117280855c0cc288b1e335007585"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Consulting/Overview.md",
+      "bytes": 1294,
+      "sha256": "f3607dabc44bc1db8e16a43c6654c687e0a2a0dab5a13d09450be2967c61a56b"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Production Consulting/Beginner Filming Setup.md",
+      "bytes": 2564,
+      "sha256": "c876fb49ca6b08ce2c59f229db13b22373598f7399cb30519aa9c9b8c772f4d1"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Production Consulting/Beginner Workflow.md",
+      "bytes": 1338,
+      "sha256": "5c05926d4ce921914c8ceb4c153fceec72262be3211a92faf16b1905c74209b1"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Production Consulting/Editing Principles for Short-Form.md",
+      "bytes": 2426,
+      "sha256": "2e5a45da1301f8f9441f9b846f416cae03c7d2d68b322bd12e6af9976ecd3862"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Production Consulting/Overview.md",
+      "bytes": 2540,
+      "sha256": "79ad100f71a87b1dd68cd47881cf0b943a409ecc8c0f4fbe994cff18f32ed686"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Production Consulting/Recommended Tool Stack.md",
+      "bytes": 1942,
+      "sha256": "336a34c0427929e89891ebc130fbf624a1eca3b805af2c7851fe24b877c70b8f"
+    },
+    {
+      "path": "09. Archive/04. Departments - Archived/Production Consulting/Video Quality Standards.md",
+      "bytes": 2945,
+      "sha256": "839aa8f04b98648f7620b88656bfd52ec54fd46f9cf5b7c9c864d237aad5abb3"
+    },
+    {
+      "path": "09. Archive/05. Plans - Archived/Consulting Launch Plan.md",
+      "bytes": 906,
+      "sha256": "a3d28d970562b90fdd51b95f4eddb40a7d44e3a32756ece24ca33d079f8f0f0b"
+    },
+    {
+      "path": "09. Archive/05. Plans - Archived/Content Pivot Phase Plan.md",
+      "bytes": 3383,
+      "sha256": "130d1c398275ae98e1fac83df3dbf882566484027b50bc95825e008db58a897a"
+    },
+    {
+      "path": "09. Archive/06. Project Continuity - Archived/Veritas OS Automation Spine.md",
+      "bytes": 7220,
+      "sha256": "2ae619307abc892ac244d3433eced7da07fa368fbefee5a85f822cd66d1767ae"
+    },
+    {
+      "path": "09. Archive/06. Project Continuity - Archived/Workflow 3C - Canonical Note Trust Gate Enforcement.md",
+      "bytes": 3946,
+      "sha256": "02d4805d309597949bb8b04b7fe82b11acbe79100e811a467fa2817dbd78cacc"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/ETN Deck - 2026-04-24.pptx",
+      "bytes": 88391,
+      "sha256": "14d4181a55bf88706d2d358920ab1a85b248ad4f0297d77204e66ffa2560fcf8"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/ETN PDF Brief - 2026-04-24.pdf",
+      "bytes": 92392,
+      "sha256": "3ec484663768bf20e6a0347ca25f9d13d97785436960ef4902e24567fde82296"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/ETN Visual Report - 2026-04-24.docx",
+      "bytes": 89638,
+      "sha256": "c7331040b5b67c8c2d27f01114744cc702f85b37cd3378f2132a9af811a823b6"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/RTX Analysis - 2026-04-24.docx",
+      "bytes": 204504,
+      "sha256": "485bcb0d0a7c202895dbe34604fe8d4a766f3c3edf2ce581db0071093a15c678"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/RTX Deck - 2026-04-24 polished.pptx",
+      "bytes": 205769,
+      "sha256": "0baa23924f1993fb0b130ee9d176b37664976646a3f6b20f9f9a445ad97ca126"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/RTX Deck - 2026-04-24.pptx",
+      "bytes": 205749,
+      "sha256": "653b4d7c9609e255f7a6a340efc6c052e504ea4b48c0723f0d02892edcdf9120"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/RTX PDF Brief - 2026-04-24.pdf",
+      "bytes": 91945,
+      "sha256": "31cd3b0fa41a54702c5d8259f5329d452c7c4785a77288c9b4faae730a63e346"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/RTX Visual Report - AXIOM Pass.docx",
+      "bytes": 91369,
+      "sha256": "9cf385dae0d3471250d9b94b12aa524a920a98f68154bd16257374177c9fba80"
+    },
+    {
+      "path": "09. Archive/06. Research Deliverables/RTX Visual Report - Reusable Template Test.docx",
+      "bytes": 90708,
+      "sha256": "7d66d61dd1215cfa6df8826f3979e2c4f03b4d3ca4268faa2efb7f414b1a4ddc"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/How the First Consulting Call Should Work.md",
+      "bytes": 3941,
+      "sha256": "21a683ce1c1cb24c0ce2f59094bb360db263779be8798520cd127ca37dd0cd3a"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/How to Answer Client Questions About the Sprint.md",
+      "bytes": 2052,
+      "sha256": "7200d93d454ad915e319f4ee68e36da38db5ea1ee2abe7387c294c7659bca73a"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/How to Read the Vault.md",
+      "bytes": 2805,
+      "sha256": "36febb8ec34ead7d2afabbadaf2a7c79a8eb75fdf1a44076565d450d1a447def"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/How to Succeed as a Content Creator in 2026.md",
+      "bytes": 8820,
+      "sha256": "93ae92b1e05e22edffc04e4792763e3409e460d19c16cb1d72c17eb9a2dac6e7"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/How Veritas Operates.md",
+      "bytes": 2872,
+      "sha256": "7abea4f5389936d36a8352e1799913faa5b95924884291a4dc031dea72e94cfe"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/Marketing, Sales, and Lead Generation Training.md",
+      "bytes": 39430,
+      "sha256": "5095f334a09d7283185242774e3a9a9962be1ee54d106d459ca0e1a2ee7ef398"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/Mock Client Simulation - First Week.md",
+      "bytes": 2017,
+      "sha256": "6de018b344b6b29478406e505718242f789f895b9edfb95ba0d44d57d03bcc84"
+    },
+    {
+      "path": "09. Archive/06. Training Documents - Archived/Why We Chose a Consulting Offer First.md",
+      "bytes": 2248,
+      "sha256": "62692d626872b3f975796058b7953c18ecc286f6ae3ad6963f714ee94abb937e"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/2026-04-22-dashboard-command-center-audit.md",
+      "bytes": 9865,
+      "sha256": "2dd14982b45ee1f08209a411df7addd36478c4679a94fbc92c1800fe97a69dd6"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Auth Readiness Audit.md",
+      "bytes": 2206,
+      "sha256": "16f0426de6ed781950148e81878b8942ba9e17f2bca65056c2b2f67eac4ed670"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Capability Matrix.md",
+      "bytes": 1425,
+      "sha256": "d25bc8e7e01fd1a7a31d08980b8ac7fc2d81d9d5a6607f82f7e82d4cf4393f96"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Content Model Trend Scan - 2026-04-11.md",
+      "bytes": 4329,
+      "sha256": "1fbd4e080e0efdfe50fa2f38638b12881e97ddc9837124363f89b771e25c50c0"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Dashboard Hardening Implementation Plan - 2026-04-22.md",
+      "bytes": 7166,
+      "sha256": "ed418732ae89219c183282791b47320a56aa2dc521b4c475cf0790ed37386444"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Independent Operations Review - 2026-04-07.md",
+      "bytes": 19173,
+      "sha256": "2113c42d0727b4c71e888d1dafa0d67c56decd4b60a12b3b37d1ab9afe406da2"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Operational Readiness Sprint - 2026-04-23.md",
+      "bytes": 16657,
+      "sha256": "d222b7e77326a1ef8a8a2d037fa7f60e0f55f0048c34d468a23cd3a98841c639"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Weekly Workspace Audit - 2026-04-20.md",
+      "bytes": 3276,
+      "sha256": "5daed76881cab311ddde4b0e43f569b306b8fc472b9514725dd16d8c9594a95c"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Workspace and Vault Health Audit - 2026-04-10.md",
+      "bytes": 1540,
+      "sha256": "cdede846685f113cf740ce0336371afaab337def22b54db53499ade1363f70f7"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Workspace Audit - 2026-04-22.md",
+      "bytes": 9040,
+      "sha256": "a38d4db475493b7c90fb34f0f2821f2bde5fc6509cf986117d8a1106f3a5d462"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Workspace Hardening Post-Sprint Summary - 2026-04-23.md",
+      "bytes": 3043,
+      "sha256": "46217b7f21572945225f6bafd5e40d9ef776861875f565f5de71b02602e9bf44"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Workspace Hardening Sprint - 2026-04-23.md",
+      "bytes": 16131,
+      "sha256": "58cd948bd93ea4a1363867748fc5ba048e52fdf03f18956c6eac09de509ae406"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Workspace Organization Audit - 2026-04-09.md",
+      "bytes": 3632,
+      "sha256": "b3a3fd38f1144dd89331d172ce30799772eab9b08eae29868d422d92e0f6ec14"
+    },
+    {
+      "path": "09. Archive/08. Audits - Archived/Workspace Tightening Plan - 2026-04-22.md",
+      "bytes": 7441,
+      "sha256": "e7efc2c5e3901e4a9f20dd79df8c8aee36a4d3124ccb506a22afbc387d7c1194"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T162606Z.json",
+      "bytes": 4599,
+      "sha256": "8a1113394903597a33d92642f698790983b55df4383ffbca423709d6120690e9"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T163101Z.json",
+      "bytes": 2541,
+      "sha256": "df261cfe553769b1044e3005391b86dd4dbaddb5d2ee1e94f191024b35102a1b"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T163250Z.json",
+      "bytes": 1981,
+      "sha256": "edf428644bfab488e074a5718191c87170617e3cc1ba53a5fc57ca746cd5cedf"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T163428Z.json",
+      "bytes": 1049,
+      "sha256": "0701d80daa472e6eef0fae415718229759fec114b0adf979f553cbfeaf5194e8"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T172634Z.json",
+      "bytes": 593,
+      "sha256": "4e80e879a06e8a95bf64bf56c71056e9869d21a8f2ddcd39d23206b280ec0fad"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T172656Z.json",
+      "bytes": 2651,
+      "sha256": "ef8a2ff503112b2becf8966d30e134f631d110e80b494de8806a53b567aa050d"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T173007Z.json",
+      "bytes": 51955,
+      "sha256": "f4aecb242688382c728fdf25384663d4485409c65bba4da23445e3a64901dce4"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T173547Z.json",
+      "bytes": 1078,
+      "sha256": "c6904c472c95780b60d6c0673d76dfe294964f9b57604479d58c615c51022ba1"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T184103Z.json",
+      "bytes": 6661,
+      "sha256": "e0112b3f71c06ffa4d94554131b3e45be68fba2f0487ea66e660f96b190ab5b2"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T184131Z.json",
+      "bytes": 15223,
+      "sha256": "cf80c98b46dbb6f6c83d476e0e074161ffe742760cc875407403aba689a621e8"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T185359Z.json",
+      "bytes": 2114,
+      "sha256": "95465a39e2b41705102e9fb86fc047dae3a3f2f13c4afac77b8a554dc188bd7a"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T190345Z.json",
+      "bytes": 8809,
+      "sha256": "548dd5847155ae5ee521efc032e507c1ec457c11080fc1663c16d2bee56f52c1"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T194235Z.json",
+      "bytes": 3829,
+      "sha256": "f8123513d14b2c098a5a7854cb1b2df95e79284d2f7d16bc1550b37d9e7d4111"
+    },
+    {
+      "path": "09. Archive/Archive Logs/bounded-auto-archive-20260525T201005Z.json",
+      "bytes": 2255,
+      "sha256": "9bc2031ca607a90efc694fbb888a80f4b1e653d3b8acf5cfbc6dbe2c6e6d6bc9"
+    },
+    {
+      "path": "09. Archive/Archive Logs/prior-archive-apply/archive-apply-manifest-latest.md",
+      "bytes": 8471,
+      "sha256": "f4fe5e7e5055e1a6e4cf6ab432c6d5295620fda9afc0e7bd4a71db35be0ac16c"
+    },
+    {
+      "path": "09. Archive/Archive Logs/prior-archive-apply/archive-candidate-apply-manifest-2026-05-19.md",
+      "bytes": 74837,
+      "sha256": "8bdd9759c5484c6c93749b2ae22a6923918771d58598269cbe2cd8e0cd20fd85"
+    },
+    {
+      "path": "09. Archive/Archive Logs/prior-archive-apply/archive-candidate-apply-result-2026-05-19.md",
+      "bytes": 24659,
+      "sha256": "80ac7a4011a110bcf781cfbe091b192adec475cfa7ae811af8c22da70fc3c8e7"
+    },
+    {
+      "path": "09. Archive/Archive Logs/prior-archive-reference-audits/archive-reference-second-pass.md",
+      "bytes": 25932,
+      "sha256": "87370757c8c2315cda8f9b8a211eaca9db9cca62235a664da1731c0c20286895"
+    },
+    {
+      "path": "09. Archive/Archive Logs/README.md",
+      "bytes": 138,
+      "sha256": "4f42dbb59bbb2e317d8057c07ad0b312b4511e018b6f2b9095ebe911f7627180"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-broad-archive-phase1-2-20260524-1518.json",
+      "bytes": 3281,
+      "sha256": "3a65cb47ce0d331a364552c7e1bbeb29e2e9edbe183fa392b29dee82ecb8dcd7"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-broad-archive-phase1-2-20260524-1518.md",
+      "bytes": 1408,
+      "sha256": "8a4fbf46583297f9ebe55feba235f56d855cb01b92957f3f34533756ea809e7b"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-broad-archive-phase3-owner-review-20260524-1551.json",
+      "bytes": 36292,
+      "sha256": "235f13002ed98f1c7f07c14b1f6e46a402582d01f8c64f4b62aa6fb63ef56b8b"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-broad-archive-phase3-owner-review-20260524-1551.md",
+      "bytes": 10607,
+      "sha256": "60a597e15a349717952a1c3d1f54d43b77ec9b17f8ca529183d723cf49266962"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-phase4-narrow-cleanup-manifest-2026-05-24.json",
+      "bytes": 22325,
+      "sha256": "9face70c4565082f6c1b0231668a22ee8573ecee86d71b1b327bc519794570e1"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-phase4-narrow-cleanup-manifest-2026-05-24.md",
+      "bytes": 4414,
+      "sha256": "4672cde4694cd667b92f992ec8606de1da6581c3b359ee223cd84118d48eb867"
+    },
+    {
+      "path": "09. Archive/Archive Logs/wf72-prior-cleanup-proof/active-ref-helper-disposition-2026-05-19.md",
+      "bytes": 12755,
+      "sha256": "fa71e5041ff544d6cc8f36290e99eef513b28f6bd8cb4b2afb903941d3d6ca7e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/real-capital-active-deployment-universe-2026-05-18.md",
+      "bytes": 4676,
+      "sha256": "191e2579a70516dda363839f31cce64d51f6931134019f2435bda822a9752de0"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-first-batch-static-inspection-2026-05-19.md",
+      "bytes": 2960,
+      "sha256": "67a6b0334ce07c43b716845d5cd5e78d740d4d45763a66da6c829327dc35ce41"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-guardrail-evidence-doc-smoke-2026-05-19.md",
+      "bytes": 1873,
+      "sha256": "6b389cac15e677841647ac8df6f8dfcde1350c70f344078062a4ec142211848f"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-guardrail-evidence-inspection-2026-05-19.md",
+      "bytes": 10346,
+      "sha256": "7df2dcb6ccd2ca961a11e7e7d600766847b5c3a039907de873c15cfe4018ea63"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-orchestration-plan-2026-05-18.md",
+      "bytes": 9324,
+      "sha256": "9aa65d259e64310f2cb5c24ff7c38cc68954d51931432d60f78506efcb24ff6e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-ownership-manifest-v2-2026-05-19.md",
+      "bytes": 6171,
+      "sha256": "d88a65880e33e644e7f7858aa98d12b72042aff5232622b5e86c12870477e6b2"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/sector-diversification-integrated-recommendation-2026-05-14.md",
+      "bytes": 6749,
+      "sha256": "998a386840e51ba659d13d4d91a47ce7a22683aa5da0556a21ddee97b2a77007"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/telemetry-audit-window-closeout.md",
+      "bytes": 984,
+      "sha256": "7e013bc555d5517f9ef35d009f896b9ca2236ceaa2dffd4f434fba547812b35b"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf68-delivery-channel-approval-packet.md",
+      "bytes": 3020,
+      "sha256": "1b83c0db700a92ef2cb358175ace0a0900d81cd79f2fafb86525737bc5091f02"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf70-current-window-index-registry-migration.md",
+      "bytes": 2180,
+      "sha256": "d7b4b8cc029757d6dd0d5ee195c83534e0a1e9032e509cf06276545c4fd512e6"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-broad-archive-execution-contract.md",
+      "bytes": 1856,
+      "sha256": "e3d4f82a6cdd92f5ba3618c3a786b6339766f6c4f74c6216074d7fc62811c0d4"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-consumer-authority-guard-implementation.md",
+      "bytes": 1965,
+      "sha256": "16b2b7c261330ab974cb02bc91cc0906c223ae9b83fdc3208267c2bd51b80652"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-financial-truth-map.md",
+      "bytes": 7109,
+      "sha256": "391ea5fd6ae09a93503f656d133654d37eeb9d1fea13577ad0521e426c75b63e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate12-closeout.md",
+      "bytes": 2810,
+      "sha256": "5fd5ce75a090b15abdfc2bae2f35857a2593049c29f8c496348bb79c87d7ac07"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate12-proposal-staging-hardening-worker.md",
+      "bytes": 2760,
+      "sha256": "5092b910166ed978e485a00be0c3af601b98f5bce99d0ab7f3da7a6eb2b450b4"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate12-proposal-staging-qa.md",
+      "bytes": 3792,
+      "sha256": "408029edc96bea018bc451a41da7b112840f3597438e61f47afa97cc93abfe12"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate13-portfolio-source-freshness-closeout.md",
+      "bytes": 1934,
+      "sha256": "e84dd4f592cabd8ffbdd575e54c1f4ca912375f8d11f2f3ae21c11df0bbc8759"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate13-portfolio-source-freshness-qa.md",
+      "bytes": 4074,
+      "sha256": "cdd0b44a0bc29d2c89c342d2a16760f16044030ad5fae2639966cfd336f255fe"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate14-neutral-deployment-display-qa.md",
+      "bytes": 3126,
+      "sha256": "524b6c21158796402e53d46288dd859ae450b1b29498f62620ff37a8ffca676b"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate14-neutral-deployment-display-worker.md",
+      "bytes": 1093,
+      "sha256": "0e5d7709e352dd677fb21ef8e589e90c7751ab87aad96bd8deb985b8ce6d5fa5"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate15-higher-risk-family-qa.md",
+      "bytes": 4206,
+      "sha256": "84b7702dbb7d55c3d2fe87f507e8103f3ceb2c82023905ac8c378512199e60ba"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate15-higher-risk-family-worker.md",
+      "bytes": 4259,
+      "sha256": "4db587cb95ebf1ff15f8a4ae93c44679b6193c8cb2c72013dc5a8fcf9a05c639"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate16-final-os-revamp-closeout-worker.md",
+      "bytes": 4935,
+      "sha256": "b578847d48f00f6d64e262b1449a542de49319500130ec01baea8a1836d02e1e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gates13-16-phase-approach.md",
+      "bytes": 9386,
+      "sha256": "fcf077aa6b55f435ede7d3f430fb9295a2e58fb681c363638ed4a38a8f0146f1"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-phase9-deployment-status-qa.md",
+      "bytes": 5138,
+      "sha256": "62418d25171cf55ddf2d62ad7cecd6d6c597816a8af2e030c2a4e6336ced6725"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-producer-contract-cleanup-closeout-2026-05-25.md",
+      "bytes": 1567,
+      "sha256": "e204d51b5983e9bbb7608c757cf3676c582c38ada7b6175bcd52376cda961a7b"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-today-card-contract.md",
+      "bytes": 9744,
+      "sha256": "79ce9d72e27d0c6972a6de3087ddeba96f8654eb88a47d94baeeba9c7881be56"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf73-active-workflows-compression-apply.md",
+      "bytes": 1471,
+      "sha256": "0b55e179c58258959a58050ea045e50c19ca4ee810d50a5d63cecf4b44b6fdc3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Artifact Index JSON First Markdown/sql-canon-phase3b-writepath-preflight.md",
+      "bytes": 2350,
+      "sha256": "2b654cb3e93daf446070e7ee2b41797c1b9f6f17f503785ac91e34607094453f"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Artifact Index JSON First Markdown/sql-canon-phase3d-consumer-parity.md",
+      "bytes": 5417,
+      "sha256": "7b26dd56a47355e210302a7e2ef44841d1fb2728cd8f2a74906dc2842aa492be"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Artifact Index JSON First Markdown/sql-canon-phase3e-dashboard-proof-pilot.md",
+      "bytes": 2005,
+      "sha256": "90b31d17d84eb03f5d3f4bcdc2c84285812866a9f05d4df3143ff1b6a3937a04"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sec-skill-smoke-test-report.md",
+      "bytes": 966,
+      "sha256": "bb5d34623e22e45508086c1f40ef4b1ed2c4b2ccca44a582a22fe2e91132962c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sector-allocation-decision-review-2026-05-24.md",
+      "bytes": 2274,
+      "sha256": "8f8b2b39e6c96f0d39a6fdd861ce8a86511a64f1ed133d74aa72af851aaf8142"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-canon-cache-rollback-export-20260523T215733Z.md",
+      "bytes": 731,
+      "sha256": "6bd7843f7b8452cdf7f1665567b2dc15f89f17d6ecb33a2157283b220f9aaeed"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-canon-cache-rollback-export-20260523T215940Z.md",
+      "bytes": 725,
+      "sha256": "2eb3176b1de40559a1358abe64caa3066ff69c80556d2c12c538b1fba17b94a2"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-canon-phase3a-qa-handoff.md",
+      "bytes": 2930,
+      "sha256": "893526d28252579d0cf161616bebd0ce9c81dd5090467ee919f1bb9e22177cad"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-proof-cockpit-phase1-completion-plan.md",
+      "bytes": 4173,
+      "sha256": "1f751bc1f637e7b149c8268b7e27025d525284804e444c260b91d4dba8e3826d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/telemetry-audit-mode-plan.md",
+      "bytes": 4626,
+      "sha256": "6579683582a8b1ef69e3cf6c1600f34cdab4eb92f87525e2018fe7d4ed33ff87"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/tuesday-alert-proposal-sizing-readiness-2026-05-26.md",
+      "bytes": 1204,
+      "sha256": "a1ede503571f7906a82775e2bf7e069870c8932f55d2fd4305e31bc48dc55436"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/tuesday-entry-opportunity-watchlist-2026-05-26.md",
+      "bytes": 2101,
+      "sha256": "9efa4896ed639804d57f909ae4d94bb9fe3c6ba5c5506185c3a3cc7b31179906"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-call-log-patch-preview-2026-05-19.md",
+      "bytes": 20616,
+      "sha256": "0d6cff9952a97255c60029cfa22b9cb9cad98e1ba62e9f5df0bc65f7528abd8b"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-no-hindsight-qa-2026-05-19.md",
+      "bytes": 3395,
+      "sha256": "aaec20b3c7afd29dc0c4d05a2fe90e5698322d70c64007e66972105d92fcde84"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-orchestration-control-2026-05-19.md",
+      "bytes": 894,
+      "sha256": "92ca2f3664f83ea141ea6cb24197c623b711a37edfb811573cf8a5dccd906946"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-outcome-ledger-v2-design.md",
+      "bytes": 7108,
+      "sha256": "631e6b2eba94e7d8f39d8c5502fffaad080771c39e9ec3350b53969b3838608e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-outcome-sidecar-bridge-proposal-2026-05-19.md",
+      "bytes": 738,
+      "sha256": "ac6045782f01cc0aa5ec35649a1fc196adc0c0d0e31cee9880b6041996274a16"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-paper-lifecycle-taxonomy-proposal-2026-05-19.md",
+      "bytes": 623,
+      "sha256": "38c0485a512e514af76f71cddaa290deb572e7af215b71195a9b67bfbd782025"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-phase6-wf68-bridge-acceptance-2026-05-19.md",
+      "bytes": 498,
+      "sha256": "729bd1e1cf1f09e36751d52e77379e5d0fae6b88b0f2ca41c74342fc33a04b6c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-wf68-alert-outcome-bridge-proposal-2026-05-19.md",
+      "bytes": 546,
+      "sha256": "dcf14b91241374fe1adddf8a413676788f201e9502e74f511cd0558b828b18e2"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-chain-manifest-registry-closeout.md",
+      "bytes": 1567,
+      "sha256": "2381c6c016ee91ad462c6547a851d85ac4fc8672a316ae298f303dd0ae82f970"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-future-quarter-rollforward-rules.md",
+      "bytes": 7591,
+      "sha256": "76f4455232722f1a03c5415692be624c422e5e352c2a8b9c06d3d13796fffc43"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-official-source-gap-map.md",
+      "bytes": 8406,
+      "sha256": "fcda199ab7681099117a8c3e9a8527c9a57f886cc341146be7d72f6f0fc85442"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-period-registry-implementation.md",
+      "bytes": 3577,
+      "sha256": "6d6005b64e74db39697d7650a8c23c3ed24d71ffb29266292ac79a814ced6627"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-batch2-migration.md",
+      "bytes": 2282,
+      "sha256": "4412f06759b3a4257ebe334058f72716d0e140a789f0146809166aea66cf8dc7"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-etn-vrt-migration.md",
+      "bytes": 2442,
+      "sha256": "3be153ca072597f181105d8a1540a8b8235bd1e887e51818e68b0113481882a3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-priority-migration.md",
+      "bytes": 2084,
+      "sha256": "cfcdba5c8ac97c57324b0cbf48621c5e7d3df847003763ae0b512fedd277c73d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-tech-migration.md",
+      "bytes": 1805,
+      "sha256": "21696308540b0a49ccd469dee403138e7adfbcc8c3f9627af209bdbc63a6a85d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-extractor-hardening-batch1.md",
+      "bytes": 1802,
+      "sha256": "3b2f1ceb3e0f113b47b88fed0314e168da8da5d318f3a8ea386f01c0aa09779a"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-extractor-hardening-batch2.md",
+      "bytes": 1784,
+      "sha256": "c23bbe991ab216fecee41842dbf05155c8dc625a794d1a183d6844c15f8963cc"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-extractor-hardening-batch3-closeout.md",
+      "bytes": 2539,
+      "sha256": "4188c3d8859d3f5c9d004e7361766b789ac5960ce86384de13f8c231d335f288"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-refactor-maintainability.md",
+      "bytes": 1618,
+      "sha256": "5cc4e1c518991f8f0bd6234d99ddddbc78e951e7935f22b8a3ba77bc2561ccf1"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-source-expansion.md",
+      "bytes": 2430,
+      "sha256": "2324c491a048f49ecf7d3bb0f1f40e4b56eae0db38a635e0009caa191570c497"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase5-bridge-recon-registry-migration.md",
+      "bytes": 1995,
+      "sha256": "28937b687c7a1d598aa94ee2b297786e42a0dd4e02263a6b0a1a87afd0a500a7"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-rollforward-registry-selector-implementation.md",
+      "bytes": 1916,
+      "sha256": "2e192790e3629025a70f39453f8a1748fd181b6399780b99ff120a37b7db17a2"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-run-summary-registry-migration.md",
+      "bytes": 2433,
+      "sha256": "2cf7a82ed1acd80580e7ce7725974b65b70cd2cf6ff29ac96c503296f3ea3283"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-tech-msft-before-migration.md",
+      "bytes": 2716,
+      "sha256": "53cfdc711cd65f4706038e075595810e02a84590cdfb68e16761d6cae5b90876"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf71-department-skill-ownership-proposal.md",
+      "bytes": 16662,
+      "sha256": "c13ff2662b22790a90759bdf2ee58f18081995eaca6a3e0d155ac67119289bfc"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf71-live-use-audit-wf70-wf72-next-task.md",
+      "bytes": 3056,
+      "sha256": "2f6eda76e6c7652a343d93bc0a782926e7c311ec7e6b1aac47212c03292412d3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf71-skill-routing-load-budget-rules.md",
+      "bytes": 12140,
+      "sha256": "f7967a952ae446e5b61f419da4a783b7f65b7579ae0675c4bb939a4e2bd8bb05"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-active-tmp-md-cleanup-2026-05-25.md",
+      "bytes": 534,
+      "sha256": "be6060079da41920d8b033626d7ffa4397461caaa7bf11ee8f2a84dab5bf4bb3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-archive-suggestions-decision-register-2026-05-25.md",
+      "bytes": 1220,
+      "sha256": "dbf867649f416a4b25f885403e275364b69cf542924a4a1f4cfe4b0ccbfcd0a1"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-backup-surface-classification-2026-05-25.md",
+      "bytes": 1444,
+      "sha256": "406aa26affef6be69897e5cfce22679c7c76e4ebaa3f10092a49a49ce1f8fcf7"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-broad-archive-phase1-2-integration.md",
+      "bytes": 2041,
+      "sha256": "c3f03e3e092ca2c606b96e543aecf0b8a0e602b704069cc7226e5e76819faa9e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-consumer-guard-qa.md",
+      "bytes": 2832,
+      "sha256": "35337dcedace8899ec87d1cf704cd30ddf68537b20cf6553d222213138e5cee3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-dashboard-decision-queue-sql-migration.md",
+      "bytes": 1375,
+      "sha256": "deb0188a23e0495421ba554ad0fd922c1d9f1c8125bd1db7e3d9662204d2cebd"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-dashboard-handoff-sql-adoption-proof.md",
+      "bytes": 998,
+      "sha256": "7801329a30785227213bf34fa5fdf66a4970b0019a81c53a6d073fed7fe3f8e9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-closeout.md",
+      "bytes": 2106,
+      "sha256": "024b986a22ff58c8d29d2f94017e24ca301e35c14cd11b3707d5e1515ed1d766"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-first-slice-approval-request.md",
+      "bytes": 1579,
+      "sha256": "d7eb3b64eaaf40b820b036896d086a7bb59af554a2dcd9493e8fe5987624580a"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-pilot-main-integration.md",
+      "bytes": 2977,
+      "sha256": "25131aadad1f73d52149b8bd5bee20e3bdc3a3a74d12fdd9da8f1ccaf3c080a9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-pilot-postworker-qa.md",
+      "bytes": 2893,
+      "sha256": "4c832000b0eb5c8d57d1b72e8dc4c2c561b9a9c62429b229a3aacb99c2138765"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-field-family-migration-prework.md",
+      "bytes": 5536,
+      "sha256": "e684745f208202f0db5212196d91a0940515184c0c0f0915c5d13e94180a43ee"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-finance-canon-cleanup-proposals.md",
+      "bytes": 7591,
+      "sha256": "00ce9d591b0400de1a40fd2bf4090af9f75a13d6b11c5a306e4f1e9921c5a1eb"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-fts-field-plan-qa.md",
+      "bytes": 4625,
+      "sha256": "022f861e906036510a62ca6d6558c11d39586b9b281af159994219a7d7bd7279"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-fts-query-hardening.md",
+      "bytes": 2257,
+      "sha256": "81fe16834c79e01ce0d7f045db2334a11be597e77b9609085b130bf419a83c7b"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-full-tmp-md-sweep-2026-05-25.md",
+      "bytes": 385,
+      "sha256": "d91e881cafbef374f3c3bce81c77636a7a5035323ac8886c91f85ae7f6a146ab"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate13-portfolio-source-freshness-redesign-worker.md",
+      "bytes": 3562,
+      "sha256": "a05f553650cea10ae89efb96108ab5c69a74aa924bfc7b9ea649f451539a08eb"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate14-neutral-deployment-display-closeout.md",
+      "bytes": 2165,
+      "sha256": "c7a30950f40fe79a2250a0f9888f91c4ef81ee52b1fd9291618b6b12aa4b4500"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate15-higher-risk-family-closeout.md",
+      "bytes": 2015,
+      "sha256": "f2ceed9434f9233c000a9d4b0a42b6e6ac56a13e3bd7ae650c93610db11c7c46"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate16-final-os-revamp-closeout-qa.md",
+      "bytes": 5053,
+      "sha256": "90a57050fe758c8a8650c27fd1aeef7e6bb5086559dff7912429d0a138245e81"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate16-final-os-revamp-closeout.md",
+      "bytes": 3099,
+      "sha256": "2223442c13eb317816700a38d743cbbd8b9819716c7bf32eda6e4d7f1c2dca06"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-obsidian-note-lookup-procedure-proof.md",
+      "bytes": 816,
+      "sha256": "6e2e4e7c9ccab8b1a5a0b7bd88364318b90ffedee7359e532c651172917bac55"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-os-optimization-execution-phase-packet.md",
+      "bytes": 3108,
+      "sha256": "70034c65ff2459168ad3a8c082c458be8cccd284b08983fbd2a5ac9415ff1974"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase10-closeout.md",
+      "bytes": 2563,
+      "sha256": "b9757d75b5e7627506616db2d2be2103ddafe811a40a9b608383cb47a02cb5ba"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase10-hardening-qa.md",
+      "bytes": 6910,
+      "sha256": "aab2975d678177b2949d6122fe47a12eeab12f8f7acd2706a6049fde2e1a6e51"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase10-higher-risk-family-taxonomy.md",
+      "bytes": 15283,
+      "sha256": "4ed146b8ca7a1dce0c343c28159312db7e2ab80d6bd117ad0cd45796c2a38070"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase11-closeout.md",
+      "bytes": 2538,
+      "sha256": "83714af4007c57c3a57ae943dfc7a75f125b57bcf2c1eefd04aa2823b4cc8370"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase11-full-activation-readiness-packet.md",
+      "bytes": 16852,
+      "sha256": "ae3fa8e64ac9434205ccef4d8317bafda378f19483bb8435ba67890c9fa20fe0"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase11-readiness-qa.md",
+      "bytes": 2521,
+      "sha256": "e4bae7dce0f73d4ce65505300b069c31429d1044ccdede9688da7cb2b635b85d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase3c-weekly-product-apply.md",
+      "bytes": 1039,
+      "sha256": "431b8bab693bbb23e75f7ad70bf8999f4b9c7e70e05b4b1fa5a1c2a88a5dc4d9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-7-integration-summary.md",
+      "bytes": 947,
+      "sha256": "3381f40e4d8173c84311b86528cbaaa4c562eb9b96c1ac4f16b6344f1f806ed9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-narrow-cleanup-result.md",
+      "bytes": 1288,
+      "sha256": "f2a82163d1a20ff591c13bdbb7ada0d5fbb08a8513f4cd0eb1a200595bcb69b9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-six-key-stabilization-postfix.md",
+      "bytes": 1030,
+      "sha256": "3490746c66384c54ba406b684e4b1bc99db491c05b1b5c540065aff6e4e5a319"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-six-key-stabilization.md",
+      "bytes": 3381,
+      "sha256": "1353556c3489d21589270f42d2690173c43c05e555b85ab06d3e8661092d3202"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-sql-lineage-expansion-proposal.md",
+      "bytes": 8763,
+      "sha256": "db53d6f1053e558caaf0ef6efdc392376b638bf553271de1c2b49f1cf3c8533e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-sql-schema-v3-implementation.md",
+      "bytes": 1910,
+      "sha256": "ade8312444d5d4af78fe8f2db9c031561fbafd15cd4cc0cb28aea6910926336f"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-sql-truth-spine-prototype.md",
+      "bytes": 1426,
+      "sha256": "8131249404fb28b1affc48f9e88f73264c249a509e47127360831cedfebad955"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase5-sql-consumer-inventory.md",
+      "bytes": 5147,
+      "sha256": "85f53d92ac53eb99162895ff0cddd4aaa7c0e3667b50f78a4e6de38c5cf336e5"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase6-held-field-adjudication.md",
+      "bytes": 4155,
+      "sha256": "c441ef5ed1990bd440e90713ab4ad7eecb4b81bb452e10ab0ec13ff80f5a9404"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase7-key-level-activation-summary.md",
+      "bytes": 1625,
+      "sha256": "57f9d3bbdeced0ed116c56228235fce521116933ab7d18486e33fbc0bec4d939"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase7-shadow-iteration.md",
+      "bytes": 7768,
+      "sha256": "589629a225502f3d881c9973529b4b505088b1ac7852478585049ae3346de437"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase7-source-freshness-shadow-proof.md",
+      "bytes": 769,
+      "sha256": "cbaf220e8b37d5039971aed6b3081d9fd0bd29830686a40bc647f6f1cfdf0ea4"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase8-closeout.md",
+      "bytes": 1087,
+      "sha256": "b62847d546271a16fcdb1497ead5b5ae5256a19e0b8aa4a4d9f7838393d8396e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase8-portfolio-source-freshness-adjudication.md",
+      "bytes": 4380,
+      "sha256": "d0eea512b218a58d78d05f3c5153903629b8c8a53a6158053533bfd914b3e05c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase8-portfolio-source-freshness-qa.md",
+      "bytes": 4360,
+      "sha256": "9a30d5c34ea6f5b7f4c6d94313d5b0c2f853558294f510244198fdd2ce35def8"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase9-closeout.md",
+      "bytes": 1225,
+      "sha256": "02d20f37e154d4deb7746c76a16b60b81814a7b5b5b9c9dfa75f430c5bcf9f86"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase9-deployment-status-adjudication.md",
+      "bytes": 3584,
+      "sha256": "25013b08e2e011e48de0045b22ddeeed3425029f9adc12d20e798919cb607b00"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phases-8-11-full-activation-readiness-plan.md",
+      "bytes": 2907,
+      "sha256": "d1af134cc4f713a32379ab4f6e1e1dccf276b2c426b71919c8ac9beec6144a46"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-runtime-cache-delete-2026-05-25.md",
+      "bytes": 384,
+      "sha256": "d75eed7bf6eba50fb969d18dd37a6cb4e8e59cefd354ae300c0f64edcbe71b60"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-runtime-cache-delete-closeout-2026-05-25.md",
+      "bytes": 1016,
+      "sha256": "e7913218ba52ac6ed376dce28d19e360b8651c87586f5669c0f1f388977185b9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-safe-delete-proposal-runtime-cache-2026-05-25.md",
+      "bytes": 8240,
+      "sha256": "7dd42c925879c38909af4f890c076b77a5e52a78e02f5bc26accd143eea72b36"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-script-ownership-inventory.md",
+      "bytes": 110267,
+      "sha256": "df76fda2b11e3254db62a84f257227cc93576bb386b5fd20fbe9790d89f4ac21"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-adoption-phase5a-proof.md",
+      "bytes": 1681,
+      "sha256": "f16275bc234f2222377fff2c8f29dd4b3bfd8939a980b557eb72e0ede58e706e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-adoption-phase5b-dashboard-trust-proof.md",
+      "bytes": 1753,
+      "sha256": "235aaa567f00412456593e1f28039baa6bc073b30c57f93e76d0f7cfd0a5484d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-adoption-phase5c-today-card-proof.md",
+      "bytes": 1658,
+      "sha256": "c720b86a088ad1bfaa54d266455b7f375a36b273a0522e5e25ef2091ff0ea19f"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-authority-phase-implementation-synthesis.md",
+      "bytes": 1531,
+      "sha256": "ce427149e0a24bb5b1204dd1cc4c7eb8877f11d92e2213b8a587ee5dbe99b24c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-authority-prework-review.md",
+      "bytes": 4706,
+      "sha256": "9eabadcb046241d2a4a7ccfa26e283a75d9be2600eb6afaa668e68a624ae860f"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-cockpit-boot-protocol-promotion.md",
+      "bytes": 1233,
+      "sha256": "662127bf7bf7249aadc5a1cd13abf4a93b5ff5a03f1c549e2aa823c0cb6aa833"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-cockpit-phase4d-proof.md",
+      "bytes": 2151,
+      "sha256": "0b3c7c848695796c9f68cc6bb94d5deba88f3b1bafe6b751f3c6b14baacfc5fa"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-freshness-drift-validator-proof.md",
+      "bytes": 1852,
+      "sha256": "466704a1e82c94029c68d4eee3deaa121289c09ca379597ff8e8734b49227353"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-obsidian-capability-phase-proof.md",
+      "bytes": 1013,
+      "sha256": "c842fb1a834e35257e146b2dc45e2a8ece9f2218dc24f660fd8c4c821cb0b378"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-workflow-handoff-proof.md",
+      "bytes": 668,
+      "sha256": "0e8550d177c0445572e70e5137721283d3115c9d33eae1ac0f15130358fdb096"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-workspace-index-refresh-proof.md",
+      "bytes": 1024,
+      "sha256": "3090afffd8c875d554b94e9820ed51bd95076fc1892c2fd9bedd619aa8ef844c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-active-workflows-compression-proposal.md",
+      "bytes": 11330,
+      "sha256": "533eda4da2b3b32935182c885ba4657d46d51de2a913829a2c5be5dc8805204d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-active-workflows-compression-qa.md",
+      "bytes": 706,
+      "sha256": "1c4f700d71250e67cc0a4a3f5d198c6314a2349b56c9eef0ad58d6fbe22f65c0"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-boot-surface-load-map.md",
+      "bytes": 8726,
+      "sha256": "b5a560f8354618b6879f222acc6971e829fe9c6bf90fd7b2f524b9c775889c1a"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-startup-truth-index-proposal.md",
+      "bytes": 10874,
+      "sha256": "76ed0b488263ca44bca1e847c1edd8cb6ebc2b913bd08e9e4faa79b266a01e0a"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf75-opportunity-intelligence-expansion-plan.md",
+      "bytes": 2969,
+      "sha256": "ec371eaad54697d8dbd601d81b258de9bd577fba57d876c6ddf32c44a8306f07"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 JSON First Legacy Markdown/bounded-auto-archive-last-report.md",
+      "bytes": 5583,
+      "sha256": "1bc44dc92b09195d5adddde7f905a775852a8f29434d4b1afca921f9abf51690"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 JSON First Legacy Markdown/redacted-tool-result-telemetry.md",
+      "bytes": 6559,
+      "sha256": "00f8d9ece230ea2b5736a1d2cc2af2ecf05ce5fb9cbd8335458828d174f2821c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 JSON First Legacy Markdown/tool-bloat-reduction-guard.md",
+      "bytes": 2121,
+      "sha256": "e581258f9e421fc4b99aaa757a27770b9be7cf0850df8aa8cf6adc6f1e068324"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-producer-contract-baseline-2026-05-25.md",
+      "bytes": 389,
+      "sha256": "8e28584c54f45dcbae0922fc4edfdd70d3d1ec68e4d48ccf3c3730e0be1f2acc"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-producer-contract-classification-2026-05-25.md",
+      "bytes": 1123,
+      "sha256": "27c73979ea15aec6d541fa983912c1e2d620b51bffbb4af03562e465a6802de1"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-producer-contract-promotion-adjudication-2026-05-25.md",
+      "bytes": 506,
+      "sha256": "ea8b0432a677ca449ebfde6df16fbded19cb8f0b4664ff205690714341bdc0c9"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-script-owned-report-inspection-2026-05-25.md",
+      "bytes": 365,
+      "sha256": "0d4c86675212f83c19a10bee669fa1235718034c8f5d25f3e37e953802655dda"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/active-entry-monitor-list-2026-05-24.md",
+      "bytes": 4991,
+      "sha256": "7b89645e10903c4a5d9a5898ba214352ca1359b5fdfcf7ea65e474cc949f2803"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/advisor-packet-trust-coherence-gate-design.md",
+      "bytes": 5966,
+      "sha256": "da545c4036fc4a81732f8fff960f11084af70b0cca4e57afaeb9883156abcf53"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/archive-phase2-tmp-executable-classification.md",
+      "bytes": 3890,
+      "sha256": "153c31af349e578551eaf6d019a294c03ff59260076d922fd38aff49b5b49ca2"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/automation-health-dashboard.md",
+      "bytes": 4484,
+      "sha256": "aeacf9377872a358474971e28c9e9984fa64bbb62e6cecfd90d399cf9eecfabe"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/defense-stack-promotion-review-2026-05-24.md",
+      "bytes": 2461,
+      "sha256": "096a5ffbda14fe85045b59b48fcde4bbcc2d4fa862e020720fc5b46c391f088b"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/main-session-approval-ready-wf67-order-card-design-2026-05-24.md",
+      "bytes": 2174,
+      "sha256": "3883c7ce95b6db148443e66f9529cab94a172714976caf69945fde058df82b0d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/next-level-phases-1-3-integration.md",
+      "bytes": 1588,
+      "sha256": "33b020fb439c5524d5de8788091c847859de5d46b7152e103de90e90f3e83040"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/next-level-workspace-intelligence-execution-contract.md",
+      "bytes": 2867,
+      "sha256": "2ead538e071a476679b9f1e3a58fb52efedfe24df787bfce887011cc9a2ed0c3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/official-source-period-mapping-reconciliation.md",
+      "bytes": 1766,
+      "sha256": "dddf5e38a33cd5ce6000661b042104c4fd9590833737a3eb364d309dcafe627d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/official-source-reconciliation-readiness-queue.md",
+      "bytes": 4932,
+      "sha256": "4132bfece927fc6930e91f893223f7da4d4149679ebf3c5abce7f129511bdd7c"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/openai-sdk-openclaw-enhancement-research-2026-05-24.md",
+      "bytes": 7196,
+      "sha256": "61eb071aa7aadb5e903bdbbd3839308ef4a7655d21f30d070af72e552332f223"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/openclaw-otel-enabled-proof.md",
+      "bytes": 820,
+      "sha256": "426033ec06d019f5ffd9025593b468b880ba26e68905bcd5642707a5dad8f1bd"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/os-opt-advisor-unlock-prework.md",
+      "bytes": 9229,
+      "sha256": "a3308159e5286583143058e8cb13551136762ecc1fd1c09fc5a22f63428a6110"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/os-opt-cron-runtime-prework.md",
+      "bytes": 5575,
+      "sha256": "b7502ec23998756286d1f2397863aabeb555769b8a1f4944251f24e448501741"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/os-opt-rsi-routing-prework.md",
+      "bytes": 12206,
+      "sha256": "5554277faf382215733c07f51b81ed63b29d8f38aae17b10f9df727a696a8cfd"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/quality-bench-bond-cash-lane.md",
+      "bytes": 3482,
+      "sha256": "14511c4275542f1f1a1ff075c7257addd04c79ef9494c70453545572433c1d57"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/reference-band-note-sync.md",
+      "bytes": 6028,
+      "sha256": "e6730578ee44fc9137c3a745e4ba5dc241d921185c1cffd98f7c79e39985cf2d"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/retrieval-quality-scorecard.md",
+      "bytes": 2492,
+      "sha256": "4cd39b9e3f1ae6a49bbed501087e6a56f3026787491a12d20cfd5dbb3abd43ca"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/runtime-expansion-pilot-status.md",
+      "bytes": 796,
+      "sha256": "0e03b0000a079c36dcb0ff8fd15583dd6b0b415ab6e60f5a6aa5daa9ce29e9b5"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/sector-allocation-decision-matrix.md",
+      "bytes": 5724,
+      "sha256": "dd0773731324dc316e2e758dc95f2b5632f2558a2bd8d592bf66849d3cc93fdb"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/tuesday-position-sizing-readiness-2026-05-26.md",
+      "bytes": 3788,
+      "sha256": "f58009b8bd0e606dbd259ad3081c7b5139fe48a5eea26a34666bbecd12dc7b63"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf55-outcome-ledger-v2-migration-preview.md",
+      "bytes": 1075,
+      "sha256": "d94a6060ecf05db879a9c684892cb10329936a4290d53be37ca7ac71d854b3c3"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-official-source-inventory.md",
+      "bytes": 4536,
+      "sha256": "5fe5e426289b357923cd61915a8a865a2edcf27409f8a74288a66043592fc9fb"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-phase6-parallel-capture-runbook.md",
+      "bytes": 2644,
+      "sha256": "a2e17babf172662a9ee57993370fd2d9c0946b212d93c444b74a2a6230e7f095"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-phase7-q2-rollforward-readiness.md",
+      "bytes": 4097,
+      "sha256": "58fdd9451b1669ad2fdb61ccffe37bff4b6fb11c92363995f1361aa33610ae60"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-wf66-official-evidence-spine.md",
+      "bytes": 4268,
+      "sha256": "da8a8283387a62372fb0325cdd670f010a0c184182c5c44d58ab43f359917766"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-clawhub-rsi-inspection-queue.md",
+      "bytes": 1784,
+      "sha256": "fc8df2432911cc140d6e51b56b17d2c0a909cfe6675272a0666a7b21cf14ff51"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-outcome-eval-suite-v2.md",
+      "bytes": 4885,
+      "sha256": "58d6f1145aebff4acfb087d7f83a4782d7b0311f2bb67cc82e4d91feff092e80"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-reflection-to-proposal-pipeline.md",
+      "bytes": 1653,
+      "sha256": "e2c26655a4aea40c5a0e2edbfc3b6ce72c9b4237b128cb228975b942cb94a664"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-rsi-evaluation-harness.md",
+      "bytes": 6107,
+      "sha256": "8c54dd28e5f960bf93606384c8d4a6d9bff0db3d6d9f269b118ea8cec5117233"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-rsi-research-brief.md",
+      "bytes": 4165,
+      "sha256": "f5f7e98b30c304ef227bcbe55e21cd846aa91925cf81e18078aa55861c397f63"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-rsi-validation.md",
+      "bytes": 1331,
+      "sha256": "ece148d3262c92869582faf5f85a1625b5d02e480e55b947d9b4a8f711962a4e"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/sql-canon-low-risk-phase3-activation.md",
+      "bytes": 6892,
+      "sha256": "90b07a011ed9368916e52ab6e2e4f5858e0f68e47aaf439401464dd41ba5ba81"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/sql-canon-low-risk-phase3-post-activation-no-drift.md",
+      "bytes": 459,
+      "sha256": "22d40af3cb137e2865e9179aa370ce4c81dd1a2b2ad40231205ff1105874d143"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-entry-stop-sql-activation-packet.md",
+      "bytes": 305,
+      "sha256": "67a5fa71c9362aaf75b19c9259424123337321d6b888e69ba9986133148a0627"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-entry-stop-sql-activation-pilot-worker.md",
+      "bytes": 11633,
+      "sha256": "411e1a6f091968830e110749dfc9360d2c0bd6d1ba62fad7ddf99c62cb8d7c50"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-entry-stop-sql-activation-state.md",
+      "bytes": 191,
+      "sha256": "193ce74c7d8ac91609b254016be6b5a59b406b0b0734604faae6e19819bfc0e1"
+    },
+    {
+      "path": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-sql-truth-expansion-phase-approach.md",
+      "bytes": 2468,
+      "sha256": "6ba6445bca6de0321cad5a88467ff69a44b4b04128c1b18d49d51ac0335dc482"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/AGENTS.md",
+      "bytes": 12658,
+      "sha256": "04c4bfdddb5f7745d22b7e94b510dc26d94f238835ea2ae4aa2daa6f81f792cc"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/HEARTBEAT.md",
+      "bytes": 2921,
+      "sha256": "36b539597f181db95c86ef42d1dc2f1a4c12c6b5c634af0c70779c5273f5a85d"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/IDENTITY.md",
+      "bytes": 1067,
+      "sha256": "1e0b5bd95c680067e8979f37f2c36491add33d06312d9d0fe2383dd25a907f7d"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/MEMORY.md",
+      "bytes": 11355,
+      "sha256": "6f0f6177f4bbf7569d331681ab836a90086189f3cc5b2c3533ece1e61e4e8bc7"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/SOUL.md",
+      "bytes": 7798,
+      "sha256": "07cb2c8adba8b4df7f87c075c42d474e49b1c9e4663bf467425816d802d76cbf"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/TOOLS.md",
+      "bytes": 12350,
+      "sha256": "2abfdb9d3818d3845b521400cc53d59b0973aec6098b6d88ba2bd1a314857cdc"
+    },
+    {
+      "path": "09. Archive/Bootstrap Audit Backups 20260515-201455/USER.md",
+      "bytes": 4337,
+      "sha256": "f976cb0c8fb9ba642ee09063135a0f38313837c0ee2d20d761013c1af29c0eac"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved/root-generated-residue/tmpdashboard-acceptance-baseline.json",
+      "bytes": 203,
+      "sha256": "46ea33c2979f5512a75dc35a808eeff1367b49a2c925e3ec80f80b657d062cf9"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved/tmp-python-helpers/implement_cron_broadening.py",
+      "bytes": 6820,
+      "sha256": "84c20dd94c2ffcc013a3ae9fd27fbf05b48beaf793d26f9f280df6ccf9b5aef4"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved/tmp-python-helpers/wf72_make_phases_8_11_plan.py",
+      "bytes": 6345,
+      "sha256": "7c26805d8dc3fec0570aea48404219061c917187df914e72796aa0893a2a9a14"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-macro-dashboard-draft.md",
+      "bytes": 11572,
+      "sha256": "4d09bad5329bf9f4f99a0226ddbb04b1f232d4749ce3f369c42ccc015e84a8cd"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-portfolio-decision-packets.md",
+      "bytes": 11050,
+      "sha256": "ffc6bf20639aad57b56b64bebd15fd2c771ad449094e8f62c452bdfb512d70d2"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-weekly-positioning-draft.md",
+      "bytes": 10290,
+      "sha256": "b4e959e41ee99a10ef96f5413d0c99041577c78c2190fd72fa536526e8b319aa"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/capital-base-sizing-proposal-2026-05-18.md",
+      "bytes": 10102,
+      "sha256": "3deec96c97890c69cec103c2de68f635665afa60af5dcf9376258d6950efc30a"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core-10-decision-universe-2026-05-19.md",
+      "bytes": 8021,
+      "sha256": "bc1ab4ccdfee2b087262f6892966b658956388c98a212d36eacf2a4aefca9446"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core10-model-packets-qa-2026-05-19.md",
+      "bytes": 4925,
+      "sha256": "33e82dddc584c5993577e88c28d52ec52b756796e734a10054f357f31c429cac"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/defense-sleeve-resolution-proposal-2026-05-18.md",
+      "bytes": 12384,
+      "sha256": "95b6b31639752563dec3b43dd141b88664532a0b8655f4fdbd32e0ccf20ba7ac"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase1-shortlist.md",
+      "bytes": 9144,
+      "sha256": "3b98c5b2ed4ec25aba1806e2eb6194d1ec5796691b0f40828fd221f3d8bee7be"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase2-etf-reserve-packets.md",
+      "bytes": 11329,
+      "sha256": "83b96aa37a80f3ca09f63e333c6573da89170bcdf4b9d7177bf98bb8b896d68e"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase2-promotion-packets-core.md",
+      "bytes": 15162,
+      "sha256": "93f40025beec78ebdbecb0cadc9fb4fe6b606b7556c3cf5c421ef766931e7b20"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase3-4-paper-plan-entry-gates.md",
+      "bytes": 17445,
+      "sha256": "8b3da6c5533ef676d87586e2d03a775a592cb562834fbd8640f3c96683182c97"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/execution-board-display-sync-proposal-2026-05-19.md",
+      "bytes": 31734,
+      "sha256": "3f6b659fbcb9238d87379f6b3a0ca35cfa33a24a665746de84e9f5736a8eb4e8"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-a-2026-05-19.md",
+      "bytes": 11354,
+      "sha256": "e552f39b2b1d01a76248fc24be10df47e3364b2030c74f49942c41fd2a31ed7e"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-b-2026-05-19.md",
+      "bytes": 9606,
+      "sha256": "c0e931ba773b45081dd8192bd76f1ace65799e54110f347a62ed725febbbb4bd"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-c-goog-jpm-2026-05-19.md",
+      "bytes": 14716,
+      "sha256": "1f77d392c87b205b6582abab076782ce6466440fa9092686ab3715d3eab84ee9"
+    },
+    {
+      "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/README.md",
+      "bytes": 747,
+      "sha256": "5cc037f32ae741117844a7a1b412aad86ecdb7fd05aef17286d59e05db42f3dc"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf67-test-fixtures/wf67-paper-position-state.pre-block-test.20260528-175138.sqlite",
+      "bytes": 53248,
+      "sha256": "422937d347ed441b533a553a94c01178b7ff3bfc129583ffc6010c8020613706"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf67-test-fixtures/wf67-paper-position-state.pre-block-test.20260528-175138.sqlite-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf67-test-fixtures/wf67-paper-position-state.pre-block-test.20260528-175138.sqlite-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-drill/wf72-entry-stop-sql-activation-rollback-drill.sqlite",
+      "bytes": 3006464,
+      "sha256": "91fd6993c9b632d421a9aba88b51253c4c06762754bdf3b10d7c2a56b99a1a29"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-drill/wf72-entry-stop-sql-activation-rollback-drill.sqlite-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-drill/wf72-entry-stop-sql-activation-rollback-drill.sqlite-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-rollback-copies/wf72-phase4-six-key-stabilization-cache-copy.sqlite",
+      "bytes": 69632,
+      "sha256": "2ea487d5408b78a0018476b5cd312b5664231ad1be45e4217761878151e78e3f"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-rollback-copies/wf72-phase4-six-key-stabilization-cache-copy.sqlite-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-rollback-copies/wf72-phase4-six-key-stabilization-cache-copy.sqlite-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-rollback-copies/wf72-phase4-six-key-stabilization-postfix-cache-copy.sqlite",
+      "bytes": 77824,
+      "sha256": "e16e4cd97e33692507bdba85be57f5bb9f40966e719e70090e0025f6ff10a168"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-rollback-copies/wf72-phase4-six-key-stabilization-postfix-cache-copy.sqlite-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    {
+      "path": "09. Archive/DB Lifecycle - Archived/2026-05-30/wf72-rollback-copies/wf72-phase4-six-key-stabilization-postfix-cache-copy.sqlite-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "09. Archive/entry-band-reports - Archived/2026-05-05-wf34/BRK-B_entry_band.html",
+      "bytes": 51001,
+      "sha256": "cdf5396fee8736f17791952d3bd7b94ac8450a8f808bc1a8bfc1040234a325fe"
+    },
+    {
+      "path": "09. Archive/Evening Review - Archived/2026-04-21 Evening Review.md",
+      "bytes": 17944,
+      "sha256": "e498ced3e00c167de2dfe389bc1346b95beeb194391ee89753501a64d947556e"
+    },
+    {
+      "path": "09. Archive/Evening Review - Archived/2026-04-22 Evening Review.md",
+      "bytes": 6544,
+      "sha256": "7cef559bf0f8cddd11fc0d20c521f1569a01f2058ea10a50b846f8b86fb0bfe9"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 pre-consolidation/Coverage Universe.md",
+      "bytes": 25969,
+      "sha256": "f314411dd6b9f519fe349109cb5d929c2d9d752397c6d516c2f2b60722b4fbe4"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 pre-consolidation/Deployment Trigger Sheet.md",
+      "bytes": 9726,
+      "sha256": "64a5c8b8462cecd50de7a33786b96685dd57e29fddaaf6492f0781a33c04c65d"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 pre-consolidation/Technical Entry and Invalidation Sheet.md",
+      "bytes": 41411,
+      "sha256": "357d518a20a2bc30029bbf7984785ab11de0d6d6eb4cc18237e3f41a168f0945"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 pre-consolidation/Watchlist.md",
+      "bytes": 4216,
+      "sha256": "1800f39bd5320ae2651b2aa78da046d0033c0f76d12ddcfd57026fb8d9d2fb57"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 retired redirects/Coverage Universe.md",
+      "bytes": 653,
+      "sha256": "ca14352c807aa93f8d77e33ca52094d2b208c77d85d639551295e02dab5159b9"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 retired redirects/Deployment Trigger Sheet.md",
+      "bytes": 938,
+      "sha256": "fcf858766ed52b18bf7033d11dad7d0576c55f4f3359969729db6ae82dab7c36"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 retired redirects/Technical Entry and Invalidation Sheet.md",
+      "bytes": 924,
+      "sha256": "5dc255d5ce652976409babcd732bcfa94a2a1a3e20901f32dcb10ada151413bc"
+    },
+    {
+      "path": "09. Archive/Finance Canon/2026-05-13 retired redirects/Watchlist.md",
+      "bytes": 606,
+      "sha256": "0234eeba7a699f97c60dde968fa6345295abe4ee488fe7329c9d8e5b3d3263aa"
+    },
+    {
+      "path": "09. Archive/Manual IC Prompts - Archived/claude-weekly-macro-snapshot-contract-prompt.md",
+      "bytes": 2432,
+      "sha256": "27c5c2dec3dc0f9dc657ace14c2e992040309de5de7de4343f42670d754eb06e"
+    },
+    {
+      "path": "09. Archive/Manual IC Prompts - Archived/claude-weekly-macro-w20-hard-judgment-prompt.md",
+      "bytes": 1669,
+      "sha256": "6f3ef2727c654c62f40ae5aeb23bb469f2278953f9d0ced1b39c7c81215d1683"
+    },
+    {
+      "path": "09. Archive/memory - Archived/2026-04-19-vault-review.md",
+      "bytes": 8822,
+      "sha256": "ab93e1add509105d0272108d7b9f781b369351b6fdcc2e4dffe421436ad69031"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Capital Deployment Readiness - Phase 0 Contract.md",
+      "bytes": 23136,
+      "sha256": "ec1721a0b8087be786419b20f88969dd2f38a80323c8b4ace6b46c2e8cfdbded"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Capital Deployment Readiness - Phase 1 Audit.md",
+      "bytes": 34237,
+      "sha256": "76a0d1f7657f099dfa91a51da497df2725be04bdb774d36e5549d4c006a593de"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Capital Deployment Readiness - Phase 2 Surface Design.md",
+      "bytes": 36801,
+      "sha256": "a14cc994f20ae8806044cd91ffc3758d268137affb86eaf14c9b918a2b0d8a69"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Command Center Chain Readiness Review.md",
+      "bytes": 4106,
+      "sha256": "9e67aad6bf41d441b0966a4676cbf3a02fa694e3b0ba6767835f6c997b690742"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Coverage Tier Framework.md",
+      "bytes": 1415,
+      "sha256": "d60683afdcaa47911e1be495ff62717eb8c4a2cb25bc92cd4ce1b5c298ab0046"
+    },
+    {
+      "path": "09. Archive/Project Continuity/E17 Universe Synchronization - Earnings Block Architecture.md",
+      "bytes": 2733,
+      "sha256": "35fe4148e5931541c6b3444c6d0dd1a91460f6514fe0d98a0d1e690f70c0464f"
+    },
+    {
+      "path": "09. Archive/Project Continuity/E17 Universe Synchronization - Phase 0 Decision.md",
+      "bytes": 15739,
+      "sha256": "acf8e2a83af9a855bd4b910f643b67a3eb98f2c2e559e1cef19023a4b039910a"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Research Department Operating Model.md",
+      "bytes": 1340,
+      "sha256": "2ff5492f1f062e2f8966ab2d28d53fa70488716797bffda8ac778159d1a7cbe4"
+    },
+    {
+      "path": "09. Archive/Project Continuity/Sector Coverage Expansion Plan.md",
+      "bytes": 1284,
+      "sha256": "07c7ebfc22bc09a33fdb7c8afaf872461ee9b2be98b0348571257a0555c97f1a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/atomic_slice_precheck/01. Dashboards__Pre-Market Snapshot__2026-05-01.md",
+      "bytes": 1791,
+      "sha256": "e3f57817537f040a8d0da9efe00b0f67d87972d2d153bfb53a57e0c834b97179"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/atomic_slice_precheck/tmp__band-proposals.json",
+      "bytes": 16634,
+      "sha256": "c73b9fa8fcae7742a34d4b8b303b86dc3dde3f9fb5c0350f7db44633d726aabb"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/atomic_slice_precheck/tmp__breadth-state.json",
+      "bytes": 4578,
+      "sha256": "f9c023802ff06a030fcc52a157d92203e1584d698a9d03b7899903b872d80ad9"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/atomic_slice_precheck/tmp__daily-executive-brief.json",
+      "bytes": 462,
+      "sha256": "fac2386e4f8cd7ec6dcc28e571a7e2f15004175222f8b8735abae013bd5dfdae"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/atomic_slice_precheck/tmp__postmarket-snapshot.json",
+      "bytes": 468,
+      "sha256": "65b60c3ad52164f0d9f3a717e5c412759f963537d7ed8e18fc1264a9f483cd5c"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/atomic_slice_precheck/tmp__premarket-snapshot.json",
+      "bytes": 376,
+      "sha256": "b590d0502011e593e7852910ab98813895fb7c0b276719fb5757a211b2d4a282"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/axiom_rtx_doc_text.txt",
+      "bytes": 91106,
+      "sha256": "b7691df4d51bd607945a6cc48e10fd99f4e8deb6db96c2797927406ea6f348d4"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/entry-band-data-anomalies/_test.json",
+      "bytes": 2,
+      "sha256": "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/entry-band-data-anomalies/BRK-B.json",
+      "bytes": 17765,
+      "sha256": "5e253b79ff2f534c8e09fa445e288288024a32b139918dc12d192cb494f6ae1b"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/entry-band-data-anomalies/UNKN.json",
+      "bytes": 13999,
+      "sha256": "75eef46a182c7964fbb502f366554a04677073136e5846ff33a076860df98f63"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/etn-history-panel.png",
+      "bytes": 20764,
+      "sha256": "1bcbafb5a0029b0e2db67afa374d40e48965fe149e62ccd538d3566cd18eaea9"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/etn-price-panel.png",
+      "bytes": 43419,
+      "sha256": "4c6287861190132c6fe63d51005543d7ef9d37d3e6bd22ecca704adf34e0b00f"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/etn-visual-report-data.json",
+      "bytes": 2601,
+      "sha256": "9981cc8c64ea9ea1f61798db67b03d24d48a7e8719c6659d229d59d4f29f52f9"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/external-research/2026-05-01 Workflow-State Verification - Gemini Flash.md",
+      "bytes": 4138,
+      "sha256": "fe5f4db5a0090fcc04b37143eabd04b89e0b514f267dd7277caefb7619087fb7"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/external-research/2026-05-01 XOM Post-Earnings Risk Pass - GPT5.md",
+      "bytes": 11988,
+      "sha256": "1f41e3cec6ebf6197faae664210c798a493e5b368cb982a71cebde6b93403474"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-analysis-data-v2.json",
+      "bytes": 3943,
+      "sha256": "90903cc44ad2c10df3d57b4d12100b247314da9bb923775799b87b2e6275bd56"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-analysis-data.json",
+      "bytes": 3775,
+      "sha256": "87af664ff70577f1420d4a6fd260501489897746324c1799b7edd05bf4a8dc36"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-earnings-panel.png",
+      "bytes": 68734,
+      "sha256": "41a26d073d74f131ac63fe19bac9ba67eee05333d5bb346a8cd14a19e0e6d75f"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-history-panel.png",
+      "bytes": 20558,
+      "sha256": "9ab5feb98eb30b27970e1172f6c23d75e68acfa38d9262e744269656237e7b17"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-price-panel.png",
+      "bytes": 44836,
+      "sha256": "7ad8f97e81b7d85db9ee5f98acb54866395b5d7d03c81a5a72591afce05a7340"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-q1-2026-press-release.pdf",
+      "bytes": 346941,
+      "sha256": "79fbd3053c5017e2140862c4c53ebeaa2ecfe2f4d0b27217c6c24ee1c7ae6d85"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-segment-panel.png",
+      "bytes": 55145,
+      "sha256": "438140f42079375f7a9b0a2a2fdced4a298d4ee64eefcee4a0633d9e059b1c26"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx-visual-report-data.json",
+      "bytes": 2545,
+      "sha256": "14372873870d732528733d2982b4d75d6ed3dd9965ce0f2ff5a6e24093a5eb33"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx_doc_builder.py",
+      "bytes": 13948,
+      "sha256": "52fde9e14700b734dfa12b8c8dba7c4b9d7f2fb2c805f1e0d2ef64aaee090099"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx_doc_builder_v2.py",
+      "bytes": 23177,
+      "sha256": "fd792220b5d2b90d13ca4d0f8278b75c38df0be1bf1f5844f30dbe5a9a334683"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/rtx_fetch_ir_links.py",
+      "bytes": 265,
+      "sha256": "f18d1b5bb5025c4acfc6b894178767a0b381c1cec4955c8573eea9c74cfbf93d"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/schedule_openclaw_audits.py",
+      "bytes": 2252,
+      "sha256": "e49cb3f6c6e6c763520fd35abc999a44459e1db9534d789f1ad1cbe680b4b752"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/technicals-2026-04-19.json",
+      "bytes": 36485,
+      "sha256": "152f4483d7c680923c6fb8a45d0715e151e9e00b56612642a6a0958da416596e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-03-tmp-cleanup/wf9b-12-orchestration-prompt.md",
+      "bytes": 3295,
+      "sha256": "479ca24d7beddc1d62d9dbe63b397031100a140226c8f032f964bc2a0fdbcdfe"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/add_missing_execution_board_sections_2026_05_18.py",
+      "bytes": 3710,
+      "sha256": "bac99d1b9ac804d89494397f5b12fca534e8d5a8a3e3ca61abe20c54944848bd"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/add_vxus_tracked_universe_2026_05_18.py",
+      "bytes": 8259,
+      "sha256": "d47e2ed897bd619fe574b573fe9418aa79110dc74ffe186ade9e1c2c1b2e026d"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/apply_canon_freshness_sync_2026_05_18.py",
+      "bytes": 4863,
+      "sha256": "f2722af3ba8a7c7876709cccc4926e8d4e7e2ddef20539cdfe5b03eab7813f9d"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/apply_closeout_updates.py",
+      "bytes": 7486,
+      "sha256": "2bd523c0c9feb5f2a0e4664b79ba75fccde49175839fde5c89decc8aa9fb9831"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/authority-window-morning-dry-run.txt",
+      "bytes": 8708,
+      "sha256": "e95b0e287b70467c9264fbbc49fddbafd98da9c703b272c1d330f1a17bb58f44"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/authority-window-post-close-dry-run.txt",
+      "bytes": 9178,
+      "sha256": "711434d153c697ac1e40948105ca91e6a1c003498b0a273ffe9bbea97530e129"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/authority-window-sunday-dry-run.txt",
+      "bytes": 9498,
+      "sha256": "75b0d9c2c14e63fc3eb3707168c936394c58e085e0f6fa104631d97510ef2351"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/baker-hughes-na-rig-count-2026-05-15.xlsx",
+      "bytes": 7196675,
+      "sha256": "f9f352f496d1e50affad11f1e08e684305ee64f27b7bd4c8fa4717bf1d178531"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/build_lin_ita_ph_readiness.py",
+      "bytes": 13216,
+      "sha256": "be73253569cee5f535223b97ecbf5d8076a07b217d94e7a6342034160f917269"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/codex-context.patch.json",
+      "bytes": 211,
+      "sha256": "b8a5642ad03d9412c4911c4f00d6549eabc018bacd1d0c4fbb1910bc71d2cd6a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/debug_current_dashboard.py",
+      "bytes": 391,
+      "sha256": "871f93c12b5a38742437c2bc967f09751b3e1bc58261177b8541764bf0ce45aa"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/debug_state_transition.py",
+      "bytes": 1014,
+      "sha256": "5d597c347d597b95027186cfa362a7c2c33432385d99f4714c24111670731c97"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/dol-w20-source.pdf",
+      "bytes": 451982,
+      "sha256": "f8ee3fdae8f07f9387dd2a32b7ad169ea344af71cd55f814ec175dffa195a956"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/dry-run-morning-wf58.txt",
+      "bytes": 23692,
+      "sha256": "a3f8956d6bb2d1549ba2285f45d138ba7f67442eb3514acf73db14044e3c6799"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/dry-run-post-close-wf58.txt",
+      "bytes": 27166,
+      "sha256": "3fe04c8fd00c1c094600fc2e2710adbb9f73a5658b073ab9a7ee629656475084"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/dry-run-sunday-wf58.txt",
+      "bytes": 25750,
+      "sha256": "360a8f5afa7ea8db75a0dc00253fcca9ca22cd799b8f29675a23bd08a39f121f"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/eia-w20-source.pdf",
+      "bytes": 71754,
+      "sha256": "804be32aefec9d8fbc38400de0fc50af29ab200f0a6838b1d93d757da0618930"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/explicit-window-morning-dry-run.txt",
+      "bytes": 8708,
+      "sha256": "e95b0e287b70467c9264fbbc49fddbafd98da9c703b272c1d330f1a17bb58f44"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/explicit-window-post-close-dry-run.txt",
+      "bytes": 9178,
+      "sha256": "711434d153c697ac1e40948105ca91e6a1c003498b0a273ffe9bbea97530e129"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/explicit-window-sunday-dry-run.txt",
+      "bytes": 9498,
+      "sha256": "75b0d9c2c14e63fc3eb3707168c936394c58e085e0f6fa104631d97510ef2351"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/extract_relevant.py",
+      "bytes": 783,
+      "sha256": "5e76ae27edbf60e6a3cd9c4fd9c2bde099f14c082abc698dde3668951bbe5a2d"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/fix_daily_note_entry.py",
+      "bytes": 1568,
+      "sha256": "f0aaa2683e8ce19808f5de812a3c57d77731c2c5d0e3a34ccc2a9f0eebe19828"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/fix_vxus_daily_note_entry.py",
+      "bytes": 1115,
+      "sha256": "6e1fa15bbf2d953e63a0d635cadd0f1ea9e33104d669a4d42fe4d79a1298dcec"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Investor Profile.before-10k-universe-20260518T191332Z.md",
+      "bytes": 3968,
+      "sha256": "06496ee997223a89c1d964445c6d7388cb13e0382846bc21b6e85f352747c0f6"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/ita-blackrock-data-download.xlsx",
+      "bytes": 1965369,
+      "sha256": "2b563a4fd4729afeae2bd693ebfe91916e7f31da27b0b1850373797bcf45a70e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/ita-ishares-fact-sheet.pdf",
+      "bytes": 193853,
+      "sha256": "6427a629adb2a6dd435e860adc977f549de09fbfaf2d5634d21fba3dc7c657a4"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/ita-ishares-holdings.csv",
+      "bytes": 9913502,
+      "sha256": "8e197e50dd683da445ce75be64c23393874311d03288305c2a380c89be582db9"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/jpm-20260331-official.html",
+      "bytes": 9164618,
+      "sha256": "15740c2d14ca9f75309a5794c436082053b1e0dc66fab97fd50964c11a74b538"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/linde-1q26-earnings-release-tables.pdf",
+      "bytes": 368945,
+      "sha256": "b4a4446c9da2ce8c378bbadd53f1a42785f60db0f17fe318160705d40741b8b3"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/log_ita_promotion_memory.py",
+      "bytes": 1155,
+      "sha256": "0770346ee2d3cb4bc768736fa3c6973df2463ff90ae75cc2be1466cbf6fd3cc5"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Model Portfolio.before-10k-universe-20260518T191332Z.md",
+      "bytes": 1650,
+      "sha256": "e8a7afb89c173838f711427335625074646d74bb5f6219a874dd968b2444155c"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/openclaw-config-schema.json",
+      "bytes": 4453366,
+      "sha256": "12d8b47eaed04a447f906ebc68ad1dbda58554f9cefe5c1b696262ab252200d5"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/openclaw-schema.json",
+      "bytes": 4739088,
+      "sha256": "ec90ad5f98854113cd626c8b7176d3fc9723ad0eeb0818ad08acafe415bf77f6"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/patch-session-model.js",
+      "bytes": 633,
+      "sha256": "94d7b5c63bd3a23481bd8bf89d077b40f459dc25244723341c27bf875d96f7c0"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/phase3-morning-dry-run.txt",
+      "bytes": 17418,
+      "sha256": "1fd2d28f760ccc5ca438401945569340412045477b035b7a90c8d45a1ecd9e11"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/phase3-post-close-dry-run.txt",
+      "bytes": 18358,
+      "sha256": "6d30362184c66cb410ad2f56b7dae6013532351245260d2a9caafa44b79faa9b"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/phase3-sunday-dry-run.txt",
+      "bytes": 18998,
+      "sha256": "440d0566fe1034d1fffa42c6a848433cc623443ea2c943e107009e59926a4806"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-10k-universe-20260518T191332Z.md",
+      "bytes": 13789,
+      "sha256": "92b9b457d5e7207d714320dede2a0c0f8cbc54846ddc0ee7bd7ead4069207f64"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-defense-sizing-20260518T184323Z.md",
+      "bytes": 11884,
+      "sha256": "33f26446ab51b21ebf2ef73679052d4588b4336be20689e482a70dab7c92c733"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.before-10k-universe-20260518T191332Z.json",
+      "bytes": 76557,
+      "sha256": "d6964fdb6cd86c9662b5de282bd72605960e536e10833ee8a7693c78440cb0c2"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.before-defense-sizing-20260518T184323Z.json",
+      "bytes": 73886,
+      "sha256": "f6bea4c09173aa551e8387aa752cdfce6e886c638cd6d7397cd3f4cb527b72ac"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.before-ita-candidate-promotion-2026-05-18.json",
+      "bytes": 70530,
+      "sha256": "2ebce136016d23523e48495c04dfaa3ba6d6b39650495a601d1ba943b74eb5e6"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.before-vxus-entry-band-2026-05-18.json",
+      "bytes": 69870,
+      "sha256": "47c0d5e02696620479ea5c5e32248bcbbc87ad8de1b7f5335a2e6dda992be7e5"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.before-vxus-tracked-universe-2026-05-18.json",
+      "bytes": 71424,
+      "sha256": "6ae25d61868d28fd7e5043dfbbaf8c24253c347382c45c8d8a5775296af4177e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.jsonlint.tmp",
+      "bytes": 164462,
+      "sha256": "9b6ac5ceed4d22cc1b57edf9cd9e7953e3a15bd74a94781e22e0365103a32fcd"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.validated.json",
+      "bytes": 163004,
+      "sha256": "a0d48749123502e88fc2b0e791d3f46060375dc22ba70b2f78db9bb1424a02df"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.validation.json",
+      "bytes": 157778,
+      "sha256": "311f730ebfbc35c28f8df73497f6eae3f705e7f43920b42e66cdc249f0488a49"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/probe_ita.py",
+      "bytes": 481,
+      "sha256": "a4a943a5676622dcb687a7c58c5e1d3a2ceafdbc497e8d160e343e6e10a34869"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/promote_ita_candidate_2026_05_18.py",
+      "bytes": 9913,
+      "sha256": "7ba5b946b6870dd3f540d95e99dff350df1d8a9585eb62614b9cb6b88cc6081c"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/reset-compaction-defaults.patch.json",
+      "bytes": 100,
+      "sha256": "4e9b15d0499e3dfd49e11999ce946095ff102d3bc6e91328592bffd9b07562de"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/set-context-391k.patch.json",
+      "bytes": 76,
+      "sha256": "70914649fe8261eb16bab0385768ec0c40e89115959731b2d22c9274b5639674"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/set-gpt55-context-391k.patch.json",
+      "bytes": 216,
+      "sha256": "536d0189a45e8571b59fc39b1cbe6ebe36f62c1292ba45603bb5556080a50738"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/set-model-catalog-gpt55-391k-full.patch.json",
+      "bytes": 742,
+      "sha256": "b18722e8079b0710c3e5dfb9bdba7627b57577218cc8f70abe86287ea5439375"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/set-model-catalog-gpt55-391k.patch.json",
+      "bytes": 440,
+      "sha256": "583d347be5d10192fec864c1553ca9de93f2c565a13005ff4c7a488ee8c1eb62"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/set-model-catalog-replace-gpt55-391k.patch.json",
+      "bytes": 765,
+      "sha256": "0c2ba1e7734015e04e07fd94d02a4682cc7eb93bd3ad4d6c9953d8c2f068e8c8"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/state-history-v1-repeat-sample.json",
+      "bytes": 85134,
+      "sha256": "84c08c8d44a3ff475c0aa3c9e5f41779f9a1488adb693be99c81ccc162c0e14a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/update_ita_vxus_promotion.py",
+      "bytes": 1447,
+      "sha256": "ad0c25a163a2cd4036a7e4aa22e50a9f077a1f976f189b8b71582d94319e25ea"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/vxus-vanguard-factsheet-F3369.pdf",
+      "bytes": 453242,
+      "sha256": "bd981fc9176544144a4a3252dc6d1d132eadf9e906d682d5be8c1ae0b3040699"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf40-manual-proof-report.md",
+      "bytes": 2857,
+      "sha256": "2b418faa553f19cb689dbf3a3dd95ebc252673516a721360fc5d2884f7affe3a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf40-residual-exception-note.md",
+      "bytes": 695,
+      "sha256": "804d95b6a83fa588723e31acbe955b4835467de48eb4a3e6a6151bf04d6ddc06"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf41-router-contract-report.md",
+      "bytes": 3365,
+      "sha256": "31e003ce5e11a9191d142d19b7ea18984dacd54f847103b487ec91c2044b17c4"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf42-capital-recommendation-report.md",
+      "bytes": 4034,
+      "sha256": "1e0685226a0c701cf347d719b6dbbc3cd3f120ebde3cf6023c737b2921c19227"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf43-post-cron-validation-report.json",
+      "bytes": 2495,
+      "sha256": "75f3cbf52eadaa4648ae10b897dde1d3687333ad0bd5131ddca6633ec7098df9"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf43-post-cron-validation-report.md",
+      "bytes": 2726,
+      "sha256": "45629768b012ced6d39827dd71dec2b838689bb124d7b3f1191822924890f0b2"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf43-repeat-proof-report.md",
+      "bytes": 2131,
+      "sha256": "150844473631ed8ac33d5fca653bf9452c36de2094cbefb4881f286a00999532"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf43-state-history-report.md",
+      "bytes": 4526,
+      "sha256": "399ab3348b052c80358fcbee304d36ee79c5c6c9d164e2332a43cd923acf2428"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf44-implementation-report.md",
+      "bytes": 3734,
+      "sha256": "64d3b618389bbf702ae57d7ca58d226ccde661ea783947665d6881a08e24fc6a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf45-implementation-report.md",
+      "bytes": 4585,
+      "sha256": "f6f9941c34bd2f7653cc3e79d275ecb51526a6d6c25e82cbdefed12bb8faf9fa"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf47-implementation-report.md",
+      "bytes": 4700,
+      "sha256": "54c656d81dde8b59deee2f3b61fd281be51c39a9c6f12689739885856644098a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf51-phase2-code-review-audit.md",
+      "bytes": 6358,
+      "sha256": "504db3679129cf4294df45cd5e9a3208ed6b1ec807a7c546e8ab77e5fe1c5272"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf52-real-chain-proof-report.md",
+      "bytes": 2651,
+      "sha256": "37a8687ad13cda412e352d48f3ac9bd5f0fd74a3667922024663972a0bf0b686"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf53-morning-dryrun.txt",
+      "bytes": 15522,
+      "sha256": "e2d38a94f3399e251084e82aa3c8dceb757e7f3ed4e5cdcf283659f38ed6cee3"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf53-orchestration-prep.md",
+      "bytes": 13625,
+      "sha256": "95cf764445dd4070182395343a4ffc87fd37838398f4cf725bdbf72b9d2da5f2"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf53-postclose-dryrun.txt",
+      "bytes": 16416,
+      "sha256": "4c8ffc76cce7128a759c7bb433f4268e292e55c3e967fe6c0339afc6d813f540"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf53-sunday-dryrun.txt",
+      "bytes": 16916,
+      "sha256": "fca225afaacfc6df9e05d4a2c5b97aff4bd621c491c6c1e62f958a2ab11b0d97"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf54-implementation-report.json",
+      "bytes": 2075,
+      "sha256": "0c24d7849bbc797257aa424fd93b0c69026cfe1c52fe68e16e48a934450ccc7a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf54-implementation-report.md",
+      "bytes": 2007,
+      "sha256": "2fcbd16b2f6785fdb747f0a385d56f4eb9689383351db6db6e779dc4b9e2bcb3"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf54-main-verification-report.md",
+      "bytes": 1364,
+      "sha256": "8307eea2a005bdab819c45db7a19008d4f8a29dabf18b61ed850067451f5f882"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf58-paper-dashboard-truth-gap-analysis.md",
+      "bytes": 13395,
+      "sha256": "1f7f79c73d67c2b1a036dc05cc8be28fabb16a47db9c51cb52b5eb9e84713f84"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf59-backups/Active Workflows.before-wf59-closeout.md",
+      "bytes": 15281,
+      "sha256": "7d267301d42684db30787db0243b50968cb5e636b9b51406f2cc0101f3a726b7"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf59-backups/Active Workflows.before-wf59.md",
+      "bytes": 14228,
+      "sha256": "6e9269026626a9672d724aac57d341bc9e12ebeca3a456066c473b7a06cae0e8"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf59-backups/AGENTS.before-wf59.md",
+      "bytes": 12199,
+      "sha256": "798e816d8732e99434972cd42b3c044292dfae59284cd505c2ad6cecc21295d1"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf59-backups/TOOLS.before-telegram-disable.md",
+      "bytes": 12406,
+      "sha256": "bf4d820f3dd0ebba86c382f408e31e9f7d4a361781702d92d93ec64617586097"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Active Workflows.before-truth-surface.md",
+      "bytes": 15332,
+      "sha256": "ab60cb889aa324db18cf3d8f068a2742facf1d71cdbfd3fb8f24f6a4e96a092e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Operating Model.before-truth-surface.md",
+      "bytes": 11022,
+      "sha256": "3795c8d855c5d5c8e957616967c423db7964023d7cb81e5b445c8272ba61cac0"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Operating Procedures README.before-truth-surface.md",
+      "bytes": 1820,
+      "sha256": "8b7c8ae9e14558e0d30dc0b24d7093624ccc4a09d40dc451de353133a00b4453"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Procedure Index.before-truth-surface.md",
+      "bytes": 2991,
+      "sha256": "66ff47fb27ed284aedf6cf395a99f77a363ad166768fcb9d593234771d1d5380"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/research_freshness_opportunity_review.py.20260513-222414.bak",
+      "bytes": 17181,
+      "sha256": "c7b836915318cd2791a6af7e08da8b03a2b28683a84e5c1b02f22b1199b36cb3"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Skill-to-Procedure Ownership Map.before-truth-surface.md",
+      "bytes": 3134,
+      "sha256": "ad34acc0f9c87cc4ee7c9ffdeb46eed1498094b18bd43e0c9bf533ac878d4b0e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Startup Truth Index.before-truth-surface.md",
+      "bytes": 5172,
+      "sha256": "bff9b9fc8fb6e86bef41f072714be35e0814b7d51b5fc09e4432ebddcee5cba5"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/test_research_freshness_opportunity_review.py.20260513-222414.bak",
+      "bytes": 4815,
+      "sha256": "645082e491e8f5221016d93990c1a4843cdf9fff172b071802b9979da6dd346e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-wf61-cron-payload-proposal.md",
+      "bytes": 1932,
+      "sha256": "345e4afec872627f3a8a550598b3c2e2e919cc32a75622526ea9f534e1c11a9c"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf61-backups/2026-05-12.before-research-small-mid.md",
+      "bytes": 11398,
+      "sha256": "8fc33aab09e48e128d7d69b1828c005840db1eae50e36c1878a296c64527ca17"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf61-backups/Active Workflows.before-research-small-mid.md",
+      "bytes": 18107,
+      "sha256": "e96fa854c3130dd7c4c043de8a71da61e0e5052d58c866e530718fcb94a5d401"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf61-backups/README.before-small-mid-cap-regime-feed.md",
+      "bytes": 76590,
+      "sha256": "e7a10cb09dda33dab42177299880591cd0ea45688f227f397718fa44803eaee1"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf61-backups/Workflow 61.before-small-mid-cap-regime-feed.md",
+      "bytes": 5790,
+      "sha256": "4e4971d32fa30d9118ff50e2a58f5e7b0f617d1774dfb4a42cffbd0d38344306"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf62-cleanup-archive-plan.md",
+      "bytes": 4652,
+      "sha256": "09c9a83829a6a70fbadb1ec2a77349a2228c40a9e3291b6fcee5fab968db572f"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf65-claude-final-hardening-pass.md",
+      "bytes": 5065,
+      "sha256": "3e78a3f5a1a9c432b1a1a5b4dc88190acabefcfde4873009d9603d71f2f5d3fd"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf67-claude-challenger-prompt.md",
+      "bytes": 5709,
+      "sha256": "bb346f1fe03d1c3f35115ae2fc75d2b28d263b329f1f914289284f5ee084c565"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf67-full-portfolio-safety-qa.md",
+      "bytes": 7146,
+      "sha256": "a04bff88967d2a9b54908e1ca4f890e8e7f690125038f61f012b76b0d3906f1c"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf67-full-portfolio-scope-contract-draft.md",
+      "bytes": 10779,
+      "sha256": "d6b512a2797672f612a07220be7473e5a393d88d907c8c3f7ec72565aca70417"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf67-full-portfolio-validator-design.md",
+      "bytes": 15473,
+      "sha256": "e049bc964835a0996219d4ea84e758aa9502dad09f13776058c399f6f878de03"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf67_position_reconcile_once.py",
+      "bytes": 3551,
+      "sha256": "3834d4625f1cd5a989508961dd377da7c53fd24511c88967e8e6ac7ef0e2cee3"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf67_submit_reconcile_once.py",
+      "bytes": 3126,
+      "sha256": "8b3f55f568ccd17ada11a699d8c24a8267f170cf98f7f84ef1bbe773210eb862"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/write_ita_promotion_artifact.py",
+      "bytes": 3917,
+      "sha256": "b5886ed9638e5e99b9ad0b4995f0afafca1045cfb74ff017d8439b2fef16fb4e"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/calc_ma.py",
+      "bytes": 744,
+      "sha256": "ff92acd214f97fabd6ecbfa53b086d5527b772ab3a07e22b6393aa5e295c49d6"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/diagnose.py",
+      "bytes": 861,
+      "sha256": "5566d6e091a01bbfdf9668818b40b20ede14cc4e2c2fe95e07deb679c71cf15a"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/diagnose_calendar.py",
+      "bytes": 983,
+      "sha256": "7049866e45914c4fde1292197ffafc1055305156391812ab38dfa856c8c3519b"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/inspect_fedwatch.py",
+      "bytes": 520,
+      "sha256": "0e129c7187b2a4a60fd6815fb1619d6df5c05477f8af2189f72aa4e815722a55"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/market_state_refresh_plan.md",
+      "bytes": 6004,
+      "sha256": "5fd27135da2805694941d8927c9c8fc4f260d29e0c8824e1bec92ed0a21216e8"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/refresh_technicals.py",
+      "bytes": 737,
+      "sha256": "d329fe2ed68752d3b6a873d975a0827b66c2ca21a69f2e6e8fb470519783b2e1"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/refresh_technicals_raw.json",
+      "bytes": 248647,
+      "sha256": "14af5ddc91bd6d02dcd41cc2089b4ccb639bba373c8783d8c88468f43ef0578f"
+    },
+    {
+      "path": "09. Archive/Scripts and Tmp Cleanup - Archived/technicals-2026-04-19.json",
+      "bytes": 36485,
+      "sha256": "152f4483d7c680923c6fb8a45d0715e151e9e00b56612642a6a0958da416596e"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/agent-evaluation/agent-evaluation/.clawhub/origin.json",
+      "bytes": 148,
+      "sha256": "98c40b8dc80b9d91f62ef55a993e4f29136e04a8a7cbcb8bb090575a4ac54066"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/agent-evaluation/agent-evaluation/_meta.json",
+      "bytes": 135,
+      "sha256": "b1bea1a223c292e8e8e90d06ad04638b2f662fe27d23ffcdeaa21b3a3e454d05"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/agent-evaluation/agent-evaluation/SKILL.md",
+      "bytes": 2089,
+      "sha256": "ed17c32416886ddd5fcff8ff8117a0c09a36066e4a9b72759a73aec3020d779b"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/.clawhub/origin.json",
+      "bytes": 148,
+      "sha256": "51ecd8d0667dfd4397da3b66623c7786d6c15b5e083520bca27642319ff074fa"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/_meta.json",
+      "bytes": 135,
+      "sha256": "c578966d37317eda28a95ab8a936421944de667de61394881a5288783baf7ce5"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/references/behavioral-biases.md",
+      "bytes": 6061,
+      "sha256": "b0e105404806639fdcbd6c18f9ece2b68352c713723c207267fbbb5c69876cfb"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/references/macro-framework.md",
+      "bytes": 5715,
+      "sha256": "ce15b5a9273c13a5dd18dd65d8925fc4141f8c4290a50edfc80d785abb8462b6"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/references/product-selection.md",
+      "bytes": 7314,
+      "sha256": "a5be91a5ad0680cb440ca38064b6b279ae5dc444b1041bdc9ab3f523d4375e4a"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/references/purchase-guide.md",
+      "bytes": 6067,
+      "sha256": "a5a9b18f8f50ccd893b06264309b48005929c8da2b6671ee4d560d1e90661750"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/references/rebalancing-protocol.md",
+      "bytes": 5370,
+      "sha256": "c83f84e147375ef4e19a9e9167ad7846c577312db52538f595e1f5fd23d4e515"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/asset-allocation/asset-allocation/SKILL.md",
+      "bytes": 3012,
+      "sha256": "6344265fc95167509e1ebd98aa12357fe41eb3adde2986975f2af9f918d0db89"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/fundamental-stock-analysis/fundamental-stock-analysis/.clawhub/origin.json",
+      "bytes": 158,
+      "sha256": "fefdfc77cf21b76bd1b41013435aa45ec0c752fc77e46cb49ae312480da056b0"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/fundamental-stock-analysis/fundamental-stock-analysis/_meta.json",
+      "bytes": 145,
+      "sha256": "9939b3e752df9687145f39151e23c6ea390c0cc2a9eb50c64c65fa4c959a93d3"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/fundamental-stock-analysis/fundamental-stock-analysis/references/playbook.md",
+      "bytes": 19137,
+      "sha256": "6efb0d0ca88c1055e065a60ead70fc41b14468af0e2b79cfa793796f0ac82f96"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/fundamental-stock-analysis/fundamental-stock-analysis/SKILL.md",
+      "bytes": 1662,
+      "sha256": "f4072d3d8dadac32dfaab3f341c100e98ca128815acb738321934e22f96d7f00"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/macro-analyst/macro-analyst/.clawhub/origin.json",
+      "bytes": 145,
+      "sha256": "77d49b7db01aaced9044dded4131f4fd90f1155ae596f542fdbc219582e9ef65"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/macro-analyst/macro-analyst/_meta.json",
+      "bytes": 132,
+      "sha256": "d36b94d8354ad3bd97242ea2eac709cf75aba2670b040b8b92233a22ff69d382"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/macro-analyst/macro-analyst/SKILL.md",
+      "bytes": 1562,
+      "sha256": "361dd45df27fdfe3edd80a3efb16762bdcf2cc94d33bc720ebfc571adcb536d4"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/macro-regime-detector/macro-regime-detector/.clawhub/origin.json",
+      "bytes": 153,
+      "sha256": "cc70abe246a200142ced340b30bd2d9e60f4cf68e013c3181793f7c9f51ef541"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/macro-regime-detector/macro-regime-detector/_meta.json",
+      "bytes": 140,
+      "sha256": "38a3b3b6e6cdbeedb724cffe8536297a8327d261792dd0a5f68afe37fde32722"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/macro-regime-detector/macro-regime-detector/SKILL.md",
+      "bytes": 1998,
+      "sha256": "105ff6f9f2281323937483c0dc371f754ee26a57a33421f10473df044626114d"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/.clawhub/origin.json",
+      "bytes": 151,
+      "sha256": "f014830a8a3cb61fe64a853a50d057bf0f9962e723f73a6539c294afab944fcf"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/_meta.json",
+      "bytes": 138,
+      "sha256": "7c540567f6e89edc560770b17e3e432408fd11639f55bf6a799e07accc912f1c"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/references/corporate_news_impact.md",
+      "bytes": 12420,
+      "sha256": "e2d0c3727c7072efeebb68e20b7968b58a54419c6d189cef49b59f9aa6c8e569"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/references/geopolitical_commodity_correlations.md",
+      "bytes": 13476,
+      "sha256": "b404fb71fffec998a1df04aa5dedd9e88d7e5cbebc44766fb43207f45ec16d67"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/references/market_event_patterns.md",
+      "bytes": 11547,
+      "sha256": "9b835e76407cbd847c96c6744a65f2a1e7836094e74e95f15d2f0a8b29cccbb6"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/references/trusted_news_sources.md",
+      "bytes": 11375,
+      "sha256": "49e1cc93c8f7c2d2a6eb14a1f8797a88b7f790724cadf872a856ddc9737a03af"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/market-news-analyst/market-news-analyst/SKILL.md",
+      "bytes": 26450,
+      "sha256": "a66b8073a7489189f949586fd2de35f47107cd649aeeee49c5d86be33728867b"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/memory-tiering/memory-tiering/.clawhub/origin.json",
+      "bytes": 146,
+      "sha256": "d880184a93afe1aa1ed24a1ff22e5b3ddd00f5a0774fbfb162efb0c13bd7408e"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/memory-tiering/memory-tiering/_meta.json",
+      "bytes": 133,
+      "sha256": "21b137dc8c83b872fc70e761e2630cf6c1c2af1bdd0aa4e4f15b60282165f9fb"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/memory-tiering/memory-tiering/SKILL.md",
+      "bytes": 2099,
+      "sha256": "9f82f1b42c6e8a2caea0dce6a0033c87424ae5e7d311bfafa046a3dc76deb412"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/.clawhub/origin.json",
+      "bytes": 149,
+      "sha256": "c06402e485b0a57b38108593b9d989b067eedcd6d6a4176008e2b29856ef8ea5"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/_meta.json",
+      "bytes": 136,
+      "sha256": "8dc0482a8674c9b9ce51a36542e06cdd44d86adfdf97bdac3d5f4e9f4062cbb8"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/README.md",
+      "bytes": 11518,
+      "sha256": "07e9e33b6d3ca31309c6b074a377456e4e8f1be5af384151f7fef21c60057199"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/alpaca-mcp-setup.md",
+      "bytes": 9889,
+      "sha256": "fdfb57747680062011902df690a8bd9d835fa1ffce04f98950cdfcd775247455"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/asset-allocation.md",
+      "bytes": 17249,
+      "sha256": "afb273db65d056fac899e2536abcbe3b7dfb09e24898ab00138624f02fe58bd1"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/diversification-principles.md",
+      "bytes": 18785,
+      "sha256": "246880e1cd4625936c1056b00019aa7aa4d1c92c6cbeb67ef714f4d3bfe425a2"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/portfolio-risk-metrics.md",
+      "bytes": 17129,
+      "sha256": "aeec1fb1090fb0ec4f1870d5ed84fa12f31f3053be60b1c57dfaef0bf824f790"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/position-evaluation.md",
+      "bytes": 16464,
+      "sha256": "274428e8671f17d1a0d7ab4430ba98080b078f273a75c905758770077757750c"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/rebalancing-strategies.md",
+      "bytes": 19565,
+      "sha256": "9adf61ffad079d225205c8b9f061c728fc17853080a14a4bb87d756fdc89e06f"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/risk-profile-questionnaire.md",
+      "bytes": 19546,
+      "sha256": "2043a448b719313de1ae10c3dfaa2d920f63854bbbc0e00bff7b68129b486ff8"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/references/target-allocations.md",
+      "bytes": 18956,
+      "sha256": "c3896338cc09f998427bb46ae243d7a951d44ea4dabb625519e9b293ca063309"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/scripts/test_alpaca_connection.py",
+      "bytes": 10355,
+      "sha256": "a8137d84f64996ac76bfc59b846d2bd2dcc98548ac52fd6ef7008dc89264df71"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-manager/portfolio-manager/SKILL.md",
+      "bytes": 22783,
+      "sha256": "863c837a38bd8392641d457e8b80ec87bc5200d58f8c2b4ee4d39f83eaeb9db2"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-risk-manager/portfolio-risk-manager/.clawhub/origin.json",
+      "bytes": 154,
+      "sha256": "801c29df293ca4351f3ed4855178e272df40dd42f6051335494df24623a23baf"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-risk-manager/portfolio-risk-manager/_meta.json",
+      "bytes": 141,
+      "sha256": "0ae7fedf2fccc089490ce7e6fe34ddec7fa1bb9a41a35c20719da8d85e776608"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-risk-manager/portfolio-risk-manager/agents/openai.yaml",
+      "bytes": 529,
+      "sha256": "7a3873857118a0e3e8632c6666d805d583820f4a674b85d7bc63e7431fe4efc0"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/portfolio-risk-manager/portfolio-risk-manager/SKILL.md",
+      "bytes": 3714,
+      "sha256": "05390c9e0905ff15b57ffe203bd39952e927a78ff2bcc04531d392ccb9aa5504"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/.clawhub/origin.json",
+      "bytes": 163,
+      "sha256": "da316256f93975e474a39ffce39b2f400c7fe192c8d67c50ab82be0ccc6b4efe"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/_meta.json",
+      "bytes": 150,
+      "sha256": "ac58627803d74f0484b5d7548010a1b07b7cfb827960ee7facab5277942a8b2d"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/boundaries.md",
+      "bytes": 2236,
+      "sha256": "d306e26bc55d77bc8397b5cd8fc0a3fc0fc3dc085ae2eecf1c0196b329c3f24e"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/corrections.md",
+      "bytes": 1026,
+      "sha256": "34dd77b51d6e0914cf82c18a3c5f275df51b5226655bb2c4ef10ea3f48b61a76"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/learning.md",
+      "bytes": 2951,
+      "sha256": "7662295cc88c04e2620de8bb83331cda6a7347b4cfdaaa131ebd23cdd56b1b96"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/memory-template.md",
+      "bytes": 1014,
+      "sha256": "57700c2ebe819872c8e8d8af59a622497217c7103af0c1e51c09b7520200487e"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/memory.md",
+      "bytes": 756,
+      "sha256": "43de03842db066f24d9334107d72247f20c40fcdd13dd0aec610cb7b11a78a9a"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/operations.md",
+      "bytes": 3435,
+      "sha256": "efe32247caa4fb05a401501b91eec26d1400d68efd02810ebab681b284c5a8c4"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/README.md",
+      "bytes": 4300,
+      "sha256": "0ec1eb8d88a1e1b80983300e34d0e818d241f507a13420a0d75451b8b90f7b6c"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/reflections.md",
+      "bytes": 840,
+      "sha256": "7a3322c2784dde81030c41ca6b681ce883f253176ce32601d921da7aa1065bcd"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/scaling.md",
+      "bytes": 2945,
+      "sha256": "7821d1a8580f8687be461d74a1e3e1fa0cf96c86c36ed788763b159a88f2fe42"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/setup.md",
+      "bytes": 5040,
+      "sha256": "a1f132c7a2fc9da0fdad759879e20d08f00212f2746a64b8f23807f607686185"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/self-improving-with-reflection/self-improving-with-reflection/SKILL.md",
+      "bytes": 7368,
+      "sha256": "2427db9c75fb81799e55ea28972828d2b7296538b3e7dd9ac9088d320e80faa7"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/technical-analyst/technical-analyst/.clawhub/origin.json",
+      "bytes": 149,
+      "sha256": "ba5003befe8ff7f15e7d477df5c4dcc716bda046913741e4b663c180ea568a18"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/technical-analyst/technical-analyst/_meta.json",
+      "bytes": 136,
+      "sha256": "7b658dd1226505824f3951a99bc345e1780dddc8083fda9ab6696b8c6dff399e"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/technical-analyst/technical-analyst/assets/analysis_template.md",
+      "bytes": 4607,
+      "sha256": "0f9a703857cbfa08c32ef8c1910ad5519a6e473a4b9bdddc5c984aaa96f115df"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/technical-analyst/technical-analyst/references/technical_analysis_framework.md",
+      "bytes": 10987,
+      "sha256": "a530ffebf10c04f28e6e2696ce1f6b0068a74ffc532e67caf7afd0fa28b31465"
+    },
+    {
+      "path": "09. Archive/temp-skill-inspect - Archived/technical-analyst/technical-analyst/SKILL.md",
+      "bytes": 9517,
+      "sha256": "0371899d1e4c367e6f52a345b1140c63e7468c60e04a7d124e287f261678b7a5"
+    },
+    {
+      "path": "09. Archive/templates - Archived/daily-note.md",
+      "bytes": 118,
+      "sha256": "9a28c5221a9bccb46eb7e54f16e5e75a9fc13abac05efe05ce196dfb1f7b2ad7"
+    },
+    {
+      "path": "09. Archive/templates - Archived/opportunity-note.md",
+      "bytes": 346,
+      "sha256": "5666df6863cb22c2b0a72701bb5d5b0cdf96c975120a137e933ed27573535ed4"
+    },
+    {
+      "path": "09. Archive/templates - Archived/weekly-opportunity-review.md",
+      "bytes": 320,
+      "sha256": "2e3e5eba0eae5ee7c63ef20f776a45caf248b4f212b3a3088680209703085648"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/archive-apply-manifest.json",
+      "bytes": 27003,
+      "sha256": "ebd2f1997aaf24da0ff97b3ba114931ab1a371ef89b3161d39ec6d978fb1ba15"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/archive-apply-manifest.md",
+      "bytes": 8471,
+      "sha256": "f4fe5e7e5055e1a6e4cf6ab432c6d5295620fda9afc0e7bd4a71db35be0ac16c"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/archive-candidate-owner-approval-packet.md",
+      "bytes": 12810,
+      "sha256": "264f082c06b667a0c111cf19676aa0a67423cd1128b87f4c8e5eb9a55b2aafdf"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/bkng-deep-dive.md",
+      "bytes": 13949,
+      "sha256": "c4bf632fb7c5283714de3098369b77acba43881c2c5dcedf38b76aee8395b343"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/bkng-promotion-review-pass.md",
+      "bytes": 10987,
+      "sha256": "c613ae6a92c90fe25545492017cf00061b9a99d3f09e81217f2b005659f984dd"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/bkng-tjx-fundamental-technical-pass.md",
+      "bytes": 12056,
+      "sha256": "532bed1138d1c1d768dd1877dc1f9ebab148eb1c5ffbe4e199dba0fc3d2f9f3c"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/consumer-discretionary-candidate-screen.md",
+      "bytes": 8407,
+      "sha256": "8e8d97e59d8623ea9d262a53b959cbe23676fbc14a062fefc25cc9055392d31b"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/consumer-discretionary-focused-followup.md",
+      "bytes": 10030,
+      "sha256": "fdfba83d788f02419d13b6cea098f7ec77fc2ad850b5fcbe02ec9469f4218c85"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/cron-expansion-orchestration-handoff.md",
+      "bytes": 4139,
+      "sha256": "0f23d456371ade545c1fea5b8430acd76d27e4e0a224ab729897759d7eef89ec"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/cron-expansion-qa-retention-challenge.md",
+      "bytes": 20644,
+      "sha256": "cfb851dc607cd9c58922c6f85892fa4c16ad1cb8ac7c307de1cb013d398a9123"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/finance-canon-consolidation-plan-2026-05-13.md",
+      "bytes": 4460,
+      "sha256": "e74d9c63921f0f0738503f9daa8ca970632394c00c12e6ffa7d1f446bbd79bd3"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/manual-entry-band-canon-update-proposal.md",
+      "bytes": 6122,
+      "sha256": "c14be50d383b9d281a5dd3e320e04aee1f52db8d24854b2254c27024065302a8"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/materials-candidate-research.md",
+      "bytes": 15144,
+      "sha256": "e137f01509c1eb7f53e5d9ba0ac79ed76eeca0720be24b00ba2c8ac3c3146892"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/materials-packet-validation-confirmation.md",
+      "bytes": 4121,
+      "sha256": "1627accb3f8d39b78a47b343d8fcc130cdebfcf527895c09698f7edc9507d8c7"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/next-workflow-queue-packet.md",
+      "bytes": 2533,
+      "sha256": "fba4506b979576a3ebe1fbce7292478519d9c017a0fa544b7a76942aefbae8b8"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/portfolio-mutation-automation-audit.md",
+      "bytes": 14553,
+      "sha256": "17aba11f73395a49347b860e73a9a5ad23dad4d4194640e4a87bd4b329e63faa"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/retrospective-governance-gap-proposal-2026-05-06.md",
+      "bytes": 8610,
+      "sha256": "4c92009640ee4fdd8c94f032ba5c3309aee238c2f07a9cae1007b5dee1b31d5e"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/retrospective-hardening-qa-2026-05-06.md",
+      "bytes": 6897,
+      "sha256": "6662234fb1da9f01c91311fb89c4ecb01ce843e3776bfd262e25bec2c53c1fbb"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/sector-diversification-healthcare-lly-xlv-review.md",
+      "bytes": 9201,
+      "sha256": "910c727c5c701b882a224a0da5640abb2f5cf07dd5a97cc3f7ad3075032ece04"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/sector-diversification-quality-staples-xlp-review.md",
+      "bytes": 13919,
+      "sha256": "535f62b485dfaed5ec68cf29f67dd1387d6cdd06b65692d5653dbe697a2ffe22"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/staged-tranche-recommendation-future-enhancement.md",
+      "bytes": 1264,
+      "sha256": "665aa48419be35a1bc1afdcde3d1d85ba5f4bb6155f1fc3ad8a2c7eee0b1211d"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf-implementation-readiness-scan.md",
+      "bytes": 17726,
+      "sha256": "7f5c74c083e891c072d1ac910894f688bedca7987745a98f0ed3044447bce983"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf-program-architect-audit.md",
+      "bytes": 27163,
+      "sha256": "4e6e37735757b3a2824fbffbd8b1fbd07e516f902d6dae3e3cdbbc2498196aa4"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf23-phase3-dashboard-overlap-edit-proposal-2026-05-06.md",
+      "bytes": 16338,
+      "sha256": "857a9f846bcddb20ab219fb8c648dd09d5530ebad99771968f9a51a26e8aa436"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf36-slice-b-qa-checkpoint.md",
+      "bytes": 1140,
+      "sha256": "f1b06d534bfa7942769cc3c3d10dd58af694b48ed0c1982216c38c5f9cabdcff"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/add_bkng_to_config.py",
+      "bytes": 2274,
+      "sha256": "7ef3482649fee8970749db106aef7f6dadf041ef55ba81d76a9cf33973b1969f"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/append_memory_wf58.py",
+      "bytes": 1436,
+      "sha256": "c2d8ee53f5c0d201a20fe90ba1da2d8ec200a4ff856dd0adc174b4787c0e48a8"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/append_wf56_phase2.py",
+      "bytes": 1311,
+      "sha256": "29553c1fb279dd5dce285c8dd0d9352f2e66240456e5fb863eb7eb1d38e8d967"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/archive_compare.py",
+      "bytes": 919,
+      "sha256": "62023f4968eceeabe031019c963bbed93f6b153f0755a5cebcfb339062b25737"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/archive_ref_check.py",
+      "bytes": 2765,
+      "sha256": "df81a18915afc183396ef15da0ac97eb4e9dfca863ceda70bd9b085571f34e34"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/bkng_tjx_pass_data.py",
+      "bytes": 3157,
+      "sha256": "45ba8b34bfdd4e2ae3d1c1f2d8495a1e93af963e37de1b93524d06e056fb100a"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/build_archive_packet.py",
+      "bytes": 5352,
+      "sha256": "8abc3af456838e0d0efde7c5a87e851da65751a377c39770e11f12549252d96c"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/canonical_compression_apply.py",
+      "bytes": 16107,
+      "sha256": "45170d58beeddb24ebf2f95b3b89f30394b4405a769cd92de8bac351e7cf14b2"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/canonical_compression_finish.py",
+      "bytes": 14355,
+      "sha256": "e7eec18e674fbc184f9320f99707a4569046f79ff2c3f9eba31ac36e25bd97b3"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/generate_manual_band_proposal.py",
+      "bytes": 2838,
+      "sha256": "aa1ca29d4d73a6e5c75034fbb6193bdd0deef5b22a3921cca5641b125bceb848"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/inspect_freshness.py",
+      "bytes": 802,
+      "sha256": "f735c801910107e6292f15964d3890cbb3e5498b947d0fb41e679b8e30142844"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/list_sec_dir.py",
+      "bytes": 381,
+      "sha256": "fd349ea5e615ce3b00e253fc1eb0435bdecfbfc1870026ac4c97896fef5c02cc"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/models_props.py",
+      "bytes": 289,
+      "sha256": "cc3dafb8f20a8ed85c2d0c1ce2420a1a06de425dd3172fbd727d51fbe6ae19d6"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/patch_capital_rec_manifest.py",
+      "bytes": 1845,
+      "sha256": "1e3fa11491e53f915c1f64194f4720e3de84cd640afcdb8deb7a787d88c97656"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/patch_tail_test_wf58.py",
+      "bytes": 1217,
+      "sha256": "8146d44c9f2e07f9e18ec4e665cb7860320ea94d8c89614f97df75b0e722d504"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/patch_wf58_manifest.py",
+      "bytes": 2616,
+      "sha256": "78d9b8a0743d8b1fed312f1d4e899fb94496c9445bdf651e1608a8b7b4660e77"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/plugin_models.py",
+      "bytes": 1015,
+      "sha256": "c9ad5c360a70a321a47a13f2dec13f08d8252e6a277ee894f8a6f05c7a198a15"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/print_model_item_schema.py",
+      "bytes": 244,
+      "sha256": "6cfd2a53936ff32030994c84d70cab1279c1d05b643939ed16ecf6ae33f52f26"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/print_models_schema.py",
+      "bytes": 150,
+      "sha256": "6feb4a6a6c3356f78d0f599992271cbdfe34c9b2b2228a036955d5acd25bff9c"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/print_schema_node.py",
+      "bytes": 211,
+      "sha256": "0e59985cc465e18a8601209d973ef61a79bfd0822d6aac0d774be2c858fd4b37"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/repair_capital_rec_manifest.py",
+      "bytes": 1309,
+      "sha256": "02b3dc6b12a8757c4441b8071bf08f52a49fa810f9f22fb770382355a8016865"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/schema_paths.py",
+      "bytes": 897,
+      "sha256": "bc800ba48e21be8c6e01d086621b1fb600908783dfb635acbb3f1e09c3a93058"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/summarize_refs.py",
+      "bytes": 433,
+      "sha256": "aad5dfb125be64ff0c1e15e71de2e2bfe8cbdde77ee048281fdf009ce4d1a9f2"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/update_queue_wf58.py",
+      "bytes": 2463,
+      "sha256": "2b9ecba72da183cd356cc56c4acb56c89d6e03673f38b312c88cc94f3af78589"
+    },
+    {
+      "path": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/update_registry_wf58.py",
+      "bytes": 5546,
+      "sha256": "e3ded3e580384c804c4b94bd4889f4d4f6511e52e79bbaf385bc24df458fc2bc"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/archive_orphan_transcripts_20260526.py",
+      "bytes": 1590,
+      "sha256": "2247b24d278045f01034880522dede719ce2970f36faabc8a4bc5f9ea8a03b6a"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/check_band_eligible.py",
+      "bytes": 407,
+      "sha256": "c843461e4c5b5c6a8e613b100645cbb4b96b7dd558294d79e154eb8488c7b1b1"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/cron_status_snapshot.py",
+      "bytes": 1859,
+      "sha256": "aed6e95783d396780054dc6c0f35404eae646194c0f2cab9b607391c9078c8c5"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/cron_watchdog_check.py",
+      "bytes": 1115,
+      "sha256": "e5385c90ae9966e15e0b119ac20048fda76cb9fc6c3072a1fa16dccf362a2cd0"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/extract_cat.py",
+      "bytes": 791,
+      "sha256": "8bb4137dd462271f4bd1ef28425a2cd9eb0de8249110da2cec75f420efdc80d7"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/extract_ticker.py",
+      "bytes": 707,
+      "sha256": "742849da93d26a9675fb6b1e7f1a192c40b0ad88396e0592f307f6fc368a4bf6"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/final_compact_proof.py",
+      "bytes": 618,
+      "sha256": "21e73905457dddcfd156b30d62960a86575b457bec8b2f88e20e755f0b81b45f"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_canon_cache_counts.py",
+      "bytes": 440,
+      "sha256": "73946510631bba9bb4b5d53101c97d0d8a785ac1bfae91d33c9964b608e60917"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_canon_cache_etn.py",
+      "bytes": 726,
+      "sha256": "2735a058d597905a043c053c4a0deb14378d2fd9d5adc19749a3f6d91430749e"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_cron_flags.py",
+      "bytes": 2208,
+      "sha256": "c1bcfc6fd08c42a1824d54a3004e68d8fa9a21cee214b946834f8596272aeed5"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_cron_outputs.py",
+      "bytes": 1949,
+      "sha256": "eec87c652736f10fe5ebb17b4f0d523c8ab821be4699a397341ed0e546aeebe6"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_etn_canon_rows.py",
+      "bytes": 363,
+      "sha256": "a232065e7bde8c259bac6300102545553df48da5e915fe7e03109ad602e402a5"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_recent_subagent_jsonl.py",
+      "bytes": 986,
+      "sha256": "31bf2d3a15582021f4d639320b91ed4a81275921dc413ad6cfe53b863abec415"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/inspect_warnings.py",
+      "bytes": 373,
+      "sha256": "8a13656d001c756da0debd3d8afcf8061c430e6de834ef140600a616025a805d"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/morning_finance_inspect_20260526.py",
+      "bytes": 1881,
+      "sha256": "c2da3b228c2228544e922943e7fa162dd1d40392459b5e5bca6b44d917f5c811"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/patch_etn_acceptance_contract.py",
+      "bytes": 12462,
+      "sha256": "852b7e87d7312e6243f99ef68ee4a29947c8659705e2d7c29b71e49a81364e9a"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/session_recap_extract.py",
+      "bytes": 1653,
+      "sha256": "942bdeb230432791617493d806ff0c2ac73b7f39a89f7db70ca243c8239d170e"
+    },
+    {
+      "path": "09. Archive/tmp-helper-residue-20260529/sql_canon_hardening_audit_20260526.py",
+      "bytes": 1930,
+      "sha256": "b1dc4b2b44f769e85dc5ce50861845c90865a076d83d24a7a7dd71c5c24e5f6a"
+    },
+    {
+      "path": "09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/fetch_news.py",
+      "bytes": 486,
+      "sha256": "2be783607f1c96a418cf8ffcfe9cba4880c48114dad309825aa4f342749ba93a"
+    },
+    {
+      "path": "09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/scrape_ir_links.py",
+      "bytes": 785,
+      "sha256": "05d6c16b03616d75216dfa3a00fa1e3783902f9bbd5736778f982bb269a01e42"
+    },
+    {
+      "path": "09. Archive/tmp-helper-scripts - Archived/2026-05-05-wf34/wf36_audit_probe.py",
+      "bytes": 938,
+      "sha256": "e85f49e2bc0aa31841dace013c5b6486444cad59021af6dd8b9a4e59d031df03"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/archive-manifest.json",
+      "bytes": 3692,
+      "sha256": "0875b04ff5c2223263404943df244ee92a72cca0399d2b6a089fda3bce7a4396"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/archive-manifest.md",
+      "bytes": 2546,
+      "sha256": "b4c955994aafd22be1b03c1c01ba17f22683414eb5d059ce351c2954d198ff83"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/dump_bands.py",
+      "bytes": 230,
+      "sha256": "021507619a69c45a3174302e1404b82a0a58513fa87436dc34019bb2cef0cf77"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_band_refs.py",
+      "bytes": 376,
+      "sha256": "f2acf1de1705d2ce65f1b07f30bc318f86128709ab0980700a319704801028da"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_disallowed_model_refs.py",
+      "bytes": 1290,
+      "sha256": "7243c3956d49a19c579a1d67cb2344653d678353d9fc822bc9841355bf313189"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_disallowed_openclaw_refs.py",
+      "bytes": 1199,
+      "sha256": "dd6a589cf74b1744fe7057260d6f56812713487e4d01e92e8d05d4c7302f96de"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_model_refs.py",
+      "bytes": 1273,
+      "sha256": "7ce6a88e7a3a39980077521d91dc2d594f961673d8c3233589dd2284c5711546"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/market_close_quick.py",
+      "bytes": 1805,
+      "sha256": "cfe3ee7da72e44cea41498256976390c79e91ec6015a3e6c91bd881b94359590"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/archive-manifest.json",
+      "bytes": 9824,
+      "sha256": "7290cc2ef430d9b74c418238c695cb92545618140f87208c5b6695c77286cf39"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/archive-manifest.md",
+      "bytes": 2524,
+      "sha256": "4f3f06bdfd9e3e1c911bdce178142264336d818201de36cbfc2c3edf54ab9164"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_append_continuity.py",
+      "bytes": 3901,
+      "sha256": "615f8838b693df6dc37d978f5ee54182c739690130fce3ab80dd45c178f12f9e"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_append_daily.py",
+      "bytes": 1957,
+      "sha256": "54d3c6380ccf75f272e0bf9659d06f9352ef62c5b05884fbbf1c34477f312c20"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_append_phase7_activation_continuity.py",
+      "bytes": 3180,
+      "sha256": "04e2744de6c3fdeaad0811a5e4a9babaf76d19050998d73c78f7e5d824ddf4c4"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_append_phase8_11_prep.py",
+      "bytes": 2086,
+      "sha256": "f0757868832e3ff43124a33e5b9edb9bbc4dafa74e1bed104d4e0e54434a26e6"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_finalize_phase11_closeout.py",
+      "bytes": 14215,
+      "sha256": "3b5274f496d5677c06f382cfc8f49545d48a687f11c21a7a64d87035865f7a34"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase10_closeout.py",
+      "bytes": 5293,
+      "sha256": "fc6bc0568a8b6e8716156548aafa8e5662741e3a2de96ff1d17c4de544ce7ac8"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase47_summary.py",
+      "bytes": 4019,
+      "sha256": "64fd9df6106a910f280369b45d37a49334e5085dfa94807a5bafea68bd2be92c"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase4_postfix.py",
+      "bytes": 4491,
+      "sha256": "836565b68a7e5a24d3991bb7d86354338888f887cbfc8581a904e96a5012832e"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase7_activation_summary.py",
+      "bytes": 4977,
+      "sha256": "cf26b7b6a87f16b7fa2129576386a7bdc0a02ff2d552d20155796989146611c4"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase7_source_shadow.py",
+      "bytes": 4041,
+      "sha256": "748012daa2563bb089e849212847919dcf4745133bf87e5ab534fe3a2c112307"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase8_closeout.py",
+      "bytes": 2778,
+      "sha256": "0bc20d20e809fe1045ddbb6f12f909ed32bd28a53d6883f11b91a16699acc038"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_make_phase9_closeout.py",
+      "bytes": 3200,
+      "sha256": "a8c5596cfc6aaa3b01ec837b55bc6a9ce5a4650e5bccc03eac19cae15845dc8a"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/2026-05-24-wf72-phase0-owner-approved/wf72_patch_activate_7.py",
+      "bytes": 15037,
+      "sha256": "e53530266032b5190a624e1bf8d86e0010040b63a12d0768190833b4d42d7478"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/add_wf78_active_memory.py",
+      "bytes": 2564,
+      "sha256": "4beb05f6fadefa0389d2364d4e3e533fdd6191070f096a38e33536f28524c85d"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/log_wf77_cron_fix.py",
+      "bytes": 1298,
+      "sha256": "56b0776dac3eb0ef2a6d2f885fc1d357b77e5afa5aea48f57a51eca2a89b6480"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/sql_audit_probe.py",
+      "bytes": 1859,
+      "sha256": "17a99e53cb01a498ca86bde02c24883ad4150581981d1a12f29c6e441345489a"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/sql_more_probe.py",
+      "bytes": 922,
+      "sha256": "0fd544d28aba53d754e93e8721a54f715613abd2a68f44356d9ea066c109826e"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/update_wf77_continuity.py",
+      "bytes": 2349,
+      "sha256": "801e325620afdb72e6317bae9e071e6bf8e0ef7940845c8507d7e12c90b25498"
+    },
+    {
+      "path": "09. Archive/tmp-python-helpers - Archived/update_wf77_resolver_memory.py",
+      "bytes": 1884,
+      "sha256": "da63d635e645fa365d011e9152f1b3b4eb88945f3ce130d8f4913336989a6613"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/finance-intelligence-router-qa-wf78-live-pilot-import.json",
+      "bytes": 220791,
+      "sha256": "194e6eac87bbc322a41ab81de3cc3d43461bfcee35f27492266955a2f657534f"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/finance-intelligence-router-qa-wf78-phase1.json",
+      "bytes": 216951,
+      "sha256": "fc62b9f16d58055005e60ce8d04b12895b777011e097d9063b5680d65711a68f"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/finance-intelligence-router-qa-wf78-phase2.json",
+      "bytes": 216951,
+      "sha256": "57f34d6f4a6e2561bbddd124209a75be317824a56a5c66688697e0fb26f6f1a6"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/finance-intelligence-router-qa-wf78-phase3.json",
+      "bytes": 216951,
+      "sha256": "c495a4436f5aae045bca2600c74358f062b8bc1f70c8aa3180da6eb57d166aca"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/ticker-card-wf78-live-pilot-import-regression-summary.json",
+      "bytes": 9052,
+      "sha256": "8329a930a52eb607413f33e5d48318ad759c94178f6bbc6dadad532f8797eefd"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/ticker-card-wf78-phase1-build-summary.json",
+      "bytes": 9044,
+      "sha256": "05ea1e981e52a47b9266b5df1d3a8b617c5218d982c107278f5a5a39dcff4630"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/wf72-entry-stop-helper-42-no-drift-review.json",
+      "bytes": 19230,
+      "sha256": "ef59c99c633ae232877624880e44bb95165275f9341178dc3443c22180cc948b"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/wf78-pilot-on-demand-card-build-summary.json",
+      "bytes": 1590,
+      "sha256": "c606404d9978ec1df9176c137cb87ca3cda721c797e5e0ccfa93c6c6580f6e03"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/wf78-pilot-on-demand-card-proof.json",
+      "bytes": 6988,
+      "sha256": "70d015a0925f04ac017de63ab35d46b5480c2a09d6c0ee2c751b1b5979999342"
+    },
+    {
+      "path": "09. Archive/WF78 Finance SQL Canon Legacy 42 Proof/2026-05-30/tmp/wf78-pilot-provider-runtime-proof.json",
+      "bytes": 11909,
+      "sha256": "fc6d205007838f9c44ceef959067f464cb14a408ef9b6dd8590c3ca96c34d7d9"
+    }
+  ]
+}

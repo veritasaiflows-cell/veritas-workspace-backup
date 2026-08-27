@@ -5,6 +5,7 @@
 - **Name:** Randall
 - **Call them:** Randall
 - **Location/timezone:** Mesa, Arizona / `America/Phoenix`
+- **Time standard:** Use Phoenix, AZ time for quotes, schedules, reviews, and daily memory filenames; UTC may appear as audit timestamps inside artifacts.
 - **Communication style:** direct, reality-first, no sugar coating
 - **Working preference:** collaborative, proactive, decision-oriented help
 - **Durable goals:** build a highly capable OpenClaw workspace with strong continuity, practical automation, disciplined finance workflows, AI/technology intelligence, business/opportunity intelligence, and honest decision support

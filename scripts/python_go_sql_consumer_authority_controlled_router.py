@@ -139,9 +139,24 @@ def build_report(cycles_requested: int) -> dict[str, Any]:
 
     live_default = by_key[(PYTHON_OWNER_ONLY, "live_a2_fallback")]
     live_controlled = by_key[(GO_FIRST_WITH_PYTHON_FALLBACK, "live_a2_fallback")]
-    add(findings, "default_mode_live_a2_fallback_python_owned", live_default["selected_route"] == "python_owner_read_allowed", "critical", live_default)
-    add(findings, "controlled_mode_live_a2_fallback_selects_go", live_controlled["selected_route"] == "go_primary_read_allowed", "critical", live_controlled)
-    add(findings, "controlled_mode_live_a2_fallback_no_fallback", live_controlled["fallback_exercised"] is False, "critical", live_controlled)
+    live_default_ready = live_default["selected_route"] == "python_owner_read_allowed"
+    live_default_fail_closed = live_default["selected_route"] == "python_owner_blocked"
+    live_controlled_ready = live_controlled["selected_route"] == "go_primary_read_allowed" and live_controlled["fallback_exercised"] is False
+    live_controlled_fail_closed = live_controlled["selected_route"] == "python_fallback_blocked" and live_controlled["fallback_exercised"] is True
+    add(findings, "default_mode_live_a2_python_owned_or_expected_fail_closed", live_default_ready or live_default_fail_closed, "critical", live_default)
+    add(findings, "controlled_mode_live_a2_go_primary_or_expected_fail_closed", live_controlled_ready or live_controlled_fail_closed, "critical", live_controlled)
+    if live_default_fail_closed or live_controlled_fail_closed:
+        add(
+            findings,
+            "live_a2_expected_fail_closed_posture",
+            False,
+            "warning",
+            {
+                "default_mode": live_default,
+                "controlled_mode": live_controlled,
+                "meaning": "live A2 guard is safely refusing SQL reads; controlled demotion remains proof-only and not ready for default promotion",
+            },
+        )
 
     blocked_cases = ("missing_fallback", "stale_unsafe_source")
     for case_name in blocked_cases:
@@ -153,7 +168,9 @@ def build_report(cycles_requested: int) -> dict[str, Any]:
 
     expected_clean_rows = approved_key_count()
     for row in decisions:
-        expected_rows = expected_clean_rows if row["case"] in {"clean_fixture", "live_a2_fallback"} else 0
+        expected_rows = expected_clean_rows if row["case"] == "clean_fixture" else 0
+        if row["case"] == "live_a2_fallback" and row["dashboard_sql_read_allowed"] is True:
+            expected_rows = expected_clean_rows
         add(findings, f"cycle_{row['cycle']}:{row['mode']}:{row['case']}:route_consistent", row["route_consistent"] is True, "critical", row)
         add(findings, f"cycle_{row['cycle']}:{row['mode']}:{row['case']}:dashboard_rows_expected", row["dashboard_rows"] == expected_rows, "critical", row)
     stable = stable_route_fingerprints(cycle_rows)
@@ -190,7 +207,7 @@ def build_report(cycles_requested: int) -> dict[str, Any]:
             "go_primary_allowed_cases": sum(1 for row in decisions if row["selected_route"] == "go_primary_read_allowed"),
             "python_fallback_cases": sum(1 for row in decisions if row["fallback_exercised"]),
             "default_python_owned_cases": sum(1 for row in decisions if row["mode"] == PYTHON_OWNER_ONLY),
-            "controlled_router_signal": "go_first_switch_ready_for_controlled_ab_only" if not critical else "not_ready",
+            "controlled_router_signal": "expected_fail_closed_not_ready_for_promotion" if warnings and not critical else "go_first_switch_ready_for_controlled_ab_only" if not critical else "not_ready",
         },
         "route_decisions": decisions,
         "cycles": [

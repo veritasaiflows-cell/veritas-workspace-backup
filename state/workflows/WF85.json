@@ -3,11 +3,30 @@
   "workflow_id": "WF85",
   "display_name": "Personal Trade-Grade Decision OS",
   "tier": "P0",
-  "effective_status": "ready",
-  "next_action": "WF85 full-answer parity is clean across the 200-ticker WF84 population, and targeted production blockers have been repaired or adjudicated: missing band/stop, freshness, and source-open blocker counts are now zero; remaining rows are true no-chase, true below-stop/invalidation, or finance-domain repair/monitor states that do not create PM implementation blockers while conveyor validation and quality gates remain clean. Tier A/B missing decision-grade band/stop coverage is refreshed daily as finance-domain debt, not auto-applied to canon. The WF85 full-answer assembler now owns the default ticker-answer contract; legacy answer packets are compatibility snapshots generated from the assembler. Retirement planning may continue, but archive/delete/apply and source-feeder retirement remain false until exact owner approval.",
-  "helper_safe": true,
+  "priority": "P0",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Primary P0; decision readiness is fail-closed and generated drafts are never approval.",
+  "next_action": "Use radar for review only; paper submit requires fresh WF67 guard/kill switch and Randall's exact order approval.",
+  "authoritative_next_action": "Use radar for review only; paper submit requires fresh WF67 guard/kill switch and Randall's exact order approval.",
+  "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "internal review-only decision/approval-card interface; no capital or execution authority",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [
+    "WF87",
+    "WF67",
+    "Randall"
+  ],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/trade-grade-decision-cards.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [],
   "stop_lines": [
     "Internal/personal decision support only; no customer/account/PII/suitability data, no canon/portfolio/cash/sizing/risk-rule mutation, no capital approval, no paper/live/account action, no generated card/score/SQL row as owner approval, no owner approval inference."
@@ -71,7 +90,6 @@
     "python scripts\\test_wf78_missing_band_context_repair_policy.py",
     "python scripts\\tier_ab_band_freshness_cron_guard.py --write --validate",
     "python scripts\\test_tier_ab_band_freshness_cron_guard.py",
-    "python scripts\\ticker_answer_packet.py --all-from-coverage --validate",
     "python scripts\\trade_grade_repair_conveyor.py --write --validate",
     "python scripts\\trade_grade_os_readiness_rollup.py --write --validate",
     "python scripts\\test_trade_grade_os_readiness_rollup.py",
@@ -110,27 +128,20 @@
       "no capital deployment or execution authority",
       "no card/score/SQL row becomes approval"
     ],
-    "lane_status": "ready",
+    "lane_status": "refresh_required",
     "readiness_score": 90,
-    "rank": 6,
-    "pm_packet_only": true
+    "rank": 14,
+    "pm_packet_only": true,
+    "source_lane_status": "ready",
+    "superseded_by_route_contract": true
   },
-  "pm_job": {
-    "job_id": "pm-06-trade-grade-decision-os-execute-safe-next-step",
-    "status": "ready_for_main_or_helper",
-    "validation_budget": {
-      "budget": "narrow",
-      "description": "One owner plus one adjacent consumer or validator.",
-      "closeout_mode": "pm_state",
-      "proof_command_count": 3,
-      "max_default_proof_commands": 3,
-      "phase_count": 3
-    },
-    "closeout_mode": "pm_state",
-    "collision_group": "trade_grade_decision_os"
-  },
+  "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

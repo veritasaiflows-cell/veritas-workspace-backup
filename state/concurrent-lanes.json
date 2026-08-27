@@ -1,0 +1,315 @@
+{
+  "schema": "veritas.concurrent_lane_register.v1",
+  "generated_at_utc": "2026-08-11T03:11:50Z",
+  "authority_boundary": {
+    "review_only": true,
+    "coordination_register_only": true,
+    "spawns_helpers": false,
+    "scheduler_allowed": false,
+    "autonomous_execution_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "ticker_card_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "destructive_cleanup_allowed": false,
+    "capital_deployment_allowed": false,
+    "trade_execution_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_authority": "06. Playbooks/Active Workflows.md",
+  "workflow_route_index": "tmp/workflow-routing-index.json",
+  "lanes": [],
+  "stop_lines": [
+    "This register coordinates helper-lane leases only; it does not spawn helpers or schedule work.",
+    "No two active lanes may write the same surface.",
+    "Completion requires proof artifacts or acceptance commands.",
+    "No canon/portfolio/config/auth/runtime/destructive/capital/trade/account/money authority."
+  ],
+  "summary": {
+    "lane_count": 0,
+    "status_counts": {},
+    "workflow_counts": {},
+    "active_lane_count": 0,
+    "next_safe_action": "Lease narrow distinct-output lanes only after allowed_writes are explicit; main session must merge and update continuity."
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "checks": [
+      {
+        "name": "schema_current",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": "veritas.concurrent_lane_register.v1"
+      },
+      {
+        "name": "authority_coordination_register_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_review_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_owner_approval_inferred_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_spawns_helpers_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_brokerage_or_account_action_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_trade_execution_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_config_auth_runtime_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_autonomous_execution_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_canon_or_portfolio_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_ticker_card_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_capital_deployment_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_destructive_cleanup_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_scheduler_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_money_movement_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_paper_or_live_execution_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_sql_canon_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "unique_lane_ids",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "valid_status_values",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "no_active_write_collisions",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {}
+      },
+      {
+        "name": "no_active_forbidden_write_paths",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "terminal_forbidden_write_paths",
+        "ok": true,
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "classification": "terminal_history_audit_inventory",
+          "safety_note": "Active forbidden write paths remain hard failures; terminal hits are retained as audit inventory.",
+          "hit_count": 0,
+          "lane_count": 0,
+          "status_counts": {},
+          "pattern_counts": {},
+          "hits": []
+        }
+      },
+      {
+        "name": "active_lanes_have_owner",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "leased_running_lanes_declare_writes",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "no_stale_active_leases",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": []
+      },
+      {
+        "name": "running_lanes_have_started_at",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": []
+      },
+      {
+        "name": "running_lanes_have_session_metadata",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": []
+      },
+      {
+        "name": "running_lanes_have_model_metadata",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": []
+      },
+      {
+        "name": "terminal_lanes_have_ended_at",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": []
+      },
+      {
+        "name": "completed_lanes_have_proof_or_acceptance",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "historical_completed_model_lanes_have_token_closeout_visibility",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": {
+          "token_closeout_guard_start_utc": "2026-07-03T19:30:00Z",
+          "token_closeout_hard_enforcement_start_utc": "2026-07-07T00:00:00Z",
+          "gaps": []
+        }
+      },
+      {
+        "name": "future_completed_model_lanes_require_token_closeout_metadata_or_classification",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "token_closeout_hard_enforcement_start_utc": "2026-07-07T00:00:00Z",
+          "gaps": []
+        }
+      },
+      {
+        "name": "new_model_driven_implementation_and_isolated_lanes_require_complete_reconciled_usage_or_provider_unavailable",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "enforcement_start_utc": "2026-08-09T00:00:00Z",
+          "gaps": []
+        }
+      },
+      {
+        "name": "new_isolated_implementation_phases_require_complete_reconciled_usage_or_classification",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "isolated_implementation_pricing_unavailable_visibility",
+        "ok": true,
+        "status": "ok",
+        "severity": "info",
+        "detail": []
+      },
+      {
+        "name": "proof_artifacts_exist",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      }
+    ]
+  }
+}

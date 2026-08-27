@@ -23,12 +23,15 @@
     "mode": "announce"
   },
   "payload": {
-    "kind": "agentTurn",
-    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nRun the deterministic weekday post-close finance refresh wrapper:\n\npython scripts\\post_close_review_cron_runner.py --write --validate\n\nThen inspect tmp\\post-close-review-cron-runner.json. If status is ok and operator_action is NO_REPLY, reply NO_REPLY. If operator_action is MAIN_SESSION_REQUIRED or BLOCKED, report only runner status, failed step names, validation errors/warnings, proof path, and next repair owner.\n\nBoundary: review-only post-close finance proof plus only the existing approved scoped entry-band maintenance, reference-band visibility sync, and Portfolio Snapshot sizing semantic sync rails. No trade/account action, brokerage order, money movement, inferred per-packet owner approval, self-applying capital recommendation packet, portfolio-config weight changes, new allocation decisions, sleeve changes, cash/risk-rule changes, execution-entitlement changes, customer/public output, config/auth/channel/runtime mutation, or owner approval inference.",
-    "model": "openai/gpt-5.4",
-    "thinking": "high",
-    "timeoutSeconds": 3600,
-    "lightContext": false
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts\\post_close_review_cron_launcher.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 900
   },
   "compare_fields": [
     "enabled",
@@ -40,16 +43,23 @@
     "delivery.bestEffort",
     "failureAlert",
     "payload.kind",
-    "payload.message",
-    "payload.model",
-    "payload.thinking",
-    "payload.timeoutSeconds",
-    "payload.lightContext"
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
+    "tmp/post-close-review-cron-launcher.json",
     "tmp/post-close-review-cron-runner.json",
     "tmp/run-chain-post-close.json",
     "tmp/run-summary-post-close.json",
+    "tmp/earnings-calendar.json",
+    "tmp/earnings-date-source-confidence.json",
+    "tmp/event-calendar-rollforward.json",
+    "tmp/post-close-final-quote-ledger.json",
+    "tmp/ticker-card-freshness-owner-runner.json",
+    "tmp/trade-grade-os-freshness-cron-runner.json",
+    "tmp/wf85-deployment-timing-gate.json",
+    "tmp/trade-grade-os-readiness-rollup.json",
     "tmp/cron-control-packet.json"
   ],
   "authority_boundary": {
@@ -62,5 +72,7 @@
     "paper_or_live_execution_allowed": false,
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
-  }
+  },
+  "updated_at_utc": "2026-06-29T23:57:22Z",
+  "contract_update_reason": "Cron prompt-integrity repair: converted deterministic single-command wrapper from quiet-only agentTurn to direct command payload; schedule/delivery/enablement unchanged."
 }

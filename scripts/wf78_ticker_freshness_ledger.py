@@ -44,6 +44,17 @@ AUTHORITY_BOUNDARY = {
     "owner_approval_inferred": False,
 }
 
+# Ordered hardest blocker first. A row's overall state must describe the work that
+# actually gates it, otherwise a cheap refreshable family outvotes an expensive
+# source-open one and the row is routed to a gate that cannot clear it.
+STATE_SEVERITY = (
+    "blocked_structural",
+    "stale_source_open",
+    "stale_review_required",
+    "source_open_repaired_rerun_needed",
+    "stale_refreshable",
+)
+
 REFRESHABLE_FAMILIES = {"fresh_price_quote", "stale:technical_posture", "technical_posture"}
 SOURCE_OPEN_FAMILIES = {
     "price_band_stop",
@@ -178,6 +189,7 @@ def build_report() -> dict[str, Any]:
     family_counts: Counter[str] = Counter()
     state_counts: Counter[str] = Counter()
     tier_counts: Counter[str] = Counter()
+    unclassified_families: Counter[str] = Counter()
     for symbol in symbols:
         route = routes.get(symbol, {})
         stale_row = stale.get(symbol, {})
@@ -191,18 +203,16 @@ def build_report() -> dict[str, Any]:
             family_states.append({"family": family, "state": state})
             family_counts[family] += 1
         family_state_values = {item["state"] for item in family_states}
+        unclassified = [fam for fam in families if fam not in REFRESHABLE_FAMILIES and fam not in SOURCE_OPEN_FAMILIES]
+        if unclassified:
+            unclassified_families.update(unclassified)
         if not families:
             overall = "fresh"
-        elif "stale_refreshable" in family_state_values:
-            overall = "stale_refreshable"
-        elif "source_open_repaired_rerun_needed" in family_state_values:
-            overall = "source_open_repaired_rerun_needed"
-        elif "stale_source_open" in family_state_values:
-            overall = "stale_source_open"
-        elif "blocked_structural" in family_state_values:
-            overall = "blocked_structural"
         else:
-            overall = "stale_review_required"
+            overall = next(
+                (state for state in STATE_SEVERITY if state in family_state_values),
+                "stale_review_required",
+            )
         state_counts[overall] += 1
         tier_counts[tier] += 1
         rows.append({
@@ -212,6 +222,7 @@ def build_report() -> dict[str, Any]:
             "overall_freshness_state": overall,
             "stale_families": families,
             "family_states": family_states,
+            "unclassified_families": unclassified,
             "repair_disposition": repair_disposition,
             "sla": ticker_sla(tier),
             "card_generated_at_utc": card_generated_at(symbol),
@@ -221,6 +232,12 @@ def build_report() -> dict[str, Any]:
             "paper_or_live_execution_allowed": False,
             "owner_approval_inferred": False,
         })
+    warnings = []
+    if unclassified_families:
+        warnings.append(
+            "unclassified stale families routed to stale_review_required: "
+            + ", ".join(f"{fam}({count})" for fam, count in unclassified_families.most_common())
+        )
     errors = []
     if any(row["capital_deployment_approved"] or row["trade_or_execution_approved"] or row["paper_or_live_execution_allowed"] or row["owner_approval_inferred"] for row in rows):
         errors.append("authority boundary widened in freshness rows")
@@ -236,12 +253,13 @@ def build_report() -> dict[str, Any]:
             "tier_counts": dict(tier_counts.most_common()),
             "freshness_state_counts": dict(state_counts.most_common()),
             "top_stale_families": [{"family": fam, "count": count} for fam, count in family_counts.most_common(12)],
+            "unclassified_stale_families": [{"family": fam, "count": count} for fam, count in unclassified_families.most_common()],
             "tier_a_attention": [row["ticker"] for row in rows if row["auto_tier"] == "Tier A" and row["overall_freshness_state"] != "fresh"],
             "tier_b_attention": [row["ticker"] for row in rows if row["auto_tier"] == "Tier B" and row["overall_freshness_state"] != "fresh"],
             "next_safe_action": "Daily loop should refresh refreshable rows, run source-open repair for Tier A/B, and preserve Tier C structural holds.",
         },
         "rows": rows,
-        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": []},
+        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": warnings},
         "stop_lines": [
             "Freshness ledger routes attention only; no ticker-card/canon/portfolio mutation.",
             "Tier C structural holds are honest debt, not failed automation.",

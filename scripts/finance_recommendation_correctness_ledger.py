@@ -192,6 +192,9 @@ def build_ledger(inputs: dict[str, Any]) -> dict[str, Any]:
     ok_count = sum(1 for row in rows if row["status"] == "ok")
     warning_count = sum(1 for row in rows if row["status"] == "warning")
     blocked_count = sum(1 for row in rows if row["status"] == "blocked")
+    durable_v2 = as_dict(wf55.get("durable_v2_ledger"))
+    grade_history = as_dict(durable_v2.get("grade_history"))
+    current_capital_later_graded = sum(1 for row in rows if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True)
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -203,6 +206,10 @@ def build_ledger(inputs: dict[str, Any]) -> dict[str, Any]:
             "wf55_recommendation_outcome_ledger": rel(WF55_RECO_LEDGER),
         },
         "summary": {
+            "metric_scope": "current_capital_recommendation_process_correctness",
+            "process_correctness_metric_scope": "current_capital_deployment_recommendation_packets",
+            "outcome_quality_metric_scope": "wf55_forward_scorecard_join_for_current_capital_rows",
+            "later_outcome_graded_rows_metric_scope": "current_capital_recommendation_rows_only",
             "row_count": len(rows),
             "ok_count": ok_count,
             "warning_count": warning_count,
@@ -215,14 +222,18 @@ def build_ledger(inputs: dict[str, Any]) -> dict[str, Any]:
             "process_correctness_ok_rows": ok_count,
             "outcome_quality_scored_rows": sum(1 for row in rows if row.get("outcome_quality_status") == "partially_scored"),
             "outcome_quality_pending_rows": sum(1 for row in rows if row.get("outcome_quality_status") in {"pending", "not_yet_scored"}),
-            "later_outcome_graded_rows": sum(1 for row in rows if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True),
+            "later_outcome_graded_rows": current_capital_later_graded,
+            "capital_recommendation_later_outcome_graded_rows": current_capital_later_graded,
+            "durable_recommendation_later_outcome_graded_rows": durable_v2.get("later_outcome_graded_rows"),
+            "durable_recommendation_grade_history_graded_event_count": grade_history.get("graded_ledger_event_count"),
             "owner_approval_inferred_count": 0,
             "trade_or_account_action_allowed_count": sum(1 for row in rows if row["authority_boundary"].get("brokerage_or_account_action_allowed")),
         },
         "rows": rows,
         "interpretation": (
             "Rows score recommendation packets against observable rule/boundary discipline under process_correctness_status. "
-            "Outcome quality is reported separately through WF55 forward_scorecard fields and remains ungraded until a mature window and evidence review exist."
+            "Outcome quality is reported separately through WF55 forward_scorecard fields for the current capital recommendation rows. "
+            "Durable WF88 later-outcome grading is a separate ledger-level metric and is exposed under durable_recommendation_later_outcome_graded_rows."
         ),
         "authority_boundary": AUTHORITY_BOUNDARY.copy(),
     }
@@ -256,7 +267,10 @@ def render_md(ledger: dict[str, Any]) -> str:
         f"- Ok / warning / blocked: {summary.get('ok_count')} / {summary.get('warning_count')} / {summary.get('blocked_count')}",
         f"- Durable WF55 recommendation rows: {summary.get('durable_v2_recommendation_tracking_rows')}",
         f"- Outcome scored / pending rows: {summary.get('outcome_quality_scored_rows')} / {summary.get('outcome_quality_pending_rows')}",
-        f"- Later outcome graded rows: {summary.get('later_outcome_graded_rows')}",
+        f"- Current capital-row later outcome graded rows: {summary.get('capital_recommendation_later_outcome_graded_rows')}",
+        f"- Durable recommendation later outcome graded rows: {summary.get('durable_recommendation_later_outcome_graded_rows')}",
+        f"- Durable grade-history graded events: {summary.get('durable_recommendation_grade_history_graded_event_count')}",
+        f"- Metric scope: {summary.get('metric_scope')}",
         "",
         "## Rows",
     ]

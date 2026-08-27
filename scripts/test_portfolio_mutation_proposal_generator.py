@@ -98,12 +98,62 @@ def test_reclaim_stop_label_preserved(errors: list[str]) -> None:
     expect(packet["technical_gate"]["below_stop"] is False, "deployment below_stop should remain false", errors)
 
 
+def test_current_stop_flows_to_technical_gate(errors: list[str]) -> None:
+    packet = generator.proposal_for(
+        sample_rec(),
+        window="post-close",
+        generated_at="2026-05-11T00:00:00Z",
+        daily={"source_freshness": {"overall_classification": "current", "trust_level": "clean"}},
+        config={"portfolio": {"cash": 10}},
+        config_meta={"workflow_state": "WATCH", "coverage_lane": "watch", "entry_policy": "band_defined"},
+        band_proposal={
+            "band_status": "IN_BAND",
+            "current_band_low": 354.25,
+            "current_band_high": 369.69,
+            "current_stop": 341.07,
+        },
+        deployment_record={"action_state": "ALMOST DEPLOYABLE", "close": 349.82, "in_entry_band": False, "below_stop": False},
+    )
+    expect(packet["technical_gate"]["stop_or_invalidation"] == 341.07, f"technical gate should preserve current_stop fallback: {packet['technical_gate']}", errors)
+
+
+def test_canonical_eligible_suggested_band_flows_to_technical_gate(errors: list[str]) -> None:
+    packet = generator.proposal_for(
+        sample_rec(),
+        window="post-close",
+        generated_at="2026-05-11T00:00:00Z",
+        daily={"source_freshness": {"overall_classification": "current", "trust_level": "clean"}},
+        config={"portfolio": {"cash": 10}},
+        config_meta={"workflow_state": "WATCH", "coverage_lane": "watch", "entry_policy": "band_defined"},
+        band_proposal={
+            "band_status": "IN_BAND",
+            "distance_to_band_pct": -2.9,
+            "current_band_low": 202.81,
+            "current_band_high": 212.23,
+            "current_stop": 192.95,
+            "suggested_band_low": 185.14,
+            "suggested_band_high": 205.25,
+            "suggested_stop": 176.01,
+            "canonical_apply_eligible": True,
+        },
+        deployment_record={"action_state": "ALMOST DEPLOYABLE", "close": 196.06, "in_entry_band": True, "below_stop": False},
+    )
+    technical = packet["technical_gate"]
+    expect(technical["current_band_low"] == 185.14, f"technical gate should use SQL-first suggested low: {technical}", errors)
+    expect(technical["current_band_high"] == 205.25, f"technical gate should use SQL-first suggested high: {technical}", errors)
+    expect(technical["stop_or_invalidation"] == 176.01, f"technical gate should use SQL-first suggested stop: {technical}", errors)
+    expect(technical["band_source"] == "sql_first_band_proposal", f"technical gate should label SQL-first source: {technical}", errors)
+    expect(technical["raw_band_proposal"]["current_band_low"] == 202.81, f"technical gate should preserve legacy band audit context: {technical}", errors)
+
+
 def main() -> int:
     errors: list[str] = []
     test_generated_payload_authority(errors)
     test_generated_packet_validates(errors)
     test_forbidden_text_sanitized(errors)
     test_reclaim_stop_label_preserved(errors)
+    test_current_stop_flows_to_technical_gate(errors)
+    test_canonical_eligible_suggested_band_flows_to_technical_gate(errors)
     if errors:
         print("portfolio_mutation_proposal_generator_tests_failed")
         for error in errors:

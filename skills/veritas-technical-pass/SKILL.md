@@ -1,6 +1,6 @@
 ---
 name: "veritas-technical-pass"
-description: "Run technical setup reads with bands, stops, catalyst risk, and deployment-state discipline."
+description: "Prefer SQL-first bands and timing proof."
 ---
 
 # Veritas Technical Pass
@@ -11,6 +11,37 @@ This is not for vague chart commentary.
 Use it when the output needs exact levels, clear setup status, deployment discipline, and explicit timing quality.
 
 ## Before starting
+
+## SQL-First Technical Context
+
+Before a technical pass is used for entry bands, stops, deployment readiness, no-chase status, or ticker priority, start with the guarded SQL/JSON finance front door:
+
+```powershell
+python scripts\finance_sql_canon_access.py --write --validate
+python scripts\finance_intelligence_state.py ticker <TICKER> --pretty
+```
+
+For current trade-grade setup context, prefer the SQL-first and WF85 route over older Markdown or compatibility surfaces:
+
+```powershell
+python scripts\finance_decision_sync_spine.py --write --write-md --validate
+python scripts\trade_grade_decision_cards.py --write --validate
+python scripts\wf85_deployment_timing_gate.py --write --validate
+python scripts\capital_deployment_band_integrity_validator.py --write --validate
+```
+
+Current SQL-first reference levels and `tmp\band-proposals.json` must outrank stale portfolio-config, old chief/opportunity digests, WF78 capital snapshots, morning-card snapshots, archived paper cards, and Markdown tables when deciding whether a ticker is in band, above band, below stop, or no-chase.
+
+Legacy context may be retained as audit detail, but it must be labeled as superseded and must not create a current blocker when SQL-first current status is clean.
+
+Use source-open fallback when:
+
+- SQL-canon access is stale, blocked, or missing technical/reference-level context
+- current price, band, stop, catalyst, or moving-average posture is not fresh enough for the decision window
+- source lineage is disputed
+- the output would support a deployment card, sizing/staggering recommendation, or owner decision
+
+A clean technical pass is review readiness only. It does not authorize capital deployment, paper/live execution, brokerage/account action, portfolio/canon mutation, or owner approval inference.
 
 ## Effort routing
 
@@ -179,7 +210,7 @@ When a watch/research ticker is promoted to portfolio-review, execution review, 
 4. `python scripts\deployment_check.py` keeps portfolio-review names in `PROMOTION REVIEW`, not `DEPLOYABLE NOW`, unless a separate owner-approved deployment/model gate exists.
 5. `python scripts\generate_dashboard.py` and `python scripts\validate_dashboard_state.py --write` pass and the rendered dashboard shows numeric band/stop values.
 
-If any item fails, say the promotion is technically incomplete. Do not call bands Ã¢â‚¬Å“fully appliedÃ¢â‚¬Â just because low/high/stop exist in one artifact.
+If any item fails, say the promotion is technically incomplete. Do not call bands "fully applied" until every propagation check passes.
 
 ## Judgment rules
 

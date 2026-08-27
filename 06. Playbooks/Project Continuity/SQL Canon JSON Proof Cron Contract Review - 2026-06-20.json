@@ -1,0 +1,952 @@
+{
+  "schema": "veritas.cron_contract_validator.v1",
+  "generated_at_utc": "2026-06-21T02:22:22Z",
+  "status": "ok",
+  "summary": {
+    "contract_count": 28,
+    "live_job_count": 77,
+    "drift_count": 0,
+    "missing_live_job_count": 0,
+    "next_safe_action": "Review drift entries; use cron_patch_manager.py for approved live patches."
+  },
+  "sources": {
+    "contract_dir": "state/cron-contracts",
+    "live": {
+      "source": "openclaw cron list --all --json",
+      "returncode": 0,
+      "ok": true,
+      "stderr_tail": ""
+    }
+  },
+  "contracts": [
+    {
+      "contract_path": "state/cron-contracts/cron-main-session-auto-green-watchdog.json",
+      "job_id": "e467754a-9f5c-4c58-a5ba-016eb7339616",
+      "name": "Cron - Main Session Auto-Green Watchdog",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/cron-operator-ledger.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-freshness-spine.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-signal-scorecard.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/escalation-trigger.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/main-session-handoff-first-proof.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/main-session-escalation-consumer.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/cron-reduction-control-fail-closed-dispatcher.json",
+      "job_id": "1f061a69-b390-4f00-8646-dd0576e8cc1c",
+      "name": "Cron Reduction - Control Fail-Closed Dispatcher",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/cron-control-digest-runner-control.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-contract-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/escalation-trigger.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/cron-reduction-morning-control-digest.json",
+      "job_id": "59f0b198-5067-48b7-9d71-cfc1d13803fb",
+      "name": "Cron Reduction - Morning Control Digest",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/cron-control-digest-runner-morning.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-contract-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-control-digest.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/cron-reduction-post-close-control-digest.json",
+      "job_id": "e220c30e-c0ab-4f5a-8a7a-a2c0d16207ad",
+      "name": "Cron Reduction - Post-Close Control Digest",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/cron-control-digest-runner-post-close.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-contract-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/post-close-control-digest.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-midday-paper-deployment-recommendation-cards.json",
+      "job_id": "2321c9e9-a3d6-4706-a666-fe8fc6336ebd",
+      "name": "Finance - Midday Paper Deployment Recommendation Cards",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-decision-sync-spine.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-capital-review-queue.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-decision-factory.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-morning-paper-deployment-recommendation-cards.json",
+      "job_id": "249c5db9-f920-4fd0-a6ce-cd0077b35498",
+      "name": "Finance - Morning Paper Deployment Recommendation Cards",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-decision-sync-spine.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-capital-review-queue.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-decision-factory.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/capital-deployment-band-integrity-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/capital-deployment-band-integrity-validator.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-research-freshness-and-opportunity-review.json",
+      "job_id": "25aef99b-7b2b-40a9-823c-2cfff7d5493d",
+      "name": "Finance - Research Freshness and Opportunity Review",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/research-freshness-opportunity-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/research-freshness-opportunity-cron-cache.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/research-freshness-opportunity-review.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/small-mid-cap-regime-feed.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/json-sql-promotion-index.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-silent-tier-a-confirmation-market-readiness-probe.json",
+      "job_id": "54486d58-a2b1-492d-86bd-7b431cfe46a9",
+      "name": "Finance - Silent Tier A Confirmation Market Readiness Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/tier-a-intraday-opportunity-probe.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/market-execution-readiness-cron-hardening.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-silent-tier-a-intraday-market-readiness-probe.json",
+      "job_id": "894e3374-e105-492e-9e2d-2599fe24e646",
+      "name": "Finance - Silent Tier A Intraday Market Readiness Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/tier-a-intraday-opportunity-probe.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/market-execution-readiness-cron-hardening.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-silent-tier-a-late-session-market-readiness-probe.json",
+      "job_id": "63aff057-7456-4022-804c-79a7c8b62a0f",
+      "name": "Finance - Silent Tier A Late-Session Market Readiness Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/tier-a-intraday-opportunity-probe.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/market-execution-readiness-cron-hardening.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-tier-a-confirmation-opportunity-probe.json",
+      "job_id": "f5ec4cce-2830-482d-9f3b-9f92f5d3176d",
+      "name": "Finance - Tier A Confirmation Opportunity Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/tier-a-intraday-opportunity-probe.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-tier-a-intraday-opportunity-probe.json",
+      "job_id": "e05ce666-e745-4697-acd8-1d6b9146017f",
+      "name": "Finance - Tier A Intraday Opportunity Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/tier-a-intraday-opportunity-probe.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-tier-a-late-session-opportunity-probe.json",
+      "job_id": "978f36d2-d192-41c0-bef2-bafd5266d903",
+      "name": "Finance - Tier A Late-Session Opportunity Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/tier-a-late-session-opportunity-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/finance-market-deployment-operating-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-weekday-morning-review-refresh.json",
+      "job_id": "63512442-b4cf-4c9c-a704-158e6bc36a9b",
+      "name": "Finance - Weekday Morning Review Refresh",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/weekday-morning-review-cron-launcher.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/weekday-morning-review-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/run-chain-morning.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/run-summary-morning.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-weekday-post-close-review-refresh.json",
+      "job_id": "58fc5f27-4cc1-470f-8af5-eba29327a0d5",
+      "name": "Finance - Weekday Post-Close Review Refresh",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/post-close-review-cron-launcher.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/post-close-review-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/run-chain-post-close.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/run-summary-post-close.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-wf78-daily-freshness-and-promotion-proof.json",
+      "job_id": "93de5b09-94ea-4b4c-bfd2-24bedd4e9f78",
+      "name": "Finance - WF78 Daily Freshness and Promotion Proof",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf78-intelligence-routing-v2.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-daily-movement-ledger.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-repair-priority-queue.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-daily-freshness-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/veritas-artifact-index.sqlite",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-wf78-open-ready-owner-review-proof.json",
+      "job_id": "c93504f5-4772-4e1d-bc95-9dbbc34ddfbe",
+      "name": "Finance - WF78 Open-Ready Owner Review Proof",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf78-open-ready-owner-review-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-position-sizing-surface-review.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-deployment-readiness-review.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-source-artifact-capture-review.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-position-sizing-integration-proposal.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf78-tier-a-owner-readiness-proposals.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-wf85-paper-deployment-telegram-radar.json",
+      "job_id": "94f4c7f5-7f76-4cf6-8555-08f4d697d0e4",
+      "name": "Finance - WF85 Paper Deployment Telegram Radar",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf85-paper-deployment-telegram-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf85-paper-deployment-notification-digest.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf85-paper-deployment-telegram-notifier.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/capital-deployment-band-integrity-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/capital-deployment-band-integrity-validator.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-wf85-post-refresh-paper-deployment-telegram-radar.json",
+      "job_id": "6ae6d2cb-143e-4404-baf8-d90e58048575",
+      "name": "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf85-paper-deployment-telegram-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf85-paper-deployment-notification-digest.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf85-paper-deployment-telegram-notifier.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/morning-paper-deployment-recommendation-cards.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/capital-deployment-band-integrity-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/capital-deployment-band-integrity-validator.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-wf87-autonomy-command-center-refresh.json",
+      "job_id": "de274a52-aaf1-4b28-926d-60421ddcbdcc",
+      "name": "Finance - WF87 Autonomy Command Center Refresh",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf87-autonomy-command-center.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-autonomy-command-center.md",
+          "exists": true
+        },
+        {
+          "path": "tmp/autonomous-card-authority-audit.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/finance-wf87-market-hours-fresh-gate-probe.json",
+      "job_id": "9a6dcdd4-40e9-4032-89df-31a4f4f5c26b",
+      "name": "Finance - WF87 Market-Hours Fresh Gate Probe",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf87-market-hours-gate-probe.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/paper-autotrader/shadow-eligibility.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/paper-autotrader/shadow-decisions.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-position-sizing-runtime-check.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-portfolio-circuit-breakers.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-approval-freshness-ttl.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-intraday-monitor.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-shadow-outcome-scorecard.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/wf87-v2-readiness-rollup.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/memory-dream-review-packet.json",
+      "job_id": "5a27129c-3fd5-4556-acaa-b18a77b5e742",
+      "name": "Memory Dream Review Packet",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/dream-review-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/memory-dreaming-promotion.json",
+      "job_id": "e70a39b4-1203-49c5-8088-b9a33dd88bd3",
+      "name": "Memory Dreaming Promotion",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/dream-review-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/operating-leverage-escalation-trigger-check.json",
+      "job_id": "6ab3d7e6-424a-418b-9c40-9cdba230c5e6",
+      "name": "Operating Leverage - Escalation Trigger Check",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/cron-operator-ledger.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/operating-leverage-spine.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-freshness-spine.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-signal-scorecard.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/escalation-trigger.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/main-session-handoff-first-proof.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/main-session-escalation-consumer.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/ops-otel-local-digest.json",
+      "job_id": "b911d479-13aa-48fe-b662-937e08450363",
+      "name": "Ops - OTEL Local Digest",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/wf74-model-quality-collection-cron-runner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/model-quality-scorecard.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/otel-ops-control.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/otel-ops-window-summary.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/otel-tool-workflow-metadata.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/model-learning-metadata-ledger.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/otel-learning-loop.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/coding-runtime-kpi-probe.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/pm-main-session-continuation-dispatcher.json",
+      "job_id": "8d64de93-6a13-4eba-9065-09e7a1637f04",
+      "name": "PM - Main Session Continuation Dispatcher",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/main-session-escalation-consumer.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/main-session-action-executor.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/main-session-handoff-first-proof.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/pm-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/startup-brief-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/runtime-weekly-os-improvement-radar-proof-refresh.json",
+      "job_id": "a9d1978a-7d52-4790-bfe4-ab211e49f560",
+      "name": "Runtime - Weekly OS Improvement Radar Proof Refresh",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/artifact-staleness-explainer.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/lane-collision-preflight.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/validator-bundle-router.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/worktree-checkpoint-planner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-contract-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/pm-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    },
+    {
+      "contract_path": "state/cron-contracts/runtime-weekly-os-improvement-radar-review.json",
+      "job_id": "d5e9feed-7ff2-4cb7-bac7-40f162cbdb4f",
+      "name": "Runtime - Weekly OS Improvement Radar Review",
+      "status": "ok",
+      "severity": "ok",
+      "drift": [],
+      "expected_artifacts": [
+        {
+          "path": "tmp/artifact-staleness-explainer.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/lane-collision-preflight.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/validator-bundle-router.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/worktree-checkpoint-planner.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-contract-validator.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/cron-control-packet.json",
+          "exists": true
+        },
+        {
+          "path": "tmp/pm-control-packet.json",
+          "exists": true
+        }
+      ],
+      "missing_expected_artifacts": []
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "drift_detection_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

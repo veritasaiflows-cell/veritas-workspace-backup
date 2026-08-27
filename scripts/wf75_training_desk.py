@@ -172,6 +172,72 @@ def build_packet() -> dict[str, Any]:
             "acceptance": "Randall catches unsafe claims before delivery.",
         },
     ]
+    rollout_training_plan = [
+        {
+            "week": 1,
+            "title": "Internal demo and approval preparation",
+            "goal": "Choose the first vertical, pick the demo path, rehearse the offer, and draft the approval card.",
+            "practice": [
+                "explain the Lead Rescue offer in 90 seconds",
+                "choose the HVAC / plumbing / electrical demo path",
+                "write the no-outreach approval card",
+                "state every stop line out loud",
+            ],
+            "mock_scenarios": [
+                "smb-missed-call-capture-v1",
+                "smb-owner-attention-dashboard-v1",
+            ],
+            "acceptance": "Randall can explain the offer and approval gate without implying public launch, outreach, ROI, credentials, or implementation.",
+        },
+        {
+            "week": 2,
+            "title": "Warm-list and conversation rehearsal",
+            "goal": "Practice discovery, objection handling, and sanitized intake boundaries before any real contact.",
+            "practice": [
+                "run a discovery roleplay",
+                "ask for sanitized workflow description only",
+                "answer common objections without hype",
+                "mark bad-fit conversations cleanly",
+            ],
+            "mock_scenarios": [
+                "smb-lead-intake-routing-v1",
+                "smb-follow-up-sequences-v1",
+            ],
+            "acceptance": "Randall can complete a fake discovery call and keep all data, messaging, credential, and ROI boundaries intact.",
+        },
+        {
+            "week": 3,
+            "title": "Paid pilot delivery rehearsal",
+            "goal": "Run the manual delivery flow against fake inputs before a real paid pilot is approved.",
+            "practice": [
+                "build a lead-flow map",
+                "build an owner attention queue",
+                "draft follow-up examples for human review",
+                "write the automation blueprint handoff",
+            ],
+            "mock_scenarios": [
+                "smb-lead-status-tracking-v1",
+                "smb-script-message-pack-v1",
+            ],
+            "acceptance": "Randall can produce a mock pilot packet and explain what remains blocked until exact owner approval.",
+        },
+        {
+            "week": 4,
+            "title": "Closeout, proof, and retainer offer rehearsal",
+            "goal": "Practice pilot recap, no-hype proof framing, retainer-fit judgment, and next-step recommendation.",
+            "practice": [
+                "write a pilot closeout summary",
+                "separate observations from ROI claims",
+                "choose continue, retainer, or no-fit",
+                "name the next safe experiment",
+            ],
+            "mock_scenarios": [
+                "smb-sales-pipeline-cleanup-v1",
+                "smb-tool-stack-recommendation-v1",
+            ],
+            "acceptance": "Randall can close the loop without overclaiming results or turning a pilot into unapproved implementation.",
+        },
+    ]
     lesson_modules = [
         {
             "day": 1,
@@ -293,6 +359,7 @@ def build_packet() -> dict[str, Any]:
             },
         ],
         "daily_micro_learning_plan": daily_sessions,
+        "week_by_week_rollout_training_plan": rollout_training_plan,
         "lesson_modules": lesson_modules,
         "fake_scenario_training_bench": [
             "HVAC lead rescue",
@@ -370,6 +437,21 @@ def render_markdown(packet: dict[str, Any]) -> str:
             f"Fake scenario: {session['fake_scenario']}",
             f"Acceptance: {session['acceptance']}",
         ])
+    lines.extend(["", "## 30-Day Rollout Training Track"])
+    for week in packet.get("week_by_week_rollout_training_plan", []):
+        lines.extend([
+            "",
+            f"### Week {week['week']} - {week['title']}",
+            f"Goal: {week['goal']}",
+            "",
+            "Practice:",
+            *[f"- {item}" for item in week["practice"]],
+            "",
+            "Mock scenarios:",
+            *[f"- {item}" for item in week["mock_scenarios"]],
+            "",
+            f"Acceptance: {week['acceptance']}",
+        ])
     lines.extend(["", "## Actual Lesson Modules"])
     for lesson in packet.get("lesson_modules", []):
         lines.extend([
@@ -419,6 +501,7 @@ def render_html_handout(packet: dict[str, Any]) -> str:
     sessions = packet["daily_micro_learning_plan"]
     tools = packet["tool_curriculum"]
     lessons = packet.get("lesson_modules", [])
+    rollout_weeks = packet.get("week_by_week_rollout_training_plan", [])
     session_cards = []
     for session in sessions:
         learn = "".join(f"<li>{esc(item)}</li>" for item in session["learn"])
@@ -473,6 +556,26 @@ def render_html_handout(packet: dict[str, Any]) -> str:
             </section>
             """
         )
+    rollout_sections = []
+    for week in rollout_weeks:
+        practice = "".join(f"<li>{esc(item)}</li>" for item in week["practice"])
+        scenarios = "".join(f"<li>{esc(item)}</li>" for item in week["mock_scenarios"])
+        rollout_sections.append(
+            f"""
+            <section class="card">
+              <div class="eyebrow">30-day rollout rehearsal / Week {esc(week['week'])}</div>
+              <h2>{esc(week['title'])}</h2>
+              <h3>Goal</h3>
+              <p>{esc(week['goal'])}</p>
+              <h3>Practice</h3>
+              <ul>{practice}</ul>
+              <h3>Mock scenarios</h3>
+              <ul>{scenarios}</ul>
+              <h3>Acceptance</h3>
+              <p>{esc(week['acceptance'])}</p>
+            </section>
+            """
+        )
     stop_lines = "".join(f"<li>{esc(item)}</li>" for item in packet["authority_boundary"])
     return f"""<!doctype html>
 <html>
@@ -523,6 +626,11 @@ def render_html_handout(packet: dict[str, Any]) -> str:
 {''.join(lesson_sections)}
 {''.join(session_cards)}
 <section class="card">
+  <h2>30-Day Rollout Training Track</h2>
+  <p>Practice the service-led rollout with fake scenarios before any real outreach, customer data, credentials, implementation, or ROI claim is allowed.</p>
+</section>
+{''.join(rollout_sections)}
+<section class="card">
   <h2>Tool Curriculum</h2>
   <table>
     <tr><th>Tool</th><th>Learn for</th><th>Starter pattern</th><th>Do not do yet</th></tr>
@@ -570,6 +678,14 @@ def render_simulation_html(packet: dict[str, Any]) -> str:
                 "title": f"Day {session['day']}: {session['title']}",
                 "body": f"Scenario: {session['fake_scenario']}",
                 "prompt": f"Activity: {session['practice']} Acceptance: {session['acceptance']}",
+            }
+        )
+    for week in packet.get("week_by_week_rollout_training_plan", []):
+        slides.append(
+            {
+                "title": f"Rollout Week {week['week']}: {week['title']}",
+                "body": week["goal"],
+                "prompt": f"Practice: {' '.join(week['practice'])} Mock scenarios: {', '.join(week['mock_scenarios'])}",
             }
         )
     slides_json = json.dumps(slides)
@@ -731,6 +847,14 @@ def render_pptx(packet: dict[str, Any], pptx_path: Path) -> dict[str, Any]:
         add_box(slide, "Learning points", learn_text, 0.75, 3.45, 5.7, 2.1)
         add_box(slide, "Acceptance", session["acceptance"], 6.75, 3.45, 5.8, 2.1)
 
+    for week in packet.get("week_by_week_rollout_training_plan", []):
+        slide = prs.slides.add_slide(blank)
+        add_title(slide, f"Rollout Week {week['week']}: {week['title']}", "30-day service-led rollout rehearsal")
+        add_box(slide, "Goal", week["goal"], 0.75, 1.4, 5.8, 1.2)
+        add_box(slide, "Practice", "\n".join(f"- {item}" for item in week["practice"]), 0.75, 2.9, 5.8, 2.3)
+        add_box(slide, "Mock scenarios", "\n".join(week["mock_scenarios"]), 6.85, 1.4, 5.75, 1.6)
+        add_box(slide, "Acceptance", week["acceptance"], 6.85, 3.35, 5.75, 1.85)
+
     for lesson in packet.get("lesson_modules", []):
         slide = prs.slides.add_slide(blank)
         add_title(slide, f"Training: {lesson['title']}", "Actual lesson content")
@@ -788,6 +912,19 @@ def render_docx_book(packet: dict[str, Any], docx_path: Path) -> dict[str, Any]:
     doc.add_heading("Training Path", level=1)
     for session in packet["daily_micro_learning_plan"]:
         doc.add_paragraph(f"Day {session['day']}: {session['title']} ({session['duration_minutes']} minutes)", style="List Bullet")
+
+    doc.add_heading("30-Day Rollout Training Track", level=1)
+    doc.add_paragraph("Internal rehearsal only. No real outreach, customer data, credentials, external delivery, implementation, spending, public launch, or ROI/compliance claim.")
+    for week in packet.get("week_by_week_rollout_training_plan", []):
+        doc.add_heading(f"Week {week['week']}: {week['title']}", level=2)
+        doc.add_paragraph(f"Goal: {week['goal']}")
+        doc.add_heading("Practice", level=3)
+        for item in week["practice"]:
+            doc.add_paragraph(item, style="List Bullet")
+        doc.add_heading("Mock Scenarios", level=3)
+        for item in week["mock_scenarios"]:
+            doc.add_paragraph(item, style="List Bullet")
+        doc.add_paragraph(f"Acceptance: {week['acceptance']}")
 
     doc.add_heading("Lesson Modules", level=1)
     for lesson in packet.get("lesson_modules", []):

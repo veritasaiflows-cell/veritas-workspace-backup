@@ -1,0 +1,206 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-18T03:09:13Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-wf78-scaleout-refresh-artifact"
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-wf78-scaleout-refresh-artifact"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 0,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-wf78-scaleout-refresh-artifact",
+        "budget": "major",
+        "closeout_mode": "integration",
+        "closeout_command_count": 2
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-wf78-scaleout-refresh-artifact",
+      "rank": 3,
+      "priority": "P1",
+      "title": "Advance 500-ticker feeder scaleout through the reputation gate",
+      "implementation_class": "wf78_reputation_scaleout_gate",
+      "owner_surface": "WF78 non-capital feeder for WF84/WF85 finance route",
+      "collision_group": "wf78_wf84_wf85_feeder_scaleout",
+      "validation_budget": {
+        "budget": "major",
+        "description": "Workflow/control-plane or authority-adjacent contract change.",
+        "closeout_mode": "integration",
+        "proof_command_count": 5,
+        "max_default_proof_commands": 99,
+        "phase_count": 5
+      },
+      "closeout_mode": "integration",
+      "target_files": [
+        "scripts/wf78_phase_runner.py",
+        "scripts/wf78_auto_tier_router.py",
+        "scripts/wf78_event_triggered_rerouting.py",
+        "scripts/wf78_500_ticker_reputation_gate.py",
+        "tmp/wf78-auto-tier-routing.json",
+        "tmp/wf78-event-triggered-rerouting.json",
+        "tmp/wf78-500-ticker-reputation-gate.json",
+        "tmp/wf78-500-ticker-reputation-gate.sqlite"
+      ],
+      "proof_commands": [
+        "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+        "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+        "python scripts\\wf78_auto_tier_router.py --write --validate",
+        "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+        "python scripts\\automation_stack_hardening_pass.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate",
+        "python scripts\\helper_completion_handshake.py --write --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:proof[0]",
+      "command": "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
+      "started_at_utc": "2026-06-18T03:08:43Z",
+      "completed_at_utc": "2026-06-18T03:09:11Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"failed_steps\": 0,\n  \"md_out\": null,\n  \"out\": \"tmp/wf78-phase-runner-current.json\",\n  \"phase\": \"all-safe\",\n  \"status\": \"ok\",\n  \"steps\": 25,\n  \"validation\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:proof[1]",
+      "command": "python scripts\\wf78_event_triggered_rerouting.py --write --write-db --validate",
+      "started_at_utc": "2026-06-18T03:09:11Z",
+      "completed_at_utc": "2026-06-18T03:09:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"actions\": 59,\n  \"db_out\": \"tmp/wf78-event-triggered-rerouting.sqlite\",\n  \"out\": \"tmp/wf78-event-triggered-rerouting.json\",\n  \"owner_action_required\": 3,\n  \"status\": \"ok\",\n  \"validation\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:proof[2]",
+      "command": "python scripts\\wf78_auto_tier_router.py --write --validate",
+      "started_at_utc": "2026-06-18T03:09:12Z",
+      "completed_at_utc": "2026-06-18T03:09:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "AT\",\n      \"CDNS\",\n      \"CVX\",\n      \"DECK\",\n      \"ECL\",\n      \"FCX\",\n      \"GE\",\n      \"KTOS\",\n      \"LLY\",\n      \"LNG\",\n      \"MU\",\n      \"NFLX\",\n      \"PLTR\",\n      \"TMUS\",\n      \"WMB\",\n      \"XLB\"\n    ],\n    \"held_phase2_b_candidates_count\": 4,\n    \"held_phase2_b_candidates\": [\n      \"ALLE\",\n      \"AMCR\",\n      \"AME\",\n      \"AOS\"\n    ],\n    \"phase2_auto_tier_b_candidate_count\": 0,\n    \"phase2_auto_tier_b_candidates\": [],\n    \"phase2_eligible_c_to_b_candidate_count\": 15,\n    \"phase2_eligible_c_to_b_candidates\": [\n      \"ACN\",\n      \"ADI\",\n      \"ADP\",\n      \"ADSK\",\n      \"AKAM\",\n      \"ALB\",\n      \"ALLE\",\n      \"AMAT\",\n      \"AMCR\",\n      \"AME\",\n      \"ANET\",\n      \"AOS\",\n      \"APH\",\n      \"APP\",\n      \"CDNS\"\n    ],\n    \"competitive_gate_auto_tier_a_candidate_count\": 1,\n    \"competitive_gate_auto_tier_a_candidates\": [\n      \"BKNG\"\n    ],\n    \"competitive_gate_auto_tier_a_capacity_held_count\": 0,\n    \"competitive_gate_auto_tier_a_capacity_held\": [],\n    \"auto_tier_a_capacity_demoted_count\": 0,\n    \"auto_tier_a_capacity_demoted_tickers\": [],\n    \"tier_a_missing_confidence_count\": 0,\n    \"tier_a_missing_confidence_tickers\": [],\n    \"tier_a_conflicted_ready_count\": 0,\n    \"tier_a_conflicted_ready_tickers\": [],\n    \"inline_confidence_convergence_count\": 0,\n    \"inline_confidence_convergence_tickers\": [],\n    \"tier_c_attention_candidate_count\": 21,\n    \"tier_c_attention_candidates\": [\n      \"ABNB\",\n      \"AMCR\",\n      \"APO\",\n      \"ASML\",\n      \"AVGO\",\n      \"AXP\",\n      \"BA\",\n      \"CCL\",\n      \"CEG\",\n      \"CRWD\",\n      \"DASH\",\n      \"DD\",\n      \"EMR\",\n      \"GD\",\n      \"HON\",\n      \"PANW\",\n      \"QCOM\",\n      \"SCCO\",\n      \"TDG\",\n      \"TSM\",\n      \"TXN\"\n    ],\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"next_safe_action\": \"Use this artifact as the live non-capital routing state; capital deployment and execution still require separate exact approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:proof[3]",
+      "command": "python scripts\\wf78_500_ticker_reputation_gate.py --write --write-db --validate",
+      "started_at_utc": "2026-06-18T03:09:12Z",
+      "completed_at_utc": "2026-06-18T03:09:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"db_out\": \"tmp/wf78-500-ticker-reputation-gate.sqlite\",\n  \"json_out\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n  \"output_validation_errors\": [],\n  \"output_validation_result\": \"ok\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"batch_size\": 100,\n    \"current_100_count\": 200,\n    \"current_baseline_count\": 200,\n    \"future_prior_batch_hold_count\": 200,\n    \"future_validation_required_count\": 0,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_batch_tier_c_eligible_count\": 0,\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"repair_queue_count\": 100,\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"target_count\": 500,\n    \"tier_a_production_eligible_count\": 0,\n    \"tier_b_research_eligible_count\": 0\n  },\n  \"validation_result\": \"ok\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:proof[4]",
+      "command": "python scripts\\automation_stack_hardening_pass.py --write --validate",
+      "started_at_utc": "2026-06-18T03:09:12Z",
+      "completed_at_utc": "2026-06-18T03:09:12Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "atus\": \"ok\"\n  },\n  \"wf78_event_triggered_rerouting_hardening\": {\n    \"action_count\": 59,\n    \"exists\": true,\n    \"next_safe_action\": \"Repair evidence and reroute labels only; prepare owner review cards only after freshness blockers clear.\",\n    \"owner_action_required_count\": 3,\n    \"path\": \"tmp/wf78-event-triggered-rerouting.json\",\n    \"status\": \"ok\",\n    \"top_action\": {\n      \"action_type\": \"prepare_owner_card\",\n      \"apply_allowed\": false,\n      \"capital_deployment_approved\": false,\n      \"current_route\": \"A-READY\",\n      \"owner_action_required\": true,\n      \"paper_or_live_execution_allowed\": false,\n      \"priority\": 90,\n      \"proposed_route\": \"OWNER_CARD_PREP_ONLY\",\n      \"queue_rank\": 1,\n      \"reason\": \"Candidate has no local freshness blockers; prepare a non-executing owner review card only.\",\n      \"source_artifacts\": [\n        \"tmp/intraday-alerts/quote-snapshot-proof.json\",\n        \"tmp/market-execution-readiness-cron-hardening.json\",\n        \"tmp/post-close-final-quote-ledger.json\",\n        \"tmp/ticker-intelligence-cards/GOOG.current.json\",\n        \"tmp/wf78-auto-tier-routing.json\",\n        \"tmp/wf78-capital-review-queue.json\",\n        \"tmp/wf78-production-tier-adjudication.json\",\n        \"tmp/wf78-routing-delta.json\"\n      ],\n      \"ticker\": \"GOOG\",\n      \"trade_or_execution_approved\": false,\n      \"trigger\": \"capital_candidate_review_ready\"\n    },\n    \"validation_status\": \"ok\"\n  },\n  \"wf78_reputation_hardening\": {\n    \"current_baseline_count\": 200,\n    \"exists\": true,\n    \"future_validation_required_count\": 0,\n    \"next_101_200_tier_c_eligible_count\": 0,\n    \"next_batch_label\": \"201-300\",\n    \"next_safe_action\": \"Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import.\",\n    \"path\": \"tmp/wf78-500-ticker-reputation-gate.json\",\n    \"row_count\": 500,\n    \"status\": \"ok\",\n    \"tier_a_production_eligible_count\": 0,\n    \"validation_status\": \"ok\"\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-18T03:09:12Z",
+      "completed_at_utc": "2026-06-18T03:09:13Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "tel_daily_vs_weekly_event_rate_ratio\": 7.0,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"review\",\n        \"otel_field_depth_packet_status\": \"owner_decision_required\",\n        \"recommended_budget\": \"major\",\n        \"recommended_validator_count\": 62,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 3,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 8,\n        \"validator_elapsed_seconds\": 2.379,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 25\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"pm_cockpit_required_sources_stale\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-wf78-scaleout-refresh-artifact:closeout[1]",
+      "command": "python scripts\\helper_completion_handshake.py --write --validate",
+      "started_at_utc": "2026-06-18T03:09:13Z",
+      "completed_at_utc": "2026-06-18T03:09:13Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"mode\": \"idle_contract\",\n  \"out\": \"tmp/helper-completion-handshake.json\",\n  \"status\": \"ok\",\n  \"synthesis_allowed\": true,\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

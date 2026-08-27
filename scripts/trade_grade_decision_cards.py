@@ -18,12 +18,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_decision_state_compiler import (
+    APPROVAL_DRAFT_BAND_STATUS,
+    NO_CHASE_BAND_STATES,
+    PROMOTE_VERDICT as PROMOTION_REVIEW_VERDICT,
+    REVIEW_READY_PRIMARY_STATES,
+    classify_decision_state,
+    flag_true,
+    thin_monitor_scope,
+)
+from finance_sql_canon_access import FinanceSqlCanonAccess, p0_registry_lane_status
 from market_data_utils import atomic_write_json, load_json_artifact
 from trade_grade_decision_os_contract import (
     AUTHORITY_BOUNDARY,
-    BLOCKING_PRIMARY_STATES,
     EXPECTED_APPROVAL_DRAFT_COUNT_BEFORE_FRESHNESS_REPAIR,
-    INVALIDATION_PRIMARY_STATES,
     MAX_PAPER_GUARD_CONTEXT_AGE_DAYS,
     REQUIRED_FALSE_KEYS,
     age_days,
@@ -50,8 +58,11 @@ AUTHORITY_SCHEMA = "veritas.trade_grade_decision_card_authority_validation.v1"
 APPROVAL_GATE_SCHEMA = "veritas.trade_grade_approval_card_gate.v1"
 RISK_SCHEMA = "veritas.trade_grade_risk_sizing_overlay.v1"
 WORKFLOW_ID = "WF85"
+LEGACY_PRODUCTION_COMPATIBILITY_COUNT = 42
 
-SOURCE_OK = {"ok", "fresh"}
+SOURCE_OK = {"ok", "fresh", "current"}
+SOURCE_WARNING_OK_PATHS = {"tmp/post-close-final-quote-ledger.json"}
+SOURCE_ARTIFACT_STATUS_ONLY_OK_PATHS = {"tmp/technical-refresh.json"}
 NON_EXECUTION_TECHNICAL_PRICE_FRESHNESS = "current_price_technical_available_for_non_executing_review"
 QUOTE_FRESH_OK = {
     "fresh",
@@ -61,10 +72,25 @@ QUOTE_FRESH_OK = {
     NON_EXECUTION_TECHNICAL_PRICE_FRESHNESS,
 }
 APPROVAL_DRAFT_QUOTE_FRESH_OK = {"fresh", "ok", "intraday_fresh"}
-REVIEW_READY_PRIMARY_STATES = {"approval_card_clean", "owner_review_candidate", "route_monitor"}
-NO_CHASE_BAND_STATES = {"ABOVE_BAND", "ABOVE_BAND_WAIT", "NO_CHASE"}
-MISSING_BAND_STATES = {"UNKNOWN", "missing_required_refresh", None, ""}
-APPROVAL_DRAFT_BAND_STATUS = "IN_BAND"
+
+# Families that only make sense for equity operating companies; ETFs, bond/rate
+# proxies, and commodity proxies should not be collection-blocked by their absence.
+EQUITY_ONLY_FAMILIES = {
+    "analyst_consensus",
+    "analyst_price_targets",
+    "analyst_ratings",
+    "catalyst_earnings_state",
+}
+
+NON_EQUITY_INSTRUMENT_TYPES = {
+    "etf",
+    "bond_or_rate_proxy",
+    "commodity_proxy",
+}
+
+def is_non_equity_instrument(instrument_type: str | None) -> bool:
+    return bool(instrument_type and str(instrument_type).lower() in NON_EQUITY_INSTRUMENT_TYPES)
+
 
 FORBIDDEN_ACTION_PHRASES = (
     "approved to buy",
@@ -100,6 +126,14 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
 def connect_ro(db_path: Path = WF84_DB) -> sqlite3.Connection:
     uri = db_path.resolve().as_uri() + "?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
@@ -115,18 +149,6 @@ def parse_json_text(value: Any, default: Any) -> Any:
         return json.loads(value)
     except json.JSONDecodeError:
         return default
-
-
-def flag_true(value: Any) -> bool:
-    return value in {1, True, "1", "true", "True", "yes", "YES"}
-
-
-def thin_monitor_scope(membership: dict[str, Any]) -> bool:
-    return (
-        flag_true(membership.get("thin_monitor_row"))
-        and not flag_true(membership.get("production_answer_path_member"))
-        and not flag_true(membership.get("decision_grade_eligible"))
-    )
 
 
 def sqlite_probe() -> dict[str, Any]:
@@ -165,6 +187,70 @@ def wf84_parity_probe(wf84_packet: dict[str, Any], db_probe: dict[str, Any]) -> 
     }
 
 
+def sql_canon_scope_context(cards: list[dict[str, Any]]) -> dict[str, Any]:
+    client = FinanceSqlCanonAccess()
+    validation = client.validate()
+    critical: list[str] = []
+    warnings: list[str] = []
+    registry: dict[str, Any] = {}
+    production_tickers: list[str] = []
+    legacy_production_tickers: list[str] = []
+    wf84_production = sorted(
+        str(card.get("ticker") or "").upper()
+        for card in cards
+        if as_dict(card.get("wf84_scope")).get("production_answer_path_member") is True
+    )
+    if validation.get("status") != "ok":
+        critical.append("sql_canon_access_validation_blocked")
+    else:
+        production_tickers = client.production_answer_tickers()
+        legacy_production_tickers = client.legacy_production_answer_tickers()
+        registry = client.migration_registry_summary()
+        production_set = set(production_tickers)
+        wf84_set = set(wf84_production)
+        if not production_tickers:
+            warnings.append("production_grade_set_empty_wait_for_decision_grade_gates")
+        if len(legacy_production_tickers) != LEGACY_PRODUCTION_COMPATIBILITY_COUNT:
+            warnings.append("sql_canon_legacy_42_compatibility_count_mismatch_advisory")
+        if production_set != wf84_set:
+            warnings.append("legacy_wf84_answer_path_differs_from_strategic_sql_first_scope")
+        p0_status = p0_registry_lane_status(registry)
+        if not p0_status["ok"]:
+            critical.extend(p0_status["errors"])
+    status = "blocked" if critical else "ok"
+    return {
+        "status": status,
+        "access_validation_status": validation.get("status"),
+        "registry_summary": registry,
+        "p0_registry_lane_status": p0_registry_lane_status(registry),
+        "wf84_production_answer_tickers": wf84_production,
+        "sql_canon_production_answer_tickers": production_tickers,
+        "sql_canon_production_answer_count": len(production_tickers),
+        "sql_canon_production_answer_definition": "validated proof-joined production-grade set",
+        "legacy_42_retired_from_blocking": True,
+        "legacy_42_count_advisory_only": True,
+        "effective_production_answer_count": len(production_tickers),
+        "effective_production_answer_definition": "validated proof-joined production-grade set; empty means wait for decision-grade gates",
+        "sql_canon_legacy_production_answer_tickers": legacy_production_tickers,
+        "sql_canon_legacy_production_answer_count": len(legacy_production_tickers),
+        "sql_canon_legacy_production_answer_definition": "retired legacy 42 compatibility answer scope",
+        "production_scope_diff": {
+            "missing_from_sql": sorted(set(wf84_production) - set(production_tickers)),
+            "extra_in_sql": sorted(set(production_tickers) - set(wf84_production)),
+            "legacy_wf84_scope_retired_from_blocking": True,
+        },
+        "validation": {"status": status, "critical_errors": critical, "warnings": warnings},
+        "authority_boundary": {
+            "sql_canon_scope_validation_only": True,
+            "consumer_cutover_allowed_by_this_packet": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
 def rows_by_ticker(conn: sqlite3.Connection, sql: str) -> dict[str, dict[str, Any]]:
     rows: dict[str, dict[str, Any]] = {}
     for row in conn.execute(sql):
@@ -190,7 +276,86 @@ def source_status_for(
     source_rows: list[dict[str, Any]],
     family_rows: list[dict[str, Any]],
     membership: dict[str, Any],
+    current: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    accepted_warning_sources: list[dict[str, Any]] = []
+    accepted_status_only_sources: list[dict[str, Any]] = []
+
+    def source_row_ok(row: dict[str, Any]) -> bool:
+        status = row.get("status")
+        validation_status = row.get("validation_status")
+        if status in SOURCE_OK and validation_status in SOURCE_OK:
+            return True
+        source_path_text = str(row.get("path") or "").replace("\\", "/").lstrip("./")
+        if (
+            status in SOURCE_OK
+            and validation_status in (None, "", "unknown")
+            and source_path_text in SOURCE_ARTIFACT_STATUS_ONLY_OK_PATHS
+        ):
+            source_path = ROOT / source_path_text
+            source_payload = load_json(source_path)
+            records = as_list(source_payload.get("records"))
+            matching_record = next(
+                (
+                    item
+                    for item in records
+                    if isinstance(item, dict)
+                    and str(item.get("ticker") or "").upper() == ticker.upper()
+                    and item.get("close") is not None
+                    and item.get("data_date")
+                ),
+                None,
+            )
+            if source_payload.get("status") == "ok" and matching_record:
+                accepted_status_only_sources.append({
+                    "source_use": row.get("source_use"),
+                    "path": row.get("path"),
+                    "status": status,
+                    "validation_status": validation_status,
+                    "acceptance": "artifact_status_ok_accepted_for_non_executing_review_ticker_row",
+                    "ticker_row_present": True,
+                    "data_date": matching_record.get("data_date"),
+                })
+                return True
+        if status == "warning" and validation_status in SOURCE_OK and source_path_text in SOURCE_WARNING_OK_PATHS:
+            source_path = ROOT / source_path_text
+            source_payload = load_json(source_path)
+            summary = as_dict(source_payload.get("summary"))
+            validation = as_dict(source_payload.get("validation"))
+            target_count = int(summary.get("target_count") or 0)
+            ok_count = int(summary.get("ok_count") or 0)
+            error_count = int(summary.get("error_count") or 0)
+            cached_overlay_count = int(summary.get("cached_overlay_count") or 0)
+            ok_tickers = {str(item).upper() for item in as_list(summary.get("ok_tickers"))}
+            all_cached_overlay = cached_overlay_count == target_count
+            ticker_ok = ticker.upper() in ok_tickers
+            warning_ok = (
+                source_payload.get("status") == "warning"
+                and validation.get("status") == "ok"
+                and target_count > 0
+                and ok_count == target_count
+                and error_count == 0
+                and (all_cached_overlay or ticker_ok)
+            )
+            if warning_ok:
+                accepted_warning_sources.append({
+                    "source_use": row.get("source_use"),
+                    "path": row.get("path"),
+                    "status": status,
+                    "validation_status": validation_status,
+                    "acceptance": (
+                        "warning_accepted_for_non_executing_review_cached_overlay"
+                        if all_cached_overlay
+                        else "warning_accepted_for_non_executing_review_ticker_ok"
+                    ),
+                    "target_count": target_count,
+                    "ok_count": ok_count,
+                    "cached_overlay_count": cached_overlay_count,
+                    "ticker_in_ok_tickers": ticker_ok,
+                })
+                return True
+        return False
+
     non_ok_sources = [
         {
             "source_use": row.get("source_use"),
@@ -199,34 +364,50 @@ def source_status_for(
             "validation_status": row.get("validation_status"),
         }
         for row in source_rows
-        if row.get("status") not in SOURCE_OK or row.get("validation_status") not in SOURCE_OK
+        if not source_row_ok(row)
     ]
-    missing_or_stale_families = [
-        {
+    non_equity = is_non_equity_instrument(current.get("instrument_type") if current else None)
+    exempted_families: list[str] = []
+    missing_or_stale_families = []
+    for row in family_rows:
+        if int(row.get("source_required") or 0) != 1:
+            continue
+        if (int(row.get("missing_count") or 0) <= 0 and int(row.get("stale_count") or 0) <= 0):
+            continue
+        family_id = str(row.get("family_id") or "")
+        if non_equity and family_id in EQUITY_ONLY_FAMILIES:
+            exempted_families.append(family_id)
+            continue
+        missing_or_stale_families.append({
             "family_id": row.get("family_id"),
             "status": row.get("status"),
             "missing_count": row.get("missing_count"),
             "stale_count": row.get("stale_count"),
             "resolution_state": row.get("resolution_state"),
             "source_paths": parse_json_text(row.get("source_paths_json"), []),
-        }
-        for row in family_rows
-        if int(row.get("source_required") or 0) == 1
-        and (int(row.get("missing_count") or 0) > 0 or int(row.get("stale_count") or 0) > 0)
-    ]
+        })
     is_thin_monitor = thin_monitor_scope(membership)
     source_open_status = "blocked" if non_ok_sources or not source_rows else "verified"
     if is_thin_monitor and source_open_status == "blocked":
         source_open_status = "scoped_thin_monitor_not_required"
-    return {
+    result: dict[str, Any] = {
         "ticker": ticker,
         "source_open_status": source_open_status,
         "scope": "thin_monitor_card_wf84_surface" if is_thin_monitor else "production_or_decision_surface",
         "source_drillback_count": len(source_rows),
         "non_ok_sources": non_ok_sources,
+        "accepted_warning_sources": accepted_warning_sources,
+        "accepted_status_only_sources": accepted_status_only_sources,
         "missing_or_stale_families": missing_or_stale_families,
         "material_claim_guard": "source_open_required_before_material_finance_claims",
+        "approval_execution_freshness_guard": "accepted warning/status-only sources are review-only and do not satisfy execution freshness or owner approval",
     }
+    if current is not None:
+        result["instrument_type"] = current.get("instrument_type")
+    if exempted_families:
+        result["exempted_equity_only_families"] = exempted_families
+        result["non_equity_exemption_applied"] = True
+    return result
 
 
 def freshness_status_for(
@@ -263,61 +444,6 @@ def freshness_status_for(
         "quote_time_utc": price.get("quote_time_utc"),
         "blockers": blockers,
     }
-
-
-def blocking_primary_state_still_applies(
-    primary_state: Any,
-    current: dict[str, Any],
-    source_gate: dict[str, Any],
-    freshness: dict[str, Any],
-) -> bool:
-    """Keep fail-closed primary blockers unless the current WF84 gate clears that exact blocker."""
-    band_complete = (
-        current.get("entry_band_low") is not None
-        and current.get("entry_band_high") is not None
-        and current.get("stop_or_invalidation") is not None
-        and current.get("band_status") not in MISSING_BAND_STATES
-    )
-    if primary_state == "blocked_missing_freshness" and freshness.get("status") == "fresh":
-        return False
-    if primary_state == "blocked_missing_source_open" and source_gate.get("source_open_status") == "verified":
-        return False
-    if primary_state == "blocked_missing_band_or_stop" and band_complete:
-        return False
-    return primary_state in BLOCKING_PRIMARY_STATES
-
-
-def classify_decision_state(
-    current: dict[str, Any],
-    source_gate: dict[str, Any],
-    freshness: dict[str, Any],
-    membership: dict[str, Any],
-) -> tuple[str, list[str]]:
-    blockers: list[str] = []
-    primary_state = current.get("primary_state")
-    band_status = current.get("band_status")
-    is_thin_monitor = thin_monitor_scope(membership)
-    if primary_state in INVALIDATION_PRIMARY_STATES or band_status == "BELOW_STOP":
-        return "below_stop_or_invalidation", ["primary_state_or_band_below_stop"]
-    if is_thin_monitor:
-        return "monitor_only", ["thin_monitor_not_decision_grade"]
-    if current.get("entry_band_low") is None or current.get("entry_band_high") is None or current.get("stop_or_invalidation") is None:
-        return "blocked_missing_band_or_stop", ["missing_entry_band_or_stop"]
-    if band_status in MISSING_BAND_STATES:
-        return "blocked_missing_band_or_stop", ["band_status_missing_or_unknown"]
-    if blocking_primary_state_still_applies(primary_state, current, source_gate, freshness):
-        return str(primary_state), [f"primary_state={primary_state}"]
-    if source_gate.get("source_open_status") != "verified":
-        return "blocked_missing_source_open", ["source_open_not_verified"]
-    if freshness.get("status") != "fresh":
-        return "blocked_missing_freshness", freshness.get("blockers", ["freshness_not_verified"])
-    if band_status in NO_CHASE_BAND_STATES:
-        return "no_chase", [f"band_status={band_status}"]
-    if primary_state == "promotion_vetoed":
-        return "evidence_repair", ["promotion_vetoed"]
-    if primary_state in REVIEW_READY_PRIMARY_STATES:
-        return "review_ready", []
-    return "monitor_only", ["not_owner_review_candidate"]
 
 
 def source_drillback_public(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -398,7 +524,7 @@ def build_card(
     scenario_context: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     ticker = current["ticker"]
-    source_gate = source_status_for(ticker, source_rows, family_rows, membership)
+    source_gate = source_status_for(ticker, source_rows, family_rows, membership, current)
     freshness = freshness_status_for(current, price, source_gate, membership)
     decision_state, blockers = classify_decision_state(current, source_gate, freshness, membership)
     current_price = current.get("latest_known_price")
@@ -411,6 +537,11 @@ def build_card(
         "queue_state": current.get("queue_state"),
         "decision_state": decision_state,
         "decision_state_reason": blockers,
+        "promotion_gate": {
+            "verdict": current.get("gate_verdict"),
+            "vetoes": parse_json_text(current.get("gate_vetoes_json"), []),
+            "owner_review_ready_when_gates_clear": current.get("gate_verdict") == PROMOTION_REVIEW_VERDICT,
+        },
         "wf84_scope": {
             "universe_scope": membership.get("universe_scope"),
             "production_answer_path_member": flag_true(membership.get("production_answer_path_member")),
@@ -697,7 +828,16 @@ def readiness_invariant_errors(cards: list[dict[str, Any]], approval_gate: dict[
     errors: list[str] = []
     cards_by_ticker = {str(card.get("ticker") or "").upper(): card for card in cards}
     for card in cards:
-        if card.get("decision_state") == "review_ready" and card.get("primary_state") not in REVIEW_READY_PRIMARY_STATES:
+        promoted_review_ready = (
+            as_dict(card.get("promotion_gate")).get("verdict") == PROMOTION_REVIEW_VERDICT
+            and as_dict(card.get("source_freshness")).get("status") == "fresh"
+            and card_band_status(card) == APPROVAL_DRAFT_BAND_STATUS
+        )
+        if (
+            card.get("decision_state") == "review_ready"
+            and card.get("primary_state") not in REVIEW_READY_PRIMARY_STATES
+            and not promoted_review_ready
+        ):
             errors.append(f"review_ready_primary_state_invalid:{card.get('ticker')}:{card.get('primary_state')}")
     for draft in approval_gate.get("approval_card_drafts", []):
         ticker = str(draft.get("ticker") or "").upper()
@@ -873,6 +1013,10 @@ def build_artifacts() -> dict[str, dict[str, Any]]:
     state_counts = Counter(card.get("decision_state") for card in cards)
     source_counts = Counter(row.get("source_open_status") for row in source_gate_rows)
     freshness_counts = Counter(row.get("status") for row in freshness_rows)
+    sql_canon_context = sql_canon_scope_context(cards)
+    sql_canon_errors = sql_canon_context.get("validation", {}).get("critical_errors") or []
+    if sql_canon_errors:
+        errors.extend(f"sql_canon:{item}" for item in sql_canon_errors)
     source_gate_payload = {
         "schema": SOURCE_GATE_SCHEMA,
         "generated_at_utc": generated,
@@ -883,9 +1027,12 @@ def build_artifacts() -> dict[str, dict[str, Any]]:
             "source_open_status_counts": dict(source_counts),
             "freshness_status_counts": dict(freshness_counts),
             "wf84_json_sqlite_parity": parity.get("status"),
+            "sql_canon_scope_status": sql_canon_context.get("status"),
+            "sql_canon_production_answer_count": sql_canon_context.get("sql_canon_production_answer_count"),
         },
         "wf84_sqlite_probe": db_probe,
         "wf84_json_sqlite_parity": parity,
+        "sql_canon_scope": sql_canon_context,
         "rows": source_gate_rows,
         "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": warnings},
         "stop_line": "No material finance claim from WF84 SQLite alone; source drillback remains required.",
@@ -900,9 +1047,12 @@ def build_artifacts() -> dict[str, dict[str, Any]]:
             "decision_state_counts": dict(state_counts),
             "approval_card_draft_count": sum(1 for card in cards if card.get("decision_state") == "approval_card_draft"),
             "authority_flags_false_by_contract": True,
+            "sql_canon_scope_status": sql_canon_context.get("status"),
+            "sql_canon_production_answer_count": sql_canon_context.get("sql_canon_production_answer_count"),
         },
         "source_gate_artifact": rel(DEFAULT_SOURCE_GATE_OUT),
         "scenario_context_artifact": rel(CURRENT_ANALOG_MATCH),
+        "sql_canon_scope": sql_canon_context,
         "cards": cards,
         "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": warnings},
         "authority_boundary": AUTHORITY_BOUNDARY,

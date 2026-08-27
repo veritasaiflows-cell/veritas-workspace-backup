@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-10T01:47:00Z",
-  "status": "warning",
-  "stop_line": false,
+  "generated_at_utc": "2026-08-27T00:15:44Z",
+  "status": "critical",
+  "stop_line": true,
   "operator_action_required": true,
-  "next_action": "Keep `channels` empty unless channel expansion is intentional.",
+  "next_action": "Inspect the attached findings before trusting the workspace posture.",
   "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
   "openclaw_home": "C:\\Users\\Veritas\\.openclaw",
   "trust_boundary": {
@@ -13,22 +13,26 @@
     "external_delivery": "none"
   },
   "summary": {
-    "critical": 0,
-    "warning": 10,
-    "info": 9
+    "critical": 1,
+    "warning": 11,
+    "info": 8
   },
   "checks": [
     {
       "id": "config_posture",
-      "status": "warning",
+      "status": "info",
       "details": {
-        "model_primary": "openai-codex/gpt-5.5",
+        "model_primary": "openai/gpt-5.6-terra",
         "agent_runtime_id": null,
         "plugins_allow": [],
         "channels_enabled": [
           "telegram"
         ],
-        "owner_allow_from": [],
+        "owner_allow_from": [
+          "openclaw-control-ui",
+          "telegram:8650152206",
+          "webchat:openclaw-control-ui"
+        ],
         "gateway_bind": "loopback"
       }
     },
@@ -45,15 +49,11 @@
       "id": "openclaw_security_audit_basic",
       "status": "warning",
       "details": {
-        "returncode": 0,
-        "timed_out": false,
-        "summary": {
-          "critical": 0,
-          "warn": 2,
-          "info": 1
-        },
+        "returncode": null,
+        "timed_out": true,
+        "summary": null,
         "deep": null,
-        "stdout_excerpt": "{\n  \"ts\": 1778377537393,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 2,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway.\",\n      \"remediation\": \"If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\\\"all\\\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.\"\n    }\n  ],\n  \"secretDiagnostics\": []\n}\n",
+        "stdout_excerpt": "",
         "stderr_excerpt": ""
       }
     },
@@ -61,11 +61,11 @@
       "id": "openclaw_security_audit_deep",
       "status": "warning",
       "details": {
-        "returncode": 0,
-        "timed_out": false,
+        "returncode": null,
+        "timed_out": true,
         "summary": {
           "critical": 0,
-          "warn": 2,
+          "warn": 3,
           "info": 1
         },
         "deep": {
@@ -77,8 +77,8 @@
             "close": null
           }
         },
-        "stdout_excerpt": "{\n  \"ts\": 1778377548294,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 2,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway.\",\n      \"remediation\": \"If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\\\"all\\\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.\"\n    }\n  ],\n  \"deep\": {\n    \"gateway\": {\n      \"attempted\": true,\n      \"url\": \"ws://127.0.0.1:18789\",\n      \"ok\": true,\n      \"error\": null,\n      \"close\": null\n    }\n  },\n  \"secretDiagnostics\": []\n}\n",
-        "stderr_excerpt": "[skills] failed to create plugin skill symlink \"C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation\" \u00e2\u2020\u2019 \"C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation\": Error: EPERM: operation not permitted, symlink 'C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation' -> 'C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation'\n"
+        "stdout_excerpt": "{\n  \"ts\": 1787789562432,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 3,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\n- agents.list.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway.\",\n      \"remediation\": \"If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\\\"all\\\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.\"\n    },\n    {\n      \"checkId\": \"plugins.installs_unpinned_npm_specs\",\n      \"severity\": \"warn\",\n      \"title\": \"Plugin index includes unpinned npm specs\",\n      \"detail\": \"Unpinned plugin index install records:\\n- codex (@openclaw/codex)\\n- kimi (@openclaw/kimi-provider)\",\n      \"remediation\": \"Pin install specs to exact versions (for example, `@scope/pkg@1.2.3`) for higher supply-chain stability.\"\n    }\n  ],\n  \"deep\": {\n    \"gateway\": {\n      \"attempted\": true,\n      \"url\": \"ws://127.0.0.1:18789\",\n      \"ok\": true,\n      \"error\": null,\n      \"close\": null\n    }\n  },\n  \"secretDiagnostics\": []\n}\n",
+        "stderr_excerpt": ""
       }
     },
     {
@@ -87,49 +87,84 @@
       "details": {
         "returncode": 0,
         "summary": {
-          "total": 78,
-          "eligible": 34,
-          "modelVisible": 34,
-          "commandVisible": 33,
-          "disabled": 44,
+          "total": 106,
+          "eligible": 69,
+          "modelVisible": 69,
+          "commandVisible": 68,
+          "disabled": 37,
           "blocked": 0,
           "agentFiltered": 0,
           "notInjected": 0,
           "missingRequirements": 0
         },
         "eligible": [
+          "agi-harness-readiness-operator",
+          "ai-drop-service-os-contract",
           "automation-hardening-manager",
+          "bash-compatibility",
           "browser-automation",
+          "canvas",
+          "clawhub",
           "code-review-auditor",
           "cron-automation-manager",
+          "diagram-maker",
           "disciplined-implementation",
           "github",
+          "graphify",
           "healthcheck",
           "ic-swarm-orchestrator",
+          "implementation-friction-closeout",
+          "main-session-handoff-finisher",
+          "meme-maker",
           "memory-continuity-manager",
           "node-connect",
+          "node-inspect-debugger",
           "obsidian",
+          "obsidian-vault-maintainer",
           "openclaw-operator",
           "openclaw-troubleshooter",
           "operating-procedure-repository-manager",
+          "opportunity-recommendation-review-router",
+          "otel-operations-analyst",
+          "privacy-safe-telemetry-expansion",
           "project-continuity-manager",
+          "python-debugpy",
           "safe-refactor-planner",
+          "sec",
           "skill-creator",
+          "smb-workflow-automation-operator",
+          "spike",
           "SQLite",
+          "task-intake-contract",
           "taskflow",
           "taskflow-inbox-triage",
           "technical-chart-pass",
+          "veritas-bounded-portfolio-agent",
+          "veritas-entry-policy-opportunity-surface",
+          "veritas-financial-planning-pass",
           "veritas-fundamental-pass",
+          "veritas-intelligence-effort-router",
           "veritas-investment-deck",
+          "veritas-isolated-agent-contract",
           "veritas-macro-pass",
+          "veritas-model-routing-helper-lanes",
+          "veritas-os2-cleanup-router",
           "veritas-pdf-brief",
+          "veritas-pm-department",
           "veritas-portfolio-update",
           "veritas-positioning-pass",
           "veritas-post-earnings-sync",
+          "veritas-prompt-book-operator",
+          "veritas-response-contract",
           "veritas-self-improvement",
           "veritas-technical-pass",
           "veritas-weekly-brief",
+          "veritas-wf78-tier-promotion-spine",
+          "veritas-workspace-audit-orchestrator",
           "weather",
+          "wf67-paper-trading-operator",
+          "wiki-maintainer",
+          "windows-powershell-workspace",
           "workspace-governor",
           "workspace-qa-pass"
         ]
@@ -145,10 +180,10 @@
           "orphan_transcripts": null,
           "codex_runtime_warning": false,
           "session_lock_stale": false,
-          "raw_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                  \u00f0\u0178\u00a6\u017e OPENCLAW \u00f0\u0178\u00a6\u017e                    \n \nT  OpenClaw doctor\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - messages.groupChat.visibleReplies is set to \"message_tool\", but the   |\n|    message tool is unavailable for default tool policy; OpenClaw falls   |\n|    back to automatic visible replies, so normal replies may post to the  |\n|    source chat. Enable the message tool or set                           |\n|    messages.groupChat.visibleReplies to \"automatic\".                     |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ------------------------------------------------------+\n|                                                                        |\n|  - channels.telegram: default account has no available bot token, and  |\n|    TELEGRAM_BOT_TOKEN is absent in this doctor environment. After      |\n|    migration, verify TELEGRAM_BOT_TOKEN is present in the state-dir    |\n|    .env or configure channels.telegram.botToken /                      |\n|    channels.telegram.accounts.default.botToken as a SecretRef.         |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - `openai-codex/*` model refs use the Codex OAuth route through         |\n|    OpenClaw PI.                                                          |\n|  - agents.defaults.model.primary: openai-codex/gpt-5.5 is preserved;     |\n|    current runtime is \"pi\".                                              |\n|  - agents.defaults.models.openai-codex/gpt-5.5: openai-codex/gpt-5.5 is  |\n|    preserved.                                                            |\n|  - `openclaw doctor --fix` preserves these routes because they are the   |\n|    working Codex OAuth route through OpenClaw PI.                        |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Command owner ---------------------------------------------------------+\n|                                                                         |\n|  No command owner is configured.                                        |\n|  A command owner is the human operator account allowed to run           |\n|  owner-only commands and approve dangerous actions, including           |\n|  /diagnostics, /export-trajectory, /config, and exec approvals.         |\n|  DM pairing only lets someone talk to the bot; it does not make that    |\n|  sender the owner for privileged commands.                              |\n|  Fix: set commands.ownerAllowFrom to your channel user id, for example  |\n|  openclaw config set commands.ownerAllowFrom '[\"telegram:123456789\"]'   |\n|  Restart the gateway after changing this if it is already running.      |\n|"
+          "raw_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                       OPENCLAW                       \n \nT  OpenClaw doctor\n|\no  Update ---------------------------------------------------------------+\n|                                                                        |\n|  This install is not a git checkout.                                   |\n|  Run `openclaw update` to update via your package manager (npm/pnpm),  |\n|  then rerun doctor.                                                    |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor changes preview ------------------------------------------------+\n|                                                                         |\n|  Set models.providers.ollama-cloud.models[0].params.num_ctx to 262144   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[1].params.num_ctx to 524288   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[2].params.num_ctx to 999424   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[3].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[4].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|                                                                         |\n+-------------------------------------------------------------------------+\n|\no  Doctor changes preview -----------------------------------+\n|                                                            |\n|  openrouter/auto model configured, enabled automatically.  |\n|                                                            |\n+------------------------------------------------------------+\n|\no  Doctor info ------------------------------------------------------------+\n|                                                                          |\n|  - Personal Codex CLI assets were found, but native Codex-mode OpenClaw  |\n|    agents use isolated per-agent Codex homes.                            |\n|  - Sources: C:\\Users\\Veritas\\.codex and C:\\Users\\Veritas\\.agents\\skills  |\n|    (0 skills, 14 plugins, 1 config file, 0 hook files).                  |\n|  - These assets will not be loaded by the Codex app-server child unless  |\n|    you intentionally promote them.                                       |\n|  - If the Codex plugin is not installed, run `openclaw plugins install   |\n|    npm:@openclaw/codex` first. Then run `openclaw migrate plan codex`    |\n|    to inventory them. Applying that migration copies skills into the     |\n|    current OpenClaw agent workspace; Codex plugins, hooks, and config    |\n|    stay manual-review only.                                              |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ---------------------------------------------------"
         },
-        "stdout_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                  \u00f0\u0178\u00a6\u017e OPENCLAW \u00f0\u0178\u00a6\u017e                    \n \nT  OpenClaw doctor\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - messages.groupChat.visibleReplies is set to \"message_tool\", but the   |\n|    message tool is unavailable for default tool policy; OpenClaw falls   |\n|    back to automatic visible replies, so normal replies may post to the  |\n|    source chat. Enable the message tool or set                           |\n|    messages.groupChat.visibleReplies to \"automatic\".                     |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ------------------------------------------------------+\n|                                                                        |\n|  - channels.telegram: default account has no available bot token, and  |\n|    TELEGRAM_BOT_TOKEN is absent in this doctor environment. After      |\n|    migration, verify TELEGRAM_BOT_TOKEN is present in the state-dir    |\n|    .env or configure channels.telegram.botToken /                      |\n|    channels.telegram.accounts.default.botToken as a SecretRef.         |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor warnings --------------------------------------------------------+\n|                                                                          |\n|  - `openai-codex/*` model refs use the Codex OAuth route through         |\n|    OpenClaw PI.                                                          |\n|  - agents.defaults.model.primary: openai-codex/gpt-5.5 is preserved;     |\n|    current runtime is \"pi\".                                              |\n|  - agents.defaults.models.openai-codex/gpt-5.5: openai-codex/gpt-5.5 is  |\n|    preserved.                                                            |\n|  - `openclaw doctor --fix` preserves these routes because they are the   |\n|    working Codex OAuth route through OpenClaw PI.                        |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Command owner ---------------------------------------------------------+\n|                                                                         |\n|  No command owner is configured.                                        |\n|  A command owner is the human operator account allowed to run           |\n|  owner-only commands and approve dangerous actions, including           |\n|  /diagnostics, /export-trajectory, /config, and exec approvals.         |\n|  DM pairing only lets someone talk to the bot; it does not make that    |\n|  sender the owner for privileged commands.                              |\n|  Fix: set commands.ownerAllowFrom to your channel user id, for example  |\n|  openclaw config set commands.ownerAllowFrom '[\"telegram:123456789\"]'   |\n|  Restart the gateway after changing this if it is already running.      |\n|",
-        "stderr_excerpt": "[skills] failed to create plugin skill symlink \"C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation\" \u00e2\u2020\u2019 \"C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation\": Error: EPERM: operation not permitted, symlink 'C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation' -> 'C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation'\n[skills] failed to create plugin skill symlink \"C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation\" \u00e2\u2020\u2019 \"C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation\": Error: EPERM: operation not permitted, symlink 'C:\\Users\\Veritas\\AppData\\Roaming\\npm\\node_modules\\openclaw\\dist\\extensions\\browser\\skills\\browser-automation' -> 'C:\\Users\\Veritas\\.openclaw\\plugin-skills\\browser-automation'\n"
+        "stdout_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                       OPENCLAW                       \n \nT  OpenClaw doctor\n|\no  Update ---------------------------------------------------------------+\n|                                                                        |\n|  This install is not a git checkout.                                   |\n|  Run `openclaw update` to update via your package manager (npm/pnpm),  |\n|  then rerun doctor.                                                    |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor changes preview ------------------------------------------------+\n|                                                                         |\n|  Set models.providers.ollama-cloud.models[0].params.num_ctx to 262144   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[1].params.num_ctx to 524288   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[2].params.num_ctx to 999424   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[3].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[4].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|                                                                         |\n+-------------------------------------------------------------------------+\n|\no  Doctor changes preview -----------------------------------+\n|                                                            |\n|  openrouter/auto model configured, enabled automatically.  |\n|                                                            |\n+------------------------------------------------------------+\n|\no  Doctor info ------------------------------------------------------------+\n|                                                                          |\n|  - Personal Codex CLI assets were found, but native Codex-mode OpenClaw  |\n|    agents use isolated per-agent Codex homes.                            |\n|  - Sources: C:\\Users\\Veritas\\.codex and C:\\Users\\Veritas\\.agents\\skills  |\n|    (0 skills, 14 plugins, 1 config file, 0 hook files).                  |\n|  - These assets will not be loaded by the Codex app-server child unless  |\n|    you intentionally promote them.                                       |\n|  - If the Codex plugin is not installed, run `openclaw plugins install   |\n|    npm:@openclaw/codex` first. Then run `openclaw migrate plan codex`    |\n|    to inventory them. Applying that migration copies skills into the     |\n|    current OpenClaw agent workspace; Codex plugins, hooks, and config    |\n|    stay manual-review only.                                              |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ---------------------------------------------------",
+        "stderr_excerpt": ""
       }
     },
     {
@@ -158,19 +193,181 @@
         "returncode": 1,
         "payload": {
           "status": "warning",
-          "generated_at_utc": "2026-05-10T01:46:52Z",
+          "generated_at_utc": "2026-08-27T00:14:02Z",
           "canonical_truth_note": "This report is a boundary-audit aid only. Source files and governance notes remain authoritative.",
           "counts": {
-            "findings": 11,
-            "warnings": 7,
-            "info": 4
+            "findings": 76,
+            "warnings": 71,
+            "info": 5
           },
           "findings": [
             {
-              "path": "backups/",
+              "path": "derived/",
               "severity": "warning",
               "issue": "root directory has no documented active entitlement",
               "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "err.txt",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
+              "path": "graphify-out/",
+              "severity": "warning",
+              "issue": "root directory has no documented active entitlement",
+              "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "lanes",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
+              "path": "media/",
+              "severity": "warning",
+              "issue": "root directory has no documented active entitlement",
+              "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "raw/",
+              "severity": "warning",
+              "issue": "root directory has no documented active entitlement",
+              "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "wf73-postgres-shadow-pilot-metrics.json",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
+              "path": "wf73-postgres-shadow-pilot.json",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
+              "path": "data/evals/",
+              "severity": "warning",
+              "issue": "data/ contains an undocumented durable-derived surface",
+              "recommended_action": "document authority/README or archive after reference check"
+            },
+            {
+              "path": "tmp/apply_oxalpha_config_20260822.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/backfill_band_context.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/band_state_conflict_scan.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/build_graphify_graph.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/build_provenance_map.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/clean_graphify_document_nodes.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catA-retry.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catA-retry2.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catA-retry3.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catA.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catB.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catC-verify.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catC-verify2.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catC.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catD.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-catE.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/cleanup-20260823-closeout.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/debug_remaining_blockers.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/debug_view_instrument_type.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
               "path": "tmp/dump_bands.py",
@@ -179,7 +376,25 @@
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
+              "path": "tmp/extract_blocked_cron_jobs.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "tmp/find_band_refs.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/find_dashboard_technical.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/find_dashboard_technical2.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -203,13 +418,223 @@
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
+              "path": "tmp/graphify_benchmark.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/graphify_health_metrics.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/graphify_lease_run.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/graphify_spot_check_extract.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/inspect_chunk_03.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/inspect_models.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lane_open_probe.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_deep_inspect.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_final_check.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_inspect.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_post_fix_check.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_price_technical_row.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_section_context.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/lin_technical_posture.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/list_isolated_skills.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/llm_extract_skills.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "tmp/market_close_quick.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
+              "path": "tmp/memory_compounding_probe.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/merge_graphify_chunks.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/merge_skills_into_merged.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/normalize_graphify_extract.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/ph5_hub_analysis.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/post813_lane_inspect.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/probe_entry_bands.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/rebuild_clusters_merged.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/reextract_isolated_skills.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/repair_graph_provenance.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/repair_graphify_chunks.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/repair_graphify_edges.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/repair_graphify_source_traceability.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/repair_skill_prefix_nodes.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/stage_active_skills_for_graphify.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/tier_a_query.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/validate_merged_graph.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/wf74_probe_sqlite.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "scripts/__pycache__/",
+              "severity": "info",
+              "issue": "Python runtime cache; non-canonical debris",
+              "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
+            },
+            {
+              "path": "scripts/lib/__pycache__/",
               "severity": "info",
               "issue": "Python runtime cache; non-canonical debris",
               "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
@@ -234,7 +659,7 @@
             }
           ]
         },
-        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-05-10T01:46:52Z\",\n  \"canonical_truth_note\": \"This report is a boundary-audit aid only. Source files and governance notes remain authoritative.\",\n  \"counts\": {\n    \"findings\": 11,\n    \"warnings\": 7,\n    \"info\": 4\n  },\n  \"findings\": [\n    {\n      \"path\": \"backups/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"tmp/dump_bands.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_band_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_disallowed_model_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_disallowed_openclaw_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/find_model_refs.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/market_close_quick.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"scripts/__pycache__/\",\n      \"severity\": \"info\",\n      \"issue\": \"Python runtime cache; non-canonical debris\",\n      \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n    },\n    {\n      \"path\": \"scripts/operators/__pycache__/\",\n      \"severity\": \"info\",\n      \"issue\": \"Python runtime cache; non-canonical debris\",\n      \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n    },\n    {\n      \"path\": \"tmp/workspace-index.sqlite\",\n      \"severity\": \"info\",\n      \"issue\": \"generated SQLite retrieval cache\",\n      \"recommended_action\": \"retain ignored; source Markdown remains canonical\"\n    },\n    {\n      \"path\": \"tmp/veritas-command-center.last-good.html\",\n      \"severity\": \"info\",\n      \"issue\": \"last-known-good dashboard fallback generated by finance chain\",\n      \"recommended_action\": \"retain while run_finance_refresh_chain.py references it as fallback\"\n    }\n  ]\n}\n",
+        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-08-27T00:14:02Z\",\n  \"canonical_truth_note\": \"This report is a boundary-audit aid only. Source files and governance notes remain authoritative.\",\n  \"counts\": {\n    \"findings\": 76,\n    \"warnings\": 71,\n    \"info\": 5\n  },\n  \"findings\": [\n    {\n      \"path\": \"derived/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"err.txt\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"graphify-out/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"lanes\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"media/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"raw/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"wf73-postgres-shadow-pilot-metrics.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"wf73-postgres-shadow-pilot.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"data/evals/\",\n      \"severity\": \"warning\",\n      \"issue\": \"data/ contains an undocumented durable-derived surface\",\n      \"recommended_action\": \"document authority/README or archive after reference check\"\n    },\n    {\n      \"path\": \"tmp/apply_oxalpha_config_20260822.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/backfill_band_context.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/band_state_conflict_scan.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/build_graphify_graph.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/build_provenance_map.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/clean_graphify_document_nodes.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if dura",
         "stderr_excerpt": ""
       }
     },
@@ -245,99 +670,105 @@
         "returncode": 0,
         "payload": {
           "status": "ok",
-          "generated_at_utc": "2026-05-10T01:46:52Z",
+          "generated_at_utc": "2026-08-27T00:14:06Z",
           "canonical_truth_note": "Dashboards summarize and route; canonical investment state remains in owner notes.",
           "canonical_owners": {
-            "deployment_state": "03. Portfolio/Deployment Trigger Sheet.md",
+            "deployment_state": "03. Portfolio/Execution Board.md",
             "portfolio_posture": "03. Portfolio/Portfolio Snapshot.md",
-            "technical_discipline": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
+            "technical_discipline": "03. Portfolio/Execution Board.md",
             "macro_regime": "02. Markets/Macro Regime Dashboard.md",
             "weekly_operating_stance": "05. Intelligence/Weekly Positioning Review.md",
             "risk_doctrine": "07. Risk/Risk Rules.md"
           },
           "counts": {
-            "findings": 0,
+            "findings": 1,
             "warnings": 0,
-            "info": 0
+            "info": 1
           },
-          "findings": []
+          "findings": [
+            {
+              "path": "05. Intelligence/Weekly Positioning Review.md",
+              "severity": "info",
+              "issue": "weekly canonical surface may contain old template/placeholder residue",
+              "recommendation": "inspect and remove old lower-section template residue if it weakens current truth clarity"
+            }
+          ]
         },
-        "stdout_excerpt": "{\n  \"status\": \"ok\",\n  \"generated_at_utc\": \"2026-05-10T01:46:52Z\",\n  \"canonical_truth_note\": \"Dashboards summarize and route; canonical investment state remains in owner notes.\",\n  \"canonical_owners\": {\n    \"deployment_state\": \"03. Portfolio/Deployment Trigger Sheet.md\",\n    \"portfolio_posture\": \"03. Portfolio/Portfolio Snapshot.md\",\n    \"technical_discipline\": \"03. Portfolio/Technical Entry and Invalidation Sheet.md\",\n    \"macro_regime\": \"02. Markets/Macro Regime Dashboard.md\",\n    \"weekly_operating_stance\": \"05. Intelligence/Weekly Positioning Review.md\",\n    \"risk_doctrine\": \"07. Risk/Risk Rules.md\"\n  },\n  \"counts\": {\n    \"findings\": 0,\n    \"warnings\": 0,\n    \"info\": 0\n  },\n  \"findings\": []\n}\n",
+        "stdout_excerpt": "{\n  \"status\": \"ok\",\n  \"generated_at_utc\": \"2026-08-27T00:14:06Z\",\n  \"canonical_truth_note\": \"Dashboards summarize and route; canonical investment state remains in owner notes.\",\n  \"canonical_owners\": {\n    \"deployment_state\": \"03. Portfolio/Execution Board.md\",\n    \"portfolio_posture\": \"03. Portfolio/Portfolio Snapshot.md\",\n    \"technical_discipline\": \"03. Portfolio/Execution Board.md\",\n    \"macro_regime\": \"02. Markets/Macro Regime Dashboard.md\",\n    \"weekly_operating_stance\": \"05. Intelligence/Weekly Positioning Review.md\",\n    \"risk_doctrine\": \"07. Risk/Risk Rules.md\"\n  },\n  \"counts\": {\n    \"findings\": 1,\n    \"warnings\": 0,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"path\": \"05. Intelligence/Weekly Positioning Review.md\",\n      \"severity\": \"info\",\n      \"issue\": \"weekly canonical surface may contain old template/placeholder residue\",\n      \"recommendation\": \"inspect and remove old lower-section template residue if it weakens current truth clarity\"\n    }\n  ]\n}\n",
         "stderr_excerpt": ""
       }
     },
     {
       "id": "workspace_governance_truth_check",
-      "status": "warning",
+      "status": "critical",
       "details": {
-        "returncode": 0,
+        "returncode": 1,
         "payload": {
-          "status": "warning",
-          "generated_at_utc": "2026-05-10T01:46:54Z",
+          "status": "critical",
+          "generated_at_utc": "2026-08-27T00:14:27Z",
           "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
           "canonical_truth_note": "This validator detects governance drift only. Source notes and approved config remain authoritative.",
           "counts": {
-            "findings": 3,
-            "critical": 0,
-            "warnings": 3,
-            "info": 0
+            "findings": 4,
+            "critical": 2,
+            "warnings": 1,
+            "info": 1
           },
           "findings": [
             {
-              "check_id": "telegram_channel_setup_pending",
-              "severity": "warning",
-              "issue": "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven",
-              "recommendation": "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.",
+              "check_id": "wf40_residual_proof_exception_active",
+              "severity": "info",
+              "issue": "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
+              "recommendation": "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
               "evidence": {
-                "channel": "telegram"
+                "active_workflow_found": "64",
+                "wf40_registry_row_found": true
               }
             },
             {
-              "check_id": "telegram_plugin_setup_pending",
-              "severity": "warning",
-              "issue": "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven",
-              "recommendation": "Verify Telegram delivery before relying on it for scheduled automation reports."
+              "check_id": "db_lifecycle_manifest_validation_error",
+              "severity": "critical",
+              "issue": "DB lifecycle manifest reports validation errors",
+              "recommendation": "Fix manifest classification/integrity errors before archive or cleanup decisions.",
+              "evidence": {
+                "validation_errors": [
+                  "tmp/test-vector-memory.sqlite is unclassified"
+                ],
+                "truncated": false
+              }
             },
             {
-              "check_id": "owner_allow_config_unavailable",
-              "severity": "warning",
-              "issue": "Could not read OpenClaw commands.ownerAllowFrom config snippet",
-              "recommendation": "Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.",
+              "check_id": "db_lifecycle_manifest_bad_counts",
+              "severity": "critical",
+              "issue": "DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases",
+              "recommendation": "Stop cleanup automation and inspect the manifest before making archive/delete decisions.",
               "evidence": {
-                "error": "openclaw config get commands.ownerAllowFrom returned rc=1"
+                "unknown_count": 1,
+                "integrity_error_count": 0,
+                "delete_ready_count": 0
+              }
+            },
+            {
+              "check_id": "db_lifecycle_archive_ready_owner_decision",
+              "severity": "warning",
+              "issue": "DB lifecycle manifest has archive-ready candidates awaiting owner decision",
+              "recommendation": "Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.",
+              "evidence": {
+                "archive_ready_count": 3
               }
             }
           ]
         },
-        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-05-10T01:46:54Z\",\n  \"workspace_root\": \"C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\",\n  \"canonical_truth_note\": \"This validator detects governance drift only. Source notes and approved config remain authoritative.\",\n  \"counts\": {\n    \"findings\": 3,\n    \"critical\": 0,\n    \"warnings\": 3,\n    \"info\": 0\n  },\n  \"findings\": [\n    {\n      \"check_id\": \"telegram_channel_setup_pending\",\n      \"severity\": \"warning\",\n      \"issue\": \"Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven\",\n      \"recommendation\": \"Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.\",\n      \"evidence\": {\n        \"channel\": \"telegram\"\n      }\n    },\n    {\n      \"check_id\": \"telegram_plugin_setup_pending\",\n      \"severity\": \"warning\",\n      \"issue\": \"Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven\",\n      \"recommendation\": \"Verify Telegram delivery before relying on it for scheduled automation reports.\"\n    },\n    {\n      \"check_id\": \"owner_allow_config_unavailable\",\n      \"severity\": \"warning\",\n      \"issue\": \"Could not read OpenClaw commands.ownerAllowFrom config snippet\",\n      \"recommendation\": \"Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.\",\n      \"evidence\": {\n        \"error\": \"openclaw config get commands.ownerAllowFrom returned rc=1\"\n      }\n    }\n  ]\n}\n",
+        "stdout_excerpt": "{\n  \"status\": \"critical\",\n  \"generated_at_utc\": \"2026-08-27T00:14:27Z\",\n  \"workspace_root\": \"C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\",\n  \"canonical_truth_note\": \"This validator detects governance drift only. Source notes and approved config remain authoritative.\",\n  \"counts\": {\n    \"findings\": 4,\n    \"critical\": 2,\n    \"warnings\": 1,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"check_id\": \"wf40_residual_proof_exception_active\",\n      \"severity\": \"info\",\n      \"issue\": \"WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active\",\n      \"recommendation\": \"Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.\",\n      \"evidence\": {\n        \"active_workflow_found\": \"64\",\n        \"wf40_registry_row_found\": true\n      }\n    },\n    {\n      \"check_id\": \"db_lifecycle_manifest_validation_error\",\n      \"severity\": \"critical\",\n      \"issue\": \"DB lifecycle manifest reports validation errors\",\n      \"recommendation\": \"Fix manifest classification/integrity errors before archive or cleanup decisions.\",\n      \"evidence\": {\n        \"validation_errors\": [\n          \"tmp/test-vector-memory.sqlite is unclassified\"\n        ],\n        \"truncated\": false\n      }\n    },\n    {\n      \"check_id\": \"db_lifecycle_manifest_bad_counts\",\n      \"severity\": \"critical\",\n      \"issue\": \"DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases\",\n      \"recommendation\": \"Stop cleanup automation and inspect the manifest before making archive/delete decisions.\",\n      \"evidence\": {\n        \"unknown_count\": 1,\n        \"integrity_error_count\": 0,\n        \"delete_ready_count\": 0\n      }\n    },\n    {\n      \"check_id\": \"db_lifecycle_archive_ready_owner_decision\",\n      \"severity\": \"warning\",\n      \"issue\": \"DB lifecycle manifest has archive-ready candidates awaiting owner decision\",\n      \"recommendation\": \"Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.\",\n      \"evidence\": {\n        \"archive_ready_count\": 3\n      }\n    }\n  ]\n}\n",
         "stderr_excerpt": ""
       }
     },
     {
       "id": "windows_firewall",
-      "status": "info",
+      "status": "warning",
       "details": {
-        "profiles": [
-          {
-            "Name": "Domain",
-            "Enabled": 1,
-            "DefaultInboundAction": 0,
-            "DefaultOutboundAction": 0
-          },
-          {
-            "Name": "Private",
-            "Enabled": 1,
-            "DefaultInboundAction": 0,
-            "DefaultOutboundAction": 0
-          },
-          {
-            "Name": "Public",
-            "Enabled": 1,
-            "DefaultInboundAction": 0,
-            "DefaultOutboundAction": 0
-          }
-        ],
-        "returncode": 0,
+        "profiles": [],
+        "returncode": null,
         "stderr_excerpt": ""
       }
     },
@@ -365,9 +796,9 @@
           },
           {
             "displayName": "McAfee",
-            "pathToSignedProductExe": "\\\\?\\C:\\Program Files\\McAfee\\wps\\1.38.166.1\\mc-fw-host.exe",
+            "pathToSignedProductExe": "\\\\?\\C:\\Program Files\\McAfee\\wps\\1.40.161.1\\mc-fw-host.exe",
             "productState": 266240,
-            "timestamp": "Sat, 09 May 2026 06:39:21 GMT"
+            "timestamp": "Sun, 23 Aug 2026 05:49:21 GMT"
           }
         ],
         "defender_stderr_excerpt": "",
@@ -377,38 +808,17 @@
   ],
   "findings": [
     {
-      "severity": "warning",
+      "severity": "info",
       "source": "config.channels",
-      "message": "Chat channels are enabled; intended posture is local Control UI only.",
-      "remediation": "Keep `channels` empty unless channel expansion is intentional.",
+      "message": "Approved chat channel posture is active.",
       "evidence": [
         "telegram"
-      ]
-    },
-    {
-      "severity": "warning",
-      "source": "config.commands.ownerAllowFrom",
-      "message": "Local Control UI sender allowlist is incomplete.",
-      "remediation": "Restore the expected local sender identifiers.",
-      "evidence": [
-        "openclaw-control-ui",
-        "webchat:openclaw-control-ui"
       ]
     },
     {
       "severity": "info",
       "source": "config.browser",
       "message": "Browser plugin is disabled and excluded from the allowlist."
-    },
-    {
-      "severity": "warning",
-      "source": "config.model_runtime",
-      "message": "Default OpenAI model still routes through PI instead of the native Codex runtime.",
-      "remediation": "If native Codex execution is intended, use `openai/<model>` plus `agents.defaults.agentRuntime.id = \"codex\"`.",
-      "evidence": {
-        "model": "openai-codex/gpt-5.5",
-        "agentRuntime.id": null
-      }
     },
     {
       "severity": "info",
@@ -427,55 +837,72 @@
       }
     },
     {
-      "severity": "info",
+      "severity": "warning",
       "source": "openclaw_security_audit_basic",
+      "message": "Command error: timeout after 60s",
+      "remediation": "Verify CLI/runtime health and rerun the audit."
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_basic",
+      "message": "Audit output was not usable JSON: no stdout",
+      "remediation": "Inspect the raw stdout/stderr and rerun the audit."
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_basic",
+      "message": "Audit timed out.",
+      "remediation": "Rerun the audit manually and inspect Gateway health."
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_deep",
+      "message": "Command error: timeout after 90s",
+      "remediation": "Verify CLI/runtime health and rerun the audit."
+    },
+    {
+      "severity": "info",
+      "source": "openclaw_security_audit_deep",
       "message": "Attack surface summary",
       "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway"
     },
     {
       "severity": "warning",
-      "source": "openclaw_security_audit_basic",
+      "source": "openclaw_security_audit_deep",
       "message": "Reverse proxy headers are not trusted",
       "remediation": "Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.",
       "evidence": "gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed."
     },
     {
       "severity": "warning",
-      "source": "openclaw_security_audit_basic",
+      "source": "openclaw_security_audit_deep",
       "message": "Potential multi-user setup detected (personal-assistant model warning)",
       "remediation": "If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\"all\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.",
-      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway."
-    },
-    {
-      "severity": "info",
-      "source": "openclaw_security_audit_deep",
-      "message": "Attack surface summary",
-      "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway"
+      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\n- agents.list.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway."
     },
     {
       "severity": "warning",
       "source": "openclaw_security_audit_deep",
-      "message": "Reverse proxy headers are not trusted",
-      "remediation": "Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.",
-      "evidence": "gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed."
+      "message": "Plugin index includes unpinned npm specs",
+      "remediation": "Pin install specs to exact versions (for example, `@scope/pkg@1.2.3`) for higher supply-chain stability.",
+      "evidence": "Unpinned plugin index install records:\n- codex (@openclaw/codex)\n- kimi (@openclaw/kimi-provider)"
     },
     {
       "severity": "warning",
       "source": "openclaw_security_audit_deep",
-      "message": "Potential multi-user setup detected (personal-assistant model warning)",
-      "remediation": "If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\"all\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.",
-      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway."
+      "message": "Audit timed out.",
+      "remediation": "Rerun the audit manually and inspect Gateway health."
     },
     {
       "severity": "info",
       "source": "skills_check",
       "message": "Skill inventory check completed.",
       "evidence": {
-        "total": 78,
-        "eligible": 34,
-        "modelVisible": 34,
-        "commandVisible": 33,
-        "disabled": 44,
+        "total": 106,
+        "eligible": 69,
+        "modelVisible": 69,
+        "commandVisible": 68,
+        "disabled": 37,
         "blocked": 0,
         "agentFiltered": 0,
         "notInjected": 0,
@@ -495,10 +922,172 @@
       "remediation": "Review the listed findings and decide whether cleanup or documentation is needed.",
       "evidence": [
         {
-          "path": "backups/",
+          "path": "derived/",
           "severity": "warning",
           "issue": "root directory has no documented active entitlement",
           "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "err.txt",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
+          "path": "graphify-out/",
+          "severity": "warning",
+          "issue": "root directory has no documented active entitlement",
+          "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "lanes",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
+          "path": "media/",
+          "severity": "warning",
+          "issue": "root directory has no documented active entitlement",
+          "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "raw/",
+          "severity": "warning",
+          "issue": "root directory has no documented active entitlement",
+          "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "wf73-postgres-shadow-pilot-metrics.json",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
+          "path": "wf73-postgres-shadow-pilot.json",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
+          "path": "data/evals/",
+          "severity": "warning",
+          "issue": "data/ contains an undocumented durable-derived surface",
+          "recommended_action": "document authority/README or archive after reference check"
+        },
+        {
+          "path": "tmp/apply_oxalpha_config_20260822.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/backfill_band_context.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/band_state_conflict_scan.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/build_graphify_graph.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/build_provenance_map.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/clean_graphify_document_nodes.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catA-retry.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catA-retry2.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catA-retry3.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catA.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catB.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catC-verify.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catC-verify2.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catC.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catD.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-catE.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/cleanup-20260823-closeout.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/debug_remaining_blockers.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/debug_view_instrument_type.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
           "path": "tmp/dump_bands.py",
@@ -507,7 +1096,25 @@
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
+          "path": "tmp/extract_blocked_cron_jobs.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "tmp/find_band_refs.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/find_dashboard_technical.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/find_dashboard_technical2.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -531,13 +1138,223 @@
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
+          "path": "tmp/graphify_benchmark.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/graphify_health_metrics.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/graphify_lease_run.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/graphify_spot_check_extract.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/inspect_chunk_03.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/inspect_models.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lane_open_probe.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_deep_inspect.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_final_check.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_inspect.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_post_fix_check.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_price_technical_row.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_section_context.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/lin_technical_posture.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/list_isolated_skills.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/llm_extract_skills.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "tmp/market_close_quick.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
+          "path": "tmp/memory_compounding_probe.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/merge_graphify_chunks.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/merge_skills_into_merged.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/normalize_graphify_extract.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/ph5_hub_analysis.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/post813_lane_inspect.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/probe_entry_bands.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/rebuild_clusters_merged.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/reextract_isolated_skills.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/repair_graph_provenance.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/repair_graphify_chunks.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/repair_graphify_edges.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/repair_graphify_source_traceability.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/repair_skill_prefix_nodes.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/stage_active_skills_for_graphify.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/tier_a_query.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/validate_merged_graph.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/wf74_probe_sqlite.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "scripts/__pycache__/",
+          "severity": "info",
+          "issue": "Python runtime cache; non-canonical debris",
+          "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
+        },
+        {
+          "path": "scripts/lib/__pycache__/",
           "severity": "info",
           "issue": "Python runtime cache; non-canonical debris",
           "recommended_action": "keep ignored or remove when safe; never treat as operating evidence"
@@ -567,67 +1384,70 @@
       "source": "dashboard_truth_lint",
       "message": "dashboard_truth_lint passed cleanly.",
       "evidence": {
-        "findings": 0,
+        "findings": 1,
         "warnings": 0,
-        "info": 0
+        "info": 1
       }
     },
     {
-      "severity": "warning",
+      "severity": "critical",
       "source": "workspace_governance_truth_check",
-      "message": "workspace_governance_truth_check returned warning-grade output.",
-      "remediation": "Review the listed findings and decide whether cleanup or documentation is needed.",
+      "message": "workspace_governance_truth_check returned critical.",
+      "remediation": "Inspect the attached findings before trusting the workspace posture.",
       "evidence": [
         {
-          "check_id": "telegram_channel_setup_pending",
-          "severity": "warning",
-          "issue": "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven",
-          "recommendation": "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.",
+          "check_id": "wf40_residual_proof_exception_active",
+          "severity": "info",
+          "issue": "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
+          "recommendation": "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
           "evidence": {
-            "channel": "telegram"
+            "active_workflow_found": "64",
+            "wf40_registry_row_found": true
           }
         },
         {
-          "check_id": "telegram_plugin_setup_pending",
-          "severity": "warning",
-          "issue": "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven",
-          "recommendation": "Verify Telegram delivery before relying on it for scheduled automation reports."
+          "check_id": "db_lifecycle_manifest_validation_error",
+          "severity": "critical",
+          "issue": "DB lifecycle manifest reports validation errors",
+          "recommendation": "Fix manifest classification/integrity errors before archive or cleanup decisions.",
+          "evidence": {
+            "validation_errors": [
+              "tmp/test-vector-memory.sqlite is unclassified"
+            ],
+            "truncated": false
+          }
         },
         {
-          "check_id": "owner_allow_config_unavailable",
-          "severity": "warning",
-          "issue": "Could not read OpenClaw commands.ownerAllowFrom config snippet",
-          "recommendation": "Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.",
+          "check_id": "db_lifecycle_manifest_bad_counts",
+          "severity": "critical",
+          "issue": "DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases",
+          "recommendation": "Stop cleanup automation and inspect the manifest before making archive/delete decisions.",
           "evidence": {
-            "error": "openclaw config get commands.ownerAllowFrom returned rc=1"
+            "unknown_count": 1,
+            "integrity_error_count": 0,
+            "delete_ready_count": 0
+          }
+        },
+        {
+          "check_id": "db_lifecycle_archive_ready_owner_decision",
+          "severity": "warning",
+          "issue": "DB lifecycle manifest has archive-ready candidates awaiting owner decision",
+          "recommendation": "Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.",
+          "evidence": {
+            "archive_ready_count": 3
           }
         }
       ]
     },
     {
-      "severity": "info",
+      "severity": "warning",
       "source": "windows_firewall",
-      "message": "All Windows Firewall profiles are enabled.",
-      "evidence": [
-        {
-          "Name": "Domain",
-          "Enabled": 1,
-          "DefaultInboundAction": 0,
-          "DefaultOutboundAction": 0
-        },
-        {
-          "Name": "Private",
-          "Enabled": 1,
-          "DefaultInboundAction": 0,
-          "DefaultOutboundAction": 0
-        },
-        {
-          "Name": "Public",
-          "Enabled": 1,
-          "DefaultInboundAction": 0,
-          "DefaultOutboundAction": 0
-        }
-      ]
+      "message": "Could not read firewall profile state.",
+      "remediation": "Inspect Windows Firewall manually.",
+      "evidence": {
+        "error": "timeout after 30s",
+        "parse_error": "no stdout"
+      }
     },
     {
       "severity": "info",

@@ -104,6 +104,15 @@ def test_ledger_builds_neutral_measurement_events() -> None:
         assert payload["summary"]["decision_event_count"] == 2
         assert payload["summary"]["event_type_counts"]["decision_observed"] == 1
         assert payload["summary"]["event_type_counts"]["invalid_due_to_stale_data"] == 1
+        assert payload["summary"]["measurement_grade_count"] == 2
+        assert payload["summary"]["measurement_grade_counts"]["followup_pending"] == 1
+        assert payload["summary"]["measurement_grade_counts"]["stale_data_failure"] == 1
+        assert payload["summary"]["measurement_grade_assignment_status"] == "assigned_measurement_only_durable_v2_append_enabled_review_only"
+        assert payload["summary"]["durable_v2_append_allowed"] is True
+        assert payload["summary"]["durable_v2_append_approval"]["approved_at"] == "2026-06-19"
+        assert payload["summary"]["decision_quality_claim_allowed_now"] is False
+        assert payload["events"][0]["measurement_grade_status"] == "pending_regular_session_followup"
+        assert payload["events"][1]["measurement_grade_status"] == "assigned_measurement_only"
         assert payload["authority_boundary"]["predictive_claim_allowed"] is False
 
 

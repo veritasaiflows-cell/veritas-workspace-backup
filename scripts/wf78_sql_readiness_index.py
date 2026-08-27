@@ -32,11 +32,11 @@ STATE_DB = TMP / "finance-intelligence-state.sqlite"
 DESIGN_GATE = TMP / "sql-500-ticker-expansion-design-gate.json"
 PHASE4_PACKET = TMP / "wf78-phase4-recommendation-packet.json"
 CLEANUP_QUEUE = TMP / "wf78-review-monitor-source-open-cleanup-queue.json"
+PRODUCTION_POLICY_GATE = TMP / "finance-production-grade-policy-gate.json"
 
 SCHEMA = "veritas.wf78_sql_readiness_index.v1"
-EXPECTED_PRODUCTION_TICKERS = 42
 SUPPORTED_TOTAL_TICKER_COUNTS = {100, 200, 300, 400, 500}
-SUPPORTED_REVIEW_MONITOR_COUNTS = {58, 158, 258, 358, 458}
+SUPPORTED_PRODUCTION_TICKER_COUNTS = {0, 42}
 
 AUTHORITY_BOUNDARY: dict[str, bool] = {
     "report_only": True,
@@ -464,10 +464,18 @@ def summarize(readiness_rows: list[dict[str, Any]], promotion_rows: list[dict[st
     phase4 = as_dict(artifacts["phase4_recommendation"].get("payload"))
     cleanup = as_dict(artifacts["cleanup_queue"].get("payload"))
     design_gate = as_dict(artifacts["design_gate"].get("payload"))
+    policy_gate = as_dict(artifacts["production_policy_gate"].get("payload"))
+    policy_summary = as_dict(policy_gate.get("summary"))
+    policy_validation = as_dict(policy_gate.get("validation"))
     return {
         "total_tickers": len(readiness_rows),
         "production_answer_path_count": production,
         "review_monitor_count": review,
+        "production_grade_policy_gate_status": policy_gate.get("status"),
+        "production_grade_policy_validation_status": policy_validation.get("status"),
+        "production_grade_candidate_count": policy_summary.get("production_grade_candidate_count"),
+        "dynamic_production_review_candidate_count": policy_summary.get("dynamic_production_review_candidate_count"),
+        "answer_consumer_cutover_allowed": policy_summary.get("answer_consumer_cutover_allowed"),
         "source_open_ready_count": source_open_ready,
         "blocked_or_repair_count": blocked_or_repair,
         "recommended_pilot_tickers": recommended,
@@ -494,8 +502,19 @@ def validation_checks(report: dict[str, Any], out_json: Path | None = None, out_
 
     add_check(checks, "required_source_db_exists", STATE_DB.exists(), rel(STATE_DB))
     add_check(checks, "total_ticker_count_supported_scaleout", summary.get("total_tickers") in SUPPORTED_TOTAL_TICKER_COUNTS, {"actual": summary.get("total_tickers"), "supported": sorted(SUPPORTED_TOTAL_TICKER_COUNTS)})
-    add_check(checks, "production_answer_path_count_expected", summary.get("production_answer_path_count") == EXPECTED_PRODUCTION_TICKERS, summary.get("production_answer_path_count"))
-    add_check(checks, "review_monitor_count_supported_scaleout", summary.get("review_monitor_count") in SUPPORTED_REVIEW_MONITOR_COUNTS, {"actual": summary.get("review_monitor_count"), "supported": sorted(SUPPORTED_REVIEW_MONITOR_COUNTS)})
+    add_check(checks, "production_policy_gate_ok", summary.get("production_grade_policy_gate_status") == "ok" and summary.get("production_grade_policy_validation_status") == "ok", {
+        "status": summary.get("production_grade_policy_gate_status"),
+        "validation_status": summary.get("production_grade_policy_validation_status"),
+    })
+    add_check(checks, "production_answer_path_count_policy_aligned", summary.get("production_answer_path_count") == summary.get("production_grade_candidate_count"), {
+        "production_answer_path_count": summary.get("production_answer_path_count"),
+        "production_grade_candidate_count": summary.get("production_grade_candidate_count"),
+    })
+    add_check(checks, "production_answer_path_count_supported", summary.get("production_answer_path_count") in SUPPORTED_PRODUCTION_TICKER_COUNTS, {"actual": summary.get("production_answer_path_count"), "supported": sorted(SUPPORTED_PRODUCTION_TICKER_COUNTS)})
+    add_check(checks, "strict_production_fail_closed_when_empty", summary.get("production_answer_path_count") != 0 or summary.get("answer_consumer_cutover_allowed") is False, {
+        "production_answer_path_count": summary.get("production_answer_path_count"),
+        "answer_consumer_cutover_allowed": summary.get("answer_consumer_cutover_allowed"),
+    })
     add_check(checks, "row_counts_consistent", (summary.get("production_answer_path_count") or 0) + (summary.get("review_monitor_count") or 0) == summary.get("total_tickers"), summary)
     add_check(checks, "required_artifacts_present", not summary.get("missing_artifacts"), summary.get("missing_artifacts"))
     add_check(checks, "authority_true_flags_present", all(authority.get(key) is True for key in REQUIRED_TRUE_AUTHORITY_FLAGS), authority)
@@ -550,6 +569,7 @@ def build_report() -> dict[str, Any]:
         "design_gate": artifact_meta(DESIGN_GATE, "json_design_gate", required=True),
         "phase4_recommendation": artifact_meta(PHASE4_PACKET, "json_phase4_recommendation", required=True),
         "cleanup_queue": artifact_meta(CLEANUP_QUEUE, "json_source_open_cleanup_queue", required=True),
+        "production_policy_gate": artifact_meta(PRODUCTION_POLICY_GATE, "json_production_grade_policy_gate", required=True),
     }
 
     readiness_rows: list[dict[str, Any]] = []

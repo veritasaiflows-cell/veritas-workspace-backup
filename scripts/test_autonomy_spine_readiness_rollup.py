@@ -47,7 +47,15 @@ def write_sources(paths: dict[str, Path], *, mature: bool = False) -> None:
     readiness["reconciliation_maturity"] = {"maturity_met": mature}
     write_json(paths["wf87_rollup"], readiness)
     cron = base()
-    cron["summary"] = {"blocked_count": 0, "stale_count": 0, "urgent_attention_count": 0, "missing_expected_artifact_contract_count": 0}
+    cron["summary"] = {
+        "blocked_count": 0,
+        "stale_count": 0,
+        "urgent_attention_count": 0,
+        "requires_attention_count": 0,
+        "implementation_attention_count": 0,
+        "missing_expected_artifact_contract_count": 0,
+        "unregistered_enabled_count": 0,
+    }
     write_json(paths["cron_freshness"], cron)
     advancement = base()
     advancement["summary"] = {"advanced_count": 4, "blocked_count": 0}
@@ -80,7 +88,68 @@ def test_rollup_ready_state_still_requires_owner_review() -> None:
         assert payload["validation"]["status"] == "ok"
 
 
+def test_rollup_accepts_wf87_mature_for_autonomy_field() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths, mature=True)
+        readiness = json.loads(paths["wf87_rollup"].read_text(encoding="utf-8"))
+        readiness["reconciliation_maturity"] = {"mature_for_autonomy": True}
+        write_json(paths["wf87_rollup"], readiness)
+        payload = rollup.build_payload(paths)
+        assert payload["summary"]["reconciliation_mature"] is True
+        assert "reconciliation_maturity_not_met" not in payload["summary"]["blockers"]
+
+
+def test_rollup_ignores_workflow_advancement_self_reference_warning() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths, mature=True)
+        advancement = json.loads(paths["workflow_advancement"].read_text(encoding="utf-8"))
+        advancement["validation"] = {
+            "status": "warning",
+            "errors": [],
+            "warnings": ["source_validation_not_ok:autonomy_spine_rollup:warning"],
+        }
+        write_json(paths["workflow_advancement"], advancement)
+        payload = rollup.build_payload(paths)
+        assert payload["validation"]["status"] == "ok"
+
+
+def test_rollup_treats_monitor_only_stale_cron_as_clean() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths, mature=True)
+        cron = json.loads(paths["cron_freshness"].read_text(encoding="utf-8"))
+        cron["status"] = "warning"
+        cron["summary"]["stale_count"] = 2
+        cron["summary"]["monitor_only_or_stale_count"] = 2
+        cron["summary"]["live_scheduler_last_run_exception_count"] = 2
+        cron["validation"]["warnings"] = ["one_or_more_enabled_jobs_have_stale_artifacts"]
+        write_json(paths["cron_freshness"], cron)
+
+        payload = rollup.build_payload(paths)
+        assert payload["summary"]["cron_clean"] is True
+        assert "cron_cadence_not_clean" not in payload["summary"]["blockers"]
+
+
+def test_rollup_blocks_hard_cron_attention() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths, mature=True)
+        cron = json.loads(paths["cron_freshness"].read_text(encoding="utf-8"))
+        cron["summary"]["requires_attention_count"] = 1
+        write_json(paths["cron_freshness"], cron)
+
+        payload = rollup.build_payload(paths)
+        assert payload["summary"]["cron_clean"] is False
+        assert "cron_cadence_not_clean" in payload["summary"]["blockers"]
+
+
 if __name__ == "__main__":
     test_rollup_stays_continue_accrual_until_thresholds_clear()
     test_rollup_ready_state_still_requires_owner_review()
+    test_rollup_accepts_wf87_mature_for_autonomy_field()
+    test_rollup_ignores_workflow_advancement_self_reference_warning()
+    test_rollup_treats_monitor_only_stale_cron_as_clean()
+    test_rollup_blocks_hard_cron_attention()
     print("autonomy_spine_readiness_rollup_tests_passed")

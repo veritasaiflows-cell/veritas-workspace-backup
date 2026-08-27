@@ -1,165 +1,52 @@
 # OpenClaw Model Deployment Plan
 
-## Purpose
+## Current Status
 
-Define how Veritas should use:
-- the main OpenClaw session
-- spawned OpenClaw sub-sessions
-- Gemini CLI
-- Claude CLI
-- low-cost external research lanes
+This playbook is now a thin deployment-map pointer, not the live model-routing authority.
 
-This plan exists to scale productivity without losing routing discipline, budget discipline, or trust discipline.
+Live model choice is owned by `skills/veritas-model-routing-helper-lanes/SKILL.md`.
+Spawn packet mechanics are owned by `06. Playbooks/Subagent Spawn Handoff Template.md`.
+Verified Opus challenger lanes for serious gates remain owned by `skills/ic-swarm-orchestrator/SKILL.md`.
+Cron schedule and contract design remain owned by `skills/cron-automation-manager/SKILL.md`.
 
-For concurrency structure and lane ownership, also use `06. Playbooks/OpenClaw Parallel Work Plan.md`.
+## Current Baseline
 
-## Supersession note
+- Main session: `openai/gpt-5.6-sol` for truth integration, orchestration, final synthesis, high-stakes finance judgment, ambiguous cross-contract failures, and user-facing final recommendations.
+- Default serious/routine helper: `openai/gpt-5.6-terra` for file-writing implementation helpers, validator/script edits, PM implementation jobs, research, review, and tool-heavy proof work.
+- Cron helper posture: keep deterministic command jobs model-free. Proven narrow `agentTurn` proof/digest/status jobs may use `openai/gpt-5.6-luna` at low reasoning through exact patch packets and canaries. Tool-heavy, authority-sensitive, code-changing, or finance false-green-sensitive cron jobs use Terra; main-session judgment events remain on Sol.
+- Fallback/control posture: `openai/gpt-5.5` is the primary fallback. `openai/gpt-5.4` remains installed as an explicit rollback/control route during migration validation; it is not the default helper.
+- Ollama Cloud: GLM-5.2, Kimi K2.7 Code, MiniMax M3, and DeepSeek V4 Pro are draft/scaffold/challenge helpers until path-specific tool-loop proof expands their role.
+- Claude/Gemini: manual or special challenger lanes only unless the active routing skill and exact provider skill authorize a narrower use.
 
-Updated on 2026-05-06 after Randall's WF39 posture correction.
+## Historical Note
 
-Current posture supersedes the earlier 2026-05-01 default-worker posture. Historical daily notes and audits may still mention older routing decisions as history; this file is the live model-routing plan.
+Earlier May 2026 language in this file defaulted substantial spawned OpenClaw sub-sessions to a GPT-5.5-style high-thinking worker posture and kept Claude/Gemini routing in this playbook. That is superseded by the 2026-06-20 consolidation.
 
-## Core routing ownership
+Reason for consolidation: model routing changed from one static "best helper" default into a resource-aware matrix across GPT-5.5, GPT-5.4, GPT-5.4-mini, Ollama Cloud draft/challenge lanes, and selective Claude/Gemini challengers. Keeping those rules in several docs created contradictory defaults.
 
-Veritas owns:
-- OpenClaw model selection when session-level control is available
-- spawned OpenClaw sub-session model / thinking choice
-- Gemini CLI routing
-- Claude CLI routing when using the local CLI lane
-- escalation decisions across all local model lanes
-
-Randall may still use Claude or lighter external/helper models directly when desired. The operating system should treat those outputs as evidence for Veritas review, not as final queue state or canonical judgment.
-
-## Current live OpenClaw posture
-
-Verified / updated on 2026-05-06:
-- main OpenClaw session posture: live truth surface, workspace-file truth interpreter, orchestrator, QC owner, and final integrator
-- default spawned sub-session model for substantial workspace work: `openai-codex/gpt-5.5` with high-thinking posture when available
-- current stable OpenClaw runtime pin remains `2026.5.4` unless Randall intentionally revisits the runtime stability decision
-- lower-complexity 5.3 Codex lanes are not approved for Veritas-routed workflow use
-- Randall may still use lighter external/manual outputs as evidence for review, but Veritas should not route live workflow work through removed 5.3 Codex lanes
-
-## Codex lane policy
-
-### Main OpenClaw session
-
-Use the main session for:
-- live truth-surface judgment
-- canonical financial database interpretation
-- project selection and queue movement
-- handoff packet creation
-- QC / audit integration
-- final synthesis and closeout
-- quick bounded execution expected to stay under roughly five minutes
-
-The main session is not the durable canonical database. The workspace file layer is the durable canonical financial database; the main session interprets and reconciles it.
-
-### Spawned OpenClaw sub-sessions
-
-Use spawned sessions when work is substantial, detached, multi-step, multi-artifact, broad-inspection, or QA-heavy.
-
-Recommended spawn posture:
-- default model for substantial workspace work: `openai-codex/gpt-5.5`
-- thinking posture: high-thinking when available
-- handoff: explicit file-grounded context packet
-- authority: bounded execution, inspection, draft prep, validation, or audit only
-- not allowed: final queue state, final portfolio/OS judgment, canonical conflict resolution, or canonical finance-note mutation unless a later explicit workflow contract authorizes it
-
-### Direct main-session exception
-
-Direct execution in the main session is acceptable when:
-- the work is quick, reversible, and bounded enough to stay under roughly five minutes
-- an immediate truth fix is safer than spawning
-- the work is final merge / QC after worker or audit evidence
-- spawning would add more friction than value
-
-If meaningful work uses this exception, record the exception in status, continuity, or closeout notes.
-
-### Fallback rule
-
-If `openai-codex/gpt-5.5` is unavailable:
-- keep the same bounded contract
-- record the fallback explicitly
-- do not silently downgrade trust
-- do not revive removed 5.3 Codex helper lanes as Veritas-routed workflow lanes
-
-## Candidate models to adopt only when verified
-
-Potential future Codex models of interest may exist, but catalog rumors and entitlement notes are not proof.
-
-Rule:
-- do not route meaningful work to a candidate model until it is actually verified as exposed and reliable in this environment
-- if a smaller helper posture is needed, reduce scope or use manual external evidence review instead of routing through a removed model
-
-## CLI lane posture
-
-### Gemini CLI
-
-Current posture:
-- Gemini Pro is the preferred CLI implementation/research lane when available
-- Gemini Flash is a bounded audit / contradiction / narrow diagnosis lane
-- Veritas owns routing and integration
-
-Use Gemini for:
-- bounded contradiction checks
-- file-level diagnosis
-- narrow implementation prep
-- broad research or implementation only when the model and contract are fit for the task
-
-### Claude CLI
-
-Current posture:
-- Claude is the hard-judgment CLI lane when available
-- use higher effort for trust/contract adjudication or high-stakes review
-
-Use Claude for:
-- judgment passes
-- cross-artifact synthesis
-- bounded review of machine contradictions
-- selective implementation only when coherence and judgment both matter
-
-## External low-cost lanes
-
-Use low-cost external lanes as:
-- external web research
-- thesis challenge passes
-- macro / policy / event-risk context
-- manual helper evidence supplied by Randall
-
-Cheap lanes gather evidence or diagnose. They do not become canonical truth by themselves.
-
-## Limits / usage discipline
-
-Until local CLIs expose reliable remaining-limit signals:
-- use model/effort discipline as the control layer
-- reserve high-cost judgment lanes for real ambiguity or high consequence
-- reserve Gemini Flash / cheaper lanes for bounded tasks only
-- keep OpenClaw spawned subagents as the primary workspace execution lane for substantial work
-
-## Current deployment baseline
-
-Available posture:
-- Main OpenClaw: live truth surface / final integrator
-- OpenClaw spawned sub-sessions: `openai-codex/gpt-5.5` high-thinking by default for substantial workspace work when available
-- Claude CLI: judgment / contract / challenge lane
-- Gemini Pro: preferred implementation / broad research CLI lane when available
-- Gemini Flash: bounded audit / contradiction / diagnosis lane
-- external research lanes: evidence only
-
-## Durable rule
+## Durable Rule
 
 Scale productivity by splitting lanes deliberately:
-- OpenClaw main = truth surface, orchestration, QC, final integration
-- OpenClaw spawned subagents = substantial bounded workspace execution
-- Claude CLI = hard-judgment review / challenge lane
-- Gemini Pro = implementation or broad research lane when available
-- Gemini Flash = cheap bounded audit / diagnosis lane
-- external research = evidence intake only
 
-More models do not help unless routing discipline stays stronger than model enthusiasm.
+- OpenClaw main = truth surface, orchestration, QC, final integration.
+- GPT-5.6 Terra helpers = default serious and routine implementation, research, review, and reliable tool/write work.
+- GPT-5.6 Luna cron helpers = proven deterministic proof, digest, ledger, packet, and status `agentTurn` jobs at low reasoning; model-free command jobs stay model-free.
+- GPT-5.5 = primary fallback; GPT-5.4 = explicit rollback/control route.
+- Ollama helpers = untrusted draft, scaffold, formatting, long-context digestion, and challenge lanes until smoke proof expands trust.
+- Special challenger lanes = deliberate escalation only when the work benefits from the extra cost or provider-specific judgment.
 
-## Manual-use exception
+More models only help if routing discipline stays stronger than model enthusiasm.
 
-Randall may still bring outputs from lighter manual helper models back to Veritas for QA, audits, reports, judgment, and integration.
+## Boundaries
 
-That is explicitly different from Veritas routing those models as workflow lanes.
+No helper model, cron model, or challenger lane may infer:
+
+- capital deployment approval
+- paper/live order approval
+- account, brokerage, credential, or money-movement authority
+- portfolio/canon mutation authority
+- cron schedule mutation authority
+- customer/public output approval
+- final queue movement or final closeout authority
+
+Generated/helper output remains evidence until Veritas main verifies it against live files, source artifacts, validators, and owner surfaces.

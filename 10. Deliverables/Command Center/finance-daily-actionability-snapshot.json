@@ -1,0 +1,289 @@
+{
+  "schema_version": "finance_daily_actionability_snapshot.v1",
+  "generated_at_utc": "2026-06-18T20:51:26Z",
+  "operating_window": "post_close",
+  "daily_packet_window": "post_close",
+  "market_data_as_of": "2026-06-18T20:29:01Z",
+  "next_refresh_due": "2026-06-19T14:20:00Z",
+  "latest_required_input_generated_at_utc": "2026-06-18T20:51:11Z",
+  "snapshot_newer_than_latest_required_input": true,
+  "actionability_status": "review_only_actionability",
+  "actionability_mode": "review_only",
+  "actionability_permission": "review_only",
+  "actionability_allowed": true,
+  "actionability_reason": "Capital review buckets exist, but execution remains owner-gated.",
+  "refresh_blockers": [],
+  "capital_buckets": {
+    "deployable_now": {
+      "count": 0,
+      "tickers": []
+    },
+    "owner_review": {
+      "count": 8,
+      "tickers": [
+        "GOOG",
+        "ITA",
+        "LIN",
+        "NVDA",
+        "PH",
+        "RTX",
+        "VRT",
+        "XLB"
+      ]
+    },
+    "pullback_only": {
+      "count": 4,
+      "tickers": [
+        "ETN",
+        "GS",
+        "JPM",
+        "MSFT"
+      ]
+    },
+    "below_stop": {
+      "count": 11,
+      "tickers": [
+        "AMZN",
+        "CME",
+        "CVX",
+        "LMT",
+        "LNG",
+        "META",
+        "NFLX",
+        "PLTR",
+        "TMUS",
+        "XLC",
+        "XLE"
+      ]
+    },
+    "blocked_or_stale": {
+      "count": 0,
+      "items": []
+    },
+    "watch_research": {
+      "count": 15,
+      "tickers": [
+        "AMD",
+        "CAT",
+        "ECL",
+        "GE",
+        "LLY",
+        "PAVE",
+        "VAW",
+        "VMC",
+        "VXUS",
+        "WMB",
+        "XLF",
+        "XLI",
+        "BKNG",
+        "BRK.B",
+        "XOM"
+      ]
+    }
+  },
+  "deployable_now_count": 0,
+  "owner_review_count": 8,
+  "pullback_only_count": 4,
+  "below_stop_count": 11,
+  "blocked_or_stale_count": 0,
+  "fundamentals_status": "warning",
+  "fundamentals_warning_count": 10,
+  "fundamentals_critical_count": 0,
+  "fundamentals_caveats": [
+    {
+      "code": "sec_foreign_issuer_ir_required",
+      "classification": "foreign_issuer_ir_reconciliation_required",
+      "tickers": [
+        "ASML",
+        "SAP",
+        "TSM"
+      ],
+      "ticker_count": 3,
+      "source_open_required": true,
+      "answer_caveat": "Do not present SEC-clean fundamental confidence until company IR, 6-K, or IFRS reconciliation is source-opened."
+    },
+    {
+      "code": "sec_lag_wait",
+      "classification": "sec_companyfacts_lag_wait",
+      "tickers": [
+        "BF-B",
+        "DECK",
+        "EA",
+        "MCK"
+      ],
+      "ticker_count": 4,
+      "source_open_required": false,
+      "answer_caveat": "Disclose that local aggregator period is ahead of SEC companyfacts; use as lag caveat, not a hard stale-data failure."
+    },
+    {
+      "code": "sec_manual_period_review_required",
+      "classification": "manual_period_reconciliation_required",
+      "tickers": [
+        "BBY",
+        "DE",
+        "GD"
+      ],
+      "ticker_count": 3,
+      "source_open_required": true,
+      "answer_caveat": "Disclose that the latest SEC period needs manual reconciliation before decision-grade use."
+    }
+  ],
+  "macro_status": "warning",
+  "macro_posture": "defensive_review_bias",
+  "macro_caveat": "Macro spine is warning-class defensive-review context; use it to raise evidence burden and no-chase discipline, not as a forecast or trade signal.",
+  "energy_status": "warning",
+  "energy_caveat": "Energy supply answers must disclose Baker Hughes official-source fallback when using public republisher rig-count data.",
+  "source_freshness_status": "manual_dependency",
+  "source_trust_level": "review_required",
+  "stale_required_sources": [],
+  "finance_warning_router": {
+    "status": "warning",
+    "blocking_section_count": 0,
+    "caveat_section_count": 4,
+    "caveat_sections": [
+      "fundamentals",
+      "macro_signal",
+      "energy_supply",
+      "escalation_consumer"
+    ],
+    "customer_output_allowed": false
+  },
+  "daily_review_stale": false,
+  "market_intelligence_stale": false,
+  "required_inputs": {
+    "dashboard": {
+      "name": "dashboard",
+      "path": "tmp/dashboard-data.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:51:11Z",
+      "age_hours": 0.0,
+      "status": null
+    },
+    "deployment": {
+      "name": "deployment",
+      "path": "tmp/deployment-check.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:29:01Z",
+      "age_hours": 0.37,
+      "status": "ok"
+    },
+    "fundamentals": {
+      "name": "fundamentals",
+      "path": "tmp/fundamental-metrics-validation.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:26:40Z",
+      "age_hours": 0.41,
+      "status": "warning"
+    },
+    "macro": {
+      "name": "macro",
+      "path": "tmp/macro-signal-spine.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:27:41Z",
+      "age_hours": 0.4,
+      "status": "warning"
+    },
+    "energy": {
+      "name": "energy",
+      "path": "tmp/macro-energy-supply.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:27:55Z",
+      "age_hours": 0.39,
+      "status": "warning"
+    },
+    "warning_router": {
+      "name": "warning_router",
+      "path": "tmp/finance-evidence-warning-router.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T05:17:02Z",
+      "age_hours": 15.57,
+      "status": "warning"
+    },
+    "daily_review": {
+      "name": "daily_review",
+      "path": "tmp/daily-review-objects-post-close.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:29:18Z",
+      "age_hours": 0.37,
+      "status": null
+    },
+    "market_intelligence": {
+      "name": "market_intelligence",
+      "path": "tmp/market-intelligence-events-post-close.json",
+      "exists": true,
+      "generated_at_utc": "2026-06-18T20:29:15Z",
+      "age_hours": 0.37,
+      "status": null
+    }
+  },
+  "proof_artifacts": {
+    "dashboard": "tmp/dashboard-data.json",
+    "deployment": "tmp/deployment-check.json",
+    "fundamentals": "tmp/fundamental-metrics-validation.json",
+    "macro": "tmp/macro-signal-spine.json",
+    "energy": "tmp/macro-energy-supply.json",
+    "warning_router": "tmp/finance-evidence-warning-router.json",
+    "daily_review": "tmp/daily-review-objects-post-close.json",
+    "market_intelligence": "tmp/market-intelligence-events-post-close.json"
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "capital_review_is_owner_gated": true,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sql_canon_promotion_allowed": false,
+    "customer_or_public_output_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_notes": {
+    "deployment_summary_keys": [
+      "almost",
+      "below_stop",
+      "bench",
+      "blocked",
+      "deployable",
+      "entry_policy_review",
+      "error",
+      "promotion_review",
+      "watch"
+    ],
+    "stale_daily_packet_hours": 24.0,
+    "window_packet_files": {
+      "pre_market": {
+        "daily_review": "daily-review-objects-morning.json",
+        "market_intelligence": "market-intelligence-events-morning.json"
+      },
+      "morning": {
+        "daily_review": "daily-review-objects-morning.json",
+        "market_intelligence": "market-intelligence-events-morning.json"
+      },
+      "midday": {
+        "daily_review": "daily-review-objects-morning.json",
+        "market_intelligence": "market-intelligence-events-morning.json"
+      },
+      "post_close": {
+        "daily_review": "daily-review-objects-post-close.json",
+        "market_intelligence": "market-intelligence-events-post-close.json"
+      },
+      "after_hours": {
+        "daily_review": "daily-review-objects-post-close.json",
+        "market_intelligence": "market-intelligence-events-post-close.json"
+      },
+      "post_earnings": {
+        "daily_review": "daily-review-objects-post-earnings.json",
+        "market_intelligence": "market-intelligence-events-post-earnings.json"
+      },
+      "sunday": {
+        "daily_review": "daily-review-objects-sunday.json",
+        "market_intelligence": "market-intelligence-events-sunday.json"
+      }
+    },
+    "serving_purpose": "Finance Command Center answers capital/actionability review. PM cockpit owns workflows, lanes, handoffs, sources, and non-finance state.",
+    "pm_cockpit_url": "http://127.0.0.1:8765/"
+  }
+}

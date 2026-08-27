@@ -18,6 +18,7 @@ from market_data_utils import atomic_write_json
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT = ROOT / "tmp" / "portfolio-mutation-proposals" / "current-capital-deployment-recommendations.json"
 DEFAULT_OUT = ROOT / "tmp" / "capital-deployment-recommendation-validation.json"
+DEFAULT_WF78_CAPITAL_QUEUE = ROOT / "tmp" / "wf78-capital-review-queue.json"
 
 FORBIDDEN_EXECUTION_LANGUAGE = {
     "trade_order": re.compile(r"\b(place|submit|execute)\s+(?:a\s+)?(?:trade|order)\b", re.IGNORECASE),
@@ -54,6 +55,36 @@ def load_bundle(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError("capital recommendation bundle must be a JSON object")
     return data
+
+
+def as_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return round(float(value), 2)
+    except (TypeError, ValueError):
+        return None
+
+
+def wf78_band_index(path: Path = DEFAULT_WF78_CAPITAL_QUEUE) -> dict[str, dict[str, float | None]]:
+    try:
+        payload = load_bundle(path)
+    except (FileNotFoundError, json.JSONDecodeError, ValueError):
+        return {}
+    out: dict[str, dict[str, float | None]] = {}
+    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        ticker = str(row.get("ticker") or "").strip().upper()
+        band = row.get("written_band") if isinstance(row.get("written_band"), dict) else {}
+        if ticker and band:
+            out[ticker] = {
+                "entry_band_low": as_float(band.get("entry_band_low")),
+                "entry_band_high": as_float(band.get("entry_band_high")),
+                "stop_or_invalidation": as_float(band.get("stop_or_invalidation")),
+            }
+    return out
 
 
 def walk_strings(value: Any, path: str = "$") -> list[tuple[str, str]]:
@@ -106,7 +137,7 @@ def validate_top_level(bundle: dict[str, Any], findings: list[dict[str, Any]]) -
         findings.append({"severity": "critical", "field": "authority.blocked_scope", "issue": "must explicitly keep trade/account actions blocked"})
 
 
-def validate_packet(packet: dict[str, Any], index: int, findings: list[dict[str, Any]]) -> None:
+def validate_packet(packet: dict[str, Any], index: int, findings: list[dict[str, Any]], wf78_bands: dict[str, dict[str, float | None]]) -> None:
     schema_result = schema_validator.validate_packet(packet)
     for error in schema_result.get("errors") or []:
         findings.append({"severity": "critical", "packet_index": index, "issue": "schema error", "detail": error})
@@ -140,6 +171,24 @@ def validate_packet(packet: dict[str, Any], index: int, findings: list[dict[str,
 
     technical_gate = packet.get("technical_gate")
     if isinstance(technical_gate, dict):
+        ticker = str(packet.get("ticker") or packet.get("ticker_or_scope") or "").strip().upper()
+        if technical_gate.get("band_source") == "wf78_capital_review_queue" and ticker in wf78_bands:
+            expected = wf78_bands[ticker]
+            actual = {
+                "entry_band_low": as_float(technical_gate.get("current_band_low")),
+                "entry_band_high": as_float(technical_gate.get("current_band_high")),
+                "stop_or_invalidation": as_float(technical_gate.get("stop_or_invalidation")),
+            }
+            if actual != expected:
+                findings.append({
+                    "severity": "critical",
+                    "packet_index": index,
+                    "field": "technical_gate",
+                    "issue": "technical gate claims wf78_capital_review_queue but does not match the current WF78 queue band",
+                    "ticker": ticker,
+                    "expected": expected,
+                    "actual": actual,
+                })
         entry_status = technical_gate.get("entry_band_status")
         below_stop = technical_gate.get("below_stop")
         if entry_status == "BELOW_STOP" and below_stop is not True:
@@ -268,6 +317,7 @@ def validate_text(bundle: dict[str, Any], findings: list[dict[str, Any]]) -> Non
 def build_report(path: Path) -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     bundle = load_bundle(path)
+    wf78_bands = wf78_band_index()
     proposals = bundle.get("proposals")
     if not isinstance(proposals, list):
         findings.append({"severity": "critical", "issue": "bundle.proposals must be a list"})
@@ -275,7 +325,7 @@ def build_report(path: Path) -> dict[str, Any]:
     validate_top_level(bundle, findings)
     for index, packet in enumerate(proposals, start=1):
         if isinstance(packet, dict):
-            validate_packet(packet, index, findings)
+            validate_packet(packet, index, findings, wf78_bands)
         else:
             findings.append({"severity": "critical", "packet_index": index, "issue": "proposal item must be an object"})
     validate_text(bundle, findings)

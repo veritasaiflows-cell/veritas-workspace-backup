@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SEC Evidence Review Practice Lab</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #15202b;
+      --muted: #596574;
+      --paper: #f7f8fa;
+      --panel: #ffffff;
+      --line: #d9dee7;
+      --accent: #0f766e;
+      --accent-2: #2457a6;
+      --warn: #9a6700;
+      --bad: #a53b3b;
+      --good: #267047;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    .skip {
+      position: absolute;
+      left: -999px;
+      top: 8px;
+      background: var(--ink);
+      color: white;
+      padding: 8px 10px;
+      z-index: 10;
+    }
+    .skip:focus { left: 8px; }
+    header {
+      background: #101820;
+      color: white;
+      padding: 22px clamp(16px, 4vw, 46px);
+      border-bottom: 4px solid var(--accent);
+    }
+    header h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.45rem, 3vw, 2.35rem);
+      letter-spacing: 0;
+    }
+    header p { margin: 0; max-width: 980px; color: #dbe4ee; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+      min-height: calc(100vh - 112px);
+    }
+    nav {
+      border-right: 1px solid var(--line);
+      background: #eef2f7;
+      padding: 18px;
+    }
+    nav h2, .workspace h2 { font-size: 1rem; margin: 0 0 10px; }
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 6px 0;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      text-align: left;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .nav-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      box-shadow: inset 4px 0 0 var(--accent);
+      font-weight: 700;
+    }
+    .workspace { padding: clamp(16px, 4vw, 34px); }
+    .band {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 82px;
+    }
+    .metric strong { display: block; font-size: 1.4rem; }
+    .lesson, .interaction, .review-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: clamp(14px, 3vw, 22px);
+      margin-bottom: 16px;
+    }
+    .interaction h3 { margin-top: 0; }
+    .choice, .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin: 8px 0;
+      background: #fbfcfe;
+      min-height: 44px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font: inherit;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    button.primary, button.secondary {
+      min-height: 42px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+    button.secondary { background: white; color: var(--ink); }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f7faf8;
+    }
+    .result.good { border-color: var(--good); }
+    .result.bad { border-color: var(--bad); }
+    .boundary {
+      border-left: 5px solid var(--warn);
+      background: #fff8e5;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+    .progress {
+      height: 12px;
+      background: #dfe5ed;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress span { display: block; height: 100%; background: var(--accent-2); width: 0%; }
+    code { background: #eef2f7; padding: 2px 4px; border-radius: 4px; }
+    @media (max-width: 820px) {
+      main { grid-template-columns: 1fr; }
+      nav { border-right: 0; border-bottom: 1px solid var(--line); }
+      .band { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to training workspace</a>
+  <header>
+    <h1>SEC Evidence Review Practice Lab</h1>
+    <p>Practice module for reviewing SEC/EDGAR evidence packets without treating filings, tool output, or training completion as portfolio, canon, trade, account, or capital authority.</p>
+  </header>
+  <main>
+    <nav aria-label="Training sections">
+      <h2>Sections</h2>
+      <button class="nav-button" type="button" data-view="briefing" aria-pressed="true">Briefing <span aria-hidden="true">&gt;</span></button>
+      <button class="nav-button" type="button" data-view="practice" aria-pressed="false">Practice <span aria-hidden="true">&gt;</span></button>
+      <button class="nav-button" type="button" data-view="review" aria-pressed="false">Review <span aria-hidden="true">&gt;</span></button>
+      <button class="nav-button" type="button" data-view="events" aria-pressed="false">Events <span aria-hidden="true">&gt;</span></button>
+    </nav>
+    <section class="workspace" id="workspace" tabindex="-1">
+      <div class="band" aria-label="Training status">
+        <div class="metric"><strong id="scoreText">0%</strong><span>score</span></div>
+        <div class="metric"><strong id="doneText">0/9</strong><span>completed</span></div>
+        <div class="metric"><strong id="eventText">0</strong><span>xAPI events</span></div>
+      </div>
+      <div class="progress" id="progressShell" role="progressbar" aria-label="Completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressBar"></span></div>
+      <div id="announce" aria-live="polite" class="result" hidden></div>
+      <div id="view"></div>
+    </section>
+  </main>
+  <script>
+    const DATA = {"schema": "veritas.interactive_training_module.v1", "module_id": "sec-evidence-review-practice", "title": "SEC Evidence Review Practice Lab", "audience": "Randall internal finance research operator training", "summary": "Practice module for reviewing SEC/EDGAR evidence packets without treating filings, tool output, or training completion as portfolio, canon, trade, account, or capital authority.", "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false, "live_sec_retrieval_approved": false, "venv_rebuild_approved": false, "portfolio_canon_mutation_approved": false, "trade_account_action_approved": false, "capital_deployment_approved": false}, "learning_objectives": ["Classify SEC filings by evidence use without overstating decision authority.", "Check SEC environment readiness before any evidence packet run.", "Separate official-source evidence from portfolio/canon mutation or trade approval.", "Identify freshness, source, and User-Agent failures that block evidence use."], "lessons": [{"id": "sec-evidence-role", "title": "What SEC Evidence Can And Cannot Do", "body": "SEC filings are official-source evidence for research. They can support a later finance review, but they do not approve portfolio-note edits, capital deployment, paper/live orders, account action, or owner approval.", "key_points": ["10-K and 10-Q filings support fundamentals and risk review.", "8-K filings support event freshness and material updates.", "DEF 14A, 13D/13G, and insider filings support governance and ownership review.", "Evidence packets are inputs to judgment, not execution authority."]}, {"id": "sec-environment-gate", "title": "Environment Gate", "body": "Before relying on SEC evidence tooling, run the local environment audit. It proves the SEC venv exists, imports work, expected methods are exposed, the User-Agent is real, and the docs preserve the review-only boundary.", "key_points": ["Use `python scripts\\sec_env_audit_validator.py --write --validate` before packet generation.", "The expected User-Agent is `Veritas OpenClaw Research veritasaiflows@gmail.com`.", "A clean audit still does not approve live retrieval, finance mutation, or account action."]}, {"id": "review-lane-handoff", "title": "Review Lane Handoff", "body": "A clean SEC evidence packet should move into a review lane with source freshness, filing type, conflict notes, and downstream authority flags. If evidence is stale, missing, contradictory, or produced with a broken environment, stop and repair proof first.", "key_points": ["Name the ticker, filing type, filing date, source URL, and producer proof.", "Mark stale or contradictory evidence as review debt, not as a recommendation.", "Keep trade/account/capital and canon mutation flags false unless a separate gate applies."]}], "interactions": [{"id": "filing-purpose-match", "type": "multiple_choice", "title": "Match Filing To Use", "prompt": "Which filing is the best first source for annual audited business, risk, and financial statement review?", "choices": [{"id": "ten-k", "text": "10-K", "correct": true, "feedback": "Correct. The 10-K is the annual audited filing and a primary fundamentals/risk source."}, {"id": "eight-k", "text": "8-K", "correct": false, "feedback": "8-Ks are important for material events, but not the first annual fundamentals source."}, {"id": "def-fourteen-a", "text": "DEF 14A", "correct": false, "feedback": "Proxy statements are useful for governance, compensation, and voting matters."}], "xapi_object": "activity/filing-purpose-match"}, {"id": "environment-preflight", "type": "checklist", "title": "SEC Evidence Preflight", "prompt": "Check each item that must be true before treating a local SEC packet as usable review evidence.", "checklist_items": ["SEC venv exists and imports cleanly", "Expected SEC methods are exposed", "User-Agent is real and not a placeholder", "Packet includes filing date and source lineage", "Authority flags remain review-only"], "xapi_object": "activity/environment-preflight"}, {"id": "authority-boundary-check", "type": "multiple_choice", "title": "Authority Boundary Check", "prompt": "A packet finds a fresh 10-Q and clean company facts. What does that approve?", "choices": [{"id": "research-only", "text": "Review-only research evidence for a later finance judgment.", "correct": true, "feedback": "Correct. Evidence supports judgment but does not approve mutation or execution."}, {"id": "portfolio-edit", "text": "Immediate portfolio/canon edits because the source is official.", "correct": false, "feedback": "Official source quality does not bypass the separate gated apply path."}, {"id": "trade-order", "text": "A paper or live trade because SEC data is fresh.", "correct": false, "feedback": "Fresh evidence never creates paper/live/account authority."}], "xapi_object": "activity/authority-boundary-check"}, {"id": "stale-evidence-scenario", "type": "scenario", "title": "Stale Evidence Scenario", "prompt": "You open an SEC packet and see the latest 10-Q field is missing while the summary still claims the evidence is ready. Write the safe operator response.", "expected": "Mark the packet as blocked or warning-grade, identify the missing 10-Q evidence, rerun or repair the SEC proof path, and do not use it for a material recommendation until source freshness is clean.", "rubric": ["Names the missing or stale evidence.", "Blocks or downgrades the packet instead of smoothing it over.", "Calls for rerun/repair proof before material use.", "Does not infer finance, canon, or execution authority."], "xapi_object": "activity/stale-evidence-scenario"}, {"id": "conflict-review-scenario", "type": "scenario", "title": "Conflict Review Scenario", "prompt": "A generated summary says revenue accelerated, but the 10-Q source line shows a decline. What should the review note say?", "expected": "Treat the official filing/source line as the evidence anchor, flag the generated summary conflict, and route the item for review or repair before it influences a recommendation.", "rubric": ["Uses official filing/source line as anchor.", "Flags generated-summary conflict explicitly.", "Routes repair or review before recommendation use.", "Avoids hiding uncertainty."], "xapi_object": "activity/conflict-review-scenario"}, {"id": "user-agent-check", "type": "multiple_choice", "title": "User-Agent Gate", "prompt": "Which User-Agent state is acceptable before SEC evidence retrieval is considered?", "choices": [{"id": "real-contact", "text": "Veritas OpenClaw Research veritasaiflows@gmail.com", "correct": true, "feedback": "Correct. The workspace expects a real research identity and contact."}, {"id": "placeholder", "text": "my-app", "correct": false, "feedback": "Placeholder identity is not acceptable for SEC retrieval."}, {"id": "blank", "text": "Blank or omitted User-Agent", "correct": false, "feedback": "Blank identity fails the SEC environment gate."}], "xapi_object": "activity/user-agent-check"}, {"id": "boundary-ack", "type": "boundary_ack", "title": "SEC Boundary Acknowledgement", "prompt": "Confirm this module is internal SEC evidence review training only and does not approve live SEC retrieval, venv rebuild, portfolio/canon mutation, capital deployment, paper/live orders, account action, or owner approval.", "expected": "I confirm this is internal SEC evidence review training only.", "xapi_object": "activity/boundary-ack"}, {"id": "handoff-checklist", "type": "checklist", "title": "Review Handoff Checklist", "prompt": "Check every field that belongs in a clean SEC evidence handoff.", "checklist_items": ["Ticker or entity identifier", "Filing type and filing date", "Source URL or accession pointer", "Producer script/proof path", "Freshness/conflict status", "Review-only authority flags"], "xapi_object": "activity/handoff-checklist"}, {"id": "operator-reflection", "type": "reflection", "title": "Operator Reflection", "prompt": "After passing this module, what is the next safe use of SEC evidence and what remains blocked?", "rubric": ["Names review packet or finance research support as safe use.", "States live retrieval requires its own approved run path.", "Keeps portfolio/canon mutation and paper/live/account action blocked.", "Mentions freshness/conflict proof before material recommendations."], "xapi_object": "activity/operator-reflection"}], "xapi": {"activity_id": "https://veritas.local/training/sec-evidence-review-practice", "verbs": ["answered", "completed", "failed", "passed", "reviewed_boundary", "started"]}};
+    const STORE_KEY = "veritas.training." + DATA.module_id;
+    const LEDGER_ENABLED_KEY = "veritas.training.xapiLedger.enabled";
+    const LEDGER_ENDPOINT_KEY = "veritas.training.xapiLedger.endpoint";
+    const state = JSON.parse(localStorage.getItem(STORE_KEY) || '{"answers":{},"events":[],"view":"briefing"}');
+    const scorm = { api: null, initialized: false, completed: false, lastError: "0" };
+
+    function findScormApi(win) {
+      let current = win;
+      for (let depth = 0; depth < 8 && current; depth += 1) {
+        if (current.API && typeof current.API.LMSInitialize === "function") return current.API;
+        if (current.parent && current.parent !== current) current = current.parent;
+        else break;
+      }
+      if (win.opener && win.opener.API && typeof win.opener.API.LMSInitialize === "function") return win.opener.API;
+      return null;
+    }
+
+    function scormInitialize() {
+      if (scorm.initialized) return true;
+      scorm.api = findScormApi(window);
+      if (!scorm.api) return false;
+      try {
+        scorm.initialized = scorm.api.LMSInitialize("") === "true";
+        if (scorm.initialized) {
+          scorm.api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+          scorm.api.LMSSetValue("cmi.core.score.min", "0");
+          scorm.api.LMSSetValue("cmi.core.score.max", "100");
+          scorm.api.LMSCommit("");
+        }
+      } catch (error) {
+        scorm.lastError = String(error);
+        scorm.initialized = false;
+      }
+      return scorm.initialized;
+    }
+
+    function scormSetValue(key, value) {
+      if (scorm.completed) return false;
+      if (!scormInitialize()) return false;
+      try {
+        return scorm.api.LMSSetValue(key, String(value)) === "true";
+      } catch (error) {
+        scorm.lastError = String(error);
+        return false;
+      }
+    }
+
+    function scormCommit() {
+      if (scorm.completed) return false;
+      if (!scorm.initialized || !scorm.api) return false;
+      try {
+        return scorm.api.LMSCommit("") === "true";
+      } catch (error) {
+        scorm.lastError = String(error);
+        return false;
+      }
+    }
+
+    function scormSyncStatus(done, pct, rawScore) {
+      if (scorm.completed) {
+        return;
+      }
+      const status = done >= DATA.interactions.length ? (rawScore >= 80 ? "passed" : "completed") : "incomplete";
+      scormSetValue("cmi.core.lesson_status", status);
+      scormSetValue("cmi.core.score.raw", rawScore);
+      scormSetValue("cmi.core.lesson_location", state.view || "briefing");
+      scormSetValue("cmi.suspend_data", JSON.stringify({ answers: state.answers, event_count: state.events.length }).slice(0, 3900));
+      scormCommit();
+    }
+
+    function scormFinish(passed, rawScore) {
+      if (scorm.completed) return;
+      scormSetValue("cmi.core.lesson_status", passed ? "passed" : "completed");
+      scormSetValue("cmi.core.score.raw", rawScore);
+      scormSetValue("cmi.core.lesson_location", state.view || "review");
+      scormSetValue("cmi.suspend_data", JSON.stringify({ answers: state.answers, event_count: state.events.length }).slice(0, 3900));
+      scormCommit();
+      if (scorm.initialized && scorm.api) {
+        try { scorm.api.LMSFinish(""); } catch (error) { scorm.lastError = String(error); }
+      }
+      scorm.completed = true;
+    }
+
+    function save() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      updateStatus();
+    }
+
+    function localLedgerEnabled() {
+      return localStorage.getItem(LEDGER_ENABLED_KEY) === "true";
+    }
+
+    function localLedgerEndpoint() {
+      return localStorage.getItem(LEDGER_ENDPOINT_KEY) || "http://127.0.0.1:8766/xapi";
+    }
+
+    function statement(verb, objectId, result) {
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
+        timestamp: new Date().toISOString(),
+        actor: { name: "local learner", account: { homePage: "https://veritas.local", name: "local" } },
+        verb: { id: "https://adlnet.gov/expapi/verbs/" + verb, display: { "en-US": verb } },
+        object: { id: DATA.xapi.activity_id + "/" + objectId, definition: { name: { "en-US": objectId } } },
+        result: result || {},
+        context: { platform: "Veritas local HTML training runtime", extensions: { "https://veritas.local/extensions/internal_training_only": true } }
+      };
+    }
+
+    function record(verb, objectId, result) {
+      const entry = statement(verb, objectId, result);
+      state.events.push(entry);
+      save();
+      if (localLedgerEnabled()) {
+        fetch(localLedgerEndpoint(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entry),
+          keepalive: true
+        }).catch(() => {
+          state.ledger_warning = "local_xapi_ledger_unavailable";
+          save();
+        });
+      }
+    }
+
+    function setView(view) {
+      state.view = view;
+      document.querySelectorAll(".nav-button").forEach(button => {
+        button.setAttribute("aria-pressed", button.dataset.view === view ? "true" : "false");
+      });
+      render();
+      save();
+      document.getElementById("workspace").focus();
+    }
+
+    function completedInteractions() {
+      return DATA.interactions.filter(item => state.answers[item.id] && state.answers[item.id].completed).length;
+    }
+
+    function score() {
+      const graded = DATA.interactions.filter(item => ["multiple_choice", "checklist", "boundary_ack"].includes(item.type));
+      if (!graded.length) return 0;
+      const points = graded.filter(item => state.answers[item.id] && state.answers[item.id].passed).length;
+      return Math.round((points / graded.length) * 100);
+    }
+
+    function updateStatus() {
+      const done = completedInteractions();
+      const pct = Math.round((done / DATA.interactions.length) * 100);
+      const rawScore = score();
+      document.getElementById("scoreText").textContent = rawScore + "%";
+      document.getElementById("doneText").textContent = done + "/" + DATA.interactions.length;
+      document.getElementById("eventText").textContent = state.events.length;
+      document.getElementById("progressBar").style.width = pct + "%";
+      document.getElementById("progressShell").setAttribute("aria-valuenow", String(pct));
+      scormSyncStatus(done, pct, rawScore);
+    }
+
+    function announce(text) {
+      const node = document.getElementById("announce");
+      node.textContent = text;
+      node.hidden = false;
+    }
+
+    function briefingView() {
+      return `
+        <section class="review-panel">
+          <h2>Objectives</h2>
+          <ul><li>Classify SEC filings by evidence use without overstating decision authority.</li><li>Check SEC environment readiness before any evidence packet run.</li><li>Separate official-source evidence from portfolio/canon mutation or trade approval.</li><li>Identify freshness, source, and User-Agent failures that block evidence use.</li></ul>
+          <div class="boundary"><strong>Boundary:</strong> Internal training only. A clean score does not approve outreach, customer data, credentials, production access, or external delivery.</div>
+        </section>
+
+      <section class="lesson" id="lesson-sec-evidence-role">
+        <h3>What SEC Evidence Can And Cannot Do</h3>
+        <p>SEC filings are official-source evidence for research. They can support a later finance review, but they do not approve portfolio-note edits, capital deployment, paper/live orders, account action, or owner approval.</p>
+        <ul><li>10-K and 10-Q filings support fundamentals and risk review.</li><li>8-K filings support event freshness and material updates.</li><li>DEF 14A, 13D/13G, and insider filings support governance and ownership review.</li><li>Evidence packets are inputs to judgment, not execution authority.</li></ul>
+      </section>
+
+      <section class="lesson" id="lesson-sec-environment-gate">
+        <h3>Environment Gate</h3>
+        <p>Before relying on SEC evidence tooling, run the local environment audit. It proves the SEC venv exists, imports work, expected methods are exposed, the User-Agent is real, and the docs preserve the review-only boundary.</p>
+        <ul><li>Use \`python scripts\\sec_env_audit_validator.py --write --validate\` before packet generation.</li><li>The expected User-Agent is \`Veritas OpenClaw Research veritasaiflows@gmail.com\`.</li><li>A clean audit still does not approve live retrieval, finance mutation, or account action.</li></ul>
+      </section>
+
+      <section class="lesson" id="lesson-review-lane-handoff">
+        <h3>Review Lane Handoff</h3>
+        <p>A clean SEC evidence packet should move into a review lane with source freshness, filing type, conflict notes, and downstream authority flags. If evidence is stale, missing, contradictory, or produced with a broken environment, stop and repair proof first.</p>
+        <ul><li>Name the ticker, filing type, filing date, source URL, and producer proof.</li><li>Mark stale or contradictory evidence as review debt, not as a recommendation.</li><li>Keep trade/account/capital and canon mutation flags false unless a separate gate applies.</li></ul>
+      </section>
+        <div class="toolbar">
+          <button class="primary" type="button" onclick="record('started', 'module', { completion: false }); setView('practice')">Start practice</button>
+        </div>`;
+    }
+
+    function renderInteraction(item, index) {
+      const answer = state.answers[item.id] || {};
+      if (item.type === "multiple_choice") {
+        const choices = item.choices.map(choice => `
+          <label class="choice">
+            <input type="radio" name="${item.id}" value="${choice.id}" ${answer.choice === choice.id ? "checked" : ""}>
+            <span>${choice.text}</span>
+          </label>`).join("");
+        return interactionShell(item, index, choices, `<button class="primary" type="button" onclick="gradeChoice('${item.id}')">Check answer</button>`);
+      }
+      if (item.type === "checklist") {
+        const rows = item.checklist_items.map((text, idx) => `
+          <label class="check-row">
+            <input type="checkbox" data-check="${item.id}" value="${idx}" ${(answer.checked || []).includes(idx) ? "checked" : ""}>
+            <span>${text}</span>
+          </label>`).join("");
+        return interactionShell(item, index, rows, `<button class="primary" type="button" onclick="gradeChecklist('${item.id}')">Check checklist</button>`);
+      }
+      if (item.type === "boundary_ack") {
+        return interactionShell(item, index, `<div class="boundary">${item.prompt}</div>`, `<button class="primary" type="button" onclick="ackBoundary('${item.id}')">Confirm boundary</button>`);
+      }
+      const text = answer.text || "";
+      const rubric = (item.rubric || []).map(row => `<li>${row}</li>`).join("");
+      return interactionShell(item, index, `
+        <textarea id="text-${item.id}" aria-label="${item.title} response">${text}</textarea>
+        <h4>Rubric</h4><ul>${rubric}</ul>`,
+        `<button class="primary" type="button" onclick="saveText('${item.id}')">Save response</button>`);
+    }
+
+    function interactionShell(item, index, body, action) {
+      const answer = state.answers[item.id] || {};
+      const result = answer.completed ? `<div class="result ${answer.passed ? "good" : ""}">${answer.message || "Saved."}</div>` : "";
+      return `<article class="interaction" id="${item.id}">
+        <h3>${index + 1}. ${item.title}</h3>
+        <p>${item.prompt}</p>
+        ${body}
+        <div class="toolbar">${action}<button class="secondary" type="button" onclick="showExpected('${item.id}')">Show guide</button></div>
+        ${result}
+      </article>`;
+    }
+
+    function practiceView() {
+      return DATA.interactions.map(renderInteraction).join("");
+    }
+
+    function reviewView() {
+      const rows = DATA.interactions.map(item => {
+        const answer = state.answers[item.id] || {};
+        return `<li><strong>${item.title}:</strong> ${answer.completed ? (answer.passed ? "passed" : "saved") : "open"}</li>`;
+      }).join("");
+      return `<section class="review-panel"><h2>Review</h2><ul>${rows}</ul><div class="toolbar"><button class="primary" type="button" onclick="completeModule()">Complete module</button><button class="secondary" type="button" onclick="resetModule()">Reset local progress</button></div></section>`;
+    }
+
+    function eventsView() {
+      return `<section class="review-panel"><h2>Local xAPI Events</h2><p>Events are stored locally in this browser until exported or reset.</p><pre>${JSON.stringify(state.events, null, 2)}</pre><div class="toolbar"><button class="primary" type="button" onclick="downloadEvents()">Download events</button></div></section>`;
+    }
+
+    function render() {
+      const view = document.getElementById("view");
+      if (state.view === "practice") view.innerHTML = practiceView();
+      else if (state.view === "review") view.innerHTML = reviewView();
+      else if (state.view === "events") view.innerHTML = eventsView();
+      else view.innerHTML = briefingView();
+      document.querySelectorAll(".nav-button").forEach(button => button.setAttribute("aria-pressed", button.dataset.view === state.view ? "true" : "false"));
+      updateStatus();
+    }
+
+    function findItem(id) { return DATA.interactions.find(item => item.id === id); }
+
+    function gradeChoice(id) {
+      const item = findItem(id);
+      const selected = document.querySelector(`input[name="${id}"]:checked`);
+      if (!selected) { announce("Choose an answer first."); return; }
+      const choice = item.choices.find(row => row.id === selected.value);
+      state.answers[id] = { choice: choice.id, completed: true, passed: choice.correct, message: choice.feedback || "" };
+      record("answered", item.xapi_object || id, { success: choice.correct, response: choice.id });
+      announce(choice.correct ? "Correct." : "Saved. Review the guide.");
+      render();
+    }
+
+    function gradeChecklist(id) {
+      const item = findItem(id);
+      const checked = Array.from(document.querySelectorAll(`input[data-check="${id}"]:checked`)).map(input => Number(input.value));
+      const passed = checked.length === item.checklist_items.length;
+      state.answers[id] = { checked, completed: true, passed, message: passed ? "All minimums checked." : "Missing one or more minimum fields." };
+      record("answered", item.xapi_object || id, { success: passed, response: checked.join(",") });
+      render();
+    }
+
+    function ackBoundary(id) {
+      const item = findItem(id);
+      state.answers[id] = { completed: true, passed: true, message: item.expected || "Boundary confirmed." };
+      record("reviewed_boundary", item.xapi_object || id, { success: true });
+      render();
+    }
+
+    function saveText(id) {
+      const item = findItem(id);
+      const value = document.getElementById("text-" + id).value.trim();
+      state.answers[id] = { text: value, completed: value.length > 0, passed: value.length > 0, message: value.length > 0 ? "Response saved for review." : "Write a response first." };
+      if (value.length > 0) record("answered", item.xapi_object || id, { response: value.slice(0, 240), completion: true });
+      render();
+    }
+
+    function showExpected(id) {
+      const item = findItem(id);
+      alert(item.expected || (item.rubric || []).join("\n"));
+    }
+
+    function completeModule() {
+      const pct = score();
+      const passed = pct >= 80;
+      record("completed", "module", { completion: true, score: { scaled: pct / 100 } });
+      record(passed ? "passed" : "failed", "module", { success: passed, score: { raw: pct } });
+      scormFinish(passed, pct);
+      announce(passed ? "Module complete." : "Module complete with review needed.");
+      render();
+    }
+
+    function downloadEvents() {
+      const blob = new Blob([JSON.stringify(state.events, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = DATA.module_id + "-xapi-events.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function resetModule() {
+      localStorage.removeItem(STORE_KEY);
+      state.answers = {};
+      state.events = [];
+      state.view = "briefing";
+      render();
+      save();
+    }
+
+    document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
+    document.addEventListener("keydown", event => {
+      const order = ["briefing", "practice", "review", "events"];
+      const idx = order.indexOf(state.view);
+      if (event.altKey && event.key === "ArrowRight" && idx < order.length - 1) setView(order[idx + 1]);
+      if (event.altKey && event.key === "ArrowLeft" && idx > 0) setView(order[idx - 1]);
+    });
+    if (!state.events.length) record("started", "module", { completion: false });
+    render();
+  </script>
+</body>
+</html>

@@ -1,38 +1,14 @@
 {
   "ticker": "NVDA",
   "name": "NVIDIA Corporation",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 1.16,
-      "h": 1.21,
-      "l": 1.11,
-      "c": 1.18,
-      "v": 8197.9
-    },
-    {
-      "d": "2016-07",
-      "o": 1.17,
-      "h": 1.43,
-      "l": 1.15,
-      "c": 1.43,
-      "v": 7210.05
-    },
-    {
-      "d": "2016-08",
-      "o": 1.43,
-      "h": 1.59,
-      "l": 1.39,
-      "c": 1.53,
-      "v": 9305.12
-    },
     {
       "d": "2016-09",
       "o": 1.53,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 201.28,
-      "h": 217.8,
+      "h": 236.54,
       "l": 194.74,
-      "c": 215.2,
-      "v": 994.32
+      "c": 211.14,
+      "v": 3324.84
+    },
+    {
+      "d": "2026-06",
+      "o": 215.73,
+      "h": 232.28,
+      "l": 189.8,
+      "c": 200.09,
+      "v": 3424.31
+    },
+    {
+      "d": "2026-07",
+      "o": 196.2,
+      "h": 214.39,
+      "l": 190.01,
+      "c": 200.75,
+      "v": 2852.6
+    },
+    {
+      "d": "2026-08",
+      "o": 197.69,
+      "h": 227.92,
+      "l": 196.85,
+      "c": 214.72,
+      "v": 1619.05
     }
   ],
   "macro_regimes": {
@@ -1025,34 +1025,36 @@
     }
   },
   "preferred_band": {
-    "low": 197.01,
-    "high": 210.84,
-    "stop": 190.1,
-    "set": "2026-05-06",
-    "label": "197.01–210.84"
+    "low": 202.81,
+    "high": 212.23,
+    "stop": 192.95,
+    "set": "2026-06-18",
+    "label": "202.81–212.23"
   },
   "current_quote": {
-    "close": 215.2,
-    "ma20": 203.18,
-    "ma50": 188.65,
-    "ma200": 184.72,
-    "data_date": "2026-05-08"
+    "close": 214.72,
+    "ma20": 213.18,
+    "ma50": 207.58,
+    "ma200": 195.12,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_MA_CONSTRAINED",
-    "type": "PULLBACK",
-    "status": "ABOVE_BAND_WAIT",
-    "trend_stack": "BULLISH_20_50_200",
-    "suggested_low": 190.37,
-    "suggested_high": 203.22,
-    "suggested_stop": 182.2,
-    "sma_envelope_low": 183.95,
-    "sma_envelope_high": 203.31,
-    "earnings_state": "TIMING_WINDOW",
-    "band_confidence": 4,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 202.15,
+    "suggested_high": 217.11,
+    "suggested_stop": 193.84,
+    "sma_envelope_low": 199.99,
+    "sma_envelope_high": 221.05,
+    "earnings_state": "CLEAR",
+    "earnings_date_source_class": "post_earnings_lifecycle_closeout",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
     "needs_review": true,
-    "canonical_apply_eligible": false
+    "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:35+00:00"
+  "generated_at": "2026-08-21T20:32:20+00:00"
 }

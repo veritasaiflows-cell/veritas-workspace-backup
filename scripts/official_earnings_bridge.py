@@ -187,12 +187,59 @@ def capture_claim(name: str, block: dict[str, Any], capture: dict[str, Any]) -> 
     }
 
 
+def source_verified_claim(capture: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "claim_type": "official_capture_source_verified",
+        "claim_text": "A newer official SEC/IR source was fetched and validator-clean, but field-level reconciliation remains source-open.",
+        "source_url": source.get("source_url"),
+        "source_section": "official source metadata",
+        "value": None,
+        "period": capture.get("period_end"),
+        "manual_capture_required": True,
+        "manual_capture_date": source.get("retrieved_at_utc") or capture.get("generated_at_utc"),
+        "capture_status": "source_verified_manual_reconciliation_pending",
+        "reconciled": False,
+        "inferred": False,
+    }
+
+
 def apply_official_capture(copied: dict[str, Any], capture: dict[str, Any]) -> dict[str, Any]:
     captures = capture.get("captures") if isinstance(capture.get("captures"), dict) else {}
     source = capture.get("source") if isinstance(capture.get("source"), dict) else {}
     captured_fields = [name for name, block in captures.items() if isinstance(block, dict) and block.get("status") in OFFICIAL_CAPTURE_STATUSES]
     addressed_fields = [name for name, block in captures.items() if isinstance(block, dict) and block.get("status") in OFFICIAL_ADDRESSING_STATUSES]
     if not captured_fields:
+        if capture.get("source_capture_status") != "source_verified_manual_reconciliation_pending":
+            return copied
+        copied["official_evidence_status"] = "source_verified_manual_reconciliation_pending"
+        copied["source_authority_level"] = "verified_official_source_pending_reconciliation"
+        copied["manual_review_required"] = True
+        copied["reconciled"] = False
+        copied["resolved_for_apply"] = False
+        copied["source_freshness"] = {
+            "source_url": source.get("source_url"),
+            "source_type": source.get("source_type") or "official_sec_source",
+            "retrieval_status": "source_verified",
+            "manual_capture_date": source.get("retrieved_at_utc") or capture.get("generated_at_utc"),
+            "as_of_period": capture.get("period_end"),
+            "freshness_status": "source_verified_not_review_fresh",
+        }
+        copied["official_capture"] = {
+            "ticker": capture.get("ticker"),
+            "artifact": str(capture.get("_artifact_path", OFFICIAL_CAPTURE_DIR).relative_to(WORKSPACE)).replace("\\", "/"),
+            "validation_artifact": str(capture.get("_validation_artifact_path", OFFICIAL_CAPTURE_DIR).relative_to(WORKSPACE)).replace("\\", "/"),
+            "source_url": source.get("source_url"),
+            "source_title": source.get("source_title"),
+            "period_end": capture.get("period_end"),
+            "captured_fields": [],
+            "addressed_fields": [],
+            "source_verified": True,
+            "manual_reconciliation_pending": True,
+            "review_only": True,
+            "resolved_for_apply": False,
+        }
+        copied["evidence_claims"] = [source_verified_claim(capture, source)]
+        copied["unresolved_official_fields"] = list(UNRESOLVED_OFFICIAL_FIELDS)
         return copied
 
     copied["official_evidence_status"] = "manual_confirmed"
@@ -313,13 +360,16 @@ def bridge_row(packet: dict[str, Any], official_captures: dict[str, dict[str, An
     if not isinstance(bridge, dict):
         bridge = {}
     copied_bridge = force_review_only_bridge(bridge, ticker if isinstance(ticker, str) else None, official_captures)
-    manual_required = copied_bridge.get("official_evidence_status") != "manual_confirmed"
+    evidence_status = copied_bridge.get("official_evidence_status")
+    manual_required = evidence_status != "manual_confirmed"
+    official_capture = copied_bridge.get("official_capture") if isinstance(copied_bridge.get("official_capture"), dict) else {}
+    selected_period_end = official_capture.get("period_end") or packet.get("period_end")
     return {
         "ticker": ticker,
         "company_name": packet.get("company_name"),
-        "period_end": packet.get("period_end"),
+        "period_end": selected_period_end,
         "comparison_period_end": packet.get("comparison_period_end"),
-        "status": "manual_confirmed_official_source" if not manual_required else "manual_required",
+        "status": "manual_confirmed_official_source" if not manual_required else evidence_status or "manual_required",
         "source_posture": "review_only",
         "manual_review_required": True,
         "review_only": True,

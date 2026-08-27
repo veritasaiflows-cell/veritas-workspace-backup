@@ -84,8 +84,15 @@ def move_one(src: Path, dest: Path, expected_sha256: str | None, dry_run: bool) 
         row["error"] = "source_hash_mismatch"
         return row
     if dest.exists():
-        row["error"] = "destination_exists"
         row["destination_sha256_existing"] = sha256_file(dest)
+        if before_hash and row["destination_sha256_existing"] == before_hash:
+            row["error"] = "destination_exists_same_hash"
+            row["action_required"] = (
+                "archive destination is already populated; do not overwrite; "
+                "handle the remaining source only through a separate delete approval packet"
+            )
+        else:
+            row["error"] = "destination_exists_hash_mismatch"
         return row
     if dry_run:
         row["dry_run"] = True
@@ -151,11 +158,14 @@ def apply_archive(*, dry_run: bool) -> dict[str, Any]:
         "dry_run": dry_run,
         "manifest_path": rel(MANIFEST),
         "authority_boundary": {
-            "archive_move_performed": not dry_run and not errors and not unverified,
+            "archive_move_performed": bool(plan) and not dry_run and not errors and not unverified,
             "delete_performed": False,
             "canon_or_portfolio_mutation": False,
             "brokerage_or_execution_authority": False,
-            "owner_approval_source": "webchat 2026-05-30 16:08 MST: Yes, proceed with archiving; approved.",
+            "owner_approval_source": (
+                "operator supplied exact owner approval before running apply; "
+                "this script does not infer approval"
+            ),
         },
         "counts": {
             "planned_files": len(plan),

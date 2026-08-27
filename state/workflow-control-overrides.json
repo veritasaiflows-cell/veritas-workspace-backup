@@ -1,6 +1,6 @@
 {
   "schema": "veritas.workflow_control_overrides.v1",
-  "generated_at_utc": "2026-06-15T03:13:14Z",
+  "generated_at_utc": "2026-08-27T02:02:16Z",
   "authority_boundary": {
     "review_only": true,
     "routing_override_only": true,
@@ -11,31 +11,75 @@
     "owner_approval_inferred": false
   },
   "overrides": {
-    "retail_truth_routing": {
+    "wf75": {
       "status": "on_hold",
       "set_by": "Randall",
-      "set_at_local": null,
-      "set_at_utc": "2026-06-09T13:22:02Z",
-      "reason": "Paused by Randall on 2026-06-09 06:19 MST so Personal Trade-Grade Decision OS/WF85 becomes the primary PM goal.",
-      "resume_condition": "Randall explicitly resumes retail-grade truth-routing work",
+      "set_at_local": "2026-06-09 America/Phoenix",
+      "set_at_utc": "2026-08-14T04:18:17Z",
+      "reason": "Canonical Active Workflows records WF75 as paused by Randall on 2026-06-09; reconcile the routing-only control registry to that existing decision.",
+      "resume_condition": "Resume only when Randall explicitly resumes WF75.",
       "aliases": [
-        "retail-grade_truth_routing",
-        "retail_grade_os"
+        "retail_investor_finance_intelligence_saas",
+        "workflow_75"
       ],
       "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
     },
-    "wf-retail-routing": {
+    "wf80": {
+      "status": "on_hold",
+      "set_by": "Veritas reconciliation",
+      "set_at_local": null,
+      "set_at_utc": "2026-08-14T04:24:52Z",
+      "reason": "Canonical Active Workflows P3 queue tier marks WF80 paused/resume-later; reconcile routing-only control state.",
+      "resume_condition": "Resume only when Randall explicitly resumes WF80-WF83.",
+      "aliases": [
+        "workflow_80"
+      ],
+      "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    },
+    "wf81": {
+      "status": "on_hold",
+      "set_by": "Veritas reconciliation",
+      "set_at_local": null,
+      "set_at_utc": "2026-08-14T04:24:53Z",
+      "reason": "Canonical Active Workflows P3 queue tier marks WF81 paused/resume-later; reconcile routing-only control state.",
+      "resume_condition": "Resume only when Randall explicitly resumes WF80-WF83.",
+      "aliases": [
+        "workflow_81"
+      ],
+      "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    },
+    "wf82": {
+      "status": "on_hold",
+      "set_by": "Veritas reconciliation",
+      "set_at_local": null,
+      "set_at_utc": "2026-08-14T04:24:53Z",
+      "reason": "Canonical Active Workflows P3 queue tier marks WF82 paused/resume-later; reconcile routing-only control state.",
+      "resume_condition": "Resume only when Randall explicitly resumes WF80-WF83.",
+      "aliases": [
+        "workflow_82"
+      ],
+      "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    },
+    "wf83": {
+      "status": "on_hold",
+      "set_by": "Veritas reconciliation",
+      "set_at_local": null,
+      "set_at_utc": "2026-08-14T04:24:53Z",
+      "reason": "Canonical Active Workflows P3 queue tier marks WF83 paused/resume-later; reconcile routing-only control state.",
+      "resume_condition": "Resume only when Randall explicitly resumes WF80-WF83.",
+      "aliases": [
+        "workflow_83"
+      ],
+      "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    },
+    "wave2": {
       "status": "on_hold",
       "set_by": "Randall",
       "set_at_local": null,
-      "set_at_utc": "2026-06-09T13:23:36Z",
-      "reason": "Paused by Randall on 2026-06-09 06:19 MST so Personal Trade-Grade Decision OS/WF85 becomes the primary PM goal.",
-      "resume_condition": "Randall explicitly resumes retail-grade truth-routing work",
-      "aliases": [
-        "retail-grade_truth_routing",
-        "retail_grade_os",
-        "retail_truth_routing"
-      ],
+      "set_at_utc": "2026-08-27T02:02:16Z",
+      "reason": "Randall explicitly retired the WAVE2 ten-job measurement cohort after repeated pre-provider control-plane failures and no remaining production value.",
+      "resume_condition": "Do not resume this cohort. Any future effort requires Randall's new explicitly scoped decision for a distinct production-relevant pilot with a clear user-value acceptance target.",
+      "aliases": [],
       "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
     }
   }

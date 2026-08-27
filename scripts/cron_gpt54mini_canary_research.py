@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 
@@ -129,6 +130,11 @@ def build_report() -> dict[str, Any]:
     classifications = [classify_job(job) for job in jobs]
     candidates = [row for row in classifications if row["candidate"]]
     holds = [row for row in classifications if row["preferred_candidate"] and not row["candidate"]]
+    sql_canon_context = finance_sql_canon_guard_context(consumer=rel(Path(__file__)))
+    validation_errors = [] if OFFICIAL_OPENAI_SOURCES and jobs else ["missing_sources_or_cron_jobs"]
+    validation_warnings = [] if candidates else ["no_low_risk_candidates_found"]
+    if sql_canon_context.get("status") != "ok":
+        validation_errors.append("sql_canon_guard_blocked")
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -170,10 +176,11 @@ def build_report() -> dict[str, Any]:
             "trade_or_execution_allowed": False,
             "owner_approval_inferred": False,
         },
+        "sql_canon_context": sql_canon_context,
         "validation": {
-            "status": "ok" if OFFICIAL_OPENAI_SOURCES and jobs else "error",
-            "errors": [] if OFFICIAL_OPENAI_SOURCES and jobs else ["missing_sources_or_cron_jobs"],
-            "warnings": [] if candidates else ["no_low_risk_candidates_found"],
+            "status": "error" if validation_errors else "warning" if validation_warnings else "ok",
+            "errors": validation_errors,
+            "warnings": validation_warnings,
         },
         "source_artifacts": {
             "cron_operator_ledger": rel(CRON_LEDGER),

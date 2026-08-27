@@ -1,27 +1,40 @@
 {
-  "generated_at_utc": "2026-05-08T13:01:05.915803+00:00",
-  "snapshot_date": "2026-05-08",
-  "market_data_as_of": "2026-05-08",
-  "trust_label": "degraded",
-  "canonical_mutation_allowed": false,
-  "trust_reason": "dashboard validation has 2 warning(s)",
-  "trust_gate_blocked": true,
+  "generated_at_utc": "2026-08-14T13:15:48.544190+00:00",
+  "snapshot_date": "2026-08-14",
+  "market_data_as_of": "2026-08-13",
+  "trust_label": "clean",
+  "canonical_mutation_allowed": true,
+  "trust_reason": "dashboard validation clean",
+  "trust_gate_blocked": false,
   "deployable_now": [],
+  "promotion_review": [
+    "GS",
+    "VRT"
+  ],
   "almost_deployable": [
+    "ETN",
     "GOOG",
     "JPM",
     "MSFT",
     "NVDA"
   ],
   "blocked": [],
-  "wrote_to": "01. Dashboards\\Pre-Market Snapshot\\2026-05-08-machine.md",
+  "do_not_touch": [
+    "BRK.B",
+    "LMT",
+    "XOM"
+  ],
+  "watch": [],
+  "error": [],
+  "wrote_to": "01. Dashboards\\Pre-Market Snapshot\\2026-08-14.md",
   "actionable_table_tickers": [
     "ETN",
     "GOOG",
     "GS",
     "JPM",
     "MSFT",
-    "NVDA"
+    "NVDA",
+    "VRT"
   ],
   "actionable_quote_tickers": [
     "ETN",
@@ -29,9 +42,10 @@
     "GS",
     "JPM",
     "MSFT",
-    "NVDA"
+    "NVDA",
+    "VRT"
   ],
   "actionable_quote_coverage_gap": [],
   "actionable_contract_source": "trigger_sheet_review_states",
-  "actionable_contract_target_count": 6
+  "actionable_contract_target_count": 7
 }

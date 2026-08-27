@@ -9,11 +9,13 @@ from __future__ import annotations
 from board_state_contract import legacy_state
 import argparse
 import json
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from board_state_contract import deployment_contract
+from finance_sql_canon_access import FinanceSqlCanonAccess
 from wf72_entry_stop_reference_helper import (
     NO_DRIFT_PILOT_JSON,
     PILOT_TICKERS,
@@ -42,6 +44,8 @@ WF78_CARD_FIELD_REPAIR_APPLY_PATH = WORKSPACE / "tmp" / "wf78-ticker-card-field-
 POST_CLOSE_FINAL_QUOTE_LEDGER_PATH = WORKSPACE / "tmp" / "post-close-final-quote-ledger.json"
 DECISION_SYNC_SPINE_PATH = WORKSPACE / "tmp" / "finance-decision-sync-spine.json"
 CAPITAL_REVIEW_QUEUE_PATH = WORKSPACE / "tmp" / "wf78-capital-review-queue.json"
+SQL_CANON_DB = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
+LEGACY_PRODUCTION_COMPATIBILITY_COUNT = 42
 
 AUTHORITY_BOUNDARY = {
     "artifact_role": "derived_review_and_question_routing_surface_only",
@@ -52,6 +56,8 @@ AUTHORITY_BOUNDARY = {
     "paper_order_execution_allowed": False,
     "paper_order_submit_allowed_by_card": False,
     "paper_order_cancel_allowed_by_card": False,
+    "durable_sql_canon_current_state_allowed": True,
+    "sql_canon_mutation_allowed": False,
     "live_trade_allowed": False,
     "live_brokerage_or_account_action_allowed": False,
     "money_movement_allowed": False,
@@ -177,6 +183,24 @@ def find_ticker_entry(obj: Any, ticker: str) -> dict[str, Any] | None:
     return None
 
 
+def find_ticker_keyed_entry(obj: Any, ticker: str, key_name: str) -> dict[str, Any] | None:
+    if not isinstance(obj, dict):
+        return None
+    rows = obj.get(key_name)
+    if not isinstance(rows, dict):
+        return None
+    normalized = ticker.upper()
+    for key, value in rows.items():
+        if isinstance(key, str) and key.upper() == normalized and isinstance(value, dict):
+            return {"ticker": normalized, **value}
+    return None
+
+
+def find_analyst_consensus_entry(obj: Any, ticker: str) -> dict[str, Any] | None:
+    # The analyst artifact also carries thin manual-review rows; the full row is under tickers.
+    return find_ticker_keyed_entry(obj, ticker, "tickers") or find_ticker_entry(obj, ticker)
+
+
 def find_order_card(ticker: str) -> tuple[dict[str, Any] | None, str | None]:
     if not ORDER_CARD_DIR.exists():
         return None, None
@@ -241,6 +265,28 @@ def classify_band_status(price: Any, low: Any, high: Any, stop: Any) -> str | No
     return "IN_BAND"
 
 
+STALE_REFERENCE_BAND = "STALE_REFERENCE_BAND"
+LOW_CONFIDENCE_REFERENCE_MAX = 2
+
+
+def low_confidence_reference_band_requires_refresh(
+    auto_tier_entry: dict[str, Any] | None,
+    sql_canon_reference: dict[str, Any] | None,
+    computed_band_status: str | None,
+) -> bool:
+    """Require a refreshed reference band before exposing a Tier A hard-stop claim."""
+
+    if str((auto_tier_entry or {}).get("auto_tier") or "") != "Tier A":
+        return False
+    if computed_band_status != "BELOW_STOP":
+        return False
+    try:
+        confidence = int((sql_canon_reference or {}).get("reference_confidence"))
+    except (TypeError, ValueError):
+        return False
+    return confidence <= LOW_CONFIDENCE_REFERENCE_MAX
+
+
 def normalize_claim_key(claim: dict[str, Any]) -> str:
     raw = str(claim.get("claim_type") or claim.get("capture_key") or "")
     return raw.removeprefix("official_capture_")
@@ -287,6 +333,230 @@ def claim_summary(claim: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+PERIOD_SENSITIVE_FUNDAMENTAL_FIELDS = (
+    "revenue",
+    "revenue_prior",
+    "revenue_yoy_pct",
+    "net_income",
+    "net_income_prior",
+    "net_income_yoy_pct",
+    "diluted_eps",
+    "diluted_eps_prior",
+    "eps_yoy_pct",
+    "gross_profit",
+    "gross_margin_pct",
+    "operating_income",
+    "operating_margin_pct",
+    "net_margin_pct",
+    "ebitda",
+    "operating_cash_flow",
+    "capital_expenditure",
+    "free_cash_flow",
+    "free_cash_flow_prior",
+    "free_cash_flow_yoy_pct",
+    "fcf_per_share",
+    "fcf_per_share_prior",
+    "fcf_per_share_yoy_pct",
+    "cash_and_equivalents",
+    "total_debt",
+    "net_debt",
+    "debt_to_annualized_ebitda",
+    "total_assets",
+    "total_equity",
+    "invested_capital_proxy",
+    "roic_proxy_pct",
+    "debt_issued",
+    "debt_repaid",
+    "net_debt_issued",
+    "dividends_paid",
+    "share_repurchases",
+    "net_share_repurchases",
+    "buyback_yield_pct",
+    "dividend_yield_pct",
+    "shareholder_yield_pct",
+    "stock_based_compensation",
+    "sbc_pct_of_revenue",
+    "sbc_pct_of_fcf",
+    "capital_return_to_fcf_pct",
+    "capital_allocation_anomalies",
+    "capital_allocation_anomaly_count",
+    "capital_allocation_quality",
+    "capital_allocation_notes",
+    "enterprise_value",
+    "trailing_pe",
+    "forward_pe",
+    "fcf_yield_pct",
+    "earnings_yield_pct",
+    "price_to_sales",
+    "price_to_book",
+    "ev_to_ebitda_proxy",
+    "ev_to_fcf_proxy",
+)
+
+
+def _period_tuple(value: Any) -> tuple[int, int, int] | None:
+    try:
+        year, month, day = (int(part) for part in str(value).split("-")[:3])
+        return year, month, day
+    except (TypeError, ValueError):
+        return None
+
+
+def latest_official_claim_period(official_claims: dict[str, Any]) -> tuple[str | None, dict[str, Any] | None]:
+    latest_period: str | None = None
+    latest_claim: dict[str, Any] | None = None
+    latest_key: tuple[int, int, int] | None = None
+    for claim in official_claims.values():
+        if not isinstance(claim, dict):
+            continue
+        period = claim.get("period")
+        key = _period_tuple(period)
+        if key is not None and (latest_key is None or key > latest_key):
+            latest_key = key
+            latest_period = str(period)
+            latest_claim = claim
+    return latest_period, latest_claim
+
+
+def build_period_aligned_fundamentals(
+    fundamentals: dict[str, Any] | None,
+    official_claims: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Prevent a newer official release from being mixed with an older provider row.
+
+    A validated official capture may advance the earnings period before the broad
+    normalized 10-Q metrics refresh is available.  In that state, retain the old
+    row only as prior context, withhold period-sensitive fields, and overlay only
+    explicitly captured current-period values.  This makes the stale boundary
+    visible instead of silently presenting a hybrid-period card.
+    """
+    base = dict(fundamentals or {})
+    normalized_period = base.get("period_end")
+    official_period, _latest_claim = latest_official_claim_period(official_claims)
+    normalized_key = _period_tuple(normalized_period)
+    official_key = _period_tuple(official_period)
+    if official_key is None or (normalized_key is not None and official_key <= normalized_key):
+        alignment = {
+            "status": "aligned" if official_key is None or normalized_key == official_key else "normalized_metrics_newer_than_official_capture",
+            "latest_official_period_end": official_period,
+            "normalized_metrics_period_end": normalized_period,
+            "normalized_metrics_stale": False,
+            "source_url": None,
+            "withheld_fields": [],
+        }
+        base["period_alignment"] = alignment
+        return base, alignment
+
+    prior = {field: base.get(field) for field in PERIOD_SENSITIVE_FUNDAMENTAL_FIELDS if field in base}
+    source_url = None
+    for claim in official_claims.values():
+        if isinstance(claim, dict) and claim.get("period") == official_period:
+            source_url = claim.get("source_url") or source_url
+    for field in PERIOD_SENSITIVE_FUNDAMENTAL_FIELDS:
+        base[field] = None
+    base["period_type"] = "quarterly"
+    base["period_end"] = official_period
+    base["comparison_period_end"] = normalized_period
+    base["source"] = "official_sec_earnings_release_period_overlay"
+    base["source_tier"] = "official_primary_review_only"
+    base["data_quality"] = "partial"
+    base["valuation_context"] = "partial_newer_period_metrics_withheld"
+    base["quality_notes"] = [
+        "A newer validated official earnings release was captured.",
+        "Period-sensitive normalized fields not present in the release are withheld until the 10-Q/normalized refresh catches up.",
+    ]
+
+    metrics_claim = official_claims.get("quarterly_metrics")
+    metrics = metrics_claim.get("value") if isinstance(metrics_claim, dict) and isinstance(metrics_claim.get("value"), dict) else {}
+    period_bridge_fields = (
+        "revenue",
+        "revenue_prior",
+        "net_income",
+        "net_income_prior",
+        "diluted_eps",
+        "diluted_eps_prior",
+    )
+    verified_period_bridge = (
+        isinstance(metrics_claim, dict)
+        and metrics_claim.get("period") == official_period
+        and metrics.get("official_period_bridge_verified") is True
+        and metrics.get("period_bridge_validation") == "matching_period_official_10q"
+        and all(metrics.get(field) is not None for field in period_bridge_fields)
+    )
+    if verified_period_bridge:
+        for field in (
+            "revenue",
+            "revenue_prior",
+            "revenue_yoy_pct",
+            "net_income",
+            "net_income_prior",
+            "net_income_yoy_pct",
+            "diluted_eps",
+            "diluted_eps_prior",
+            "eps_yoy_pct",
+            "operating_cash_flow",
+            "free_cash_flow",
+            "free_cash_flow_yoy_pct",
+        ):
+            if metrics.get(field) is not None:
+                base[field] = metrics[field]
+        base["comparison_period_end"] = metrics.get("comparison_period_end") or normalized_period
+        base["source"] = "official_sec_10q_period_bridge"
+        base["source_tier"] = "official_primary_review_only"
+        base["data_quality"] = "partial_official_period_bridge"
+        base["valuation_context"] = "partial_current_period_10q_bridge"
+        base["quality_notes"] = [
+            "A matching-period official 10-Q bridge verified revenue, net income, and diluted EPS against the newer earnings period.",
+            "The normalized provider refresh is still pending for non-bridged period-sensitive fields; no values were inferred.",
+        ]
+        if metrics_claim.get("source_url"):
+            source_url = metrics_claim.get("source_url")
+        alignment = {
+            "status": "official_period_bridge_verified",
+            "latest_official_period_end": official_period,
+            "normalized_metrics_period_end": normalized_period,
+            "normalized_metrics_stale": False,
+            "normalized_provider_refresh_pending": True,
+            "source_url": source_url,
+            "withheld_fields": [field for field in PERIOD_SENSITIVE_FUNDAMENTAL_FIELDS if base.get(field) is None],
+            "prior_normalized_metrics_retained": True,
+            "bridge_required_fields": list(period_bridge_fields),
+            "bridge_source_type": metrics.get("source_kind"),
+        }
+        base["prior_normalized_metrics"] = {
+            "period_end": normalized_period,
+            "source": fundamentals.get("source") if fundamentals else None,
+            "metrics": prior,
+        }
+        base["period_alignment"] = alignment
+        return base, alignment
+    for field in ("revenue", "diluted_eps", "operating_cash_flow", "free_cash_flow", "free_cash_flow_yoy_pct"):
+        if metrics.get(field) is not None:
+            base[field] = metrics[field]
+    growth_claim = official_claims.get("growth_bridge")
+    growth = growth_claim.get("value") if isinstance(growth_claim, dict) and isinstance(growth_claim.get("value"), dict) else {}
+    if growth.get("reported_sales_growth_pct") is not None:
+        base["revenue_yoy_pct"] = growth["reported_sales_growth_pct"]
+    if metrics_claim and metrics_claim.get("source_url"):
+        source_url = metrics_claim.get("source_url")
+    alignment = {
+        "status": "newer_official_period_normalized_metrics_catch_up_required",
+        "latest_official_period_end": official_period,
+        "normalized_metrics_period_end": normalized_period,
+        "normalized_metrics_stale": True,
+        "source_url": source_url,
+        "withheld_fields": [field for field in PERIOD_SENSITIVE_FUNDAMENTAL_FIELDS if base.get(field) is None],
+        "prior_normalized_metrics_retained": True,
+    }
+    base["prior_normalized_metrics"] = {
+        "period_end": normalized_period,
+        "source": fundamentals.get("source") if fundamentals else None,
+        "metrics": prior,
+    }
+    base["period_alignment"] = alignment
+    return base, alignment
+
+
 def technical_record(data: dict[str, Any] | None, ticker: str) -> dict[str, Any] | None:
     records = (data or {}).get("records")
     if isinstance(records, dict):
@@ -299,15 +569,38 @@ def technical_record(data: dict[str, Any] | None, ticker: str) -> dict[str, Any]
     return None
 
 
+SECTOR_ALIASES = {
+    "AEROSPACE & DEFENSE": "INDUSTRIALS",
+    "DEFENSE": "INDUSTRIALS",
+    "DIVERSIFIED QUALITY": "FINANCIALS",
+    "FINANCIAL INFRASTRUCTURE": "FINANCIALS",
+    "INFRASTRUCTURE": "INDUSTRIALS",
+    "INFORMATION TECHNOLOGY": "TECHNOLOGY",
+    "MATERIALS / INFRASTRUCTURE": "MATERIALS",
+    "TECH": "TECHNOLOGY",
+}
+
+
 def sector_record(data: dict[str, Any] | None, sector_or_ticker: str | None) -> dict[str, Any] | None:
     if not sector_or_ticker:
         return None
-    needle = str(sector_or_ticker).upper()
+    raw = str(sector_or_ticker).strip()
+    needle = raw.upper()
+    alias = SECTOR_ALIASES.get(needle)
+    candidates = [needle]
+    if alias and alias not in candidates:
+        candidates.append(alias)
     for row in (data or {}).get("sectors") or []:
         if not isinstance(row, dict):
             continue
-        if str(row.get("ticker", "")).upper() == needle or str(row.get("sector", "")).upper() == needle:
-            return row
+        row_ticker = str(row.get("ticker", "")).upper()
+        row_sector = str(row.get("sector", "")).upper()
+        for candidate in candidates:
+            if row_ticker == candidate or row_sector == candidate:
+                matched = dict(row)
+                matched["sector_query"] = raw
+                matched["sector_match_basis"] = "exact" if candidate == needle else f"alias:{needle}->{candidate}"
+                return matched
     return None
 
 
@@ -338,6 +631,7 @@ def build_latest_earnings_performance(fundamentals: dict[str, Any] | None, offic
         "official_growth_bridge": claim_summary(official_claims.get("growth_bridge")),
         "official_guidance": claim_summary(official_claims.get("guidance")),
         "management_explanation": claim_summary(official_claims.get("management_explanation")),
+        "period_alignment": (fundamentals or {}).get("period_alignment"),
         "source_open_required": True,
     }
 
@@ -350,6 +644,7 @@ def build_key_financial_metrics(fundamentals: dict[str, Any] | None, instrument_
         }
     return {
         "status": "available" if fundamentals else "missing_manual_required",
+        "period_end": (fundamentals or {}).get("period_end"),
         "growth": metric(fundamentals or {}, ["revenue_yoy_pct", "net_income_yoy_pct", "eps_yoy_pct", "free_cash_flow_yoy_pct"]),
         "profitability": metric(fundamentals or {}, ["gross_margin_pct", "operating_margin_pct", "net_margin_pct", "roic_proxy_pct"]),
         "cash_flow": metric(fundamentals or {}, ["operating_cash_flow", "free_cash_flow", "fcf_per_share", "fcf_yield_pct"]),
@@ -357,6 +652,7 @@ def build_key_financial_metrics(fundamentals: dict[str, Any] | None, instrument_
         "valuation": metric(fundamentals or {}, ["market_cap", "enterprise_value", "trailing_pe", "forward_pe", "price_to_sales", "price_to_book", "ev_to_ebitda_proxy", "ev_to_fcf_proxy", "earnings_yield_pct"]),
         "capital_returns": metric(fundamentals or {}, ["buyback_yield_pct", "dividend_yield_pct", "shareholder_yield_pct", "capital_return_to_fcf_pct"]),
         "data_quality": (fundamentals or {}).get("data_quality"),
+        "period_alignment": (fundamentals or {}).get("period_alignment"),
         "source_open_required": True,
     }
 
@@ -402,6 +698,215 @@ def build_etf_profile(fundamentals: dict[str, Any] | None, sector: dict[str, Any
     }
 
 
+def pct_fragment(label: str, value: Any) -> str | None:
+    if value is None:
+        return None
+    try:
+        return f"{label} {float(value):.2f}%"
+    except (TypeError, ValueError):
+        return None
+
+
+def claim_value_summary(claim: dict[str, Any] | None) -> str | None:
+    if not claim:
+        return None
+    value = claim.get("value")
+    if isinstance(value, dict):
+        summary = value.get("summary")
+        if summary:
+            return str(summary)
+        drivers = value.get("demand_drivers")
+        if isinstance(drivers, list) and drivers:
+            return "Demand drivers: " + ", ".join(str(item) for item in drivers[:4])
+        keys = [key for key in value.keys() if key not in {"rationale", "note"}]
+        if keys:
+            return "Captured official fields: " + ", ".join(str(key) for key in keys[:5])
+    if value:
+        return str(value)
+    return claim.get("claim_text")
+
+
+def claim_evidence(label: str, claim: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not claim:
+        return None
+    summary = claim_value_summary(claim)
+    if not summary:
+        return None
+    return {
+        "label": label,
+        "summary": summary,
+        "source_url": claim.get("source_url"),
+        "source_section": claim.get("source_section"),
+        "period": claim.get("period"),
+        "status": claim.get("capture_status") or claim.get("status"),
+        "source_artifact": str(OFFICIAL_EARNINGS_BRIDGE_PATH.relative_to(WORKSPACE)),
+    }
+
+
+def build_review_thesis_context(
+    ticker: str,
+    fundamentals: dict[str, Any] | None,
+    official_claims: dict[str, Any],
+    sector_entry: dict[str, Any] | None,
+    price_band_stop: dict[str, Any],
+    missing: list[dict[str, str]],
+    universe_entry: dict[str, Any] | None,
+) -> dict[str, Any]:
+    evidence: list[dict[str, Any]] = []
+    if (fundamentals or {}).get("instrument_type") == "etf_or_macro_proxy":
+        evidence.append(
+            {
+                "label": "etf_or_macro_proxy_profile",
+                "summary": f"ETF/macro proxy classified for {(fundamentals or {}).get('sector') or 'broad exposure'}; operating-company fundamentals are not applicable.",
+                "source_artifact": str(FUNDAMENTALS_PATH.relative_to(WORKSPACE)),
+                "portfolio_role": (fundamentals or {}).get("portfolio_role"),
+                "coverage_lane": (fundamentals or {}).get("coverage_lane"),
+            }
+        )
+    growth_bits = [
+        pct_fragment("revenue YoY", (fundamentals or {}).get("revenue_yoy_pct")),
+        pct_fragment("EPS YoY", (fundamentals or {}).get("eps_yoy_pct")),
+        pct_fragment("FCF YoY", (fundamentals or {}).get("free_cash_flow_yoy_pct")),
+    ]
+    growth_summary = ", ".join(bit for bit in growth_bits if bit)
+    if growth_summary:
+        evidence.append(
+            {
+                "label": "fundamental_snapshot",
+                "summary": growth_summary,
+                "source_artifact": str(FUNDAMENTALS_PATH.relative_to(WORKSPACE)),
+                "period_end": (fundamentals or {}).get("period_end"),
+                "source_tier": (fundamentals or {}).get("source_tier"),
+            }
+        )
+    for label, key in (
+        ("management_explanation", "management_explanation"),
+        ("growth_bridge", "growth_bridge"),
+        ("orders_backlog_or_activity", "orders_backlog"),
+    ):
+        row = claim_evidence(label, official_claims.get(key))
+        if row:
+            evidence.append(row)
+    if sector_entry:
+        evidence.append(
+            {
+                "label": "sector_proxy_context",
+                "summary": f"{sector_entry.get('sector')} via {sector_entry.get('ticker')} versus SPY; leadership={sector_entry.get('leadership_status')}",
+                "source_artifact": str(SECTOR_EXPANSION_BOARD_PATH.relative_to(WORKSPACE)),
+                "as_of": sector_entry.get("as_of"),
+                "match_basis": sector_entry.get("sector_match_basis"),
+            }
+        )
+    if not evidence:
+        return {
+            "thesis": "Card-level thesis synthesis requires source-open review of fundamentals, official captures, sector context, and technical posture before final answer.",
+            "bull_case_inputs": ["latest_earnings_performance", "key_financial_metrics", "official_capture_developments_orders_backlog", "current_sector_performance", "technical_posture"],
+            "bear_case_inputs": ["risk_register", "missing_or_stale_evidence", "valuation", "price_band_stop"],
+            "entry_context": price_band_stop,
+            "source_open_required": True,
+        }
+
+    name = (universe_entry or {}).get("name") or ticker
+    band_status = price_band_stop.get("band_status") or "unknown band status"
+    risk_count = len([item for item in missing if item.get("severity") in {"blocking", "context"}])
+    thesis = (
+        f"{name} has a review-only synthesized Tier A thesis from local sourced artifacts: "
+        f"{evidence[0]['summary']}. Entry posture is {band_status}; "
+        f"{risk_count} evidence/freshness gaps still require review before decision-grade use."
+    )
+    return {
+        "status": "synthesized_review_only_source_backed",
+        "thesis": thesis,
+        "bull_case_inputs": ["latest_earnings_performance", "key_financial_metrics", "official_capture_developments_orders_backlog", "current_sector_performance", "technical_posture"],
+        "bear_case_inputs": ["risk_register", "missing_or_stale_evidence", "valuation", "price_band_stop"],
+        "entry_context": price_band_stop,
+        "synthesis_evidence": evidence,
+        "source_open_required": True,
+        "limits": [
+            "Review-only synthesis generated from existing local sourced artifacts.",
+            "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority.",
+        ],
+    }
+
+
+def build_review_competitive_moat(
+    fundamentals: dict[str, Any] | None,
+    official_claims: dict[str, Any],
+    sector_entry: dict[str, Any] | None,
+    universe_entry: dict[str, Any] | None,
+    instrument_type: str | None,
+) -> dict[str, Any]:
+    if instrument_type == "etf_or_macro_proxy":
+        return {
+            "status": "not_applicable_etf_or_macro_proxy",
+            "summary": "ETF/macro proxy; use sector/proxy profile rather than issuer competitive moat.",
+            "evidence": [
+                {
+                    "label": "instrument_type",
+                    "summary": "Ticker is classified as etf_or_macro_proxy in the local fundamentals layer.",
+                    "source_artifact": str(FUNDAMENTALS_PATH.relative_to(WORKSPACE)),
+                }
+            ],
+            "source_open_required": True,
+        }
+
+    evidence: list[dict[str, Any]] = []
+    profitability = []
+    for label, key in (
+        ("operating margin", "operating_margin_pct"),
+        ("net margin", "net_margin_pct"),
+        ("ROIC proxy", "roic_proxy_pct"),
+    ):
+        bit = pct_fragment(label, (fundamentals or {}).get(key))
+        if bit:
+            profitability.append(bit)
+    if profitability:
+        evidence.append(
+            {
+                "label": "profitability_quality",
+                "summary": ", ".join(profitability),
+                "source_artifact": str(FUNDAMENTALS_PATH.relative_to(WORKSPACE)),
+                "period_end": (fundamentals or {}).get("period_end"),
+                "source_tier": (fundamentals or {}).get("source_tier"),
+            }
+        )
+    for label, key in (
+        ("management_explanation", "management_explanation"),
+        ("demand_or_backlog_activity", "orders_backlog"),
+    ):
+        row = claim_evidence(label, official_claims.get(key))
+        if row:
+            evidence.append(row)
+    if sector_entry:
+        evidence.append(
+            {
+                "label": "sector_proxy_position",
+                "summary": f"{sector_entry.get('sector')} proxy {sector_entry.get('ticker')} leadership={sector_entry.get('leadership_status')}",
+                "source_artifact": str(SECTOR_EXPANSION_BOARD_PATH.relative_to(WORKSPACE)),
+                "as_of": sector_entry.get("as_of"),
+                "match_basis": sector_entry.get("sector_match_basis"),
+            }
+        )
+    if not evidence:
+        return {
+            "status": "not_yet_structured_source_open_required",
+            "summary": None,
+            "evidence": [],
+            "note": "Ticker cards now reserve this field; populate only from sourced thesis/official/research artifacts, not model inference.",
+        }
+    name = (universe_entry or {}).get("name") or (fundamentals or {}).get("ticker") or "Ticker"
+    return {
+        "status": "partially_structured_source_backed_review_required",
+        "summary": f"{name} has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+        "evidence": evidence,
+        "source_open_required": True,
+        "limits": [
+            "Evidence supports structured review coverage, not a final moat grade.",
+            "Peer comparison and source-open competitive research remain required before decision-grade use.",
+        ],
+    }
+
+
 def compact_source(path: Path, data: dict[str, Any] | None) -> dict[str, Any]:
     return {
         "path": str(path.relative_to(WORKSPACE)),
@@ -411,6 +916,24 @@ def compact_source(path: Path, data: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def review_post_close_quote_available(post_close_quote: dict[str, Any] | None) -> bool:
+    if not isinstance(post_close_quote, dict):
+        return False
+    market_date = str(post_close_quote.get("market_date") or "").strip()
+    retrieved_at_utc = str(post_close_quote.get("retrieved_at_utc") or "").strip()
+    source = str(post_close_quote.get("source") or "").strip()
+    return bool(market_date and retrieved_at_utc and source)
+
+
+def effective_review_fresh_quote_required(
+    readiness: dict[str, Any] | None,
+    post_close_quote: dict[str, Any] | None,
+) -> bool:
+    if not bool((readiness or {}).get("fresh_quote_required")):
+        return False
+    return not review_post_close_quote_available(post_close_quote)
+
+
 def metric(row: dict[str, Any], keys: list[str]) -> dict[str, Any]:
     return {key: row.get(key) for key in keys if key in row}
 
@@ -418,6 +941,7 @@ def metric(row: dict[str, Any], keys: list[str]) -> dict[str, Any]:
 def build_recommendation_posture(
     ticker: str,
     readiness: dict[str, Any] | None,
+    post_close_quote: dict[str, Any] | None,
     deployment_entry: dict[str, Any] | None,
     price_band_stop: dict[str, Any],
     order_card: dict[str, Any] | None,
@@ -429,7 +953,7 @@ def build_recommendation_posture(
     deployment_state = legacy_state((deployment_entry or {}), "surface_state") or legacy_state((deployment_entry or {}), "action_state") or legacy_state((deployment_entry or {}), "machine_state")
     state = deployment_state or readiness_state
     band_status = price_band_stop.get("band_status") or (readiness or {}).get("band_status")
-    fresh_required = bool((readiness or {}).get("fresh_quote_required"))
+    fresh_required = effective_review_fresh_quote_required(readiness, post_close_quote)
     has_prepared_order_card = bool(order_card)
 
     if stale_blockers:
@@ -492,6 +1016,7 @@ def build_missing_and_stale(
     ticker: str,
     fundamentals: dict[str, Any] | None,
     readiness: dict[str, Any] | None,
+    post_close_quote: dict[str, Any] | None,
     deployment_entry: dict[str, Any] | None,
     analyst_entry: dict[str, Any] | None,
     universe_entry: dict[str, Any] | None = None,
@@ -520,7 +1045,7 @@ def build_missing_and_stale(
         items.append({"family": "analyst_consensus_ratings_targets", "severity": "context", "status": "missing_manual_required", "detail": "tmp/analyst-consensus-current.json is absent or lacks ticker; do not fabricate ratings/targets"})
     elif analyst_entry.get("status") == "missing_manual_required" or analyst_entry.get("manual_required") is True:
         items.append({"family": "analyst_consensus_ratings_targets", "severity": "context", "status": "missing_manual_required", "detail": "Analyst consensus placeholder is present but values remain null/manual-required; do not fabricate ratings/targets"})
-    if readiness and readiness.get("fresh_quote_required"):
+    if effective_review_fresh_quote_required(readiness, post_close_quote):
         items.append({"family": "fresh_price_quote", "severity": "context", "status": "stale_until_refreshed", "detail": "Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation"})
     return items
 
@@ -530,13 +1055,20 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
     fundamentals = inputs["fundamental_index"].get(ticker)
     readiness = find_ticker_entry(inputs["tuesday_readiness"], ticker)
     deployment_entry = find_ticker_entry(inputs["deployment_surface"], ticker)
-    analyst_entry = find_ticker_entry(inputs["analyst_consensus"], ticker)
+    analyst_entry = find_analyst_consensus_entry(inputs["analyst_consensus"], ticker)
     official_claims = index_official_claims(inputs.get("official_earnings_bridge"), ticker)
+    card_fundamentals, period_alignment = build_period_aligned_fundamentals(fundamentals, official_claims)
     tech_entry = technical_record(inputs.get("technical_refresh"), ticker)
-    sector_entry = sector_record(inputs.get("sector_expansion_board"), (fundamentals or {}).get("sector") or ticker)
+    sector_entry = sector_record(inputs.get("sector_expansion_board"), (card_fundamentals or {}).get("sector") or ticker)
     config_band = portfolio_config_band(inputs.get("portfolio_config"), ticker)
     universe_entry = inputs.get("universe_index", {}).get(ticker)
     auto_tier_entry = inputs.get("auto_tier_index", {}).get(ticker)
+    sql_canon_state = inputs.get("sql_canon_state_index", {}).get(ticker)
+    sql_canon_reference = inputs.get("sql_canon_reference_index", {}).get(ticker)
+    sql_reference_available = isinstance(sql_canon_reference, dict) and any(
+        sql_canon_reference.get(key) is not None
+        for key in ("reference_price_low", "reference_price_high", "reference_invalidation_level")
+    )
     decision_spine_entry = inputs.get("decision_spine_index", {}).get(ticker)
     capital_queue_entry = inputs.get("capital_queue_index", {}).get(ticker)
     capital_written_band = (capital_queue_entry or {}).get("written_band")
@@ -544,8 +1076,16 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         capital_written_band = {}
     post_close_quote = post_close_quote_row(inputs, ticker)
     order_card, order_card_path = find_order_card(ticker)
-    missing = build_missing_and_stale(ticker, fundamentals, readiness, deployment_entry, analyst_entry, universe_entry, auto_tier_entry)
-    instrument_type = (fundamentals or {}).get("instrument_type")
+    missing = build_missing_and_stale(ticker, card_fundamentals, readiness, post_close_quote, deployment_entry, analyst_entry, universe_entry, auto_tier_entry)
+    if period_alignment.get("normalized_metrics_stale"):
+        missing.append({
+            "family": "fundamental_period_alignment",
+            "severity": "context",
+            "status": "newer_official_period_normalized_metrics_catch_up_required",
+            "detail": f"Official period {period_alignment.get('latest_official_period_end')} is newer than normalized metrics period {period_alignment.get('normalized_metrics_period_end')}; withheld fields remain manual/10-Q required.",
+        })
+    instrument_type = (card_fundamentals or {}).get("instrument_type") or (fundamentals or {}).get("instrument_type")
+    fresh_quote_required = effective_review_fresh_quote_required(readiness, post_close_quote)
 
     latest_price, latest_price_source = first_present(
         ((post_close_quote or {}).get("close"), "tmp/post-close-final-quote-ledger.json"),
@@ -554,6 +1094,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         ((readiness or {}).get("close_reference"), "tmp/position-sizing-readiness-current.json"),
     )
     band_low, band_low_source = first_present(
+        (sql_canon_reference.get("reference_price_low") if sql_reference_available else None, "state/finance/finance-canon.sqlite:reference_levels"),
         (capital_written_band.get("entry_band_low"), "tmp/wf78-capital-review-queue.json"),
         ((decision_spine_entry or {}).get("entry_band_low"), "tmp/finance-decision-sync-spine.json"),
         (config_band.get("low"), "tmp/portfolio-config.json"),
@@ -561,6 +1102,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         ((readiness or {}).get("band_low"), "tmp/position-sizing-readiness-current.json"),
     )
     band_high, band_high_source = first_present(
+        (sql_canon_reference.get("reference_price_high") if sql_reference_available else None, "state/finance/finance-canon.sqlite:reference_levels"),
         (capital_written_band.get("entry_band_high"), "tmp/wf78-capital-review-queue.json"),
         ((decision_spine_entry or {}).get("entry_band_high"), "tmp/finance-decision-sync-spine.json"),
         (config_band.get("high"), "tmp/portfolio-config.json"),
@@ -568,6 +1110,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         ((readiness or {}).get("band_high"), "tmp/position-sizing-readiness-current.json"),
     )
     stop, stop_source = first_present(
+        (sql_canon_reference.get("reference_invalidation_level") if sql_reference_available else None, "state/finance/finance-canon.sqlite:reference_levels"),
         (capital_written_band.get("stop_or_invalidation"), "tmp/wf78-capital-review-queue.json"),
         ((capital_queue_entry or {}).get("stop_or_invalidation"), "tmp/wf78-capital-review-queue.json"),
         ((decision_spine_entry or {}).get("stop_or_invalidation"), "tmp/finance-decision-sync-spine.json"),
@@ -576,6 +1119,13 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         ((readiness or {}).get("stop"), "tmp/position-sizing-readiness-current.json"),
     )
     band_status = classify_band_status(latest_price, band_low, band_high, stop) or (deployment_entry or {}).get("band_position") or (readiness or {}).get("band_status")
+    stale_low_confidence_reference_band = low_confidence_reference_band_requires_refresh(
+        auto_tier_entry,
+        sql_canon_reference if sql_reference_available else None,
+        band_status,
+    )
+    if stale_low_confidence_reference_band:
+        band_status = STALE_REFERENCE_BAND
 
     price_band_stop = {
         "latest_known_price": latest_price,
@@ -586,8 +1136,10 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         "band_status": band_status,
         "band_source": band_low_source if band_low_source == band_high_source else {"low": band_low_source, "high": band_high_source},
         "stop_source": stop_source,
-        "fresh_quote_required": bool((readiness or {}).get("fresh_quote_required")),
-        "staleness_note": "Reference price/band from prepared packet; refresh before final use." if (readiness or {}).get("fresh_quote_required") else None,
+        "fresh_quote_required": True if stale_low_confidence_reference_band else fresh_quote_required,
+        "staleness_note": "Low-confidence fallback reference band requires refreshed/validated reference-band evidence before a hard stop claim; technical freshness alone does not validate it." if stale_low_confidence_reference_band else "Reference price/band from prepared packet; refresh before final use." if fresh_quote_required else None,
+        "reference_band_refresh_required": stale_low_confidence_reference_band,
+        "sql_canon_reference": sql_canon_reference or None,
     }
     if post_close_quote:
         price_band_stop["post_close_final_quote"] = {
@@ -598,7 +1150,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "execution_freshness_approved": False,
         }
     entry_stop_reference_metadata = build_entry_stop_reference_metadata(ticker)
-    recommendation = build_recommendation_posture(ticker, readiness, deployment_entry, price_band_stop, order_card, missing)
+    recommendation = build_recommendation_posture(ticker, readiness, post_close_quote, deployment_entry, price_band_stop, order_card, missing)
 
     source_artifacts = [
         compact_source(FUNDAMENTALS_PATH, inputs["fundamentals"]),
@@ -614,9 +1166,13 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         compact_source(CAPITAL_REVIEW_QUEUE_PATH, inputs.get("capital_review_queue")),
         compact_source(UNIVERSE_PATH, inputs.get("universe")),
         compact_source(WF78_AUTO_TIER_ROUTING_PATH, inputs.get("auto_tier_routing")),
+        compact_source(SQL_CANON_DB, inputs.get("sql_canon_context")),
     ]
     if order_card_path:
         source_artifacts.append({"path": order_card_path, "exists": True, "created_at_utc": (order_card or {}).get("created_at_utc"), "status": (order_card or {}).get("status")})
+    risk_register = build_risk_register(card_fundamentals, readiness, deployment_entry, missing)
+    thesis_context = build_review_thesis_context(ticker, card_fundamentals, official_claims, sector_entry, price_band_stop, missing, universe_entry)
+    competitive_moat = build_review_competitive_moat(card_fundamentals, official_claims, sector_entry, universe_entry, instrument_type)
 
     return {
         "schema_version": 2,
@@ -630,6 +1186,11 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "source": str(UNIVERSE_PATH.relative_to(WORKSPACE)),
             "note": "WF78 universe metadata missing for ticker; card remains review-only and source-open required.",
         },
+        "durable_sql_canon_state": sql_canon_state or {
+            "status": "missing_sql_canon_state",
+            "source": str(SQL_CANON_DB.relative_to(WORKSPACE)),
+            "note": "Durable SQL-canon state missing; card remains review-only and source-open required.",
+        },
         "wf78_auto_tier_routing": auto_tier_entry or {
             "status": "missing_auto_tier_routing",
             "source": str(WF78_AUTO_TIER_ROUTING_PATH.relative_to(WORKSPACE)),
@@ -638,23 +1199,19 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         "latest_known_price": price_band_stop["latest_known_price"],
         "price_band_stop": price_band_stop,
         "entry_stop_reference_metadata": entry_stop_reference_metadata,
-        "thesis_bull_bear_entry_context": {
-            "thesis": "Card-level thesis synthesis requires source-open review of fundamentals, official captures, sector context, and technical posture before final answer.",
-            "bull_case_inputs": ["latest_earnings_performance", "key_financial_metrics", "official_capture_developments_orders_backlog", "current_sector_performance", "technical_posture"],
-            "bear_case_inputs": ["risk_register", "missing_or_stale_evidence", "valuation", "price_band_stop"],
-            "entry_context": price_band_stop,
-            "source_open_required": True,
-        },
-        "latest_earnings_performance": build_latest_earnings_performance(fundamentals, official_claims, instrument_type),
-        "key_financial_metrics": build_key_financial_metrics(fundamentals, instrument_type),
-        "valuation": metric(fundamentals or {}, ["valuation_context", "market_cap", "enterprise_value", "trailing_pe", "forward_pe", "fcf_yield_pct", "earnings_yield_pct", "price_to_sales", "price_to_book", "ev_to_ebitda_proxy", "ev_to_fcf_proxy"]),
-        "official_fundamentals": metric(fundamentals or {}, ["source", "source_tier", "period_type", "period_end", "comparison_period_end", "revenue", "revenue_yoy_pct", "net_income", "net_income_yoy_pct", "diluted_eps", "eps_yoy_pct", "gross_margin_pct", "operating_margin_pct", "net_margin_pct", "operating_cash_flow", "free_cash_flow", "free_cash_flow_yoy_pct", "fcf_per_share", "fcf_per_share_yoy_pct", "cash_and_equivalents", "total_debt", "net_debt", "debt_to_annualized_ebitda", "roic_proxy_pct", "data_quality"]),
+        "thesis_bull_bear_entry_context": thesis_context,
+        "latest_earnings_performance": build_latest_earnings_performance(card_fundamentals, official_claims, instrument_type),
+        "key_financial_metrics": build_key_financial_metrics(card_fundamentals, instrument_type),
+        "valuation": metric(card_fundamentals or {}, ["valuation_context", "market_cap", "enterprise_value", "trailing_pe", "forward_pe", "fcf_yield_pct", "earnings_yield_pct", "price_to_sales", "price_to_book", "ev_to_ebitda_proxy", "ev_to_fcf_proxy"]),
+        "official_fundamentals": metric(card_fundamentals or {}, ["source", "source_tier", "period_type", "period_end", "comparison_period_end", "revenue", "revenue_yoy_pct", "net_income", "net_income_yoy_pct", "diluted_eps", "eps_yoy_pct", "gross_margin_pct", "operating_margin_pct", "net_margin_pct", "operating_cash_flow", "free_cash_flow", "free_cash_flow_yoy_pct", "fcf_per_share", "fcf_per_share_yoy_pct", "cash_and_equivalents", "total_debt", "net_debt", "debt_to_annualized_ebitda", "roic_proxy_pct", "data_quality"]),
+        "fundamental_period_alignment": period_alignment,
         "fundamental_reconciliation": {
-            "sec_status": ((fundamentals or {}).get("sec_reconciliation") or {}).get("status"),
-            "sec_source_url": ((fundamentals or {}).get("sec_reconciliation") or {}).get("source_url"),
-            "company_ir_status": ((fundamentals or {}).get("company_ir_reconciliation") or {}).get("status"),
-            "company_ir_source_url": ((fundamentals or {}).get("company_ir_reconciliation") or {}).get("source_url"),
-            "quality_notes": (fundamentals or {}).get("quality_notes") or [],
+            "sec_status": ((card_fundamentals or {}).get("sec_reconciliation") or {}).get("status"),
+            "sec_source_url": ((card_fundamentals or {}).get("sec_reconciliation") or {}).get("source_url"),
+            "company_ir_status": ((card_fundamentals or {}).get("company_ir_reconciliation") or {}).get("status"),
+            "company_ir_source_url": ((card_fundamentals or {}).get("company_ir_reconciliation") or {}).get("source_url"),
+            "quality_notes": (card_fundamentals or {}).get("quality_notes") or [],
+            "period_alignment": period_alignment,
         },
         "analyst_consensus_ratings_targets": analyst_entry or {
             "status": "missing_manual_required",
@@ -667,12 +1224,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "implied_upside_downside": None,
             "note": "Analyst consensus layer is WF77 Phase 3; no value is fabricated here.",
         },
-        "competitive_moat": {
-            "status": "not_yet_structured_source_open_required",
-            "summary": None,
-            "evidence": [],
-            "note": "Ticker cards now reserve this field; populate only from sourced thesis/official/research artifacts, not model inference.",
-        },
+        "competitive_moat": competitive_moat,
         "recent_developments": claim_summary(official_claims.get("acquisition_debt_notes")),
         "orders_backlog_book_to_bill": claim_summary(official_claims.get("orders_backlog")),
         "official_capture_developments_orders_backlog": {
@@ -683,7 +1235,9 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         },
         "current_sector_performance": {
             "status": "available" if sector_entry else "missing",
-            "sector": (fundamentals or {}).get("sector"),
+            "sector": (card_fundamentals or {}).get("sector"),
+            "sector_query": (sector_entry or {}).get("sector_query"),
+            "sector_match_basis": (sector_entry or {}).get("sector_match_basis"),
             "sector_proxy_ticker": (sector_entry or {}).get("ticker"),
             "as_of": (sector_entry or {}).get("as_of"),
             "relative_strength_vs_spy": (sector_entry or {}).get("relative_strength_vs_spy"),
@@ -695,7 +1249,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "underexposed": (sector_entry or {}).get("underexposed"),
             "owner_gated_next_review_action": (sector_entry or {}).get("owner_gated_next_review_action"),
         },
-        "etf_or_macro_proxy_profile": build_etf_profile(fundamentals, sector_entry),
+        "etf_or_macro_proxy_profile": build_etf_profile(card_fundamentals, sector_entry),
         "catalyst_earnings_state": {
             "workflow_state": legacy_state((fundamentals or {}), "workflow_state") or legacy_state((deployment_entry or {}), "workflow_state"),
             "surface_state": legacy_state((deployment_entry or {}), "surface_state"),
@@ -723,6 +1277,13 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
         "portfolio_fit_concentration": {
             "sector": (fundamentals or {}).get("sector"),
             "wf78_tier": (universe_entry or {}).get("tier"),
+            "sql_canon_legacy_tier": (sql_canon_state or {}).get("legacy_tier"),
+            "sql_canon_universe_scope": (sql_canon_state or {}).get("universe_scope"),
+            "sql_canon_production_answer_path_member": bool(
+                (sql_canon_state or {}).get("auto_tier") == "Tier A"
+                and (sql_canon_state or {}).get("auto_state") == "A-READY"
+                and (sql_canon_state or {}).get("production_card_generation_allowed")
+            ),
             "wf78_auto_tier": (auto_tier_entry or {}).get("auto_tier"),
             "wf78_auto_state": (auto_tier_entry or {}).get("auto_state"),
             "wf78_monitoring_role": (universe_entry or {}).get("monitoring_role"),
@@ -742,7 +1303,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "anomalies": (fundamentals or {}).get("capital_allocation_anomalies") or [],
             "notes": (fundamentals or {}).get("capital_allocation_notes") or [],
         },
-        "risk_register": build_risk_register(fundamentals, readiness, deployment_entry, missing),
+        "risk_register": risk_register,
         "recommendation_support": recommendation,
         "missing_or_stale_evidence": missing,
         "source_artifacts": source_artifacts,
@@ -757,7 +1318,7 @@ def apply_post_close_price_overlay(card: dict[str, Any], inputs: dict[str, Any])
         return card
     pbs = card.get("price_band_stop") if isinstance(card.get("price_band_stop"), dict) else {}
     close = row.get("close")
-    band_status = classify_band_status(
+    band_status = pbs.get("band_status") if pbs.get("reference_band_refresh_required") else classify_band_status(
         close,
         pbs.get("entry_band_low"),
         pbs.get("entry_band_high"),
@@ -768,6 +1329,8 @@ def apply_post_close_price_overlay(card: dict[str, Any], inputs: dict[str, Any])
         "latest_known_price": close,
         "price_source": "tmp/post-close-final-quote-ledger.json",
         "band_status": band_status,
+        "fresh_quote_required": pbs.get("fresh_quote_required") if pbs.get("reference_band_refresh_required") else False if review_post_close_quote_available(row) else pbs.get("fresh_quote_required"),
+        "staleness_note": pbs.get("staleness_note") if pbs.get("reference_band_refresh_required") else None if review_post_close_quote_available(row) else pbs.get("staleness_note"),
         "post_close_final_quote": {
             "market_date": row.get("market_date"),
             "retrieved_at_utc": row.get("retrieved_at_utc"),
@@ -792,8 +1355,16 @@ def uses_current_wf84_band_precedence(card: dict[str, Any]) -> bool:
     source_text = json.dumps({
         "band_source": pbs.get("band_source"),
         "stop_source": pbs.get("stop_source"),
+        "sql_canon_reference": pbs.get("sql_canon_reference"),
     }, sort_keys=True)
-    return "tmp/finance-decision-sync-spine.json" in source_text or "tmp/wf78-capital-review-queue.json" in source_text
+    return any(
+        marker in source_text
+        for marker in (
+            "state/finance/finance-canon.sqlite:reference_levels",
+            "tmp/finance-decision-sync-spine.json",
+            "tmp/wf78-capital-review-queue.json",
+        )
+    )
 
 
 def validate_card(card: dict[str, Any]) -> list[str]:
@@ -808,6 +1379,7 @@ def validate_card(card: dict[str, Any]) -> list[str]:
         "valuation",
         "official_fundamentals",
         "universe_metadata",
+        "durable_sql_canon_state",
         "analyst_consensus_ratings_targets",
         "competitive_moat",
         "recent_developments",
@@ -823,9 +1395,11 @@ def validate_card(card: dict[str, Any]) -> list[str]:
         if key not in card:
             errors.append(f"missing required key: {key}")
     authority = card.get("authority_boundary") or {}
-    for key in ["live_trade_allowed", "paper_order_execution_allowed", "owner_approval_inferred", "portfolio_mutation_allowed"]:
+    for key in ["live_trade_allowed", "paper_order_execution_allowed", "owner_approval_inferred", "portfolio_mutation_allowed", "sql_canon_mutation_allowed"]:
         if authority.get(key) is not False:
             errors.append(f"authority boundary widened or missing false flag: {key}")
+    if authority.get("durable_sql_canon_current_state_allowed") is not True:
+        errors.append("durable SQL-canon current-state read flag must be true")
     analyst = card.get("analyst_consensus_ratings_targets") or {}
     if analyst.get("status") == "missing_manual_required" and analyst.get("average_target") is not None:
         errors.append("analyst targets must remain null when status is missing_manual_required")
@@ -833,12 +1407,75 @@ def validate_card(card: dict[str, Any]) -> list[str]:
         errors.append("competitive moat claims require structured evidence")
     if not card.get("universe_metadata") or card.get("universe_metadata", {}).get("status") == "missing_universe_metadata":
         errors.append("universe_metadata must be present from data/finance/universe-v1.json")
+    if not card.get("durable_sql_canon_state") or card.get("durable_sql_canon_state", {}).get("status") == "missing_sql_canon_state":
+        errors.append("durable_sql_canon_state must be present from state/finance/finance-canon.sqlite")
     if not isinstance(card.get("risk_register"), list) or not card.get("risk_register"):
         errors.append("risk_register must be a non-empty list")
     technical_close = (card.get("technical_posture") or {}).get("latest_close")
     if technical_close is not None and card.get("latest_known_price") is None:
         errors.append("latest_known_price must fall back to technical_posture.latest_close when readiness/deployment price is absent")
     return errors
+
+
+def load_sql_canon_inputs(tickers: list[str]) -> dict[str, Any]:
+    context: dict[str, Any] = {
+        "schema": "wf77.ticker_intelligence_card.sql_canon_context.v1",
+        "status": "blocked",
+        "sql_canon_db": str(SQL_CANON_DB.relative_to(WORKSPACE)),
+        "typed_access_layer": "scripts/finance_sql_canon_access.py",
+        "production_answer_count": None,
+        "missing_ticker_state": [],
+        "registry_summary": {},
+        "validation": {"status": "blocked", "errors": [], "warnings": []},
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+    state_index: dict[str, dict[str, Any]] = {}
+    reference_index: dict[str, dict[str, Any]] = {}
+    try:
+        client = FinanceSqlCanonAccess(SQL_CANON_DB)
+        validation = client.validate()
+        context["access_validation_status"] = validation.get("status")
+        if validation.get("status") != "ok":
+            context["validation"]["errors"].append({"sql_canon_access_blocked": validation.get("errors")})
+            return {"context": context, "state_index": state_index, "reference_index": reference_index}
+        states = client.ticker_states(tickers)
+        for ticker, state in states.items():
+            state_index[ticker] = asdict(state)
+            reference = client.reference_level(ticker)
+            if reference:
+                reference_index[ticker] = asdict(reference)
+        missing = sorted(set(tickers) - set(states))
+        production = client.production_answer_tickers()
+        legacy = client.legacy_production_answer_tickers()
+        context["production_answer_count"] = len(production)
+        context["production_answer_definition"] = "validated proof-joined production-grade set"
+        context["legacy_production_answer_count"] = len(legacy)
+        context["legacy_production_answer_definition"] = "retired legacy 42 compatibility inventory"
+        context["missing_ticker_state"] = missing
+        context["registry_summary"] = client.migration_registry_summary()
+        errors = context["validation"]["errors"]
+        context["legacy_42_retired_from_blocking"] = True
+        context["legacy_42_count_advisory_only"] = True
+        if not production:
+            context["validation"]["warnings"].append("production_grade_set_empty_wait_for_decision_grade_gates")
+        if len(legacy) != LEGACY_PRODUCTION_COMPATIBILITY_COUNT:
+            context["validation"]["warnings"].append({
+                "legacy_42_compatibility_count": len(legacy),
+                "expected": LEGACY_PRODUCTION_COMPATIBILITY_COUNT,
+            })
+        if missing:
+            errors.append({"missing_ticker_state": missing[:25]})
+        context["validation"]["status"] = "blocked" if errors else "ok"
+        context["status"] = "blocked" if errors else "ok"
+    except Exception as exc:  # noqa: BLE001 - card builder must fail closed on SQL-canon guard errors.
+        context["validation"]["errors"].append({"exception": repr(exc)})
+    return {"context": context, "state_index": state_index, "reference_index": reference_index}
 
 
 def tickers_from_coverage(path: Path = COVERAGE_PATH) -> list[str]:
@@ -890,6 +1527,12 @@ def main() -> int:
             tickers = [ticker for ticker in tickers if ticker in requested]
     else:
         tickers = [t.upper() for t in (args.tickers or ["CME", "PH"])]
+    sql_canon_inputs = load_sql_canon_inputs(tickers)
+    inputs.update({
+        "sql_canon_context": sql_canon_inputs["context"],
+        "sql_canon_state_index": sql_canon_inputs["state_index"],
+        "sql_canon_reference_index": sql_canon_inputs["reference_index"],
+    })
     out_dir = Path(args.out_dir)
     if not args.validate_only:
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -912,12 +1555,16 @@ def main() -> int:
         "cards": [],
         "errors": [],
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_context": sql_canon_inputs["context"],
     }
     after_pilot_cards: dict[str, dict[str, Any]] = {}
     pilot_band_precedence_refresh: set[str] = set()
     if args.all_from_coverage and not tickers:
         summary["status"] = "error"
         summary["errors"].append({"scope": "coverage_registry", "errors": ["No tickers found in tmp/finance-data-coverage-current.json ticker_coverage"]})
+    if sql_canon_inputs["context"].get("status") != "ok":
+        summary["status"] = "error"
+        summary["errors"].append({"scope": "sql_canon_guard", "errors": [sql_canon_inputs["context"].get("validation")]})
     for ticker in tickers:
         card = build_card(ticker, inputs)
         card = apply_approved_wf78_card_field_repair(card)
@@ -928,6 +1575,11 @@ def main() -> int:
             else:
                 additive_card = dict(before_pilot_cards[ticker])
                 additive_card["entry_stop_reference_metadata"] = card["entry_stop_reference_metadata"]
+                additive_card["durable_sql_canon_state"] = card["durable_sql_canon_state"]
+                additive_card["authority_boundary"] = AUTHORITY_BOUNDARY
+                source_artifacts = additive_card.get("source_artifacts")
+                if isinstance(source_artifacts, list):
+                    source_artifacts.append(compact_source(SQL_CANON_DB, inputs.get("sql_canon_context")))
                 additive_card["generated_at_utc"] = card["generated_at_utc"]
                 additive_card = apply_post_close_price_overlay(additive_card, inputs)
                 card = additive_card
@@ -941,7 +1593,16 @@ def main() -> int:
             continue
         if not args.validate_only:
             (out_dir / f"{ticker}.current.json").write_text(json.dumps(card, indent=2, sort_keys=False) + "\n", encoding="utf-8")
-        summary["cards"].append({"ticker": ticker, "path": rel_path, "recommendation_support": card["recommendation_support"]["posture"], "missing_or_stale_count": len(card["missing_or_stale_evidence"])})
+        gaps = card["missing_or_stale_evidence"]
+        summary["cards"].append({
+            "ticker": ticker,
+            "path": rel_path,
+            "recommendation_support": card["recommendation_support"]["posture"],
+            "missing_or_stale_count": len(gaps),
+            "blocking_gap_count": len([item for item in gaps if item.get("severity") == "blocking"]),
+            "context_gap_count": len([item for item in gaps if item.get("severity") == "context"]),
+            "blocking_gap_families": sorted({str(item.get("family")) for item in gaps if item.get("severity") == "blocking"}),
+        })
 
     if requested_pilot and not args.validate_only and pilot_band_precedence_refresh:
         summary["wf72_entry_stop_no_drift_pilot"] = {

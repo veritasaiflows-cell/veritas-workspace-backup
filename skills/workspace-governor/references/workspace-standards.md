@@ -3,13 +3,13 @@
 ## Root policy
 
 Keep the workspace root strict. It should contain only:
-- core operating files such as `SOUL.md`, `USER.md`, `MEMORY.md`, `AGENTS.md`, `TOOLS.md`, `IDENTITY.md`, `FINANCE_SOUL.MD`, `Continuity Protocol.md`, `HEARTBEAT.md`, `CLAUDE.md`, and `Home.md`
+- core operating files such as `SOUL.md`, `USER.md`, `MEMORY.md`, `AGENTS.md`, `TOOLS.md`, `FINANCE_SOUL.MD`, `Continuity Protocol.md`, `HEARTBEAT.md`, `CLAUDE.md`, `DREAMS.md`, and `Home.md`
 - canonical numbered knowledge domains
 - essential system or implementation folders
 - the archive domain
 - clearly documented generated or staged surfaces that cannot live more naturally elsewhere
 
-Current canonical numbered review domains:
+Current canonical numbered review and delivery domains:
 - `01. Dashboards/`
 - `02. Markets/`
 - `03. Portfolio/`
@@ -19,6 +19,7 @@ Current canonical numbered review domains:
 - `07. Risk/`
 - `08. Audits/`
 - `09. Archive/`
+- `10. Deliverables/` for durable human-facing deliverable packs, PDFs, workbooks, HTML exports, and retrieval indexes; review/delivery surface only, not canon, approval, external-send, customer-output, or execution authority
 
 Current allowed non-numbered active root folders:
 - `memory/` for daily notes
@@ -29,7 +30,11 @@ Current allowed non-numbered active root folders:
 - `state/` for approved durable machine state such as PM cockpit registry and finance SQL canon candidate surfaces; these remain derived/proof or gated machine-canon candidates, not portfolio/trade/approval authority unless an exact gate says otherwise
 - `apps/` for local application surfaces such as `apps/pm-control-cockpit`; apps remain local/review-only unless a separate exposure gate is approved
 - `training/` for internal WF75 Academy/training assets; internal only, no public/customer delivery authority
+- `wiki/` for durable WF88 second-brain synthesis and retrieval pages generated from validated source packets; review-only and never canon, approval, execution, customer output, model-training, or apply authority
+- `schemas/` for durable local JSON/schema contracts that are shared across scripts or training assets
+- `tests/` for root-level cross-script/workspace tests when placing them under `scripts/` would obscure the contract being tested
 - `migration-backups/` for reversible local backup checkpoints
+- `node_modules/` as a rebuildable local QA/development dependency cache only while root `package.json` owns local training QA dependencies
 - `.obsidian/`, `.openclaw/`, `.clawhub/`, `.git/` for tool or repo infrastructure
 - `.claude/` as a runtime/tool-settings compatibility surface; do not move, archive, or clean it without exact runtime/config approval
 
@@ -39,6 +44,9 @@ Current documented root exceptions:
 - `attachments/` while `.obsidian/app.json` still points `attachmentFolderPath` there, even if the folder is currently empty
 - `migration-review.md` while it still has active review or retrieval value
 - `GEMINI.md` as an external-process compatibility surface parallel to `CLAUDE.md`; keep route-only and do not treat it as active Veritas doctrine
+- `DREAMS.md` as an OpenClaw dream diary/reference surface. Treat it as read-only bootstrap/reference material during memory flushes and cleanup passes unless Randall explicitly scopes content edits.
+- `openclaw-workspace-state.json` as a small OpenClaw bootstrap/setup state file. Treat it as runtime-owned unless OpenClaw documentation proves it can be retired.
+- `package.json`, `package-lock.json`, and `requirements-dev.txt` as local development/test dependency manifests; they do not grant runtime, customer, finance, external, or execution authority.
 - `.backups/` as a temporary rollback/provenance surface with `README.md`; do not move whole folder, and do not move config/runtime-sensitive subtrees without exact approval
 - `backups/` as a temporary rollback/provenance surface with `README.md`; do not move whole folder, and archive only retired individual backup sets after fresh proof
 
@@ -188,6 +196,9 @@ Audits, readiness checks, cleanup notes, and hardening history.
 
 ### `09. Archive/`
 Retired branches, old templates, and preserved historical material.
+
+### `10. Deliverables/`
+Durable human-facing deliverable packs, exports, and retrieval indexes.
 
 ### `memory/`
 Daily notes and continuity support only.

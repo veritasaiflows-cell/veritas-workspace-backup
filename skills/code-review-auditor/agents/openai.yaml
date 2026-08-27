@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Review Auditor"
-  short_description: "High-signal code and contract review"
-  default_prompt: "Use $code-review-auditor to review a code change for correctness, contract drift, and proof quality."
+  short_description: "Deprecated router to Workspace QA Pass"
+  default_prompt: "Use $workspace-qa-pass for code and contract review; $code-review-auditor is retained only as a deprecated compatibility router."

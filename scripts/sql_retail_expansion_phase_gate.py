@@ -35,7 +35,7 @@ from ticker_intelligence_card import (
     validate_card,
 )
 from wf72_entry_stop_reference_helper import NO_DRIFT_FIELDS
-from wf78_legacy_42_tier_state import production_tickers as effective_production_tickers
+from finance_production_scope import production_tickers as effective_production_tickers
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -115,7 +115,7 @@ def production_tickers_from_universe(inputs: dict[str, Any]) -> list[str]:
     for row in entries:
         if not isinstance(row, dict) or row.get("active") is not True:
             continue
-        if row.get("universe_scope", "production_current_42") != "production_current_42":
+        if row.get("production_scope") is not True:
             continue
         ticker = str(row.get("ticker", "")).upper().strip()
         if ticker:
@@ -412,3 +412,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

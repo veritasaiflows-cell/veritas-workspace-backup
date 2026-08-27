@@ -1,0 +1,62 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "name": "PM - Main Session Priority Pickup",
+  "declaration_key": "veritas.main_session_priority_pickup.v1",
+  "job_id": "c295580b-fd61-4995-9a0e-f876873a5ea4",
+  "required": true,
+  "owner_workflow": "Heartbeat priority handoff",
+  "contract_reason": "A bounded main-session checkpoint must pick up new or aging P0/P1 current-window, ticker-debt, and cron-error handoffs within thirty minutes during the Phoenix operating window.",
+  "description": "Every-30-minute review-only main-session priority pickup. It refreshes the non-aging main-session priority handoff, selects one P0/P1 handoff, and persists an explicit Main disposition. It never executes a repair, PM proof, agent packet, lane lease, ticker import, canon/portfolio change, or finance/account action.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "*/30 7-17 * * *",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Priority pickup checkpoint. Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\n1. Run exactly: python scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate\n2. Run exactly: python scripts\\main_session_action_executor.py --context main_session --write --validate\n3. Read tmp\\main-session-priority-handoff.json and tmp\\main-session-action-executor.json. If either validation is not ok, report only its path, failed control, and named owner.\n4. If selected priority is P0/P1 and disposition.status is pending, claim it with this exact PowerShell sequence:\n$selectedPriority = (Get-Content -LiteralPath 'tmp\\main-session-priority-handoff.json' -Raw | ConvertFrom-Json).selected_item\npython scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate --priority-id $selectedPriority.priority_id --priority-disposition accepted\nVerify the matching accepted entry in state\\main-session-priority-disposition-ledger.jsonl, then route its named bounded review/repair owner. For defer/block, replace accepted and add a factual --priority-note. Do not close without its acceptance proof.\n5. P2 is monitor-only; it must not preempt generic PM work or require a claim.\n6. Do not execute a repair, generic PM proof, --execute-safe, --execute-one, finance-agent packet, helper spawn, or lane lease. Reply NO_REPLY only when no P0/P1 main-session action is required.\n\nBoundaries: review/routing only; no ticker or SQL import, canon/portfolio/cash/sizing/risk mutation, capital deployment, paper/live/brokerage/account action, money movement, config/auth/runtime mutation, external delivery, archive/delete, or owner approval inference."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [
+    "tmp/main-session-escalation-consumer.json",
+    "tmp/main-session-priority-handoff.json",
+    "tmp/main-session-action-executor.json",
+    "state/main-session-priority-disposition-ledger.jsonl"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "priority_handoff_only": true,
+    "repair_execution_allowed": false,
+    "pm_proof_execution_allowed": false,
+    "agent_packet_execution_allowed": false,
+    "helper_spawn_or_lane_lease_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "unscoped_canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_risk_rule_or_execution_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  }
+}

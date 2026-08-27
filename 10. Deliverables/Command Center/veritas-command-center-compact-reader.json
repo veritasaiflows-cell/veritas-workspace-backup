@@ -1,0 +1,470 @@
+{
+  "schema_version": "veritas_command_center_compact_reader.v1",
+  "generated_at_utc": "2026-06-18T21:52:04Z",
+  "status": "ok",
+  "purpose": "Machine-readable first-read route for Veritas; Randall full-detail dashboard is retained separately.",
+  "routes": {
+    "veritas_primary_reader": "tmp/veritas-command-center-compact-reader.json",
+    "veritas_primary_html": "tmp/veritas-command-center-compact.html",
+    "randall_full_detail_html": "tmp/veritas-command-center.html",
+    "legacy_payload": "tmp/dashboard-data.json",
+    "compact_view_model": "tmp/dashboard-presentation-view-model.json",
+    "v2_reader_migration": "tmp/dashboard-v2-reader-migration.json"
+  },
+  "summary": {
+    "panel_count": 7,
+    "finance_panel_count": 7,
+    "top_action_count": 7,
+    "blocked_item_count": 0,
+    "stale_input_count": 0,
+    "stale_required_source_count": 0,
+    "refresh_blocker_count": 0,
+    "finance_review_queue_count": 6,
+    "owner_approval_required": true,
+    "actionability_status": "review_only_actionability",
+    "actionability_permission": "review_only",
+    "all_finance_panels_migrated": true,
+    "workflow_pm_migrated_to_pm_cockpit": true,
+    "legacy_payload_retained_by_design": true,
+    "legacy_dashboard_replaced": false,
+    "next_safe_action": "Use finance Command Center for daily capital/actionability review; use PM cockpit for workflows/non-finance state."
+  },
+  "daily_actionability": {
+    "snapshot": "tmp/finance-daily-actionability-snapshot.json",
+    "generated_at_utc": "2026-06-18T20:51:26Z",
+    "operating_window": "post_close",
+    "daily_packet_window": "post_close",
+    "market_data_as_of": "2026-06-18T20:29:01Z",
+    "latest_required_input_generated_at_utc": "2026-06-18T20:51:11Z",
+    "snapshot_newer_than_latest_required_input": true,
+    "actionability_status": "review_only_actionability",
+    "actionability_mode": "review_only",
+    "actionability_permission": "review_only",
+    "actionability_allowed": true,
+    "actionability_reason": "Capital review buckets exist, but execution remains owner-gated.",
+    "refresh_blockers": [],
+    "capital_buckets": {
+      "deployable_now": {
+        "count": 0,
+        "tickers": []
+      },
+      "owner_review": {
+        "count": 8,
+        "tickers": [
+          "GOOG",
+          "ITA",
+          "LIN",
+          "NVDA",
+          "PH",
+          "RTX",
+          "VRT",
+          "XLB"
+        ]
+      },
+      "pullback_only": {
+        "count": 4,
+        "tickers": [
+          "ETN",
+          "GS",
+          "JPM",
+          "MSFT"
+        ]
+      },
+      "below_stop": {
+        "count": 11,
+        "tickers": [
+          "AMZN",
+          "CME",
+          "CVX",
+          "LMT",
+          "LNG",
+          "META",
+          "NFLX",
+          "PLTR",
+          "TMUS",
+          "XLC",
+          "XLE"
+        ]
+      },
+      "blocked_or_stale": {
+        "count": 0,
+        "items": []
+      },
+      "watch_research": {
+        "count": 15,
+        "tickers": [
+          "AMD",
+          "CAT",
+          "ECL",
+          "GE",
+          "LLY",
+          "PAVE",
+          "VAW",
+          "VMC",
+          "VXUS",
+          "WMB",
+          "XLF",
+          "XLI",
+          "BKNG",
+          "BRK.B",
+          "XOM"
+        ]
+      }
+    },
+    "deployable_now_count": 0,
+    "owner_review_count": 8,
+    "pullback_only_count": 4,
+    "below_stop_count": 11,
+    "blocked_or_stale_count": 0,
+    "fundamentals_status": "warning",
+    "fundamentals_warning_count": 10,
+    "fundamentals_critical_count": 0,
+    "fundamentals_caveats": [
+      {
+        "code": "sec_foreign_issuer_ir_required",
+        "classification": "foreign_issuer_ir_reconciliation_required",
+        "tickers": [
+          "ASML",
+          "SAP",
+          "TSM"
+        ],
+        "ticker_count": 3,
+        "source_open_required": true,
+        "answer_caveat": "Do not present SEC-clean fundamental confidence until company IR, 6-K, or IFRS reconciliation is source-opened."
+      },
+      {
+        "code": "sec_lag_wait",
+        "classification": "sec_companyfacts_lag_wait",
+        "tickers": [
+          "BF-B",
+          "DECK",
+          "EA",
+          "MCK"
+        ],
+        "ticker_count": 4,
+        "source_open_required": false,
+        "answer_caveat": "Disclose that local aggregator period is ahead of SEC companyfacts; use as lag caveat, not a hard stale-data failure."
+      },
+      {
+        "code": "sec_manual_period_review_required",
+        "classification": "manual_period_reconciliation_required",
+        "tickers": [
+          "BBY",
+          "DE",
+          "GD"
+        ],
+        "ticker_count": 3,
+        "source_open_required": true,
+        "answer_caveat": "Disclose that the latest SEC period needs manual reconciliation before decision-grade use."
+      }
+    ],
+    "macro_status": "warning",
+    "macro_posture": "defensive_review_bias",
+    "macro_caveat": "Macro spine is warning-class defensive-review context; use it to raise evidence burden and no-chase discipline, not as a forecast or trade signal.",
+    "energy_status": "warning",
+    "energy_caveat": "Energy supply answers must disclose Baker Hughes official-source fallback when using public republisher rig-count data.",
+    "source_freshness_status": "manual_dependency",
+    "source_trust_level": "review_required",
+    "stale_required_sources": [],
+    "finance_warning_router": {
+      "status": "warning",
+      "blocking_section_count": 0,
+      "caveat_section_count": 4,
+      "caveat_sections": [
+        "fundamentals",
+        "macro_signal",
+        "energy_supply",
+        "escalation_consumer"
+      ],
+      "customer_output_allowed": false
+    },
+    "proof_artifacts": {
+      "dashboard": "tmp/dashboard-data.json",
+      "deployment": "tmp/deployment-check.json",
+      "fundamentals": "tmp/fundamental-metrics-validation.json",
+      "macro": "tmp/macro-signal-spine.json",
+      "energy": "tmp/macro-energy-supply.json",
+      "warning_router": "tmp/finance-evidence-warning-router.json",
+      "daily_review": "tmp/daily-review-objects-post-close.json",
+      "market_intelligence": "tmp/market-intelligence-events-post-close.json"
+    },
+    "authority_boundary": {
+      "review_only": true,
+      "capital_review_is_owner_gated": true,
+      "canonical_mutation_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "sql_canon_promotion_allowed": false,
+      "customer_or_public_output_allowed": false,
+      "capital_deployment_approved": false,
+      "trade_or_execution_approved": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "money_movement_allowed": false,
+      "owner_approval_inferred": false
+    },
+    "next_refresh_due": "2026-06-19T14:20:00Z"
+  },
+  "retail_truth_routing": {
+    "status": "ok",
+    "decision": "customer_output_blocked",
+    "customer_output_allowed": false,
+    "internal_answer_safety_ready": true,
+    "blockers": [
+      "owner_launch_approval",
+      "source_licensing_review",
+      "privacy_customer_data_policy",
+      "legal_compliance_review",
+      "disclaimer_language_approved",
+      "personalization_policy",
+      "external_delivery_channel",
+      "security_runtime_exposure"
+    ],
+    "seeded_bad_cases": 14,
+    "blocked_as_expected": 14,
+    "category_count": 11,
+    "covered_category_count": 11,
+    "categories": {
+      "unknown_ticker": true,
+      "paper_or_execution_request": true,
+      "customer_advice_request": true,
+      "guaranteed_return_claim": true,
+      "stale_source_claim": true,
+      "customer_allocation_suitability": true,
+      "brokerage_account_action": true,
+      "customer_suitability_profile": true,
+      "tax_or_account_advice": true,
+      "retirement_account_advice": true,
+      "external_customer_delivery": true
+    },
+    "proof_artifacts": {
+      "automation": "tmp/retail-automation-control-plane.json",
+      "harness": "tmp/retail-answer-harness.json",
+      "decision": "tmp/retail-customer-output-decision-packet.json"
+    },
+    "authority": {
+      "review_only": true,
+      "customer_output_allowed": false,
+      "external_delivery_allowed": false,
+      "real_customer_data_allowed": false,
+      "personalized_advice_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "pm_cockpit_route": {
+    "url": "http://127.0.0.1:8765/",
+    "label": "Veritas PM Cockpit",
+    "purpose": "Workflows, lanes, handoffs, sources, closeout, SMB/Retail/Academy/SQL, and non-finance notes."
+  },
+  "top_actions": [
+    {
+      "panel_id": "command_today",
+      "headline": "Daily finance actionability after the latest refresh.",
+      "severity": "warning",
+      "state": "review_only_actionability",
+      "freshness": "manual_dependency",
+      "reason": "Capital review buckets exist, but execution remains owner-gated.",
+      "owner_action_required": "Review-only; owner approval still required for any capital or execution action.",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "trust_and_freshness",
+      "headline": "Trust, freshness, and proof status for the finance snapshot.",
+      "severity": "warning",
+      "state": "review_required",
+      "freshness": "manual_dependency",
+      "reason": "0 stale required source(s); 4 caveat section(s); next refresh 2026-06-19T14:20:00Z.",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "deployment",
+      "headline": "Capital review funnel: deployable, owner-review, pullback, below-stop.",
+      "severity": "warning",
+      "state": "review_only_capital_funnel",
+      "freshness": "manual_dependency",
+      "reason": "deployable=0, owner_review=8, pullback_only=4, below_stop=11; owner_review_names=GOOG, ITA, LIN, NVDA (+4 more)",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/research-freshness-opportunity-review.json",
+        "tmp/technical-refresh.json + tmp/deployment-check.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "market_macro",
+      "headline": "Macro and energy caveats for the daily finance read.",
+      "severity": "warning",
+      "state": "defensive_review_bias",
+      "freshness": "manual_dependency",
+      "reason": "Macro spine is warning-class defensive-review context; use it to raise evidence burden and no-chase discipline, not as a forecast or trade signal.",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "portfolio",
+      "headline": "Portfolio posture, cash/risk context, and band source refs.",
+      "severity": "warning",
+      "state": "Neutral to Moderately Offensive",
+      "freshness": "manual_dependency",
+      "reason": "sizing_rules: 3 row(s)",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "technical",
+      "headline": "Technical/band posture rows with compact severity and proof refs.",
+      "severity": "warning",
+      "state": "present",
+      "freshness": "manual_dependency",
+      "reason": "technical: 38 row(s)",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/research-freshness-opportunity-review.json",
+        "tmp/technical-refresh.json + tmp/deployment-check.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "fundamentals_earnings",
+      "headline": "Fundamentals and earnings caveats for decision-grade use.",
+      "severity": "warning",
+      "state": "warning",
+      "freshness": "manual_dependency",
+      "reason": "critical=0, warnings=10",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    }
+  ],
+  "blocked_items": [],
+  "stale_inputs": [],
+  "finance_review_queue": [
+    {
+      "panel_id": "command_today",
+      "headline": "Daily finance actionability after the latest refresh.",
+      "severity": "warning",
+      "state": "review_only_actionability",
+      "freshness": "manual_dependency",
+      "reason": "Capital review buckets exist, but execution remains owner-gated.",
+      "owner_action_required": "Review-only; owner approval still required for any capital or execution action.",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "deployment",
+      "headline": "Capital review funnel: deployable, owner-review, pullback, below-stop.",
+      "severity": "warning",
+      "state": "review_only_capital_funnel",
+      "freshness": "manual_dependency",
+      "reason": "deployable=0, owner_review=8, pullback_only=4, below_stop=11; owner_review_names=GOOG, ITA, LIN, NVDA (+4 more)",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/research-freshness-opportunity-review.json",
+        "tmp/technical-refresh.json + tmp/deployment-check.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "market_macro",
+      "headline": "Macro and energy caveats for the daily finance read.",
+      "severity": "warning",
+      "state": "defensive_review_bias",
+      "freshness": "manual_dependency",
+      "reason": "Macro spine is warning-class defensive-review context; use it to raise evidence burden and no-chase discipline, not as a forecast or trade signal.",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "portfolio",
+      "headline": "Portfolio posture, cash/risk context, and band source refs.",
+      "severity": "warning",
+      "state": "Neutral to Moderately Offensive",
+      "freshness": "manual_dependency",
+      "reason": "sizing_rules: 3 row(s)",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "technical",
+      "headline": "Technical/band posture rows with compact severity and proof refs.",
+      "severity": "warning",
+      "state": "present",
+      "freshness": "manual_dependency",
+      "reason": "technical: 38 row(s)",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/research-freshness-opportunity-review.json",
+        "tmp/technical-refresh.json + tmp/deployment-check.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    },
+    {
+      "panel_id": "fundamentals_earnings",
+      "headline": "Fundamentals and earnings caveats for decision-grade use.",
+      "severity": "warning",
+      "state": "warning",
+      "freshness": "manual_dependency",
+      "reason": "critical=0, warnings=10",
+      "owner_action_required": "review_only_no_immediate_owner_action_from_compact_dto",
+      "proof_ref": [
+        "tmp/dashboard-data.json",
+        "tmp/finance-daily-actionability-snapshot.json"
+      ]
+    }
+  ],
+  "proof_links": [
+    "tmp/daily-review-objects-post-close.json",
+    "tmp/dashboard-data.json",
+    "tmp/deployment-check.json",
+    "tmp/finance-daily-actionability-snapshot.json",
+    "tmp/finance-evidence-warning-router.json",
+    "tmp/fundamental-metrics-validation.json",
+    "tmp/macro-energy-supply.json",
+    "tmp/macro-signal-spine.json",
+    "tmp/market-intelligence-events-post-close.json",
+    "tmp/research-freshness-opportunity-review.json",
+    "tmp/technical-refresh.json + tmp/deployment-check.json"
+  ],
+  "authority": {
+    "review_only": true,
+    "legacy_dashboard_replaced": false,
+    "legacy_payload_retained_by_design": true,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sql_canon_promotion_allowed": false,
+    "customer_or_public_output_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

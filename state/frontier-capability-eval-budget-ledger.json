@@ -1,0 +1,532 @@
+{
+  "schema": "wf88.frontier_capability_eval_budget_ledger.v1",
+  "policy_id": "frontier-capability-eval-sol-terra-luna-pilot-v3",
+  "approved_policy_sha256": "18e63ada2f079e0db07dd72b33e5977cc723c170446febb134e99e8abdff1bac",
+  "approval_scope_sha256": "ddf82b92a08be139e84dfc0ccb3a24e6431a0fff73c0fd7bb7f5fbdb68099623",
+  "approved_scope_material": {
+    "collection_id": "fce-401598a639a34199a189a4f5ddf35755",
+    "policy_id": "frontier-capability-eval-sol-terra-luna-pilot-v3",
+    "policy_sha256": "18e63ada2f079e0db07dd72b33e5977cc723c170446febb134e99e8abdff1bac",
+    "fixture_set_id": "frontier-capability-eval-p0-sol-terra-luna-20260808",
+    "fixture_sha256": "a4d9f5ad5482fde08d3da3acf1cd2cdad047d7c3062ff9338df462801c2d1622",
+    "execution_implementation": {
+      "collector_path": "scripts/frontier_eval_execution_collector.py",
+      "collector_raw_sha256": "a42e8607bec4c28b6d10ac779e63844d5297c481f523b2774855a0589eb96930",
+      "transport_path": "scripts/frontier_eval_openai_transport.py",
+      "transport_raw_sha256": "05958131b65615655bab4114c7f9a92eb4da4f70da66ae4925c56ee7da6c0677",
+      "transport_contract": {
+        "schema": "wf88.frontier_eval_openai_responses_transport.v2",
+        "provider_id": "openai",
+        "endpoint": "https://api.openai.com/v1/responses",
+        "http_method": "POST",
+        "model_map": {
+          "openai/gpt-5.6-sol": "gpt-5.6-sol",
+          "openai/gpt-5.6-terra": "gpt-5.6-terra",
+          "openai/gpt-5.6-luna": "gpt-5.6-luna"
+        },
+        "request_timeout_seconds": 30,
+        "http_attempts_per_send": 1,
+        "redirects_allowed": false,
+        "store": false,
+        "tools": [],
+        "service_tier": "default",
+        "response_service_tier_required": "default",
+        "prompt_cache_options": {
+          "mode": "explicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_breakpoints_sent": false,
+        "implicit_prompt_caching_disabled": true,
+        "cache_write_tokens_parsed_and_nonzero_disqualified": true,
+        "max_output_tokens_source": "exact_durable_reservation",
+        "api_key_environment_variable": "OPENAI_API_KEY",
+        "api_key_read_after_durable_authorization_only": true,
+        "request_id_header": "x-request-id",
+        "response_id_required": true,
+        "candidate_output_source": "output.message.content.output_text",
+        "grader_output_contract": "strict_json_schema_four_scores_v1",
+        "durable_authorization_required": true,
+        "durable_ledger_path": "state/frontier-capability-eval-budget-ledger.json",
+        "authorization_context_schema": "wf88.frontier_eval_transport_authorization_context.v1",
+        "raw_request_response_header_error_persistence": false
+      },
+      "transport_contract_sha256": "437a0040136d8296d9a356c7c30ee7682d2bbde5afce8d5e73c1b8da302bb7a5",
+      "transport_materialized": true,
+      "executable_transport_enabled": true,
+      "execution_implementation_sha256": "3f12f3a893716acc7b9b8044ceeedbdfeb6f560b2596f016fca19452ef8e8874"
+    },
+    "execution_implementation_sha256": "7b21e75a45fcd81e3093be542dca113834345c1d31b4af787908226703a7c86c",
+    "request_renderer_sha256": "84a5678b70667f4d1b427c216f5bf591ed5d5bf280d23239e1ddfa6f7538e2b4",
+    "rubric_id": "frontier-capability-eval-p0-rubric-v2",
+    "rubric_sha256": "e7307753ee060ce829e716f0f4bc9d02c350e9cc74714b16e976d4f0ffc1f625",
+    "pricing_snapshot_sha256": "75fe3b6a23a84477880863f99f8297d984b8a21284f716d8e3a0e8b6374306e6",
+    "pricing_verified_at_utc": "2026-08-09T02:57:21Z",
+    "pricing_service_tier": "standard",
+    "api_service_tier": "default",
+    "prompt_cache_contract": {
+      "mode": "explicit",
+      "ttl": "30m",
+      "breakpoints": [],
+      "implicit_caching_disabled": true,
+      "nonzero_cache_write_tokens_disposition": "stop_and_disqualify"
+    },
+    "pricing_rows": {
+      "openai/gpt-5.6-sol": {
+        "billable_model_id": "gpt-5.6-sol",
+        "input_per_million": 5.0,
+        "cached_input_per_million": 0.5,
+        "cache_write_per_million": 6.25,
+        "output_per_million": 30.0,
+        "long_context_input_per_million": 10.0,
+        "long_context_cached_input_per_million": 1.0,
+        "long_context_cache_write_per_million": 12.5,
+        "long_context_output_per_million": 45.0,
+        "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+        "status": "official",
+        "verified_at_utc": "2026-08-09T02:57:21Z"
+      },
+      "openai/gpt-5.6-terra": {
+        "billable_model_id": "gpt-5.6-terra",
+        "input_per_million": 2.0,
+        "cached_input_per_million": 0.2,
+        "cache_write_per_million": 2.5,
+        "output_per_million": 12.0,
+        "long_context_input_per_million": 4.0,
+        "long_context_cached_input_per_million": 0.4,
+        "long_context_cache_write_per_million": 5.0,
+        "long_context_output_per_million": 18.0,
+        "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+        "status": "official",
+        "verified_at_utc": "2026-08-09T02:57:21Z"
+      },
+      "openai/gpt-5.6-luna": {
+        "billable_model_id": "gpt-5.6-luna",
+        "input_per_million": 0.2,
+        "cached_input_per_million": 0.02,
+        "cache_write_per_million": 0.25,
+        "output_per_million": 1.2,
+        "long_context_input_per_million": 0.4,
+        "long_context_cached_input_per_million": 0.04,
+        "long_context_cache_write_per_million": 0.5,
+        "long_context_output_per_million": 1.8,
+        "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+        "status": "official",
+        "verified_at_utc": "2026-08-09T02:57:21Z"
+      }
+    },
+    "pilot_case_subset_sha256": "2dbb6ebe15cc88029346cad4da84d35cc2d280a3e0fa61c2c014e22288ba8be2",
+    "subset_assignment_manifest_sha256": "181cf74b211ec897c3f5e83c8e567c0aa9fbcf60edf9d774213e872169e599a4",
+    "scorer_manifest_sha256": "181cf74b211ec897c3f5e83c8e567c0aa9fbcf60edf9d774213e872169e599a4",
+    "case_ids": [
+      "architecture-02",
+      "architecture-17",
+      "coding-02",
+      "coding-17",
+      "recovery-02",
+      "recovery-17",
+      "contradiction-02",
+      "contradiction-17",
+      "authority-02",
+      "authority-17"
+    ],
+    "candidate_configurations": [
+      {
+        "model_path": "openai/gpt-5.6-sol",
+        "billable_model_id": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "assignment_count": 10
+      },
+      {
+        "model_path": "openai/gpt-5.6-terra",
+        "billable_model_id": "gpt-5.6-terra",
+        "reasoning_effort": "high",
+        "assignment_count": 10
+      },
+      {
+        "model_path": "openai/gpt-5.6-luna",
+        "billable_model_id": "gpt-5.6-luna",
+        "reasoning_effort": "low",
+        "assignment_count": 10
+      }
+    ],
+    "actual_model_identity_requirement": "provider-returned actual model path and billable model id must exactly match the requested candidate configuration; fallback or alias mismatch stops and disqualifies",
+    "grader_contract": {
+      "model_path": "openai/gpt-5.6-sol",
+      "billable_model_id": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "distinct_role_key_required": true,
+      "separate_process_isolation_implemented": false,
+      "separate_process_isolation_required_for_plumbing_pilot": false,
+      "independent_capability_ranking_requires_separate_process_or_external_grader": true,
+      "candidate_identity_blinded": true,
+      "sole_capability_ranking_evidence_allowed": false,
+      "purpose": "plumbing_only_no_capability_ranking"
+    },
+    "pre_collection_scope_material_sha256": "b895d9360d9d75375a3a4077ad04878fd0ec86da9f1f6c555e8d87f5960e7bbf",
+    "request_limits": {
+      "request_timeout_ms": 30000,
+      "max_retries_per_assignment": 1,
+      "max_candidate_attempts": 60,
+      "max_grader_requests": 30,
+      "max_total_requests": 90,
+      "max_concurrency": 3
+    },
+    "token_and_cost_limits": {
+      "max_total_tokens": 2000000,
+      "max_input_tokens": 1600000,
+      "max_cached_input_tokens": 1200000,
+      "max_output_tokens": 400000,
+      "max_reasoning_tokens": 300000,
+      "max_total_tokens_per_model": 700000,
+      "expected_total_tokens_low": 600000,
+      "expected_total_tokens_high": 1200000,
+      "expected_total_cost_usd_low": 3.9,
+      "expected_total_cost_usd_high": 7.9,
+      "expected_total_cost_usd": 5.9,
+      "max_total_cost_usd": 20.0,
+      "warning_cost_usd": 14.0,
+      "launch_stop_cost_usd": 18.0,
+      "hard_stop_cost_usd": 20.0
+    },
+    "tool_allowlist": [],
+    "data_classes": [
+      "synthetic",
+      "public"
+    ],
+    "signer_key_ids": [
+      "wf88-eval-execution-key-v1",
+      "wf88-eval-output-key-v1",
+      "wf88-eval-grader-key-v1"
+    ],
+    "durable_ledger_path": "state/frontier-capability-eval-budget-ledger.json",
+    "advanced_capability_pilots_included": false,
+    "capability_ranking_allowed": false,
+    "route_or_runtime_promotion_allowed": false
+  },
+  "approved_collection_id": "fce-401598a639a34199a189a4f5ddf35755",
+  "coordinator_identity_sha256": "00beb744f5021215f99ff1e795507f04f38cad56efcb6de7cb48c91a431a113e",
+  "approved_fixture_set_id": "frontier-capability-eval-p0-sol-terra-luna-20260808",
+  "approved_fixture_sha256": "a4d9f5ad5482fde08d3da3acf1cd2cdad047d7c3062ff9338df462801c2d1622",
+  "approved_policy_case_set_sha256": "1c231da00e3a9f2a7ae486a713aa87f86a14ad0ed1097b2a286c7f7d2af5e26b",
+  "approved_execution_implementation": {
+    "collector_path": "scripts/frontier_eval_execution_collector.py",
+    "collector_raw_sha256": "a42e8607bec4c28b6d10ac779e63844d5297c481f523b2774855a0589eb96930",
+    "transport_path": "scripts/frontier_eval_openai_transport.py",
+    "transport_raw_sha256": "05958131b65615655bab4114c7f9a92eb4da4f70da66ae4925c56ee7da6c0677",
+    "transport_contract": {
+      "schema": "wf88.frontier_eval_openai_responses_transport.v2",
+      "provider_id": "openai",
+      "endpoint": "https://api.openai.com/v1/responses",
+      "http_method": "POST",
+      "model_map": {
+        "openai/gpt-5.6-sol": "gpt-5.6-sol",
+        "openai/gpt-5.6-terra": "gpt-5.6-terra",
+        "openai/gpt-5.6-luna": "gpt-5.6-luna"
+      },
+      "request_timeout_seconds": 30,
+      "http_attempts_per_send": 1,
+      "redirects_allowed": false,
+      "store": false,
+      "tools": [],
+      "service_tier": "default",
+      "response_service_tier_required": "default",
+      "prompt_cache_options": {
+        "mode": "explicit",
+        "ttl": "30m"
+      },
+      "prompt_cache_breakpoints_sent": false,
+      "implicit_prompt_caching_disabled": true,
+      "cache_write_tokens_parsed_and_nonzero_disqualified": true,
+      "max_output_tokens_source": "exact_durable_reservation",
+      "api_key_environment_variable": "OPENAI_API_KEY",
+      "api_key_read_after_durable_authorization_only": true,
+      "request_id_header": "x-request-id",
+      "response_id_required": true,
+      "candidate_output_source": "output.message.content.output_text",
+      "grader_output_contract": "strict_json_schema_four_scores_v1",
+      "durable_authorization_required": true,
+      "durable_ledger_path": "state/frontier-capability-eval-budget-ledger.json",
+      "authorization_context_schema": "wf88.frontier_eval_transport_authorization_context.v1",
+      "raw_request_response_header_error_persistence": false
+    },
+    "transport_contract_sha256": "437a0040136d8296d9a356c7c30ee7682d2bbde5afce8d5e73c1b8da302bb7a5",
+    "transport_materialized": true,
+    "executable_transport_enabled": true,
+    "execution_implementation_sha256": "3f12f3a893716acc7b9b8044ceeedbdfeb6f560b2596f016fca19452ef8e8874"
+  },
+  "approved_execution_implementation_sha256": "7b21e75a45fcd81e3093be542dca113834345c1d31b4af787908226703a7c86c",
+  "approved_assignment_map": {
+    "asg-000b854096f7663a53aa5d825510513f": {
+      "assignment_id": "asg-000b854096f7663a53aa5d825510513f",
+      "case_id": "architecture-02",
+      "task_class": "architecture_synthesis",
+      "workload_sha256": "29b46dd13f6215eafdd61ba197aeba9b4524262d9e435861de1fd5c871a3e358",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-0699bd92e77a7440b985fbfc439daace": {
+      "assignment_id": "asg-0699bd92e77a7440b985fbfc439daace",
+      "case_id": "contradiction-17",
+      "task_class": "contradiction_detection",
+      "workload_sha256": "4f8dd7ffc178b8e66e5b4e6cfa76169c685ab0fa5cb5fe84fe3081d9211c253f",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-14890924f95f9c8dc1c47a901c04de16": {
+      "assignment_id": "asg-14890924f95f9c8dc1c47a901c04de16",
+      "case_id": "architecture-17",
+      "task_class": "architecture_synthesis",
+      "workload_sha256": "84eae0c3cb3b23d1e7ba6ee3c3f891e83bed9cea5fc5161404c00f2efe244c8b",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-15c50e65c812e39d8b5dac3b0866b39b": {
+      "assignment_id": "asg-15c50e65c812e39d8b5dac3b0866b39b",
+      "case_id": "architecture-02",
+      "task_class": "architecture_synthesis",
+      "workload_sha256": "29b46dd13f6215eafdd61ba197aeba9b4524262d9e435861de1fd5c871a3e358",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-1698e61f58a9728289dec1a7deff0947": {
+      "assignment_id": "asg-1698e61f58a9728289dec1a7deff0947",
+      "case_id": "coding-17",
+      "task_class": "bounded_coding",
+      "workload_sha256": "2641058e77b2631dca8a64024b590b5433c6510bfded07e562108297b425544a",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-230f55f95a16c09dda778463b925841e": {
+      "assignment_id": "asg-230f55f95a16c09dda778463b925841e",
+      "case_id": "contradiction-02",
+      "task_class": "contradiction_detection",
+      "workload_sha256": "4a22619c78dbc1c480302cadf56b9d39e51e62932019255cb5b18a9d41c47319",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-24a0a47ed4c7c364eaecd01e3afebaab": {
+      "assignment_id": "asg-24a0a47ed4c7c364eaecd01e3afebaab",
+      "case_id": "architecture-02",
+      "task_class": "architecture_synthesis",
+      "workload_sha256": "29b46dd13f6215eafdd61ba197aeba9b4524262d9e435861de1fd5c871a3e358",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-36507af76a4b599aa1ccf5347aeb4a7c": {
+      "assignment_id": "asg-36507af76a4b599aa1ccf5347aeb4a7c",
+      "case_id": "authority-02",
+      "task_class": "authority_boundary_judgment",
+      "workload_sha256": "a1ba15ef2e1a7ae9b3fe229bc36bf0aa688747b8aa3878391c192c253b9780d6",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-3706d0efaff6e6462efa605a96cdba48": {
+      "assignment_id": "asg-3706d0efaff6e6462efa605a96cdba48",
+      "case_id": "recovery-17",
+      "task_class": "multi_tool_recovery",
+      "workload_sha256": "87b63d8b5341c14c9cb8a298074741eb33668d99c3ef407febbe5e378fa233ce",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-399e6958fda3c101a6e6b2e86f4fc8ab": {
+      "assignment_id": "asg-399e6958fda3c101a6e6b2e86f4fc8ab",
+      "case_id": "recovery-17",
+      "task_class": "multi_tool_recovery",
+      "workload_sha256": "87b63d8b5341c14c9cb8a298074741eb33668d99c3ef407febbe5e378fa233ce",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-51754b43a4702ed4437e392aac13e31a": {
+      "assignment_id": "asg-51754b43a4702ed4437e392aac13e31a",
+      "case_id": "coding-02",
+      "task_class": "bounded_coding",
+      "workload_sha256": "a765e54531d6db44f18f84205cf236a6dded1e79b044f858ad0035b7b093311c",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-5eef30788b3b3550e03e6fabec5361ec": {
+      "assignment_id": "asg-5eef30788b3b3550e03e6fabec5361ec",
+      "case_id": "authority-17",
+      "task_class": "authority_boundary_judgment",
+      "workload_sha256": "213e8265f438cf3426957e5ba7ca1aa450baf1de9fdd330270196ba7c58ba5d1",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-6bca442b09aa8a78599fe56fde57747c": {
+      "assignment_id": "asg-6bca442b09aa8a78599fe56fde57747c",
+      "case_id": "recovery-02",
+      "task_class": "multi_tool_recovery",
+      "workload_sha256": "d16340a1375129e22530a6359744ccdba63b02abddd1d43240bff32a7f482e18",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-77a837883e336348fbc3d9ff4120cc0a": {
+      "assignment_id": "asg-77a837883e336348fbc3d9ff4120cc0a",
+      "case_id": "authority-17",
+      "task_class": "authority_boundary_judgment",
+      "workload_sha256": "213e8265f438cf3426957e5ba7ca1aa450baf1de9fdd330270196ba7c58ba5d1",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-7a335c725203a1bc9e06becd7b1bd1bd": {
+      "assignment_id": "asg-7a335c725203a1bc9e06becd7b1bd1bd",
+      "case_id": "recovery-02",
+      "task_class": "multi_tool_recovery",
+      "workload_sha256": "d16340a1375129e22530a6359744ccdba63b02abddd1d43240bff32a7f482e18",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-84a2cb7515d69a4f52eaca8a5398251d": {
+      "assignment_id": "asg-84a2cb7515d69a4f52eaca8a5398251d",
+      "case_id": "contradiction-02",
+      "task_class": "contradiction_detection",
+      "workload_sha256": "4a22619c78dbc1c480302cadf56b9d39e51e62932019255cb5b18a9d41c47319",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-91b0cce8c2c4b3a288300a97aca1e81c": {
+      "assignment_id": "asg-91b0cce8c2c4b3a288300a97aca1e81c",
+      "case_id": "authority-02",
+      "task_class": "authority_boundary_judgment",
+      "workload_sha256": "a1ba15ef2e1a7ae9b3fe229bc36bf0aa688747b8aa3878391c192c253b9780d6",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-91d4d58c643526265e23abefc335ade9": {
+      "assignment_id": "asg-91d4d58c643526265e23abefc335ade9",
+      "case_id": "architecture-17",
+      "task_class": "architecture_synthesis",
+      "workload_sha256": "84eae0c3cb3b23d1e7ba6ee3c3f891e83bed9cea5fc5161404c00f2efe244c8b",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-98b33c8d60bf945d4131b4977e5c6ecc": {
+      "assignment_id": "asg-98b33c8d60bf945d4131b4977e5c6ecc",
+      "case_id": "recovery-17",
+      "task_class": "multi_tool_recovery",
+      "workload_sha256": "87b63d8b5341c14c9cb8a298074741eb33668d99c3ef407febbe5e378fa233ce",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-a3457f46f3dd13191e5367fbd515165e": {
+      "assignment_id": "asg-a3457f46f3dd13191e5367fbd515165e",
+      "case_id": "contradiction-17",
+      "task_class": "contradiction_detection",
+      "workload_sha256": "4f8dd7ffc178b8e66e5b4e6cfa76169c685ab0fa5cb5fe84fe3081d9211c253f",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-a61ae62376977e11287bfbced2d8489f": {
+      "assignment_id": "asg-a61ae62376977e11287bfbced2d8489f",
+      "case_id": "authority-17",
+      "task_class": "authority_boundary_judgment",
+      "workload_sha256": "213e8265f438cf3426957e5ba7ca1aa450baf1de9fdd330270196ba7c58ba5d1",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-a792097e5de7ba88be2202934eeee8c4": {
+      "assignment_id": "asg-a792097e5de7ba88be2202934eeee8c4",
+      "case_id": "contradiction-17",
+      "task_class": "contradiction_detection",
+      "workload_sha256": "4f8dd7ffc178b8e66e5b4e6cfa76169c685ab0fa5cb5fe84fe3081d9211c253f",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-bda403155720a7904f01a9f8c3f06058": {
+      "assignment_id": "asg-bda403155720a7904f01a9f8c3f06058",
+      "case_id": "architecture-17",
+      "task_class": "architecture_synthesis",
+      "workload_sha256": "84eae0c3cb3b23d1e7ba6ee3c3f891e83bed9cea5fc5161404c00f2efe244c8b",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-bea0939b783a94cb5e4861729ede231a": {
+      "assignment_id": "asg-bea0939b783a94cb5e4861729ede231a",
+      "case_id": "recovery-02",
+      "task_class": "multi_tool_recovery",
+      "workload_sha256": "d16340a1375129e22530a6359744ccdba63b02abddd1d43240bff32a7f482e18",
+      "model_path": "openai/gpt-5.6-sol",
+      "blind_candidate_id": "candidate-521cf05acf3bafcb4137779c"
+    },
+    "asg-bf30350bbfe7678e604018ca7eb9cfe2": {
+      "assignment_id": "asg-bf30350bbfe7678e604018ca7eb9cfe2",
+      "case_id": "coding-02",
+      "task_class": "bounded_coding",
+      "workload_sha256": "a765e54531d6db44f18f84205cf236a6dded1e79b044f858ad0035b7b093311c",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-cd8b470cf06dd6b7a935465587d6d24e": {
+      "assignment_id": "asg-cd8b470cf06dd6b7a935465587d6d24e",
+      "case_id": "contradiction-02",
+      "task_class": "contradiction_detection",
+      "workload_sha256": "4a22619c78dbc1c480302cadf56b9d39e51e62932019255cb5b18a9d41c47319",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    },
+    "asg-d0ea0bb5ede3a4c5ebb1adc8ee58f43e": {
+      "assignment_id": "asg-d0ea0bb5ede3a4c5ebb1adc8ee58f43e",
+      "case_id": "coding-02",
+      "task_class": "bounded_coding",
+      "workload_sha256": "a765e54531d6db44f18f84205cf236a6dded1e79b044f858ad0035b7b093311c",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-d1c8710b23d014077a4f1ac4506fe822": {
+      "assignment_id": "asg-d1c8710b23d014077a4f1ac4506fe822",
+      "case_id": "coding-17",
+      "task_class": "bounded_coding",
+      "workload_sha256": "2641058e77b2631dca8a64024b590b5433c6510bfded07e562108297b425544a",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-e5bc9353264d3eaf76516f6d4c03a9ac": {
+      "assignment_id": "asg-e5bc9353264d3eaf76516f6d4c03a9ac",
+      "case_id": "authority-02",
+      "task_class": "authority_boundary_judgment",
+      "workload_sha256": "a1ba15ef2e1a7ae9b3fe229bc36bf0aa688747b8aa3878391c192c253b9780d6",
+      "model_path": "openai/gpt-5.6-luna",
+      "blind_candidate_id": "candidate-9f6bd90777a1869be2a9f675"
+    },
+    "asg-ee17f163782722249aefe8dfdb600589": {
+      "assignment_id": "asg-ee17f163782722249aefe8dfdb600589",
+      "case_id": "coding-17",
+      "task_class": "bounded_coding",
+      "workload_sha256": "2641058e77b2631dca8a64024b590b5433c6510bfded07e562108297b425544a",
+      "model_path": "openai/gpt-5.6-terra",
+      "blind_candidate_id": "candidate-0114c1598a9d405bc0d09f6d"
+    }
+  },
+  "approved_assignment_map_sha256": "f206cae50eff38cfadde1b1005c4b1d39c83579782f70761bb08175abc24bf0a",
+  "approved_assignment_manifest_sha256": "672bd97da3a4b4a56e907b5fce5e7b25e61371793fb2ef928de56b1b0946808d",
+  "collection_id": null,
+  "status": "inactive_owner_approval_required",
+  "version": 10,
+  "updated_at_utc": "2026-08-09T05:25:53Z",
+  "reservations": {},
+  "settlements": {},
+  "send_claims": {},
+  "proof_bundles": {},
+  "proof_bundle_by_assignment": {},
+  "proof_attestation_nonces": {},
+  "proof_bundle_index": null,
+  "proof_bundle_index_sha256": null,
+  "nonce_bindings": {},
+  "settlement_attestation_nonces": {},
+  "counters": {
+    "reserved_requests": 0,
+    "reserved_tokens": 0,
+    "reserved_cost_usd": "0.000000",
+    "settled_requests": 0,
+    "settled_tokens": 0,
+    "settled_cost_usd": "0.000000"
+  },
+  "authority": {
+    "external_model_execution_allowed": false,
+    "owner_pilot_approved": false,
+    "automatic_budget_release_after_crash": false
+  },
+  "approval_envelope": null,
+  "ledger_state_mac_algorithm": "hmac-sha256-derived-runtime-capability-v1",
+  "ledger_state_mac": null
+}

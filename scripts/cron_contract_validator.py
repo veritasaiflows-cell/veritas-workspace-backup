@@ -43,6 +43,26 @@ DEFAULT_COMPARE_FIELDS = [
     "payload.timeoutSeconds",
     "payload.lightContext",
 ]
+DEFAULT_MAX_PROMPT_CHARS = 1800
+DEFAULT_MAX_MESSAGE_LINES = 30
+QUIET_RULE_MARKER = "QUIET CRON OUTPUT RULE"
+TASK_BODY_MARKERS = (
+    "Objective:",
+    "Execute exactly",
+    "Execute:",
+    "Run the ",
+    "Run ",
+    "python scripts\\",
+    "python scripts/",
+)
+
+UNSUPPORTED_MODEL_ROUTES = {
+    "claude-cli/claude-fable-5": {
+        "status": "unsupported_legacy",
+        "reason": "Fable is no longer a supported model route.",
+        "replacement_guidance": "Use openai/gpt-5.6-sol for main/final synthesis or openai/gpt-5.6-terra for an approved bounded helper route.",
+    },
+}
 
 
 def utc_now() -> str:
@@ -79,6 +99,112 @@ def get_nested(obj: dict[str, Any], dotted: str) -> Any:
             return None
         current = current.get(part)
     return current
+
+
+def message_shape(value: Any, *, max_prompt_chars: int, max_message_lines: int) -> dict[str, Any]:
+    text = value if isinstance(value, str) else ""
+    return {
+        "char_count": len(text),
+        "line_count": text.count("\n") + 1 if text else 0,
+        "max_prompt_chars": max_prompt_chars,
+        "max_message_lines": max_message_lines,
+        "over_char_budget": len(text) > max_prompt_chars,
+        "over_line_budget": (text.count("\n") + 1 if text else 0) > max_message_lines,
+        "has_multiline": "\n" in text,
+    }
+
+
+def prompt_integrity_findings(job: dict[str, Any] | None, *, source: str) -> list[dict[str, Any]]:
+    if not isinstance(job, dict):
+        return []
+    payload = as_dict(job.get("payload"))
+    if payload.get("kind") != "agentTurn":
+        return []
+    message = payload.get("message")
+    text = message if isinstance(message, str) else ""
+    normalized = " ".join(text.split())
+    quiet_rule_present = QUIET_RULE_MARKER in text
+    task_body_present = any(marker in text for marker in TASK_BODY_MARKERS)
+    findings: list[dict[str, Any]] = []
+    if not normalized:
+        findings.append({
+            "source": source,
+            "issue": "missing_agentturn_prompt",
+            "severity": "error",
+            "message_char_count": 0,
+        })
+    if quiet_rule_present and not task_body_present:
+        findings.append({
+            "source": source,
+            "issue": "quiet_only_agentturn_prompt",
+            "severity": "error",
+            "message_char_count": len(text),
+            "message_line_count": text.count("\n") + 1 if text else 0,
+            "reason": "agentTurn prompt contains the quiet output rule but no task body or command marker",
+        })
+    return findings
+
+
+def unsupported_model_findings(contract: dict[str, Any], live_job: dict[str, Any] | None) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    for source, model in (
+        ("contract", expected_value(contract, "payload.model")),
+        ("live", get_nested(live_job, "payload.model") if live_job else None),
+    ):
+        if model in UNSUPPORTED_MODEL_ROUTES:
+            findings.append({
+                "source": source,
+                "model": model,
+                **UNSUPPORTED_MODEL_ROUTES[str(model)],
+            })
+    return findings
+
+
+def detected_unsupported_model_routes(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return the distinct unsupported routes actually observed in this run."""
+    grouped: dict[str, dict[str, Any]] = {}
+    for result in results:
+        for raw_finding in as_list(result.get("unsupported_model_routes")):
+            finding = as_dict(raw_finding)
+            model = str(finding.get("model") or "").strip()
+            if not model:
+                continue
+            row = grouped.setdefault(model, {
+                "model": model,
+                "status": finding.get("status"),
+                "reason": finding.get("reason"),
+                "replacement_guidance": finding.get("replacement_guidance"),
+                "detection_count": 0,
+                "sources": set(),
+                "contracts": [],
+            })
+            row["detection_count"] += 1
+            source = str(finding.get("source") or "").strip()
+            if source:
+                row["sources"].add(source)
+            context = {
+                "contract_path": result.get("contract_path"),
+                "job_id": result.get("job_id"),
+                "name": result.get("name"),
+                "source": source or None,
+            }
+            if context not in row["contracts"]:
+                row["contracts"].append(context)
+    return [
+        {
+            **row,
+            "sources": sorted(row["sources"]),
+            "contracts": sorted(
+                row["contracts"],
+                key=lambda item: (
+                    str(item.get("contract_path") or ""),
+                    str(item.get("job_id") or ""),
+                    str(item.get("source") or ""),
+                ),
+            ),
+        }
+        for _, row in sorted(grouped.items())
+    ]
 
 
 def normalize_cron_payload(payload: Any) -> list[dict[str, Any]]:
@@ -170,7 +296,13 @@ def expected_value(contract: dict[str, Any], field: str) -> Any:
     return get_nested(contract, field)
 
 
-def compare_contract(contract: dict[str, Any], live_job: dict[str, Any] | None) -> dict[str, Any]:
+def compare_contract(
+    contract: dict[str, Any],
+    live_job: dict[str, Any] | None,
+    *,
+    max_prompt_chars: int = DEFAULT_MAX_PROMPT_CHARS,
+    max_message_lines: int = DEFAULT_MAX_MESSAGE_LINES,
+) -> dict[str, Any]:
     fields = [str(item) for item in as_list(contract.get("compare_fields"))] or DEFAULT_COMPARE_FIELDS
     if live_job is None:
         return {
@@ -194,15 +326,46 @@ def compare_contract(contract: dict[str, Any], live_job: dict[str, Any] | None) 
         path = ROOT / str(item)
         expected_artifacts.append({"path": str(item), "exists": path.exists()})
     missing_artifacts = [item for item in expected_artifacts if not item["exists"]]
+    expected_message = expected_value(contract, "payload.message")
+    actual_message = get_nested(live_job, "payload.message")
+    prompt_shape = {
+        "expected": message_shape(expected_message, max_prompt_chars=max_prompt_chars, max_message_lines=max_message_lines),
+        "live": message_shape(actual_message, max_prompt_chars=max_prompt_chars, max_message_lines=max_message_lines),
+    }
+    prompt_bloat = []
+    for source, shape in prompt_shape.items():
+        if shape["over_char_budget"] or shape["over_line_budget"]:
+            prompt_bloat.append({"source": source, **shape})
+    unsupported_model_routes = unsupported_model_findings(contract, live_job)
+    prompt_integrity = [
+        *prompt_integrity_findings(contract, source="contract"),
+        *prompt_integrity_findings(live_job, source="live"),
+    ]
+    multiline_expected = prompt_shape["expected"]["has_multiline"]
+    multiline_live_intact = not multiline_expected or (
+        isinstance(actual_message, str)
+        and "\n" in actual_message
+        and actual_message == expected_message
+    )
     return {
         "contract_path": contract.get("_contract_path"),
         "job_id": live_job.get("id"),
         "name": live_job.get("name"),
-        "status": "drift" if drift else "ok",
-        "severity": "warning" if drift else "ok",
+        "status": (
+            "prompt_integrity_error"
+            if prompt_integrity else
+            "unsupported_model" if unsupported_model_routes else
+            ("drift" if drift else "ok")
+        ),
+        "severity": "error" if prompt_integrity or unsupported_model_routes else ("warning" if drift else "ok"),
         "drift": drift,
+        "unsupported_model_routes": unsupported_model_routes,
+        "prompt_integrity_findings": prompt_integrity,
         "expected_artifacts": expected_artifacts,
         "missing_expected_artifacts": missing_artifacts,
+        "prompt_shape": prompt_shape,
+        "prompt_bloat": prompt_bloat,
+        "multiline_live_intact": multiline_live_intact,
     }
 
 
@@ -210,9 +373,34 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     contract_dir = args.contract_dir if args.contract_dir.is_absolute() else ROOT / args.contract_dir
     jobs, live_meta = load_live_jobs(args.live_file)
     contracts, warnings = load_contracts(contract_dir, args.contract)
-    results = [compare_contract(contract, find_live_job(contract, jobs)) for contract in contracts]
+    results = [
+        compare_contract(
+            contract,
+            find_live_job(contract, jobs),
+            max_prompt_chars=args.max_prompt_chars,
+            max_message_lines=args.max_message_lines,
+        )
+        for contract in contracts
+    ]
     drift_count = sum(1 for item in results if item.get("status") == "drift")
     missing_count = sum(1 for item in results if item.get("status") == "missing_live_job")
+    unsupported_model_routes = detected_unsupported_model_routes(results)
+    unsupported_model_route_count = len(unsupported_model_routes)
+    contract_prompt_integrity_error_count = sum(1 for item in results if as_list(item.get("prompt_integrity_findings")))
+    live_prompt_integrity_findings = [
+        {
+            "job_id": job.get("id"),
+            "name": job.get("name"),
+            "enabled": job.get("enabled"),
+            **finding,
+        }
+        for job in jobs
+        if job.get("enabled", True) is not False
+        for finding in prompt_integrity_findings(job, source="live_global")
+    ]
+    live_prompt_integrity_error_count = len(live_prompt_integrity_findings)
+    prompt_bloat_count = sum(1 for item in results if as_list(item.get("prompt_bloat")))
+    multiline_truncation_risk_count = sum(1 for item in results if item.get("multiline_live_intact") is False)
     errors = []
     if not live_meta.get("ok"):
         errors.append("live_cron_list_unavailable")
@@ -220,6 +408,18 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         errors.append("no_contracts_found")
     if args.fail_on_drift and (drift_count or missing_count):
         errors.append("cron_contract_drift_present")
+    if unsupported_model_route_count:
+        errors.append("unsupported_cron_model_route_present")
+    if live_prompt_integrity_error_count:
+        errors.append("cron_prompt_integrity_error_present")
+    if args.fail_on_prompt_bloat and prompt_bloat_count:
+        errors.append("cron_prompt_bloat_present")
+    if multiline_truncation_risk_count:
+        errors.append("cron_multiline_live_payload_mismatch")
+    if prompt_bloat_count:
+        warnings.append("cron_prompt_bloat_present")
+    if multiline_truncation_risk_count:
+        warnings.append("cron_multiline_live_payload_mismatch")
     if not contracts:
         warnings.append(f"no_contracts_found:{rel(contract_dir)}")
     status = "error" if errors else "warning" if warnings or drift_count or missing_count else "ok"
@@ -232,6 +432,15 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "live_job_count": len(jobs),
             "drift_count": drift_count,
             "missing_live_job_count": missing_count,
+            "unsupported_model_route_count": unsupported_model_route_count,
+            "unsupported_model_routes": unsupported_model_routes,
+            "configured_unsupported_model_routes": sorted(UNSUPPORTED_MODEL_ROUTES),
+            "contract_prompt_integrity_error_count": contract_prompt_integrity_error_count,
+            "live_prompt_integrity_error_count": live_prompt_integrity_error_count,
+            "prompt_bloat_count": prompt_bloat_count,
+            "multiline_truncation_risk_count": multiline_truncation_risk_count,
+            "max_prompt_chars": args.max_prompt_chars,
+            "max_message_lines": args.max_message_lines,
             "next_safe_action": (
                 "Create state\\cron-contracts\\*.json for important jobs."
                 if not contracts else
@@ -243,6 +452,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "live": live_meta,
         },
         "contracts": results,
+        "live_prompt_integrity_findings": live_prompt_integrity_findings,
         "authority_boundary": AUTHORITY_BOUNDARY,
         "validation": {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings},
     }
@@ -255,6 +465,9 @@ def main() -> int:
     parser.add_argument("--live-file", type=Path)
     parser.add_argument("--require-contracts", action="store_true")
     parser.add_argument("--fail-on-drift", action="store_true")
+    parser.add_argument("--fail-on-prompt-bloat", action="store_true")
+    parser.add_argument("--max-prompt-chars", type=int, default=DEFAULT_MAX_PROMPT_CHARS)
+    parser.add_argument("--max-message-lines", type=int, default=DEFAULT_MAX_MESSAGE_LINES)
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)

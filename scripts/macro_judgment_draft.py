@@ -49,6 +49,7 @@ AUTHORITY_BOUNDARY = {
     "owner_approval_inferred": False,
     "capital_action_allowed": False,
 }
+USABLE_RIG_STATUSES = {"ok", "cached_fallback", "public_republisher_fallback"}
 
 
 def utc_now() -> str:
@@ -237,14 +238,20 @@ def judge_energy(market_state: dict[str, Any], energy_supply: dict[str, Any]) ->
         }
 
     rig_artifact = energy_supply.get("baker_hughes") if isinstance(energy_supply.get("baker_hughes"), dict) else {}
-    if rig_artifact.get("status") in {"ok", "cached_fallback"} and rig_artifact.get("us_rig_count") is not None:
+    if rig_artifact.get("status") in USABLE_RIG_STATUSES and rig_artifact.get("us_rig_count") is not None:
+        status = rig_artifact.get("status")
+        caveat = (
+            " This is a public republisher fallback because Baker Hughes official pages timed out."
+            if status == "public_republisher_fallback"
+            else ""
+        )
         rig = {
             "text": (
                 f"Baker Hughes rig-count artifact is wired with U.S. rig count {rig_artifact.get('us_rig_count')} "
-                f"as of {rig_artifact.get('latest_date') or 'date unavailable'}; status {rig_artifact.get('status')}. "
-                "Use as supply-response context, not a standalone energy thesis."
+                f"as of {rig_artifact.get('latest_date') or 'date unavailable'}; status {status}."
+                f"{caveat} Use as supply-response context, not a standalone energy thesis."
             ),
-            "confidence": "medium" if rig_artifact.get("status") == "ok" else "low",
+            "confidence": "medium" if status == "ok" else "low",
             "source_basis": ["tmp/macro-energy-supply.json"],
         }
     else:

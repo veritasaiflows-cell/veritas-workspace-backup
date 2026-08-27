@@ -1,12 +1,43 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from pathlib import Path
 from typing import Any
 
 import official_capture_period_registry as _registry
 
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = ROOT / "scripts"
+
 _REGISTRY_CAPTURE_SCRIPTS: set[str] = {entry.capture_script for entry in _registry.all_periods()}
 _OFFICIAL_VALIDATOR_SCRIPT = "official_ir_capture_validator.py"
+
+_CATEGORY_STAGE_MAP = {
+    "fundamentals": "fundamentals",
+    "market_data": "market_data",
+    "portfolio": "portfolio_technical",
+    "intelligence": "intelligence",
+    "review_only": "review_and_proposals",
+    "validation": "validation",
+    "summary": "summary_and_reports",
+    "history": "state_history",
+}
+
+
+def _stage_for_step(step: dict[str, Any]) -> str:
+    script = str(step.get("script") or "")
+    category = str(step.get("category") or "")
+    if script in {"validate_portfolio_config.py"}:
+        return "preflight"
+    if script in {"run_summary_refresh.py", "dashboard_run_summary_consumer.py"}:
+        return "recovery_finalizers"
+    return _CATEGORY_STAGE_MAP.get(category, category or "uncategorized")
+
+
+def _apply_stage_names(manifests: dict[str, dict[str, Any]]) -> None:
+    for manifest in manifests.values():
+        for step in manifest.get("steps", []):
+            step.setdefault("stage", _stage_for_step(step))
 
 
 def _apply_registry_paths(manifests: dict[str, dict[str, Any]]) -> None:
@@ -35,9 +66,9 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
         "description": "Pre-open readiness refresh. Rebuilds macro, technical, regime scores, and band-staleness artifacts, then regenerates trigger layer and dashboard.",
         "steps": [
             {"script": "validate_portfolio_config.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": [], "recovery_posture": "fail_chain"},
-            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain"},
-            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain"},
-            {"script": "validate_fundamental_metrics.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/fundamental-metrics-validation.json"], "depends_on": ["fundamental_metrics_refresh.py"], "recovery_posture": "fail_chain"},
+            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain", "incremental_skip": False},
+            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain", "timeout_seconds": 900},
+            {"script": "validate_fundamental_metrics.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/fundamental-metrics-validation.json"], "depends_on": ["fundamental_metrics_refresh.py"], "recovery_posture": "ticker_data_quality", "data_quality_artifact": "tmp/fundamental-metrics-validation.json"},
             {"script": "goog_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
             {"script": "etn_vrt_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
             {"script": "tech_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
@@ -75,12 +106,14 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "band_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/band-proposals.json"], "depends_on": ["technical_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "auto_apply_entry_band_maintenance.py", "args": ["--apply"], "category": "portfolio", "expected_outputs": ["tmp/auto-band-apply.json"], "depends_on": ["band_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "reference_band_note_sync.py", "args": ["--apply"], "category": "portfolio", "expected_outputs": ["tmp/reference-band-note-sync.json"], "depends_on": ["auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "entry_band_fetch.py", "args": ["--all-tracked", "--html"], "category": "portfolio", "expected_outputs": [], "depends_on": ["reference_band_note_sync.py"], "recovery_posture": "fail_chain"},
-            {"script": "generate_entry_band_status.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["entry_band_fetch.py"], "recovery_posture": "fail_chain"},
+            {"script": "entry_band_fetch.py", "args": ["--all-tracked", "--html"], "category": "portfolio", "expected_outputs": ["tmp/entry-band-data/_batch-manifest.json"], "depends_on": ["reference_band_note_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "generate_entry_band_status.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/entry-band-status.html"], "depends_on": ["entry_band_fetch.py"], "recovery_posture": "fail_chain"},
             {"script": "deployment_check.py", "args": [], "category": "validation", "expected_outputs": ["tmp/deployment-check.json"], "depends_on": ["technical_refresh.py", "band_refresh.py", "earnings_calendar_enrichment.py"], "recovery_posture": "fail_chain"},
             {"script": "trigger_sheet_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/trigger-sheet.json"], "depends_on": ["deployment_check.py"], "recovery_posture": "fail_chain"},
             {"script": "canon_volatile_execution_board_sync.py", "args": ["--apply", "--strict-exit"], "category": "portfolio", "expected_outputs": ["tmp/canon-volatile-execution-board-sync.json"], "depends_on": ["technical_refresh.py", "deployment_check.py", "trigger_sheet_refresh.py", "auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "sql_canon_field_family_preflight.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/sql-canon-low-risk-field-family-preflight.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "wf72_entry_stop_sql_activate.py", "args": ["--batch", "all", "--validate-only"], "category": "validation", "expected_outputs": ["tmp/wf72-entry-stop-sql-activation-validation.json"], "depends_on": ["sql_canon_field_family_preflight.py"], "recovery_posture": "fail_chain"},
+            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["wf72_entry_stop_sql_activate.py"], "recovery_posture": "fail_chain"},
             {"script": "regime_scoring_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/regime-scores.json"], "depends_on": ["macro_regime_refresh.py", "technical_refresh.py", "trigger_sheet_refresh.py", "deployment_check.py"], "recovery_posture": "fail_chain"},
             {"script": "positioning_ranking_refresh.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["trigger_sheet_refresh.py", "regime_scoring_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "post_earnings_prep.py", "args": [], "category": "intelligence", "expected_outputs": ["tmp/post-earnings-prep.json"], "depends_on": ["earnings_calendar_enrichment.py"], "recovery_posture": "fail_chain"},
@@ -130,9 +163,9 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "event_calendar_rollforward.py", "args": [], "category": "intelligence", "expected_outputs": ["tmp/event-calendar-rollforward.json"], "depends_on": ["earnings_calendar_enrichment.py", "earnings_date_source_confidence.py"], "recovery_posture": "fail_chain"},
             {"script": "event_calendar_apply.py", "args": ["--apply"], "category": "intelligence", "expected_outputs": ["tmp/event-calendar-apply.json"], "depends_on": ["event_calendar_rollforward.py"], "recovery_posture": "fail_chain"},
             {"script": "validate_portfolio_config.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": [], "recovery_posture": "fail_chain"},
-            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain"},
-            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain"},
-            {"script": "validate_fundamental_metrics.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/fundamental-metrics-validation.json"], "depends_on": ["fundamental_metrics_refresh.py"], "recovery_posture": "fail_chain"},
+            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain", "incremental_skip": False},
+            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain", "timeout_seconds": 900},
+            {"script": "validate_fundamental_metrics.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/fundamental-metrics-validation.json"], "depends_on": ["fundamental_metrics_refresh.py"], "recovery_posture": "ticker_data_quality", "data_quality_artifact": "tmp/fundamental-metrics-validation.json"},
             {"script": "goog_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
             {"script": "etn_vrt_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
             {"script": "tech_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
@@ -166,12 +199,14 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "band_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/band-proposals.json"], "depends_on": ["technical_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "auto_apply_entry_band_maintenance.py", "args": ["--apply"], "category": "portfolio", "expected_outputs": ["tmp/auto-band-apply.json"], "depends_on": ["band_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "reference_band_note_sync.py", "args": ["--apply"], "category": "portfolio", "expected_outputs": ["tmp/reference-band-note-sync.json"], "depends_on": ["auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "entry_band_fetch.py", "args": ["--all-tracked", "--html"], "category": "portfolio", "expected_outputs": [], "depends_on": ["reference_band_note_sync.py"], "recovery_posture": "fail_chain"},
-            {"script": "generate_entry_band_status.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["entry_band_fetch.py"], "recovery_posture": "fail_chain"},
+            {"script": "entry_band_fetch.py", "args": ["--all-tracked", "--html"], "category": "portfolio", "expected_outputs": ["tmp/entry-band-data/_batch-manifest.json"], "depends_on": ["reference_band_note_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "generate_entry_band_status.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/entry-band-status.html"], "depends_on": ["entry_band_fetch.py"], "recovery_posture": "fail_chain"},
             {"script": "deployment_check.py", "args": [], "category": "validation", "expected_outputs": ["tmp/deployment-check.json"], "depends_on": ["technical_refresh.py", "band_refresh.py", "earnings_calendar_enrichment.py"], "recovery_posture": "fail_chain"},
             {"script": "trigger_sheet_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/trigger-sheet.json"], "depends_on": ["deployment_check.py"], "recovery_posture": "fail_chain"},
             {"script": "canon_volatile_execution_board_sync.py", "args": ["--apply", "--strict-exit"], "category": "portfolio", "expected_outputs": ["tmp/canon-volatile-execution-board-sync.json"], "depends_on": ["technical_refresh.py", "deployment_check.py", "trigger_sheet_refresh.py", "auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "sql_canon_field_family_preflight.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/sql-canon-low-risk-field-family-preflight.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "wf72_entry_stop_sql_activate.py", "args": ["--batch", "all", "--validate-only"], "category": "validation", "expected_outputs": ["tmp/wf72-entry-stop-sql-activation-validation.json"], "depends_on": ["sql_canon_field_family_preflight.py"], "recovery_posture": "fail_chain"},
+            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["wf72_entry_stop_sql_activate.py"], "recovery_posture": "fail_chain"},
             {"script": "regime_scoring_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/regime-scores.json"], "depends_on": ["macro_regime_refresh.py", "technical_refresh.py", "trigger_sheet_refresh.py", "deployment_check.py"], "recovery_posture": "fail_chain"},
             {"script": "positioning_ranking_refresh.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["trigger_sheet_refresh.py", "regime_scoring_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "post_earnings_prep.py", "args": [], "category": "intelligence", "expected_outputs": ["tmp/post-earnings-prep.json"], "depends_on": ["earnings_calendar_enrichment.py"], "recovery_posture": "fail_chain"},
@@ -217,10 +252,13 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "post_close_final_quote_ledger.py", "args": ["--write", "--validate"], "category": "market_data", "expected_outputs": ["tmp/post-close-final-quote-ledger.json"], "depends_on": ["state_history_capture.py"], "recovery_posture": "fail_chain"},
             {"script": "ticker_card_freshness_owner_runner.py", "args": ["--skip-provider-refresh", "--full-answer-mode", "changed", "--write", "--validate"], "category": "review_only", "expected_outputs": ["tmp/ticker-card-freshness-owner-runner.json"], "depends_on": ["post_close_final_quote_ledger.py"], "recovery_posture": "fail_chain"},
             {"script": "wf78_capital_review_queue.py", "args": ["--write", "--write-db", "--validate"], "category": "review_only", "expected_outputs": ["tmp/wf78-capital-review-queue.json", "tmp/wf78-capital-review-queue.sqlite"], "depends_on": ["post_close_final_quote_ledger.py", "ticker_card_freshness_owner_runner.py"], "recovery_posture": "fail_chain"},
-            {"script": "finance_decision_factory.py", "args": ["--ledger-only", "--write", "--validate"], "category": "review_only", "expected_outputs": ["tmp/finance-decision-factory.json"], "depends_on": ["wf78_capital_review_queue.py", "ticker_card_freshness_owner_runner.py"], "recovery_posture": "fail_chain"},
+            {"script": "finance_sql_canon_access.py", "args": ["--write", "--validate"], "category": "validation", "expected_outputs": ["tmp/finance-sql-canon-access-validation.json"], "depends_on": ["wf78_capital_review_queue.py"], "recovery_posture": "fail_chain"},
+            {"script": "finance_decision_factory.py", "args": ["--ledger-only", "--write", "--validate"], "category": "review_only", "expected_outputs": ["tmp/finance-decision-factory.json"], "depends_on": ["wf78_capital_review_queue.py", "ticker_card_freshness_owner_runner.py", "finance_sql_canon_access.py"], "recovery_posture": "fail_chain"},
+            {"script": "finance_decision_sync_spine.py", "args": ["--write", "--write-md", "--validate"], "category": "review_only", "expected_outputs": ["tmp/finance-decision-sync-spine.json", "tmp/finance-decision-sync-spine.md"], "depends_on": ["finance_decision_factory.py"], "recovery_posture": "fail_chain"},
+            {"script": "veritas_finance_brief.py", "args": ["--write", "--write-md", "--validate"], "category": "summary", "expected_outputs": ["tmp/veritas-finance-brief.json", "tmp/veritas-finance-brief.md"], "depends_on": ["finance_decision_sync_spine.py"], "recovery_posture": "fail_chain"},
             {"script": "wf78_tier_weighted_freshness_resolver.py", "args": ["--write", "--validate"], "category": "review_only", "expected_outputs": ["tmp/wf78-tier-weighted-freshness-resolution.json"], "depends_on": ["post_close_final_quote_ledger.py", "ticker_card_freshness_owner_runner.py"], "recovery_posture": "fail_chain"},
             {"script": "market_today_answer_packet.py", "args": ["--write", "--validate"], "category": "summary", "expected_outputs": ["tmp/market-today-answer-packet.json"], "depends_on": ["postmarket_snapshot.py", "macro_signal_spine.py", "macro_metrics_ingest.py", "ticker_card_freshness_owner_runner.py", "wf78_tier_weighted_freshness_resolver.py"], "recovery_posture": "fail_chain"},
-            {"script": "current_window_artifact_index.py", "args": ["--window", "post-close", "--write"], "category": "summary", "expected_outputs": ["tmp/current-window-artifacts.json"], "depends_on": ["daily_review_objects.py", "run_summary_refresh.py", "state_history_capture.py", "finance_decision_factory.py", "wf78_tier_weighted_freshness_resolver.py", "market_today_answer_packet.py"], "recovery_posture": "fail_chain"},
+            {"script": "current_window_artifact_index.py", "args": ["--window", "post-close", "--write"], "category": "summary", "expected_outputs": ["tmp/current-window-artifacts.json"], "depends_on": ["daily_review_objects.py", "run_summary_refresh.py", "state_history_capture.py", "finance_decision_factory.py", "veritas_finance_brief.py", "wf78_tier_weighted_freshness_resolver.py", "market_today_answer_packet.py"], "recovery_posture": "fail_chain"},
             {"script": "artifact_index.py", "args": ["incremental"], "category": "summary", "expected_outputs": ["tmp/veritas-artifact-index.sqlite"], "depends_on": ["current_window_artifact_index.py"], "recovery_posture": "fail_chain"},
             {"script": "run_summary_refresh.py", "args": ["--window", "post-close"], "category": "summary", "expected_outputs": ["tmp/run-summary-post-close.json"], "depends_on": ["artifact_index.py"], "recovery_posture": "recovery_finalizer"},
         ],
@@ -233,8 +271,8 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "event_calendar_rollforward.py", "args": [], "category": "intelligence", "expected_outputs": ["tmp/event-calendar-rollforward.json"], "depends_on": ["earnings_calendar_enrichment.py", "earnings_date_source_confidence.py"], "recovery_posture": "fail_chain"},
             {"script": "event_calendar_apply.py", "args": ["--apply"], "category": "intelligence", "expected_outputs": ["tmp/event-calendar-apply.json"], "depends_on": ["event_calendar_rollforward.py"], "recovery_posture": "fail_chain"},
             {"script": "validate_portfolio_config.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": [], "recovery_posture": "fail_chain"},
-            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain"},
-            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain"},
+            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain", "incremental_skip": False},
+            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain", "timeout_seconds": 900},
             {"script": "validate_fundamental_metrics.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/fundamental-metrics-validation.json"], "depends_on": ["fundamental_metrics_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "goog_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
             {"script": "etn_vrt_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
@@ -260,7 +298,9 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "positioning_ranking_refresh.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["trigger_sheet_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "universe_consistency_check.py", "args": [], "category": "validation", "expected_outputs": [], "depends_on": ["post_earnings_prep.py"], "recovery_posture": "fail_chain"},
             {"script": "canon_volatile_execution_board_sync.py", "args": ["--apply", "--strict-exit"], "category": "portfolio", "expected_outputs": ["tmp/canon-volatile-execution-board-sync.json"], "depends_on": ["technical_refresh.py", "deployment_check.py", "trigger_sheet_refresh.py", "auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "sql_canon_field_family_preflight.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/sql-canon-low-risk-field-family-preflight.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "wf72_entry_stop_sql_activate.py", "args": ["--batch", "all", "--validate-only"], "category": "validation", "expected_outputs": ["tmp/wf72-entry-stop-sql-activation-validation.json"], "depends_on": ["sql_canon_field_family_preflight.py"], "recovery_posture": "fail_chain"},
+            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["wf72_entry_stop_sql_activate.py"], "recovery_posture": "fail_chain"},
             {"script": "test_dashboard_acceptance.py", "args": [], "category": "validation", "expected_outputs": ["tmp/dashboard-acceptance-report.json"], "depends_on": ["post_earnings_prep.py", "canon_volatile_execution_board_sync.py", "canon_drift_freshness_gate.py"], "recovery_posture": "fail_chain"},
             {"script": "generate_dashboard.py", "args": [], "category": "summary", "expected_outputs": ["tmp/veritas-command-center.html"], "depends_on": ["test_dashboard_acceptance.py"], "recovery_posture": "fail_chain"},
             {"script": "validate_dashboard_state.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/dashboard-validation.json"], "depends_on": ["generate_dashboard.py"], "recovery_posture": "fail_chain"},
@@ -284,8 +324,8 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "event_calendar_rollforward.py", "args": [], "category": "intelligence", "expected_outputs": ["tmp/event-calendar-rollforward.json"], "depends_on": ["earnings_calendar_enrichment.py", "earnings_date_source_confidence.py"], "recovery_posture": "fail_chain"},
             {"script": "event_calendar_apply.py", "args": ["--apply"], "category": "intelligence", "expected_outputs": ["tmp/event-calendar-apply.json"], "depends_on": ["event_calendar_rollforward.py"], "recovery_posture": "fail_chain"},
             {"script": "validate_portfolio_config.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": [], "recovery_posture": "fail_chain"},
-            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain"},
-            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain"},
+            {"script": "bank_native_sec_concept_probe.py", "args": ["--write"], "category": "fundamentals", "expected_outputs": ["tmp/bank-native-sec-concept-probe.json"], "depends_on": ["validate_portfolio_config.py"], "recovery_posture": "fail_chain", "incremental_skip": False},
+            {"script": "fundamental_metrics_refresh.py", "args": [], "category": "fundamentals", "expected_outputs": ["tmp/fundamental-metrics-current.json", "data/fundamentals/fundamentals-quarterly-v1.jsonl"], "depends_on": ["bank_native_sec_concept_probe.py"], "recovery_posture": "fail_chain", "timeout_seconds": 900},
             {"script": "validate_fundamental_metrics.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/fundamental-metrics-validation.json"], "depends_on": ["fundamental_metrics_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "goog_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
             {"script": "etn_vrt_official_ir_capture.py", "args": [], "category": "fundamentals", "expected_outputs": [], "depends_on": ["validate_fundamental_metrics.py"], "recovery_posture": "fail_chain"},
@@ -320,12 +360,14 @@ WINDOW_MANIFESTS: dict[str, dict[str, Any]] = {
             {"script": "band_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/band-proposals.json"], "depends_on": ["technical_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "auto_apply_entry_band_maintenance.py", "args": ["--apply"], "category": "portfolio", "expected_outputs": ["tmp/auto-band-apply.json"], "depends_on": ["band_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "reference_band_note_sync.py", "args": ["--apply"], "category": "portfolio", "expected_outputs": ["tmp/reference-band-note-sync.json"], "depends_on": ["auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "entry_band_fetch.py", "args": ["--all-tracked", "--html"], "category": "portfolio", "expected_outputs": [], "depends_on": ["reference_band_note_sync.py"], "recovery_posture": "fail_chain"},
-            {"script": "generate_entry_band_status.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["entry_band_fetch.py"], "recovery_posture": "fail_chain"},
+            {"script": "entry_band_fetch.py", "args": ["--all-tracked", "--html"], "category": "portfolio", "expected_outputs": ["tmp/entry-band-data/_batch-manifest.json"], "depends_on": ["reference_band_note_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "generate_entry_band_status.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/entry-band-status.html"], "depends_on": ["entry_band_fetch.py"], "recovery_posture": "fail_chain"},
             {"script": "deployment_check.py", "args": [], "category": "validation", "expected_outputs": ["tmp/deployment-check.json"], "depends_on": ["technical_refresh.py", "band_refresh.py", "earnings_calendar_enrichment.py"], "recovery_posture": "fail_chain"},
             {"script": "trigger_sheet_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/trigger-sheet.json"], "depends_on": ["deployment_check.py"], "recovery_posture": "fail_chain"},
             {"script": "canon_volatile_execution_board_sync.py", "args": ["--apply", "--strict-exit"], "category": "portfolio", "expected_outputs": ["tmp/canon-volatile-execution-board-sync.json"], "depends_on": ["technical_refresh.py", "deployment_check.py", "trigger_sheet_refresh.py", "auto_apply_entry_band_maintenance.py"], "recovery_posture": "fail_chain"},
-            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "sql_canon_field_family_preflight.py", "args": ["--write"], "category": "validation", "expected_outputs": ["tmp/sql-canon-low-risk-field-family-preflight.json"], "depends_on": ["canon_volatile_execution_board_sync.py"], "recovery_posture": "fail_chain"},
+            {"script": "wf72_entry_stop_sql_activate.py", "args": ["--batch", "all", "--validate-only"], "category": "validation", "expected_outputs": ["tmp/wf72-entry-stop-sql-activation-validation.json"], "depends_on": ["sql_canon_field_family_preflight.py"], "recovery_posture": "fail_chain"},
+            {"script": "canon_drift_freshness_gate.py", "args": ["--write", "--strict-exit"], "category": "validation", "expected_outputs": ["tmp/canon-drift-freshness-gate.json"], "depends_on": ["wf72_entry_stop_sql_activate.py"], "recovery_posture": "fail_chain"},
             {"script": "regime_scoring_refresh.py", "args": [], "category": "portfolio", "expected_outputs": ["tmp/regime-scores.json"], "depends_on": ["macro_regime_refresh.py", "technical_refresh.py", "trigger_sheet_refresh.py", "deployment_check.py"], "recovery_posture": "fail_chain"},
             {"script": "positioning_ranking_refresh.py", "args": [], "category": "portfolio", "expected_outputs": [], "depends_on": ["trigger_sheet_refresh.py", "regime_scoring_refresh.py"], "recovery_posture": "fail_chain"},
             {"script": "post_earnings_prep.py", "args": [], "category": "intelligence", "expected_outputs": ["tmp/post-earnings-prep.json"], "depends_on": ["earnings_calendar_enrichment.py"], "recovery_posture": "fail_chain"},
@@ -380,7 +422,57 @@ WINDOW_MANIFESTS["full"] = {
 }
 
 
+def _apply_earnings_rollforward_guard(manifests: dict[str, dict[str, Any]]) -> None:
+    """Insert the missed-period guard before official capture producers.
+
+    This is deliberately applied to the operating windows rather than to a
+    live scheduler payload.  Any existing morning/post-close/Sunday run will
+    therefore detect a machine outage or a newly filed quarter on its next
+    normal invocation.
+    """
+
+    capture_scripts = {
+        "goog_official_ir_capture.py",
+        "etn_vrt_official_ir_capture.py",
+        "tech_official_ir_capture.py",
+        "priority_official_ir_capture.py",
+        "batch2_official_ir_capture.py",
+        "batch2b_official_ir_capture.py",
+        "longtail_official_ir_capture.py",
+    }
+    for window, manifest in manifests.items():
+        if window not in {"morning", "post-close", "post-earnings", "sunday", "full"}:
+            continue
+        steps = manifest.get("steps", [])
+        if any(step.get("script") == "earnings_rollforward_guard.py" for step in steps):
+            continue
+        capture_index = next((idx for idx, step in enumerate(steps) if step.get("script") in capture_scripts), None)
+        if capture_index is None:
+            continue
+        prior_script = str(steps[capture_index - 1].get("script") or "") if capture_index else ""
+        args = ["--all-tracked"] if window in {"sunday", "post-earnings"} else ["--priority-only"]
+        args.extend(["--auto-capture", "--write", "--validate"])
+        guard = {
+            "script": "earnings_rollforward_guard.py",
+            "args": args,
+            "category": "validation",
+            "expected_outputs": ["tmp/earnings-rollforward-guard.json"],
+            "depends_on": [prior_script] if prior_script else [],
+            "recovery_posture": "fail_chain",
+            "timeout_seconds": 900,
+        }
+        steps.insert(capture_index, guard)
+        for step in steps[capture_index + 1 :]:
+            if step.get("script") in capture_scripts:
+                dependencies = list(step.get("depends_on") or [])
+                if "earnings_rollforward_guard.py" not in dependencies:
+                    dependencies.append("earnings_rollforward_guard.py")
+                step["depends_on"] = dependencies
+
+
 _apply_registry_paths(WINDOW_MANIFESTS)
+_apply_earnings_rollforward_guard(WINDOW_MANIFESTS)
+_apply_stage_names(WINDOW_MANIFESTS)
 
 
 def window_names() -> list[str]:
@@ -400,3 +492,120 @@ def expected_outputs_by_script(window: str) -> dict[str, list[str]]:
     for step in manifest_steps(window):
         outputs[step["script"]] = list(step.get("expected_outputs") or [])
     return outputs
+
+
+def manifest_stages(window: str) -> list[str]:
+    stages: list[str] = []
+    for step in manifest_steps(window):
+        stage = str(step.get("stage") or _stage_for_step(step))
+        if stage not in stages:
+            stages.append(stage)
+    return stages
+
+
+def _latest_prior_index_by_script(steps: list[dict[str, Any]]) -> tuple[dict[int, list[int]], list[dict[str, Any]]]:
+    latest: dict[str, int] = {}
+    all_scripts = {str(step.get("script") or "") for step in steps}
+    deps_by_index: dict[int, list[int]] = {}
+    findings: list[dict[str, Any]] = []
+    for index, step in enumerate(steps):
+        deps: list[int] = []
+        for dep in list(step.get("depends_on") or []):
+            dep_name = str(dep)
+            if dep_name in latest:
+                deps.append(latest[dep_name])
+            elif dep_name in all_scripts:
+                findings.append({
+                    "severity": "error",
+                    "code": "forward_dependency",
+                    "script": step.get("script"),
+                    "dependency": dep_name,
+                    "index": index + 1,
+                })
+            else:
+                findings.append({
+                    "severity": "error",
+                    "code": "missing_dependency",
+                    "script": step.get("script"),
+                    "dependency": dep_name,
+                    "index": index + 1,
+                })
+        deps_by_index[index] = deps
+        latest[str(step.get("script") or "")] = index
+    return deps_by_index, findings
+
+
+def dependency_graph(window: str) -> dict[str, Any]:
+    steps = manifest_steps(window)
+    deps_by_index, findings = _latest_prior_index_by_script(steps)
+    dependents: dict[int, list[int]] = {idx: [] for idx in range(len(steps))}
+    for idx, deps in deps_by_index.items():
+        for dep in deps:
+            dependents.setdefault(dep, []).append(idx)
+    return {
+        "window": window,
+        "steps": steps,
+        "dependencies": deps_by_index,
+        "dependents": dependents,
+        "findings": findings,
+    }
+
+
+def topological_batches_from_steps(steps: list[dict[str, Any]]) -> dict[str, Any]:
+    deps_by_index, findings = _latest_prior_index_by_script(steps)
+    remaining = set(range(len(steps)))
+    completed: set[int] = set()
+    batches: list[list[int]] = []
+    while remaining:
+        ready = sorted(idx for idx in remaining if all(dep in completed or dep not in remaining for dep in deps_by_index.get(idx, [])))
+        if not ready:
+            findings.append({
+                "severity": "error",
+                "code": "cycle_or_unresolved_dependencies",
+                "remaining": sorted(remaining),
+            })
+            break
+        batches.append(ready)
+        completed.update(ready)
+        remaining.difference_update(ready)
+    return {"batches": batches, "dependencies": deps_by_index, "findings": findings}
+
+
+def topological_batches(window: str) -> dict[str, Any]:
+    result = topological_batches_from_steps(manifest_steps(window))
+    result["window"] = window
+    return result
+
+
+def manifest_validation(window: str) -> dict[str, Any]:
+    steps = manifest_steps(window)
+    topo = topological_batches_from_steps(steps)
+    findings = list(topo["findings"])
+    for index, step in enumerate(steps, start=1):
+        script = str(step.get("script") or "")
+        if script and not (SCRIPTS_DIR / script).exists():
+            findings.append({
+                "severity": "error",
+                "code": "missing_script_file",
+                "script": script,
+                "index": index,
+            })
+        for output in list(step.get("expected_outputs") or []):
+            if not isinstance(output, str) or not output.strip():
+                findings.append({
+                    "severity": "warning",
+                    "code": "empty_expected_output",
+                    "script": script,
+                    "index": index,
+                })
+    critical = [item for item in findings if item.get("severity") == "error"]
+    warnings = [item for item in findings if item.get("severity") == "warning"]
+    return {
+        "window": window,
+        "status": "error" if critical else ("warning" if warnings else "ok"),
+        "step_count": len(steps),
+        "stage_count": len(manifest_stages(window)),
+        "batch_count": len(topo["batches"]),
+        "max_batch_size": max((len(batch) for batch in topo["batches"]), default=0),
+        "findings": findings,
+    }

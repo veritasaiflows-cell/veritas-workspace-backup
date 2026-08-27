@@ -46,6 +46,23 @@ go run .\cmd\finance-sql-boundary-lint --root ..\.. --out ..\..\tmp\finance-sql-
 go run .\cmd\python-sql-contract-lint --root ..\.. --out ..\..\tmp\python-sql-contract-lint.json
 go run .\cmd\sql-schema-drift-lint --root ..\.. --out ..\..\tmp\sql-schema-drift-lint.json
 go run .\cmd\sql-proof-probe --root ..\.. --out ..\..\tmp\sql-proof-probe.json
+go run .\cmd\go-json-proof-contract-lint --root ..\.. --out ..\..\tmp\go-json-proof-contract-lint.json
+go run .\cmd\go-sql-canon-proof-bundle-lint --root ..\.. --driver inprocess --out ..\..\tmp\go-sql-canon-proof-bundle-lint.json
+go run .\cmd\go-cron-contract-json-proof-lint --root ..\.. --out ..\..\tmp\go-cron-contract-json-proof-lint.json
+go run .\cmd\go-finance-canon-authority-event-lint --root ..\.. --driver inprocess --out ..\..\tmp\go-finance-canon-authority-event-lint.json
+go run .\cmd\go-json-proof-warning-residue-lint --root ..\.. --out ..\..\tmp\go-json-proof-warning-residue-lint.json
+go run .\cmd\go-sql-source-artifact-freshness-lint --root ..\.. --driver inprocess --out ..\..\tmp\go-sql-source-artifact-freshness-lint.json
+go run .\cmd\go-sql-source-lineage-producer-contract-lint --root ..\.. --freshness-report ..\..\tmp\go-sql-source-artifact-freshness-lint.json --out ..\..\tmp\go-sql-source-lineage-producer-contract-lint.json
+go run .\cmd\go-implementation-closeout-ledger-lint --root ..\.. --out ..\..\tmp\go-implementation-closeout-ledger-lint.json
+go run .\cmd\go-json-proof-structural-validator --root ..\.. --driver inprocess --out ..\..\tmp\go-json-proof-structural-validator.json
+go run .\cmd\go-entry-stop-band-freshness-validator --root ..\.. --driver inprocess --out ..\..\tmp\go-entry-stop-band-freshness-validator.json
+go run .\cmd\go-pm-queue-authority-lint --root ..\.. --out ..\..\tmp\go-pm-queue-authority-lint.json
+go run .\cmd\go-finance-answer-completeness-validator --root ..\.. --out ..\..\tmp\go-finance-answer-completeness-validator.json
+go run .\cmd\go-cross-db-referential-integrity-probe --root ..\.. --driver inprocess --out ..\..\tmp\go-cross-db-referential-integrity-probe.json
+go run .\cmd\go-workflow-artifact-freshness-gate --root ..\.. --driver inprocess --out ..\..\tmp\go-workflow-artifact-freshness-gate.json
+go run .\cmd\go-validator-timing-benchmark --root ..\.. --out ..\..\tmp\go-validator-timing-benchmark.json
+go run .\cmd\go-execution-board-structural-lint --root ..\.. --out ..\..\tmp\go-execution-board-structural-lint.json
+go run .\cmd\go-paper-trading-guard-preflight --root ..\.. --out ..\..\tmp\go-paper-trading-guard-preflight.json
 go build -o ..\..\tmp\go-binaries\go-sql-latency-probe.exe .\cmd\go-sql-latency-probe
 go build -o ..\..\tmp\go-binaries\go-sql-inventory-helper.exe .\cmd\go-sql-inventory-helper
 go build -o ..\..\tmp\go-binaries\go-finance-human-notes-sql-check.exe .\cmd\go-finance-human-notes-sql-check
@@ -195,6 +212,115 @@ The report is written to `tmp/sql-proof-probe.json` and is consumed by:
 - `scripts/veritas_harness_scorecard.py`
 - `scripts/pm_program_state.py`
 - `state/pm-cockpit-source-registry.json`
+
+### `go-json-proof-contract-lint`
+
+Advisory compiled proof-contract validator for SQL/canon JSON packets. It checks:
+
+- proof packet existence and JSON parseability
+- status and timestamp presence
+- future timestamps and stale packet age warnings
+- validation envelopes where present
+- visible validation errors and warnings
+- forbidden authority flags such as owner-approval inference, execution authority, SQL/canon mutation, archive/delete apply, cron schedule mutation, or customer/external delivery
+
+The report is written to `tmp/go-json-proof-contract-lint.json`. Current integration is advisory: critical findings should block closeout, while existing warning residue is visible but not treated as proof of failure.
+
+### `go-sql-canon-proof-bundle-lint`
+
+Advisory compiled SQL-canon bundle validator. It opens `state/finance/finance-canon.sqlite` read-only, validates core SQL/canon table and view presence, checks expected 200-row field-family coverage, compares the consumer migration registry row count to the consumer inventory backlog, and embeds `go-json-proof-contract-lint` over the SQL/canon proof packet bundle.
+
+The report is written to `tmp/go-sql-canon-proof-bundle-lint.json`. It does not write SQL, mutate canon, mutate portfolio notes, alter cron schedules, infer owner approval, or change Python ownership of generators/orchestrators.
+
+### `go-cron-contract-json-proof-lint`
+
+Advisory compiled cron contract/control validator. It reads `state/cron-contracts/*.json` and `tmp/cron-control-packet.json`, then checks contract schema, schedule shape, expected proof artifacts, freshness, validation residue, blocked/escalation signal visibility, and closed authority flags.
+
+The report is written to `tmp/go-cron-contract-json-proof-lint.json`. It is read-only proof; it does not mutate cron contracts, live schedules, runtime config, delivery settings, finance/canon state, or external/customer surfaces.
+
+### `go-finance-canon-authority-event-lint`
+
+Advisory compiled finance SQL authority-event validator. It opens `state/finance/finance-canon.sqlite` read-only and checks `authority_events`, `audit_events`, `validator_runs`, and `migration_validation_runs` for parseable JSON, event-time continuity, owner-approval references, forbidden capital/execution authority flags, rollback/fallback trace, and blocked validator status.
+
+The report is written to `tmp/go-finance-canon-authority-event-lint.json`. It does not write SQL, mutate finance canon, alter portfolio notes, infer owner approval, or grant trade/account/paper/live authority.
+
+### `go-json-proof-warning-residue-lint`
+
+Advisory compiled warning classifier for the Go proof family. It reads the inner Go validator JSON reports, classifies known advisory residue, and keeps unclassified warning drift visible as a separate finding.
+
+The report is written to `tmp/go-json-proof-warning-residue-lint.json`. Status `ok` means the warning residue is classified, not resolved.
+
+### `go-sql-source-artifact-freshness-lint`
+
+Advisory compiled SQL source-lineage validator. It opens `state/finance/finance-canon.sqlite` read-only, checks `source_lineage` and `source_artifacts`, verifies source paths, hashes, freshness, blocked statuses, and forbidden authority language.
+
+The report is written to `tmp/go-sql-source-artifact-freshness-lint.json`. It does not write SQL or mutate source artifacts.
+
+### `go-sql-source-lineage-producer-contract-lint`
+
+Advisory compiled producer-contract mapper for SQL source-lineage residue. It reads `tmp/go-sql-source-artifact-freshness-lint.json`, maps every promoted source artifact path to an owning producer and safe repair route, verifies referenced producer scripts exist, and keeps hash/registry/generated-at residue visible without mutating SQL/canon.
+
+The report is written to `tmp/go-sql-source-lineage-producer-contract-lint.json`. It is proof-only; it does not refresh producers, write SQL, alter source artifacts, infer owner approval, or apply finance/canon changes.
+
+### `go-implementation-closeout-ledger-lint`
+
+Advisory compiled closeout proof validator. It checks the lane register, changed-file router, validator-bundle router, Go wrapper proof, warning-residue classifier, and daily memory marker so implementation lanes do not close without durable evidence.
+
+The report is written to `tmp/go-implementation-closeout-ledger-lint.json`. It is proof-only and does not complete lanes or mutate workflow/canon state.
+
+### `go-json-proof-structural-validator`
+
+Bulk JSON proof-structure validator. It reads the artifact index, opens indexed JSON artifacts, checks parseability, status and timestamp shape, hash continuity, stale artifacts, and forbidden authority flags.
+
+The report is written to `tmp/go-json-proof-structural-validator.json`. It is deliberately broad and may block on real live artifact residue; it does not repair or mutate artifacts.
+
+### `go-entry-stop-band-freshness-validator`
+
+Entry/stop band freshness companion. It checks SQL `reference_levels`, source lineage, source hashes, generated timestamps, finance-state mirrors, and canon-cache mirrors for stale or mismatched entry/stop source state.
+
+The report is written to `tmp/go-entry-stop-band-freshness-validator.json`. It is read-only and does not apply entry-band maintenance, mutate SQL, or edit portfolio/canon notes.
+
+### `go-pm-queue-authority-lint`
+
+PM queue authority lint. It reads the PM control packet and checks stale lanes, blocked/needs-validation lanes, unsafe automatic execution posture, missing stop lines, owner-gated jobs, and authority-language drift.
+
+The report is written to `tmp/go-pm-queue-authority-lint.json`. It does not move PM jobs, close lanes, spawn helpers, or infer owner approval.
+
+### `go-finance-answer-completeness-validator`
+
+Finance answer packet completeness validator. It checks WF85 full-answer assembler packets for required sections, parseability, stale packets, rollup continuity, and forbidden authority flags.
+
+The report is written to `tmp/go-finance-answer-completeness-validator.json`. It validates answer packet shape only; it does not create recommendations, approve deployment, or execute trades.
+
+### `go-cross-db-referential-integrity-probe`
+
+Cross-DB referential integrity probe. It opens the finance canon, finance intelligence, WF84 data-plane, and canon-cache SQLite surfaces read-only; runs integrity/foreign-key checks; and compares required and optional ticker sets.
+
+The report is written to `tmp/go-cross-db-referential-integrity-probe.json`. Required finance-canon set drift blocks; optional mirror drift remains visible as warning residue.
+
+### `go-workflow-artifact-freshness-gate`
+
+Workflow artifact freshness gate. It reads the artifact index and source-freshness rows, checks file existence, index hash continuity, critical/manual source freshness, and stop-line visibility.
+
+The report is written to `tmp/go-workflow-artifact-freshness-gate.json`. It can block on real stale workflow residue; it does not refresh producers or mutate queue state.
+
+### `go-validator-timing-benchmark`
+
+Validator timing benchmark. It inspects or runs a fixed allowlist of compiled Go validators, records elapsed time, binary presence, and failed process status, and rejects arbitrary validator names.
+
+The report is written to `tmp/go-validator-timing-benchmark.json`. It is timing evidence only and does not execute shell strings, Python workflow commands, SQL writers, cron jobs, or brokerage actions.
+
+### `go-execution-board-structural-lint`
+
+Execution Board structural lint. It checks the portfolio Execution Board Markdown for required structure, table health, stale/thin surface posture, and forbidden authority drift.
+
+The report is written to `tmp/go-execution-board-structural-lint.json`. It does not edit the board, mutate canon, or approve deployment.
+
+### `go-paper-trading-guard-preflight`
+
+Paper trading guard preflight. It checks existing paper-readiness and kill-switch artifacts for missing/stale guard proof, unsafe flags, live endpoint leakage, and fresh kill-switch readiness.
+
+The report is written to `tmp/go-paper-trading-guard-preflight.json`. It is preflight proof only; it does not submit, cancel, replace, or approve paper or live orders.
 
 ### `go-sql-latency-probe`
 
@@ -492,9 +618,11 @@ The report is written to `tmp/python-go-sql-helper-retirement-gate.json`. It val
 26. Python owner/default rollback: complete for the approved controlled-demoted helper set after the 2026-06-08 benchmark showed no material Go speed advantage for this path. Go remains validator-only and Python fallback is retained.
 27. Python-owner route history gate: complete for repeated default-route history, with stable fingerprints and Python deletion denied.
 28. Python helper retirement gate: complete as a blocker proof; full Python retirement/deletion remains disallowed while Python is owner/default.
-29. PM queue and handoff lint: catch stale, unsafe, or authority-widening PM continuation packets.
-30. Cron payload and automation-authority lint: catch schedule payload drift, prompt bloat, delivery mismatch, and unsafe authority language.
-31. Shared validator suite: consolidate common report schema, file loading, severity handling, and test fixtures without turning Go into a second operating system.
+29. PM queue and handoff lint: complete as `go-pm-queue-authority-lint`; catches stale, unsafe, or authority-widening PM continuation packets.
+30. Cron payload and automation-authority lint: `go-cron-contract-json-proof-lint` now covers cron contract/control proof and blocked-signal visibility; follow-up can narrow prompt bloat and delivery mismatch once current cron residue is classified.
+31. Finance authority-event lint: `go-finance-canon-authority-event-lint` now covers SQL-canon authority/audit/validator event history without SQL mutation.
+32. Audit-gap validator suite: complete for bulk JSON proof structure, entry/stop band freshness, PM authority, finance answer completeness, cross-DB referential integrity, workflow artifact freshness, timing benchmark, Execution Board structure, and paper guard preflight.
+33. Shared validator suite: consolidate common report schema, file loading, severity handling, and test fixtures without turning Go into a second operating system.
 
 ## Boundary
 

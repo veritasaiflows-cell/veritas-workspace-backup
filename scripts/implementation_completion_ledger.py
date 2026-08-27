@@ -27,6 +27,10 @@ SNAPSHOT_DIRNAME = "implementation-completion-ledger-snapshots"
 OUT = TMP / "implementation-completion-ledger-current.json"
 SCHEMA = "veritas.implementation_completion_ledger.v1"
 ENTRY_SCHEMA = "veritas.implementation_completion_ledger.entry.v1"
+STATUS_SURFACE_REFRESH_COMMANDS = [
+    ("startup_brief_packet", [sys.executable, "scripts\\startup_brief_packet.py", "--write", "--validate"]),
+    ("status_card_packet", [sys.executable, "scripts\\status_card_packet.py", "--write", "--validate"]),
+]
 
 DEFAULT_PROOF_ARTIFACTS = [
     TMP / "pm-execution-loop.json",
@@ -341,6 +345,76 @@ def append_entries(path: Path, entries: list[dict[str, Any]]) -> None:
             fh.write(stable_json(entry) + "\n")
 
 
+def run_command_parts(name: str, parts: list[str], timeout: int = 120) -> dict[str, Any]:
+    started = utc_now()
+    try:
+        proc = subprocess.run(parts, cwd=ROOT, text=True, capture_output=True, timeout=timeout)
+        return {
+            "name": name,
+            "command": parts,
+            "started_at_utc": started,
+            "completed_at_utc": utc_now(),
+            "returncode": proc.returncode,
+            "ok": proc.returncode == 0,
+            "stdout_preview": proc.stdout.strip()[-2000:],
+            "stderr_preview": proc.stderr.strip()[-1200:],
+        }
+    except FileNotFoundError as exc:
+        return {
+            "name": name,
+            "command": parts,
+            "started_at_utc": started,
+            "completed_at_utc": utc_now(),
+            "returncode": None,
+            "ok": False,
+            "stdout_preview": "",
+            "stderr_preview": f"{type(exc).__name__}: {exc}",
+        }
+    except subprocess.TimeoutExpired as exc:
+        return {
+            "name": name,
+            "command": parts,
+            "started_at_utc": started,
+            "completed_at_utc": utc_now(),
+            "returncode": None,
+            "ok": False,
+            "timeout_seconds": timeout,
+            "stdout_preview": (exc.stdout or "")[-2000:] if isinstance(exc.stdout, str) else "",
+            "stderr_preview": (exc.stderr or "")[-1200:] if isinstance(exc.stderr, str) else "",
+        }
+
+
+def refresh_status_surfaces() -> list[dict[str, Any]]:
+    return [
+        run_command_parts(name, parts)
+        for name, parts in STATUS_SURFACE_REFRESH_COMMANDS
+    ]
+
+
+def apply_status_surface_refresh(report: dict[str, Any], steps: list[dict[str, Any]]) -> dict[str, Any]:
+    failed = [step["name"] for step in steps if not step.get("ok")]
+    report["status_surface_refresh_result"] = {
+        "required": True,
+        "steps": steps,
+        "failed_steps": failed,
+    }
+    report["summary"]["status_surface_refresh_failed_count"] = len(failed)
+    report["summary"]["status_surface_refresh_required"] = True
+    if failed:
+        report["summary"]["status_surface_refresh_attention_required"] = True
+        report["summary"]["next_safe_action"] = (
+            "Ledger record is valid; repair or refresh status/front-door residue separately before treating "
+            "startup/status surfaces as green."
+        )
+        report["validation"]["warnings"] = [
+            *as_list(report["validation"].get("warnings")),
+            *[f"status_surface_refresh_attention:{name}" for name in failed],
+        ]
+    else:
+        report["summary"]["status_surface_refresh_attention_required"] = False
+    return report
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     source_path = (ROOT / args.source).resolve() if not args.source.is_absolute() else args.source
     source = as_dict(load_json_artifact(source_path))
@@ -386,6 +460,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "entry_count_after": after_validation["entry_count"],
             "tip_entry_hash": after_validation.get("tip_entry_hash") or (new_entries[-1]["entry_hash"] if new_entries else None),
             "source_sha256": sha256_file(source_path),
+            "status_surface_refresh_required": bool(args.record and new_entries and status == "ok"),
+            "status_surface_refresh_failed_count": None,
             "next_safe_action": "Use this ledger for future completed-job reconstruction; keep PM/closeout artifacts as detailed proof.",
         },
         "new_entries": new_entries,
@@ -412,11 +488,15 @@ def main() -> int:
     parser.add_argument("--record", action="store_true", help="Append new entry/entries to the ledger.")
     parser.add_argument("--write", action="store_true", help="Write current report artifact.")
     parser.add_argument("--validate", action="store_true", help="Return non-zero when ledger validation is blocked.")
+    parser.add_argument("--skip-status-refresh", action="store_true", help="Do not refresh startup/status surfaces after recording a new completion.")
     args = parser.parse_args()
 
     report = build_report(args)
     if args.write:
         atomic_write_json(args.out, report)
+        if report["summary"]["status_surface_refresh_required"] and not args.skip_status_refresh:
+            report = apply_status_surface_refresh(report, refresh_status_surfaces())
+            atomic_write_json(args.out, report)
         print(
             f"wrote {rel(args.out)} status={report['status']} recorded={report['recorded']} "
             f"entries={report['summary']['entry_count_after']} new={report['summary']['new_entry_count']}"

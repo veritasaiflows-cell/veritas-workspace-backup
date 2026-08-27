@@ -348,8 +348,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             manifest_cmd = py_cmd("scripts/wf78_100_to_200_candidate_manifest.py", "--write", "--validate")
             provider_source_cmd = py_cmd("scripts/wf78_101_200_provider_source_validation.py", "--write", "--validate")
             import_decision_cmd = py_cmd("scripts/wf78_101_200_import_decision_packet.py", "--write", "--validate")
-            production_tier_adjudication_cmd = py_cmd("scripts/wf78_production_tier_adjudication.py", "--write", "--write-db", "--validate")
-            tier_b_final_promotion_cmd = py_cmd("scripts/wf78_tier_b_final_promotion_packet.py", "--write", "--validate")
             tier_b_evidence_repair_cmd = None
             if args.tier_b_repair_quote:
                 tier_b_evidence_repair_cmd = py_cmd(
@@ -368,18 +366,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 "--write",
                 "--validate",
             )
-            tier_b_next_batch_cmd = py_cmd(
-                "scripts/wf78_tier_b_final_promotion_packet.py",
-                "--source", "phase2_eligible",
-                "--offset", str(args.tier_b_next_batch_offset),
-                "--out", "tmp/wf78-tier-b-final-promotion-packet.next-batch.json",
-                "--write",
-                "--validate",
-            )
             tier_label_sync_preview_cmd = py_cmd("scripts/wf78_tier_label_sync_preview.py", "--write", "--validate")
             tier_a_confidence_gate_cmd = py_cmd("scripts/wf78_tier_a_confidence_gate.py", "--write", "--validate")
             tier_c_attention_trigger_cmd = py_cmd("scripts/wf78_tier_c_attention_trigger.py", "--write", "--write-db", "--validate")
             auto_tier_router_cmd = py_cmd("scripts/wf78_auto_tier_router.py", "--write", "--validate")
+            clean_tier_roster_cmd = py_cmd("scripts/wf78_clean_tier_roster.py", "--write", "--validate")
+            truth_layer_map_cmd = py_cmd("scripts/wf78_truth_layer_map.py", "--write", "--validate")
+            tier_semantics_guard_cmd = py_cmd("scripts/wf78_tier_semantics_guard.py", "--write", "--validate")
+            production_grade_policy_cmd = py_cmd("scripts/finance_production_grade_policy_gate.py", "--write", "--validate")
             routing_delta_cmd = py_cmd("scripts/wf78_routing_delta.py", "--write", "--validate")
             capital_review_queue_cmd = py_cmd("scripts/wf78_capital_review_queue.py", "--write", "--write-db", "--validate")
             event_rerouting_cmd = py_cmd("scripts/wf78_event_triggered_rerouting.py", "--write", "--write-db", "--validate")
@@ -389,8 +383,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             manifest_cmd = py_cmd("scripts/wf78_100_to_200_candidate_manifest.py", "--validate")
             provider_source_cmd = py_cmd("scripts/wf78_101_200_provider_source_validation.py", "--validate")
             import_decision_cmd = py_cmd("scripts/wf78_101_200_import_decision_packet.py", "--validate")
-            production_tier_adjudication_cmd = py_cmd("scripts/wf78_production_tier_adjudication.py", "--validate")
-            tier_b_final_promotion_cmd = py_cmd("scripts/wf78_tier_b_final_promotion_packet.py", "--validate")
             tier_b_evidence_repair_cmd = None
             if args.tier_b_repair_quote:
                 tier_b_evidence_repair_cmd = py_cmd(
@@ -406,17 +398,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 "--requests", "tmp/wf78-tier-b-research-packet-requests.json",
                 "--validate",
             )
-            tier_b_next_batch_cmd = py_cmd(
-                "scripts/wf78_tier_b_final_promotion_packet.py",
-                "--source", "phase2_eligible",
-                "--offset", str(args.tier_b_next_batch_offset),
-                "--out", "tmp/wf78-tier-b-final-promotion-packet.next-batch.json",
-                "--validate",
-            )
             tier_label_sync_preview_cmd = py_cmd("scripts/wf78_tier_label_sync_preview.py", "--validate")
             tier_a_confidence_gate_cmd = py_cmd("scripts/wf78_tier_a_confidence_gate.py", "--validate")
             tier_c_attention_trigger_cmd = py_cmd("scripts/wf78_tier_c_attention_trigger.py", "--validate")
             auto_tier_router_cmd = py_cmd("scripts/wf78_auto_tier_router.py", "--validate")
+            clean_tier_roster_cmd = py_cmd("scripts/wf78_clean_tier_roster.py", "--validate")
+            truth_layer_map_cmd = py_cmd("scripts/wf78_truth_layer_map.py", "--validate")
+            tier_semantics_guard_cmd = py_cmd("scripts/wf78_tier_semantics_guard.py", "--validate")
+            production_grade_policy_cmd = py_cmd("scripts/finance_production_grade_policy_gate.py", "--validate")
             routing_delta_cmd = py_cmd("scripts/wf78_routing_delta.py", "--validate")
             capital_review_queue_cmd = py_cmd("scripts/wf78_capital_review_queue.py", "--validate")
             event_rerouting_cmd = py_cmd("scripts/wf78_event_triggered_rerouting.py", "--validate")
@@ -454,20 +443,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                     import_decision_cmd,
                 )
             )
-        if steps[-1].get("ok"):
-            steps.append(
-                run_step(
-                    "wf78_production_tier_adjudication",
-                    production_tier_adjudication_cmd,
-                )
-            )
-        if steps[-1].get("ok"):
-            steps.append(
-                run_step(
-                    "wf78_tier_b_final_promotion_packet",
-                    tier_b_final_promotion_cmd,
-                )
-            )
         if steps[-1].get("ok") and tier_b_evidence_repair_cmd is not None:
             steps.append(
                 run_step(
@@ -487,13 +462,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 run_step(
                     "wf78_tier_funnel_promotion_gate_from_repaired_requests",
                     tier_b_phase2_from_requests_cmd,
-                )
-            )
-        if steps[-1].get("ok"):
-            steps.append(
-                run_step(
-                    "wf78_tier_b_next_batch_packet",
-                    tier_b_next_batch_cmd,
                 )
             )
         if steps[-1].get("ok"):
@@ -522,6 +490,34 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 run_step(
                     "wf78_auto_tier_router",
                     auto_tier_router_cmd,
+                )
+            )
+        if steps[-1].get("ok"):
+            steps.append(
+                run_step(
+                    "wf78_clean_tier_roster",
+                    clean_tier_roster_cmd,
+                )
+            )
+        if steps[-1].get("ok"):
+            steps.append(
+                run_step(
+                    "wf78_truth_layer_map",
+                    truth_layer_map_cmd,
+                )
+            )
+        if steps[-1].get("ok"):
+            steps.append(
+                run_step(
+                    "wf78_tier_semantics_guard",
+                    tier_semantics_guard_cmd,
+                )
+            )
+        if steps[-1].get("ok"):
+            steps.append(
+                run_step(
+                    "finance_production_grade_policy_gate",
+                    production_grade_policy_cmd,
                 )
             )
         if steps[-1].get("ok"):

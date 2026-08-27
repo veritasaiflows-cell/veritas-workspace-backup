@@ -30,10 +30,16 @@ CARDS = TMP / "trade-grade-decision-cards.json"
 MISSING_BAND_REPAIR = TMP / "wf78-missing-band-context-repair.json"
 REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
 WF77_PRICE_BRIDGE = TMP / "wf77-price-freshness-bridge.json"
+TICKER_FRESHNESS_LEDGER = TMP / "wf78-ticker-freshness-ledger.json"
 
 SCHEMA = "veritas.tier_ab_band_freshness_cron_guard.v1"
 TARGET_TIERS = {"Tier A", "Tier B"}
 MISSING_BAND_STATUSES = {None, "", "UNKNOWN", "missing_required_refresh"}
+BAND_EVIDENCE_STALE_FAMILIES = {
+    "stale:price_band_stop",
+    "price_band_stop",
+    "price_band_stop_position_sizing",
+}
 CURRENT_PRICE_STATUSES = {
     "post_close_final_quote_available_for_non_executing_review",
     "current_price_technical_available_for_non_executing_review",
@@ -137,24 +143,70 @@ def bridge_rows_by_ticker(path: Path = WF77_PRICE_BRIDGE) -> dict[str, dict[str,
     }
 
 
-def effective_current_price(card: dict[str, Any], bridge_rows: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    price = as_dict(card.get("current_price"))
-    if price.get("market_date") and price.get("latest_known_price") is not None:
-        return {**price, "context_source": "decision_card"}
+def ledger_band_stale_tickers(path: Path | None = None) -> set[str] | None:
+    """Tickers the WF78 freshness ledger flags as stale band/stop evidence.
 
+    Returns None when the ledger is unavailable so callers can fail loudly
+    instead of reporting an unverified all-clear.
+    """
+    rows = as_list(load(path or TICKER_FRESHNESS_LEDGER).get("rows"))
+    if not rows:
+        return None
+    stale: set[str] = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        families = {str(item) for item in as_list(row.get("stale_families"))}
+        if families & BAND_EVIDENCE_STALE_FAMILIES:
+            stale.add(ticker(row.get("ticker")))
+    return stale
+
+
+def source_age_hours(raw: Any, now: datetime | None = None) -> float | None:
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(raw))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    reference = now or datetime.now(timezone.utc)
+    return round((reference - parsed).total_seconds() / 3600.0, 1)
+
+
+def valid_bridge_price(card: dict[str, Any], bridge_rows: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
     bridge_row = as_dict(bridge_rows.get(ticker(card.get("ticker"))))
     bridge_price = as_dict(bridge_row.get("price_state"))
     if bridge_price.get("status") == "ok" and bridge_price.get("latest_close") is not None and bridge_price.get("data_date"):
-        return {
-            "latest_known_price": bridge_price.get("latest_close"),
-            "market_date": bridge_price.get("data_date"),
-            "quote_time_utc": None,
-            "source": bridge_price.get("source"),
-            "quote_freshness_status": "current_price_technical_available_for_non_executing_review",
-            "context_source": "wf77_price_freshness_bridge",
-            "source_family": bridge_price.get("source_family"),
-            "source_label": bridge_price.get("source_label"),
-        }
+        return bridge_price
+    return None
+
+
+def bridge_price_context(bridge_price: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "latest_known_price": bridge_price.get("latest_close"),
+        "market_date": bridge_price.get("data_date"),
+        "quote_time_utc": None,
+        "source": bridge_price.get("source"),
+        "quote_freshness_status": "current_price_technical_available_for_non_executing_review",
+        "context_source": "wf77_price_freshness_bridge",
+        "source_family": bridge_price.get("source_family"),
+        "source_label": bridge_price.get("source_label"),
+    }
+
+
+def effective_current_price(card: dict[str, Any], bridge_rows: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    price = as_dict(card.get("current_price"))
+    bridge_price = valid_bridge_price(card, bridge_rows)
+    if bridge_price:
+        card_date = str(price.get("market_date") or "")
+        bridge_date = str(bridge_price.get("data_date") or "")
+        if not (price.get("market_date") and price.get("latest_known_price") is not None) or bridge_date > card_date:
+            return bridge_price_context(bridge_price)
+    if price.get("market_date") and price.get("latest_known_price") is not None:
+        return {**price, "context_source": "decision_card"}
+
     return {**price, "context_source": "decision_card"}
 
 
@@ -169,28 +221,45 @@ def current_band_context_ok(card: dict[str, Any], expected_market_date: str | No
     return str(price.get("quote_freshness_status") or "") in CURRENT_PRICE_STATUSES
 
 
-def tier_band_rows(cards: list[dict[str, Any]], expected_market_date: str | None = None, bridge_rows: dict[str, dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+def tier_band_rows(
+    cards: list[dict[str, Any]],
+    expected_market_date: str | None = None,
+    bridge_rows: dict[str, dict[str, Any]] | None = None,
+    band_stale_tickers: set[str] | None = None,
+) -> list[dict[str, Any]]:
     tier_cards = [card for card in cards if target_tier(card) in TARGET_TIERS]
     expected_date = expected_market_date or max_market_date(tier_cards)
     bridge = bridge_rows or {}
+    now = datetime.now(timezone.utc)
     rows: list[dict[str, Any]] = []
     for card in tier_cards:
         band = as_dict(card.get("entry_band"))
         stop = as_dict(card.get("stop_or_invalidation"))
         price = effective_current_price(card, bridge)
         missing = decision_grade_band_missing(card)
+        symbol = ticker(card.get("ticker"))
+        provenance_present = band.get("source_timestamp") is not None
+        ledger_stale = None if band_stale_tickers is None else symbol in band_stale_tickers
+        evidence_stale = (not provenance_present) or bool(ledger_stale)
         context_current = False if missing else current_band_context_ok(card, expected_date, bridge)
+        # Hardest blocker wins: absent band > stale band evidence (source-open)
+        # > stale price context (refreshable).
         if missing:
             state = "missing_decision_grade_band"
+        elif evidence_stale:
+            state = "stale_band_evidence"
         elif context_current:
             state = "complete_and_current"
         else:
             state = "stale_complete_band_context"
         rows.append({
-            "ticker": ticker(card.get("ticker")),
+            "ticker": symbol,
             "auto_tier": target_tier(card),
             "state": state,
             "decision_grade_band_missing": missing,
+            "band_provenance_present": provenance_present,
+            "band_source_age_hours": source_age_hours(band.get("source_timestamp"), now),
+            "ledger_band_evidence_stale": ledger_stale,
             "current_band_context": context_current,
             "expected_market_date": expected_date,
             "market_date": price.get("market_date"),
@@ -242,11 +311,16 @@ def build_payload() -> dict[str, Any]:
     cards_payload = load(CARDS)
     cards = [as_dict(card) for card in as_list(cards_payload.get("cards"))]
     bridge_rows = bridge_rows_by_ticker()
-    rows = tier_band_rows(cards, bridge_rows=bridge_rows)
+    band_stale_tickers = ledger_band_stale_tickers()
+    rows = tier_band_rows(cards, bridge_rows=bridge_rows, band_stale_tickers=band_stale_tickers)
     missing_rows = [row for row in rows if row.get("state") == "missing_decision_grade_band"]
     stale_rows = [row for row in rows if row.get("state") == "stale_complete_band_context"]
+    evidence_stale_rows = [row for row in rows if row.get("state") == "stale_band_evidence"]
     complete_rows = [row for row in rows if row.get("state") == "complete_and_current"]
     missing_tickers = sorted(str(row.get("ticker")) for row in missing_rows)
+    no_provenance_tickers = sorted(str(row.get("ticker")) for row in rows if not row.get("band_provenance_present"))
+    aged = [row for row in rows if row.get("band_source_age_hours") is not None]
+    oldest_band_age_hours = max((float(row["band_source_age_hours"]) for row in aged), default=None)
 
     repair = load(MISSING_BAND_REPAIR)
     repair_summary = as_dict(repair.get("summary"))
@@ -261,8 +335,6 @@ def build_payload() -> dict[str, Any]:
     warnings: list[str] = []
     if not rows:
         errors.append("tier_a_b_cards_missing")
-    if stale_rows:
-        errors.append("tier_a_b_complete_band_context_stale")
     if repair.get("status") != "ok":
         errors.append("missing_band_repair_status_not_ok")
     if uncovered_missing_tickers:
@@ -271,8 +343,16 @@ def build_payload() -> dict[str, Any]:
         errors.append("repair_conveyor_tier_a_b_missing_band_count_mismatch")
     if any(item.get("status") != "ok" for item in contract_checks):
         errors.append("cron_expected_artifact_contract_missing_tier_a_b_band_guard")
+    if stale_rows:
+        warnings.append("tier_a_b_complete_band_context_finance_domain_debt")
     if missing_rows:
         warnings.append("tier_a_b_missing_decision_grade_band_finance_domain_debt")
+    if band_stale_tickers is None:
+        errors.append("band_evidence_ledger_unavailable")
+    if evidence_stale_rows:
+        warnings.append("tier_a_b_stale_band_evidence_finance_domain_debt")
+    if no_provenance_tickers:
+        warnings.append("tier_a_b_band_source_timestamp_missing")
 
     tier_counts = Counter(str(row.get("auto_tier")) for row in rows)
     state_counts = Counter(str(row.get("state")) for row in rows)
@@ -289,8 +369,20 @@ def build_payload() -> dict[str, Any]:
             "state_counts": dict(sorted(state_counts.items())),
             "expected_market_date": rows[0].get("expected_market_date") if rows else None,
             "complete_and_current_count": len(complete_rows),
+            "stale_band_evidence_count": len(evidence_stale_rows),
+            "stale_band_evidence_tickers": [str(row.get("ticker")) for row in evidence_stale_rows],
+            "stale_band_evidence_scope": "finance_domain_debt_not_implementation_blocker",
+            "band_source_timestamp_missing_count": len(no_provenance_tickers),
+            "band_source_timestamp_missing_tickers": no_provenance_tickers,
+            "oldest_band_source_age_hours": oldest_band_age_hours,
+            "band_evidence_ledger_available": band_stale_tickers is not None,
+            "band_evidence_ledger_stale_tier_a_b_count": (
+                None if band_stale_tickers is None
+                else len([row for row in rows if row.get("ledger_band_evidence_stale")])
+            ),
             "stale_complete_band_context_count": len(stale_rows),
             "stale_complete_band_context_tickers": [str(row.get("ticker")) for row in stale_rows],
+            "stale_complete_band_context_scope": "finance_domain_debt_not_implementation_blocker",
             "missing_decision_grade_band_count": len(missing_rows),
             "missing_decision_grade_band_tickers": missing_tickers,
             "missing_decision_grade_band_scope": "finance_domain_debt_not_implementation_blocker",
@@ -311,6 +403,7 @@ def build_payload() -> dict[str, Any]:
             "missing_band_repair": rel(MISSING_BAND_REPAIR),
             "repair_conveyor": rel(REPAIR_CONVEYOR),
             "wf77_price_bridge": rel(WF77_PRICE_BRIDGE),
+            "ticker_freshness_ledger": rel(TICKER_FRESHNESS_LEDGER),
             "cron_freshness_spine_contracts": "scripts/cron_freshness_spine.py",
         },
         "validation": {
@@ -320,6 +413,8 @@ def build_payload() -> dict[str, Any]:
         },
         "stop_lines": [
             "Missing Tier A/B decision-grade band coverage is finance-domain debt, not an implementation blocker by itself.",
+            "complete_and_current means band evidence is present, provenanced, not flagged stale by the WF78 freshness ledger, and carries a current price context. It is not a band-age SLA verdict; no staleness threshold is asserted here.",
+            "A band with no source_timestamp cannot be reported current; absent provenance is treated as stale band evidence.",
             "This guard does not fabricate, apply, or mutate entry bands, stops, cards, canon, portfolio notes, cash, sizing, or risk rules.",
             "Capital deployment and paper/live execution remain owner-gated.",
         ],

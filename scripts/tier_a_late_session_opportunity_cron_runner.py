@@ -20,6 +20,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -200,6 +201,8 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         warnings.append(f"market_deployment_loop_operator_action:{summary.get('operator_action')}")
     if summary.get("cron_control_escalation_signal_count"):
         warnings.append("cron_control_escalation_signal_present_for_main_visibility")
+    if as_dict(payload.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
     return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
 
 
@@ -211,6 +214,7 @@ def build_payload(steps: list[dict[str, Any]], skip_loop: bool, send: bool) -> d
         "operator_action": "NO_REPLY",
         "mode": {"skip_loop": skip_loop, "send": send},
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_context": finance_sql_canon_guard_context(consumer="scripts/tier_a_late_session_opportunity_cron_runner.py"),
         "summary": build_summary(),
         "steps": steps,
         "artifacts": [

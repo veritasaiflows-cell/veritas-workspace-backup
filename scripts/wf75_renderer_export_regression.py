@@ -18,6 +18,8 @@ from market_data_utils import atomic_write_json, atomic_write_text, load_json_ar
 from retail_saas_customer_output_validator import validate_payload, validate_rendered_text
 from retail_saas_fixture_demo import build_payload, customer_export_document, render_md, write_seeded_bad, write_seeded_bad_markdown
 from retail_saas_html_report import render_html
+from retail_truth_safety import export_guard, render_internal_route
+from veritas_question_router import build_route
 from wf75_scenario_template_library import DEFAULT_OUT as TEMPLATE_LIBRARY, build_library
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,6 +42,14 @@ AUTHORITY_BOUNDARY = {
     "portfolio_or_canon_mutation_allowed": False,
     "owner_approval_inferred": False,
 }
+
+ROUTER_RENDERER_PILOTS = [
+    ("DASH", "https://ir.doordash.com/"),
+    ("TSM", "https://investor.tsmc.com/english"),
+    ("AVGO", "https://investors.broadcom.com/"),
+    ("ALLE", "https://investor.allegion.com/"),
+    ("AOS", "https://investor.aosmith.com/"),
+]
 
 
 def utc_now() -> str:
@@ -163,6 +173,85 @@ def run_seeded_bad() -> dict[str, Any]:
     }
 
 
+def build_router_renderer_pilot(
+    route_builder=build_route,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    as_of = now.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    rows: list[dict[str, Any]] = []
+    for ticker, source_url in ROUTER_RENDERER_PILOTS:
+        route = route_builder(f"What is the internal evidence readiness for {ticker}?")
+        claim = {
+            "claim_type": "routing_state",
+            "text": "Issuer investor-relations endpoint is queued for source-open review; no finance recommendation is rendered.",
+            "source_label": "issuer_ir_endpoint_fixture_unfetched",
+            "source_url": source_url,
+            "as_of_utc": as_of,
+        }
+        rendered = render_internal_route(ticker=ticker, route=route, claims=[claim], now=now)
+        internal = export_guard(rendered, "internal_state")
+        external = export_guard(rendered, "customer")
+        rows.append({
+            "ticker": ticker,
+            "question_class": route.get("question_class"),
+            "route_status": rendered.get("route_status"),
+            "audience": rendered.get("audience"),
+            "source_labels_present": rendered.get("source_labels_present"),
+            "freshness_labels_present": rendered.get("freshness_labels_present"),
+            "recommendation_allowed": rendered.get("recommendation_allowed"),
+            "decision_grade": rendered.get("decision_grade"),
+            "internal_export_allowed": internal.get("allowed"),
+            "external_export_blocked": external.get("allowed") is False and external.get("serialized") is False,
+            "external_block_reasons": external.get("reasons"),
+        })
+
+    base_route = route_builder("What is the internal evidence readiness for DASH?")
+    expired_claim = {
+        "claim_type": "routing_state",
+        "text": "Expired routing state fixture.",
+        "source_label": "issuer_ir_endpoint_fixture_unfetched",
+        "source_url": "https://ir.doordash.com/",
+        "as_of_utc": "2000-01-01T00:00:00Z",
+    }
+    expired_render = render_internal_route(ticker="DASH", route=base_route, claims=[expired_claim], now=now)
+    leaked_claim = dict(expired_claim)
+    leaked_claim.update({"text": r"Read C:\private\workspace\tmp\proof.json", "as_of_utc": as_of})
+    leaked_render = render_internal_route(ticker="DASH", route=base_route, claims=[leaked_claim], now=now)
+    wrong_audience = render_internal_route(
+        ticker="DASH",
+        route=base_route,
+        claims=[dict(expired_claim, as_of_utc=as_of)],
+        now=now,
+    )
+    wrong_audience["audience"] = "customer"
+    seeded_bad = {
+        "expired_claim_blocked": export_guard(expired_render, "internal_state").get("allowed") is False,
+        "internal_path_leak_blocked": export_guard(leaked_render, "internal_state").get("allowed") is False,
+        "wrong_audience_blocked": export_guard(wrong_audience, "internal_state").get("allowed") is False,
+        "external_target_blocked": export_guard(wrong_audience, "public").get("serialized") is False,
+    }
+    clean = [
+        row for row in rows
+        if row["internal_export_allowed"] is True
+        and row["external_export_blocked"] is True
+        and row["source_labels_present"] is True
+        and row["freshness_labels_present"] is True
+        and row["recommendation_allowed"] is False
+        and row["decision_grade"] is False
+    ]
+    return {
+        "audience": "internal_anonymous_service_state",
+        "pilot_tickers": [row[0] for row in ROUTER_RENDERER_PILOTS],
+        "pilot_count": len(rows),
+        "clean_internal_case_count": len(clean),
+        "rows": rows,
+        "seeded_bad": seeded_bad,
+        "all_seeded_bad_blocked": all(seeded_bad.values()),
+        "customer_or_external_delivery_allowed": False,
+    }
+
+
 def load_library(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     if isinstance(payload, dict) and isinstance(payload.get("templates"), list):
@@ -182,6 +271,15 @@ def validate_payload_result(payload: dict[str, Any]) -> dict[str, Any]:
     for key, value in AUTHORITY_BOUNDARY.items():
         if payload.get("authority_boundary", {}).get(key) is not value:
             errors.append(f"authority_{key}_unexpected")
+    boundary = payload.get("router_renderer_export_guard") or {}
+    if boundary.get("pilot_count", 0) < 3:
+        errors.append("router_renderer_pilot_count_below_3")
+    if boundary.get("clean_internal_case_count") != boundary.get("pilot_count"):
+        errors.append("router_renderer_internal_case_failed")
+    if boundary.get("all_seeded_bad_blocked") is not True:
+        errors.append("router_renderer_seeded_bad_not_blocked")
+    if boundary.get("customer_or_external_delivery_allowed") is not False:
+        errors.append("router_renderer_external_authority_widened")
     return {"status": "ok" if not errors else "error", "errors": errors}
 
 
@@ -191,6 +289,7 @@ def build_regression(args: argparse.Namespace) -> dict[str, Any]:
     scenarios = [row for row in library.get("templates", []) if isinstance(row, dict)]
     clean_results = [run_scenario(scenario) for scenario in scenarios]
     seeded_bad = run_seeded_bad()
+    router_renderer = build_router_renderer_pilot()
     clean_failed = [row for row in clean_results if row["status"] != "ok"]
     payload: dict[str, Any] = {
         "schema": SCHEMA,
@@ -202,6 +301,7 @@ def build_regression(args: argparse.Namespace) -> dict[str, Any]:
         "clean_failed_count": len(clean_failed),
         "clean_results": clean_results,
         "seeded_bad": seeded_bad,
+        "router_renderer_export_guard": router_renderer,
         "authority_boundary": AUTHORITY_BOUNDARY,
     }
     payload["validation"] = validate_payload_result(payload)

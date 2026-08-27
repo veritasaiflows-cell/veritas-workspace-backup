@@ -11,9 +11,9 @@ func TestValidateSQLCanon(t *testing.T) {
 		Status:                "ok",
 		Exists:                true,
 		Integrity:             "ok",
-		ActiveTickerCount:     ptr(100),
-		LegacyAnswerPathCount: ptr(42),
-		ReviewMonitorCount:    ptr(58),
+		ActiveTickerCount:     ptr(300),
+		LegacyAnswerPathCount: ptr(0),
+		ReviewMonitorCount:    ptr(258),
 	}
 	validation := validateSQLCanon(check)
 	if validation.Status != "ok" || validation.Failed != 0 {

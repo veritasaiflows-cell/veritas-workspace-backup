@@ -40,7 +40,7 @@ If one of those is missing, the skill should be reviewed before it is relied on 
 
 ## Validation tiers
 
-### Tier 1 — Eligibility / structure check
+### Tier 1 - Eligibility / structure check
 Good enough for:
 - most prompt-only or routing skills
 - early governance/hardening passes
@@ -49,7 +49,7 @@ Examples:
 - `openclaw skills check`
 - direct inspection for scope, posture, and boundaries
 
-### Tier 2 — Functional local proof
+### Tier 2 - Functional local proof
 Good enough for:
 - skills that depend on a live protocol, local script, or real file contract
 
@@ -58,13 +58,19 @@ Examples:
 - script/help invocation when the skill depends on a local toolchain
 - inspection of the owning workflow note or playbook against the skill contract
 
-### Tier 3 — Live workflow proof
+### Tier 3 - Live workflow proof
 Use when:
 - the skill drives a meaningful workflow that can lie about readiness if only structurally checked
 
 Examples:
 - bounded live workflow pass
 - QA audit on the workflow the skill claims to govern
+
+## Core skill proof-tier validator
+
+Use `python scripts\skill_core_proof_tier_audit.py --write --validate` when promoting core operating and finance skills from Tier 1 structural to Tier 2 functional local proof.
+
+This validator proves only that selected live skill bodies still contain their contract anchors, authority stop lines, source/proof routing, and wrapper/mojibake hygiene. It is not Tier 3 live workflow proof, does not apply Skill Workshop proposals, and does not widen finance, cron, runtime, external, or paper/live authority.
 
 ## Model-posture rule
 

@@ -80,6 +80,8 @@ def route_map() -> dict[str, dict[str, Any]]:
 
 def production_map() -> dict[str, dict[str, Any]]:
     data = load_dict(PROD_ADJUDICATION)
+    if as_dict(data.get("deprecation_status")).get("deprecated_for_authority") is True:
+        return {}
     return {ticker(row.get("ticker")): as_dict(row) for row in as_list(data.get("rows"))}
 
 
@@ -196,7 +198,8 @@ def build() -> dict[str, Any]:
         "status": "blocked" if errors else "ok",
         "purpose": "Promotion-only owner entry/stop lineage queue for WF78 A/B and promoted candidates.",
         "authority_boundary": AUTHORITY_BOUNDARY,
-        "source_artifacts": [rel(AUTO_ROUTER), rel(PROD_ADJUDICATION), rel(SOURCE_REQUIREMENTS), rel(INTEGRATION), rel(OWNER_PROPOSALS)],
+        "source_artifacts": [rel(AUTO_ROUTER), rel(SOURCE_REQUIREMENTS), rel(INTEGRATION), rel(OWNER_PROPOSALS)],
+        "deprecated_compatibility_artifacts": [rel(PROD_ADJUDICATION)],
         "summary": {
             "row_count": len(rows),
             "lineage_status_counts": dict(Counter(str(row.get("lineage_status")) for row in rows)),

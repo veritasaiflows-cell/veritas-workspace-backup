@@ -66,11 +66,14 @@ def rel(path: Path) -> str:
 
 def job_text(job: dict[str, Any]) -> str:
     payload = as_dict(job.get("payload"))
+    argv = payload.get("argv")
+    argv_text = " ".join(str(part) for part in argv) if isinstance(argv, list) else ""
     return "\n".join([
         str(job.get("name") or ""),
         str(job.get("description") or ""),
         str(payload.get("message") or ""),
         str(payload.get("text") or ""),
+        argv_text,
     ])
 
 

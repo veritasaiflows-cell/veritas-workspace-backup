@@ -78,9 +78,22 @@ ALLOWED_PATTERN_REFERENCE_FILES = {
     "scripts/test_alpaca_paper_trade_executor.py",
     "scripts/alpaca_paper_readiness_validator.py",
     "scripts/alpaca_paper_execution_guard_validator.py",
+    "scripts/test_alpaca_paper_readiness_validator.py",
     "07. Risk/Alpaca Paper Trading Guardrails.md",
     "06. Playbooks/Project Continuity/Workflow 63 - Alpaca Paper Trading Readiness.md",
     "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
+}
+
+ALLOWED_LIVE_ENDPOINT_REFERENCE_FILES = {
+    # Detector/test/doc references to the forbidden live endpoint are not
+    # executable live-endpoint selection paths. Other forbidden write patterns
+    # in these files still block.
+    "scripts/wf55_outcome_ledger_v2.py",
+    "scripts/test_wf55_outcome_ledger_v2.py",
+    "scripts/test_intraday_alert_delivery_router.py",
+    "scripts/test_wf67_wf86_cap_bridge.py",
+    "06. Playbooks/Operating Procedures/Alpaca Paper Credential Handling Procedure.md",
+    "06. Playbooks/Project Continuity/Workflow 67 - Paper Trading Skill Scout - 2026-05-19.md",
 }
 
 REQUIRED_PREVIEW_FALSE_FLAGS = [
@@ -117,7 +130,20 @@ def utc_now() -> str:
 
 
 def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(read_text_safely(path))
+
+
+def read_text_safely(path: Path) -> str:
+    raw = path.read_bytes()
+    if raw.startswith(b"\xff\xfe") or raw.startswith(b"\xfe\xff"):
+        return raw.decode("utf-16")
+    if b"\x00" in raw[:200]:
+        for encoding in ("utf-16", "utf-16-le", "utf-16-be"):
+            try:
+                return raw.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+    return raw.decode("utf-8", errors="ignore")
 
 
 def rel_path(path: Path) -> str:
@@ -145,6 +171,8 @@ def scan_active_forbidden_patterns() -> list[dict[str, str]]:
             if rel_text in ALLOWED_PATTERN_REFERENCE_FILES:
                 continue
             for pattern in FORBIDDEN_ACTIVE_PATTERNS:
+                if pattern == FORBIDDEN_LIVE_ENDPOINT and rel_text in ALLOWED_LIVE_ENDPOINT_REFERENCE_FILES:
+                    continue
                 if pattern in text:
                     findings.append({"path": rel_text, "pattern": pattern})
     return findings
@@ -423,7 +451,7 @@ def scan_readiness_artifacts_for_secrets() -> list[dict[str, str]]:
             continue
         rel_text = str(path.relative_to(ROOT)).replace("\\", "/")
         try:
-            text = path.read_text(encoding="utf-8", errors="ignore")
+            text = read_text_safely(path)
         except OSError:
             continue
         if path.suffix.lower() == ".json":

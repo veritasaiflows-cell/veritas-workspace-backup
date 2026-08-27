@@ -1,4 +1,4 @@
 interface:
   display_name: "Safe Refactor Planner"
-  short_description: "Low-risk refactor planning"
-  default_prompt: "Use $safe-refactor-planner to plan a behavior-preserving refactor with proof and rollback boundaries."
+  short_description: "Deprecated router to Disciplined Implementation"
+  default_prompt: "Use $disciplined-implementation for refactor planning and parity proof; $safe-refactor-planner is retained only as a deprecated compatibility router."

@@ -23,6 +23,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import FinanceSqlCanonAccess, connect_readonly as connect_sql_canon_ro
 from wf84_sqlite_mutex import wf84_sqlite_mutex
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +32,7 @@ TMP = ROOT / "tmp"
 SCHEMA = "veritas.canonical_finance_data_plane.v1"
 SQLITE_SCHEMA = "veritas.canonical_finance_data_plane.sqlite.v1"
 WORKFLOW_ID = "WF84"
-EXPECTED_ACTIVE_TICKERS = 200
+SUPPORTED_ACTIVE_TICKER_COUNTS = {100, 200, 300, 400, 500}
 DEFAULT_REQUIRED_SOURCE_MAX_AGE_HOURS = 48
 NON_EXECUTION_TECHNICAL_PRICE_FRESHNESS = "current_price_technical_available_for_non_executing_review"
 
@@ -51,11 +52,13 @@ DEFAULT_DB = TMP / "canonical-finance-data-plane.sqlite"
 
 AUTO_ROUTER = TMP / "wf78-auto-tier-routing.json"
 FINANCE_STATE_DB = TMP / "finance-intelligence-state.sqlite"
+SQL_CANON_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 TIER_WEIGHTED_FRESHNESS = TMP / "wf78-tier-weighted-freshness-resolution.json"
 DECISION_SYNC_SPINE = TMP / "finance-decision-sync-spine.json"
 TICKER_CARD_GATE = TMP / "finance-ticker-card-refresh-gate.json"
 CAPITAL_REVIEW_QUEUE = TMP / "wf78-capital-review-queue.json"
 POST_CLOSE_FINAL_QUOTES = TMP / "post-close-final-quote-ledger.json"
+TECHNICAL_REFRESH = TMP / "technical-refresh.json"
 TIER_C_BAND_STATUS = TMP / "tier-c-band-status.json"
 WF78_MISSING_BAND_CONTEXT_REPAIR = TMP / "wf78-missing-band-context-repair.json"
 UNIVERSE = ROOT / "data" / "finance" / "universe-v1.json"
@@ -78,6 +81,7 @@ SOURCE_MAX_AGE_HOURS = {
 }
 DURABLE_REGISTRY_SOURCE_PATHS = {
     "data/finance/universe-v1.json",
+    "state/finance/finance-canon.sqlite",
 }
 
 AUTHORITY_BOUNDARY = {
@@ -174,6 +178,7 @@ VALID_AUTO_STATES = {
     "C-CANDIDATE-HOLD",
     "C-CANDIDATE-REPAIR",
     "C-MONITOR",
+    "C-REPAIR",
     "C-THEME-WATCH",
 }
 FORBIDDEN_ACTIONABILITY_TERMS = ("approved", "execute", "execution", "trade", "live", "paper_order")
@@ -213,6 +218,12 @@ def parse_utc(value: Any) -> datetime | None:
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)
+
+
+def date_is_newer(left: Any, right: Any) -> bool:
+    left_ts = parse_utc(left)
+    right_ts = parse_utc(right)
+    return left_ts is not None and (right_ts is None or left_ts > right_ts)
 
 
 def hours_between(later: datetime, earlier_text: Any) -> float | None:
@@ -333,6 +344,47 @@ def classify_band_status(price: Any, low: Any, high: Any, stop: Any) -> str | No
     return None
 
 
+STALE_REFERENCE_BAND = "STALE_REFERENCE_BAND"
+LOW_CONFIDENCE_REFERENCE_MAX = 2
+
+
+def technical_record_is_complete_and_current(
+    technical_row: dict[str, Any],
+    market_date: Any,
+) -> bool:
+    """Report whether the technical view is current; it does not validate a reference band."""
+
+    if any(fnum(technical_row.get(key)) is None for key in ("close", "ma20", "ma50", "ma200")):
+        return False
+    technical_date = str(technical_row.get("data_date") or "").strip()
+    if not technical_date:
+        return False
+    price_date = str(market_date or "").strip()
+    return not price_date or technical_date[:10] >= price_date[:10]
+
+
+def low_confidence_reference_band_requires_refresh(
+    router_row: dict[str, Any],
+    sql_reference: dict[str, Any],
+    computed_band_status: str | None,
+) -> bool:
+    """Fail closed on a Tier A stop breach derived from a thin fallback reference band.
+
+    A current technical pull can improve the technical review, but it cannot validate a
+    low-confidence legacy entry/stop reference. Only refreshed/validated reference-band
+    evidence may release this stale-reference state.
+    """
+
+    if str(router_row.get("auto_tier") or "") != "Tier A":
+        return False
+    if computed_band_status != "BELOW_STOP":
+        return False
+    confidence = inum(sql_reference.get("reference_confidence"))
+    if confidence is None or confidence > LOW_CONFIDENCE_REFERENCE_MAX:
+        return False
+    return True
+
+
 def load_json(path: Path, default: Any = None) -> Any:
     data = load_json_artifact(path)
     return default if data is None else data
@@ -390,6 +442,7 @@ def source_meta(path: Path, *, role: str, source_type: str, required: bool, rank
 def feeder_sources() -> list[dict[str, Any]]:
     return [
         source_meta(UNIVERSE, role="universe/security base feed", source_type="json", required=True, rank=10),
+        source_meta(SQL_CANON_DB, role="durable SQL-canon reference_levels feed", source_type="sqlite", required=True, rank=15),
         source_meta(AUTO_ROUTER, role="primary non-capital tier/routing feed", source_type="json", required=True, rank=20),
         source_meta(FINANCE_STATE_DB, role="current-state SQL feeder", source_type="sqlite", required=True, rank=30),
         source_meta(TIER_WEIGHTED_FRESHNESS, role="tier-weighted evidence/freshness feed", source_type="json", required=True, rank=40),
@@ -397,6 +450,7 @@ def feeder_sources() -> list[dict[str, Any]]:
         source_meta(TICKER_CARD_GATE, role="ticker-card repair/staleness feed", source_type="json", required=True, rank=60),
         source_meta(CAPITAL_REVIEW_QUEUE, role="non-executing owner-review queue feed", source_type="json", required=False, rank=70),
         source_meta(POST_CLOSE_FINAL_QUOTES, role="review-only closed-market quote overlay", source_type="json", required=False, rank=80),
+        source_meta(TECHNICAL_REFRESH, role="review-only current technical price overlay", source_type="json", required=False, rank=85),
         source_meta(TIER_C_BAND_STATUS, role="Tier C monitor-grade price/technical fallback", source_type="json", required=False, rank=90),
         source_meta(WF78_MISSING_BAND_CONTEXT_REPAIR, role="Tier A/B review-only missing band-context repair feed", source_type="json", required=False, rank=95),
     ]
@@ -407,6 +461,28 @@ def finance_rows(table: str) -> list[dict[str, Any]]:
         return []
     with connect_ro(FINANCE_STATE_DB) as conn:
         return [dict(row) for row in conn.execute(f'SELECT * FROM "{table}" ORDER BY 1')]
+
+
+def sql_canon_reference_rows() -> dict[str, dict[str, Any]]:
+    """Read guarded durable SQL reference levels for WF84 entry/stop rows."""
+
+    client = FinanceSqlCanonAccess()
+    validation = client.validate()
+    if validation.get("status") != "ok":
+        return {}
+    query = """
+        SELECT *
+        FROM reference_levels
+        WHERE reference_price_low IS NOT NULL
+          AND reference_price_high IS NOT NULL
+          AND reference_invalidation_level IS NOT NULL
+        ORDER BY ticker
+    """
+    with connect_sql_canon_ro(client.db_path) as conn:
+        return {
+            str(row["ticker"]).upper(): dict(row)
+            for row in conn.execute(query)
+        }
 
 
 def index_by_ticker(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -739,18 +815,18 @@ def durable_registry_findings(source_rows: list[dict[str, Any]]) -> list[dict[st
         return findings
     if universe.get("artifact_type") != "wf78_finance_universe_registry":
         findings.append({"path": rel(UNIVERSE), "reason": "unexpected_artifact_type", "observed": universe.get("artifact_type")})
-    if summary.get("active_ticker_count") != EXPECTED_ACTIVE_TICKERS:
+    if summary.get("active_ticker_count") not in SUPPORTED_ACTIVE_TICKER_COUNTS:
         findings.append({
             "path": rel(UNIVERSE),
             "reason": "active_ticker_count_mismatch",
-            "expected": EXPECTED_ACTIVE_TICKERS,
+            "expected": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS),
             "observed": summary.get("active_ticker_count"),
         })
-    if len(entries) != EXPECTED_ACTIVE_TICKERS:
+    if len(entries) not in SUPPORTED_ACTIVE_TICKER_COUNTS:
         findings.append({
             "path": rel(UNIVERSE),
             "reason": "entry_count_mismatch",
-            "expected": EXPECTED_ACTIVE_TICKERS,
+            "expected": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS),
             "observed": len(entries),
         })
     if authority.get("owner_approval_inferred") is not False:
@@ -777,6 +853,7 @@ def build_packet() -> dict[str, Any]:
     earnings_rows = index_by_ticker(finance_rows("earnings_calendar"))
     evidence_rows = finance_rows("official_evidence_index")
     promotion_rows = index_by_ticker(finance_rows("promotion_signals"))
+    sql_reference_rows = sql_canon_reference_rows()
 
     tier_weighted = as_dict(load_json(TIER_WEIGHTED_FRESHNESS, {}))
     tier_weighted_by_ticker = index_by_ticker([row for row in as_list(tier_weighted.get("rows")) if isinstance(row, dict)])
@@ -786,17 +863,21 @@ def build_packet() -> dict[str, Any]:
     capital_by_ticker = index_by_ticker([row for row in as_list(capital_queue.get("rows")) if isinstance(row, dict)])
     post_close_quotes = as_dict(load_json(POST_CLOSE_FINAL_QUOTES, {}))
     post_close_by_ticker = index_by_ticker([row for row in as_list(post_close_quotes.get("rows")) if isinstance(row, dict)])
+    technical_refresh = as_dict(load_json(TECHNICAL_REFRESH, {}))
+    technical_refresh_by_ticker = index_by_ticker([row for row in as_list(technical_refresh.get("records")) if isinstance(row, dict)])
     tier_c_band = as_dict(load_json(TIER_C_BAND_STATUS, {}))
     tier_c_band_by_ticker = index_by_ticker([row for row in as_list(tier_c_band.get("rows")) if isinstance(row, dict)])
     missing_band_repair = as_dict(load_json(WF78_MISSING_BAND_CONTEXT_REPAIR, {}))
     missing_band_repair_by_ticker = index_by_ticker([row for row in as_list(missing_band_repair.get("rows")) if isinstance(row, dict)])
     sources = feeder_sources()
     src_auto = source_artifact_id(AUTO_ROUTER)
+    src_sql_canon = source_artifact_id(SQL_CANON_DB)
     src_finance = source_artifact_id(FINANCE_STATE_DB)
     src_freshness = source_artifact_id(TIER_WEIGHTED_FRESHNESS)
     src_spine = source_artifact_id(DECISION_SYNC_SPINE)
     src_capital = source_artifact_id(CAPITAL_REVIEW_QUEUE)
     src_post_close = source_artifact_id(POST_CLOSE_FINAL_QUOTES)
+    src_technical_refresh = source_artifact_id(TECHNICAL_REFRESH)
     src_tier_c_band = source_artifact_id(TIER_C_BAND_STATUS)
     src_missing_band_repair = source_artifact_id(WF78_MISSING_BAND_CONTEXT_REPAIR)
 
@@ -820,6 +901,7 @@ def build_packet() -> dict[str, Any]:
         urow = next((item for item in universe_rows if str(item.get("ticker") or "").upper() == ticker), {})
         p = price_rows.get(ticker, {})
         e = entry_rows.get(ticker, {})
+        sql_ref = sql_reference_rows.get(ticker, {})
         f = fundamental_rows.get(ticker, {})
         earn = earnings_rows.get(ticker, {})
         prom = promotion_rows.get(ticker, {})
@@ -861,7 +943,6 @@ def build_packet() -> dict[str, Any]:
         universe_membership.append({
             "ticker": ticker,
             "universe_scope": urow.get("universe_scope") or "active_internal_universe",
-            "legacy_universe_tier": row.get("legacy_universe_tier"),
             "legacy_monitoring_role": row.get("legacy_monitoring_role"),
             "production_answer_path_member": bool(urow.get("production_answer_path_member")),
             "thin_monitor_row": bool(urow.get("thin_monitor_row")),
@@ -891,6 +972,16 @@ def build_packet() -> dict[str, Any]:
         price_context = review_price_context_from_price_row(p_effective)
         latest_price = fnum(price_context.get("latest_price"))
         price_source_artifact = src_tier_c_band if price_context.get("price_source") == rel(TIER_C_BAND_STATUS) else src_finance if latest_price is not None else src_spine
+        tech_refresh = technical_refresh_by_ticker.get(ticker, {})
+        tech_refresh_price = fnum(tech_refresh.get("close"))
+        tech_refresh_market_date = tech_refresh.get("data_date")
+        tech_refresh_is_newer = tech_refresh_price is not None and date_is_newer(
+            tech_refresh_market_date,
+            price_context.get("market_date"),
+        )
+        if tech_refresh_is_newer:
+            latest_price = tech_refresh_price
+            price_source_artifact = src_technical_refresh
         if latest_price is None:
             latest_price = fnum(ds.get("current_price"))
             price_source_artifact = src_spine
@@ -908,50 +999,84 @@ def build_packet() -> dict[str, Any]:
         quote_time_utc = price_context.get("quote_time_utc") or (as_dict(cq.get("quote")).get("timestamp_utc") if isinstance(cq.get("quote"), dict) else None)
         market_date = price_context.get("market_date") or (as_dict(cq.get("quote")).get("market_date") if isinstance(cq.get("quote"), dict) else None)
         quote_freshness_status = price_context.get("quote_freshness_status") or cq.get("quote_freshness_status") or "unknown"
+        if tech_refresh_is_newer:
+            quote_time_utc = technical_refresh.get("generated_at_utc")
+            market_date = tech_refresh_market_date
+            quote_freshness_status = NON_EXECUTION_TECHNICAL_PRICE_FRESHNESS
         if band_repair_ready and latest_price is not None and not market_date:
             quote_time_utc = missing_band_repair.get("generated_at_utc")
             market_date = band_repair.get("price_data_date") or band_repair_band.get("source_timestamp")
             quote_freshness_status = NON_EXECUTION_TECHNICAL_PRICE_FRESHNESS
-        if post_close_available:
+        if post_close_available and not tech_refresh_is_newer:
             latest_price = fnum(post_close.get("close"))
             price_source_artifact = src_post_close
             quote_time_utc = post_close.get("retrieved_at_utc")
             market_date = post_close.get("market_date")
             quote_freshness_status = "post_close_final_quote_available_for_non_executing_review"
-        # Entry/stop reference rows are owner/WF72-backed; decision-spine values
-        # are fallback context only and must not override the reference table.
-        entry_band_low = fnum(e.get("entry_band_low") if e.get("entry_band_low") is not None else ds.get("entry_band_low"))
-        entry_band_high = fnum(e.get("entry_band_high") if e.get("entry_band_high") is not None else ds.get("entry_band_high"))
-        stop_or_invalidation = fnum(e.get("stop_or_invalidation") if e.get("stop_or_invalidation") is not None else ds.get("stop_or_invalidation"))
+        # Entry/stop reference rows are SQL-canon first. Finance-state and
+        # decision-spine values remain compatibility lineage/fallback context.
+        if sql_ref:
+            entry_band_low = fnum(sql_ref.get("reference_price_low"))
+            entry_band_high = fnum(sql_ref.get("reference_price_high"))
+            stop_or_invalidation = fnum(sql_ref.get("reference_invalidation_level"))
+        else:
+            entry_band_low = fnum(e.get("entry_band_low") if e.get("entry_band_low") is not None else ds.get("entry_band_low"))
+            entry_band_high = fnum(e.get("entry_band_high") if e.get("entry_band_high") is not None else ds.get("entry_band_high"))
+            stop_or_invalidation = fnum(e.get("stop_or_invalidation") if e.get("stop_or_invalidation") is not None else ds.get("stop_or_invalidation"))
         if band_repair_ready:
             entry_band_low = entry_band_low if entry_band_low is not None else fnum(band_repair_band.get("entry_band_low"))
             entry_band_high = entry_band_high if entry_band_high is not None else fnum(band_repair_band.get("entry_band_high"))
             stop_or_invalidation = stop_or_invalidation if stop_or_invalidation is not None else fnum(band_repair_band.get("stop_or_invalidation"))
-        source_band_status = ds.get("band_status") or cq.get("current_band_status") or p.get("band_status")
+        source_band_status = sql_ref.get("reference_band_status") or ds.get("band_status") or cq.get("current_band_status") or p.get("band_status")
         if not source_band_status and band_repair_ready:
             source_band_status = band_repair.get("fresh_band_status") or band_repair_band.get("band_status")
         computed_band_status = classify_band_status(latest_price, entry_band_low, entry_band_high, stop_or_invalidation)
+        technical_record_complete_current = technical_record_is_complete_and_current(tech_refresh, market_date)
+        stale_low_confidence_reference_band = low_confidence_reference_band_requires_refresh(row, sql_ref, computed_band_status)
+        effective_band_status = STALE_REFERENCE_BAND if stale_low_confidence_reference_band else computed_band_status or source_band_status
+        technical_status = p_effective.get("technical_status")
+        technical_summary = p_effective.get("technical_summary")
+        if stale_low_confidence_reference_band:
+            technical_status = (
+                "review_only_current_technical_reference_band_stale"
+                if technical_record_complete_current
+                else "missing_required_refresh"
+            )
+            technical_summary = (
+                "Hard BELOW_STOP suppressed: the Tier A reference band is low-confidence "
+                "and requires refreshed/validated reference-band evidence; current technicals "
+                "cannot rehabilitate the legacy fallback."
+                if technical_record_complete_current
+                else "Hard BELOW_STOP suppressed: the Tier A reference band is low-confidence, "
+                "the technical MA record is incomplete, and refreshed/validated reference-band "
+                "evidence is required."
+            )
         price_technical_current.append({
             "ticker": ticker,
             "latest_known_price": latest_price,
-            "price_source": rel(POST_CLOSE_FINAL_QUOTES) if post_close_available else rel(WF78_MISSING_BAND_CONTEXT_REPAIR) if price_source_artifact == src_missing_band_repair else price_context.get("price_source") or p_effective.get("price_source") or cq.get("quote_freshness_status"),
+            "price_source": rel(TECHNICAL_REFRESH) if price_source_artifact == src_technical_refresh else rel(POST_CLOSE_FINAL_QUOTES) if post_close_available and not tech_refresh_is_newer else rel(WF78_MISSING_BAND_CONTEXT_REPAIR) if price_source_artifact == src_missing_band_repair else price_context.get("price_source") or p_effective.get("price_source") or cq.get("quote_freshness_status"),
             "quote_time_utc": quote_time_utc,
             "market_date": market_date,
-            "band_status": computed_band_status or source_band_status,
-            "technical_status": p_effective.get("technical_status"),
-            "technical_summary": p_effective.get("technical_summary"),
+            "band_status": effective_band_status,
+            "technical_status": technical_status,
+            "technical_summary": technical_summary,
             "fresh_quote_required": bool(p.get("fresh_quote_required") or cq.get("requires_fresh_quote_band_stop_before_deployment_review")),
             "quote_freshness_status": quote_freshness_status,
             "source_artifact_id": price_source_artifact,
             "raw_json": json_text({
                 "finance_state": p_effective,
+                "sql_canon_reference_level": sql_ref,
                 "decision_spine": ds,
                 "capital_queue": cq,
                 "post_close_final_quote": post_close if post_close_available else None,
+                "technical_refresh": tech_refresh if tech_refresh_is_newer else None,
                 "missing_band_context_repair": band_repair if band_repair_ready else None,
                 "price_context": price_context,
                 "source_band_status": source_band_status,
                 "computed_band_status": computed_band_status,
+                "effective_band_status": effective_band_status,
+                "reference_band_refresh_required": stale_low_confidence_reference_band,
+                "technical_record_complete_current": technical_record_complete_current,
             }),
         })
         entry_stop_reference.append({
@@ -959,16 +1084,22 @@ def build_packet() -> dict[str, Any]:
             "entry_band_low": entry_band_low,
             "entry_band_high": entry_band_high,
             "stop_or_invalidation": stop_or_invalidation,
-            "band_source": e.get("band_source") or band_repair_band.get("band_source") or "unknown",
-            "stop_source": e.get("stop_source") or band_repair_band.get("stop_source"),
-            "freshness_status": "fresh_review_context" if band_repair_ready else e.get("freshness_status") or "unknown",
-            "validation_status": "ok" if band_repair_ready else e.get("validation_status") or "unknown",
+            "band_source": "state/finance/finance-canon.sqlite:reference_levels" if sql_ref else e.get("band_source") or band_repair_band.get("band_source") or "unknown",
+            "stop_source": "state/finance/finance-canon.sqlite:reference_levels" if sql_ref else e.get("stop_source") or band_repair_band.get("stop_source"),
+            "freshness_status": "stale_low_confidence_reference_band" if stale_low_confidence_reference_band else "current" if sql_ref else "fresh_review_context" if band_repair_ready else e.get("freshness_status") or "unknown",
+            "validation_status": "review_required" if stale_low_confidence_reference_band else "ok" if sql_ref or band_repair_ready else e.get("validation_status") or "unknown",
             "owner_note_path": e.get("owner_note_path"),
-            "source_artifact_path": e.get("source_artifact_path") or (rel(WF78_MISSING_BAND_CONTEXT_REPAIR) if band_repair_ready else None),
-            "source_artifact_hash": e.get("source_artifact_hash") or (sha256_file(WF78_MISSING_BAND_CONTEXT_REPAIR) if band_repair_ready else None),
-            "source_timestamp": e.get("source_timestamp") or (band_repair_band.get("source_timestamp") if band_repair_ready else None),
+            "source_artifact_path": sql_ref.get("source_artifact_path") if sql_ref else e.get("source_artifact_path") or (rel(WF78_MISSING_BAND_CONTEXT_REPAIR) if band_repair_ready else None),
+            "source_artifact_hash": sql_ref.get("source_artifact_sha256") if sql_ref else e.get("source_artifact_hash") or (sha256_file(WF78_MISSING_BAND_CONTEXT_REPAIR) if band_repair_ready else None),
+            "source_timestamp": sql_ref.get("source_generated_at_utc") if sql_ref else e.get("source_timestamp") or (band_repair_band.get("source_timestamp") if band_repair_ready else None),
             "authority_boundary": "review_only_reference_no_capital_or_execution_approval",
-            "raw_json": json_text({"finance_state": e, "decision_spine": ds, "missing_band_context_repair": band_repair if band_repair_ready else None}),
+            "raw_json": json_text({
+                "sql_canon_reference_level": sql_ref,
+                "finance_state_reference_lineage": e,
+                "decision_spine": ds,
+                "missing_band_context_repair": band_repair if band_repair_ready else None,
+                "reference_band_refresh_required": stale_low_confidence_reference_band,
+            }),
         })
         fundamental_snapshot.append({
             "ticker": ticker,
@@ -997,21 +1128,31 @@ def build_packet() -> dict[str, Any]:
             "source_path": earn.get("source_path") or rel(FINANCE_STATE_DB),
             "raw_json": earn.get("raw_json") or json_text(earn),
         })
+        queue_primary_state = ds.get("primary_state") or cq.get("queue_state") or prom.get("recommendation_posture_key") or "monitor"
+        queue_blockers = as_list(ds.get("blockers") or cq.get("blockers") or [])
+        queue_warnings = as_list(ds.get("warnings") or cq.get("cautions") or [])
+        if stale_low_confidence_reference_band:
+            queue_primary_state = "blocked_missing_freshness"
+            blocker = "stale_low_confidence_reference_band_requires_technical_refresh"
+            if blocker not in queue_blockers:
+                queue_blockers.append(blocker)
+            if blocker not in queue_warnings:
+                queue_warnings.append(blocker)
         decision_queue_state.append({
             "ticker": ticker,
-            "primary_state": ds.get("primary_state") or cq.get("queue_state") or prom.get("recommendation_posture_key") or "monitor",
+            "primary_state": queue_primary_state,
             "states_json": json_text(ds.get("states") or []),
             "recommendation_posture_key": prom.get("recommendation_posture_key"),
             "actionability": prom.get("actionability") or "review_only",
-            "queue_state": ds.get("primary_state") or cq.get("queue_state") or "monitor",
+            "queue_state": queue_primary_state,
             "rank_score": fnum(cq.get("rank_score")),
             "gate_verdict": ds.get("promotion_gate_verdict"),
             "gate_vetoes_json": json_text(ds.get("promotion_gate_vetoes") or []),
             "owner_card_path": ds.get("owner_card_path") or cq.get("owner_card_path"),
             "wf67_request_path": ds.get("wf67_request_path"),
             "wf67_request_generation_status": ds.get("wf67_request_generation_status"),
-            "blockers_json": json_text(ds.get("blockers") or cq.get("blockers") or []),
-            "warnings_json": json_text(ds.get("warnings") or cq.get("cautions") or []),
+            "blockers_json": json_text(queue_blockers),
+            "warnings_json": json_text(queue_warnings),
             "owner_action_required": bool(ds.get("owner_action_required") or cq.get("owner_action_required")),
             "capital_deployment_approved": False,
             "trade_or_execution_approved": False,
@@ -1154,6 +1295,15 @@ def add_check(checks: list[dict[str, Any]], name: str, ok: bool, detail: Any, *,
     })
 
 
+def lane_family_count(lane_tier_counts: dict[str, Any], auto_tier: str) -> int:
+    prefix = f"{auto_tier} "
+    total = 0
+    for key, value in lane_tier_counts.items():
+        if str(key).startswith(prefix):
+            total += int(value or 0)
+    return total
+
+
 def validate_tables(tables: dict[str, list[dict[str, Any]]], router_summary: dict[str, Any], context: dict[str, list[str]]) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     errors: list[str] = []
@@ -1162,6 +1312,17 @@ def validate_tables(tables: dict[str, list[dict[str, Any]]], router_summary: dic
     tier_counts: dict[str, int] = {}
     for row in tables["routing_state_current"]:
         tier_counts[str(row.get("auto_tier"))] = tier_counts.get(str(row.get("auto_tier")), 0) + 1
+    lane_tier_counts = as_dict(router_summary.get("lane_tier_counts"))
+    has_lane_counts = bool(lane_tier_counts)
+    cap_tier_a_count = lane_family_count(lane_tier_counts, "Tier A") if has_lane_counts else tier_counts.get("Tier A", 0)
+    cap_tier_b_count = lane_family_count(lane_tier_counts, "Tier B") if has_lane_counts else tier_counts.get("Tier B", 0)
+    cap_detail = {
+        "source": "lane_qualified" if has_lane_counts else "flat_auto_tier_compatibility",
+        "tier_counts": tier_counts,
+        "lane_tier_counts": lane_tier_counts,
+        "cap_tier_a_count": cap_tier_a_count,
+        "cap_tier_b_count": cap_tier_b_count,
+    }
 
     def record(name: str, ok: bool, detail: Any, severity: str = "critical") -> None:
         add_check(checks, name, ok, detail, severity=severity)
@@ -1178,7 +1339,7 @@ def validate_tables(tables: dict[str, list[dict[str, Any]]], router_summary: dic
     record("required_source_freshness_thresholds", not stale_sources, {"stale": stale_sources}, severity="warning")
     durable_registry_gaps = durable_registry_findings(tables["source_artifact"])
     record("durable_registry_semantic_validity", not durable_registry_gaps, {"gaps": durable_registry_gaps}, severity="warning")
-    record("active_router_rows_200", counts["routing_state_current"] == EXPECTED_ACTIVE_TICKERS, counts["routing_state_current"])
+    record("active_router_rows_supported_dynamic", counts["routing_state_current"] in SUPPORTED_ACTIVE_TICKER_COUNTS, {"observed": counts["routing_state_current"], "supported": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS)})
     record("security_master_rows_match_router", counts["security_master"] == counts["routing_state_current"], counts)
     record("universe_membership_rows_match_router", counts["universe_membership"] == counts["routing_state_current"], counts)
     expected_full_answer_rows = counts["routing_state_current"] * len(FULL_ANSWER_SECTION_SOURCES)
@@ -1200,10 +1361,37 @@ def validate_tables(tables: dict[str, list[dict[str, Any]]], router_summary: dic
     finance_tickers = set(context.get("finance_universe_tickers") or [])
     freshness_tickers = set(context.get("tier_weighted_tickers") or [])
     spine_tickers = set(context.get("decision_spine_tickers") or [])
+    universe_by_ticker = {
+        str(row.get("ticker") or "").upper(): row
+        for row in tables["universe_membership"]
+        if row.get("ticker")
+    }
+    router_only_from_finance_state = router_tickers - finance_tickers
+    finance_only_from_router = finance_tickers - router_tickers
+    router_only_compatibility = sorted(
+        ticker
+        for ticker in router_only_from_finance_state
+        if str(universe_by_ticker.get(ticker, {}).get("universe_scope") or "") == "active_internal_universe"
+        and not bool(universe_by_ticker.get(ticker, {}).get("production_answer_path_member"))
+        and not bool(universe_by_ticker.get(ticker, {}).get("thin_monitor_row"))
+        and not bool(universe_by_ticker.get(ticker, {}).get("decision_grade_eligible"))
+    )
+    finance_state_scope_ok = (
+        router_tickers == finance_tickers
+        or (
+            not finance_only_from_router
+            and router_only_from_finance_state == set(router_only_compatibility)
+        )
+    )
     record(
         "router_ticker_set_matches_finance_state_universe",
-        router_tickers == finance_tickers,
-        {"router_only": sorted(router_tickers - finance_tickers), "finance_only": sorted(finance_tickers - router_tickers)},
+        finance_state_scope_ok,
+        {
+            "router_only": sorted(router_only_from_finance_state),
+            "finance_only": sorted(finance_only_from_router),
+            "router_only_active_internal_non_production_compatibility": router_only_compatibility,
+            "compatibility_wait_state_allowed": bool(router_only_compatibility) and not finance_only_from_router,
+        },
     )
     record(
         "tier_weighted_ticker_set_matches_router",
@@ -1216,9 +1404,17 @@ def validate_tables(tables: dict[str, list[dict[str, Any]]], router_summary: dic
         {"spine_extra": sorted(spine_tickers - router_tickers), "router_missing_from_spine": sorted(router_tickers - spine_tickers)},
         severity="warning",
     )
-    record("tier_a_cap", tier_counts.get("Tier A", 0) <= 25, tier_counts)
-    record("tier_b_cap", tier_counts.get("Tier B", 0) <= 50, tier_counts)
-    record("tier_a_b_combined_cap", tier_counts.get("Tier A", 0) + tier_counts.get("Tier B", 0) <= 75, tier_counts)
+    record("tier_a_cap", cap_tier_a_count <= 25, cap_detail)
+    record("tier_b_cap", cap_tier_b_count <= 50, cap_detail)
+    record("tier_a_b_combined_cap", cap_tier_a_count + cap_tier_b_count <= 75, cap_detail)
+    if has_lane_counts and router_summary.get("flat_auto_tier_compatibility_retained") is True:
+        add_check(
+            checks,
+            "flat_auto_tier_b_cap_compatibility_classified",
+            True,
+            {"flat_tier_counts": tier_counts, "current_cap_source": "lane_qualified"},
+            severity="info",
+        )
     bad_tiers = sorted({str(row.get("auto_tier")) for row in tables["routing_state_current"] if row.get("auto_tier") not in VALID_AUTO_TIERS})
     bad_states = sorted({str(row.get("auto_state")) for row in tables["routing_state_current"] if row.get("auto_state") not in VALID_AUTO_STATES})
     record("routing_enum_domain_known", not bad_tiers and not bad_states, {"bad_tiers": bad_tiers, "bad_states": bad_states})
@@ -1284,7 +1480,7 @@ SQL_COLUMNS = {
     "schema_run": ["run_id TEXT PRIMARY KEY", "schema_version TEXT NOT NULL", "generated_at_utc TEXT NOT NULL", "local_market_date TEXT", "status TEXT NOT NULL", "builder_version TEXT", "authority_boundary_json TEXT NOT NULL", "validation_status TEXT NOT NULL"],
     "source_artifact": ["artifact_id TEXT PRIMARY KEY", "path TEXT NOT NULL", "role TEXT NOT NULL", "source_type TEXT NOT NULL", "required_for_mvp INTEGER NOT NULL", "exists_on_disk INTEGER NOT NULL", "generated_at_utc TEXT", "mtime_utc TEXT", "sha256 TEXT", "schema TEXT", "status TEXT", "validation_status TEXT", "source_rank INTEGER", "raw_summary_json TEXT"],
     "security_master": ["ticker TEXT PRIMARY KEY", "name TEXT", "instrument_type TEXT", "sector TEXT", "industry TEXT", "yfinance_symbol TEXT", "sec_cik TEXT", "company_ir_url TEXT", "active INTEGER NOT NULL"],
-    "universe_membership": ["ticker TEXT PRIMARY KEY REFERENCES security_master(ticker) ON DELETE CASCADE", "universe_scope TEXT NOT NULL", "legacy_universe_tier TEXT", "legacy_monitoring_role TEXT", "production_answer_path_member INTEGER NOT NULL", "thin_monitor_row INTEGER NOT NULL", "decision_grade_eligible INTEGER NOT NULL", "promotion_required_before_action INTEGER NOT NULL", "source_open_required INTEGER NOT NULL", "owner_note_path TEXT", "raw_json TEXT"],
+    "universe_membership": ["ticker TEXT PRIMARY KEY REFERENCES security_master(ticker) ON DELETE CASCADE", "universe_scope TEXT NOT NULL", "legacy_monitoring_role TEXT", "production_answer_path_member INTEGER NOT NULL", "thin_monitor_row INTEGER NOT NULL", "decision_grade_eligible INTEGER NOT NULL", "promotion_required_before_action INTEGER NOT NULL", "source_open_required INTEGER NOT NULL", "owner_note_path TEXT", "raw_json TEXT"],
     "routing_state_current": ["ticker TEXT PRIMARY KEY REFERENCES security_master(ticker) ON DELETE CASCADE", "auto_tier TEXT NOT NULL", "auto_state TEXT NOT NULL", "route_priority INTEGER", "route_reason TEXT", "data_confidence_rating TEXT", "fundamentals_confidence TEXT", "tier_a_confidence_status TEXT", "tier_a_confidence_promotion_effect TEXT", "critical_data_conflict_count INTEGER NOT NULL", "requires_separate_capital_or_execution_approval INTEGER NOT NULL", "capital_deployment_approved INTEGER NOT NULL", "trade_or_execution_approved INTEGER NOT NULL", "would_mutate_universe INTEGER NOT NULL", "source_artifact_id TEXT NOT NULL"],
     "evidence_family_status": ["ticker TEXT NOT NULL REFERENCES security_master(ticker) ON DELETE CASCADE", "family_id TEXT NOT NULL", "status TEXT NOT NULL", "missing_count INTEGER NOT NULL", "stale_count INTEGER NOT NULL", "source_required INTEGER NOT NULL", "required_depth TEXT NOT NULL", "resolution_state TEXT", "tier_weighted_resolved INTEGER NOT NULL", "source_paths_json TEXT", "PRIMARY KEY (ticker, family_id)"],
     "full_answer_section_context": ["ticker TEXT NOT NULL REFERENCES security_master(ticker) ON DELETE CASCADE", "section_id TEXT NOT NULL", "section_status TEXT NOT NULL", "source_kind TEXT NOT NULL", "freshness_status TEXT NOT NULL", "source_paths_json TEXT", "source_open_required INTEGER NOT NULL", "field_presence_score REAL NOT NULL", "value_hash TEXT NOT NULL", "generated_at_utc TEXT", "raw_json TEXT", "PRIMARY KEY (ticker, section_id)"],
@@ -1350,6 +1546,7 @@ def _create_sqlite_unlocked(packet: dict[str, Any], db_path: Path) -> dict[str, 
                    p.latest_known_price, p.band_status, p.quote_freshness_status,
                    e.entry_band_low, e.entry_band_high, e.stop_or_invalidation,
                    d.primary_state, d.queue_state, d.actionability, d.owner_action_required,
+                   d.gate_verdict, d.gate_vetoes_json,
                    d.capital_deployment_approved, d.trade_or_execution_approved,
                    d.paper_or_live_execution_allowed, d.owner_approval_inferred
             FROM security_master s
@@ -1409,8 +1606,10 @@ def _create_sqlite_unlocked(packet: dict[str, Any], db_path: Path) -> dict[str, 
             WHERE e.source_artifact_path IS NOT NULL AND e.source_artifact_path <> '';
 
         CREATE VIEW v_decision_grade_os_layer AS
-            SELECT o.ticker, o.name, o.auto_tier, o.auto_state, o.route_priority, o.primary_state,
+            SELECT o.ticker, o.name, o.instrument_type, o.sector,
+                   o.auto_tier, o.auto_state, o.route_priority, o.primary_state,
                    o.queue_state, o.actionability, o.owner_action_required,
+                   o.gate_verdict, o.gate_vetoes_json,
                    o.latest_known_price, o.band_status, o.entry_band_low,
                    o.entry_band_high, o.stop_or_invalidation,
                    CASE
@@ -1439,7 +1638,7 @@ def _create_sqlite_unlocked(packet: dict[str, Any], db_path: Path) -> dict[str, 
 
         CREATE VIEW v_pm_decision_queue_overlay AS
             SELECT ticker, name, auto_tier, auto_state, primary_state, queue_state,
-                   actionability, owner_action_required, review_priority_score,
+                   actionability, owner_action_required, gate_verdict, gate_vetoes_json, review_priority_score,
                    latest_known_price, band_status, entry_band_low, entry_band_high,
                    stop_or_invalidation, authority_boundary, priority_boundary
             FROM v_wf84_priority_queue;

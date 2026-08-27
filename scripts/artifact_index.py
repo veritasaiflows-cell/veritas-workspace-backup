@@ -17,7 +17,7 @@ from market_data_utils import load_json_artifact
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 DEFAULT_DB = TMP / "veritas-artifact-index.sqlite"
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 SQL_AUTHORITY_BOUNDARY = "derived_review_only_index_not_canon_not_apply"
 FORBIDDEN_TRUE_AUTHORITY_FLAGS = {
     "trade_execution_allowed",
@@ -211,8 +211,24 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
-def bool_int(value: Any) -> int:
-    return 1 if bool(value) else 0
+def parse_bool(value: Any) -> bool | None:
+    """Parse conventional JSON/config booleans without truthifying text like ``false``."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)) and value in {0, 1}:
+        return bool(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"true", "1", "yes", "y", "on"}:
+            return True
+        if normalized in {"false", "0", "no", "n", "off"}:
+            return False
+    return None
+
+
+def bool_int(value: Any, *, default: bool = False) -> int:
+    parsed = parse_bool(value)
+    return 1 if (default if parsed is None else parsed) else 0
 
 
 def sha_text(value: Any) -> str:
@@ -666,6 +682,7 @@ def init_schema(conn: sqlite3.Connection) -> None:
         CREATE INDEX IF NOT EXISTS idx_source_freshness_key ON source_freshness_rows(source_key, classification, stop_line);
         CREATE INDEX IF NOT EXISTS idx_deployment_readiness_ticker ON deployment_readiness_rows(upper(ticker), bucket, surface_state);
 
+        DROP VIEW IF EXISTS v_cockpit_action_queue_deduped;
         DROP VIEW IF EXISTS v_cockpit_action_queue;
         DROP VIEW IF EXISTS v_cockpit_ticker_timeline;
         DROP VIEW IF EXISTS v_cockpit_trust_boundary;
@@ -698,6 +715,41 @@ def init_schema(conn: sqlite3.Connection) -> None:
                COALESCE(blocked_reason, 'review_only_owner_gated') AS authority_boundary,
                source_file, generated_at_utc
         FROM market_events WHERE list_name='escalations';
+
+        CREATE VIEW IF NOT EXISTS v_cockpit_action_queue_deduped AS
+        WITH ranked AS (
+            SELECT
+                priority_kind, ticker, route, urgency, score, action_text,
+                owner_action_needed, authority_boundary, source_file, generated_at_utc,
+                lower(trim(coalesce(priority_kind, ''))) || '|' ||
+                lower(trim(coalesce(ticker, ''))) || '|' ||
+                lower(trim(coalesce(route, ''))) || '|' ||
+                lower(trim(coalesce(urgency, ''))) || '|' ||
+                lower(trim(coalesce(action_text, ''))) || '|' ||
+                lower(trim(coalesce(owner_action_needed, ''))) || '|' ||
+                lower(trim(coalesce(authority_boundary, ''))) AS action_dedupe_key,
+                ROW_NUMBER() OVER (
+                    PARTITION BY
+                        lower(trim(coalesce(priority_kind, ''))),
+                        lower(trim(coalesce(ticker, ''))),
+                        lower(trim(coalesce(route, ''))),
+                        lower(trim(coalesce(urgency, ''))),
+                        lower(trim(coalesce(action_text, ''))),
+                        lower(trim(coalesce(owner_action_needed, ''))),
+                        lower(trim(coalesce(authority_boundary, '')))
+                    ORDER BY
+                        coalesce(generated_at_utc, '') DESC,
+                        CAST(coalesce(score, 0) AS REAL) DESC,
+                        source_file DESC
+                ) AS action_dedupe_rank
+            FROM v_cockpit_action_queue
+        )
+        SELECT
+            priority_kind, ticker, route, urgency, score, action_text,
+            owner_action_needed, authority_boundary, source_file, generated_at_utc,
+            action_dedupe_key, action_dedupe_rank
+        FROM ranked
+        WHERE action_dedupe_rank=1;
 
         CREATE VIEW IF NOT EXISTS v_cockpit_ticker_timeline AS
         SELECT ticker_or_macro_sleeve AS ticker, 'market_event' AS kind, source_file, generated_at_utc,
@@ -746,11 +798,23 @@ def init_schema(conn: sqlite3.Connection) -> None:
         FROM dashboard_findings;
 
         CREATE VIEW IF NOT EXISTS v_cockpit_source_freshness AS
-        SELECT source_key, path, classification, trust_level, criticality, owner_layer,
-               usable_for_review, usable_for_presentation, usable_for_canonical_mutation,
-               stop_line, generated_at_utc, age_hours, stale_after_hours, confidence_ceiling,
-               source_file, 'review_only_source_freshness_not_apply' AS authority_boundary
-        FROM source_freshness_rows;
+        SELECT s.source_key, s.path, s.classification, s.trust_level, s.criticality, s.owner_layer,
+               s.usable_for_review, s.usable_for_presentation, s.usable_for_canonical_mutation,
+               s.stop_line, s.generated_at_utc, s.age_hours, s.stale_after_hours, s.confidence_ceiling,
+               s.source_file, r.indexed_at_utc AS index_captured_at_utc,
+               (julianday('now') - julianday(r.indexed_at_utc)) * 24.0 AS index_age_hours,
+               'review_only_source_freshness_not_apply' AS authority_boundary
+        FROM source_freshness_rows s
+        JOIN artifact_runs r ON r.id = s.artifact_run_id
+        WHERE s.id = (
+            SELECT s2.id
+            FROM source_freshness_rows s2
+            JOIN artifact_runs r2 ON r2.id = s2.artifact_run_id
+            WHERE s2.source_key = s.source_key
+              AND IFNULL(s2.path, '') = IFNULL(s.path, '')
+            ORDER BY IFNULL(r2.indexed_at_utc, '') DESC, s2.artifact_run_id DESC, s2.id DESC
+            LIMIT 1
+        );
 
         CREATE VIEW IF NOT EXISTS v_cockpit_trust_boundary AS
         SELECT ar.source_file, ar.artifact_type, ar.window, ar.generated_at_utc, ar.consumer_posture,
@@ -1217,23 +1281,142 @@ def insert_canon_proposal_staging(conn: sqlite3.Connection, run_id: int, source_
     return {"canon_proposal_staging": count, "canon_proposal_evidence_links": evidence_count}
 
 
+def earnings_lifecycle_semantic_key(
+    event_kind: str,
+    item: dict[str, Any],
+    record: dict[str, Any] | None = None,
+) -> tuple[str, ...]:
+    """Return a shape-independent identity for one earnings lifecycle event."""
+    record = record or {}
+    ticker = clean_text(item.get("ticker") or record.get("ticker")).strip().upper()
+    evidence = as_dict(item.get("evidence"))
+    status = clean_text(item.get("status")).strip().lower()
+    source_class = clean_text(record.get("date_source_class") or record.get("source")).strip().lower()
+    is_closeout = (
+        event_kind in {"closeout", "active_hold"}
+        or source_class == "post_earnings_lifecycle_closeout"
+        or bool(item.get("closed_watchlist_date"))
+        or status in {
+            "post_event_review_confirmed_next_date_pending",
+            "watchlist_already_closed",
+            "watchlist_cleanup_eligible",
+        }
+    )
+    family = "post_earnings_closeout" if is_closeout else f"lifecycle_status:{status or event_kind}"
+    watchlist_date = clean_text(item.get("watchlist_date") or item.get("closed_watchlist_date")).strip()
+    provider_date = clean_text(item.get("provider_date_before_closeout")).strip()
+    last_earnings_date = clean_text(evidence.get("last_earnings_date")).strip()
+    post_review_date = clean_text(evidence.get("post_earnings_review_date")).strip()
+    confirmed_raw = parse_bool(evidence.get("post_earnings_review_confirmed"))
+    confirmed = "true" if confirmed_raw is True else ("false" if confirmed_raw is False else "")
+    temporal_identity = (watchlist_date, provider_date, last_earnings_date, post_review_date)
+    fallback_identity = "" if any(temporal_identity) else clean_text(item.get("reason")).strip().lower()
+    return (ticker, family, *temporal_identity, confirmed, fallback_identity)
+
+
+def earnings_lifecycle_authority(
+    item: dict[str, Any],
+    record: dict[str, Any],
+    lifecycle: dict[str, Any],
+) -> dict[str, int]:
+    """Resolve source authority without normalizing unsafe claims into safe rows."""
+    sources = (
+        as_dict(item.get("authority")),
+        as_dict(record.get("authority")),
+        as_dict(lifecycle.get("authority")),
+    )
+    defaults = {
+        "review_only": True,
+        "portfolio_mutation_allowed": False,
+        "canonical_note_mutation_allowed": False,
+        "trade_or_account_action_allowed": False,
+        "owner_approval_inferred": False,
+    }
+    resolved: dict[str, int] = {}
+    for field, default in defaults.items():
+        value = default
+        for source in sources:
+            if field in source:
+                value = source[field]
+                break
+        parsed = parse_bool(value)
+        if parsed is None:
+            # Ambiguous authority is unsafe: review-only must be explicit while
+            # every action/mutation/approval flag is conservatively asserted.
+            parsed = field != "review_only"
+        resolved[field] = int(parsed)
+    return resolved
+
+
+def merge_earnings_lifecycle_authority(
+    current: dict[str, int],
+    incoming: dict[str, int],
+) -> dict[str, int]:
+    """Merge semantic duplicates without allowing a safe copy to hide authority."""
+    return {
+        "review_only": min(current["review_only"], incoming["review_only"]),
+        "portfolio_mutation_allowed": max(
+            current["portfolio_mutation_allowed"], incoming["portfolio_mutation_allowed"]
+        ),
+        "canonical_note_mutation_allowed": max(
+            current["canonical_note_mutation_allowed"], incoming["canonical_note_mutation_allowed"]
+        ),
+        "trade_or_account_action_allowed": max(
+            current["trade_or_account_action_allowed"], incoming["trade_or_account_action_allowed"]
+        ),
+        "owner_approval_inferred": max(
+            current["owner_approval_inferred"], incoming["owner_approval_inferred"]
+        ),
+    }
+
+
 def insert_earnings_lifecycle_events(conn: sqlite3.Connection, run_id: int, source_file: str, data: dict[str, Any]) -> int:
     lifecycle = as_dict(data.get("earnings_lifecycle"))
-    rows: list[tuple[str, dict[str, Any]]] = []
+    rows: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
     for item in as_list(lifecycle.get("closeouts")):
         if isinstance(item, dict):
-            rows.append(("closeout", item))
+            rows.append(("closeout", item, {}))
     for item in as_list(lifecycle.get("active_holds")):
         if isinstance(item, dict):
-            rows.append(("active_hold", item))
+            rows.append(("active_hold", item, {}))
+    for record in as_list(data.get("records")):
+        if not isinstance(record, dict):
+            continue
+        item = as_dict(record.get("lifecycle"))
+        ticker = clean_text(record.get("ticker")).strip().upper()
+        if not item or not ticker:
+            continue
+        record_item = dict(item)
+        record_item.setdefault("ticker", ticker)
+        rows.append(("record_lifecycle", record_item, record))
 
-    count = 0
-    for event_kind, item in rows:
-        ticker = clean_text(item.get("ticker")).upper()
+    grouped_rows: dict[
+        tuple[str, ...],
+        tuple[str, dict[str, Any], dict[str, Any], dict[str, int]],
+    ] = {}
+    for event_kind, item, record in rows:
+        ticker = clean_text(item.get("ticker") or record.get("ticker")).strip().upper()
         if not ticker:
             continue
+        semantic_key = earnings_lifecycle_semantic_key(event_kind, item, record)
+        authority = earnings_lifecycle_authority(item, record, lifecycle)
+        if semantic_key in grouped_rows:
+            winner_kind, winner_item, winner_record, winner_authority = grouped_rows[semantic_key]
+            grouped_rows[semantic_key] = (
+                winner_kind,
+                winner_item,
+                winner_record,
+                merge_earnings_lifecycle_authority(winner_authority, authority),
+            )
+            continue
+        # Input order preserves content precedence: closeout, active hold, then
+        # record lifecycle. Authority is merged across every semantic copy.
+        grouped_rows[semantic_key] = (event_kind, item, record, authority)
+
+    count = 0
+    for event_kind, item, record, authority in grouped_rows.values():
+        ticker = clean_text(item.get("ticker") or record.get("ticker")).strip().upper()
         evidence = as_dict(item.get("evidence"))
-        authority = as_dict(item.get("authority"))
         conn.execute(
             """
             INSERT INTO earnings_lifecycle_events(
@@ -1246,12 +1429,12 @@ def insert_earnings_lifecycle_events(conn: sqlite3.Connection, run_id: int, sour
             """,
             (
                 run_id, source_file, ticker, event_kind, clean_text(item.get("status")),
-                clean_text(item.get("watchlist_date")), clean_text(item.get("provider_date_before_closeout")),
+                clean_text(item.get("watchlist_date") or item.get("closed_watchlist_date")), clean_text(item.get("provider_date_before_closeout")),
                 clean_text(evidence.get("last_earnings_date")), clean_text(evidence.get("post_earnings_review_date")),
                 bool_int(evidence.get("post_earnings_review_confirmed")), clean_text(item.get("reason")),
-                bool_int(authority.get("review_only", True)), bool_int(authority.get("portfolio_mutation_allowed")),
-                bool_int(authority.get("canonical_note_mutation_allowed")), bool_int(authority.get("trade_or_account_action_allowed")),
-                bool_int(authority.get("owner_approval_inferred")), as_json(item),
+                authority["review_only"], authority["portfolio_mutation_allowed"],
+                authority["canonical_note_mutation_allowed"], authority["trade_or_account_action_allowed"],
+                authority["owner_approval_inferred"], as_json(item),
             ),
         )
         count += 1
@@ -1611,7 +1794,7 @@ def validate_index(db_path: Path) -> dict[str, Any]:
         fk_rows = conn.execute("PRAGMA foreign_key_check").fetchall()
         add("foreign_key_check", len(fk_rows) == 0, f"rows={len(fk_rows)}")
         for view in [
-            "v_cockpit_action_queue", "v_cockpit_ticker_timeline", "v_cockpit_trust_boundary",
+            "v_cockpit_action_queue", "v_cockpit_action_queue_deduped", "v_cockpit_ticker_timeline", "v_cockpit_trust_boundary",
             "v_cockpit_official_source_fields", "v_cockpit_canon_staging", "v_cockpit_earnings_lifecycle",
             "v_cockpit_dashboard_findings", "v_cockpit_source_freshness", "v_cockpit_deployment_readiness",
         ]:
@@ -1642,12 +1825,41 @@ def validate_index(db_path: Path) -> dict[str, Any]:
         add("official_ir_fields_have_lineage", int(official_without_lineage) == 0, f"missing={official_without_lineage}")
         cockpit_rows = conn.execute("SELECT COUNT(*) FROM v_cockpit_action_queue").fetchone()[0]
         add("cockpit_action_queue_has_rows", int(cockpit_rows) > 0, f"rows={cockpit_rows}")
+        cockpit_deduped_rows = conn.execute("SELECT COUNT(*) FROM v_cockpit_action_queue_deduped").fetchone()[0]
+        add("cockpit_action_queue_deduped_has_rows", int(cockpit_deduped_rows) > 0, f"rows={cockpit_deduped_rows}")
+        add(
+            "cockpit_action_queue_deduped_not_larger_than_raw",
+            int(cockpit_deduped_rows) <= int(cockpit_rows),
+            f"raw={cockpit_rows} deduped={cockpit_deduped_rows}",
+        )
+        cockpit_deduped_duplicates = conn.execute(
+            """
+            SELECT COUNT(*) FROM (
+                SELECT action_dedupe_key, COUNT(*) AS count
+                FROM v_cockpit_action_queue_deduped
+                GROUP BY action_dedupe_key
+                HAVING count > 1
+            )
+            """
+        ).fetchone()[0]
+        add("cockpit_action_queue_deduped_unique_keys", int(cockpit_deduped_duplicates) == 0, f"duplicates={cockpit_deduped_duplicates}")
         amd = conn.execute("SELECT COUNT(*) FROM v_cockpit_official_source_fields WHERE upper(ticker)='AMD' AND field_name='adjusted_eps' AND excerpt_sha256 IS NOT NULL").fetchone()[0]
         add("official_field_proof_amd_adjusted_eps", int(amd) > 0, f"rows={amd}")
         etn = conn.execute("SELECT COUNT(*) FROM v_cockpit_ticker_timeline WHERE upper(ticker)='ETN'").fetchone()[0]
         add("ticker_timeline_etn_has_rows", int(etn) > 0, f"rows={etn}")
         nvda_lifecycle = conn.execute("SELECT COUNT(*) FROM v_cockpit_earnings_lifecycle WHERE upper(ticker)='NVDA' AND review_only=1 AND trade_or_account_action_allowed=0 AND owner_approval_inferred=0").fetchone()[0]
         add("earnings_lifecycle_nvda_review_only", int(nvda_lifecycle) > 0, f"rows={nvda_lifecycle}")
+        unsafe_lifecycle = conn.execute(
+            """
+            SELECT COUNT(*) FROM earnings_lifecycle_events
+            WHERE review_only != 1
+               OR portfolio_mutation_allowed != 0
+               OR canonical_note_mutation_allowed != 0
+               OR trade_or_account_action_allowed != 0
+               OR owner_approval_inferred != 0
+            """
+        ).fetchone()[0]
+        add("earnings_lifecycle_review_only_no_action", int(unsafe_lifecycle) == 0, f"rows={unsafe_lifecycle}")
         deployment_etn = conn.execute("SELECT COUNT(*) FROM v_cockpit_deployment_readiness WHERE upper(ticker)='ETN'").fetchone()[0]
         etn_buckets = [str(row[0]) for row in conn.execute("SELECT DISTINCT bucket FROM v_cockpit_deployment_readiness WHERE upper(ticker)='ETN' ORDER BY bucket")]
         add("deployment_readiness_etn_indexed", int(deployment_etn) > 0, f"rows={deployment_etn} buckets={etn_buckets}")
@@ -1849,15 +2061,71 @@ def query_capital(conn: sqlite3.Connection, limit: int) -> None:
     result = rows(
         conn,
         """
-        SELECT window, ticker, current_state, entry_band_status, fresh_intelligence_status,
-               recommended_action, confidence, owner_approval_required, generated_at_utc
-        FROM capital_recommendations
-        ORDER BY generated_at_utc DESC, rank ASC
+        WITH latest_deployment AS (
+            SELECT *
+            FROM (
+                SELECT d.*,
+                       ROW_NUMBER() OVER (
+                           PARTITION BY upper(d.ticker)
+                           ORDER BY COALESCE(d.source_generated_at_utc, '') DESC,
+                                    d.id DESC
+                       ) AS rn
+                FROM deployment_readiness_rows d
+            )
+            WHERE rn=1
+        ),
+        latest_legacy_daily AS (
+            SELECT upper(ticker) AS ticker_key,
+                   'present_superseded_by_wf85' AS legacy_daily_review_context
+            FROM (
+                SELECT c.*,
+                       ROW_NUMBER() OVER (
+                           PARTITION BY upper(c.ticker)
+                           ORDER BY COALESCE(c.generated_at_utc, '') DESC,
+                                    COALESCE(c.rank, 999999) ASC,
+                                    c.id DESC
+                       ) AS rn
+                FROM capital_recommendations c
+                WHERE c.ticker IS NOT NULL AND c.ticker != ''
+            )
+            WHERE rn=1
+        )
+        SELECT d.ticker,
+               json_extract(d.raw_json, '$.deployment_status') AS deployment_status,
+               json_extract(d.raw_json, '$.wf85_final_timing_state') AS wf85_final_timing_state,
+               json_extract(d.raw_json, '$.wf85_decision_state') AS wf85_decision_state,
+               json_extract(d.raw_json, '$.wf85_price_band_gate') AS wf85_price_band_gate,
+               json_extract(d.raw_json, '$.reconciliation_required') AS reconciliation_required,
+               d.bucket,
+               d.close,
+               d.band_position,
+               COALESCE(l.legacy_daily_review_context, 'none') AS legacy_daily_review_context,
+               1 AS owner_approval_required,
+               d.source_artifact_path,
+               d.authority_boundary,
+               COALESCE(d.source_generated_at_utc, '') AS generated_at_utc
+        FROM latest_deployment d
+        LEFT JOIN latest_legacy_daily l ON l.ticker_key = upper(d.ticker)
+        ORDER BY
+            CASE
+                WHEN json_extract(d.raw_json, '$.reconciliation_required') IN (1, '1', 'true') THEN 0
+                WHEN json_extract(d.raw_json, '$.wf85_final_timing_state') LIKE 'review_ready%' THEN 1
+                WHEN json_extract(d.raw_json, '$.deployment_status') = 'ALMOST_DEPLOYABLE' THEN 2
+                WHEN json_extract(d.raw_json, '$.deployment_status') = 'NO_CHASE' THEN 3
+                WHEN json_extract(d.raw_json, '$.deployment_status') IN ('DO_NOT_TOUCH', 'BELOW_STOP') THEN 4
+                ELSE 5
+            END,
+            upper(d.ticker)
         LIMIT ?
         """,
         (limit,),
     )
-    print_table(result, ["window", "ticker", "current_state", "entry_band_status", "fresh_intelligence_status", "recommended_action", "confidence", "owner_approval_required", "generated_at_utc"])
+    print_table(result, [
+        "ticker", "deployment_status", "wf85_final_timing_state", "wf85_decision_state",
+        "wf85_price_band_gate", "reconciliation_required", "bucket", "close", "band_position",
+        "legacy_daily_review_context", "owner_approval_required", "source_artifact_path",
+        "authority_boundary", "generated_at_utc",
+    ])
 
 
 def query_trust(conn: sqlite3.Connection, limit: int) -> None:
@@ -2403,10 +2671,47 @@ def query_answer_packet(ticker: str, json_output: bool = False) -> None:
             "missing_sections": missing_sections,
             "reason": "legacy answer-packet command now resolves to WF85 full-answer assembler",
         }
+    try:
+        import finance_cache_frontdoor
+
+        cache_payload = finance_cache_frontdoor.load_or_build_payload()
+        cache_row = finance_cache_frontdoor.row_by_ticker(cache_payload, ticker)
+        if cache_row:
+            route_readiness = as_dict(cache_row.get("route_readiness"))
+            descriptor["cache_frontdoor"] = {
+                "path": "tmp/finance-cache-frontdoor.json",
+                "status": cache_payload.get("status"),
+                "generated_at_utc": cache_payload.get("generated_at_utc"),
+                "safe_to_answer_from_cache": cache_row.get("safe_to_answer_from_cache"),
+                "material_claim_requires_source_open": cache_row.get("material_claim_requires_source_open"),
+                "source_open_status": cache_row.get("source_open_status"),
+                "freshness_status": cache_row.get("freshness_status"),
+                "needs_refresh_reason": cache_row.get("needs_refresh_reason"),
+                "routing_tier": cache_row.get("routing_tier"),
+                "routing_state": cache_row.get("routing_state"),
+                "timing_state": cache_row.get("timing_state"),
+                "decision_state": cache_row.get("decision_state"),
+                "trade_readiness_state": cache_row.get("trade_readiness_state"),
+                "authority_state": cache_row.get("authority_state"),
+                "next_route_action": route_readiness.get("next_route_action"),
+                "latest_price": cache_row.get("latest_price"),
+                "band_status": cache_row.get("band_status"),
+                "entry_band_low": cache_row.get("entry_band_low"),
+                "entry_band_high": cache_row.get("entry_band_high"),
+                "stop_or_invalidation": cache_row.get("stop_or_invalidation"),
+            }
+            descriptor["preferred_chat_source"] = "finance_cache_frontdoor"
+            descriptor["reason"] = "legacy answer-packet command resolves through the finance cache front door backed by WF85 full-answer assembler"
+    except Exception as exc:
+        descriptor["cache_frontdoor"] = {
+            "path": "tmp/finance-cache-frontdoor.json",
+            "status": "unavailable",
+            "reason": str(exc),
+        }
     if json_output:
         print(json.dumps(descriptor, indent=2, sort_keys=True))
         return
-    print_table([descriptor], ["ticker", "availability", "preferred_source", "answer_confidence", "decision_state", "canonical_answer_path"])
+    print_table([descriptor], ["ticker", "availability", "preferred_source", "preferred_chat_source", "answer_confidence", "decision_state", "canonical_answer_path"])
 
 
 def query_answer_contract(question: str, json_output: bool = False, output: str | None = None) -> None:
@@ -2506,10 +2811,16 @@ def query_deployment_readiness(conn: sqlite3.Connection, ticker: str | None, lim
     result = rows(
         conn,
         f"""
-        SELECT ticker, bucket, surface_state, workflow_state, machine_state, close,
+        SELECT ticker, bucket, surface_state,
+               json_extract(raw_json, '$.deployment_status') AS deployment_status,
+               json_extract(raw_json, '$.wf85_final_timing_state') AS wf85_final_timing_state,
+               json_extract(raw_json, '$.wf85_decision_state') AS wf85_decision_state,
+               json_extract(raw_json, '$.wf85_price_band_gate') AS wf85_price_band_gate,
+               json_extract(raw_json, '$.reconciliation_required') AS reconciliation_required,
+               workflow_state, machine_state, close,
                band_position, macro_gate, review_only_no_apply_artifact, band_stale,
                next_earnings_date, catalyst_blocker, source_artifact_path, authority_boundary
-        FROM v_cockpit_deployment_readiness
+        FROM deployment_readiness_rows
         {where}
         ORDER BY bucket, ticker
         LIMIT ?
@@ -2517,7 +2828,8 @@ def query_deployment_readiness(conn: sqlite3.Connection, ticker: str | None, lim
         params,
     )
     print_table(result, [
-        "ticker", "bucket", "surface_state", "workflow_state", "machine_state", "close",
+        "ticker", "bucket", "surface_state", "deployment_status", "wf85_final_timing_state",
+        "wf85_decision_state", "wf85_price_band_gate", "reconciliation_required", "workflow_state", "machine_state", "close",
         "band_position", "macro_gate", "review_only_no_apply_artifact", "band_stale",
         "next_earnings_date", "catalyst_blocker", "source_artifact_path", "authority_boundary",
     ])

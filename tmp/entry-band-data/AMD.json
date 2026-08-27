@@ -1,38 +1,14 @@
 {
   "ticker": "AMD",
   "name": "Advanced Micro Devices, Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 4.6,
-      "h": 5.52,
-      "l": 4.07,
-      "c": 5.14,
-      "v": 625.64
-    },
-    {
-      "d": "2016-07",
-      "o": 5.09,
-      "h": 7.16,
-      "l": 4.82,
-      "c": 6.86,
-      "v": 700.56
-    },
-    {
-      "d": "2016-08",
-      "o": 6.89,
-      "h": 8.0,
-      "l": 6.15,
-      "c": 7.4,
-      "v": 606.4
-    },
     {
       "d": "2016-09",
       "o": 7.18,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 351.87,
-      "h": 456.29,
+      "h": 527.2,
       "l": 338.7,
-      "c": 455.19,
-      "v": 388.07
+      "c": 516.1,
+      "v": 795.8
+    },
+    {
+      "d": "2026-06",
+      "o": 500.16,
+      "h": 584.73,
+      "l": 437.23,
+      "c": 580.91,
+      "v": 672.19
+    },
+    {
+      "d": "2026-07",
+      "o": 557.53,
+      "h": 574.2,
+      "l": 424.03,
+      "c": 476.15,
+      "v": 614.48
+    },
+    {
+      "d": "2026-08",
+      "o": 461.79,
+      "h": 530.13,
+      "l": 455.3,
+      "c": 473.25,
+      "v": 366.8
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 342.53,
     "stop": 271.73,
     "set": "2026-05-06",
-    "label": "295.33–342.53"
+    "label": "295.33-342.53"
   },
   "current_quote": {
-    "close": 455.19,
-    "ma20": 326.23,
-    "ma50": 254.51,
-    "ma200": 217.35,
-    "data_date": "2026-05-08"
+    "close": 473.25,
+    "ma20": 481.12,
+    "ma50": 510.23,
+    "ma200": 329.86,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_MA_CONSTRAINED",
-    "type": "PULLBACK",
-    "status": "ABOVE_BAND_WAIT",
-    "trend_stack": "BULLISH_20_50_200",
-    "suggested_low": 281.9,
-    "suggested_high": 342.6,
-    "suggested_stop": 248.71,
-    "sma_envelope_low": 267.73,
-    "sma_envelope_high": 295.91,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 411.81,
+    "suggested_high": 495.52,
+    "suggested_stop": 373.76,
+    "sma_envelope_low": 461.24,
+    "sma_envelope_high": 509.8,
     "earnings_state": "CLEAR",
-    "band_confidence": 4,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
     "needs_review": true,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:38+00:00"
+  "generated_at": "2026-08-21T20:32:23+00:00"
 }

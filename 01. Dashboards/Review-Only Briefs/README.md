@@ -11,8 +11,9 @@ These briefs are:
 - not allowed to override owner notes
 
 Canonical owner notes still win:
+- `03. Portfolio/Execution Board.md`
 - `03. Portfolio/Portfolio Snapshot.md`
-- `03. Portfolio/Deployment Trigger Sheet.md`
+- `04. Research/Coverage and Watchlist.md`
 - `05. Intelligence/Weekly Positioning Review.md`
 - `05. Intelligence/Event Calendar.md`
 

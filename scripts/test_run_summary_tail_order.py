@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -9,7 +12,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from chain_manifest import manifest_steps
 from dashboard_run_summary_consumer import propagate_run_summary
-from run_summary_refresh import build_run_summary, normalized_chain_status
+from run_summary_refresh import build_run_summary, normalized_chain_status, required_output_status
 
 
 def expect(condition: bool, message: str, errors: list[str]) -> None:
@@ -95,6 +98,7 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "portfolio_mutation_proposal_generator.py",
             "capital_deployment_recommendation_report.py",
             "capital_deployment_recommendation_validator.py",
+            "auto_apply_position_sizing_semantic_sync.py",
             "probability_readiness_report.py",
             "probability_readiness_validator.py",
             "board_canon_guardrail.py",
@@ -106,6 +110,7 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "finance_discrepancy_resolver.py",
             "current_window_artifact_index.py",
             "artifact_index.py",
+            "run_summary_refresh.py",
         ],
         "post-close": [
             "run_summary_refresh.py",
@@ -120,6 +125,7 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "portfolio_mutation_proposal_generator.py",
             "capital_deployment_recommendation_report.py",
             "capital_deployment_recommendation_validator.py",
+            "auto_apply_position_sizing_semantic_sync.py",
             "probability_readiness_report.py",
             "probability_readiness_validator.py",
             "board_canon_guardrail.py",
@@ -135,8 +141,18 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "authority_vocabulary_consistency_check.py",
             "post_apply_validation_chain.py",
             "state_history_capture.py",
+            "post_close_final_quote_ledger.py",
+            "ticker_card_freshness_owner_runner.py",
+            "wf78_capital_review_queue.py",
+            "finance_sql_canon_access.py",
+            "finance_decision_factory.py",
+            "finance_decision_sync_spine.py",
+            "veritas_finance_brief.py",
+            "wf78_tier_weighted_freshness_resolver.py",
+            "market_today_answer_packet.py",
             "current_window_artifact_index.py",
             "artifact_index.py",
+            "run_summary_refresh.py",
         ],
         "post-earnings": [
             "run_summary_refresh.py",
@@ -147,6 +163,7 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "daily_review_objects.py",
             "current_window_artifact_index.py",
             "artifact_index.py",
+            "run_summary_refresh.py",
         ],
         "sunday": [
             "run_summary_refresh.py",
@@ -160,6 +177,7 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "portfolio_mutation_proposal_generator.py",
             "capital_deployment_recommendation_report.py",
             "capital_deployment_recommendation_validator.py",
+            "auto_apply_position_sizing_semantic_sync.py",
             "probability_readiness_report.py",
             "probability_readiness_validator.py",
             "board_canon_guardrail.py",
@@ -172,6 +190,7 @@ def test_run_summary_post_tail(errors: list[str]) -> None:
             "archive_suggester.py",
             "current_window_artifact_index.py",
             "artifact_index.py",
+            "run_summary_refresh.py",
         ],
     }
     for window, expected in expected_tails.items():
@@ -201,6 +220,7 @@ def test_success_tail_normalizes_terminal_state(errors: list[str]) -> None:
             {"script": "portfolio_mutation_proposal_generator.py", "status": "pending"},
             {"script": "capital_deployment_recommendation_report.py", "status": "pending"},
             {"script": "capital_deployment_recommendation_validator.py", "status": "pending"},
+            {"script": "auto_apply_position_sizing_semantic_sync.py", "status": "pending"},
             {"script": "probability_readiness_report.py", "status": "pending"},
             {"script": "probability_readiness_validator.py", "status": "pending"},
             {"script": "board_canon_guardrail.py", "status": "pending"},
@@ -212,6 +232,7 @@ def test_success_tail_normalizes_terminal_state(errors: list[str]) -> None:
             {"script": "finance_discrepancy_resolver.py", "status": "pending"},
             {"script": "current_window_artifact_index.py", "status": "pending"},
             {"script": "artifact_index.py", "status": "pending"},
+            {"script": "run_summary_refresh.py", "status": "pending"},
         ],
     }
     status, reason, normalized = normalized_chain_status(chain_execution)
@@ -250,6 +271,36 @@ def test_run_summary_surfaces_sql_artifact_index_health(errors: list[str]) -> No
     expect("checks" in artifact_index, "artifact_index health must include validation check summary", errors)
     expect("safety_counts" in artifact_index, "artifact_index health must include safety counts", errors)
     expect("drift_fingerprint_tables" in artifact_index, "artifact_index health must expose drift fingerprint coverage", errors)
+
+
+def test_incremental_reused_outputs_do_not_become_stale(errors: list[str]) -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        path = Path(tmpdir) / "fresh-before-run.json"
+        generated_at = datetime.now(timezone.utc) - timedelta(hours=2)
+        path.write_text(
+            json.dumps({
+                "status": "ok",
+                "generated_at_utc": generated_at.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            }),
+            encoding="utf-8",
+        )
+        attempt_started_at = generated_at + timedelta(hours=1)
+        stale_status, _, _, stale_reused = required_output_status(
+            path,
+            "json",
+            attempt_started_at=attempt_started_at,
+            incremental_reused=False,
+        )
+        reused_status, _, _, reused = required_output_status(
+            path,
+            "json",
+            attempt_started_at=attempt_started_at,
+            incremental_reused=True,
+        )
+        expect(stale_status == "stale", f"non-reused pre-run output should be stale, got {stale_status}", errors)
+        expect(stale_reused is False, "non-reused pre-run output should not be marked reused", errors)
+        expect(reused_status == "ok", f"incremental skipped_fresh output should retain intrinsic status, got {reused_status}", errors)
+        expect(reused is True, "incremental skipped_fresh output should be marked reused", errors)
 
 
 def test_dashboard_consumer_propagates_sql_artifact_index_health(errors: list[str]) -> None:
@@ -307,6 +358,7 @@ def main() -> int:
     test_run_summary_contract_fields(errors)
     test_run_summary_downstream_authority_fail_closed(errors)
     test_run_summary_surfaces_sql_artifact_index_health(errors)
+    test_incremental_reused_outputs_do_not_become_stale(errors)
     test_dashboard_consumer_propagates_sql_artifact_index_health(errors)
     if errors:
         print("run_summary_tail_order_tests_failed")

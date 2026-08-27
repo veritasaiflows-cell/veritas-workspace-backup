@@ -39,7 +39,7 @@
 ## Goals
 
 ### Short term, next 6 to 12 months
-- Build a well-rounded portfolio with a few thousand dollars
+- Build a well-rounded portfolio from a starting capital base of **$10,000**
 - Improve market technical understanding
 - Build a repeatable system
 - Pursue absolute return while learning fast
@@ -51,8 +51,9 @@
 
 ## Capital and liquidity
 
-- Starting capital base: about $5k to $10k
-- Desired highly liquid allocation: 5% to 10%
+- Starting capital base: **$10,000 flat** as approved by Randall on 2026-05-18 for real-capital-quality deployment planning and paper-trading preparation
+- Desired highly liquid allocation: 10% target cash reserve unless a later explicit posture decision changes it
+- Working deployable capital after cash reserve: **$9,000**
 
 ## Time horizons in scope
 

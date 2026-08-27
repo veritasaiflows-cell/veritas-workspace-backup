@@ -128,9 +128,50 @@ def test_apply_updates_only_event_calendar_block_and_nvda_primary(errors: list[s
             errors.append("repeated same-day apply duplicated the Last updated maintenance entry")
 
 
+def test_apply_noops_when_provider_unavailable_and_no_rollforward_proposals(errors: list[str]) -> None:
+    before = "# Event Calendar\n\nunchanged\n"
+    rollforward = {
+        "status": "partial",
+        "warnings": ["earnings-calendar artifact is not usable"],
+        "proposals": [],
+    }
+    after, summary = apply_mod.build_updated_text(before, rollforward, {})
+
+    if after != before:
+        errors.append("provider-unavailable no-op should not mutate Event Calendar text")
+    if summary.get("block_action") != "no_op_provider_unavailable":
+        errors.append(f"provider-unavailable no-op summary missing: {summary}")
+    if summary.get("applied_rollforward_count") != 0:
+        errors.append(f"provider-unavailable no-op should apply zero rows: {summary}")
+    if not summary.get("provider_unavailable_noop"):
+        errors.append(f"provider-unavailable no-op flag missing: {summary}")
+
+
+def test_apply_refuses_warning_packet_with_staged_proposals(errors: list[str]) -> None:
+    rollforward = {
+        "status": "partial",
+        "warnings": ["earnings-calendar artifact is not usable"],
+        "proposals": [
+            {
+                "ticker": "ETN",
+                "provider_next_earnings_date": "2026-08-04",
+            }
+        ],
+    }
+    try:
+        apply_mod.build_updated_text("# Event Calendar\n", rollforward, {})
+    except RuntimeError as exc:
+        if "roll-forward packet has warnings" not in str(exc):
+            errors.append(f"unexpected warning-packet refusal: {exc}")
+    else:
+        errors.append("warning packet with staged proposals should still be refused")
+
+
 def main() -> int:
     errors: list[str] = []
     test_apply_updates_only_event_calendar_block_and_nvda_primary(errors)
+    test_apply_noops_when_provider_unavailable_and_no_rollforward_proposals(errors)
+    test_apply_refuses_warning_packet_with_staged_proposals(errors)
     if errors:
         print("event_calendar_apply_tests_failed")
         for error in errors:

@@ -130,12 +130,16 @@ WATCH_FAMILIES = {
     "wf78-tier-b-final-promotion-packet": {
         "owner_workflow": "WF78 tier/routing spine",
         "primary_owner_script": "scripts/wf78_tier_b_final_promotion_packet.py",
-        "class": "source_proof_packet",
+        "class": "deprecated_archive_candidate",
+        "status": "deprecated_for_authority",
+        "replacement_artifact": "wf78-auto-tier-routing",
     },
     "wf78-tier-a-final-promotion-packet": {
         "owner_workflow": "WF78 tier/routing spine",
         "primary_owner_script": "scripts/wf78_tier_a_final_promotion_packet.py",
-        "class": "source_proof_packet",
+        "class": "deprecated_archive_candidate",
+        "status": "deprecated_for_authority",
+        "replacement_artifact": "wf78-auto-tier-routing",
     },
     "wf78-auto-tier-routing": {
         "owner_workflow": "WF78 tier/routing spine",

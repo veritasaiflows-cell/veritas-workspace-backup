@@ -1,12 +1,12 @@
 {
   "ticker": "VRT",
   "name": "Vertiv Holdings Co",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
     "start": "2018-08",
-    "end": "2026-05"
+    "end": "2026-08"
   },
   "data": [
     {
@@ -756,10 +756,34 @@
     {
       "d": "2026-05",
       "o": 330.65,
-      "h": 359.84,
-      "l": 321.45,
-      "c": 339.97,
-      "v": 33.97
+      "h": 379.93,
+      "l": 307.3,
+      "c": 315.71,
+      "v": 114.28
+    },
+    {
+      "d": "2026-06",
+      "o": 317.99,
+      "h": 358.54,
+      "l": 275.18,
+      "c": 334.82,
+      "v": 151.54
+    },
+    {
+      "d": "2026-07",
+      "o": 325.8,
+      "h": 338.88,
+      "l": 220.92,
+      "c": 241.57,
+      "v": 134.68
+    },
+    {
+      "d": "2026-08",
+      "o": 236.98,
+      "h": 300.3,
+      "l": 234.96,
+      "c": 261.95,
+      "v": 70.39
     }
   ],
   "macro_regimes": {
@@ -817,34 +841,36 @@
     }
   },
   "preferred_band": {
-    "low": 306.85,
-    "high": 338.33,
-    "stop": 291.11,
-    "set": "2026-05-06",
-    "label": "306.85–338.33"
+    "low": 300.02,
+    "high": 319.13,
+    "stop": 276.97,
+    "set": "2026-06-18",
+    "label": "300.02–319.13"
   },
   "current_quote": {
-    "close": 339.97,
-    "ma20": 319.58,
-    "ma50": 284.75,
-    "ma200": 197.28,
-    "data_date": "2026-05-08"
+    "close": 261.95,
+    "ma20": 269.07,
+    "ma50": 293.89,
+    "ma200": 253.11,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_MA_CONSTRAINED",
-    "type": "PULLBACK",
-    "status": "ABOVE_BAND_WAIT",
-    "trend_stack": "BULLISH_20_50_200",
-    "suggested_low": 281.67,
-    "suggested_high": 322.72,
-    "suggested_stop": 263.0,
-    "sma_envelope_low": 273.55,
-    "sma_envelope_high": 302.35,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 230.66,
+    "suggested_high": 280.95,
+    "suggested_stop": 207.79,
+    "sma_envelope_low": 273.11,
+    "sma_envelope_high": 301.85,
     "earnings_state": "CLEAR",
-    "band_confidence": 4,
-    "needs_review": true,
-    "canonical_apply_eligible": false
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
+    "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:36+00:00"
+  "generated_at": "2026-08-21T20:32:21+00:00"
 }

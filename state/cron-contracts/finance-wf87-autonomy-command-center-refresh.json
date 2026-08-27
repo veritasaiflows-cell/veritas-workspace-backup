@@ -1,0 +1,78 @@
+{
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF87 autonomy command center",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "review_only": true,
+    "schedule_mutation_allowed": false
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "contract_reason": "Added during cron cadence reduction so changed schedule/effort remains drift-tracked.",
+  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "mode": "none"
+  },
+  "description": "Command-backed WF87 autonomy command-center refresh. Review-only routing-card proof; no approval, execution, paper/live/account, canon/portfolio, or capital authority.",
+  "enabled": true,
+  "expected_artifacts": [
+    "tmp/wf87-autonomy-command-center.json",
+    "tmp/wf87-v2-readiness-rollup.json",
+    "tmp/paper-autotrader/assisted-order-cards.json",
+    "tmp/wf87-market-hours-gate-probe.json",
+    "tmp/wf87-shadow-outcome-scorecard.json",
+    "tmp/wf87-assisted-paper-cadence.json",
+    "tmp/wf85-deployment-timing-gate.json",
+    "tmp/morning-paper-deployment-recommendation-cards.json",
+    "tmp/autonomous-routing-deployment-cards.json",
+    "tmp/autonomous-card-authority-audit.json"
+  ],
+  "job_id": "de274a52-aaf1-4b28-926d-60421ddcbdcc",
+  "name": "Finance - WF87 Autonomy Command Center Refresh",
+  "owner_workflow": "WF87 autonomy command center",
+  "payload": {
+    "argv": [
+      "python",
+      "scripts\\wf87_autonomy_command_center.py",
+      "--refresh-routing-cards",
+      "--write",
+      "--write-md",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "kind": "command",
+    "timeoutSeconds": 900
+  },
+  "required": true,
+  "schedule": {
+    "expr": "50 6,10 * * 1-5",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-06-29T04:55:49Z",
+  "wakeMode": "now"
+}

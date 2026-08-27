@@ -1,0 +1,12 @@
+{
+  "schema_version": "dashboard_compact_shell_validation.v1",
+  "generated_at_utc": "2026-06-18T21:52:04Z",
+  "status": "ok",
+  "critical": 0,
+  "warning": 0,
+  "output": "tmp/veritas-command-center-compact.html",
+  "reader_output": "tmp/veritas-command-center-compact-reader.json",
+  "source_view_model": "tmp/dashboard-presentation-view-model.json",
+  "source_v2_reader": "tmp/dashboard-v2-reader-migration.json",
+  "findings": []
+}

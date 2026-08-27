@@ -9,12 +9,18 @@ from typing import Any
 from artifact_index import DEFAULT_DB as ARTIFACT_INDEX_DB, validate_index as validate_artifact_index
 from market_data_utils import atomic_write_json, load_json_artifact
 import official_capture_period_registry as _registry
+from chain_manifest import manifest_steps
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
+ROLLFORWARD_GUARD_PATH = TMP / "earnings-rollforward-guard.json"
 
 STATUS_ORDER = {"ok": 0, "warning": 1, "blocked": 2, "error": 3}
 FRESHNESS_ORDER = {"ok": 0, "usable_with_caution": 1, "partial": 2, "stale": 3, "missing": 4}
+REPAIRED_FAILED_STEP_ARTIFACTS = {
+    "reference_band_note_sync.py": TMP / "reference-band-note-sync.json",
+    "test_dashboard_acceptance.py": TMP / "dashboard-acceptance-report.json",
+}
 
 WINDOW_OWNER = "scripts/run_finance_refresh_chain.py"
 WINDOW_ENTRYPOINTS = {
@@ -180,6 +186,82 @@ def output_status(path: Path, kind: str, attempt_started_at: datetime | None = N
     return status, data, generated_at
 
 
+def normalized_workspace_path(path: Path | str) -> str:
+    candidate = Path(path)
+    if not candidate.is_absolute():
+        candidate = WORKSPACE / candidate
+    try:
+        return str(candidate.relative_to(WORKSPACE)).replace("\\", "/")
+    except ValueError:
+        return str(candidate).replace("\\", "/")
+
+
+def incremental_reused_output_paths(window: str, chain_execution: dict[str, Any] | None) -> set[str]:
+    if not chain_execution or chain_execution.get("incremental") is not True:
+        return set()
+    try:
+        steps = manifest_steps(window)
+    except Exception:
+        return set()
+    reused: set[str] = set()
+    for record in (chain_execution or {}).get("steps") or []:
+        if not isinstance(record, dict) or record.get("status") != "skipped_fresh":
+            continue
+        try:
+            idx = int(record.get("index")) - 1
+        except (TypeError, ValueError):
+            continue
+        if idx < 0 or idx >= len(steps):
+            continue
+        for output in steps[idx].get("expected_outputs") or []:
+            reused.add(normalized_workspace_path(str(output)))
+    return reused
+
+
+def rollforward_guard_current_output_paths(attempt_started_at: datetime | None) -> set[str]:
+    """Return exact official-capture paths proven current during this window.
+
+    Official capture is intentionally idempotent: a validator-clean Q2
+    capture does not need to be rewritten just to prove it remains the latest
+    SEC period.  The roll-forward guard may reuse it only when the guard ran
+    during this window and explicitly marked the exact capture current.
+    """
+    guard = read_json(ROLLFORWARD_GUARD_PATH)
+    if not guard:
+        return set()
+    guard_generated_at = parse_iso(file_generated_at(ROLLFORWARD_GUARD_PATH, guard))
+    if attempt_started_at and (guard_generated_at is None or guard_generated_at < attempt_started_at):
+        return set()
+
+    reused: set[str] = set()
+    for item in guard.get("tickers") or []:
+        if not isinstance(item, dict):
+            continue
+        if str(item.get("status") or "").lower() != "current":
+            continue
+        if item.get("current_validation_clean") is not True:
+            continue
+        for key in ("current_capture_artifact", "current_validation_artifact"):
+            path = str(item.get(key) or "").strip()
+            if path:
+                reused.add(normalized_workspace_path(path))
+    return reused
+
+
+def required_output_status(
+    path: Path,
+    kind: str,
+    *,
+    attempt_started_at: datetime | None = None,
+    incremental_reused: bool = False,
+) -> tuple[str, dict[str, Any] | None, str, bool]:
+    status, data, generated_at = output_status(path, kind, attempt_started_at=attempt_started_at)
+    if status == "stale" and incremental_reused:
+        status, data, generated_at = output_status(path, kind, attempt_started_at=None)
+        return status, data, generated_at, True
+    return status, data, generated_at, False
+
+
 def current_exec_freshness() -> str:
     dashboard_data = read_json(TMP / "dashboard-data.json")
     freshness = str((dashboard_data or {}).get("exec_freshness") or "").strip().lower()
@@ -271,6 +353,70 @@ def failed_steps(chain_execution: dict[str, Any] | None) -> list[dict[str, Any]]
     return [step for step in steps if step.get("status") == "failed"]
 
 
+DATA_QUALITY_REPAIR_STATUSES = {"ticker_scoped_repair", "systemic_data_quality"}
+
+
+def data_quality_repair_steps(chain_execution: dict[str, Any] | None) -> list[dict[str, Any]]:
+    steps = (chain_execution or {}).get("steps") or []
+    return [
+        step for step in steps
+        if isinstance(step, dict) and step.get("status") in DATA_QUALITY_REPAIR_STATUSES
+    ]
+
+
+def data_quality_repair_summary(chain_execution: dict[str, Any] | None) -> dict[str, Any]:
+    repairs = data_quality_repair_steps(chain_execution)
+    classifications = {str(step.get("status") or "") for step in repairs}
+    classification = (
+        "systemic_data_quality"
+        if "systemic_data_quality" in classifications
+        else "ticker_scoped_repair" if "ticker_scoped_repair" in classifications else None
+    )
+    tickers = sorted({
+        str(ticker).strip().upper()
+        for step in repairs
+        for ticker in ((step.get("data_quality_repair") or {}).get("tickers") or [])
+        if str(ticker).strip()
+    })
+    return {
+        "classification": classification,
+        "repair_count": len(repairs),
+        "ticker_count": len(tickers),
+        "tickers": tickers,
+        "steps": [str(step.get("script") or "") for step in repairs],
+    }
+
+
+def failed_step_repair_artifact(step: dict[str, Any]) -> Path | None:
+    script = str(step.get("script") or "")
+    return REPAIRED_FAILED_STEP_ARTIFACTS.get(script)
+
+
+def failed_step_currently_repaired(step: dict[str, Any]) -> bool:
+    artifact = failed_step_repair_artifact(step)
+    if artifact is None:
+        return False
+    payload = read_json(artifact)
+    if not payload:
+        return False
+    if str(step.get("script") or "") == "test_dashboard_acceptance.py":
+        return bool(((payload.get("summary") or {}).get("all_passed")))
+    status = str(payload.get("status") or payload.get("overall") or "").lower()
+    validation = payload.get("validation") if isinstance(payload.get("validation"), dict) else {}
+    validation_status = str(validation.get("status") or "").lower()
+    if status not in {"ok", "ok_no_changes"}:
+        return False
+    return validation_status in {"", "ok", "warning"}
+
+
+def unresolved_failed_steps(chain_execution: dict[str, Any] | None) -> list[dict[str, Any]]:
+    return [step for step in failed_steps(chain_execution) if not failed_step_currently_repaired(step)]
+
+
+def repaired_failed_steps(chain_execution: dict[str, Any] | None) -> list[dict[str, Any]]:
+    return [step for step in failed_steps(chain_execution) if failed_step_currently_repaired(step)]
+
+
 def skipped_steps(chain_execution: dict[str, Any] | None) -> list[dict[str, Any]]:
     steps = (chain_execution or {}).get("steps") or []
     return [step for step in steps if step.get("status") == "skipped_after_failure"]
@@ -280,7 +426,7 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
     raw_status = str((chain_execution or {}).get("status") or "unknown")
     steps = (chain_execution or {}).get("steps") or []
     recovery = (chain_execution or {}).get("recovery") or {}
-    if raw_status in {"ok", "failed", "completed_with_recovery"}:
+    if raw_status in {"ok", "failed", "completed_with_recovery", "completed_with_ticker_repairs", "completed_with_systemic_data_quality"}:
         return raw_status, "runtime status already terminal", True
     if raw_status == "unknown":
         return raw_status, "runtime status unavailable", False
@@ -290,7 +436,15 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
     blocking_unfinished = [
         step
         for step in steps
-        if step.get("status") not in {"ok", "failed", "skipped_after_failure", "running", "pending"}
+        if step.get("status") not in {
+            "ok",
+            "failed",
+            "skipped_after_failure",
+            "ticker_scoped_repair",
+            "systemic_data_quality",
+            "running",
+            "pending",
+        }
     ]
 
     if (
@@ -311,6 +465,7 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
             "portfolio_mutation_proposal_generator.py",
             "capital_deployment_recommendation_report.py",
             "capital_deployment_recommendation_validator.py",
+            "auto_apply_position_sizing_semantic_sync.py",
             "probability_readiness_report.py",
             "probability_readiness_validator.py",
             "board_canon_guardrail.py",
@@ -326,15 +481,30 @@ def normalized_chain_status(chain_execution: dict[str, Any] | None) -> tuple[str
             "authority_vocabulary_consistency_check.py",
             "post_apply_validation_chain.py",
             "state_history_capture.py",
+            "post_close_final_quote_ledger.py",
+            "ticker_card_freshness_owner_runner.py",
+            "wf78_capital_review_queue.py",
+            "finance_sql_canon_access.py",
+            "finance_decision_factory.py",
+            "finance_decision_sync_spine.py",
+            "veritas_finance_brief.py",
+            "wf78_tier_weighted_freshness_resolver.py",
+            "market_today_answer_packet.py",
             "archive_suggester.py",
             "current_window_artifact_index.py",
             "artifact_index.py",
+            "run_summary_refresh.py",
             "tmp_cleanup.py",
         }
         if pending_scripts and not pending_scripts.issubset(allowed_pending_tail):
             return raw_status, "runtime state not safe to normalize", False
         if bool(recovery.get("triggered")):
             return "completed_with_recovery", "normalized from finalizer self-observation during run_summary_refresh.py before post-summary tail steps", True
+        classifications = {str(step.get("status") or "") for step in steps}
+        if "systemic_data_quality" in classifications:
+            return "completed_with_systemic_data_quality", "normalized from finalizer self-observation with systemic data-quality containment", True
+        if "ticker_scoped_repair" in classifications:
+            return "completed_with_ticker_repairs", "normalized from finalizer self-observation with ticker-scoped data-quality containment", True
         return "ok", "normalized from finalizer self-observation during run_summary_refresh.py before post-summary tail steps", True
 
     return raw_status, "runtime state not safe to normalize", False
@@ -347,8 +517,9 @@ def determine_status(
     chain_execution: dict[str, Any] | None,
 ) -> tuple[str, bool, list[str]]:
     blockers: list[str] = []
+    data_quality = data_quality_repair_summary(chain_execution)
 
-    chain_failures = failed_steps(chain_execution)
+    chain_failures = unresolved_failed_steps(chain_execution)
     if chain_failures:
         step = chain_failures[0]
         blockers.append(
@@ -368,12 +539,16 @@ def determine_status(
     if critical_count > 0:
         blockers.append(f"Dashboard validation surfaced {critical_count} critical issue(s)")
 
+    if data_quality.get("classification") == "systemic_data_quality":
+        tickers = ", ".join(data_quality.get("tickers") or []) or "unknown"
+        blockers.append(f"Systemic data-quality repair required before fundamental decision use: {tickers}")
+
     if blockers:
         return "blocked", True, blockers
 
     warning_count = int(((validation or {}).get("summary") or {}).get("warning", 0) or 0)
     fallbacks = detect_fallbacks(validation)
-    if warning_count > 0 or fallbacks:
+    if data_quality.get("classification") == "ticker_scoped_repair" or warning_count > 0 or fallbacks:
         return "warning", False, []
     return "ok", False, []
 
@@ -433,13 +608,22 @@ def operator_action_block(
     artifact_index: dict[str, Any],
 ) -> tuple[list[str], str]:
     recovery = (chain_execution or {}).get("recovery") or {}
-    failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
+    unresolved_failures = unresolved_failed_steps(chain_execution)
+    failed_step = recovery.get("failed_step") if not failed_step_currently_repaired(recovery.get("failed_step") or {}) else None
+    failed_step = failed_step or (unresolved_failures[0] if unresolved_failures else None)
     stale_or_failed_outputs = [name for name, meta in outputs.items() if str(meta.get("status") or "") != "ok"]
+    data_quality = data_quality_repair_summary(chain_execution)
+    data_quality_tickers = ", ".join(data_quality.get("tickers") or []) or "unknown"
 
     actions: list[str] = []
     next_action = f"Consume the {window} window outputs normally; no immediate repair action is required."
 
     if status in {"blocked", "error"}:
+        if data_quality.get("classification") == "systemic_data_quality":
+            actions.append(
+                "Keep fundamental claims and source-dependent decision work blocked for "
+                f"{data_quality_tickers}; use the consolidated same-day source-open repair queue before revalidation."
+            )
         if artifact_index.get("operator_action_required"):
             actions.append(str(artifact_index.get("operator_next_action") or "Restore derived SQL artifact-index health before using SQL cockpit outputs."))
         if failed_step:
@@ -454,13 +638,23 @@ def operator_action_block(
         if fallback_reasons:
             actions.append("Review fallback-dependent macro and policy inputs before trusting any surviving warning-grade artifacts.")
 
-        if failed_step and str(failed_step.get("script") or "") == "test_dashboard_acceptance.py":
+        if data_quality.get("classification") == "systemic_data_quality":
+            next_action = (
+                "Use the consolidated same-day source-open repair queue for "
+                f"{data_quality_tickers}, then rerun fundamental validation before decision use."
+            )
+        elif failed_step and str(failed_step.get("script") or "") == "test_dashboard_acceptance.py":
             next_action = f"Inspect tmp/dashboard-acceptance-report.json and fix the failing acceptance assertions before trusting the {window} window."
         elif failed_step:
             next_action = f"Inspect {failed_step.get('script')} and rerun the {window} window once that blocker is fixed."
         elif stale_or_failed_outputs:
             next_action = f"Refresh the blocked {window} outputs now marked stale or missing before using this window."
     elif status == "warning":
+        if data_quality.get("classification") == "ticker_scoped_repair":
+            actions.append(
+                "Source-open and revalidate the ticker-scoped fundamental repair for "
+                f"{data_quality_tickers}; unrelated window outputs remain complete but this ticker stays caveated."
+            )
         if artifact_index.get("operator_action_required"):
             actions.append(str(artifact_index.get("operator_next_action") or "Restore derived SQL artifact-index health before using SQL cockpit outputs."))
         if fallback_reasons:
@@ -489,12 +683,22 @@ def build_run_summary(window: str) -> dict[str, Any]:
     chain_execution = load_chain_execution(window)
     attempt_started_at = parse_iso((chain_execution or {}).get("started_at_utc"))
     attempt_completed_at = parse_iso((chain_execution or {}).get("completed_at_utc"))
+    reused_outputs = incremental_reused_output_paths(window, chain_execution)
+    rollforward_current_outputs = rollforward_guard_current_output_paths(attempt_started_at)
 
     outputs: dict[str, dict[str, Any]] = {}
     timestamps: list[datetime] = []
     for name, spec in WINDOW_REQUIRED_OUTPUTS[window].items():
         path = spec["path"]
-        status, data, generated_at = output_status(path, spec["kind"], attempt_started_at=attempt_started_at)
+        normalized_path = normalized_workspace_path(path)
+        incremental_reused = normalized_path in reused_outputs
+        rollforward_current_reused = normalized_path in rollforward_current_outputs
+        status, data, generated_at, reused_from_incremental_skip = required_output_status(
+            path,
+            spec["kind"],
+            attempt_started_at=attempt_started_at,
+            incremental_reused=incremental_reused or rollforward_current_reused,
+        )
         generated_dt = parse_iso(generated_at)
         if generated_dt and (attempt_started_at is None or generated_dt >= attempt_started_at):
             timestamps.append(generated_dt)
@@ -503,8 +707,13 @@ def build_run_summary(window: str) -> dict[str, Any]:
             "path": str(path.relative_to(WORKSPACE)).replace("\\", "/"),
             "generated_at_utc": generated_at,
         }
+        if incremental_reused and reused_from_incremental_skip:
+            outputs[name]["incremental_reused"] = True
+        if rollforward_current_reused and reused_from_incremental_skip:
+            outputs[name]["rollforward_guard_current_reused"] = True
 
     status, stop_line, blockers = determine_status(outputs, acceptance, validation, chain_execution)
+    data_quality = data_quality_repair_summary(chain_execution)
     warnings = [w.get("message", "") for w in (validation or {}).get("warnings", []) if w.get("message")]
     fallback_reasons = detect_fallbacks(validation)
     chain_status, chain_status_reason, chain_status_normalized = normalized_chain_status(chain_execution)
@@ -516,7 +725,7 @@ def build_run_summary(window: str) -> dict[str, Any]:
         )
         if status == "ok":
             status = "warning"
-    terminal_chain_statuses = {"ok", "failed", "completed_with_recovery"}
+    terminal_chain_statuses = {"ok", "failed", "completed_with_recovery", "completed_with_ticker_repairs", "completed_with_systemic_data_quality"}
     execution_state_ambiguous = chain_status not in terminal_chain_statuses or not chain_status_normalized
     if execution_state_ambiguous:
         warnings.append(
@@ -548,7 +757,19 @@ def build_run_summary(window: str) -> dict[str, Any]:
     workbook_status = status if status in {"blocked", "error"} else str((workbook_manifest or {}).get("overall_status") or status)
     downstream_badge = "bad" if status in {"blocked", "error"} else ("warn" if status == "warning" else "ok")
     recovery = (chain_execution or {}).get("recovery") or {}
-    failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
+    unresolved_failures = unresolved_failed_steps(chain_execution)
+    raw_failed_step = recovery.get("failed_step") or (failed_steps(chain_execution)[0] if failed_steps(chain_execution) else None)
+    failed_step = raw_failed_step
+    if raw_failed_step and failed_step_currently_repaired(raw_failed_step):
+        failed_step = unresolved_failures[0] if unresolved_failures else None
+    repaired_failures = repaired_failed_steps(chain_execution)
+    data_quality_only = (
+        data_quality.get("classification") is not None
+        and not unresolved_failures
+        and not any(info.get("status") in {"missing", "failed", "stale"} for info in outputs.values())
+        and (acceptance is None or bool((acceptance or {}).get("summary", {}).get("all_passed")))
+        and int(validation_summary.get("critical", 0) or 0) == 0
+    )
 
     note_mutation_allowed, note_mutation_reason = canonical_note_mutation_allowed(status, stop_line, validation)
     review_only_brief = review_only_brief_status(window)
@@ -595,8 +816,13 @@ def build_run_summary(window: str) -> dict[str, Any]:
             "recovery_triggered": bool(recovery.get("triggered")),
             "recovery_reason": str(recovery.get("reason") or ""),
             "failed_step": failed_step,
+            "raw_failed_step": raw_failed_step,
+            "repaired_failed_steps": [step.get("script") for step in repaired_failures],
             "skipped_steps": [step.get("script") for step in skipped_steps(chain_execution)],
             "finalized_after_failure": bool(recovery.get("triggered")),
+            "data_quality_repair": data_quality,
+            "data_quality_only": data_quality_only,
+            "unrelated_branches_continuation": "completed_or_continues" if data_quality.get("classification") else "not_applicable",
         },
         "validation": {
             "acceptance_passed": bool((acceptance or {}).get("summary", {}).get("all_passed")),

@@ -1,0 +1,62 @@
+{
+  "schema": "veritas.openai_oauth_budget_policy.v1",
+  "effective_at_utc": "2026-08-09T00:00:00Z",
+  "status": "ok",
+  "purpose": "Static local advisory policy for OpenAI OAuth subscription capacity monitoring.",
+  "billing_mode": "oauth_subscription",
+  "action_mode": "advisory_only",
+  "actual_billed_cost": {
+    "amount_usd": null,
+    "billing_period_label": null,
+    "source": "not_recorded_do_not_infer",
+    "recorded_at_utc": null
+  },
+  "thresholds_percent": {
+    "reserve": 20.0,
+    "reduce_routine_at_or_below": 30.0,
+    "pause_noncritical_at_or_below": 15.0,
+    "urgent_only_at_or_below": 5.0
+  },
+  "snapshot_freshness_max_hours": 24.0,
+  "event_refresh": {
+    "weekly_reset": {
+      "requires_authoritative_sanitized_observation": true,
+      "record_only_when_observation_is_present": true
+    },
+    "daily_consumer_refresh": {
+      "uses_existing_snapshot_only": true,
+      "capacity_capture_inferred": false
+    },
+    "high_burn_preflight_max_snapshot_age_hours": 6.0,
+    "parent_closeout": {
+      "capacity_recording_allowed": false,
+      "implementation_attribution_separate": true
+    },
+    "automatic_capacity_discovery_allowed": false
+  },
+  "credit_purchase_or_overage": {
+    "requires_explicit_owner_approval": true,
+    "automatic_purchase_allowed": false
+  },
+  "automatic_mutation": {
+    "cron_allowed": false,
+    "model_route_allowed": false,
+    "runtime_config_allowed": false
+  },
+  "unknown_capacity_behavior": {
+    "missing_or_stale_is_warning": true,
+    "automatic_throttling_authorized": false,
+    "owner_approval_inferred": false
+  },
+  "authority_boundary": {
+    "local_only": true,
+    "metadata_only": true,
+    "advisory_only": true,
+    "external_export_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "model_route_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "credit_purchase_or_overage_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

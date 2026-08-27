@@ -27,6 +27,7 @@ TMP = ROOT / "tmp"
 DEFAULT_OUTPUT = TMP / "chief-intelligence-promotion-gate.json"
 DEFAULT_VALIDATION_OUTPUT = TMP / "chief-intelligence-promotion-gate-validation.json"
 DEFAULT_PORTFOLIO_CONFIG = TMP / "portfolio-config.json"
+DEFAULT_BAND_PROPOSALS = TMP / "band-proposals.json"
 SCHEMA_VERSION = "chief_intelligence_promotion_gate.v1"
 
 AUTHORITY = {
@@ -54,6 +55,27 @@ MONDAY_PACKET_TICKERS = {"XLB", "ETN", "VRT", "LIN", "NVDA"}
 MATERIALS_TICKERS = {"XLB", "LIN", "VMC", "ECL", "VAW"}
 ENERGY_TICKERS = {"XLE", "XOM", "CVX", "LNG", "WMB"}
 FINANCIAL_TICKERS = {"XLF", "JPM", "GS", "CME"}
+HARD_OPPORTUNITY_BLOCKER_TOKENS = {
+    "above band",
+    "above_band",
+    "below stop",
+    "below_stop",
+    "blocked_missing",
+    "do not touch",
+    "do_not_touch",
+    "evidence missing",
+    "evidence repair",
+    "invalidat",
+    "missing source",
+    "missing_source",
+    "no chase",
+    "no_chase",
+    "not fresh",
+    "repair mode",
+    "source open missing",
+    "source-open missing",
+    "stale",
+}
 
 
 def utc_now() -> str:
@@ -141,6 +163,66 @@ def entry_bands(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {str(ticker).upper(): row for ticker, row in rows.items() if isinstance(row, dict)}
 
 
+def infer_status_from_levels(price: Any, low: Any, high: Any, stop: Any, fallback: Any = None) -> Any:
+    try:
+        price_f = float(price)
+        low_f = float(low)
+        high_f = float(high)
+    except (TypeError, ValueError):
+        return fallback
+    try:
+        stop_f = float(stop)
+    except (TypeError, ValueError):
+        stop_f = None
+    if stop_f is not None and price_f < stop_f:
+        return "BELOW_STOP"
+    if price_f < low_f:
+        return "BELOW_BAND_WAIT"
+    if price_f > high_f:
+        return "ABOVE_BAND_WAIT"
+    return "IN_BAND"
+
+
+def entry_bands_from_band_proposals(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    bands: dict[str, dict[str, Any]] = {}
+    for row in payload.get("proposals") or []:
+        if not isinstance(row, dict):
+            continue
+        ticker = str(row.get("ticker") or "").upper().strip()
+        if not ticker:
+            continue
+        use_suggested = row.get("canonical_apply_eligible") is True
+        low = row.get("suggested_band_low") if use_suggested else row.get("current_band_low")
+        high = row.get("suggested_band_high") if use_suggested else row.get("current_band_high")
+        stop = row.get("suggested_stop") if use_suggested else row.get("current_stop")
+        if low is None or high is None:
+            continue
+        status = row.get("band_status")
+        if not use_suggested:
+            status = infer_status_from_levels(row.get("close"), low, high, stop, fallback=status)
+        bands[ticker] = {
+            "low": low,
+            "high": high,
+            "stop": stop,
+            "label": "sql-first current reference band" if use_suggested else "legacy current band proposal",
+            "band_last_set": payload.get("generated_at_utc"),
+            "source_priority": "sql_first_band_proposal" if use_suggested else "band_proposal_current_legacy",
+            "source_artifact": rel(DEFAULT_BAND_PROPOSALS),
+            "source_generated_at_utc": payload.get("generated_at_utc"),
+            "canonical_apply_eligible": bool(row.get("canonical_apply_eligible")),
+            "needs_review": bool(row.get("needs_review")),
+            "band_status": status,
+            "supersedes_portfolio_config_band": use_suggested,
+            "legacy_current_band": {
+                "low": row.get("current_band_low"),
+                "high": row.get("current_band_high"),
+                "stop": row.get("current_stop"),
+            },
+            "reasons": row.get("reasons") or [],
+        }
+    return bands
+
+
 def sector_context(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
     summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
     improving = set(summary.get("improving_leadership_sectors") or [])
@@ -175,14 +257,53 @@ def sector_context(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def opportunity_context(payload: dict[str, Any]) -> dict[str, Any]:
     review = payload.get("opportunity_review") if isinstance(payload.get("opportunity_review"), dict) else {}
     digest = payload.get("response_recommendation_digest") if isinstance(payload.get("response_recommendation_digest"), dict) else {}
+    candidate_reviews: dict[str, dict[str, Any]] = {}
+    for row in payload.get("candidate_reviews") or []:
+        if not isinstance(row, dict):
+            continue
+        ticker = str(row.get("ticker") or "").upper().strip()
+        if ticker:
+            candidate_reviews[ticker] = row
     return {
         "status": payload.get("status"),
+        "generated_at_utc": payload.get("generated_at_utc"),
+        "source_path": "tmp/research-freshness-opportunity-review.json",
         "improving_leadership_sectors": review.get("improving_leadership_sectors") or [],
         "underexposed_sectors": review.get("underexposed_sectors") or [],
         "portfolio_review_candidates": digest.get("portfolio_review_candidates") or review.get("portfolio_review_candidates") or [],
         "conditional_watch": digest.get("conditional_watch") or review.get("conditional_watch") or [],
         "blocked_or_deferred": digest.get("blocked_or_deferred") or review.get("blocked_or_deferred") or [],
+        "candidate_reviews": candidate_reviews,
     }
+
+
+def opportunity_review_hard_blocker(ticker: str, opportunity: dict[str, Any], band_status: str) -> bool:
+    """Return true when opportunity-review debt should veto, not merely hold review."""
+    if str(band_status or "").upper() != "IN_BAND":
+        return True
+    candidate_reviews = opportunity.get("candidate_reviews") if isinstance(opportunity.get("candidate_reviews"), dict) else {}
+    row = candidate_reviews.get(ticker, {}) if isinstance(candidate_reviews.get(ticker), dict) else {}
+    if not row:
+        return True
+    if row.get("below_stop_or_repair") is True:
+        return True
+    parts: list[str] = []
+    for key in (
+        "blocking_gate",
+        "queue_judgment",
+        "deployment_status",
+        "workflow_state",
+        "next_action",
+    ):
+        value = row.get(key)
+        if value is not None:
+            parts.append(str(value))
+    for key in ("blocked_reasons", "monitoring_flags"):
+        values = row.get(key)
+        if isinstance(values, list):
+            parts.extend(str(item) for item in values if str(item).strip())
+    joined = " | ".join(parts).lower()
+    return any(token in joined for token in HARD_OPPORTUNITY_BLOCKER_TOKENS)
 
 
 def paper_position_context(path: Path) -> dict[str, dict[str, Any]]:
@@ -330,7 +451,11 @@ def score_candidate(
     if ticker in opportunity.get("conditional_watch", []):
         score += 2; cautions.append("current opportunity digest conditional watch")
     if ticker in opportunity.get("blocked_or_deferred", []):
-        score -= 20; vetoes.append("current opportunity digest blocked/deferred")
+        score -= 20
+        if opportunity_review_hard_blocker(ticker, opportunity, band_status):
+            vetoes.append("current opportunity digest blocked/deferred")
+        else:
+            cautions.append("current opportunity digest review debt")
 
     if paper:
         pl_pct = fnum(paper.get("unrealized_pl_percent"))
@@ -343,6 +468,88 @@ def score_candidate(
         cautions.append("WF55 probability layer NOT_READY; no win-rate/model claim allowed")
 
     return round(score, 2), sorted(set(positives)), sorted(set(vetoes)), sorted(set(cautions))
+
+
+def blocker_categories_from_text(text: str) -> list[str]:
+    normalized = text.lower()
+    categories: list[str] = []
+    if "band" in normalized or "entry" in normalized:
+        categories.append("entry_band_review")
+    if "calibration" in normalized:
+        categories.append("band_calibration_review")
+    if "crowding" in normalized or "ai-power" in normalized or "technology" in normalized:
+        categories.append("ai_technology_crowding_review")
+    if "sizing" in normalized or "starter" in normalized:
+        categories.append("starter_sizing_review")
+    if "fresh" in normalized:
+        categories.append("freshness_review")
+    if not categories:
+        categories.append("promotion_review")
+    return sorted(set(categories))
+
+
+def band_plain_text(band_status: str) -> str:
+    normalized = str(band_status or "").upper().strip()
+    if normalized == "IN_BAND":
+        return "in band"
+    if normalized in {"ABOVE_BAND", "ABOVE_BAND_WAIT"}:
+        return "above the entry band"
+    if normalized in {"BELOW_BAND", "BELOW_BAND_WAIT"}:
+        return "below the entry band"
+    if normalized == "BELOW_STOP":
+        return "below stop or invalidation"
+    return "without a clean band read"
+
+
+def plain_english_veto_detail(
+    ticker: str,
+    veto: str,
+    *,
+    band_status: str,
+    opportunity: dict[str, Any],
+) -> dict[str, Any]:
+    candidate_reviews = opportunity.get("candidate_reviews") if isinstance(opportunity.get("candidate_reviews"), dict) else {}
+    opportunity_row = candidate_reviews.get(ticker, {}) if isinstance(candidate_reviews.get(ticker), dict) else {}
+    source_blocker = opportunity_row.get("blocking_gate") or veto
+    next_action = opportunity_row.get("next_action")
+    blocked_reasons = [str(item) for item in opportunity_row.get("blocked_reasons") or [] if str(item).strip()]
+    monitoring_flags = [str(item) for item in opportunity_row.get("monitoring_flags") or [] if str(item).strip()]
+
+    details = [str(source_blocker)]
+    if blocked_reasons:
+        details.append("blocked reasons: " + ", ".join(blocked_reasons))
+    if monitoring_flags:
+        details.append("monitoring flags: " + ", ".join(monitoring_flags))
+    detail_text = "; ".join(details)
+    plain = (
+        f"{ticker} was {band_plain_text(band_status)}, but could not be promoted because the "
+        f"opportunity-review layer still carried unresolved promotion-review debt: {detail_text}."
+    )
+    if next_action:
+        plain += f" Next: {next_action}"
+    if any("crowding" in part.lower() or "ai-power" in part.lower() for part in details):
+        plain += " Treat this as an AI/Technology concentration caution before any starter sizing is considered."
+    if any("band" in part.lower() for part in details):
+        plain += " Cron or the main session should clear the band review or refresh the entry-band contract before promotion."
+
+    return {
+        "veto": veto,
+        "root_cause_categories": blocker_categories_from_text(detail_text),
+        "source_blocker": source_blocker,
+        "blocked_reasons": blocked_reasons,
+        "monitoring_flags": monitoring_flags,
+        "next_action": next_action,
+        "source_artifact": opportunity.get("source_path"),
+        "source_generated_at_utc": opportunity.get("generated_at_utc"),
+        "plain_english": plain,
+    }
+
+
+def veto_details_for(ticker: str, vetoes: list[str], band_status: str, opportunity: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        plain_english_veto_detail(ticker, str(veto), band_status=band_status, opportunity=opportunity)
+        for veto in vetoes
+    ]
 
 
 def verdict_from(score: float, vetoes: list[str], band_status: str, state: str, workflow: str, ticker: str) -> str:
@@ -359,7 +566,9 @@ def verdict_from(score: float, vetoes: list[str], band_status: str, state: str, 
     )
     if band_status == "IN_BAND" and score >= 45 and review_lane:
         return "promote_for_owner_review"
-    if score >= 30:
+    if band_status == "IN_BAND" and score >= 30:
+        return "in_band_review_hold"
+    if score >= 30 and band_status == "BELOW_BAND_WAIT":
         return "watch_for_reclaim_or_pullback"
     return "monitor_only"
 
@@ -375,6 +584,7 @@ def build_gate() -> dict[str, Any]:
         "probability_readiness": TMP / "probability-readiness-report.json",
         "paper_position_state": TMP / "wf67-paper-position-state.sqlite",
         "portfolio_config": DEFAULT_PORTFOLIO_CONFIG,
+        "band_proposals": DEFAULT_BAND_PROPOSALS,
     }
     artifacts = {name: load_json(path) for name, path in paths.items() if path.suffix != ".sqlite"}
     status = {
@@ -386,7 +596,9 @@ def build_gate() -> dict[str, Any]:
     sectors = sector_context(artifacts["sector_expansion_board"])
     monitors = records_by_ticker(artifacts["ticker_monitoring_performance"])
     portfolio = portfolio_records(artifacts["portfolio_config"])
-    bands = entry_bands(artifacts["portfolio_config"])
+    legacy_bands = entry_bands(artifacts["portfolio_config"])
+    sql_first_bands = entry_bands_from_band_proposals(artifacts["band_proposals"])
+    bands = {**legacy_bands, **sql_first_bands}
     opportunity = opportunity_context(artifacts["research_freshness_opportunity_review"])
     paper = paper_position_context(paths["paper_position_state"])
     probability_ready = artifacts["probability_readiness"].get("verdict") == "READY"
@@ -405,6 +617,7 @@ def build_gate() -> dict[str, Any]:
         state = str(legacy_state(dep, "surface_state") or mon.get("deployment_status") or "").upper()
         workflow = str(legacy_state(dep, "workflow_state") or legacy_state(mon, "workflow_state") or legacy_state(port, "workflow_state") or "").upper()
         score, positives, vetoes, cautions = score_candidate(ticker, tech, dep, sec, mon, port, band, pap, opportunity, probability_ready)
+        veto_details = veto_details_for(ticker, vetoes, band_status, opportunity)
         candidates.append({
             "ticker": ticker,
             "rank": None,
@@ -421,6 +634,13 @@ def build_gate() -> dict[str, Any]:
                 "stop": band.get("stop"),
                 "label": band.get("label"),
                 "band_last_set": band.get("band_last_set"),
+                "source_priority": band.get("source_priority") or "legacy_portfolio_config",
+                "source_artifact": band.get("source_artifact") or rel(DEFAULT_PORTFOLIO_CONFIG),
+                "source_generated_at_utc": band.get("source_generated_at_utc"),
+                "canonical_apply_eligible": band.get("canonical_apply_eligible"),
+                "needs_review": band.get("needs_review"),
+                "supersedes_portfolio_config_band": bool(band.get("supersedes_portfolio_config_band")),
+                "legacy_current_band": band.get("legacy_current_band"),
             },
             "coverage_lane": port.get("coverage_lane"),
             "portfolio_role": port.get("portfolio_role"),
@@ -428,6 +648,13 @@ def build_gate() -> dict[str, Any]:
             "sector_leadership_status": sec.get("leadership_status"),
             "positive_evidence": positives,
             "vetoes": vetoes,
+            "veto_details": veto_details,
+            "root_cause_blockers": sorted({
+                category
+                for detail in veto_details
+                for category in detail.get("root_cause_categories", [])
+            }),
+            "plain_english_blockers": [detail["plain_english"] for detail in veto_details if detail.get("plain_english")],
             "cautions": cautions,
             "paper_position": {
                 "present": bool(pap),

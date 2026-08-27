@@ -1,69 +1,25 @@
 ---
-name: safe-refactor-planner
-description: Plan and execute low-risk refactors in the OpenClaw workspace without behavior drift. Use when extracting helpers, reducing duplication, moving hard-coded chains into manifests, reorganizing script structure, or paying down technical debt while preserving outputs, proof gates, and rollback posture.
+name: "safe-refactor-planner"
+description: "Convert safe-refactor-planner to deprecated router."
 ---
 
 # Safe Refactor Planner
 
-Refactor only when the seam is real and the proof can keep up.
+Deprecated compatibility router.
 
-## Read First
+Use `disciplined-implementation` for low-risk refactors, helper extraction, duplication reduction, manifest migration, script reorganization, and technical-debt cleanup. The refactor-specific doctrine now lives there so implementation planning, write leasing, parity proof, release closeout, and authority boundaries stay under one owner.
 
-Read only what the refactor touches, but default to:
-- the current owner file
-- the workflow note that justifies the refactor
-- the acceptance harness or validator
-- one downstream consumer
-- `TOOLS.md` when path, packaging, or runtime posture matters
+This skill exists only to catch older references while they are drained. When invoked, immediately route to `disciplined-implementation` and preserve these expectations:
 
-## Plan First
+- name the seam, unchanged behavior, proof gate, rollback point, and deferred debt before moving code
+- freeze live behavior with the smallest meaningful proof
+- extract one seam at a time
+- keep compatibility wrappers for live CLI, workflow, cron, or documented entrypoints
+- rerun proof after each material seam
+- close only after parity proof, entrypoint proof, named residue, and continuity updates are complete
 
-Before moving code, name:
-1. the seam
-2. the behavior that must stay unchanged
-3. the proof gate
-4. the rollback point
-5. the intentionally deferred debt
+Do not use this skill as a separate planning authority. Do not create a second refactor standard here. Do not delete or archive this skill until a reference/residue scan shows no active owner surfaces require direct `safe-refactor-planner` routing and Randall separately approves the removal.
 
-If you cannot name the seam cleanly, do not refactor yet.
+## Authority Boundary
 
-## Preferred Refactor Pattern
-
-1. freeze the live behavior with the smallest meaningful proof
-2. extract one seam at a time
-3. keep compatibility wrappers when the CLI or workflow entrypoint is live
-4. move configuration or manifests out of hard-coded logic only when parity can be shown
-5. rerun proof after each material seam, not only at the end
-
-## Good Refactor Targets
-
-- duplicated state-normalization helpers
-- hard-coded chain definitions that belong in manifest data
-- repeated freshness checks
-- brittle summary-shape adapters
-- path or owner logic repeated across scripts
-
-## Bad Refactor Targets
-
-- broad renames without proof
-- cleanup passes that mix behavior changes with structure changes
-- moving ownership across files without updating continuity and validators
-- abstracting code just to look cleaner
-
-## Closeout Rule
-
-A refactor is not closed until:
-- parity proof exists
-- the entrypoint still works
-- residue is named
-- continuity notes reflect the new owner surface
-
-## Output Format
-
-Return in this order:
-- refactor goal
-- seam plan
-- proof gate
-- changes made
-- parity result
-- deferred debt
+This router does not authorize destructive cleanup, archive/delete, config/auth/runtime mutation, cron schedule mutation, finance canon or portfolio mutation, paper/live/brokerage/account action, capital deployment, external delivery, or owner-approval inference.

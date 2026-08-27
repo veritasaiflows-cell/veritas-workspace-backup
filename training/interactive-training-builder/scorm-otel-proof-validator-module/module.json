@@ -1,0 +1,269 @@
+{
+  "schema": "veritas.interactive_training_module.v1",
+  "module_id": "otel-proof-validator-practice",
+  "title": "OTEL Proof Validator Practice Lab",
+  "audience": "Randall internal operations proof and validator training",
+  "summary": "Practice module for reading local OTEL control packets, selecting the right proof window, and routing telemetry findings without changing collector, runtime, cron, external export, finance, paper, live, or account authority.",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "collector_config_mutation_approved": false,
+    "runtime_config_mutation_approved": false,
+    "cron_schedule_mutation_approved": false,
+    "telemetry_capture_depth_expansion_approved": false,
+    "external_telemetry_export_approved": false,
+    "raw_prompt_tool_payload_capture_approved": false,
+    "finance_canon_portfolio_mutation_approved": false,
+    "paper_live_account_action_approved": false
+  },
+  "learning_objectives": [
+    "Run and interpret the local OTEL ops control proof path.",
+    "Choose the smallest honest OTEL window for the operating question.",
+    "Classify OTEL findings as healthy, monitor, repair, or owner-gated.",
+    "Preserve privacy and authority boundaries while using telemetry evidence."
+  ],
+  "lessons": [
+    {
+      "id": "otel-first-hop",
+      "title": "First-Hop OTEL Proof Surface",
+      "body": "The canonical OTEL operating proof is the local control packet. Use `python scripts\\otel_ops_control.py --write --write-db --multi-window --validate` before broad log reading. The packet writes local JSON, JSONL, and SQLite proof only.",
+      "key_points": [
+        "Read `tmp\\otel-ops-control.json` for collector health, validation, drift, and actions.",
+        "Read `tmp\\otel-ops-window-summary.json` for 1h, 6h, 24h, 7d, and 30d windows.",
+        "Use `tmp\\otel-tool-workflow-metadata.json` only when tool/workflow attribution matters.",
+        "A clean OTEL packet proves operating telemetry health, not model quality or finance correctness."
+      ]
+    },
+    {
+      "id": "otel-window-selection",
+      "title": "Window Selection",
+      "body": "Use the smallest window that answers the question. A 1h window is for post-change checks, 6h is same-session review, 24h is the daily control packet, 7d is recurring friction, and 30d is a baseline only.",
+      "key_points": [
+        "Do not use a long window to hide a current collector failure.",
+        "Do not use a short window as proof of long-run stability.",
+        "Warning/error counts and drift status are repair signals, not approval signals."
+      ]
+    },
+    {
+      "id": "otel-boundaries",
+      "title": "Telemetry Boundaries",
+      "body": "OTEL review is local and metadata-bounded. It can route repairs and trend reviews, but it does not approve collector config edits, runtime config edits, cron schedule edits, external export, raw prompt or tool-payload capture, finance mutation, or paper/live action.",
+      "key_points": [
+        "Collector down, warning/error rows, failed validation, or SQLite integrity failure route to repair.",
+        "Capture-depth expansion is owner-gated and requires a separate proposal, diff, rollback, and privacy scan.",
+        "OTEL event volume is operational evidence only; it is not coding-skill, model-ranking, or trade-readiness proof."
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "canonical-command-check",
+      "type": "multiple_choice",
+      "title": "Canonical Proof Command",
+      "prompt": "Which command is the correct first-hop OTEL proof route for a local operating review?",
+      "choices": [
+        {
+          "id": "ops-control",
+          "text": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
+          "correct": true,
+          "feedback": "Correct. This refreshes the control packet, SQLite index, and multi-window summary."
+        },
+        {
+          "id": "raw-log-first",
+          "text": "Open raw collector logs first and summarize by hand.",
+          "correct": false,
+          "feedback": "Raw logs are drilldown. The control packet is the first-hop proof surface."
+        },
+        {
+          "id": "change-config",
+          "text": "Edit collector verbosity before checking the packet.",
+          "correct": false,
+          "feedback": "Config mutation is owner-gated and not a first-hop proof action."
+        }
+      ],
+      "xapi_object": "activity/canonical-command-check"
+    },
+    {
+      "id": "packet-field-checklist",
+      "type": "checklist",
+      "title": "Packet Fields To Read",
+      "prompt": "Check every field family that belongs in an OTEL proof interpretation.",
+      "checklist_items": [
+        "Collector health and loopback endpoint",
+        "Validation errors and warnings",
+        "Metric batches, trace batches, data points, and spans",
+        "Warning/error counts",
+        "Drift status and drift reasons",
+        "SQLite integrity when the DB is written",
+        "Authority boundary flags"
+      ],
+      "xapi_object": "activity/packet-field-checklist"
+    },
+    {
+      "id": "window-choice-post-change",
+      "type": "multiple_choice",
+      "title": "Post-Change Window",
+      "prompt": "After an implementation patch, which OTEL window should be checked first?",
+      "choices": [
+        {
+          "id": "one-hour",
+          "text": "1h intraday window",
+          "correct": true,
+          "feedback": "Correct. The 1h window is the post-change or suspected-incident check."
+        },
+        {
+          "id": "thirty-day",
+          "text": "30d baseline",
+          "correct": false,
+          "feedback": "The 30d view is too broad for post-change verification."
+        },
+        {
+          "id": "skip-window",
+          "text": "Skip windows if the daily packet was green yesterday.",
+          "correct": false,
+          "feedback": "A prior green daily packet does not prove current post-change health."
+        }
+      ],
+      "xapi_object": "activity/window-choice-post-change"
+    },
+    {
+      "id": "collector-down-scenario",
+      "type": "scenario",
+      "title": "Collector Down Scenario",
+      "prompt": "The OTEL packet reports `collector_health.status=blocked` and validation errors. Write the safe operator response.",
+      "expected": "Classify OTEL as repair, state that the local collector appears down, preserve the boundary, and route the next check through collector/runtime review without changing runtime or collector config.",
+      "rubric": [
+        "Names collector health as blocked.",
+        "Classifies the state as repair rather than healthy.",
+        "Does not start or reconfigure services without approval.",
+        "Names the follow-up proof path or owner-gated review."
+      ],
+      "xapi_object": "activity/collector-down-scenario"
+    },
+    {
+      "id": "telemetry-meaning-check",
+      "type": "multiple_choice",
+      "title": "What Clean OTEL Means",
+      "prompt": "A 24h OTEL packet is validation-clean with zero warnings/errors. What does that prove?",
+      "choices": [
+        {
+          "id": "ops-health",
+          "text": "Local telemetry collection and operating proof are healthy for that window.",
+          "correct": true,
+          "feedback": "Correct. It proves OTEL operating health, not the quality of every downstream decision."
+        },
+        {
+          "id": "model-quality",
+          "text": "The model produced high-quality answers.",
+          "correct": false,
+          "feedback": "OTEL volume and validation are not model-quality proof."
+        },
+        {
+          "id": "trade-ready",
+          "text": "Finance decisions are ready for execution.",
+          "correct": false,
+          "feedback": "OTEL never creates finance, account, paper, live, or capital authority."
+        }
+      ],
+      "xapi_object": "activity/telemetry-meaning-check"
+    },
+    {
+      "id": "warning-error-scenario",
+      "type": "scenario",
+      "title": "Warning/Error Scenario",
+      "prompt": "The packet validates but the daily warning/error count is nonzero. How should the closeout characterize OTEL?",
+      "expected": "Call it warning-grade or repair depending on severity, list the warning/error count, route operator review, and avoid claiming clean OTEL closeout until the issue is classified or fixed.",
+      "rubric": [
+        "States the warning/error count matters.",
+        "Avoids calling OTEL clean.",
+        "Routes operator review or repair.",
+        "Does not mutate collector or runtime config from the packet."
+      ],
+      "xapi_object": "activity/warning-error-scenario"
+    },
+    {
+      "id": "privacy-stop-lines",
+      "type": "checklist",
+      "title": "Telemetry Stop Lines",
+      "prompt": "Check every action that remains blocked by OTEL training alone.",
+      "checklist_items": [
+        "Collector config mutation",
+        "Runtime config mutation",
+        "Cron schedule mutation",
+        "External telemetry export",
+        "Raw prompt or tool-payload capture",
+        "Finance/canon/portfolio mutation",
+        "Paper/live/account action"
+      ],
+      "xapi_object": "activity/privacy-stop-lines"
+    },
+    {
+      "id": "field-depth-decision",
+      "type": "multiple_choice",
+      "title": "Capture-Depth Decision",
+      "prompt": "OTEL lacks a field you want for model-routing economics. What is the safe next step?",
+      "choices": [
+        {
+          "id": "proposal-first",
+          "text": "Prepare a local metadata-depth proposal with scope, privacy scan, diff, rollback, and owner approval requirement.",
+          "correct": true,
+          "feedback": "Correct. Depth expansion needs a separate proposal and approval path."
+        },
+        {
+          "id": "capture-now",
+          "text": "Enable broader capture immediately because the current packet is green.",
+          "correct": false,
+          "feedback": "Green collection health does not approve capture-depth expansion."
+        },
+        {
+          "id": "external-export",
+          "text": "Send OTEL data to an external backend for easier dashboards.",
+          "correct": false,
+          "feedback": "External telemetry export remains owner-gated and outside this training slice."
+        }
+      ],
+      "xapi_object": "activity/field-depth-decision"
+    },
+    {
+      "id": "otel-boundary-ack",
+      "type": "boundary_ack",
+      "title": "OTEL Boundary Acknowledgement",
+      "prompt": "Confirm this module is internal OTEL proof training only and does not approve collector config edits, runtime config edits, cron schedule edits, external export, capture-depth expansion, finance mutation, paper/live/account action, or owner approval.",
+      "expected": "I confirm this is internal OTEL proof training only.",
+      "xapi_object": "activity/otel-boundary-ack"
+    },
+    {
+      "id": "operator-reflection",
+      "type": "reflection",
+      "title": "Operator Reflection",
+      "prompt": "After passing this module, what is the next safe use of OTEL proof and what remains blocked?",
+      "rubric": [
+        "Names OTEL status/closeout/routing interpretation as safe use.",
+        "Mentions the correct control packet and window summary surfaces.",
+        "Keeps collector/runtime/cron/external export changes owner-gated.",
+        "States OTEL is not model-quality, finance-correctness, or execution authority."
+      ],
+      "xapi_object": "activity/operator-reflection"
+    }
+  ],
+  "xapi": {
+    "activity_id": "https://veritas.local/training/otel-proof-validator-practice",
+    "verbs": [
+      "answered",
+      "completed",
+      "failed",
+      "passed",
+      "reviewed_boundary",
+      "started"
+    ]
+  },
+  "source_surfaces": [
+    "scripts/otel_ops_control.py",
+    "tmp/otel-ops-control.json",
+    "tmp/otel-ops-window-summary.json",
+    "skills/otel-operations-analyst/SKILL.md"
+  ]
+}

@@ -1,19 +1,33 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from helper_lane_manifest import (
+    CONTRACT_VERSION,
+    DELIVERY_MODE_PATCH_DRAFT,
+    LEGACY_SCHEMA,
+    PREVIOUS_SCHEMA,
+    SCHEMA as HANDOFF_SCHEMA,
+    normalize_base_path,
+    revalidate_lane_handoff,
+    validate_receiver_readback,
+    v3_completion_proof_issues,
+)
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 DEFAULT_OUT = TMP / "swarm-handshake-status.json"
 TERMINAL_STATUSES = {"completed", "abandoned", "canceled", "timed_out", "failed"}
 SUCCESS_STATUSES = {"completed", "abandoned", "canceled", "timed_out"}
+SHA256_REF_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,12 +62,20 @@ def relpath(path: Path) -> str:
         return str(path)
 
 
-def artifact_ok(spec: dict[str, Any]) -> tuple[bool, str]:
+def artifact_ok(spec: dict[str, Any], base_path: Path | None = None) -> tuple[bool, str]:
     raw_path = spec.get("path")
     if not raw_path or not isinstance(raw_path, str):
         return False, "artifact path missing"
     path = Path(raw_path)
-    if not path.is_absolute():
+    if base_path is not None:
+        if path.is_absolute() or ".." in path.parts:
+            return False, f"artifact path must be base-relative ({raw_path})"
+        try:
+            path = (base_path / path).resolve(strict=True)
+            path.relative_to(base_path.resolve(strict=True))
+        except (OSError, ValueError):
+            return False, f"artifact path escapes or is missing ({raw_path})"
+    elif not path.is_absolute():
         path = WORKSPACE / path
     kind = str(spec.get("kind") or "file").strip().lower()
     if not path.exists():
@@ -70,7 +92,20 @@ def artifact_ok(spec: dict[str, Any]) -> tuple[bool, str]:
     return True, "ok"
 
 
-def evaluate_lane(lane: dict[str, Any]) -> dict[str, Any]:
+def main_applied_diff_proof_issues(lane: dict[str, Any], handoff: dict[str, Any]) -> list[str]:
+    """Compatibility wrapper for the shared v3 closeout-proof validator."""
+    if lane.get("handoff") is not handoff:
+        lane = {**lane, "handoff": handoff}
+    return v3_completion_proof_issues(lane, WORKSPACE)
+
+
+def evaluate_lane(
+    lane: dict[str, Any],
+    strict_handoff: bool = False,
+    v3_contract: bool = False,
+    expected_contract_version: int | None = None,
+    legacy_manifest: bool = False,
+) -> dict[str, Any]:
     lane_id = str(lane.get("lane_id") or "").strip()
     if not lane_id:
         return {"lane_id": "<missing>", "status": "invalid", "resolved": False, "ready_for_synthesis": False, "issues": ["lane_id missing"]}
@@ -80,12 +115,37 @@ def evaluate_lane(lane: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(artifacts, list):
         artifacts = []
     issues: list[str] = []
+    warnings: list[str] = []
+    handoff_revalidation: dict[str, Any] | None = None
+    receiver_readback: dict[str, Any] | None = None
+    artifact_base: Path | None = None
+    handoff = lane.get("handoff") if isinstance(lane.get("handoff"), dict) else {}
+    actual_contract_version = int(handoff.get("contract_version") or 0) if handoff else None
+    if expected_contract_version is not None and actual_contract_version != expected_contract_version:
+        issues.append("manifest_handoff_contract_version_mismatch")
+    if legacy_manifest and handoff:
+        issues.append("legacy_manifest_with_frozen_handoff_unsupported")
+    if strict_handoff:
+        handoff_revalidation = revalidate_lane_handoff(lane, WORKSPACE)
+        if handoff_revalidation["status"] != "ok":
+            issues.extend(handoff_revalidation["errors"])
+        try:
+            _, artifact_base = normalize_base_path(str(handoff.get("base_path") or ""), WORKSPACE)
+        except (OSError, ValueError) as exc:
+            issues.append(str(exc))
+        if actual_contract_version == CONTRACT_VERSION and status == "completed":
+            receiver_readback = validate_receiver_readback(handoff, lane.get("receiver_readback"))
+            if receiver_readback["status"] != "ok":
+                issues.extend(receiver_readback["errors"])
+            issues.extend(main_applied_diff_proof_issues(lane, handoff))
+    else:
+        warnings.append("legacy_manifest_without_frozen_handoff_revalidation")
     artifact_results: list[dict[str, Any]] = []
     for artifact in artifacts:
         if not isinstance(artifact, dict):
             issues.append("artifact spec invalid")
             continue
-        ok, detail = artifact_ok(artifact)
+        ok, detail = artifact_ok(artifact, artifact_base)
         artifact_results.append({
             "path": artifact.get("path"),
             "kind": artifact.get("kind", "file"),
@@ -103,7 +163,7 @@ def evaluate_lane(lane: dict[str, Any]) -> dict[str, Any]:
         issues.append("completed lane missing verdict")
 
     resolved = status in TERMINAL_STATUSES
-    ready = status in SUCCESS_STATUSES and not issues
+    ready = (status == "completed" if v3_contract else status in SUCCESS_STATUSES) and not issues
     return {
         "lane_id": lane_id,
         "status": status,
@@ -111,6 +171,9 @@ def evaluate_lane(lane: dict[str, Any]) -> dict[str, Any]:
         "ready_for_synthesis": ready,
         "verdict": verdict,
         "artifact_checks": artifact_results,
+        "handoff_revalidation": handoff_revalidation,
+        "receiver_readback": receiver_readback,
+        "warnings": warnings,
         "issues": issues,
     }
 
@@ -120,7 +183,22 @@ def build_result(manifest: dict[str, Any], manifest_path: Path) -> dict[str, Any
     if not isinstance(lanes, list) or not lanes:
         raise SystemExit("manifest.expected_lanes must be a non-empty array")
 
-    results = [evaluate_lane(lane if isinstance(lane, dict) else {}) for lane in lanes]
+    schema = str(manifest.get("schema") or "")
+    if schema not in {HANDOFF_SCHEMA, PREVIOUS_SCHEMA, LEGACY_SCHEMA}:
+        raise SystemExit(f"unsupported helper-lane manifest schema: {schema or '<missing>'}")
+    strict_handoff = schema in {HANDOFF_SCHEMA, PREVIOUS_SCHEMA}
+    v3_contract = schema == HANDOFF_SCHEMA
+    expected_contract_version = CONTRACT_VERSION if schema == HANDOFF_SCHEMA else 2 if schema == PREVIOUS_SCHEMA else None
+    results = [
+        evaluate_lane(
+            lane if isinstance(lane, dict) else {},
+            strict_handoff,
+            v3_contract,
+            expected_contract_version,
+            schema == LEGACY_SCHEMA,
+        )
+        for lane in lanes
+    ]
     blocking = [lane for lane in results if not lane["ready_for_synthesis"]]
     status = "ok" if not blocking else "blocked"
     stop_line = bool(blocking)
@@ -129,6 +207,8 @@ def build_result(manifest: dict[str, Any], manifest_path: Path) -> dict[str, Any
         "status": status,
         "generated_at_utc": utc_now_iso(),
         "manifest_path": relpath(manifest_path),
+        "manifest_schema": schema,
+        "observed_manifest_file_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
         "swarm_id": manifest.get("swarm_id") or manifest_path.stem,
         "summary": {
             "expected_lane_count": len(results),
@@ -142,6 +222,7 @@ def build_result(manifest: dict[str, Any], manifest_path: Path) -> dict[str, Any
             for lane in blocking
         ],
         "lanes": results,
+        "warnings": sorted({warning for lane in results for warning in lane.get("warnings", [])} | ({"v2_manifest_compatibility_mode"} if schema == PREVIOUS_SCHEMA else set())),
         "synthesis_allowed": not stop_line,
     }
 

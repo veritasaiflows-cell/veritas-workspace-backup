@@ -15,7 +15,7 @@
   "wakeMode": "now",
   "payload": {
     "kind": "systemEvent",
-    "text": "Weekly OS-improvement radar review.\n\nWork in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nPurpose: turn repeated friction into practical OS improvements without creating noise.\n\nReview these proof surfaces first:\n- tmp\\artifact-staleness-explainer.json\n- tmp\\lane-collision-preflight.json\n- tmp\\validator-bundle-router.json\n- tmp\\worktree-checkpoint-planner.json\n- tmp\\cron-contract-validator.json\n- tmp\\cron-control-packet.json\n- tmp\\pm-control-packet.json\n- memory\\YYYY-MM-DD.md recent friction notes\n\nIf proof is stale, you may refresh review-only local proof with:\npython scripts\\artifact_staleness_explainer.py --write --validate\npython scripts\\cron_contract_validator.py --require-contracts --fail-on-drift --write --validate\npython scripts\\changed_file_validator_router.py --write --validate\npython scripts\\pm_control_packet.py --write --write-db --validate\npython scripts\\cron_control_packet.py --write --validate\n\nLook for repeated manual work, false greens, stale artifacts, validator confusion, lane collisions, cron drift, or worktree checkpoint friction. If a high-value candidate exists, report a concise proposal: pain point, recommended tool/procedure, risk reduced, smallest safe next step, and required approval if any.\n\nIf nothing material changed, reply exactly NO_REPLY.\n\nBoundary: review-only OS-improvement radar. Do not mutate cron, config, auth, channels, runtime, files, skills, canon, portfolio, cash, sizing, paper/live/account surfaces, or external delivery without separate explicit approval. Do not infer owner approval. Do not create jobs, patches, commits, or apply changes from this reminder alone."
+    "text": "Weekly OS-improvement and isolated-agent fleet review.\n\nWork in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nPurpose: turn repeated friction and agent-fleet evidence into practical OS improvements without creating noise. Main remains the orchestrator, QC owner, and final integrator.\n\nReview these proof surfaces first:\n- tmp\\token-usage-ledger-current.json\n- tmp\\token-budget-status.json\n- tmp\\token-efficiency-scorecard.json\n- tmp\\cron-efficiency-review-runner.json\n- tmp\\implementation-token-attribution-bridge.json\n- tmp\\veritas-status-card.json\n- tmp\\artifact-staleness-explainer.json\n- tmp\\lane-collision-preflight.json\n- tmp\\validator-bundle-router.json\n- tmp\\worktree-checkpoint-planner.json\n- tmp\\cron-contract-validator.json\n- tmp\\cron-control-packet.json\n- tmp\\pm-control-packet.json\n- memory\\YYYY-MM-DD.md recent friction notes\n\nIf proof is stale, refresh only through the approved review-only producer commands named by the proof-refresh cron contract.\n\nReport the closed Saturday-ending seven-day fleet posture: per-agent utilization, pricing-grade coverage, API-equivalent benchmark cost (not an invoice), OAuth capacity status, parent-job completion, Main acceptance, QA yield, rework, attribution gaps, stale/missing price rows, and the three highest-value routing or prompt improvements. Missing data stays unavailable, never zero.\n\nLook for repeated manual work, false greens, stale artifacts, validator confusion, lane collisions, cron drift, worktree friction, low acceptance, QA findings, or rework. One bounded read-only Operations Efficiency Analyst sub-agent may be used when cross-agent judgment is materially useful; Main must verify its evidence and it receives no mutation or final-authority role. If a high-value candidate exists, report a concise proposal: pain point, evidence, recommended tool/procedure, expected benefit, risk reduced, smallest safe next step, and required approval if any.\n\nIf nothing material changed, reply exactly NO_REPLY.\n\nBoundary: review-only OS-improvement radar. Do not mutate cron, config, auth, channels, runtime, files, skills, canon, portfolio, cash, sizing, paper/live/account surfaces, or external delivery without separate explicit approval. Do not infer owner approval. Do not create patches, commits, persistent agents, or apply changes from this reminder alone."
   },
   "compare_fields": [
     "enabled",
@@ -26,6 +26,12 @@
     "payload.text"
   ],
   "expected_artifacts": [
+    "tmp/token-usage-ledger-current.json",
+    "tmp/token-budget-status.json",
+    "tmp/token-efficiency-scorecard.json",
+    "tmp/cron-efficiency-review-runner.json",
+    "tmp/implementation-token-attribution-bridge.json",
+    "tmp/veritas-status-card.json",
     "tmp/artifact-staleness-explainer.json",
     "tmp/lane-collision-preflight.json",
     "tmp/validator-bundle-router.json",
@@ -38,6 +44,7 @@
     "review_only": true,
     "cron_contract_only": true,
     "main_session_reminder_only": true,
+    "bounded_read_only_analysis_allowed": true,
     "cron_state_mutation_allowed": false,
     "config_auth_runtime_mutation_allowed": false,
     "canon_or_portfolio_mutation_allowed": false,
@@ -45,5 +52,11 @@
     "paper_or_live_execution_allowed": false,
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
-  }
+  },
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "updated_at_utc": "2026-08-09T17:31:00Z",
+  "contract_update_reason": "Added the closed-week six-agent efficiency/outcome briefing contract and bounded read-only Operations Efficiency Analyst pilot while preserving Main final integration and all mutation boundaries."
 }

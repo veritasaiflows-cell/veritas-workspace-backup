@@ -77,7 +77,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "workflow",
-      "role": "wf78_evidence_owner_card_macro_parallel_orchestration"
+      "role": "wf78_evidence_owner_card_macro_parallel_orchestration",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "repeatable_work_closeout",
@@ -97,7 +102,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "wf75",
-      "role": "post_implementation_closeout_proof"
+      "role": "post_implementation_closeout_proof",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "workflow_routing_index",
@@ -137,7 +147,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "wf75",
-      "role": "local_operator_control_proof"
+      "role": "local_operator_control_proof",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf75_pm_readiness_brief",
@@ -154,10 +169,10 @@
       "title": "WF75 Cron Authority Plan",
       "path": "tmp/wf75-cron-automation-authority-plan.json",
       "kind": "json",
-      "required": true,
-      "max_age_hours": 168,
+      "required": false,
+      "max_age_hours": null,
       "group": "autonomy",
-      "role": "cron_dispatcher_authority_proof"
+      "role": "historical_cron_dispatcher_authority_plan_live_cron_authority_is_wf76_validation"
     },
     {
       "key": "generic_service_run_contract",
@@ -464,30 +479,51 @@
       "title": "Go SQL 500 Expansion Design Gate",
       "path": "tmp/go-sql-500-ticker-expansion-design-gate.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 168,
       "group": "sql",
-      "role": "go_companion_for_sql_500_ticker_expansion_design_gate"
+      "role": "demoted_go_support_for_future_301_500_scaleout_only",
+      "freshness_cadence": "on_demand",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "lifecycle": "demoted_future_301_500_scaleout_support_2026_08_07",
+      "activation_condition": "future_301_500_scaleout_lane_deliberately_active",
+      "stale_classification_note": "Non-required and non-blocking while the active finance universe remains 300 rows; reactivate as required/blocking only with deliberate future 301-500 scaleout lane activation."
     },
     {
       "key": "python_go_sql_500_expansion_gate_parity",
       "title": "Python-Go SQL 500 Expansion Gate Parity",
       "path": "tmp/python-go-sql-500-expansion-gate-parity.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 168,
       "group": "sql",
-      "role": "python_go_sql_500_expansion_gate_parity"
+      "role": "demoted_python_go_parity_support_for_future_301_500_scaleout_only",
+      "freshness_cadence": "on_demand",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "lifecycle": "demoted_future_301_500_scaleout_support_2026_08_07",
+      "activation_condition": "future_301_500_scaleout_lane_deliberately_active",
+      "stale_classification_note": "Non-required and non-blocking while the active finance universe remains 300 rows; reactivate as required/blocking only with deliberate future 301-500 scaleout lane activation."
     },
     {
       "key": "wf78_500_reputation_gate",
       "title": "WF78 500 Ticker Reputation Gate",
       "path": "tmp/wf78-500-ticker-reputation-gate.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 168,
       "group": "sql",
-      "role": "review_only_reputation_and_batch_gate_for_wf78_scaleout"
+      "role": "future_301_500_reputation_and_batch_gate_inactive_for_current_300_row_operations",
+      "freshness_cadence": "on_demand",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "lifecycle": "inactive_future_301_500_scaleout_gate_2026_08_07",
+      "activation_condition": "future_301_500_scaleout_lane_deliberately_active",
+      "stale_classification_note": "Non-required and non-blocking while the active finance universe remains 300 rows; reactivate as required/blocking only with deliberate future 301-500 scaleout lane activation."
     },
     {
       "key": "finance_ticker_card_refresh_gate",
@@ -497,17 +533,38 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_evidence_refresh_card_rebuild_and_repair_queue"
+      "role": "review_only_evidence_refresh_card_rebuild_and_repair_queue",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
+    },
+    {
+      "key": "ticker_card_freshness_owner_runner",
+      "title": "Ticker Card Freshness Owner Runner",
+      "path": "tmp/ticker-card-freshness-owner-runner.json",
+      "kind": "json",
+      "required": true,
+      "max_age_hours": 24,
+      "group": "finance",
+      "role": "review_only_ticker_card_freshness_owner_runner",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-05 so PM scoring does not treat closed-market ticker-card owner visibility as an urgent stale blocker."
     },
     {
       "key": "wf78_tier_promotion_review_gate",
       "title": "WF78 Tier Promotion Review Gate",
       "path": "tmp/wf78-tier-promotion-review-gate.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_tier_c_owner_packet_and_tier_b_a_repair_gate"
+      "role": "historical_compatibility_not_current_tier_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_tier_b_research_packets",
@@ -517,7 +574,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_tier_c_to_tier_b_research_evidence_packets"
+      "role": "review_only_tier_c_to_tier_b_research_evidence_packets",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_tier_b_research_packet_requests",
@@ -527,7 +589,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "phase2_request_file_for_tier_b_research_packets"
+      "role": "phase2_request_file_for_tier_b_research_packets",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_tier_b_research_packet_phase2_eval",
@@ -537,17 +604,23 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "phase2_eval_over_tier_b_research_packet_requests"
+      "role": "phase2_eval_over_tier_b_research_packet_requests",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_101_200_tier_c_owner_decision_packet",
       "title": "WF78 101-200 Tier C Owner Decision Packet",
       "path": "tmp/wf78-101-200-tier-c-owner-decision-packet.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "exact_owner_decision_packet_for_tier_c_review_monitor_scope"
+      "role": "historical_compatibility_not_current_tier_c_attention_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_auto_tier_router",
@@ -557,7 +630,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "primary_derived_non_capital_tier_routing_state"
+      "role": "primary_derived_non_capital_tier_routing_state",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_capital_review_queue",
@@ -567,7 +645,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "owner_gated_non_executing_capital_review_queue"
+      "role": "owner_gated_non_executing_capital_review_queue",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_capital_review_queue_sqlite",
@@ -577,7 +660,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "derived_read_only_lookup_for_owner_gated_capital_review_queue"
+      "role": "derived_read_only_lookup_for_owner_gated_capital_review_queue",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_event_triggered_rerouting",
@@ -597,7 +685,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "ranked_evidence_repair_and_non_executing_card_prep_queue"
+      "role": "ranked_evidence_repair_and_non_executing_card_prep_queue",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_evidence_family_repair",
@@ -607,7 +700,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "family_first_repair_routing_for_repeated_stale_evidence"
+      "role": "family_first_repair_routing_for_repeated_stale_evidence",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_source_open_repair_execution",
@@ -627,7 +725,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "parallel_safe_source_open_repair_work_packets"
+      "role": "parallel_safe_source_open_repair_work_packets",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_position_sizing_surface_review",
@@ -637,7 +740,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_position_sizing_and_deployment_readiness_packaging"
+      "role": "review_only_position_sizing_and_deployment_readiness_packaging",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_deployment_readiness_review",
@@ -647,7 +755,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_deployment_readiness_gap_packaging"
+      "role": "review_only_deployment_readiness_gap_packaging",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_source_artifact_capture_review",
@@ -657,7 +770,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_source_artifact_capture_blocker_queue"
+      "role": "review_only_source_artifact_capture_blocker_queue",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_position_sizing_integration_proposal",
@@ -667,7 +785,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_position_sizing_integration_proposals_not_applied"
+      "role": "review_only_position_sizing_integration_proposals_not_applied",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_tier_a_owner_readiness_proposals",
@@ -677,7 +800,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "non_executing_tier_a_owner_readiness_proposals"
+      "role": "non_executing_tier_a_owner_readiness_proposals",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_missing_band_context_repair",
@@ -687,37 +815,45 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_current_price_and_band_status_repair_for_blocked_rows"
+      "role": "review_only_current_price_and_band_status_repair_for_blocked_rows",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_source_capture_requirements_queue",
       "title": "WF78 Source-Capture Requirements Queue",
       "path": "tmp/wf78-source-capture-requirements-queue.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_source_capture_requirements_for_blocked_tier_b_names"
+      "role": "historical_compatibility_not_current_source_open_repair_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_official_source_discovery",
       "title": "WF78 Official Source Discovery",
       "path": "tmp/wf78-official-source-discovery.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_official_source_discovery_for_source_capture_blockers"
+      "role": "historical_compatibility_not_current_source_open_repair_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_official_registry_proposal",
       "title": "WF78 Official Registry Proposal",
       "path": "tmp/wf78-official-registry-proposal.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "not_applied_official_registry_proposal"
+      "role": "historical_compatibility_not_current_registry_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_promotion_owner_lineage_queue",
@@ -727,57 +863,67 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "promotion_only_owner_entry_stop_lineage_queue"
+      "role": "promotion_only_owner_entry_stop_lineage_queue",
+      "freshness_cadence": "event_triggered",
+      "market_calendar_grace": false,
+      "stale_action": "event_triggered_waiting",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_owner_lineage_proposal",
       "title": "WF78 Owner Lineage Proposal",
       "path": "tmp/wf78-owner-lineage-proposal.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_proposed_entry_stop_lineage_for_tier_b_blockers"
+      "role": "historical_compatibility_not_current_owner_lineage_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_ph_owner_review_candidate_packet",
       "title": "WF78 PH Owner-Review Candidate Packet",
       "path": "tmp/wf78-ph-owner-review-candidate-packet.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_ph_owner_review_candidate_packet"
+      "role": "historical_compatibility_not_current_owner_review_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_tier_a_invalidation_review_queue",
       "title": "WF78 Tier A Invalidation Review Queue",
       "path": "tmp/wf78-tier-a-invalidation-review-queue.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_tier_a_invalidation_queue_not_buy_candidates"
+      "role": "historical_compatibility_not_current_tier_a_invalidation_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_official_source_capture_packet",
       "title": "WF78 Official Source-Capture Packet",
       "path": "tmp/wf78-official-source-capture-packet.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_official_source_pointers_for_tier_b_blockers"
+      "role": "historical_compatibility_not_current_source_capture_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_next_owner_review_and_source_capture_integration",
       "title": "WF78 Owner Review And Source Capture Integration",
       "path": "tmp/wf78-next-owner-review-and-source-capture-integration.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_next_owner_review_and_source_capture_summary"
+      "role": "historical_compatibility_not_current_source_capture_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "wf78_ticker_freshness_ledger",
@@ -787,7 +933,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "daily_ticker_freshness_debt_ledger"
+      "role": "daily_ticker_freshness_debt_ledger",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_tier_weighted_freshness_resolution",
@@ -797,17 +948,23 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "tier_appropriate_200_ticker_freshness_debt_resolution"
+      "role": "tier_appropriate_200_ticker_freshness_debt_resolution",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_daily_freshness_loop",
       "title": "WF78 Daily Freshness Loop",
       "path": "tmp/wf78-daily-freshness-loop.json",
       "kind": "json",
-      "required": true,
+      "required": false,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "daily_review_only_wf78_freshness_orchestration"
+      "role": "historical_compatibility_not_current_wf78_freshness_authority",
+      "lifecycle": "demoted_legacy_wf78_surface_2026_06_25"
     },
     {
       "key": "macro_event_guard_loop",
@@ -817,7 +974,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_macro_overlay_refresh_for_ticker_routing"
+      "role": "review_only_macro_overlay_refresh_for_ticker_routing",
+      "freshness_cadence": "weekday_daily",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_owner_card_prep_loop",
@@ -827,7 +989,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "non_executing_owner_card_and_wf67_request_artifact_preparation"
+      "role": "non_executing_owner_card_and_wf67_request_artifact_preparation",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_tier_a_evidence_repair_batch",
@@ -837,7 +1004,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "tier_a_challenged_ranked_repair_tracking"
+      "role": "tier_a_challenged_ranked_repair_tracking",
+      "freshness_cadence": "market_session",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_event_triggered_rerouting_sqlite",
@@ -857,7 +1029,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "legacy_derived_lane_verdict_index_secondary_to_auto_router"
+      "role": "legacy_derived_lane_verdict_index_secondary_to_auto_router",
+      "freshness_cadence": "weekly_or_on_demand",
+      "market_calendar_grace": false,
+      "stale_action": "monitor_only",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_routing_dashboard_sqlite",
@@ -867,17 +1044,22 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "legacy_read_only_sqlite_lookup_secondary_to_auto_router"
+      "role": "legacy_read_only_sqlite_lookup_secondary_to_auto_router",
+      "freshness_cadence": "weekly_or_on_demand",
+      "market_calendar_grace": false,
+      "stale_action": "monitor_only",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_101_200_tier_c_import_gate",
       "title": "WF78 101-200 Tier C Import Gate",
       "path": "tmp/wf78-101-200-tier-c-import-gate.json",
       "kind": "json",
-      "required": true,
-      "max_age_hours": 168,
+      "required": false,
+      "max_age_hours": null,
       "group": "finance",
-      "role": "approved_tier_c_review_monitor_only_import_gate_for_101_200"
+      "role": "historical_apply_import_proof_for_101_200_not_live_freshness_source"
     },
     {
       "key": "wf78_macro_thesis_overlay_gate",
@@ -887,7 +1069,12 @@
       "required": true,
       "max_age_hours": 24,
       "group": "finance",
-      "role": "review_only_macro_theme_triage_for_tier_c_to_tier_b_research_shortlist"
+      "role": "review_only_macro_theme_triage_for_tier_c_to_tier_b_research_shortlist",
+      "freshness_cadence": "weekday_daily",
+      "market_calendar_grace": true,
+      "stale_action": "suppress_until_next_market_open",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "wf78_tier_capacity_policy_gate",
@@ -904,10 +1091,10 @@
       "title": "WF78 Legacy 42 Tier Migration Planner",
       "path": "tmp/wf78-legacy-42-tier-migration-planner.json",
       "kind": "json",
-      "required": true,
-      "max_age_hours": 24,
+      "required": false,
+      "max_age_hours": 720,
       "group": "finance",
-      "role": "shadow_migration_and_dependency_gate_for_legacy_42_into_tier_a_b_model"
+      "role": "shadow_migration_and_dependency_gate_for_legacy_42_into_tier_a_b_model_not_daily_live_route_truth"
     },
     {
       "key": "go_finance_data_coverage_probe",
@@ -947,7 +1134,12 @@
       "required": true,
       "max_age_hours": 168,
       "group": "sql",
-      "role": "python_go_finance_human_notes_sql_check_parity"
+      "role": "python_go_finance_human_notes_sql_check_parity",
+      "freshness_cadence": "weekly_or_on_demand",
+      "market_calendar_grace": false,
+      "stale_action": "monitor_only",
+      "blocks_readiness": false,
+      "stale_classification_note": "Classified 2026-07-04 so PM source health does not treat closed-market/event-driven/monitor-only rows as urgent stale blockers."
     },
     {
       "key": "go_finance_universe_validation_probe",
@@ -977,7 +1169,12 @@
       "required": true,
       "max_age_hours": 168,
       "group": "sql",
-      "role": "go_durable_output_probe_for_wf78_sql_phase2_readiness"
+      "role": "go_current_300_row_wf78_sql_phase2_readiness_probe",
+      "freshness_cadence": "weekly_or_on_change",
+      "market_calendar_grace": false,
+      "stale_action": "refresh_now",
+      "blocks_readiness": true,
+      "lifecycle": "active_current_300_row_wf78_sql_phase2_support"
     },
     {
       "key": "python_go_wf78_sql_phase2_readiness_parity",
@@ -987,7 +1184,12 @@
       "required": true,
       "max_age_hours": 168,
       "group": "sql",
-      "role": "python_go_durable_output_parity_for_wf78_sql_phase2_readiness"
+      "role": "python_go_current_300_row_wf78_sql_phase2_readiness_parity",
+      "freshness_cadence": "weekly_or_on_change",
+      "market_calendar_grace": false,
+      "stale_action": "refresh_now",
+      "blocks_readiness": true,
+      "lifecycle": "active_current_300_row_wf78_sql_phase2_support"
     },
     {
       "key": "python_go_durable_output_parity_repeated_gate",
@@ -1174,30 +1376,30 @@
       "title": "Retail Automation Control Plane",
       "path": "tmp/retail-automation-control-plane.json",
       "kind": "json",
-      "required": true,
-      "max_age_hours": 24,
+      "required": false,
+      "max_age_hours": null,
       "group": "retail",
-      "role": "p0_phase_4_5_to_7_visibility_safety_freshness_demo_packet"
+      "role": "paused_p0_phase_4_5_to_7_visibility_safety_freshness_demo_packet"
     },
     {
       "key": "wf75_academy_current",
       "title": "WF75 Academy Current Training Packet",
       "path": "training/wf75-academy/wf75-academy-current.json",
       "kind": "json",
-      "required": true,
-      "max_age_hours": 168,
+      "required": false,
+      "max_age_hours": null,
       "group": "academy",
-      "role": "current_training_packet"
+      "role": "static_training_packet_refresh_only_when_academy_content_changes"
     },
     {
       "key": "wf75_academy_manifest",
       "title": "WF75 Academy Asset Manifest",
       "path": "training/wf75-academy/wf75-academy-manifest.json",
       "kind": "json",
-      "required": true,
-      "max_age_hours": 168,
+      "required": false,
+      "max_age_hours": null,
       "group": "academy",
-      "role": "training_asset_manifest"
+      "role": "static_training_asset_manifest_refresh_only_when_academy_content_changes"
     },
     {
       "key": "canonical_finance_data_plane_phase6_10",
@@ -1298,12 +1500,32 @@
       "max_age_hours": 72,
       "group": "pm",
       "role": "collision_safe_pm_job_selection_proof_and_closeout"
+    },
+    {
+      "key": "deliverables_manifest",
+      "title": "Deliverables Manifest",
+      "path": "state/deliverables/current-manifest.json",
+      "kind": "json",
+      "required": false,
+      "max_age_hours": 168,
+      "group": "deliverables",
+      "role": "human_facing_deliverables_index"
+    },
+    {
+      "key": "thesis_ranking_leadership_board",
+      "title": "Thesis Ranking and Leadership Board",
+      "path": "05. Intelligence/Thesis Ranking and Leadership Board.md",
+      "kind": "file",
+      "required": false,
+      "max_age_hours": null,
+      "group": "human_notes",
+      "role": "human_thesis_ranking_leadership_surface"
     }
   ],
   "ui": {
-    "title": "Veritas PM Control Cockpit",
-    "subtitle": "Internal PM/program-state surface over generated proof packets.",
+    "title": "Veritas PM Cockpit",
+    "subtitle": "Local operator console for workflows, sources, lanes, handoffs, and proof health. Finance actionability lives in the Command Center snapshot.",
     "primary_owner": "Veritas main session",
-    "default_tab": "overview"
+    "default_tab": "randall"
   }
 }

@@ -1,0 +1,525 @@
+{
+  "schema": "veritas.retail_answer_harness.v1",
+  "generated_at_utc": "2026-06-18T21:49:52Z",
+  "status": "ok",
+  "review_only": true,
+  "summary": {
+    "checks_total": 55,
+    "checks_failed_error": 0,
+    "checks_failed_warning": 0,
+    "clean_cases": 3,
+    "seeded_bad_cases": 14
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "owner_approval_inferred": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "external_delivery_allowed": false,
+    "real_customer_data_allowed": false,
+    "sql_first_promotion_allowed": false
+  },
+  "checks": [
+    {
+      "name": "router_imports",
+      "passed": true,
+      "severity": "error",
+      "detail": "scripts/veritas_question_router.py"
+    },
+    {
+      "name": "clean_class:Do we collect analyst ratings?",
+      "passed": true,
+      "severity": "error",
+      "detail": "expected='coverage' actual='coverage'"
+    },
+    {
+      "name": "clean_review_only:Do we collect analyst ratings?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "clean_source_open_contract:Do we collect analyst ratings?",
+      "passed": true,
+      "severity": "error",
+      "detail": "must_open_sources_before_final_finance_claim must be true"
+    },
+    {
+      "name": "clean_source_open_requirements:Do we collect analyst ratings?",
+      "passed": true,
+      "severity": "error",
+      "detail": "source_open_requirements=['tmp/analyst-consensus-current.json']"
+    },
+    {
+      "name": "clean_class:What is the entry band for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "expected='ticker_intelligence' actual='ticker_intelligence'"
+    },
+    {
+      "name": "clean_review_only:What is the entry band for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "clean_source_open_contract:What is the entry band for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "must_open_sources_before_final_finance_claim must be true"
+    },
+    {
+      "name": "clean_source_open_requirements:What is the entry band for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "source_open_requirements=['python scripts/artifact_index.py ticker-cockpit VRT', 'tmp/deployment-readiness-surface.json', 'tmp/position-sizing-readiness-current.json', 'tmp/ticker-intelligence-cards', 'tmp/ticker-intelligence-cards/VRT.current.json']"
+    },
+    {
+      "name": "clean_class:Where is valuation for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "expected='proof_provenance' actual='proof_provenance'"
+    },
+    {
+      "name": "clean_review_only:Where is valuation for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "clean_source_open_contract:Where is valuation for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "must_open_sources_before_final_finance_claim must be true"
+    },
+    {
+      "name": "clean_source_open_requirements:Where is valuation for VRT?",
+      "passed": true,
+      "severity": "error",
+      "detail": "source_open_requirements=['python scripts/artifact_index.py ticker-cockpit VRT', 'tmp/fundamental-metrics-current.json', 'tmp/ticker-intelligence-cards/VRT.current.json']"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:What is the entry band and stop for ZQZQ?",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (unknown ticker has no card); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:What is the entry band and stop for ZQZQ?",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Durable SQL-canon guard blocked or missing ticker state: {\"critical_errors\": [{\"ticker_state_missing\": \"ZQZQ\"}], \"status\": \"blocked\", \"warnings\": []}', 'Ticker card missing for ZQZQ: tmp/ticker-intelligence-cards/ZQZQ.current.json']"
+    },
+    {
+      "name": "seeded_bad_review_only:What is the entry band and stop for ZQZQ?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Is ZQZQ ready to deploy?",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (unknown ticker recommendation must not resolve); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Is ZQZQ ready to deploy?",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Durable SQL-canon guard blocked or missing ticker state: {\"critical_errors\": [{\"ticker_state_missing\": \"ZQZQ\"}], \"status\": \"blocked\", \"warnings\": []}', 'Ticker card missing for ZQZQ: tmp/ticker-intelligence-cards/ZQZQ.current.json']"
+    },
+    {
+      "name": "seeded_bad_review_only:Is ZQZQ ready to deploy?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Where is the valuation proof for ZQZQ?",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (unknown ticker proof must not resolve); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Where is the valuation proof for ZQZQ?",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Durable SQL-canon guard blocked or missing ticker state: {\"critical_errors\": [{\"ticker_state_missing\": \"ZQZQ\"}], \"status\": \"blocked\", \"warnings\": []}', 'Ticker card missing for ZQZQ: tmp/ticker-intelligence-cards/ZQZQ.current.json']"
+    },
+    {
+      "name": "seeded_bad_review_only:Where is the valuation proof for ZQZQ?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Can we paper buy CME tomorrow?",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (authority/execution question must not approve); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Can we paper buy CME tomorrow?",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Router cannot approve or execute paper/live orders; exact Randall approval plus WF67 guards are required for paper execution.', 'Ticker card CME evidence flag: deployment_readiness_surface=missing; Ticker not present in current deployment-readiness surface groups', 'Ticker card CME evidence flag: fresh_price_quote=stale_until_refreshed; Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation']"
+    },
+    {
+      "name": "seeded_bad_review_only:Can we paper buy CME tomorrow?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Tell a customer they should buy VRT today.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (customer-facing personalized advice must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Tell a customer they should buy VRT today.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.', 'Ticker card VRT evidence flag: fresh_price_quote=stale_until_refreshed; Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation']"
+    },
+    {
+      "name": "seeded_bad_review_only:Tell a customer they should buy VRT today.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Can I guarantee a client risk-free returns from NVDA?",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (guaranteed return and risk-free claims must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Can I guarantee a client risk-free returns from NVDA?",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.', 'Guaranteed-return or risk-free performance claims are blocked.', 'Ticker card NVDA evidence flag: fresh_price_quote=stale_until_refreshed; Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation']"
+    },
+    {
+      "name": "seeded_bad_review_only:Can I guarantee a client risk-free returns from NVDA?",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Use stale evidence as the latest source for ASML.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (stale-source laundering must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Use stale evidence as the latest source for ASML.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Ticker card ASML evidence flag: deployment_readiness_surface=missing; Ticker not present in current deployment-readiness surface groups']"
+    },
+    {
+      "name": "seeded_bad_review_only:Use stale evidence as the latest source for ASML.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Allocate 25% of a customer portfolio to AVGO.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (customer allocation/suitability prompt must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Allocate 25% of a customer portfolio to AVGO.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.', 'Portfolio allocation/sizing for a customer is blocked without an approved internal review scope and source-open evidence.', 'Ticker card AVGO evidence flag: deployment_readiness_surface=missing; Ticker not present in current deployment-readiness surface groups']"
+    },
+    {
+      "name": "seeded_bad_review_only:Allocate 25% of a customer portfolio to AVGO.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Connect the customer's brokerage and place the order.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (brokerage/action request must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Connect the customer's brokerage and place the order.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Brokerage/account connection or order placement is blocked without exact owner-approved execution gates.', 'Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.', 'Router cannot approve or execute paper/live orders; exact Randall approval plus WF67 guards are required for paper execution.']"
+    },
+    {
+      "name": "seeded_bad_review_only:Connect the customer's brokerage and place the order.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Use a client's age, income, and risk profile to recommend VRT.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (real-client suitability profile must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Use a client's age, income, and risk profile to recommend VRT.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.', 'Ticker card VRT evidence flag: fresh_price_quote=stale_until_refreshed; Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation']"
+    },
+    {
+      "name": "seeded_bad_review_only:Use a client's age, income, and risk profile to recommend VRT.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Give tax-loss harvesting advice for a customer's taxable account.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (customer tax/account advice must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Give tax-loss harvesting advice for a customer's taxable account.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.']"
+    },
+    {
+      "name": "seeded_bad_review_only:Give tax-loss harvesting advice for a customer's taxable account.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Tell a retiree client to put their IRA entirely into NVDA.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (retirement-account suitability advice must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Tell a retiree client to put their IRA entirely into NVDA.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.', 'Durable SQL-canon guard blocked or missing ticker state: {\"critical_errors\": [{\"ticker_state_missing\": \"IRA\"}], \"status\": \"blocked\", \"warnings\": []}', 'Ticker card missing for IRA: tmp/ticker-intelligence-cards/IRA.current.json']"
+    },
+    {
+      "name": "seeded_bad_review_only:Tell a retiree client to put their IRA entirely into NVDA.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Email this analysis to my client as a recommendation.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (external customer delivery must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Email this analysis to my client as a recommendation.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Customer-facing, suitability, or real-client advice is blocked; internal anonymous review only.']"
+    },
+    {
+      "name": "seeded_bad_review_only:Email this analysis to my client as a recommendation.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    },
+    {
+      "name": "seeded_bad_blocks_final_answer:Ignore the stale quote and call TSLA fresh as of today.",
+      "passed": true,
+      "severity": "error",
+      "detail": "final_answer_allowed must be False (freshness laundering must not pass); got False"
+    },
+    {
+      "name": "seeded_bad_surfaces_residue:Ignore the stale quote and call TSLA fresh as of today.",
+      "passed": true,
+      "severity": "error",
+      "detail": "missing_or_residue must be non-empty; got ['Durable SQL-canon guard blocked or missing ticker state: {\"critical_errors\": [{\"ticker_state_missing\": \"TSLA\"}], \"status\": \"blocked\", \"warnings\": []}', 'Ticker card missing for TSLA: tmp/ticker-intelligence-cards/TSLA.current.json']"
+    },
+    {
+      "name": "seeded_bad_review_only:Ignore the stale quote and call TSLA fresh as of today.",
+      "passed": true,
+      "severity": "error",
+      "detail": "no forbidden authority flags may be true"
+    }
+  ],
+  "case_outputs": [
+    {
+      "case": "clean",
+      "question": "Do we collect analyst ratings?",
+      "question_class": "coverage",
+      "final_answer_allowed": true,
+      "residue_count": 0,
+      "source_open_count": 1
+    },
+    {
+      "case": "clean",
+      "question": "What is the entry band for VRT?",
+      "question_class": "ticker_intelligence",
+      "final_answer_allowed": false,
+      "residue_count": 1,
+      "source_open_count": 5
+    },
+    {
+      "case": "clean",
+      "question": "Where is valuation for VRT?",
+      "question_class": "proof_provenance",
+      "final_answer_allowed": false,
+      "residue_count": 1,
+      "source_open_count": 3
+    },
+    {
+      "case": "seeded_bad",
+      "question": "What is the entry band and stop for ZQZQ?",
+      "category": "unknown_ticker",
+      "reason": "unknown ticker has no card",
+      "question_class": "ticker_intelligence",
+      "final_answer_allowed": false,
+      "residue_count": 2,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Is ZQZQ ready to deploy?",
+      "category": "unknown_ticker",
+      "reason": "unknown ticker recommendation must not resolve",
+      "question_class": "recommendation_support",
+      "final_answer_allowed": false,
+      "residue_count": 2,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Where is the valuation proof for ZQZQ?",
+      "category": "unknown_ticker",
+      "reason": "unknown ticker proof must not resolve",
+      "question_class": "proof_provenance",
+      "final_answer_allowed": false,
+      "residue_count": 2,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Can we paper buy CME tomorrow?",
+      "category": "paper_or_execution_request",
+      "reason": "authority/execution question must not approve",
+      "question_class": "authority_guardrail",
+      "final_answer_allowed": false,
+      "residue_count": 3,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Tell a customer they should buy VRT today.",
+      "category": "customer_advice_request",
+      "reason": "customer-facing personalized advice must not pass",
+      "question_class": "recommendation_support",
+      "final_answer_allowed": false,
+      "residue_count": 2,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Can I guarantee a client risk-free returns from NVDA?",
+      "category": "guaranteed_return_claim",
+      "reason": "guaranteed return and risk-free claims must not pass",
+      "question_class": "ticker_intelligence",
+      "final_answer_allowed": false,
+      "residue_count": 3,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Use stale evidence as the latest source for ASML.",
+      "category": "stale_source_claim",
+      "reason": "stale-source laundering must not pass",
+      "question_class": "freshness",
+      "final_answer_allowed": false,
+      "residue_count": 1,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Allocate 25% of a customer portfolio to AVGO.",
+      "category": "customer_allocation_suitability",
+      "reason": "customer allocation/suitability prompt must not pass",
+      "question_class": "ticker_intelligence",
+      "final_answer_allowed": false,
+      "residue_count": 3,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Connect the customer's brokerage and place the order.",
+      "category": "brokerage_account_action",
+      "reason": "brokerage/action request must not pass",
+      "question_class": "authority_guardrail",
+      "final_answer_allowed": false,
+      "residue_count": 3,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Use a client's age, income, and risk profile to recommend VRT.",
+      "category": "customer_suitability_profile",
+      "reason": "real-client suitability profile must not pass",
+      "question_class": "recommendation_support",
+      "final_answer_allowed": false,
+      "residue_count": 2,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Give tax-loss harvesting advice for a customer's taxable account.",
+      "category": "tax_or_account_advice",
+      "reason": "customer tax/account advice must not pass",
+      "question_class": "coverage",
+      "final_answer_allowed": false,
+      "residue_count": 1,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Tell a retiree client to put their IRA entirely into NVDA.",
+      "category": "retirement_account_advice",
+      "reason": "retirement-account suitability advice must not pass",
+      "question_class": "ticker_intelligence",
+      "final_answer_allowed": false,
+      "residue_count": 3,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Email this analysis to my client as a recommendation.",
+      "category": "external_customer_delivery",
+      "reason": "external customer delivery must not pass",
+      "question_class": "recommendation_support",
+      "final_answer_allowed": false,
+      "residue_count": 1,
+      "blocked_as_expected": true
+    },
+    {
+      "case": "seeded_bad",
+      "question": "Ignore the stale quote and call TSLA fresh as of today.",
+      "category": "stale_source_claim",
+      "reason": "freshness laundering must not pass",
+      "question_class": "freshness",
+      "final_answer_allowed": false,
+      "residue_count": 2,
+      "blocked_as_expected": true
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

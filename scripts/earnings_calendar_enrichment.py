@@ -6,6 +6,7 @@ watchlist and flags newly confirmable entries or date changes.
 
 Usage:
     python scripts/earnings_calendar_enrichment.py
+    python scripts/earnings_calendar_enrichment.py --tickers AJG AXON --merge-existing
 
 Requirements:
     pip install yfinance
@@ -17,6 +18,7 @@ Output:
 
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -437,7 +439,79 @@ def compare_to_watchlist(record: dict[str, Any], watchlist_date: str | None) -> 
     return "DATE CHANGED -- baseline has " + watchlist_date + ", yfinance shows " + fetched_date
 
 
-def main() -> None:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Refresh the review-only earnings calendar artifact.")
+    parser.add_argument(
+        "--tickers",
+        nargs="+",
+        help="Explicit ticker shard to refresh, including symbols outside static coverage.",
+    )
+    parser.add_argument(
+        "--merge-existing",
+        action="store_true",
+        help="Preserve unrefreshed records from the existing output artifact.",
+    )
+    args = parser.parse_args(argv)
+    if args.merge_existing and not args.tickers:
+        parser.error("--merge-existing requires --tickers")
+    return args
+
+
+def normalize_tickers(raw_tickers: list[str]) -> list[str]:
+    tickers: list[str] = []
+    seen: set[str] = set()
+    for raw in raw_tickers:
+        ticker = str(raw).strip().upper()
+        if not ticker or ticker in seen:
+            continue
+        seen.add(ticker)
+        tickers.append(ticker)
+    return tickers
+
+
+def provider_ticker(display_ticker: str) -> str:
+    return COVERAGE.get(display_ticker, display_ticker.replace(".", "-"))
+
+
+def load_existing_payload() -> dict[str, Any]:
+    try:
+        payload = json.loads(OUT_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def merge_refreshed_records(
+    existing_records: list[dict[str, Any]],
+    refreshed_records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    refreshed_by_ticker = {
+        str(record.get("ticker") or "").upper(): record
+        for record in refreshed_records
+        if str(record.get("ticker") or "").strip()
+    }
+    merged: list[dict[str, Any]] = []
+    replaced: set[str] = set()
+    for record in existing_records:
+        ticker = str(record.get("ticker") or "").upper()
+        if ticker in refreshed_by_ticker:
+            if ticker not in replaced:
+                merged.append(refreshed_by_ticker[ticker])
+                replaced.add(ticker)
+            continue
+        merged.append(record)
+    for record in refreshed_records:
+        ticker = str(record.get("ticker") or "").upper()
+        if ticker not in replaced:
+            merged.append(record)
+            replaced.add(ticker)
+    return merged
+
+
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    shard_tickers = normalize_tickers(args.tickers or [])
+    shard_mode = bool(args.tickers)
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     config = load_portfolio_config()
 
@@ -448,13 +522,15 @@ def main() -> None:
     print(sep)
     print("  EARNINGS CALENDAR ENRICHMENT  --  " + now)
     print(sep)
-    print("  Fetching earnings dates for " + str(len(COVERAGE)) + " names...")
+    selected_tickers = shard_tickers if shard_mode else list(COVERAGE)
+    print("  Fetching earnings dates for " + str(len(selected_tickers)) + " names...")
     print("")
 
     records: list[dict[str, Any]] = []
     errors: list[str] = []
 
-    for display_ticker, yf_ticker in COVERAGE.items():
+    for display_ticker in selected_tickers:
+        yf_ticker = provider_ticker(display_ticker)
         print("  " + display_ticker + "...", end=" ", flush=True)
         rec = fetch_earnings_date(display_ticker, yf_ticker)
         rec = apply_post_earnings_manual_hold(rec)
@@ -469,10 +545,25 @@ def main() -> None:
             else:
                 print(rec["next_earnings_date"])
 
-    lifecycle_closeouts = build_watchlist_lifecycle_closeouts(config=config, records=records, today=today)
-    lifecycle_holds = lifecycle_closeouts + build_existing_watchlist_lifecycle_holds(config=config, records=records, today=today)
-    apply_closeout_hold_to_records(records, lifecycle_holds)
-    lifecycle_apply = apply_watchlist_lifecycle_closeouts(config, lifecycle_closeouts)
+    if shard_mode:
+        lifecycle_closeouts: list[dict[str, Any]] = []
+        lifecycle_holds: list[dict[str, Any]] = []
+        lifecycle_apply = {
+            "applied": False,
+            "count": 0,
+            "tickers": [],
+            "reason": "disabled_in_ticker_shard_mode",
+        }
+    else:
+        lifecycle_closeouts = build_watchlist_lifecycle_closeouts(config=config, records=records, today=today)
+        lifecycle_holds = lifecycle_closeouts + build_existing_watchlist_lifecycle_holds(config=config, records=records, today=today)
+        apply_closeout_hold_to_records(records, lifecycle_holds)
+        lifecycle_apply = apply_watchlist_lifecycle_closeouts(config, lifecycle_closeouts)
+
+    existing_payload = load_existing_payload() if shard_mode and args.merge_existing else {}
+    existing_records = existing_payload.get("records") if isinstance(existing_payload.get("records"), list) else []
+    if existing_records:
+        records = merge_refreshed_records(existing_records, records)
     watchlist = load_earnings_date_watchlist(config)
 
     if lifecycle_holds:
@@ -551,10 +642,11 @@ def main() -> None:
     print("")
     print("  Fetch errors (" + str(len(errors)) + "): " + (", ".join(errors) if errors else "none"))
 
+    scope_size = len(selected_tickers)
     payload: dict[str, Any] = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "as_of_date": today.isoformat(),
-        "status": "ok" if not errors else ("partial" if len(errors) < len(COVERAGE) else "error"),
+        "status": "ok" if not errors else ("partial" if len(errors) < scope_size else "error"),
         "stale_after_days": STALE_AFTER_DAYS,
         "expected_update_window": EXPECTED_UPDATE_WINDOW,
         "last_trading_day": None,
@@ -581,6 +673,14 @@ def main() -> None:
         "timing_sensitive_alert_window_days": TIMING_SENSITIVE_ALERT_WINDOW_DAYS,
         "fetch_errors": errors,
     }
+    if shard_mode:
+        payload["refresh_scope"] = {
+            "mode": "ticker_shard",
+            "tickers": selected_tickers,
+            "merge_existing": bool(args.merge_existing),
+            "review_only": True,
+            "portfolio_config_mutation_allowed": False,
+        }
     OUT_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     if warnings:

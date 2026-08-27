@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections import Counter
 from datetime import datetime, timezone
@@ -48,6 +49,21 @@ REQUIRED_TRUE_FLAGS = {
 }
 REQUIRED_FALSE_FLAGS = {flag for flag in AUTHORITY_BOUNDARY if flag not in REQUIRED_TRUE_FLAGS}
 
+ROUTER_IDENTITY_VOLATILE_KEYS = {
+    "generated_at",
+    "generated_at_utc",
+    "completed_at",
+    "completed_at_utc",
+    "started_at",
+    "started_at_utc",
+    "duration_ms",
+    "elapsed_seconds",
+    "age_hours",
+    "mtime",
+    "mtime_utc",
+    "path_mtime_utc",
+}
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -66,6 +82,37 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def normalize_router_for_identity(value: Any) -> Any:
+    """Return stable router content without artifact-generation residue."""
+    if isinstance(value, dict):
+        return {
+            str(key): normalize_router_for_identity(item)
+            for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+            if str(key) not in ROUTER_IDENTITY_VOLATILE_KEYS
+        }
+    if isinstance(value, (list, tuple)):
+        return [normalize_router_for_identity(item) for item in value]
+    return value
+
+
+def source_router_lineage(router: dict[str, Any]) -> dict[str, Any]:
+    normalized = normalize_router_for_identity(router)
+    encoded = json.dumps(normalized, sort_keys=True, separators=(",", ":"), default=str)
+    return {
+        "path": rel(AUTO_ROUTER),
+        "content_sha256": hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
+        "generated_at_utc": router.get("generated_at_utc") or router.get("generated_at"),
+    }
+
+
+def router_lineage_complete(lineage: dict[str, Any]) -> bool:
+    return bool(
+        str(lineage.get("path") or "")
+        and str(lineage.get("content_sha256") or "")
+        and str(lineage.get("generated_at_utc") or "")
+    )
 
 
 def load_dict(path: Path) -> dict[str, Any]:
@@ -101,28 +148,33 @@ def add_check(checks: list[dict[str, Any]], name: str, ok: bool, detail: Any = N
 def clean_row(row: dict[str, Any], approved_labels: set[str], preview_by_ticker: dict[str, dict[str, Any]]) -> dict[str, Any]:
     symbol = ticker(row.get("ticker"))
     auto_tier = row.get("auto_tier")
-    legacy_tier = row.get("legacy_universe_tier")
+    seeded_from_legacy = bool(row.get("tier_seeded_from_legacy_label"))
     has_tier_b_label = symbol in approved_labels
     preview_row = preview_by_ticker.get(symbol, {})
     overlap_reasons: list[str] = []
     if has_tier_b_label and auto_tier != "Tier B":
         overlap_reasons.append("approved_tier_b_research_bench_label_but_current_auto_tier_differs")
-    if legacy_tier == "B" and auto_tier != "Tier B":
-        overlap_reasons.append("legacy_universe_tier_b_but_current_auto_tier_differs")
-    if legacy_tier == "A" and auto_tier != "Tier A":
-        overlap_reasons.append("legacy_universe_tier_a_but_current_auto_tier_differs")
+    if seeded_from_legacy:
+        overlap_reasons.append("current_tier_seeded_from_legacy_label_without_auto_router_evidence")
     if auto_tier == "Tier A" and has_tier_b_label:
-        overlap_reasons.append("promotion_overlap_current_tier_a_with_legacy_or_label_b_context")
+        overlap_reasons.append("promotion_overlap_current_tier_a_with_approved_label_b_context")
     return {
         "ticker": symbol,
         "name": row.get("name"),
         "sector": row.get("sector"),
         "instrument_type": row.get("instrument_type"),
+        "asset_class": row.get("asset_class"),
+        "instrument_class": row.get("instrument_class"),
+        "exposure_type": row.get("exposure_type"),
+        "review_lane": row.get("review_lane"),
+        "deployment_role": row.get("deployment_role"),
+        "opportunity_tier": row.get("opportunity_tier") or auto_tier,
+        "lane_tier": row.get("lane_tier"),
         "current_tier": auto_tier,
         "current_state": row.get("auto_state"),
         "current_route_reason": row.get("route_reason"),
         "current_tier_source": rel(AUTO_ROUTER),
-        "legacy_universe_tier": legacy_tier,
+        "tier_seeded_from_legacy_label": seeded_from_legacy,
         "legacy_monitoring_role": row.get("legacy_monitoring_role"),
         "approved_tier_b_research_bench_label": has_tier_b_label,
         "label_preview_action": preview_row.get("proposed_sync_action"),
@@ -136,6 +188,7 @@ def clean_row(row: dict[str, Any], approved_labels: set[str], preview_by_ticker:
 
 def build_report() -> dict[str, Any]:
     router = load_dict(AUTO_ROUTER)
+    router_lineage = source_router_lineage(router)
     preview = load_dict(LABEL_PREVIEW)
     rows = router_rows(router)
     approved_labels = approved_label_set(preview)
@@ -150,24 +203,22 @@ def build_report() -> dict[str, Any]:
     promotion_overlaps = [
         row for row in overlaps
         if row.get("current_tier") == "Tier A"
-        and (
-            row.get("approved_tier_b_research_bench_label")
-            or row.get("legacy_universe_tier") == "B"
-        )
+        and row.get("approved_tier_b_research_bench_label")
     ]
-    legacy_label_overlaps = [
-        row for row in overlaps
-        if row.get("current_tier") != "Tier A" or row.get("legacy_universe_tier") != "A"
-    ]
+    legacy_seed_overlaps = [row for row in overlaps if row.get("tier_seeded_from_legacy_label")]
     tier_counts = Counter(row.get("current_tier") for row in clean_rows)
     state_counts = Counter(row.get("current_state") for row in clean_rows)
+    lane_tier_counts = Counter(str(row.get("lane_tier") or "missing") for row in clean_rows)
+    review_lane_counts = Counter(str(row.get("review_lane") or "missing") for row in clean_rows)
 
     checks: list[dict[str, Any]] = []
     add_check(checks, "auto_router_present", bool(router), rel(AUTO_ROUTER))
     add_check(checks, "auto_router_status_ok", router.get("status") == "ok", router.get("status"))
+    add_check(checks, "auto_router_lineage_complete", router_lineage_complete(router_lineage), router_lineage)
     add_check(checks, "auto_router_validation_ok", as_dict(router.get("validation")).get("status") == "ok", as_dict(router.get("validation")).get("status"))
     add_check(checks, "rows_present", bool(clean_rows), len(clean_rows))
     add_check(checks, "exclusive_count_matches_rows", len(true_tier_a) + len(true_tier_b) + len(true_tier_c) == len(clean_rows), {"a": len(true_tier_a), "b": len(true_tier_b), "c": len(true_tier_c), "rows": len(clean_rows)})
+    add_check(checks, "lane_qualified_fields_present", all(row.get("review_lane") and row.get("lane_tier") for row in clean_rows), [row.get("ticker") for row in clean_rows if not (row.get("review_lane") and row.get("lane_tier"))])
     add_check(checks, "label_preview_audit_only", as_dict(preview.get("semantic_contract")).get("not_current_tier_authority") is True, as_dict(preview.get("semantic_contract")))
     add_check(checks, "no_capital_deployment_approved", all(row.get("capital_deployment_approved") is False for row in clean_rows), None)
     add_check(checks, "no_trade_or_execution_approved", all(row.get("trade_or_execution_approved") is False for row in clean_rows), None)
@@ -185,6 +236,7 @@ def build_report() -> dict[str, Any]:
         "purpose": "Provide one non-overlapping current Tier A/B/C roster so lower models do not confuse legacy labels with live routing.",
         "semantic_contract": {
             "current_tier_authority": rel(AUTO_ROUTER),
+            "source_router_lineage_required": True,
             "legacy_label_preview_role": "audit_only_not_current_tier_authority",
             "exclusive_lists_are_current_truth": True,
             "lower_model_instruction": "Use true_tier_a/true_tier_b/true_tier_c for current membership. Treat overlap arrays as explanation only.",
@@ -194,23 +246,34 @@ def build_report() -> dict[str, Any]:
             "auto_router": rel(AUTO_ROUTER),
             "label_sync_preview": rel(LABEL_PREVIEW),
         },
+        "source_router_lineage": router_lineage,
         "summary": {
             "active_ticker_count": len(clean_rows),
             "current_tier_counts": dict(tier_counts),
             "current_state_counts": dict(state_counts),
+            "lane_tier_counts": dict(sorted(lane_tier_counts.items())),
+            "review_lane_counts": dict(sorted(review_lane_counts.items())),
+            "tier_a_equity_count": lane_tier_counts.get("Tier A Equity", 0),
+            "tier_a_sleeve_count": lane_tier_counts.get("Tier A Sleeve", 0),
+            "tier_a_commodity_count": lane_tier_counts.get("Tier A Commodity", 0),
+            "tier_a_rates_income_count": lane_tier_counts.get("Tier A Rates/Income", 0),
+            "tier_a_macro_currency_count": lane_tier_counts.get("Tier A Macro/Currency", 0),
+            "tier_a_crypto_proxy_count": lane_tier_counts.get("Tier A Crypto Proxy", 0),
             "true_tier_a_count": len(true_tier_a),
             "true_tier_b_count": len(true_tier_b),
             "true_tier_c_count": len(true_tier_c),
-            "legacy_label_overlap_count": len(legacy_label_overlaps),
+            "legacy_seed_overlap_count": len(legacy_seed_overlaps),
             "promotion_overlap_count": len(promotion_overlaps),
             "capital_deployment_approved_count": 0,
             "trade_or_execution_approved_count": 0,
+            "source_router_sha256": router_lineage.get("content_sha256"),
+            "source_router_generated_at_utc": router_lineage.get("generated_at_utc"),
             "next_safe_action": "Route current tier questions through this artifact or wf78-auto-tier-routing; use label preview only for audit/apply-preview work.",
         },
         "true_tier_a": true_tier_a,
         "true_tier_b": true_tier_b,
         "true_tier_c": true_tier_c,
-        "legacy_label_overlap": legacy_label_overlaps,
+        "legacy_seed_overlap": legacy_seed_overlaps,
         "promotion_overlap_explained": promotion_overlaps,
         "rows": clean_rows,
         "validation": {

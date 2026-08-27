@@ -1149,21 +1149,30 @@ def _build_handoff_proof_state() -> list[dict[str, Any]]:
     Until a lane has a live proof artifact, it must render as pending rather
     than silently inheriting trust from the weekday research lane.
     """
+    handoff_gate_path = TMP / "main-session-handoff-first-proof.json"
+    handoff_gate = load_json(handoff_gate_path) or {}
+    handoff_gate_rows = {
+        str(row.get("key")): row
+        for row in (handoff_gate.get("lanes") or [])
+        if isinstance(row, dict) and row.get("key")
+    }
     lanes = [
         ("weekday_research", "Weekday research", RESEARCH_FRESHNESS_OPPORTUNITY_PATH, True),
         ("morning", "Morning handoff", TMP / "run-summary-morning.json", False),
         ("post_close", "Post-close handoff", TMP / "run-summary-post-close.json", False),
         ("sunday_weekly", "Sunday weekly handoff", TMP / "weekly-intelligence-brief.json", False),
-        ("sunday_research", "Sunday research handoff", TMP / "sunday-research-review.json", False),
+        ("sunday_research", "Sunday research handoff", TMP / "sunday-research-opportunity-reset-cron-runner.json", False),
     ]
     sql_records, sql_health = _load_sql_handoff_source_metadata([path for _, _, path, _ in lanes])
     out: list[dict[str, Any]] = []
     for key, label, path, standing_proved in lanes:
         # Worker artifacts are not handoff proof. A handoff is PROVED only when
-        # the main-session systemEvent path itself has been proved/processed;
-        # as of the current ledger, only weekday research has that proof.
-        payload = (load_json(path) or {}) if standing_proved and path.exists() else {}
-        proved = bool(standing_proved)
+        # the main-session proof gate has proved/processed the lane. SQL/index
+        # provenance metadata stays supporting evidence, not proof authority.
+        gate_row = handoff_gate_rows.get(key) or {}
+        payload = (load_json(path) or {}) if path.exists() else {}
+        state = str(gate_row.get("state") or ("PROVED" if standing_proved else "PENDING_FIRST_PROOF"))
+        tone = str(gate_row.get("tone") or ("ok" if state == "PROVED" else "warn"))
         rel_path = _rel_workspace_path(path)
         sql_source = sql_records.get(rel_path) or {
             "match": False,
@@ -1173,10 +1182,20 @@ def _build_handoff_proof_state() -> list[dict[str, Any]]:
         out.append({
             "key": key,
             "label": label,
-            "state": "PROVED" if proved else "PENDING_FIRST_PROOF",
-            "tone": "ok" if proved else "warn",
+            "state": state,
+            "tone": tone,
             "source_path": rel_path,
-            "generated_at_utc": payload.get("generated_at_utc") or payload.get("generated_at"),
+            "generated_at_utc": (
+                gate_row.get("source_generated_at_utc")
+                or payload.get("generated_at_utc")
+                or payload.get("generated_at")
+                or handoff_gate.get("generated_at_utc")
+            ),
+            "proof_artifact": _rel_workspace_path(handoff_gate_path) if handoff_gate_rows else None,
+            "proof_generated_at_utc": handoff_gate.get("generated_at_utc") if handoff_gate_rows else None,
+            "source_status": gate_row.get("source_status") or payload.get("status"),
+            "source_blockers": gate_row.get("source_blockers") or [],
+            "repair_action": gate_row.get("repair_action"),
             "sql_source": sql_source,
             "sql_artifact_index": {
                 "enabled": sql_health.get("enabled"),

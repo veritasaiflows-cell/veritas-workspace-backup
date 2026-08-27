@@ -1,4 +1,4 @@
 interface:
-  display_name: "Procedure Repository"
-  short_description: "Operator procedure governance"
-  default_prompt: "Use $operating-procedure-repository-manager to manage operating procedures without scattering durable workflow rules."
+  display_name: "Procedure Repository Router"
+  short_description: "Deprecated router to workspace-governor"
+  default_prompt: "Use $workspace-governor for operating-procedure placement, procedure-vs-playbook routing, and SOP-sprawl control."

@@ -1,9 +1,9 @@
 {
   "summary": {
-    "passed": 18,
-    "failed": 0,
-    "total": 18,
-    "all_passed": true
+    "passed": 29,
+    "failed": 1,
+    "total": 30,
+    "all_passed": false
   },
   "results": [
     {
@@ -12,9 +12,9 @@
       "errors": [],
       "exec_freshness": "partial",
       "validation": {
-        "critical": 0,
-        "warning": 4,
-        "info": 0
+        "critical": 14,
+        "warning": 0,
+        "info": 1
       },
       "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
     },
@@ -24,9 +24,9 @@
       "errors": [],
       "exec_freshness": "partial",
       "validation": {
-        "critical": 0,
-        "warning": 4,
-        "info": 0
+        "critical": 14,
+        "warning": 0,
+        "info": 1
       },
       "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
     },
@@ -36,9 +36,9 @@
       "errors": [],
       "exec_freshness": "partial",
       "validation": {
-        "critical": 0,
-        "warning": 6,
-        "info": 0
+        "critical": 14,
+        "warning": 2,
+        "info": 1
       },
       "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
     },
@@ -48,9 +48,9 @@
       "errors": [],
       "exec_freshness": "stale",
       "validation": {
-        "critical": 0,
-        "warning": 4,
-        "info": 0
+        "critical": 14,
+        "warning": 0,
+        "info": 1
       },
       "trust_summary": "Execution context is stale. Refresh before relying on execution signals."
     },
@@ -58,37 +58,40 @@
       "name": "contradiction_entry_band",
       "passed": true,
       "errors": [],
-      "exec_freshness": "partial",
+      "exec_freshness": "usable_with_caution",
       "validation": {
-        "critical": 1,
-        "warning": 4,
-        "info": 0
+        "critical": 14,
+        "warning": 0,
+        "info": 1
       },
-      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
     },
     {
       "name": "earnings_date_change_visibility",
       "passed": true,
       "errors": [],
-      "exec_freshness": "partial",
+      "exec_freshness": "usable_with_caution",
       "validation": {
-        "critical": 0,
-        "warning": 5,
-        "info": 0
+        "critical": 14,
+        "warning": 1,
+        "info": 1
       },
-      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
     },
     {
       "name": "state_transition_in_band_ready",
-      "passed": true,
-      "errors": [],
+      "passed": false,
+      "errors": [
+        "coherent state transition should not create critical contradiction"
+      ],
       "exec_freshness": "usable_with_caution",
       "validation": {
-        "critical": 0,
-        "warning": 4,
-        "info": 0
+        "critical": 13,
+        "warning": 2,
+        "info": 1
       },
-      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible.",
+      "producer_output_tail": "generate_dashboard.py v5, assembling payload \u2026\n"
     },
     {
       "name": "market_state_missing_policy_artifact",
@@ -147,7 +150,79 @@
       "trust_summary": null
     },
     {
+      "name": "earnings_lifecycle_closeout_candidate",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
       "name": "earnings_new_alert_visibility",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "trigger_note_uses_current_execution_band",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "neutral_deployment_evidence_shadow_display_only",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "phase4a_sql_consumer_authority_guard_fail_closed",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "fundamental_trend_panel_review_only",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "deployment_readiness_source_conflict_guard",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "auto_apply_clears_deployment_surface_band_debt",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "event_risk_band_freeze_is_structured_review_debt",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "post_apply_band_review_does_not_loop_auto_apply",
       "passed": true,
       "errors": [],
       "exec_freshness": null,
@@ -171,7 +246,31 @@
       "trust_summary": null
     },
     {
+      "name": "generic_authority_conflict_guard",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
       "name": "decision_queue_visibility",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "wf63_command_center_readiness_only",
+      "passed": true,
+      "errors": [],
+      "exec_freshness": null,
+      "validation": {},
+      "trust_summary": null
+    },
+    {
+      "name": "wf63_validator_fails_on_misleading_language",
       "passed": true,
       "errors": [],
       "exec_freshness": null,

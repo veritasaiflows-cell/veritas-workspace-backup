@@ -36,24 +36,33 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from lib.workflow_control import apply_route_override, load_registry
+from lib.workflow_control import apply_route_override, find_override, is_on_hold, load_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_OUT = ROOT / "tmp" / "workflow-routing-index.json"
 VALIDATION_OUT = ROOT / "tmp" / "workflow-routing-index-validation.json"
+PARITY_OUT = ROOT / "tmp" / "workflow-routing-parity-validation.json"
 DB_OUT = ROOT / "tmp" / "workflow-routing-index.sqlite"
 HANDOFF_DIR = ROOT / "tmp"
+ACTIVE_WORKFLOWS_REL = "06. Playbooks/Active Workflows.md"
+ACTIVE_WORKFLOWS_PATH = ROOT / ACTIVE_WORKFLOWS_REL
+CONTROL_OVERRIDES_REL = "state/workflow-control-overrides.json"
+CONTROL_OVERRIDES_PATH = ROOT / CONTROL_OVERRIDES_REL
+CAPSULE_DIR = ROOT / "state" / "workflows"
+STATUS_CARD_OUT = ROOT / "tmp" / "veritas-status-card.json"
 
 CONTINUITY = "06. Playbooks/Project Continuity"
 
 REQUIRED_FIELDS = (
     "workflow_id",
     "display_name",
+    "aliases",
     "tier",
     "current_state",
     "next_action",
@@ -68,12 +77,43 @@ REQUIRED_FIELDS = (
     "owner_action_required",
     "safe_for_helper_lane",
     "default_resume_command",
+    "priority",
+    "lifecycle",
+    "readiness",
+    "authority_class",
+    "primary_owner_lane",
+    "secondary_consumers",
+    "human_approval_owner",
+    "proof_artifact",
+    "freshness_sla",
+    "authoritative_next_action",
 )
 
-EXPECTED_ROUTE_COUNT = 35
-EXPECTED_TIER_COUNTS = {"P0": 6, "P1": 15, "P2": 10, "P3": 4}
+EXPECTED_ROUTE_COUNT = 43
+EXPECTED_TIER_COUNTS = {"P0": 4, "P1": 17, "P2": 10, "P3": 5, "P4": 7}
 FRESHNESS_SCORES = {"fresh", "aging", "stale", "missing", "n/a"}
 HANDOFF_MODES = {"Spawn read-only", "Main-session only"}
+LIFECYCLES = {"active", "paused", "monitor", "gated"}
+READINESS_STATES = {"route_only", "refresh_required", "paused", "monitor_only", "blocked"}
+AUTHORITY_CLASSES = {
+    "review_only",
+    "owner_gated_review_only",
+    "monitor_only",
+    "paused_review_only",
+    "paper_guard_fail_closed",
+}
+PAPER_FAIL_CLOSED_WORKFLOWS = {"WF67", "WF86", "WF87"}
+FRESHNESS_SLA_HOURS = 72.0
+
+# These are interface consumers, not owners.  The main session remains the
+# sole operational owner until an exact lane lease delegates a bounded write.
+SECONDARY_CONSUMERS: dict[str, list[str]] = {
+    "WF78": ["WF84", "WF85"],
+    "WF84": ["WF85"],
+    "WF85": ["WF87", "WF67", "Randall"],
+    "WF87": ["WF67", "Randall"],
+    "WF67": ["Randall"],
+}
 
 # Review-only authority clamp. Mirrors the Active Workflows global authority
 # rules. The validator treats any of these flipping true (other than
@@ -90,8 +130,69 @@ AUTHORITY = {
     "owner_approval_inferred": False,
 }
 
-LIST_FIELDS = ("secondary_artifacts", "validator_commands", "blockers", "stop_lines")
+LIST_FIELDS = (
+    "aliases", "secondary_artifacts", "validator_commands", "blockers", "stop_lines",
+    "secondary_consumers",
+)
 BOOL_FIELDS = ("owner_action_required", "safe_for_helper_lane", "primary_pending")
+
+
+def normalize_lookup_key(value: Any) -> str:
+    """Normalize a user-facing route selector to an exact lookup key.
+
+    The resolver intentionally removes punctuation and whitespace but does not
+    perform substring or fuzzy matching. That keeps `WF-78`, `Workflow 78`,
+    and `78` equivalent without letting an abbreviated phrase select the first
+    unrelated route.
+    """
+    return re.sub(r"[^a-z0-9]+", "", str(value or "").casefold())
+
+
+def workflow_id_aliases(workflow_id: str) -> list[str]:
+    """Return the safe generated aliases for a numeric workflow id."""
+    values = [workflow_id]
+    match = re.fullmatch(r"wf[-_ ]?(\d+)", workflow_id.strip(), flags=re.IGNORECASE)
+    if match:
+        number = match.group(1)
+        values.extend([number, f"Workflow {number}"])
+    return values
+
+
+def route_alias_records(route_row: dict[str, Any]) -> list[dict[str, str]]:
+    """Build deterministic exact-match aliases for one route row."""
+    values: list[tuple[str, Any]] = [
+        ("workflow_id", route_row.get("workflow_id")),
+        ("display_name", route_row.get("display_name")),
+    ]
+    workflow_id = str(route_row.get("workflow_id") or "")
+    values.extend(("generated_workflow_id", item) for item in workflow_id_aliases(workflow_id))
+    values.extend(("declared_alias", item) for item in route_row.get("aliases", []) or [])
+
+    records: dict[str, dict[str, str]] = {}
+    for alias_kind, alias in values:
+        alias_text = str(alias or "").strip()
+        alias_key = normalize_lookup_key(alias_text)
+        if alias_key and alias_key not in records:
+            records[alias_key] = {
+                "alias": alias_text,
+                "alias_key": alias_key,
+                "alias_kind": alias_kind,
+            }
+    return list(records.values())
+
+
+def declared_route_aliases(
+    workflow_id: str,
+    display_name: str,
+    aliases: list[str] | None,
+) -> list[str]:
+    """Persist the full, human-readable exact alias set on a route row."""
+    records = route_alias_records({
+        "workflow_id": workflow_id,
+        "display_name": display_name,
+        "aliases": aliases or [],
+    })
+    return [record["alias"] for record in records]
 
 
 def route(
@@ -112,10 +213,12 @@ def route(
     default_resume_command: str | None,
     primary_pending: bool = False,
     effective_status_override: str | None = None,
+    aliases: list[str] | None = None,
 ) -> dict[str, Any]:
     row = {
         "workflow_id": workflow_id,
         "display_name": display_name,
+        "aliases": declared_route_aliases(workflow_id, display_name, aliases),
         "tier": tier,
         "current_state": current_state,
         "next_action": next_action,
@@ -155,13 +258,13 @@ def build_routes() -> list[dict[str, Any]]:
             "P0",
             "Internal/service-led finance vertical: anonymous scenarios, "
             "service-state, operator console, renderer/export, PM handoff, WF77 "
-            "evidence, macro/recommendation tracking, polished PDF/Excel packaging, recurring finance delivery series, authority spine.",
-            "Run/refine the next anonymous service-state slice and keep the internal PM PDF, operator Excel, and recurring finance delivery series current.",
+            "evidence, macro/recommendation tracking, polished PDF/Excel packaging, paused manual finance-delivery SaaS gate, authority spine.",
+            "Run/refine the next anonymous service-state slice and keep the internal PM PDF, operator Excel, and paused finance-delivery gate ready for manual SaaS deliverable review.",
             f"{CONTINUITY}/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md",
-            "scripts/wf75_training_desk.py",
+            "tmp/wf75-service-state-current.json",
             [
+                "scripts/wf75_training_desk.py",
                 "tmp/wf75-operator-console.json",
-                "tmp/wf75-service-state-current.json",
                 "tmp/wf75-deliverable-packager.json",
                 "tmp/wf75-deliverables-workbook.xlsx",
                 "tmp/finance-delivery-series.json",
@@ -187,20 +290,25 @@ def build_routes() -> list[dict[str, Any]]:
             "WF-RETAIL-ROUTING",
             "Retail-Grade Truth Routing System",
             "P0",
-            "Phase 1-4 and Phase 4.5-7 automation built, validated, "
-            "scorecard-green, scheduled through review-only guard cron.",
-            "Keep routing, harness, automation plane, PM/cockpit Retail tab, "
-            "customer-safety gate, freshness prompts, demo cards clean; "
-            "customer-safe output waits for Randall.",
-            None,  # no dedicated continuity note; routes through Active Workflows + scripts
+            "Resumed by Randall on 2026-06-18 for internal answer-safety routing proof; "
+            "customer output remains blocked until separate launch gates clear.",
+            "Refresh routing contract, answer harness, automation plane, and customer-output "
+            "decision packet. Use the router internally to classify source-open/review-only/"
+            "blocked answer paths; do not produce customer output.",
+            f"{CONTINUITY}/Retail-Grade Truth Routing System.md",
             "scripts/retail_truth_routing_contract.py",
-            ["scripts/retail_answer_harness.py", "scripts/retail_automation_control_plane.py"],
+            [
+                "scripts/retail_answer_harness.py",
+                "scripts/retail_automation_control_plane.py",
+                "scripts/retail_customer_output_decision_packet.py",
+            ],
             [
                 "python scripts\\retail_truth_routing_contract.py --write --validate",
                 "python scripts\\retail_answer_harness.py --write --validate",
                 "python scripts\\retail_automation_control_plane.py --write --validate",
+                "python scripts\\retail_customer_output_decision_packet.py --write --validate",
             ],
-            ["Customer-safe output waits for Randall"],
+            ["Customer-safe output requires separate owner, licensing, privacy, compliance, delivery, and runtime/security gates"],
             [
                 "No SQL-first promotion, SQL writes/imports, customer/external output, "
                 "canon/portfolio mutation, paper/live/account action, Python fallback "
@@ -210,6 +318,7 @@ def build_routes() -> list[dict[str, Any]]:
             True,
             True,
             "python scripts\\retail_truth_routing_contract.py --write --validate",
+            aliases=["Retail-Grade Truth Routing"],
         ),
         # ---- P1 ----
         route(
@@ -230,8 +339,9 @@ def build_routes() -> list[dict[str, Any]]:
             "approval for real outreach or pilot use; do not contact real "
             "prospects yet.",
             None,
-            "scripts/generic_intelligence_saas_pivot.py",
+            "tmp/wf79-smb-phase-closeout.json",
             [
+                "scripts/generic_intelligence_saas_pivot.py",
                 "scripts/wf75_training_desk.py",
                 "tmp/wf75-smb-boundary-lint.json",
                 "tmp/wf79-smb-outreach-prep-validation.json",
@@ -287,31 +397,74 @@ def build_routes() -> list[dict[str, Any]]:
         ),
         route(
             "WF72",
-            "Financial OS SQL Support",
+            "Financial OS SQL Support / SQL-Primary Migration",
             "P1",
-            "265-row cache boundary and A2 fallback read guard are green. "
-            "WF72 is formally demoted to support/index/cache infrastructure "
-            "below the WF84/WF85 ticker-answer route, not the finance front door.",
-            "Keep support-only mode; use WF72 only for read-only lookup, cache "
-            "guard, artifact index, and fast-path QA support. Separate gate "
-            "required before consumer promotion, Python retirement, SQL-first "
-            "use, or any finance answer-path ownership.",
+            "265-row cache boundary and A2 fallback read guard remain support-only. "
+            "WF72 now owns the SQL-first migration finish-line proof after Randall's "
+            "2026-06-19 decision to finish SQL-primary migration with schedule/parity "
+            "and the 2026-06-21 band-proposals source migration closeout. The active "
+            "reference_levels path is SQL-first row-level provenance: GOOG/GS/NVDA/VRT "
+            "source metadata and low/high/stop lineage now point to tmp/band-proposals.json; "
+            "the no-single-200-row-JSON condition is informational, not a blocker. Old "
+            "Execution Board anchor packets are compatibility evidence only.",
+            "Continue SQL-first migration with consumer expansion and duplicate-surface "
+            "retirement proof only. Use SQL-native source-family proof, targeted repair "
+            "packet, full-answer parity, and migration completion runner as the active "
+            "validators. Keep Python/feeders retained until consumer parity and "
+            "source-feeder retirement gates clear, and require a separate exact gate before "
+            "schema change, cron schedule change, Python fallback retirement, source-feeder "
+            "retirement, archive/delete apply, or finance answer-path ownership change.",
             f"{CONTINUITY}/Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md",
-            "tmp/veritas-canon-cache.sqlite",
-            ["state/finance/finance-canon.sqlite", "tmp/veritas-artifact-index.sqlite", "tmp/fast-path-qa.json"],
-            ["python scripts\\artifact_index.py validate", "python scripts\\fast_path_qa.py --write --validate"],
-            ["Separate gate required before SQL-first use / Python retirement"],
+            "tmp/finance-sql-primary-migration-plan.json",
             [
-                "No SQL write expansion, archive/move/delete without proof, "
-                "action-state/canon/portfolio mutation, customer output, runtime/config "
-                "mutation, Python retirement, SQL-first promotion, finance front-door "
-                "ownership, or approval inference.",
+                "state/finance/finance-canon.sqlite",
+                "tmp/band-proposals.json",
+                "tmp/reference-levels-band-proposals-source-migration.json",
+                "tmp/reference-levels-band-proposals-source-migration-apply-result.json",
+                "tmp/reference-levels-targeted-repair-packet.json",
+                "tmp/reference-levels-sql-native-source-family-proof.json",
+                "tmp/full-answer-parity/full-answer-parity-rollup.json",
+                "tmp/sql-canon-consumer-registry-guard.json",
+                "tmp/sql-canon-migration-completion-runner.json",
+                "tmp/sql-canon-old-anchor-residue-guard.json",
+                "tmp/finance-sql-consumer-migration-burndown.json",
+                "tmp/finance-sql-markdown-field-ownership.json",
+                "tmp/veritas-artifact-index.sqlite",
+                "tmp/veritas-canon-cache.sqlite",
+                "tmp/fast-path-qa.json",
+                "08. Audits/SQL Primary Finance Canon Migration Audit and Finish Line Plan - 2026-06-19.md",
             ],
-            "support-only; SQL is proof/index, not canon/approval",
+            [
+                "python scripts\\finance_sql_primary_migration_plan.py --write --write-md --validate",
+                "python scripts\\finance_sql_markdown_field_ownership.py --write --validate",
+                "python scripts\\reference_levels_band_proposals_source_migration.py --write --validate",
+                "python scripts\\reference_levels_targeted_repair_packet.py --write --validate",
+                "python scripts\\reference_levels_sql_native_source_family_proof.py --write --validate",
+                "python scripts\\full_intelligence_answer_parity.py --all --write --validate --pretty",
+                "python scripts\\sql_canon_migration_completion_runner.py --write --validate",
+                "python scripts\\sql_canon_old_anchor_residue_guard.py --write --validate",
+                "python scripts\\finance_sql_consumer_migration_burndown.py --write --write-md --validate",
+                "python scripts\\finance_sql_canon_access.py --write --validate",
+                "python scripts\\artifact_index.py validate",
+                "python scripts\\fast_path_qa.py --write --validate",
+            ],
+            [
+                "Band-proposals source migration is complete for GOOG/GS/NVDA/VRT; source-family proof reports row_issue_counts={} and SQL-first provenance clean.",
+                "The legacy Execution Board anchor packet remains compatibility-only and should not be used as the strategic migration boundary.",
+                "Separate gate required before schema mutation, cron schedule change, Python fallback retirement, source-feeder retirement, archive/delete apply, or finance answer-path ownership.",
+            ],
+            [
+                "No SQL data/schema mutation, cron schedule mutation, archive/move/delete, "
+                "human canon/portfolio mutation, action-state mutation, customer output, "
+                "runtime/config mutation, Python retirement, SQL-first promotion, finance "
+                "front-door ownership, capital deployment, paper/live/account action, or "
+                "owner approval inference without a separate exact gate.",
+            ],
+            "support-only plus migration proof; SQL-first migration green does not grant source-feeder retirement, archive/delete, portfolio/canon mutation, or finance execution authority by itself",
             True,
             True,
-            None,
-            effective_status_override="support_only",
+            "python scripts\\finance_sql_primary_migration_plan.py --write --write-md --validate",
+            effective_status_override="support_only_with_active_sql_primary_migration",
         ),
         route(
             "WF68",
@@ -451,11 +604,14 @@ def build_routes() -> list[dict[str, Any]]:
         ),
         route(
             "WF78",
-            "500 Ticker Scaleout / Promotion",
+            "Tier A/B Evidence Repair & Auto-Routing",
             "P1",
-            "200 active rows. Auto-router currently classifies 19 Tier A, 29 Tier B, "
-            "152 Tier C. Tier A confidence gate blocks conflicted rows from "
-            "A-READY. Daily delta, route-TICKER, capital-review queue, AI "
+            "200 active rows. Strategic production boundary is the proof-joined validated production-scope path, "
+            "not the retired production_current_42 label. Current WF78 proof reports those rows as "
+            "active_internal_universe under the SQL-first Tier A/B/C schema. Auto-router "
+            "currently classifies live Tier A/B/C routing while stale final-promotion packets cannot emit "
+            "A-READY. Tier A confidence "
+            "gate blocks conflicted rows from A-READY. Daily delta, route-TICKER, capital-review queue, AI "
             "event-triggered rerouting, evidence-drag reduction, family-level "
             "repair routing, source-open repair execution, source-open work packets, "
             "position-sizing review, deployment-readiness review, source-artifact capture review, "
@@ -463,17 +619,22 @@ def build_routes() -> list[dict[str, Any]]:
             "official-source discovery, official registry proposals, registry apply preview, "
             "promotion-only owner-lineage queue, contract guard, owner-lineage discovery, owner-lineage proposal, repair scoreboard, "
             "scaleout policy dry run, tier-weighted freshness resolution, "
-            "daily movement ledger, repair-priority queue, Intelligence Routing V2, "
+            "append-only tier-routing event ledger, daily movement ledger, repair-priority queue, Intelligence Routing V2, "
             "PH owner-review packet, Tier A invalidation queue, official source-capture packet, "
             "ticker freshness ledger, daily freshness loop, and artifact action scoring are built. Repeatable "
             "parallel orchestration still handles macro/evidence/card-prep work; all "
-            "surfaces have 0 capital/trade approvals.",
+            "surfaces have 0 capital/trade approvals. 201-500 import/scaleout remains report-only "
+            "unless a separate exact owner gate approves it.",
             "WF78 is the non-capital repair/promotion feeder for the "
             "finance_intelligence_state -> WF84 -> WF85 answer route. "
+            "Use finance_production_scope.py and finance_production_grade_policy_gate.py as the forward production-grade "
+            "answer boundary: SQL Tier A/A-READY joined to current router, coverage, confidence, and authority proof. "
+            "Legacy 42 runtime fields are hard-retired from active SQL tables/views; active consumers must route through "
+            "production-scope / SQL Tier A/B/C surfaces. "
             "Use wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded as the promoted daily cron surface, with wf78_daily_movement_ledger.py as the operator ledger; keep wf78_daily_freshness_loop.py as a compatibility refresh/routing/debt "
             "measurement spine, then use tier-weighted freshness resolution for the 200-row debt answer. Use source-open repair execution, source-open work "
             "packets, concrete sizing/deployment/source-capture reviews, integration proposals, "
-            "Tier A owner-readiness proposals, missing-band repair, source-capture requirements, owner-lineage proposal, freshness ledger, tier-weighted resolver, daily movement ledger, and repair-priority queue "
+            "Tier A owner-readiness proposals, missing-band repair, source-capture requirements, owner-lineage proposal, freshness ledger, tier-weighted resolver, append-only tier-routing event ledger, daily movement ledger, and repair-priority queue "
             "for Tier A/B repair routing before owner-card prep. Use the repair debt scoreboard first: "
             "review ready sizing/deployment rows, keep owner-lineage rows blocked for owner/source decision, "
             "and treat registry apply preview as a separate gated path. Keep CME/LMT/META in invalidation "
@@ -513,11 +674,12 @@ def build_routes() -> list[dict[str, Any]]:
                 "scripts/wf78_next_owner_review_and_source_capture_integration.py",
                 "scripts/wf78_ticker_freshness_ledger.py",
                 "scripts/wf78_tier_weighted_freshness_resolver.py",
+                "scripts/wf78_tier_routing_event_ledger.py",
                 "scripts/wf78_daily_freshness_loop.py",
                 "scripts/wf78_daily_movement_ledger.py",
                 "scripts/wf78_intelligence_routing_v2.py",
+                "scripts/finance_production_grade_policy_gate.py",
                 "scripts/parallel_repeatable_work_orchestrator.py",
-                "scripts/repeatable_work_closeout.py",
                 "scripts/finance_decision_factory.py",
                 "scripts/wf78_evidence_repair_batch_runner.py",
                 "scripts/control_closeout_bundle.py",
@@ -554,15 +716,17 @@ def build_routes() -> list[dict[str, Any]]:
                 "tmp/wf78-next-owner-review-and-source-capture-integration.json",
                 "tmp/wf78-ticker-freshness-ledger.json",
                 "tmp/wf78-tier-weighted-freshness-resolution.json",
+                "tmp/wf78-tier-routing-event-ledger.json",
+                "state/workflows/wf78-tier-routing-events.jsonl",
                 "tmp/wf78-daily-freshness-loop.json",
                 "tmp/wf78-daily-movement-ledger.json",
                 "tmp/wf78-repair-priority-queue.json",
                 "tmp/wf78-intelligence-routing-v2.json",
+                "tmp/finance-production-grade-policy-gate.json",
                 "tmp/parallel-repeatable-work-orchestration.json",
                 "tmp/macro-event-guard-loop.json",
                 "tmp/wf78-owner-card-prep-loop.json",
                 "tmp/wf78-tier-a-evidence-repair-batch.json",
-                "tmp/repeatable-work-closeout.json",
                 "tmp/finance-decision-factory.json",
                 "tmp/wf78-evidence-repair-batch.json",
                 "tmp/control-closeout-bundle.json",
@@ -573,7 +737,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "tmp/wf78-routing-dashboard.json",
             ],
             [
-                "python scripts\\finance_decision_factory.py --write --validate",
+                "python scripts\\finance_decision_factory.py --ledger-only --write --validate",
                 "python scripts\\wf78_evidence_repair_batch_runner.py --tier A --write --validate",
                 "python scripts\\wf78_evidence_family_repair_runner.py --family price_band_stop --write --validate",
                 "python scripts\\wf78_source_open_repair_executor.py --write --validate",
@@ -600,11 +764,12 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\wf78_next_owner_review_and_source_capture_integration.py --write --validate",
                 "python scripts\\wf78_ticker_freshness_ledger.py --write --validate",
                 "python scripts\\wf78_tier_weighted_freshness_resolver.py --write --validate",
+                "python scripts\\wf78_tier_routing_event_ledger.py --write --write-md --validate",
                 "python scripts\\wf78_daily_movement_ledger.py --write --write-md --validate",
                 "python scripts\\wf78_intelligence_routing_v2.py --layer ledger_publish --write --validate",
+                "python scripts\\finance_production_grade_policy_gate.py --write --validate",
                 "python scripts\\wf78_daily_freshness_loop.py --write --validate",
                 "python scripts\\parallel_repeatable_work_orchestrator.py --write --validate",
-                "python scripts\\repeatable_work_closeout.py --write --validate",
                 "python scripts\\control_closeout_bundle.py --write --validate",
                 "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
                 "python scripts\\wf78_evidence_drag_reducer.py --write --validate",
@@ -769,7 +934,6 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\test_wf78_missing_band_context_repair_policy.py",
                 "python scripts\\tier_ab_band_freshness_cron_guard.py --write --validate",
                 "python scripts\\test_tier_ab_band_freshness_cron_guard.py",
-                "python scripts\\ticker_answer_packet.py --all-from-coverage --validate",
                 "python scripts\\trade_grade_repair_conveyor.py --write --validate",
                 "python scripts\\trade_grade_os_readiness_rollup.py --write --validate",
                 "python scripts\\test_trade_grade_os_readiness_rollup.py",
@@ -812,11 +976,12 @@ def build_routes() -> list[dict[str, Any]]:
             "grants no autonomous order authority. WF86 consumes WF85 decision "
             "state, written bands/stops, fresh quotes, market/sector context, "
             "paper positions, and WF67 guard state.",
-            "Use the daily WF86 shadow/reconciliation cron runner to accumulate "
-            "clean shadow decisions and GET-only paper-order reconciliation proof. "
-            "The scoped autonomous paper pilot is approved in principle, but "
-            "autonomous execution stays blocked until the 20-decision/5-session "
-            "threshold and reconciliation maturity gates are clean.",
+            "Use the daily WF86 shadow/reconciliation cron runner to keep shadow "
+            "and GET-only paper-order reconciliation proof current. The "
+            "20-decision/5-session shadow threshold and reconciliation maturity "
+            "gates are met. The scoped autonomous paper pilot is approved in "
+            "principle, but autonomous execution stays blocked on Phase B "
+            "assisted filled round trips and clean execution-time proof.",
             f"{CONTINUITY}/Workflow 86 - Main-Session Paper Autotrader OS.md",
             "tmp/paper-autotrader/policy.json",
             [
@@ -880,8 +1045,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\concurrent_lane_manager.py --status --write --validate",
             ],
             [
-                "WF86 shadow threshold is not met yet",
-                "Post-trade reconciliation is not yet mature enough for autonomy",
+                "Phase B assisted maturity is not met: 0/5 clean assisted filled round trips",
                 "Fresh short-lived kill switch, audit, WF67 guard, and reconciliation proof must be clean at execution time",
             ],
             [
@@ -898,39 +1062,28 @@ def build_routes() -> list[dict[str, Any]]:
         ),
         route(
             "WF87",
-            "Veritas OS V2 Trade-Grade Autonomous OS Upgrade",
+            "WF87 - Paper Autonomy Runtime Governor",
             "P0",
-            "Official V2 workflow opened from Randall's 2026-06-11 plan. "
-            "V2 is not a rebuild: it hardens the WF84 -> WF85 -> WF86 "
-            "spine guarded by WF67, unifies decision/readiness state, adds "
-            "review-only coding/performance tracking, and prepares gated "
-            "script/canon optimization.",
-            "Phase A hardening components are implemented: append-only "
-            "trade-decision journal, position sizing runtime check, "
-            "portfolio circuit breakers, approval/freshness TTL, intraday "
-            "monitor, assisted-paper cadence proof, shadow outcome scorecard "
-            "with non-score cause classification, autonomous routing/deployment "
-            "card queue, "
-            "market-hours fresh-gate probe, "
-            "autonomy command center, "
-            "finance decision performance digest, coding outcome ledger, and "
-            "unified readiness rollup. Runtime remains blocked "
-            "until stale/expired gates, shadow threshold, and reconciliation "
-            "maturity clear. "
-            "Phase C requires shadow threshold plus clean Phase B round trips; "
-            "Phase E/live remains out of scope.",
+            "Narrowed paper-autonomy runtime governor under WF88. It consumes "
+            "WF85 candidates and WF67 guard proof, checks execution-time TTL, "
+            "kill switch, circuit breakers, sizing, quote/band/stop freshness, "
+            "intraday monitor, and reconciliation proof, then explains whether "
+            "a paper-autonomy action can be considered. It no longer owns broad "
+            "OS learning, cleanup, coding outcomes, behavior portability, or dashboards.",
+            "Use the runtime-governor packet as WF87's front door. Current proof "
+            "shows shadow threshold met (21/20 decisions, 7/5 sessions), "
+            "reconciliation maturity true, and 22 scoreable shadow outcomes. "
+            "Phase C autonomous paper buy remains false because execution-time "
+            "TTL/intraday/circuit-breaker proof is fail-closed, Phase B has "
+            "0/5 required clean assisted filled round trips, and no exact "
+            "owner-approved paper action exists. Feed outcomes to WF88; do not "
+            "infer execution approval.",
             f"{CONTINUITY}/Veritas OS V2 - Trade-Grade Autonomous OS Upgrade Plan.md",
-            "tmp/paper-autotrader/trade-decision-journal.jsonl",
+            "tmp/wf87-paper-autonomy-runtime-governor.json",
             [
-                "tmp/paper-autotrader/shadow-decisions.json",
-                "tmp/paper-autotrader/autotrader-readiness.json",
-                "tmp/paper-autotrader/guard-readiness.json",
-                "tmp/paper-autotrader/assisted-order-cards.json",
-                "tmp/trade-grade-os-readiness-rollup.json",
-                "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
-                "tmp/alpaca-paper-readiness/paper-order-reconciliation.vrt-wf86-assisted-approved.json",
-                "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+                "tmp/wf87-paper-autonomy-runtime-governor.md",
                 "tmp/wf87-v2-readiness-rollup.json",
+                "tmp/wf87-runtime-gate-explanation.json",
                 "tmp/wf87-position-sizing-runtime-check.json",
                 "tmp/wf87-portfolio-circuit-breakers.json",
                 "tmp/wf87-approval-freshness-ttl.json",
@@ -939,13 +1092,19 @@ def build_routes() -> list[dict[str, Any]]:
                 "tmp/wf87-shadow-outcome-scorecard.json",
                 "tmp/wf87-market-hours-gate-probe.json",
                 "tmp/wf87-autonomy-command-center.json",
+                "tmp/paper-autotrader/trade-decision-journal.jsonl",
+                "tmp/paper-autotrader/shadow-decisions.json",
+                "tmp/paper-autotrader/autotrader-readiness.json",
+                "tmp/paper-autotrader/guard-readiness.json",
+                "tmp/paper-autotrader/assisted-order-cards.json",
                 "tmp/autonomous-routing-deployment-cards.json",
                 "tmp/autonomous-card-authority-audit.json",
-                "tmp/wf85-deployment-timing-gate.json",
-                "tmp/morning-paper-deployment-recommendation-cards.json",
-                "tmp/finance-decision-performance-digest.json",
-                "tmp/coding-outcome-ledger-current.json",
-                "data/state-history/coding-outcome-ledger.jsonl",
+                "tmp/wf85-decision-os-review-packet.json",
+                "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+                "tmp/alpaca-paper-readiness/paper-order-reconciliation.vrt-wf86-assisted-approved.json",
+                "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+                "scripts/wf87_paper_autonomy_runtime_governor.py",
+                "scripts/test_wf87_paper_autonomy_runtime_governor.py",
                 "scripts/wf87_trade_decision_journal.py",
                 "scripts/test_wf87_trade_decision_journal.py",
                 "scripts/wf87_position_sizing_runtime_check.py",
@@ -964,26 +1123,19 @@ def build_routes() -> list[dict[str, Any]]:
                 "scripts/test_wf87_market_hours_gate_probe.py",
                 "scripts/wf87_autonomy_command_center.py",
                 "scripts/test_wf87_autonomy_command_center.py",
+                "scripts/wf87_runtime_gate_explanation.py",
+                "scripts/test_wf87_runtime_gate_explanation.py",
                 "scripts/autonomous_routing_deployment_cards.py",
                 "scripts/test_autonomous_routing_deployment_cards.py",
                 "scripts/autonomous_card_authority_audit.py",
                 "scripts/test_autonomous_card_authority_audit.py",
-                "scripts/finance_decision_performance_digest.py",
-                "scripts/test_finance_decision_performance_digest.py",
-                "scripts/coding_outcome_ledger.py",
-                "scripts/test_coding_outcome_ledger.py",
                 "scripts/wf87_v2_readiness_rollup.py",
                 "scripts/test_wf87_v2_readiness_rollup.py",
             ],
             [
-                "python scripts\\workflow_router.py WF87 --answer all --write-capsules --validate",
-                "python scripts\\workflow_routing_index.py --write --write-db --validate",
-                "python scripts\\test_wf87_trade_decision_journal.py",
-                "python scripts\\test_wf87_position_sizing_runtime_check.py",
-                "python scripts\\test_wf87_portfolio_circuit_breakers.py",
-                "python scripts\\test_wf87_approval_freshness_ttl.py",
-                "python scripts\\test_wf87_intraday_monitor.py",
-                "python scripts\\test_wf87_v2_readiness_rollup.py",
+                "python scripts\\wf87_runtime_gate_explanation.py --write --write-md --validate",
+                "python scripts\\wf87_paper_autonomy_runtime_governor.py --write --write-md --validate",
+                "python scripts\\test_wf87_paper_autonomy_runtime_governor.py",
                 "python scripts\\wf87_trade_decision_journal.py --write --validate",
                 "python scripts\\wf87_position_sizing_runtime_check.py --write --validate",
                 "python scripts\\wf87_portfolio_circuit_breakers.py --write --validate",
@@ -995,56 +1147,330 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\autonomous_routing_deployment_cards.py --write --validate",
                 "python scripts\\autonomous_card_authority_audit.py --write --validate",
                 "python scripts\\wf87_autonomy_command_center.py --write --write-md --validate",
-                "python scripts\\finance_decision_performance_digest.py --write --write-md --validate",
-                "python scripts\\coding_outcome_ledger.py --write --validate",
-                "python scripts\\test_finance_decision_performance_digest.py",
-                "python scripts\\test_coding_outcome_ledger.py",
-                "python scripts\\test_wf87_market_hours_gate_probe.py",
-                "python scripts\\test_wf87_autonomy_command_center.py",
-                "python scripts\\test_autonomous_routing_deployment_cards.py",
-                "python scripts\\test_autonomous_card_authority_audit.py",
                 "python scripts\\wf87_v2_readiness_rollup.py --write --validate",
+                "python scripts\\workflow_router.py WF87 --answer all --write-capsules --validate",
+                "python scripts\\workflow_routing_index.py --write --write-db --validate",
                 "python scripts\\changed_file_validator_router.py --write --validate",
             ],
             [
-                "Shadow proof threshold is not met yet",
-                "Post-trade reconciliation maturity is not yet sufficient for autonomy",
-                "Current live TTL/circuit/intraday proofs are fail-closed because approvals, quote/band/stop freshness, guard, kill switch, anomaly halt, or same-session stop proof are not clean",
+                "Execution-time proof is fail-closed: approval/TTL freshness, intraday monitor, and portfolio circuit breakers are not clean",
+                "Phase B assisted paper maturity threshold is not met: 0/5 clean assisted filled round trips",
+                "No exact owner-approved paper action exists",
+                "Phase C autonomous paper buy remains a separate owner approval event, not automatic promotion",
             ],
             [
-                "Planning/validator/readiness integration only. No live endpoint/"
-                "credentials, live order, account action, money movement, portfolio/"
-                "canon/cash/risk-rule mutation, cron-direct execution, owner "
-                "approval inference, paper-to-live promotion, or autonomous paper "
-                "submit/cancel/sell until separate scoped gates clear.",
+                "Runtime proof and owner-review preparation only. No paper/live submit, "
+                "cancel, sell, brokerage/account action, money movement, portfolio/"
+                "canon/cash/sizing/risk mutation, cron-direct execution, delete/"
+                "archive/apply, owner approval inference, paper-to-live promotion, "
+                "or autonomous paper action until separate scoped gates and exact "
+                "owner approval clear.",
             ],
-            "official V2 upgrade workflow; planning, validators, journal, and readiness integration only until separate execution gates clear",
+            "review-only paper-autonomy runtime governor and evidence harness; consumes WF85 candidates and WF67 guard proof, explains runtime eligibility, exports outcome signals to WF88, and never infers execution approval",
             True,
             True,
             "python scripts\\workflow_router.py WF87 --answer all",
-            primary_pending=True,
-            effective_status_override="phase_a_implemented_runtime_blocked",
+            effective_status_override="runtime_governor_fail_closed_maturity_improved",
+        ),
+        route(
+            "WF88",
+            "WF88 - Veritas OS 2.0 Learning, Cleanup, and Unified Routing",
+            "P1",
+            "First implementation slice for the broader measured Veritas OS. It "
+            "connects finance-call intake, WF55/WF87 outcome measurement, WF67 "
+            "paper-guardrail status, WF78 ticker routing, WF85 decision packets, "
+            "OTEL/WF74/PM improvement "
+            "routing, coding-app outcomes, behavior portability, retired-surface "
+            "cleanup proposals, database-script duplication audit/thinning, "
+            "script-routing contraction, WF88 wiki/decision compilation, retrieval "
+            "quality evaluation, matched frontier-capability evaluation, RSI later-outcome "
+            "scoring, isolated advanced-capability pilot contracts, token/API efficiency "
+            "scoring, implementation token closeout attribution, self-prompting, "
+            "self-evals, and WF87 runtime governor signals into "
+            "one review-only control layer.",
+            "Use tmp/wf88-os2-control-packet.json as the thin OS 2.0 control "
+            "surface, tmp/wf88-source-open-residue-classifier.json to keep "
+            "legacy/source-open residue out of default runtime blockers, and "
+            "tmp/wf88-delete-readiness-packet.json plus "
+            "tmp/wf88-deletion-approval-prep-packet.json for owner-gated "
+            "cleanup approval readiness. Use tmp/wf88-wiki-synthesis-packet.json "
+            "and wiki/ as the durable second-brain synthesis layer that turns "
+            "OTEL, WF74, RSI, scorecards/evals, and recommendation packets into "
+            "visible next actions without apply authority. Use the deterministic "
+            "decision compiler and retrieval compatibility scorecard as source-first contract surfaces; "
+            "use tmp/retrieval-live-eval.json for live provider-discrimination evidence, "
+            "with human gold review and separate abstention calibration required before any threshold or promotion claim. Use "
+            "the blinded frontier spine only after independently attested matched results exist, "
+            "the RSI outcome scorecard for later-outcome durability evidence, and the "
+            "advanced pilot packet only as isolated fixture/API-contract readiness. Use "
+            "tmp/token-efficiency-scorecard.json and "
+            "tmp/implementation-token-attribution-bridge.json as the metadata-only "
+            "token/API optimization layer: it ranks changed-only/prompt-compression "
+            "candidates, documents the closeout token stamp command path, and exposes implementation attribution gaps without changing "
+            "cron schedules, runtime config, model weights, or raw content capture. A daily review-only "
+            "WF88 wiki synthesis cron contract keeps that layer fresh. WF88 owns finance-call intake, outcome grading, "
+            "experiment registry, cleanup/route contraction, database-facing "
+            "script duplication audits, coding/behavior portability, and "
+            "cross-workflow learning. WF67 stays the only paper execution guardrail, "
+            "WF74 stays the proposal-only improvement router, and WF88 only surfaces "
+            "their state as review-only action rows. The existing Skill Workshop body guard is the canonical anti-duplication gate for skill apply safety. WF87 is narrowed "
+            "underneath WF88 as the paper-autonomy runtime governor. Deletion, "
+            "archive, additional cron mutation, and apply still require separate exact "
+            "owner approval.",
+            f"{CONTINUITY}/Workflow 88 - Veritas OS 2.0.md",
+            "tmp/wf88-os2-control-packet.json",
+            [
+                "tmp/wf88-os2-control-packet.md",
+                "tmp/wf88-wiki-synthesis-packet.json",
+                "tmp/wf88-wiki-synthesis-packet.md",
+                "tmp/skill-workshop-body-guard.json",
+                "wiki/README.md",
+                "wiki/index.md",
+                "wiki/os2/OTEL To Proposal Route.md",
+                "wiki/scorecards-and-evals/Current Map.md",
+                "wiki/scorecards-and-evals/Token Efficiency Map.md",
+                "wiki/scorecards-and-evals/Frontier Capability Eval.md",
+                "wiki/scorecards-and-evals/Advanced Capability Pilots.md",
+                "wiki/decisions/Decision Compiler.md",
+                "wiki/self-improvement/RSI Control Loop.md",
+                "wiki/recommendations/Action Promotion Map.md",
+                "wiki/gaps/Open Follow Up Debt.md",
+                "wiki/source-map/WF88 Wiki Source Map.md",
+                "tmp/token-usage-ledger-current.json",
+                "tmp/token-budget-status.json",
+                "tmp/token-efficiency-scorecard.json",
+                "tmp/token-efficiency-scorecard.md",
+                "tmp/implementation-token-attribution-bridge.json",
+                "tmp/implementation-token-attribution-bridge.md",
+                "tmp/frontier-capability-eval-spine.json",
+                "tmp/frontier-capability-eval-spine.md",
+                "tmp/retrieval-quality-scorecard.json",
+                "tmp/retrieval-quality-scorecard.md",
+                "tmp/retrieval-live-eval.json",
+                "tmp/retrieval-live-eval.md",
+                "data/state-history/retrieval-live-eval.jsonl",
+                "tmp/wf88-decision-compiler.json",
+                "tmp/wf88-decision-compiler.md",
+                "tmp/rsi-outcome-scorecard.json",
+                "tmp/rsi-outcome-scorecard.md",
+                "tmp/advanced-capability-pilot-packet.json",
+                "tmp/advanced-capability-pilot-packet.md",
+                "tmp/wf88-route-contraction-packet.json",
+                "tmp/wf88-route-contraction-packet.md",
+                "tmp/wf88-source-open-residue-classifier.json",
+                "tmp/wf88-source-open-residue-classifier.md",
+                "tmp/wf88-delete-readiness-packet.json",
+                "tmp/wf88-delete-readiness-packet.md",
+                "tmp/wf88-deletion-approval-prep-packet.json",
+                "state/cron-contracts/runtime-wf88-wiki-synthesis-refresh.json",
+                "tmp/wf88-cron-retired-job-inventory.json",
+                "tmp/wf88-cron-retired-job-inventory.md",
+                "tmp/wf88-cron-disabled-job-reference-review.json",
+                "tmp/wf88-cron-disabled-job-reference-review.md",
+                "tmp/wf88-disabled-cron-delete-apply-report.json",
+                "tmp/recommendation-outcome-ledger-current.json",
+                "tmp/wf87-paper-autonomy-runtime-governor.json",
+                "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
+                "tmp/wf88-retired-surface-cleanup-plan.json",
+                "tmp/wf88-retired-surface-cleanup-plan.md",
+                "04. Research/Call Log.md",
+                "tmp/finance-decision-performance-digest.json",
+                "tmp/wf55-autonomy-outcome-ledger.json",
+                "tmp/wf87-shadow-outcome-scorecard.json",
+                "tmp/wf78-auto-tier-routing.json",
+                "tmp/wf78-clean-tier-roster.json",
+                "tmp/wf85-decision-os-review-packet.json",
+                "tmp/otel-ops-control.json",
+                "tmp/otel-ops-window-summary.json",
+                "tmp/improvement-ledger-current.json",
+                "tmp/wf74-decision-docket.json",
+                "tmp/wf74-autonomy-work-router.json",
+                "tmp/pm-control-packet.json",
+                "tmp/cron-control-packet.json",
+                "tmp/coding-outcome-ledger-current.json",
+                "data/state-history/coding-outcome-ledger.jsonl",
+                "tmp/tmp-lifecycle-guard.json",
+                "tmp/human-canon-thinning-retirement-inventory.json",
+                "tmp/db-lifecycle-manifest.json",
+                "tmp/wf88-db-script-duplication-audit.json",
+                "tmp/wf88-db-script-duplication-audit.md",
+                "tmp/wf88-script-cleanup-inventory.json",
+                "tmp/wf88-script-cleanup-inventory.md",
+                "tmp/wf88-typed-script-reference-graph.json",
+                "tmp/wf88-typed-script-reference-graph.md",
+                "08. Audits/WF88 Retired Surface Deletion and Script Routing Cleanup Audit - 2026-06-26.md",
+                "08. Audits/WF88 Veritas OS 2.0 Workspace State Audit - 2026-06-27.md",
+                "scripts/db_lifecycle_manifest.py",
+                "scripts/wf88_db_duplicate_source_delete_packet.py",
+                "scripts/test_wf88_db_duplicate_source_delete_packet.py",
+                "scripts/wf88_wiki_synthesis_packet.py",
+                "scripts/test_wf88_wiki_synthesis_packet.py",
+                "scripts/token_efficiency_scorecard.py",
+                "scripts/test_token_efficiency_scorecard.py",
+                "scripts/implementation_token_attribution_bridge.py",
+                "scripts/test_implementation_token_attribution_bridge.py",
+                "scripts/frontier_capability_eval_spine.py",
+                "scripts/test_frontier_capability_eval_spine.py",
+                "scripts/retrieval_quality_scorecard.py",
+                "scripts/test_retrieval_quality_scorecard.py",
+                "scripts/retrieval_live_eval.py",
+                "scripts/test_retrieval_live_eval.py",
+                "scripts/wf88_decision_compiler.py",
+                "scripts/test_wf88_decision_compiler.py",
+                "scripts/rsi_outcome_scorecard.py",
+                "scripts/test_rsi_outcome_scorecard.py",
+                "scripts/advanced_capability_pilot_packet.py",
+                "scripts/test_advanced_capability_pilot_packet.py",
+                "data/evals/frontier-capability-eval-fixtures.json",
+                "data/evals/wf88-retrieval-fixtures.json",
+                "data/evals/retrieval-live-source-registry.json",
+                "data/evals/retrieval-live-gold.json",
+                "data/evals/rsi-outcome-scorecard-fixtures.json",
+                "data/evals/advanced-capability-pilot-fixtures.json",
+                "scripts/wf88_os2_control_packet.py",
+                "scripts/test_wf88_os2_control_packet.py",
+                "scripts/skill_workshop_body_guard.py",
+                "scripts/test_skill_workshop_body_guard.py",
+                "scripts/wf88_route_contraction_packet.py",
+                "scripts/test_wf88_route_contraction_packet.py",
+                "scripts/wf88_source_open_residue_classifier.py",
+                "scripts/test_wf88_source_open_residue_classifier.py",
+                "scripts/wf88_delete_readiness_packet.py",
+                "scripts/test_wf88_delete_readiness_packet.py",
+                "scripts/wf88_deletion_approval_prep_packet.py",
+                "scripts/test_wf88_deletion_approval_prep_packet.py",
+                "scripts/wf88_cron_retired_job_inventory.py",
+                "scripts/test_wf88_cron_retired_job_inventory.py",
+                "scripts/wf88_cron_disabled_job_reference_review.py",
+                "scripts/test_wf88_cron_disabled_job_reference_review.py",
+                "scripts/wf88_cleanup_common.py",
+                "scripts/test_wf88_cleanup_common.py",
+                "scripts/test_db_lifecycle_manifest.py",
+                "scripts/wf88_retired_surface_cleanup_plan.py",
+                "scripts/test_wf88_retired_surface_cleanup_plan.py",
+                "scripts/wf88_script_cleanup_inventory.py",
+                "scripts/test_wf88_script_cleanup_inventory.py",
+                "scripts/wf88_typed_script_reference_graph.py",
+                "scripts/test_wf88_typed_script_reference_graph.py",
+                "training/",
+            ],
+            [
+                "python scripts\\db_lifecycle_manifest.py --write --validate",
+                "python scripts\\wf88_script_cleanup_inventory.py --write --write-md --validate",
+                "python scripts\\wf88_typed_script_reference_graph.py --write --write-md --validate",
+                "python scripts\\wf87_paper_autonomy_runtime_governor.py --write --write-md --validate",
+                "python scripts\\wf67_autonomous_paper_manager.py --write --validate",
+                "python scripts\\wf88_retired_surface_cleanup_plan.py --write --write-md --validate",
+                "python scripts\\wf88_route_contraction_packet.py --write --write-md --validate",
+                "python scripts\\wf88_source_open_residue_classifier.py --write --write-md --validate",
+                "python scripts\\wf88_cron_retired_job_inventory.py --write --write-md --validate",
+                "python scripts\\wf88_cron_disabled_job_reference_review.py --write --write-md --validate",
+                "python scripts\\wf88_delete_readiness_packet.py --write --write-md --validate",
+                "python scripts\\wf88_deletion_approval_prep_packet.py --write --validate",
+                "python scripts\\token_usage_ledger.py --write --write-md --validate",
+                "python scripts\\token_budget_status.py --write --validate",
+                "python scripts\\token_efficiency_scorecard.py --write --write-md --validate",
+                "python scripts\\implementation_token_attribution_bridge.py --write --write-md --validate",
+                "python scripts\\frontier_capability_eval_spine.py --write --write-md --validate",
+                "python scripts\\retrieval_quality_scorecard.py --write --write-md --validate",
+                "python scripts\\retrieval_live_eval.py --write --write-md --validate",
+                "python scripts\\wf88_decision_compiler.py --write --write-md --validate",
+                "python scripts\\rsi_outcome_scorecard.py --write --write-md --validate",
+                "python scripts\\advanced_capability_pilot_packet.py --write --write-md --validate",
+                "python scripts\\wf88_wiki_synthesis_packet.py --write --write-md --write-wiki --validate",
+                "python scripts\\skill_workshop_body_guard.py --write --validate",
+                "python scripts\\test_skill_workshop_body_guard.py",
+                "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+                "python -m pytest scripts\\test_wf88_cleanup_common.py scripts\\test_db_lifecycle_manifest.py scripts\\test_wf88_typed_script_reference_graph.py scripts\\test_wf88_cron_retired_job_inventory.py scripts\\test_wf88_cron_disabled_job_reference_review.py scripts\\test_wf88_delete_readiness_packet.py scripts\\test_wf88_deletion_approval_prep_packet.py",
+                "python scripts\\test_wf87_paper_autonomy_runtime_governor.py",
+                "python scripts\\test_wf88_route_contraction_packet.py",
+                "python scripts\\test_wf88_source_open_residue_classifier.py",
+                "python scripts\\test_wf88_delete_readiness_packet.py",
+                "python scripts\\test_wf88_disabled_cron_delete_microbatch_apply.py",
+                "python scripts\\test_wf88_wiki_synthesis_packet.py",
+                "python scripts\\test_token_efficiency_scorecard.py",
+                "python scripts\\test_implementation_token_attribution_bridge.py",
+                "python scripts\\test_frontier_capability_eval_spine.py",
+                "python scripts\\test_retrieval_quality_scorecard.py",
+                "python scripts\\test_retrieval_live_eval.py",
+                "python scripts\\test_wf88_decision_compiler.py",
+                "python scripts\\test_rsi_outcome_scorecard.py",
+                "python scripts\\test_advanced_capability_pilot_packet.py",
+                "python scripts\\test_wf88_os2_control_packet.py",
+                "python scripts\\test_wf88_script_cleanup_inventory.py",
+                "python scripts\\test_wf88_typed_script_reference_graph.py",
+                "python scripts\\test_wf88_db_duplicate_source_delete_packet.py",
+                "python scripts\\finance_decision_performance_digest.py --write --write-md --validate",
+                "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
+                "python scripts\\wf74_decision_docket.py --write --write-md --validate",
+                "python scripts\\wf74_learning_loop_eval_harness.py --write --validate",
+                "python scripts\\wf74_rsi.py --outcome-eval-v2",
+                "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
+                "python scripts\\wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate",
+                "python scripts\\wf85_decision_os_review_packet.py --write --write-md --validate",
+                "python scripts\\coding_outcome_ledger.py --write --validate",
+                "python scripts\\workflow_router.py WF88 --answer all --write-capsules --validate",
+            ],
+            [
+                "Formal Call Log intake is not current for recent finance stances",
+                "Recommendation outcome grading has started, but the graded row count is still an early sample and not a model-performance claim",
+                "WF87 runtime governor is fail-closed and owner-gated; it is not a performance or autonomy claim",
+                "WF67 paper manager remains the execution guardrail and currently surfaces blocked/ready card state only; WF88 may route that state but cannot execute or approve",
+                "Improvement-ledger overdue follow-up debt remains open",
+                "WF88 retrieval proof is split honestly: the 42-case/10-class compatibility corpus measures source-selection contracts, while the 19-case isolated live pilot currently shows zero semantic lift on six paraphrases and exact aggregate parity between semantic+FTS and FTS-only; gold review and separate abstention calibration remain open, so provider promotion is blocked",
+                "The matched frontier spine has 100 frozen source-identical cases and blind scorer aliases, but 0 result rows and 0 trusted execution/output/grader attestations; local labels and unkeyed hashes are integrity-only, so model comparison and route promotion remain blocked until independently attested results and confidence gates pass",
+                "The RSI outcome scorecard is review-only and not mature: current live rows lack enough stable, uniquely correlated later-outcome evidence for a recursive-improvement claim",
+                "Six advanced-capability pilots have official API request templates and isolated runner requirements, including an explicit-cache breakpoint/key/minimum-prefix/two-request usage-measurement contract, but 0 pilot calls have run and 0 promotions are allowed",
+                "Token efficiency scorecard is active and metadata-only; it currently surfaces API-call reduction and prompt-compression candidates but does not authorize cron/model/runtime changes",
+                "Implementation token closeout bridge is active: future lanes can stamp run id/token metadata through concurrent_lane_manager, but historical/current lanes without exposed token counts remain gaps; do not claim cost per implementation lane until gaps are reduced or provider-missing classifications are explicit",
+                "Skill Workshop body-replacement prevention is routed through the existing skill_workshop_body_guard.py surface; do not create duplicate guards for that failure mode",
+                "Database-facing script duplication audit is now partially consolidated; DB sidecar orphan proof and cron retired-job rollback export are review-only",
+                "Deletion approval prep packet is current: the approved disabled-cron delete microbatch has already been applied (6 rows) and approved tmp cleanup already applied 2 files; new destructive approval packets are now 0-ready; script deletion and DB archive/delete remain 0-ready; script refs are explicitly retained migration/route-contract surfaces with 0 exact active blockers and 0 basename-only active reviews; 34 disabled cron rows still have active code/control refs and 11 review refs",
+            ],
+            [
+                "Review-only learning/productization, wiki synthesis, and cleanup planning. No base-model self-modification, raw prompt/tool capture, model-training claim, delete/move/archive, capital deployment, paper/live/brokerage/account action, portfolio/canon/cash/sizing/risk mutation, cron schedule/config/runtime mutation, customer/external output, or owner approval inference.",
+            ],
+            "review-only OS learning, productization, wiki synthesis, and cleanup-planning workflow; no delete/archive/apply authority, finance execution, model training authority, autonomous self-modification, cron schedule mutation, portfolio/canon mutation, or customer/external output",
+            True,
+            True,
+            "python scripts\\workflow_router.py WF88 --answer all",
+            effective_status_override="v7_frontier_eval_decision_compiler_rsi_outcomes_fixture_ready_no_apply",
         ),
         route(
             "WF67",
             "Alpaca Paper Execution Guardrail",
             "P1",
-            "Paper-only guardrail active; paper sandbox separate from real "
-            "planning portfolio; manager packet consolidates readiness.",
-            "Refresh gate, run manager with request refresh, present "
-            "ready/blocked/repair status; execute only after fresh kill switch, "
-            "guards, redacted audit, notification, and Randall exact approval.",
+            "Paper-only guardrail active under the WF88/WF87 paper-autonomy spine; "
+            "paper sandbox is separate from the real planning portfolio, and the "
+            "manager packet exports ready/blocked/repair state to WF88 without "
+            "granting approval.",
+            "Refresh gate and manager only to prepare or inspect exact paper-action "
+            "cards. Feed ready/blocked/repair status to WF88/WF87; execute only "
+            "after fresh kill switch, guards, redacted audit, notification, and "
+            "Randall exact approval.",
             f"{CONTINUITY}/Workflow 67 - Alpaca Paper Execution Guardrail.md",
             "scripts/wf67_autonomous_paper_manager.py",
-            ["tmp/wf67-paper-position-state.sqlite"],
-            ["python scripts\\chief_intelligence_promotion_gate.py --write --validate"],
-            ["Execution requires fresh kill switch + guards + redacted audit + notification + exact approval"],
+            [
+                "tmp/wf67-paper-position-state.sqlite",
+                "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
+                "tmp/wf87-paper-autonomy-runtime-governor.json",
+                "tmp/wf88-os2-control-packet.json",
+            ],
+            [
+                "python scripts\\chief_intelligence_promotion_gate.py --write --validate",
+                "python scripts\\wf67_autonomous_paper_manager.py --write --validate",
+                "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+            ],
+            [
+                "Execution requires fresh kill switch + guards + redacted audit + notification + exact approval",
+                "WF88/WF87 may consume WF67 state only as review-only guard proof",
+            ],
             [
                 "No live endpoint/credentials, money movement/account settings, "
                 "close/liquidation endpoints, inferred approval, autonomous paper orders, "
                 "refresh-triggered submit/cancel/sell, or paper-to-live promotion.",
             ],
-            "paper-only simulation; exact owner approval required to execute",
+            "paper-only simulation; exact owner approval required to execute; WF88/WF87 consume status only",
             True,
             False,
             None,
@@ -1106,16 +1532,34 @@ def build_routes() -> list[dict[str, Any]]:
             "WF74",
             "Recursive Self-Improvement",
             "P1",
-            "P0-adjacent learning spine: V1 monitor-and-use complete; "
-            "validation harness and boundary lint exist; consumes WF55/WF87 "
-            "measurement telemetry for proposal-only improvements.",
-            "Use WF55 outcome measurement and validation telemetry only for "
-            "safe improvement candidates; do not expand authority.",
+            "P0-adjacent learning spine connected into WF88: V1 monitor-and-use "
+            "complete; validation harness and boundary lint exist; consumes WF55/"
+            "WF87 measurement telemetry, OTEL friction, and WF88 action rows for "
+            "proposal-only improvements.",
+            "Use WF74 to convert repeated failures and measured lessons into "
+            "WF88-visible proposal, PM, Skill Workshop, validator, owner-packet, "
+            "or monitor-only rows; use the draft live retrieval evaluator for "
+            "discriminating provider evidence, not the compatibility scorecard, and do not expand authority.",
             f"{CONTINUITY}/Workflow 74 - Veritas Recursive Self-Improvement Loop.md",
             "tmp/autonomy-spine-readiness-rollup.json",
-            ["tmp/wf55-autonomy-outcome-ledger.json", "tmp/wf74-improvement-opportunity-queue.json"],
+            [
+                "tmp/wf55-autonomy-outcome-ledger.json",
+                "tmp/wf74-improvement-opportunity-queue.json",
+                "tmp/wf74-decision-docket.json",
+                "tmp/retrieval-live-eval.json",
+                "data/state-history/retrieval-live-eval.jsonl",
+                "tmp/wf88-os2-control-packet.json",
+                "tmp/wf88-wiki-synthesis-packet.json",
+            ],
             [
                 "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
+                "python scripts\\wf74_improvement_opportunity_queue.py --write --validate",
+                "python scripts\\wf74_autonomy_work_router.py --write --validate",
+                "python scripts\\wf74_decision_docket.py --write --write-md --validate",
+                "python scripts\\wf74_learning_loop_eval_harness.py --write --validate",
+                "python scripts\\retrieval_live_eval.py --write --write-md --validate",
+                "python scripts\\test_retrieval_live_eval.py",
+                "python scripts\\wf74_rsi.py --outcome-eval-v2",
                 "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
                 "python scripts\\wf74_rsi.py --validate-only",
             ],
@@ -1125,7 +1569,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "authority expansion, second memory tree, owner-approval inference, "
                 "portfolio/trade/account/paper/live authority, or RSI theater.",
             ],
-            "review-only; no self-modification/authority expansion",
+            "review-only proposal and routing loop under WF88; no self-modification/authority expansion",
             False,
             True,
             None,
@@ -1300,6 +1744,140 @@ def build_routes() -> list[dict[str, Any]]:
             True,
             "python scripts\\workflow_routing_index.py --route WF83",
         ),
+        # ---- P4 closed / gated route-history rows ----
+        route(
+            "WF50",
+            "Tmp Helper Archive Cleanup",
+            "P4",
+            "Closed cleanup workflow. Remaining archive/root cleanup is approval-gated and must not be revived as autonomous work.",
+            "Use only as route history. Any move/delete/archive requires exact microbatch packet, references, hashes, rollback, validators, and Randall approval.",
+            f"{CONTINUITY}/Workflow 50 - Tmp Helper Archive Cleanup.md",
+            f"{CONTINUITY}/Workflow 50 - Tmp Helper Archive Cleanup.md",
+            [],
+            [],
+            ["Archive/root cleanup remains approval-gated"],
+            [
+                "No delete, move, archive, protected-surface cleanup, config/runtime mutation, proof deletion, finance/canon mutation, or owner-approval inference from this route.",
+            ],
+            "review-only historical cleanup route; destructive action gated",
+            True,
+            False,
+            "python scripts\\workflow_router.py WF50 --answer all",
+        ),
+        route(
+            "WF51",
+            "Daily Fresh Intelligence and Price Trend Promotion Branch",
+            "P4",
+            "Closed/superseded daily price-trend promotion branch; useful as history for source freshness and warning-only trend proof.",
+            "Use newer WF78/WF84/WF85 finance routing for current ticker decisions; do not use WF51 for deployment claims.",
+            f"{CONTINUITY}/Workflow 51 - Daily Fresh Intelligence and Price Trend Promotion Branch.md",
+            f"{CONTINUITY}/Workflow 51 - Daily Fresh Intelligence and Price Trend Promotion Branch.md",
+            [],
+            [],
+            ["Production watchlist candidate generation remains deferred"],
+            [
+                "No capital deployment, promotion, paper/live/account action, probability claim, or portfolio/canon mutation from WF51 historical proof.",
+            ],
+            "review-only historical trend route; superseded by WF78/WF84/WF85",
+            False,
+            False,
+            "python scripts\\workflow_router.py WF51 --answer all",
+        ),
+        route(
+            "WF52",
+            "Event Calendar Freshness Path",
+            "P4",
+            "Closed bounded Event Calendar freshness path; browser-runner verification is optional/future.",
+            "Use active earnings/event workflows for current work; preserve WF52 as route history only.",
+            f"{CONTINUITY}/Workflow 52 - Earnings Date Source Confidence and Event Calendar Roll-Forward Automation.md",
+            f"{CONTINUITY}/Workflow 52 - Earnings Date Source Confidence and Event Calendar Roll-Forward Automation.md",
+            [],
+            [],
+            ["Browser runner verification optional/future"],
+            [
+                "No deployment, portfolio/canon mutation, customer output, or event-date truth claim without current source validation.",
+            ],
+            "review-only historical event-calendar route",
+            False,
+            False,
+            "python scripts\\workflow_router.py WF52 --answer all",
+        ),
+        route(
+            "WF53",
+            "Sector Expansion Coverage and Correlation Proof Layer",
+            "P4",
+            "Closed v1 sector/correlation proof layer; artifact quality can degrade when upstream warning surfaces degrade.",
+            "Use active WF78/WF84/WF85 and macro/sector proof for current finance decisions.",
+            f"{CONTINUITY}/Workflow 53 - Sector Expansion Coverage and Correlation Proof Layer.md",
+            f"{CONTINUITY}/Workflow 53 - Sector Expansion Coverage and Correlation Proof Layer.md",
+            [],
+            [],
+            ["Historical proof may be degraded by upstream warnings"],
+            [
+                "No sector allocation, sizing, deployment, paper/live/account action, or portfolio/canon mutation from WF53 proof alone.",
+            ],
+            "review-only historical sector/correlation route",
+            False,
+            False,
+            "python scripts\\workflow_router.py WF53 --answer all",
+        ),
+        route(
+            "WF54",
+            "Ticker Monitoring Performance Analytics v1",
+            "P4",
+            "Closed review diagnostics; outcome analytics/calibration remain blocked until WF55 readiness.",
+            "Use WF55 measurement substrate for outcome/probability gating; do not publish predictive claims from WF54.",
+            f"{CONTINUITY}/Workflow 54 - Ticker Monitoring Performance Analytics v1.md",
+            f"{CONTINUITY}/Workflow 54 - Ticker Monitoring Performance Analytics v1.md",
+            ["tmp/wf55-autonomy-outcome-ledger.json"],
+            [],
+            ["Outcome analytics/calibration blocked until WF55 readiness"],
+            [
+                "No hit-rate, win-rate, expected-return, probability, model-ranked deployment, capital, paper/live/account action, or approval inference.",
+            ],
+            "review-only historical analytics route; predictive claims gated by WF55",
+            False,
+            False,
+            "python scripts\\workflow_router.py WF54 --answer all",
+        ),
+        route(
+            "WF57",
+            "Composite Regime and Sector Positioning PDF Visual Enhancement",
+            "P4",
+            "Closed internal polished PDF product lane; retained as review-only packaging history.",
+            "Use current WF75/WF85 deliverable packaging only for internal review unless a separate customer/public gate is approved.",
+            f"{CONTINUITY}/Workflow 57 - Composite Regime and Sector Positioning PDF Visual Enhancement.md",
+            f"{CONTINUITY}/Workflow 57 - Composite Regime and Sector Positioning PDF Visual Enhancement.md",
+            [],
+            [],
+            ["Public/customer packaging remains gated"],
+            [
+                "No public/customer delivery, legal/compliance/readiness claim, portfolio/canon mutation, capital deployment, or execution authority.",
+            ],
+            "review-only historical packaging route",
+            False,
+            False,
+            "python scripts\\workflow_router.py WF57 --answer all",
+        ),
+        route(
+            "WF59",
+            "Continuity and Compaction Hardening",
+            "P4",
+            "Closed continuity/compaction hardening that produced Startup Truth Index and startup-load reductions.",
+            "Use Startup Truth Index and current boot/control surfaces for live routing; preserve WF59 as history only.",
+            f"{CONTINUITY}/Workflow 59 - Continuity and Compaction Hardening.md",
+            f"{CONTINUITY}/Workflow 59 - Continuity and Compaction Hardening.md",
+            ["06. Playbooks/Startup Truth Index.md"],
+            [],
+            [],
+            [
+                "No doctrine rewrite, new boot authority surface, config/runtime mutation, or generated-index authority expansion from WF59 history.",
+            ],
+            "review-only historical continuity route",
+            False,
+            False,
+            "python scripts\\workflow_router.py WF59 --answer all",
+        ),
         # ---- P2 monitors ----
         route(
             "WF58",
@@ -1404,22 +1982,25 @@ def build_routes() -> list[dict[str, Any]]:
             "Outcome Measurement / Probability Readiness",
             "P1",
             "Promoted to active autonomy measurement substrate; probability "
-            "claims remain blocked while neutral outcome events feed WF87 and "
-            "WF74.",
-            "Build and validate neutral outcome events from WF86/WF87 shadow "
-            "artifacts; escalate if predictive language appears before gates clear.",
+            "claims remain blocked while neutral outcome events and process-quality "
+            "grades feed WF74.",
+            "Keep WF55 active as a review-only scorecard through neutral measurement "
+            "grades, stale-data/process-failure tracking, and WF74 model-quality proof; "
+            "escalate if predictive language appears before semantic outcome gates clear.",
             f"{CONTINUITY}/Workflow 55 - Probability Readiness and Outcome Retention Gate.md",
             "tmp/wf55-autonomy-outcome-ledger.json",
             ["tmp/autonomy-spine-promotion-contract.json", "tmp/autonomy-spine-readiness-rollup.json"],
             [
                 "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
                 "python scripts\\test_wf55_autonomy_outcome_ledger.py",
+                "python scripts\\model_quality_scorecard.py --write --write-md --validate",
                 "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
             ],
-            ["Probability claims not ready; outcome ledger is measurement-only"],
+            ["Predictive/probability claims not ready; WF55 measurement scorecard is active review-only"],
             [
                 "No predictive scores, expected-return claims, win-rate claims, model-ranked "
-                "deployment, durable v2 append, paper/live execution, or approval inference.",
+                "deployment, paper/live execution, or approval inference. Durable v2 append "
+                "is allowed only for review-only measurement rows under the 2026-06-19 owner approval.",
             ],
             "measurement-only; predictive claims gated",
             False,
@@ -1536,15 +2117,195 @@ def relpath(path: Path) -> str:
         return str(path)
 
 
+def parse_active_workflow_register(path: Path = ACTIVE_WORKFLOWS_PATH) -> list[dict[str, str]]:
+    """Read the compact live-register rows from the canonical Active Workflows page."""
+    if not path.exists():
+        return []
+    in_register = False
+    rows: list[dict[str, str]] = []
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if line.startswith("## "):
+            if line == "## P0/P1 Active Register":
+                in_register = True
+                continue
+            if in_register:
+                break
+        if not in_register or not line.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if len(cells) < 6 or cells[0] not in EXPECTED_TIER_COUNTS:
+            continue
+        rows.append({
+            "tier": cells[0],
+            "workflow_label": cells[1],
+            "current_state": cells[2],
+            "next_action": cells[3],
+        })
+    return rows
+
+
+def _label_has_workflow_id(label: str, workflow_id: str) -> bool:
+    return bool(re.search(
+        rf"(?<![A-Za-z0-9-]){re.escape(workflow_id)}(?![A-Za-z0-9-])",
+        label,
+        flags=re.IGNORECASE,
+    ))
+
+
+def active_row_for_route(route_row: dict[str, Any], active_rows: list[dict[str, str]]) -> dict[str, str] | None:
+    """Match a canonical register row without arbitrary fuzzy route lookup."""
+    workflow_id = str(route_row.get("workflow_id") or "").strip()
+    direct = [row for row in active_rows if workflow_id and _label_has_workflow_id(row["workflow_label"], workflow_id)]
+    if len(direct) == 1:
+        return direct[0]
+    if len(direct) > 1:
+        return None
+
+    # A few canonical rows use a human label in place of the machine id. Match
+    # only a full normalized display name/declared alias, never a query fragment.
+    route_keys = {
+        normalize_lookup_key(route_row.get("display_name")),
+        *(normalize_lookup_key(alias) for alias in route_row.get("aliases", []) or []),
+    }
+    route_keys.discard("")
+    candidates = []
+    for row in active_rows:
+        label_key = normalize_lookup_key(row["workflow_label"])
+        if label_key in route_keys:
+            candidates.append(row)
+            continue
+        if any(
+            len(key) >= 16 and (label_key.startswith(key) or key.startswith(label_key))
+            for key in route_keys
+        ):
+            candidates.append(row)
+    return candidates[0] if len(candidates) == 1 else None
+
+
+def canonical_row_is_on_hold(row: dict[str, str]) -> bool:
+    # P3 is the explicit pause/resume-later tier in Active Workflows. Do not
+    # infer holds from prose elsewhere in the page.
+    return row.get("tier") == "P3"
+
+
+def reconcile_active_workflow_state(
+    routes: list[dict[str, Any]],
+    registry: dict[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Project canonical live-register state into derived route rows.
+
+    A canonical pause is fail-closed even before a matching machine override is
+    repaired. A stale override that conflicts with an active canonical row also
+    remains held until a human resolves the disagreement.
+    """
+    active_rows = parse_active_workflow_register()
+    reconciled: list[dict[str, Any]] = []
+    reports: list[dict[str, Any]] = []
+
+    for original in routes:
+        route_row = dict(original)
+        canonical = active_row_for_route(route_row, active_rows)
+        canonical_source = ACTIVE_WORKFLOWS_REL
+        if canonical is None:
+            # The P3 queue-tier contract is itself canonical pause/resume-later
+            # policy. Some P3 rows are intentionally omitted from the active
+            # register, so preserve their existing route prose but apply the
+            # same fail-closed control treatment.
+            if route_row.get("tier") != "P3":
+                reconciled.append(route_row)
+                continue
+            canonical = {
+                "tier": "P3",
+                "workflow_label": str(route_row.get("display_name") or route_row.get("workflow_id") or ""),
+                "current_state": str(route_row.get("current_state") or ""),
+                "next_action": str(route_row.get("next_action") or ""),
+            }
+            canonical_source = f"{ACTIVE_WORKFLOWS_REL}#Queue Tiers"
+
+        override = find_override(
+            str(route_row.get("workflow_id") or ""),
+            workflow_name=str(route_row.get("display_name") or ""),
+            registry=registry,
+        )
+        canonical_hold = canonical_row_is_on_hold(canonical)
+        override_hold = is_on_hold(override)
+        changes = {
+            field: {"from": route_row.get(field), "to": canonical[field]}
+            for field in ("tier", "current_state", "next_action")
+            if route_row.get(field) != canonical[field]
+        }
+        for field in ("tier", "current_state", "next_action"):
+            route_row[field] = canonical[field]
+
+        if canonical_hold:
+            route_row["safe_for_helper_lane"] = False
+            route_row["effective_status_override"] = "on_hold"
+            blocker = f"Canonical Active Workflows hold: {canonical['current_state']}"
+            blockers = list(route_row.get("blockers") or [])
+            if blocker not in blockers:
+                blockers.append(blocker)
+            route_row["blockers"] = blockers
+            status = "aligned" if override_hold else "control_override_missing"
+        elif override_hold:
+            status = "canonical_active_override_held"
+        else:
+            status = "aligned"
+
+        reconciliation = {
+            "source": canonical_source,
+            "canonical_tier": canonical["tier"],
+            "canonical_current_state": canonical["current_state"],
+            "canonical_next_action": canonical["next_action"],
+            "canonical_hold": canonical_hold,
+            "control_override_status": (override or {}).get("status"),
+            "status": status,
+            "changes": changes,
+        }
+        route_row["state_reconciliation"] = reconciliation
+        reports.append({"workflow_id": route_row.get("workflow_id"), **reconciliation})
+        reconciled.append(route_row)
+
+    status_counts: dict[str, int] = {}
+    for report in reports:
+        status = str(report["status"])
+        status_counts[status] = status_counts.get(status, 0) + 1
+    return reconciled, {
+        "source": ACTIVE_WORKFLOWS_REL,
+        "matched_route_count": len(reports),
+        "status_counts": status_counts,
+        "routes": reports,
+    }
+
+
 def exists_on_disk(rel: str) -> bool:
     return (ROOT / rel).exists()
 
 
-# Route freshness thresholds (hours). A route's freshness is the age of its
-# freshest declared proof signal (primary artifact preferred, else continuity
-# note). This surfaces stale or missing proof without a broad workspace scan.
+# Route freshness thresholds (hours). The compact ``score`` preserves the
+# low-cost primary-proof view. ``material_context_score`` separately requires
+# the owner continuity note for active material routes, so a newly refreshed
+# packet cannot hide a stale owner instruction.
 FRESH_HOURS = 72.0
 AGING_HOURS = 336.0  # 14 days
+
+
+def _mtime_ns(rel: str | None) -> int | None:
+    if not rel:
+        return None
+    path = ROOT / rel
+    try:
+        return path.stat().st_mtime_ns
+    except FileNotFoundError:
+        return None
+
+
+def source_freshness_snapshot() -> dict[str, int | None]:
+    """The two small sources that can change a route's control state."""
+    return {
+        "active_workflows_mtime_ns": _mtime_ns(ACTIVE_WORKFLOWS_REL),
+        "control_overrides_mtime_ns": _mtime_ns(CONTROL_OVERRIDES_REL),
+    }
 
 
 def _age_hours(rel: str | None) -> float | None:
@@ -1557,39 +2318,144 @@ def _age_hours(rel: str | None) -> float | None:
     return round((datetime.now(timezone.utc) - mtime).total_seconds() / 3600.0, 1)
 
 
+def _freshness_score_for(age_hours: float | None, declared: bool) -> str:
+    if not declared:
+        return "n/a"
+    if age_hours is None:
+        return "missing"
+    if age_hours < FRESH_HOURS:
+        return "fresh"
+    if age_hours < AGING_HOURS:
+        return "aging"
+    return "stale"
+
+
+def _worst_freshness(scores: list[str]) -> str:
+    """Return the least trustworthy declared freshness signal."""
+    declared = [score for score in scores if score != "n/a"]
+    if not declared:
+        return "n/a"
+    rank = {"fresh": 0, "aging": 1, "stale": 2, "missing": 3}
+    return max(declared, key=lambda score: rank.get(score, 3))
+
+
 def score_route_freshness(r: dict[str, Any]) -> dict[str, Any]:
     cont = r.get("continuity_note")
     primary = r.get("primary_route_artifact")
     primary_declared = bool(primary) and not r.get("primary_pending")
+    primary_is_self_index = (
+        str(primary or "").replace("\\", "/").casefold()
+        == INDEX_OUT.relative_to(ROOT).as_posix().casefold()
+    )
 
     cont_exists = bool(cont) and exists_on_disk(cont)
     primary_exists = primary_declared and exists_on_disk(primary)
 
     cont_age = _age_hours(cont) if cont_exists else None
-    primary_age = _age_hours(primary) if primary_exists else None
+    # WF73 deliberately names this derived index as its own primary artifact.
+    # A successful rebuild changes that file after the route list is assembled,
+    # so its on-disk mtime cannot be used as an external source-freshness token.
+    primary_age = 0.0 if primary_is_self_index and primary_exists else (_age_hours(primary) if primary_exists else None)
 
-    missing = (bool(cont) and not cont_exists) or (primary_declared and not primary_exists)
-
-    if missing:
-        score = "missing"
-    else:
-        basis = primary_age if primary_age is not None else cont_age
-        if basis is None:
-            score = "n/a"
-        elif basis < FRESH_HOURS:
-            score = "fresh"
-        elif basis < AGING_HOURS:
-            score = "aging"
-        else:
-            score = "stale"
+    primary_score = _freshness_score_for(primary_age, primary_declared)
+    continuity_score = _freshness_score_for(cont_age, bool(cont))
+    # Compatibility score: the current proof packet remains the fast lookup
+    # basis. Material readiness below uses the stricter paired score.
+    score = primary_score if primary_score != "n/a" else continuity_score
+    material_context_score = _worst_freshness([primary_score, continuity_score])
 
     return {
         "score": score,
+        "primary_artifact_score": primary_score,
+        "continuity_note_score": continuity_score,
+        "owner_context_score": continuity_score,
+        "material_context_score": material_context_score,
         "continuity_note_age_hours": cont_age,
         "primary_artifact_age_hours": primary_age,
+        "continuity_note_mtime_ns": _mtime_ns(cont) if cont_exists else None,
+        "primary_artifact_mtime_ns": (
+            None if primary_is_self_index else (_mtime_ns(primary) if primary_exists else None)
+        ),
+        "primary_artifact_self_referential": primary_is_self_index,
         "validator_count": len(r.get("validator_commands") or []),
         "has_next_action": bool(r.get("next_action")),
     }
+
+
+def derive_route_contract(route_row: dict[str, Any]) -> None:
+    """Attach the explicit ownership, lifecycle, readiness, and authority contract.
+
+    The route map stays derived: live state comes from Active Workflows and the
+    machine-readable control-override state.  This function only projects that
+    state into a normalized contract; it never makes a route executable.
+    """
+    reconciliation = route_row.get("state_reconciliation")
+    canonical_hold = isinstance(reconciliation, dict) and reconciliation.get("canonical_hold") is True
+    tier = str(route_row.get("tier") or "")
+    workflow_id = str(route_row.get("workflow_id") or "")
+
+    if canonical_hold or tier == "P3":
+        lifecycle = "paused"
+    elif tier == "P2":
+        lifecycle = "monitor"
+    elif tier == "P4":
+        lifecycle = "gated"
+    else:
+        lifecycle = "active"
+
+    if workflow_id in PAPER_FAIL_CLOSED_WORKFLOWS:
+        authority_class = "paper_guard_fail_closed"
+    elif lifecycle == "paused":
+        authority_class = "paused_review_only"
+    elif lifecycle in {"monitor", "gated"}:
+        authority_class = "monitor_only"
+    elif route_row.get("owner_action_required") is True:
+        authority_class = "owner_gated_review_only"
+    else:
+        authority_class = "review_only"
+
+    freshness = route_row.get("freshness") if isinstance(route_row.get("freshness"), dict) else {}
+    material_context = str(freshness.get("material_context_score") or "n/a")
+    if lifecycle == "paused":
+        readiness = "paused"
+    elif authority_class == "paper_guard_fail_closed":
+        readiness = "blocked"
+    elif lifecycle in {"monitor", "gated"}:
+        readiness = "monitor_only"
+    elif material_context in {"aging", "stale", "missing"}:
+        readiness = "refresh_required"
+    else:
+        readiness = "route_only"
+
+    effective_status = {
+        "paused": "on_hold",
+        "blocked": "blocked",
+        "monitor_only": "monitor_only",
+        "refresh_required": "refresh_required",
+        "route_only": "route_only",
+    }[readiness]
+
+    route_row.update({
+        # ``tier`` remains for compatibility; ``priority`` is the unambiguous
+        # label for consumers that must not conflate priority with readiness.
+        "priority": tier,
+        "lifecycle": lifecycle,
+        "readiness": readiness,
+        "authority_class": authority_class,
+        "primary_owner_lane": "main-session-veritas",
+        "secondary_consumers": list(SECONDARY_CONSUMERS.get(workflow_id, [])),
+        "human_approval_owner": "Randall",
+        "proof_artifact": route_row.get("primary_route_artifact") or route_row.get("continuity_note"),
+        "freshness_sla": {
+            "primary_artifact_max_age_hours": FRESHNESS_SLA_HOURS,
+            "owner_context_max_age_hours": FRESHNESS_SLA_HOURS,
+            "material_owner_context_required": lifecycle == "active" and tier in {"P0", "P1"},
+        },
+        "authoritative_next_action": route_row.get("next_action"),
+        "effective_status_override": effective_status,
+    })
+    if readiness in {"paused", "blocked"}:
+        route_row["safe_for_helper_lane"] = False
 
 
 def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
@@ -1616,10 +2482,17 @@ def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
         "workflow_id": rt.get("workflow_id"),
         "display_name": rt.get("display_name"),
         "tier": rt.get("tier"),
+        "priority": rt.get("priority"),
+        "lifecycle": rt.get("lifecycle"),
+        "readiness": rt.get("readiness"),
+        "authority_class": rt.get("authority_class"),
         "mode": "Spawn read-only" if safe else "Main-session only",
         "safe_for_helper_lane": safe,
         "owner_action_required": bool(rt.get("owner_action_required")),
-        "objective": rt.get("next_action"),
+        "primary_owner_lane": rt.get("primary_owner_lane"),
+        "secondary_consumers": rt.get("secondary_consumers") or [],
+        "human_approval_owner": rt.get("human_approval_owner"),
+        "objective": rt.get("authoritative_next_action") or rt.get("next_action"),
         "current_truth": rt.get("current_state"),
         "read_first": read_first[:6],
         "do_not_read_first": [
@@ -1638,6 +2511,8 @@ def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
         "authority_boundary": rt.get("authority_boundary"),
         "acceptance_proof": acceptance,
         "freshness": rt.get("freshness"),
+        "freshness_sla": rt.get("freshness_sla"),
+        "proof_artifact": rt.get("proof_artifact"),
         "authority": dict(AUTHORITY),
         "note": (
             "Derived review-only helper packet. Active Workflows and the exact "
@@ -1658,20 +2533,40 @@ def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
 def build_index() -> dict[str, Any]:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     registry = load_registry()
-    routes = [apply_route_override(route, registry) for route in build_routes()]
+    override_routes = [apply_route_override(route, registry) for route in build_routes()]
+    routes, state_reconciliation = reconcile_active_workflow_state(override_routes, registry)
     for r in routes:
         r["last_validated_at"] = now
         r["freshness"] = score_route_freshness(r)
+        derive_route_contract(r)
     tier_counts: dict[str, int] = {}
     freshness_counts: dict[str, int] = {}
+    lifecycle_counts: dict[str, int] = {}
+    readiness_counts: dict[str, int] = {}
     for r in routes:
         tier_counts[r["tier"]] = tier_counts.get(r["tier"], 0) + 1
         fs = r["freshness"]["score"]
         freshness_counts[fs] = freshness_counts.get(fs, 0) + 1
+        lifecycle = str(r.get("lifecycle") or "unknown")
+        readiness = str(r.get("readiness") or "unknown")
+        lifecycle_counts[lifecycle] = lifecycle_counts.get(lifecycle, 0) + 1
+        readiness_counts[readiness] = readiness_counts.get(readiness, 0) + 1
     return {
-        "schema_version": "workflow_routing_index.v1",
+        "schema_version": "workflow_routing_index.v2",
         "generated_at_utc": now,
         "source_authority": "06. Playbooks/Active Workflows.md",
+        "state_authority": {
+            "canonical_control_sources": [ACTIVE_WORKFLOWS_REL, CONTROL_OVERRIDES_REL],
+            "precedence": [
+                "Active Workflows explicit pause/tier/current-state/next-action",
+                "workflow-control-overrides fail-closed machine hold",
+                "route metadata defaults only where the canonical page has no field",
+            ],
+            "derived_mirrors": ["state/workflows/*.json", "tmp/workflow-routing-index.json", "tmp/veritas-status-card.json"],
+            "note": "Derived mirrors are parity consumers, not state authority.",
+        },
+        "source_freshness": source_freshness_snapshot(),
+        "state_reconciliation": state_reconciliation,
         "note": (
             "Derived review-only route map. Active Workflows and exact continuity "
             "notes remain authority; this index never outranks them and carries no "
@@ -1682,6 +2577,15 @@ def build_index() -> dict[str, Any]:
             "route_count": len(routes),
             "tier_counts": tier_counts,
             "freshness_counts": freshness_counts,
+            "lifecycle_counts": lifecycle_counts,
+            "readiness_counts": readiness_counts,
+            "active_build_queue_count": sum(
+                1
+                for r in routes
+                if r.get("priority") in {"P0", "P1"}
+                and r.get("lifecycle") == "active"
+                and r.get("readiness") == "route_only"
+            ),
         },
         "routes": routes,
     }
@@ -1692,12 +2596,12 @@ def validate_index(index: dict[str, Any]) -> dict[str, Any]:
     routes = index.get("routes", [])
     summary = index.get("summary", {})
 
-    if index.get("schema_version") != "workflow_routing_index.v1":
+    if index.get("schema_version") != "workflow_routing_index.v2":
         findings.append({
             "severity": "critical",
             "scope": "index",
             "check": "schema_version",
-            "issue": "index schema_version must be workflow_routing_index.v1",
+            "issue": "index schema_version must be workflow_routing_index.v2",
             "value": index.get("schema_version"),
         })
 
@@ -1766,7 +2670,28 @@ def validate_index(index: dict[str, Any]) -> dict[str, Any]:
                 "value": authority.get(flag),
             })
 
+    source_freshness = index.get("source_freshness")
+    if not isinstance(source_freshness, dict):
+        findings.append({
+            "severity": "critical",
+            "scope": "index",
+            "check": "source_freshness",
+            "issue": "index must record the canonical control-source freshness snapshot",
+        })
+    else:
+        for key in ("active_workflows_mtime_ns", "control_overrides_mtime_ns"):
+            value = source_freshness.get(key)
+            if value is not None and not isinstance(value, int):
+                findings.append({
+                    "severity": "critical",
+                    "scope": "index",
+                    "check": "source_freshness",
+                    "issue": f"source_freshness.{key} must be an integer or null",
+                    "value": value,
+                })
+
     seen_ids: set[str] = set()
+    seen_aliases: dict[str, str] = {}
     for r in routes:
         wid = r.get("workflow_id", "<unknown>")
 
@@ -1818,14 +2743,83 @@ def validate_index(index: dict[str, Any]) -> dict[str, Any]:
                 "issue": "tier must be one of P0/P1/P2/P3",
                 "value": r.get("tier"),
             })
-        for field in ("display_name", "current_state", "next_action", "authority_boundary"):
+        for field in (
+            "display_name", "current_state", "next_action", "authority_boundary",
+            "priority", "lifecycle", "readiness", "authority_class",
+            "primary_owner_lane", "human_approval_owner", "authoritative_next_action",
+        ):
             if not isinstance(r.get(field), str) or not r.get(field, "").strip():
                 findings.append({
                     "severity": "critical",
                     "workflow_id": wid,
                     "check": "field_value",
-                    "issue": f"{field} must be a non-empty string",
-                })
+                "issue": f"{field} must be a non-empty string",
+            })
+
+        if r.get("priority") != r.get("tier"):
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "priority",
+                "issue": "priority must mirror the compatibility tier field",
+            })
+        if r.get("lifecycle") not in LIFECYCLES:
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "lifecycle",
+                "issue": "lifecycle is outside the declared enum",
+                "value": r.get("lifecycle"),
+            })
+        if r.get("readiness") not in READINESS_STATES:
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "readiness",
+                "issue": "readiness is outside the declared enum",
+                "value": r.get("readiness"),
+            })
+        if r.get("authority_class") not in AUTHORITY_CLASSES:
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "authority_class",
+                "issue": "authority_class is outside the declared enum",
+                "value": r.get("authority_class"),
+            })
+        freshness_sla = r.get("freshness_sla")
+        if not isinstance(freshness_sla, dict) or any(
+            not isinstance(freshness_sla.get(key), (int, float, bool))
+            for key in (
+                "primary_artifact_max_age_hours",
+                "owner_context_max_age_hours",
+                "material_owner_context_required",
+            )
+        ):
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "freshness_sla",
+                "issue": "route must declare a typed primary/owner-context freshness SLA",
+            })
+        if r.get("authoritative_next_action") != r.get("next_action"):
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "authoritative_next_action",
+                "issue": "authoritative_next_action must match the reconciled next_action",
+            })
+        if r.get("lifecycle") == "paused" and (
+            r.get("readiness") != "paused"
+            or r.get("effective_status_override") != "on_hold"
+            or r.get("safe_for_helper_lane") is not False
+        ):
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "paused_contract",
+                "issue": "paused routes must be on_hold, non-dispatchable, and visibly paused",
+            })
+        if r.get("authority_class") == "paper_guard_fail_closed" and (
+            r.get("readiness") != "blocked"
+            or r.get("safe_for_helper_lane") is not False
+            or r.get("effective_status_override") != "blocked"
+        ):
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "paper_fail_closed_contract",
+                "issue": "paper guard routes must remain visibly blocked and helper-unsafe",
+            })
+        if r.get("lifecycle") == "active" and r.get("readiness") == "route_only" and r.get("effective_status_override") == "ready":
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "route_only_contract",
+                "issue": "route_only is not executable readiness and must never serialize as ready",
+            })
 
         # Unique workflow id.
         if wid in seen_ids:
@@ -1834,6 +2828,28 @@ def validate_index(index: dict[str, Any]) -> dict[str, Any]:
                 "issue": "duplicate workflow_id in routing index",
             })
         seen_ids.add(wid)
+
+        aliases = route_alias_records(r)
+        if not r.get("aliases"):
+            findings.append({
+                "severity": "critical", "workflow_id": wid, "check": "aliases",
+                "issue": "route must carry at least one exact lookup alias",
+            })
+        for alias in aliases:
+            alias_key = alias["alias_key"]
+            previous_workflow = seen_aliases.get(alias_key)
+            if previous_workflow and previous_workflow != wid:
+                findings.append({
+                    "severity": "critical",
+                    "workflow_id": wid,
+                    "check": "alias_unique",
+                    "issue": "exact lookup alias resolves to more than one workflow",
+                    "alias": alias["alias"],
+                    "alias_key": alias_key,
+                    "other_workflow_id": previous_workflow,
+                })
+            else:
+                seen_aliases[alias_key] = wid
 
         # Stop lines mandatory.
         stop_lines = r.get("stop_lines")
@@ -1918,6 +2934,49 @@ def validate_index(index: dict[str, Any]) -> dict[str, Any]:
                     "check": "freshness",
                     "issue": "freshness.has_next_action must match next_action presence",
                 })
+            for key in ("primary_artifact_score", "continuity_note_score", "owner_context_score", "material_context_score"):
+                if freshness.get(key) not in FRESHNESS_SCORES:
+                    findings.append({
+                        "severity": "critical", "workflow_id": wid, "check": "freshness",
+                        "issue": f"freshness.{key} is outside the allowed enum",
+                        "value": freshness.get(key),
+                    })
+
+        if r.get("tier") in {"P0", "P1"}:
+            if r.get("primary_owner_lane") != "main-session-veritas":
+                findings.append({
+                    "severity": "critical", "workflow_id": wid, "check": "primary_owner_lane",
+                    "issue": "P0/P1 route must have exactly the declared main-session operational owner",
+                })
+            if not r.get("proof_artifact"):
+                findings.append({
+                    "severity": "critical", "workflow_id": wid, "check": "proof_artifact",
+                    "issue": "P0/P1 route must declare a proof artifact",
+                })
+
+        reconciliation = r.get("state_reconciliation")
+        if isinstance(reconciliation, dict):
+            status = reconciliation.get("status")
+            canonical_hold = reconciliation.get("canonical_hold") is True
+            if status in {"control_override_missing", "canonical_active_override_held"}:
+                findings.append({
+                    "severity": "critical",
+                    "workflow_id": wid,
+                    "check": "state_reconciliation",
+                    "issue": "canonical control state and workflow-control override disagree",
+                    "status": status,
+                })
+            if canonical_hold and (
+                r.get("tier") != "P3"
+                or r.get("safe_for_helper_lane") is not False
+                or r.get("effective_status_override") != "on_hold"
+            ):
+                findings.append({
+                    "severity": "critical",
+                    "workflow_id": wid,
+                    "check": "state_reconciliation",
+                    "issue": "canonical paused route must be P3, on_hold, and helper-unsafe",
+                })
 
         packet = build_handoff(r)
         expected_mode = "Spawn read-only" if r.get("safe_for_helper_lane") else "Main-session only"
@@ -1959,10 +3018,13 @@ def validate_index(index: dict[str, Any]) -> dict[str, Any]:
             "checks": [
                 "schema_version", "routes", "route_count", "route_coverage",
                 "tier_coverage", "tier_counts", "authority", "required_field",
-                "field_type", "field_value", "unique_id", "stop_lines",
+                "field_type", "field_value", "unique_id", "aliases", "alias_unique", "stop_lines",
                 "authority_boundary", "continuity_note",
                 "primary_route_artifact", "secondary_artifact",
-                "validator_commands", "freshness", "handoff_mode",
+                "validator_commands", "freshness", "freshness_sla", "priority", "lifecycle", "readiness",
+                "authority_class", "primary_owner_lane", "proof_artifact", "authoritative_next_action",
+                "paused_contract", "paper_fail_closed_contract", "route_only_contract",
+                "source_freshness", "state_reconciliation", "handoff_mode",
                 "handoff_authority",
             ],
         },
@@ -1976,8 +3038,19 @@ def _db_path(path: str | None) -> Path:
 
 def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
     """Write a derived/rebuildable SQLite lookup from the JSON route objects."""
+    alias_owners: dict[str, str] = {}
+    for route_row in index.get("routes", []):
+        workflow_id = str(route_row.get("workflow_id") or "")
+        for alias in route_alias_records(route_row):
+            existing = alias_owners.setdefault(alias["alias_key"], workflow_id)
+            if existing != workflow_id:
+                raise ValueError(
+                    f"ambiguous exact alias {alias['alias']!r}: {existing} and {workflow_id}"
+                )
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(db_path) as con:
+    with sqlite3.connect(db_path, timeout=5) as con:
+        con.execute("PRAGMA busy_timeout = 5000")
+        con.execute("PRAGMA journal_mode = WAL")
         con.execute("PRAGMA foreign_keys = ON")
         con.executescript(
             """
@@ -1987,6 +3060,7 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
             DROP TABLE IF EXISTS workflow_blockers;
             DROP TABLE IF EXISTS workflow_validators;
             DROP TABLE IF EXISTS workflow_artifacts;
+            DROP TABLE IF EXISTS workflow_route_aliases;
             DROP TABLE IF EXISTS workflow_routes;
             DROP TABLE IF EXISTS workflow_runs;
 
@@ -1996,7 +3070,9 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
                 schema_version TEXT NOT NULL,
                 source_authority TEXT NOT NULL,
                 route_count INTEGER NOT NULL,
-                authority_json TEXT NOT NULL
+                authority_json TEXT NOT NULL,
+                source_active_workflows_mtime_ns INTEGER,
+                source_control_overrides_mtime_ns INTEGER
             );
 
             CREATE TABLE workflow_routes (
@@ -2013,10 +3089,29 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
                 owner_action_required INTEGER NOT NULL,
                 safe_for_helper_lane INTEGER NOT NULL,
                 default_resume_command TEXT,
+                priority TEXT NOT NULL,
+                lifecycle TEXT NOT NULL,
+                readiness TEXT NOT NULL,
+                authority_class TEXT NOT NULL,
+                primary_owner_lane TEXT NOT NULL,
+                human_approval_owner TEXT NOT NULL,
+                proof_artifact TEXT,
+                authoritative_next_action TEXT NOT NULL,
+                freshness_sla_json TEXT NOT NULL,
                 freshness_score TEXT,
                 freshness_primary_artifact_age_hours REAL,
                 freshness_continuity_note_age_hours REAL,
+                freshness_primary_artifact_mtime_ns INTEGER,
+                freshness_continuity_note_mtime_ns INTEGER,
                 validator_count INTEGER NOT NULL
+            );
+
+            CREATE TABLE workflow_route_aliases (
+                alias_key TEXT PRIMARY KEY,
+                alias TEXT NOT NULL,
+                workflow_id TEXT NOT NULL,
+                alias_kind TEXT NOT NULL,
+                FOREIGN KEY(workflow_id) REFERENCES workflow_routes(workflow_id)
             );
 
             CREATE TABLE workflow_artifacts (
@@ -2071,6 +3166,9 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
             CREATE INDEX idx_workflow_routes_freshness ON workflow_routes(freshness_score);
             CREATE INDEX idx_workflow_routes_helper ON workflow_routes(safe_for_helper_lane);
             CREATE INDEX idx_workflow_routes_owner ON workflow_routes(owner_action_required);
+            CREATE INDEX idx_workflow_routes_readiness ON workflow_routes(readiness);
+            CREATE INDEX idx_workflow_routes_lifecycle ON workflow_routes(lifecycle);
+            CREATE INDEX idx_workflow_route_aliases_workflow ON workflow_route_aliases(workflow_id);
             """
         )
 
@@ -2078,8 +3176,9 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
         con.execute(
             """
             INSERT INTO workflow_runs
-            (run_id, generated_at_utc, schema_version, source_authority, route_count, authority_json)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (run_id, generated_at_utc, schema_version, source_authority, route_count, authority_json,
+             source_active_workflows_mtime_ns, source_control_overrides_mtime_ns)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 run_id,
@@ -2088,6 +3187,8 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
                 index.get("source_authority"),
                 index.get("summary", {}).get("route_count", 0),
                 json.dumps(index.get("authority", {}), sort_keys=True),
+                index.get("source_freshness", {}).get("active_workflows_mtime_ns"),
+                index.get("source_freshness", {}).get("control_overrides_mtime_ns"),
             ),
         )
 
@@ -2099,10 +3200,15 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
                 (workflow_id, display_name, tier, current_state, next_action,
                  continuity_note, primary_route_artifact, primary_pending,
                  last_validated_at, authority_boundary, owner_action_required,
-                 safe_for_helper_lane, default_resume_command, freshness_score,
+                 safe_for_helper_lane, default_resume_command, priority, lifecycle,
+                 readiness, authority_class, primary_owner_lane, human_approval_owner,
+                 proof_artifact, authoritative_next_action, freshness_sla_json, freshness_score,
                  freshness_primary_artifact_age_hours,
-                 freshness_continuity_note_age_hours, validator_count)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 freshness_continuity_note_age_hours, freshness_primary_artifact_mtime_ns,
+                 freshness_continuity_note_mtime_ns, validator_count)
+                VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12,
+                        ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21, ?22,
+                        ?23, ?24, ?25, ?26, ?27, ?28)
                 """,
                 (
                     r["workflow_id"],
@@ -2118,12 +3224,33 @@ def write_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any]:
                     1 if r.get("owner_action_required") else 0,
                     1 if r.get("safe_for_helper_lane") else 0,
                     r.get("default_resume_command"),
+                    r["priority"],
+                    r["lifecycle"],
+                    r["readiness"],
+                    r["authority_class"],
+                    r["primary_owner_lane"],
+                    r["human_approval_owner"],
+                    r.get("proof_artifact"),
+                    r["authoritative_next_action"],
+                    json.dumps(r.get("freshness_sla") or {}, sort_keys=True),
                     f.get("score"),
                     f.get("primary_artifact_age_hours"),
                     f.get("continuity_note_age_hours"),
+                    f.get("primary_artifact_mtime_ns"),
+                    f.get("continuity_note_mtime_ns"),
                     len(r.get("validator_commands") or []),
                 ),
             )
+
+            for alias in route_alias_records(r):
+                con.execute(
+                    """
+                    INSERT INTO workflow_route_aliases
+                    (alias_key, alias, workflow_id, alias_kind)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (alias["alias_key"], alias["alias"], r["workflow_id"], alias["alias_kind"]),
+                )
 
             artifacts: list[tuple[str, str | None]] = [
                 ("continuity_note", r.get("continuity_note")),
@@ -2208,7 +3335,8 @@ def validate_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any
             }],
         }
 
-    with sqlite3.connect(db_path) as con:
+    with sqlite3.connect(db_path, timeout=5) as con:
+        con.execute("PRAGMA busy_timeout = 5000")
         con.row_factory = sqlite3.Row
         integrity = con.execute("PRAGMA integrity_check").fetchone()[0]
         if integrity != "ok":
@@ -2238,6 +3366,35 @@ def validate_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any
                 "actual": route_count,
             })
 
+        run = con.execute(
+            """
+            SELECT source_active_workflows_mtime_ns, source_control_overrides_mtime_ns
+            FROM workflow_runs
+            ORDER BY generated_at_utc DESC
+            LIMIT 1
+            """
+        ).fetchone()
+        expected_sources = index.get("source_freshness", {})
+        if run is None:
+            findings.append({
+                "severity": "critical",
+                "check": "source_freshness",
+                "issue": "SQLite index must include a workflow_runs freshness snapshot",
+            })
+        else:
+            actual_sources = {
+                "active_workflows_mtime_ns": run["source_active_workflows_mtime_ns"],
+                "control_overrides_mtime_ns": run["source_control_overrides_mtime_ns"],
+            }
+            if actual_sources != expected_sources:
+                findings.append({
+                    "severity": "critical",
+                    "check": "source_freshness",
+                    "issue": "SQLite canonical control-source snapshot must match JSON index",
+                    "expected": expected_sources,
+                    "actual": actual_sources,
+                })
+
         tier_counts = {
             row["tier"]: row["count"]
             for row in con.execute("SELECT tier, COUNT(*) AS count FROM workflow_routes GROUP BY tier")
@@ -2250,6 +3407,44 @@ def validate_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any
                 "expected": index.get("summary", {}).get("tier_counts"),
                 "actual": tier_counts,
             })
+
+        stored_contracts = {
+            row["workflow_id"]: {
+                "priority": row["priority"],
+                "lifecycle": row["lifecycle"],
+                "readiness": row["readiness"],
+                "authority_class": row["authority_class"],
+                "primary_owner_lane": row["primary_owner_lane"],
+                "human_approval_owner": row["human_approval_owner"],
+                "proof_artifact": row["proof_artifact"],
+                "authoritative_next_action": row["authoritative_next_action"],
+                "freshness_sla": json.loads(row["freshness_sla_json"]),
+            }
+            for row in con.execute(
+                """
+                SELECT workflow_id, priority, lifecycle, readiness, authority_class,
+                       primary_owner_lane, human_approval_owner, proof_artifact,
+                       authoritative_next_action, freshness_sla_json
+                FROM workflow_routes
+                """
+            )
+        }
+        for route in index.get("routes", []):
+            expected_contract = {
+                key: route.get(key)
+                for key in (
+                    "priority", "lifecycle", "readiness", "authority_class",
+                    "primary_owner_lane", "human_approval_owner", "proof_artifact",
+                    "authoritative_next_action", "freshness_sla",
+                )
+            }
+            if stored_contracts.get(route.get("workflow_id")) != expected_contract:
+                findings.append({
+                    "severity": "critical",
+                    "workflow_id": route.get("workflow_id"),
+                    "check": "routing_contract",
+                    "issue": "SQLite route contract must match the JSON-derived route contract",
+                })
 
         freshness_counts = {
             row["freshness_score"]: row["count"]
@@ -2265,6 +3460,53 @@ def validate_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any
                 "expected": index.get("summary", {}).get("freshness_counts"),
                 "actual": freshness_counts,
             })
+
+        expected_aliases = {
+            (alias["alias_key"], route["workflow_id"], alias["alias_kind"])
+            for route in index.get("routes", [])
+            for alias in route_alias_records(route)
+        }
+        actual_aliases = {
+            (row["alias_key"], row["workflow_id"], row["alias_kind"])
+            for row in con.execute(
+                "SELECT alias_key, workflow_id, alias_kind FROM workflow_route_aliases"
+            )
+        }
+        if actual_aliases != expected_aliases:
+            findings.append({
+                "severity": "critical",
+                "check": "exact_aliases",
+                "issue": "SQLite exact lookup aliases must match the JSON route aliases",
+                "expected_count": len(expected_aliases),
+                "actual_count": len(actual_aliases),
+            })
+
+        stored_freshness = {
+            row["workflow_id"]: {
+                "primary_artifact_mtime_ns": row["freshness_primary_artifact_mtime_ns"],
+                "continuity_note_mtime_ns": row["freshness_continuity_note_mtime_ns"],
+            }
+            for row in con.execute(
+                """
+                SELECT workflow_id, freshness_primary_artifact_mtime_ns,
+                       freshness_continuity_note_mtime_ns
+                FROM workflow_routes
+                """
+            )
+        }
+        for route in index.get("routes", []):
+            expected_freshness = route.get("freshness") or {}
+            actual_freshness = stored_freshness.get(route.get("workflow_id"))
+            if actual_freshness != {
+                "primary_artifact_mtime_ns": expected_freshness.get("primary_artifact_mtime_ns"),
+                "continuity_note_mtime_ns": expected_freshness.get("continuity_note_mtime_ns"),
+            }:
+                findings.append({
+                    "severity": "critical",
+                    "workflow_id": route.get("workflow_id"),
+                    "check": "freshness_snapshot",
+                    "issue": "SQLite route freshness snapshot must match JSON route freshness",
+                })
 
         authority_rows = con.execute(
             "SELECT workflow_id, flag, value FROM workflow_authority"
@@ -2307,36 +3549,146 @@ def validate_sqlite_index(index: dict[str, Any], db_path: Path) -> dict[str, Any
 
 
 def _sql_route_dict(row: sqlite3.Row) -> dict[str, Any]:
-    return {
+    payload = {
         "workflow_id": row["workflow_id"],
         "display_name": row["display_name"],
         "tier": row["tier"],
+        "priority": row["priority"],
+        "lifecycle": row["lifecycle"],
+        "readiness": row["readiness"],
         "current_state": row["current_state"],
         "next_action": row["next_action"],
+        "authoritative_next_action": row["authoritative_next_action"],
         "freshness_score": row["freshness_score"],
         "owner_action_required": bool(row["owner_action_required"]),
         "safe_for_helper_lane": bool(row["safe_for_helper_lane"]),
         "authority_boundary": row["authority_boundary"],
+        "authority_class": row["authority_class"],
+        "primary_owner_lane": row["primary_owner_lane"],
+        "human_approval_owner": row["human_approval_owner"],
+        "proof_artifact": row["proof_artifact"],
         "default_resume_command": row["default_resume_command"],
     }
+    if "matched_alias" in row.keys():
+        payload["matched_alias"] = row["matched_alias"]
+    return payload
+
+
+class SqlIndexStaleError(RuntimeError):
+    def __init__(self, reasons: list[dict[str, Any]]):
+        super().__init__("derived SQLite workflow index is stale")
+        self.reasons = reasons
+
+
+def _sqlite_staleness_reasons(
+    con: sqlite3.Connection,
+    rows: list[sqlite3.Row],
+) -> list[dict[str, Any]]:
+    """Check only the small control sources plus the returned rows' proof mtimes."""
+    reasons: list[dict[str, Any]] = []
+    try:
+        run = con.execute(
+            """
+            SELECT source_active_workflows_mtime_ns, source_control_overrides_mtime_ns
+            FROM workflow_runs
+            ORDER BY generated_at_utc DESC
+            LIMIT 1
+            """
+        ).fetchone()
+    except sqlite3.DatabaseError as exc:
+        return [{
+            "check": "sqlite_schema",
+            "issue": "SQLite route index lacks the exact-alias/freshness schema",
+            "detail": str(exc),
+        }]
+
+    if run is None:
+        return [{
+            "check": "workflow_run",
+            "issue": "SQLite route index has no source freshness snapshot",
+        }]
+
+    current_sources = source_freshness_snapshot()
+    stored_sources = {
+        "active_workflows_mtime_ns": run["source_active_workflows_mtime_ns"],
+        "control_overrides_mtime_ns": run["source_control_overrides_mtime_ns"],
+    }
+    for key, current in current_sources.items():
+        if stored_sources.get(key) != current:
+            reasons.append({
+                "check": "canonical_control_source",
+                "source": key,
+                "stored_mtime_ns": stored_sources.get(key),
+                "current_mtime_ns": current,
+            })
+
+    for row in rows:
+        primary_current = (
+            None
+            if row["primary_pending"]
+            or str(row["primary_route_artifact"] or "").replace("\\", "/").casefold()
+            == INDEX_OUT.relative_to(ROOT).as_posix().casefold()
+            else _mtime_ns(row["primary_route_artifact"])
+        )
+        continuity_current = _mtime_ns(row["continuity_note"])
+        checks = (
+            (
+                "primary_route_artifact",
+                row["freshness_primary_artifact_mtime_ns"],
+                primary_current,
+            ),
+            (
+                "continuity_note",
+                row["freshness_continuity_note_mtime_ns"],
+                continuity_current,
+            ),
+        )
+        for field, stored, current in checks:
+            if stored != current:
+                reasons.append({
+                    "check": "route_freshness_source",
+                    "workflow_id": row["workflow_id"],
+                    "field": field,
+                    "stored_mtime_ns": stored,
+                    "current_mtime_ns": current,
+                })
+    return reasons
+
+
+def _assert_sqlite_index_current(con: sqlite3.Connection, rows: list[sqlite3.Row]) -> None:
+    reasons = _sqlite_staleness_reasons(con, rows)
+    if reasons:
+        raise SqlIndexStaleError(reasons)
 
 
 def sql_route_lookup(db_path: Path, query: str) -> dict[str, Any] | None:
-    q = query.strip().lower()
-    q_compact = q.replace("wf", "").replace("-", "").replace(" ", "")
-    with sqlite3.connect(db_path) as con:
-        con.row_factory = sqlite3.Row
-        rows = con.execute("SELECT * FROM workflow_routes").fetchall()
-    for row in rows:
-        wid = str(row["workflow_id"]).lower()
-        name = str(row["display_name"]).lower()
-        if q == wid or q == name:
-            return _sql_route_dict(row)
-        if q_compact and q_compact == wid.replace("wf", "").replace("-", ""):
-            return _sql_route_dict(row)
-        if q in name:
-            return _sql_route_dict(row)
-    return None
+    alias_key = normalize_lookup_key(query)
+    if not alias_key:
+        return None
+    try:
+        with sqlite3.connect(db_path, timeout=5) as con:
+            con.row_factory = sqlite3.Row
+            con.execute("PRAGMA busy_timeout = 5000")
+            con.execute("PRAGMA query_only = ON")
+            row = con.execute(
+                """
+                SELECT r.*, a.alias AS matched_alias
+                FROM workflow_route_aliases AS a
+                JOIN workflow_routes AS r ON r.workflow_id = a.workflow_id
+                WHERE a.alias_key = ?
+                """,
+                (alias_key,),
+            ).fetchone()
+            _assert_sqlite_index_current(con, [row] if row is not None else [])
+    except SqlIndexStaleError:
+        raise
+    except sqlite3.DatabaseError as exc:
+        raise SqlIndexStaleError([{
+            "check": "sqlite_read",
+            "issue": "could not safely read the SQLite workflow index",
+            "detail": str(exc),
+        }]) from exc
+    return _sql_route_dict(row) if row is not None else None
 
 
 def sql_query(db_path: Path, mode: str) -> list[dict[str, Any]]:
@@ -2347,26 +3699,152 @@ def sql_query(db_path: Path, mode: str) -> list[dict[str, Any]]:
         "helper_safe": "SELECT * FROM workflow_routes WHERE safe_for_helper_lane = 1 ORDER BY tier, workflow_id",
         "owner_gated": "SELECT * FROM workflow_routes WHERE owner_action_required = 1 ORDER BY tier, workflow_id",
     }
-    with sqlite3.connect(db_path) as con:
-        con.row_factory = sqlite3.Row
-        return [_sql_route_dict(row) for row in con.execute(query_map[mode]).fetchall()]
+    try:
+        with sqlite3.connect(db_path, timeout=5) as con:
+            con.row_factory = sqlite3.Row
+            con.execute("PRAGMA busy_timeout = 5000")
+            con.execute("PRAGMA query_only = ON")
+            rows = con.execute(query_map[mode]).fetchall()
+            _assert_sqlite_index_current(con, rows)
+    except SqlIndexStaleError:
+        raise
+    except sqlite3.DatabaseError as exc:
+        raise SqlIndexStaleError([{
+            "check": "sqlite_read",
+            "issue": "could not safely read the SQLite workflow index",
+            "detail": str(exc),
+        }]) from exc
+    return [_sql_route_dict(row) for row in rows]
 
 
 def find_route(index: dict[str, Any], query: str) -> dict[str, Any] | None:
-    """Resolve a route by workflow_id or display_name (case-insensitive,
-    accepts the bare number or a WF## form)."""
-    q = query.strip().lower()
-    q_compact = q.replace("wf", "").replace("-", "").replace(" ", "")
-    for r in index.get("routes", []):
-        wid = str(r.get("workflow_id", "")).lower()
-        name = str(r.get("display_name", "")).lower()
-        if q == wid or q == name:
-            return r
-        if q_compact and q_compact == wid.replace("wf", "").replace("-", ""):
-            return r
-        if q in name:
-            return r
-    return None
+    """Resolve only an exact normalized id, display name, or declared alias."""
+    alias_key = normalize_lookup_key(query)
+    if not alias_key:
+        return None
+    matches = [
+        route_row
+        for route_row in index.get("routes", [])
+        if any(alias["alias_key"] == alias_key for alias in route_alias_records(route_row))
+    ]
+    return matches[0] if len(matches) == 1 else None
+
+
+def _load_object(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def route_contract_projection(route_row: dict[str, Any]) -> dict[str, Any]:
+    """The exact cross-surface fields that must stay in parity."""
+    return {
+        key: route_row.get(key)
+        for key in (
+            "workflow_id", "tier", "priority", "lifecycle", "readiness",
+            "current_state", "next_action", "authoritative_next_action",
+            "authority_class", "primary_owner_lane", "human_approval_owner",
+            "proof_artifact",
+        )
+    }
+
+
+def _capsule_path(workflow_id: str) -> Path:
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "-", workflow_id.strip())
+    return CAPSULE_DIR / f"{safe}.json"
+
+
+def validate_route_parity(index: dict[str, Any]) -> dict[str, Any]:
+    """Validate the canonical projection across generated route consumers.
+
+    The page and override registry are control inputs.  Capsules, the lookup
+    index, and the status card are derived mirrors and must agree exactly on
+    the normalized state contract.  This is deliberately a report-only gate.
+    """
+    findings: list[dict[str, Any]] = []
+    routes = [row for row in index.get("routes", []) if isinstance(row, dict)]
+    status_payload = _load_object(STATUS_CARD_OUT)
+    status_routing = status_payload.get("workflow_routing")
+    status_routing = status_routing if isinstance(status_routing, dict) else {}
+    status_routes = {
+        str(row.get("workflow_id")): row
+        for row in status_routing.get("routes", [])
+        if isinstance(row, dict) and row.get("workflow_id")
+    }
+    canonical_checked = 0
+    for route_row in routes:
+        workflow_id = str(route_row.get("workflow_id") or "")
+        expected = route_contract_projection(route_row)
+        reconciliation = route_row.get("state_reconciliation")
+        if isinstance(reconciliation, dict):
+            canonical_checked += 1
+            canonical_projection = {
+                "tier": reconciliation.get("canonical_tier"),
+                "current_state": reconciliation.get("canonical_current_state"),
+                "next_action": reconciliation.get("canonical_next_action"),
+            }
+            if any(expected.get(key) != value for key, value in canonical_projection.items()):
+                findings.append({
+                    "severity": "critical",
+                    "workflow_id": workflow_id,
+                    "surface": "Active Workflows/workflow-control-overrides",
+                    "check": "canonical_projection",
+                    "issue": "derived route fields disagree with reconciled canonical control state",
+                    "expected": canonical_projection,
+                    "actual": {key: expected.get(key) for key in canonical_projection},
+                })
+
+        capsule_path = _capsule_path(workflow_id)
+        capsule = _load_object(capsule_path)
+        if not capsule:
+            findings.append({
+                "severity": "critical", "workflow_id": workflow_id,
+                "surface": "workflow_router/state capsule", "check": "capsule_exists",
+                "issue": "derived workflow capsule is missing or unreadable",
+                "path": relpath(capsule_path),
+            })
+        elif route_contract_projection(capsule) != expected:
+            findings.append({
+                "severity": "critical", "workflow_id": workflow_id,
+                "surface": "workflow_router/state capsule", "check": "contract_parity",
+                "issue": "router capsule does not match the generated route contract",
+            })
+
+        status_route = status_routes.get(workflow_id)
+        if status_route is None:
+            findings.append({
+                "severity": "critical", "workflow_id": workflow_id,
+                "surface": "status_card", "check": "route_visible",
+                "issue": "full status card does not expose the route contract projection",
+            })
+        elif route_contract_projection(status_route) != expected:
+            findings.append({
+                "severity": "critical", "workflow_id": workflow_id,
+                "surface": "status_card", "check": "contract_parity",
+                "issue": "status-card route projection does not match the generated route contract",
+            })
+
+    critical = sum(1 for finding in findings if finding["severity"] == "critical")
+    return {
+        "schema": "veritas.workflow_routing_parity.v1",
+        "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "status": "ok" if critical == 0 else "blocked",
+        "authority_boundary": "Parity validation is report-only; control state remains Active Workflows plus workflow-control-overrides.",
+        "sources": {
+            "canonical_control": [ACTIVE_WORKFLOWS_REL, CONTROL_OVERRIDES_REL],
+            "route_index": relpath(INDEX_OUT),
+            "capsules": relpath(CAPSULE_DIR),
+            "status_card": relpath(STATUS_CARD_OUT),
+        },
+        "summary": {
+            "routes_checked": len(routes),
+            "canonical_rows_checked": canonical_checked,
+            "critical": critical,
+        },
+        "findings": findings,
+    }
 
 
 def main() -> int:
@@ -2375,6 +3853,7 @@ def main() -> int:
     )
     parser.add_argument("--write", action="store_true", help="Write the routing index JSON.")
     parser.add_argument("--validate", action="store_true", help="Write the validation JSON.")
+    parser.add_argument("--validate-parity", action="store_true", help="Validate route state parity across canonical controls, capsules, and the full status card.")
     parser.add_argument("--route", metavar="WORKFLOW", help="Print one route object (by workflow_id or display name) and exit.")
     parser.add_argument("--list", action="store_true", help="Print a compact id/tier/state/next-action listing and exit.")
     parser.add_argument("--handoff", metavar="WORKFLOW", help="Build a bounded helper-lane handoff packet for one route (use with --write to save).")
@@ -2389,20 +3868,7 @@ def main() -> int:
     parser.add_argument("--sql-owner-gated", action="store_true", help="List owner-gated routes from the derived SQLite lookup DB.")
     args = parser.parse_args()
 
-    index = build_index()
     db_path = _db_path(args.db)
-
-    if args.sql_route:
-        if not db_path.exists():
-            print(json.dumps({"error": "db_not_found", "db_path": relpath(db_path)}, indent=2))
-            return 1
-        match = sql_route_lookup(db_path, args.sql_route)
-        if match is None:
-            print(json.dumps({"error": "route_not_found", "query": args.sql_route}, indent=2))
-            return 1
-        print(json.dumps(match, indent=2))
-        return 0
-
     sql_modes = [
         (args.sql_list, "list"),
         (args.sql_freshness, "freshness"),
@@ -2411,20 +3877,66 @@ def main() -> int:
         (args.sql_owner_gated, "owner_gated"),
     ]
     selected_sql_modes = [mode for selected, mode in sql_modes if selected]
-    if selected_sql_modes:
-        if len(selected_sql_modes) > 1:
-            print(json.dumps({"error": "choose_one_sql_query_mode"}, indent=2))
-            return 1
+    if len(selected_sql_modes) > 1:
+        print(json.dumps({"error": "choose_one_sql_query_mode"}, indent=2))
+        return 1
+
+    if args.sql_route:
         if not db_path.exists():
             print(json.dumps({"error": "db_not_found", "db_path": relpath(db_path)}, indent=2))
             return 1
-        print(json.dumps({
-            "db_path": relpath(db_path),
-            "mode": selected_sql_modes[0],
-            "authority": dict(AUTHORITY),
-            "rows": sql_query(db_path, selected_sql_modes[0]),
-        }, indent=2))
+        try:
+            match = sql_route_lookup(db_path, args.sql_route)
+        except SqlIndexStaleError as exc:
+            print(json.dumps({
+                "error": "sql_index_stale",
+                "db_path": relpath(db_path),
+                "reasons": exc.reasons,
+                "refresh_command": "python scripts\\workflow_routing_index.py --write --write-db --validate",
+            }, indent=2))
+            return 1
+        if match is None:
+            print(json.dumps({"error": "route_not_found", "query": args.sql_route}, indent=2))
+            return 1
+        print(json.dumps(match, indent=2))
         return 0
+
+    if selected_sql_modes:
+        if not db_path.exists():
+            print(json.dumps({"error": "db_not_found", "db_path": relpath(db_path)}, indent=2))
+            return 1
+        try:
+            payload = {
+                "db_path": relpath(db_path),
+                "mode": selected_sql_modes[0],
+                "authority": dict(AUTHORITY),
+                "rows": sql_query(db_path, selected_sql_modes[0]),
+            }
+        except SqlIndexStaleError as exc:
+            print(json.dumps({
+                "error": "sql_index_stale",
+                "db_path": relpath(db_path),
+                "reasons": exc.reasons,
+                "refresh_command": "python scripts\\workflow_routing_index.py --write --write-db --validate",
+            }, indent=2))
+            return 1
+        print(json.dumps(payload, indent=2))
+        return 0
+
+    if args.validate_parity and not any((args.write, args.validate, args.write_db, args.route, args.list, args.freshness, args.handoff)):
+        persisted = _load_object(INDEX_OUT)
+        if not persisted:
+            print(json.dumps({"error": "routing_index_not_found", "path": relpath(INDEX_OUT)}, indent=2))
+            return 1
+        parity = validate_route_parity(persisted)
+        PARITY_OUT.write_text(json.dumps(parity, indent=2) + "\n", encoding="utf-8")
+        print(
+            f"wrote {relpath(PARITY_OUT)}: {parity['status']} "
+            f"({parity['summary']['routes_checked']} routes, {parity['summary']['critical']} critical)"
+        )
+        return 0 if parity["status"] == "ok" else 1
+
+    index = build_index()
 
     if args.route:
         match = find_route(index, args.route)
@@ -2498,7 +4010,20 @@ def main() -> int:
         )
         rc = 1 if s["critical"] else 0
 
-    if not args.write and not args.validate and not args.write_db:
+    if args.validate_parity:
+        # When combined with --write, validate the just-built state.  The
+        # caller must have refreshed capsules and the status card first for a
+        # clean result; otherwise this deliberately reports the stale mirror.
+        parity = validate_route_parity(index)
+        PARITY_OUT.write_text(json.dumps(parity, indent=2) + "\n", encoding="utf-8")
+        print(
+            f"wrote {relpath(PARITY_OUT)}: {parity['status']} "
+            f"({parity['summary']['routes_checked']} routes, {parity['summary']['critical']} critical)"
+        )
+        if parity["status"] != "ok":
+            rc = 1
+
+    if not args.write and not args.validate and not args.write_db and not args.validate_parity:
         print(f"workflow_routing_index: {index['summary']['route_count']} routes (dry run; pass --write/--validate)")
     return rc
 

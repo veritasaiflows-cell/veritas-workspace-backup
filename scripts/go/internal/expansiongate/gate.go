@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	expectedProduction int64 = 42
-	expectedLivePilot  int64 = 25
-	target500          int64 = 500
+	expectedDeprecatedProduction int64 = 0
+	expectedLivePilot            int64 = 25
+	target500                    int64 = 500
 )
 
 var supportedActiveCounts = map[int64]bool{100: true, 200: true, 300: true, 400: true, 500: true}
@@ -137,8 +137,8 @@ func Run(opts Options) Report {
 		check("state_db_exists", state.Exists, state.StateDB, "critical"),
 		check("state_db_integrity_ok", state.IntegrityCheck == "ok", state.IntegrityCheck, "critical"),
 		check("active_sql_rows_supported_scaleout_count", int64PtrInSet(state.AllTickerSQLRows, supportedActiveCounts), map[string]any{"actual": state.AllTickerSQLRows, "supported": []int64{100, 200, 300, 400, 500}}, "critical"),
-		check("production_locked_42", int64PtrEqual(state.ProductionCurrentCards, expectedProduction), state.ProductionCurrentCards, "critical"),
-		check("production_answer_path_rows_42", int64PtrEqual(state.ProductionAnswerPathRows, expectedProduction), state.ProductionAnswerPathRows, "critical"),
+		check("production_current_cards_empty_sql_first_wait_state", int64PtrEqual(state.ProductionCurrentCards, expectedDeprecatedProduction), map[string]any{"actual": state.ProductionCurrentCards, "expected": expectedDeprecatedProduction, "empty_production_scope_is_valid_wait_state": true, "source": "sql_first_300_cutover"}, "critical"),
+		check("production_answer_path_rows_empty_sql_first_wait_state", int64PtrEqual(state.ProductionAnswerPathRows, expectedDeprecatedProduction), map[string]any{"actual": state.ProductionAnswerPathRows, "expected": expectedDeprecatedProduction, "empty_production_scope_is_valid_wait_state": true, "source": "sql_first_300_cutover"}, "critical"),
 		check("review_monitor_thin_rows_supported_scaleout_count", int64PtrInSet(state.ReviewMonitorThinRows, supportedReviewMonitorCounts), map[string]any{"actual": state.ReviewMonitorThinRows, "supported": []int64{58, 158, 258, 358, 458}}, "critical"),
 		check("fundamental_rows_for_supported_scaleout", int64PtrInSet(state.FundamentalSnapshotRows, supportedActiveCounts), map[string]any{"actual": state.FundamentalSnapshotRows, "supported": []int64{100, 200, 300, 400, 500}}, "critical"),
 		check("analyst_rows_for_supported_scaleout", int64PtrInSet(state.AnalystSnapshotRows, supportedActiveCounts), map[string]any{"actual": state.AnalystSnapshotRows, "supported": []int64{100, 200, 300, 400, 500}}, "critical"),
@@ -421,7 +421,7 @@ func sourceOpenCleanupSummary(root string) map[string]any {
 
 func phasedApproach() []StagingGate {
 	return []StagingGate{
-		{Phase: "500-S0 baseline and authority freeze", ImplementationStatus: "implemented", Scope: "100 active SQL rows, 42 production cards, 58 review-monitor thin rows", Acceptance: []string{"all 100 rows routable", "production cards remain 42", "no authority widening"}},
+		{Phase: "500-S0 baseline and authority freeze", ImplementationStatus: "implemented", Scope: "supported SQL-first active rows; retired production cards/path remain empty; review-monitor thin rows remain supported", Acceptance: []string{"all active rows routable", "retired production answer path remains empty", "no authority widening"}},
 		{Phase: "500-S1 enrichment and source-open cleanup gate", ImplementationStatus: "enrichment_complete_cleanup_gate_active", Scope: "all 58 review-monitor cards exist; first bounded cleanup pass ranks top 15 source-open candidates", Acceptance: []string{"cleanup queue validates", "top pass stays bounded to 10-15", "promotion stays review-only until source-open blockers clear"}},
 		{Phase: "500-S2 100-to-200 thin-row shard simulation", ImplementationStatus: "design_ready_no_import", Scope: "add candidate shards as proposed rows only; prove runtime/error budget before writes", Acceptance: []string{"A/B freshness unaffected", "C/D rows thin by default", "rollback and no-overwrite proof exists"}},
 		{Phase: "500-S3 200/350 operating shard gate", ImplementationStatus: "design_ready_no_import", Scope: "separate A/B daily shards from C/D rotating shards", Acceptance: []string{"daily A/B continues if C/D degrades", "retry/backoff/circuit breaker policy explicit", "cron remains review-only"}},
@@ -443,7 +443,7 @@ func shardDesign() map[string]any {
 			"preserve_a_b_before_c_d":                     true,
 			"batch_size_default":                          25,
 			"max_parallel_provider_lanes":                 4,
-			"circuit_breaker":                             "open on provider/error-budget failure; never degrade production 42 answer path",
+			"circuit_breaker":                             "open on provider/error-budget failure; never degrade SQL-first routing or resurrect retired production answer path",
 			"source_open_required_before_material_claims": true,
 		},
 	}

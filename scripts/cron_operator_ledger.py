@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 WORKSPACE = Path(__file__).resolve().parents[1]
@@ -107,17 +108,22 @@ def cron_jobs_from_gateway() -> tuple[list[dict[str, Any]], dict[str, Any]]:
 
 
 def cron_jobs() -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    store_jobs = cron_jobs_from_store()
-    if store_jobs or CRON_STORE.exists():
-        return store_jobs, {
-            "source": "legacy_file_store",
+    gateway_jobs, gateway_meta = cron_jobs_from_gateway()
+    if "error" not in gateway_meta and gateway_meta.get("returncode") == 0:
+        return gateway_jobs, {
+            "source": "gateway_cli",
             "legacy_path": rel(CRON_STORE),
             "legacy_exists": CRON_STORE.exists(),
             "gateway_fallback_used": False,
+            "gateway": gateway_meta,
         }
-    gateway_jobs, gateway_meta = cron_jobs_from_gateway()
-    return gateway_jobs, {
-        "source": "gateway_cli_fallback",
+
+    # The legacy file is only a continuity fallback.  It can lag a forced or
+    # otherwise recent Gateway run, so it must never override readable live
+    # scheduler state.
+    store_jobs = cron_jobs_from_store()
+    return store_jobs, {
+        "source": "legacy_file_store_fallback",
         "legacy_path": rel(CRON_STORE),
         "legacy_exists": CRON_STORE.exists(),
         "gateway_fallback_used": True,
@@ -214,7 +220,10 @@ def summarize_jobs(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "prompt_kind": "inline_prompt" if prompt_text else "unknown",
                 "last_status": str(state.get("lastStatus") or state.get("lastRunStatus") or job.get("status") or ""),
                 "consecutive_errors": int(state.get("consecutiveErrors") or 0),
-                "last_error": str(state.get("lastError") or state.get("lastDiagnosticSummary") or ""),
+                # A successful run can have a useful diagnostic/proof summary.
+                # Keep it visible without misclassifying it as a scheduler error.
+                "last_error": str(state.get("lastError") or ""),
+                "last_diagnostic_summary": str(state.get("lastDiagnosticSummary") or ""),
                 "failure_alert": job.get("failureAlert") if isinstance(job.get("failureAlert"), dict) else None,
             }
         )
@@ -301,6 +310,7 @@ def build_ledger() -> dict[str, Any]:
         "jobs": jobs,
         "run_summaries": summaries,
         "current_window_artifacts": current_window_index(),
+        "sql_canon_context": finance_sql_canon_guard_context(consumer=rel(Path(__file__))),
         "operator_attention": {
             "stop_line_windows": [item["window"] for item in stop_lines],
             "blocked_windows": [item["window"] for item in blocked],
@@ -384,7 +394,7 @@ def validate(ledger: dict[str, Any]) -> list[str]:
     if ledger.get("schema_version") != SCHEMA_VERSION:
         errors.append("schema_version_mismatch")
     cron_store = ledger.get("cron_store", {})
-    if not cron_store.get("exists") and cron_store.get("source") != "gateway_cli_fallback":
+    if not cron_store.get("exists") and cron_store.get("source") != "gateway_cli":
         errors.append("cron_store_missing")
     if int(cron_store.get("enabled_count") or 0) <= 0:
         errors.append("enabled_jobs_missing")
@@ -397,6 +407,8 @@ def validate(ledger: dict[str, Any]) -> list[str]:
         errors.append("run_summaries_missing")
     if not any(item.get("path") == "06. Playbooks/Cron Run Ledger.md" for item in ledger.get("markdown_surfaces", [])):
         errors.append("legacy_ledger_surface_missing")
+    if as_dict(ledger.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
     return errors
 
 

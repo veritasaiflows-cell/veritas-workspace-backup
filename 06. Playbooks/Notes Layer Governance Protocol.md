@@ -15,7 +15,7 @@ Why:
 ## Root model
 The workspace root should contain only:
 - core operating files (`SOUL.md`, `AGENTS.md`, `TOOLS.md`, `USER.md`, `MEMORY.md`, `Home.md`, `HEARTBEAT.md`, `Continuity Protocol.md`, etc.)
-- the numbered active domains `01` through `09`
+- the numbered active domains `01` through `10`
 - essential implementation folders (`memory/`, `scripts/`, `skills/`, `tmp/`)
 - clearly justified system or backup surfaces
 
@@ -30,7 +30,7 @@ Use **notes**, not folders, for reading order.
 ### Fast operator read stack
 Default human-facing read order:
 1. `01. Dashboards/Executive Brief.md`
-2. current generated daily surfaces: `tmp/full-portfolio-view.*`, `tmp/current-window-artifacts.*`, latest run summary / daily executive-summary artifacts
+2. `05. Intelligence/Thesis Ranking and Leadership Board.md`
 3. `05. Intelligence/Weekly Positioning Review.md`
 4. `06. Playbooks/Active Workflows.md`
 5. `03. Portfolio/Execution Board.md`
@@ -38,6 +38,7 @@ Default human-facing read order:
 7. `04. Research/Coverage and Watchlist.md`
 8. `02. Markets/Macro Regime Dashboard.md`
 9. `07. Risk/Risk Rules.md`
+10. `10. Deliverables/INDEX.md`
 
 Retired dashboard pointers:
 - `01. Dashboards/This Week.md` is a pointer/stub, not a weekly outcome owner.
@@ -74,10 +75,14 @@ Do not create root-level session scratch notes for continuity.
 ## Generated vs canonical rule
 - human judgment notes stay in the numbered domains
 - generated machine artifacts go in `tmp/`
+- human-facing PDFs, Excel workbooks, HTML views, and CSV exports go in `10. Deliverables/` when copied by `scripts\deliverables_publisher.py`
+- deliverable manifests go in `state/deliverables/`
 - audits go in `08. Audits/`
 - retired material goes in `09. Archive/`
 
 If something is machine-generated but useful for review, it still does **not** outrank the canonical note layer.
+
+Deliverables are presentation and retrieval objects. They do not replace machine proof, portfolio canon, approval records, or source notes.
 
 ## Filing rules
 When creating or moving a note, ask:
@@ -93,6 +98,7 @@ Do not:
 - create new root folders for temporary clarity
 - use root as a staging area for read packets
 - leave durable notes in `tmp/`
+- bury current PDFs, workbooks, or human HTML exports in `tmp/` without a `10. Deliverables/` copy when Randall needs to find them
 - leave generated artifacts in numbered human-note domains unless the workflow explicitly requires it
 - keep duplicate operator surfaces alive when one canonical surface should own the job
 
@@ -103,6 +109,7 @@ The next structural gain should be:
 - continue filing continuity into `memory/` and `06. Playbooks/Project Continuity/`
 - tighten existing stray root surfaces before inventing a new `00/` layer
 - use `Workspace Structure Protocol` for file-placement rules and `Notes Layer Audit Checklist` for recurring QA
+- keep Randall's human UI in Veritas Command Center and operator/proof state in Veritas PM
 
 ## When to promote this into a skill
 Promote this protocol into a dedicated skill only if note-layer maintenance becomes a repeated multi-step workflow with stable rules beyond what `workspace-governor` already owns.

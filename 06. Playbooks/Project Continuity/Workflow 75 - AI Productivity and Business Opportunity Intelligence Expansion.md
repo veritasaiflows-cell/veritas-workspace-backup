@@ -6,6 +6,12 @@
 
 Expand Veritas from finance-first intelligence OS into a retail investor finance intelligence SaaS/productization lane while preserving high-risk finance, regulated-advice, execution, account, and customer-data boundaries. Broader AI/productivity/business-opportunity work remains useful as a side lane, but the current SaaS goal is retail investor finance intelligence built from the Veritas finance engine.
 
+## 2026-06-19 SQL/JSON internal SaaS readiness note
+
+Guarded `state/finance/finance-canon.sqlite` plus validated JSON proof packets are now the primary internal review/routing source for anonymous Retail Investor Finance SaaS answer-safety proof. `retail_truth_routing_contract.py`, `retail_answer_harness.py`, `retail_automation_control_plane.py`, `wf75_internal_service_run_loop.py`, and `wf75_internal_prototype_readiness.py` validate the internal route.
+
+Current proof: retail route contract `ok`, answer harness `55/55` with `14/14` seeded-bad cases blocked, automation control plane `ok`, internal service loop `ok`, and prototype readiness `100/100`. Customer output remains blocked pending exact owner launch approval, source licensing review, privacy/customer-data policy, legal/compliance review, approved disclaimer language, personalization/suitability boundary, external delivery approval, and security/runtime exposure approval.
+
 ## Taxonomy
 
 - **AI / technology intelligence**: tool radar, model/agent capability briefs, workflow experiment candidates
@@ -273,6 +279,12 @@ Build the **retail finance SaaS fixture demo plus executable no-leak/no-claim-ov
 - **Boundary preserved.** Outputs are internal review only. They do not grant public/customer delivery, legal/compliance/source-licensing readiness, capital deployment, paper/live/account action, portfolio/canon mutation, forecast certainty, or owner approval.
 - **Boundary preserved.** No public launch, customer data, external delivery, personalized advice, source-licensing readiness, legal/compliance readiness, finance canon/portfolio mutation, paper/live/account action, or capital/execution approval was granted.
 
+2026-06-17 23:00 MST - Finance delivery series paused as SaaS gate
+- **Cron jobs removed.** Randall paused the recurring finance delivery series and approved removing the live cron jobs for daily market read, daily handoff, weekly market read, weekly investments/performance, weekly handoff, monthly direction/deep-dive, and monthly handoff.
+- **Contract posture.** Removed the seven `state/cron-contracts/finance-delivery-series-*.json` contract files so the cron contract validator no longer expects scheduled generation or reports false missing-job drift.
+- **Gate retained.** `scripts/finance_delivery_series_orchestrator.py` remains the manual package/gate for SaaS deliverables. Its manifest now marks the series `paused_manual_gate`, keeps latest artifact catalog/timestamps, and states that future SaaS PDF/Excel/CSV deliverables must pass source freshness, no-leak/no-claim review, visible authority boundary, operator review, source-licensing posture, and legal/compliance decision before external delivery.
+- **Boundary preserved.** This is a pause/removal of scheduled internal reporting only. It does not grant customer/public delivery, source-licensing readiness, legal/compliance readiness, portfolio/canon mutation, capital deployment, paper/live execution, brokerage/account action, money movement, or owner approval inference.
+
 ## Phases
 
 ### Phase 0 - Contract and taxonomy
@@ -417,3 +429,48 @@ Build the **retail finance SaaS fixture demo plus executable no-leak/no-claim-ov
   - Phase 5: prepare approval-gated outreach assets only after internal QA: one-page offer, sample packet, lead-list schema, and scripts. Actual sending/contact remains separately gated.
 - **Parallel lane shape.** These can advance as disjoint lanes: offer/ICP, demo packets, blueprint engine, cockpit/UI, training/sales enablement, and validator/QA. Main session integrates and verifies; helpers may write only leased outputs.
 - **Boundary preserved.** No real customer data, outreach, posting, ads, ad-account/customer-system access, credentials, external delivery, spend, guaranteed ROI/revenue claim, legal/compliance/security claim, public launch, or customer-retention store without a separate explicit approval gate.
+
+## Current checkpoint - 2026-06-17 23:25 MST / 2026-06-18 UTC
+
+- **Morning parallel plan added.** The pickup contract is `09. Archive/Legacy Audit Roots - Archived/Audit/SMB-SaaS-Parallel-Implementation-Plan-2026-06-18.md`.
+- **WF75 posture clarified.** Finance-delivery cron remains paused. WF75 is active only as an internal SaaS deliverable gate: PDF/Excel daily-weekly-monthly artifacts should prove purpose, QA, source freshness, authority labels, operator usability, and manual review discipline before any later public/customer decision.
+- **Parallel pairing.** Run WF75 deliverable-gate work in parallel with WF79-SMB sanitized implementation work when lane leases are disjoint. WF79-SMB handles Lead Rescue / Marketing Ops packets and blueprints; WF75 handles service-state, deliverable packaging, training, and internal gate proof.
+- **Morning first action.** Refresh PM with `python scripts\pm_control_packet.py --write --write-db --validate`, then use the audit plan as the execution contract.
+- **Route-surface caveat.** `Active Workflows.md` and `scripts/workflow_routing_index.py` were owned by an active WF78 lane at plan time, so this pass intentionally avoided those files. Reconcile them after that lane releases its lease.
+- **Boundary preserved.** No customer data, external delivery, public launch, outreach, cron restart, source-licensing/legal/compliance readiness claim, customer/account/advice output, brokerage/account action, paper/live execution, portfolio/canon mutation, or owner-approval inference.
+
+## Current checkpoint - 2026-06-18 10:00 MST
+
+- **SMB/SaaS morning sprint executed.** PM lane `PM::smb-saas-parallel-morning-plan-execute-safe-next-step` refreshed the internal SaaS / SMB deliverable-gate proof stack from the morning plan.
+- **WF75 deliverable gate refreshed.** `python scripts\wf75_deliverable_packager.py --write --validate` returned `status=ok` and refreshed the internal PDF/Excel deliverable packaging plan and workbook surface.
+- **Training desk refreshed.** `python scripts\wf75_training_desk.py --write --write-md --write-training-assets --validate` returned `status=ok`; the durable `training/wf75-academy/` assets remain ready, including PDF, DOCX, PPTX, HTML handout, simulation deck, and manifest.
+- **Generic service/SaaS pivot proof refreshed.** `python scripts\generic_intelligence_saas_pivot.py --write --write-db --validate` returned `status=ok`; `tmp/generic-service-state.sqlite` integrity was `ok` with service-run, payload, artifact, operator queue, QA, renderer, and authority tables populated as derived lookup only.
+- **Boundary preserved.** Internal proof and training only. No real customer data, outreach, external delivery, public launch, credentials, customer-system implementation, spend/subscription, ROI/legal/compliance/security readiness claim, paper/live/account action, portfolio/canon/cash/sizing/risk mutation, or owner approval inference.
+
+## Current checkpoint - 2026-06-18 14:02 MST
+
+- **Customer-safe deliverable contracts implemented internally.** Added `scripts/wf75_customer_safe_pdf_renderer.py` and `scripts/wf75_customer_safe_excel_exporter.py`. The PDF/HTML renderer consumes validated customer-export JSON, writes local HTML/PDF under `tmp/wf75-customer-safe-deliverables/pdf/`, validates rendered text with the retail SaaS customer-output validator, and requires seeded-bad JSON/Markdown failures. The Excel/CSV exporter writes sanitized local CSV/XLSX under `tmp/wf75-customer-safe-deliverables/excel/`, exports 5 watchlist rows, scans customer-visible rows for internal leaks/blocked claims, and requires seeded-bad failures.
+- **Packager integration completed.** `scripts/wf75_deliverable_packager.py` now consumes `tmp/wf75-customer-safe-pdf-renderer.json` and `tmp/wf75-customer-safe-excel-exporter.json`. `tmp/wf75-deliverable-packaging-plan.json` marks `customer_safe_research_pdf` and `customer_safe_excel_export` as `implemented_internal_contract`, not customer-ready or launch-ready.
+- **Manual finance-delivery gate validated.** `python scripts\finance_delivery_series_orchestrator.py --mode all --write --validate` returned `status=ok`, generated 5 manual deliverables, and preserved `automation_status=paused_manual_gate`, `cron_generation_allowed=false`, `customer_or_external_delivery_allowed=false`, and `public_launch_allowed=false`.
+- **Independent QA passed.** Read-only audit classified the slice as closed for internal contract proof, with no closure blocker. Reopen triggers: any customer-ready, launch-ready, legal/compliance-ready, or externally deliverable claim; seeded-bad weakening; real customer/account/suitability/credential/advice data entering WF75 outputs; or cron reactivation without explicit approval.
+- **Next safe action.** Run operator review plus policy/source-licensing/legal gate design before any customer/external delivery discussion. This likely moves internal/service-led SaaS readiness to roughly 65-70% for internal prototype scope only, still not public/customer SaaS readiness.
+- **Boundary preserved.** No real customer data, customer output delivery, public launch, cron restart, source-licensing/legal/compliance readiness claim, personalized advice, brokerage/account action, paper/live execution, portfolio/canon mutation, or owner approval inference.
+
+## Current checkpoint - 2026-06-18 14:16 MST
+
+- **Operator delivery gate implemented.** Added `scripts/wf75_operator_delivery_gate.py` and `scripts/test_wf75_operator_delivery_gate.py`. The gate consumes the customer-safe PDF renderer, Excel exporter, deliverable packager, and paused finance-delivery series manifests, then writes `tmp/wf75-operator-delivery-gate.json` and `tmp/wf75-operator-delivery-gate.md`.
+- **Gate decision.** `python scripts\wf75_operator_delivery_gate.py --write --validate` returned `status=ready_for_operator_review_external_blocked`, `operator=ready_for_manual_operator_review`, `external=blocked_policy_source_legal_owner_gates`, and `errors=0`.
+- **Policy/source/legal design explicit.** The gate now records required but unapproved gates for privacy/retention/export/delete/access, source-licensing posture, qualified legal/compliance review, delivery channel and rollback, and operator signoff.
+- **Packager Phase 5 integrated.** `scripts/wf75_deliverable_packager.py` treats `tmp/wf75-operator-delivery-gate.json` as an optional downstream proof surface. When present and clean, `operator_delivery_gate_packet` and Phase 5 show `implemented_internal_gate_external_blocked`; this avoids a circular dependency while making the gate visible in the workbook and packaging plan.
+- **Proof passed.** `python scripts\test_wf75_operator_delivery_gate.py`, `python scripts\test_wf75_deliverable_packager.py`, `python scripts\wf75_deliverable_packager.py --write --validate`, `python scripts\finance_delivery_series_orchestrator.py --mode all --write --validate`, `python scripts\workflow_router.py WF75 --answer all`, and `python scripts\pm_control_packet.py --write --write-db --validate` all passed.
+- **Boundary preserved.** The slice makes the internal prototype operator-review-ready only. It does not grant customer/external delivery, public launch, source-licensing readiness, legal/compliance readiness, real customer data, personalized advice, brokerage/account action, paper/live execution, portfolio/canon mutation, cron restart, or owner approval inference.
+
+## Current checkpoint - 2026-06-18 15:13 MST
+
+- **Parallel internal prototype readiness lanes executed.** Added `scripts/wf75_internal_service_run_loop.py`, `scripts/wf75_scenario_regression_matrix.py`, `scripts/wf75_operator_review_state.py`, and `scripts/wf75_internal_prototype_readiness.py`, with focused tests for each lane.
+- **One-command run loop implemented.** `python scripts\wf75_internal_service_run_loop.py --write --validate` returned `status=ok mode=executed commands=7 errors=0`, refreshing service state, customer-safe PDF, customer-safe Excel, manual finance-delivery gate, packager, operator delivery gate, and final packager proof.
+- **Scenario matrix implemented.** `python scripts\wf75_scenario_regression_matrix.py --write --validate` returned `status=ok clean=8/8 seeded_bad=True errors=0`, proving all 8 anonymous clean scenarios pass while seeded-bad JSON/Markdown remain fail-closed.
+- **Operator review state implemented.** `python scripts\wf75_operator_review_state.py --write --validate` returned `status=ready_for_internal_operator_review_external_blocked decision=rework external=blocked_internal_review_only errors=0`; allowed decisions are `pass`, `rework`, and `blocked`, with any pass scoped to internal-only.
+- **Readiness scorecard implemented.** `python scripts\wf75_internal_prototype_readiness.py --write --validate` returned `status=ok score=100/100 band=complete_internal_prototype errors=0`. This score is only for internal/service-led prototype readiness, not public/customer SaaS readiness.
+- **Integrated validation passed.** Focused tests passed for the run loop, scenario regression matrix, operator review state, internal prototype readiness scorecard, and deliverable packager. `python scripts\changed_file_validator_router.py --write --validate` returned `status=ok budget=major`.
+- **Boundary preserved.** No real customer data, customer output delivery, public launch, cron restart, source-licensing/legal/compliance readiness claim, personalized advice, brokerage/account action, paper/live execution, portfolio/canon mutation, or owner approval inference.

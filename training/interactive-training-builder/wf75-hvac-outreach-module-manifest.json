@@ -1,0 +1,48 @@
+{
+  "schema": "veritas.interactive_training_module_manifest.v1",
+  "generated_at_utc": "2026-07-04T14:40:02Z",
+  "status": "ok",
+  "module_id": "wf75-hvac-prospect-outreach-practice",
+  "outputs": {
+    "module_json": "training/interactive-training-builder/wf75-hvac-outreach-module.json",
+    "module_html": "training/interactive-training-builder/wf75-hvac-outreach-module.html",
+    "xapi_seed": "training/interactive-training-builder/wf75-hvac-outreach-module.xapi.json",
+    "scorm_manifest": "training/interactive-training-builder/scorm-wf75-hvac-outreach-module/imsmanifest.xml",
+    "scorm_zip": "training/interactive-training-builder/wf75-hvac-outreach-module-scorm.zip",
+    "module_manifest": "training/interactive-training-builder/wf75-hvac-outreach-module-manifest.json"
+  },
+  "capabilities": {
+    "schema_backed_module": true,
+    "static_html_runtime": true,
+    "local_scoring": true,
+    "local_progress_storage": true,
+    "xapi_style_events": true,
+    "local_xapi_ledger_optional": true,
+    "scorm_package_scaffold": true,
+    "scorm_runtime_api_adapter": true,
+    "external_lms_lrs_configured": false,
+    "customer_data_allowed": false
+  },
+  "counts": {
+    "lessons": 3,
+    "interactions": 15,
+    "xapi_seed_statements": 2,
+    "standards_reviewed": 0
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "customer_outreach_approved": false,
+    "payment_collection_approved": false,
+    "crm_import_approved": false,
+    "phone_sms_approved": false,
+    "bulk_automation_approved": false
+  }
+}

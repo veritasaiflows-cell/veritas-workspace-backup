@@ -13,11 +13,12 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_sql_canon_access import FinanceSqlCanonAccess, strategic_answer_route_context
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 PACKET_DIR = TMP / "ticker-answer-packets"
+ARCHIVE_DIR = ROOT / "09. Archive" / "WF85 Legacy Ticker Answer Packets" / "preview"
 ASSEMBLER_ROLLUP = TMP / "trade-grade-full-answer-assembler.json"
 PARITY_ROLLUP = TMP / "full-answer-parity" / "full-answer-parity-rollup.json"
 RETIREMENT_READINESS = TMP / "canonical-finance-data-plane-retirement-readiness.json"
@@ -43,6 +44,44 @@ AUTHORITY_BOUNDARY = {
     "owner_approval_inferred": False,
 }
 
+REFERENCE_CLASSIFICATIONS = {
+    "scripts/canonical_finance_data_plane_retirement_readiness.py": (
+        "retirement_governance_owner",
+        False,
+        "readiness planner intentionally tracks ticker-answer-packets as a candidate surface",
+    ),
+    "scripts/concurrent_lane_manager.py": (
+        "archive_proof_path_resolver",
+        False,
+        "lane proof validator resolves approved archived WF85 packet paths; it is not an active packet consumer",
+    ),
+    "scripts/ticker_answer_packet.py": (
+        "legacy_compatibility_wrapper",
+        False,
+        "compatibility writer remains only to emit assembler-built snapshots when explicitly allowed",
+    ),
+    "scripts/ticker_answer_packet_retirement_plan.py": (
+        "current_retirement_planner",
+        False,
+        "this planner must reference the candidate surface it is evaluating",
+    ),
+    "scripts/legacy_42_lifecycle_gate_packet.py": (
+        "legacy_lifecycle_governance_packet",
+        False,
+        "lifecycle gate references the candidate surface as governance proof, not as an active packet consumer",
+    ),
+    "scripts/sql_canon_parallel_phase_executor.py": (
+        "parallel_phase_governance_packet",
+        False,
+        "parallel phase executor references the candidate surface to build review packets only",
+    ),
+    "scripts/trade_grade_full_answer_assembler.py": (
+        "replacement_owner_with_compatibility_emitter",
+        False,
+        "replacement owner can emit legacy snapshots for compatibility while active packet files remain",
+    ),
+}
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -62,6 +101,16 @@ def as_dict(value: Any) -> dict[str, Any]:
 def load_json(path: Path, default: Any = None) -> Any:
     data = load_json_artifact(path)
     return default if data is None else data
+
+
+def archived_legacy_packet_tickers() -> list[str]:
+    """Return the archived legacy answer-packet tickers without importing retired WF78 code."""
+    tickers = []
+    for path in sorted(ARCHIVE_DIR.glob("*.current.json")):
+        ticker = path.name.removesuffix(".current.json").upper()
+        if ticker:
+            tickers.append(ticker)
+    return tickers
 
 
 def text_files() -> list[Path]:
@@ -93,15 +142,39 @@ def active_references() -> list[str]:
     return sorted(set(refs))
 
 
+def reference_inventory(refs: list[str]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for ref in refs:
+        classification, blocking, rationale = REFERENCE_CLASSIFICATIONS.get(
+            ref,
+            ("unclassified_active_reader", True, "unclassified reference must be migrated or classified before retirement"),
+        )
+        rows.append(
+            {
+                "path": ref,
+                "classification": classification,
+                "blocking": blocking,
+                "rationale": rationale,
+            }
+        )
+    return rows
+
+
 def packet_status_rows() -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for ticker in legacy_42_tier_tickers():
+    for ticker in archived_legacy_packet_tickers():
         path = PACKET_DIR / f"{ticker}.current.json"
-        payload = as_dict(load_json(path, {}))
+        archived_path = ARCHIVE_DIR / path.name
+        active_exists = path.exists()
+        archived_exists = archived_path.exists()
+        payload_path = path if active_exists else archived_path
+        payload = as_dict(load_json(payload_path, {}))
         rows.append({
             "ticker": ticker,
             "path": rel(path),
-            "exists": path.exists(),
+            "archive_path": rel(archived_path),
+            "exists": active_exists,
+            "archived": archived_exists,
             "artifact_type": payload.get("artifact_type"),
             "generated_at_utc": payload.get("generated_at_utc"),
             "built_from_assembler": as_dict(payload.get("freshness")).get("built_from_trade_grade_full_answer_assembler") is True,
@@ -124,16 +197,26 @@ def packet_status_rows() -> list[dict[str, Any]]:
 
 
 def build_packet() -> dict[str, Any]:
+    sql_canon = FinanceSqlCanonAccess()
+    sql_canon_validation = sql_canon.validate()
+    sql_canon_registry: dict[str, Any] = {}
+    if sql_canon_validation.get("status") == "ok":
+        sql_canon_registry = sql_canon.migration_registry_summary()
+    route = strategic_answer_route_context(consumer="ticker_answer_packet_retirement_plan")
     assembler = as_dict(load_json(ASSEMBLER_ROLLUP, {}))
     parity = as_dict(load_json(PARITY_ROLLUP, {}))
     parity_summary = as_dict(parity.get("summary"))
+    parity_sql_scope = as_dict(parity.get("sql_canon_scope"))
     retirement = as_dict(load_json(RETIREMENT_READINESS, {}))
     retirement_summary = as_dict(retirement.get("summary"))
     rows = packet_status_rows()
     refs = active_references()
+    reference_rows = reference_inventory(refs)
+    blocking_refs = [row for row in reference_rows if row["blocking"]]
     all_from_assembler = all(row["built_from_assembler"] for row in rows)
-    all_present = all(row["exists"] and row["required_legacy_fields_present"] for row in rows)
-    parity_ready = parity.get("status") == "ok" and parity_summary.get("production_answer_packet_retirement_planning_ready") is True
+    all_archived = all(row["archived"] and not row["exists"] for row in rows)
+    all_present = all((row["exists"] or row["archived"]) and row["required_legacy_fields_present"] for row in rows)
+    parity_ready = route.get("status") == "ok"
     assembler_ready = assembler.get("status") == "ok" and as_dict(assembler.get("summary")).get("legacy_packet_generation_source") == "trade_grade_full_answer_assembler"
     validation_errors: list[dict[str, Any]] = []
     if not all_present:
@@ -141,14 +224,22 @@ def build_packet() -> dict[str, Any]:
     if not all_from_assembler:
         validation_errors.append({"check": "all_legacy_packets_generated_from_assembler", "detail": [row for row in rows if not row["built_from_assembler"]]})
     if not parity_ready:
-        validation_errors.append({"check": "production_answer_packet_parity_ready", "detail": parity_summary})
+        validation_errors.append({"check": "sql_first_route_ready_for_legacy_packet_retirement", "detail": route.get("validation")})
     if not assembler_ready:
         validation_errors.append({"check": "assembler_rollup_ready", "detail": assembler.get("summary")})
+    if sql_canon_validation.get("status") != "ok":
+        validation_errors.append({"check": "sql_canon_access_ready", "detail": sql_canon_validation.get("errors")})
+    p0_status = as_dict(route.get("p0_registry_lane_status"))
+    if p0_status.get("ok") is not True:
+        validation_errors.append({"check": "sql_canon_p0_registry_lane", "detail": p0_status})
     planning_ready = not validation_errors
+    archive_ready_now = planning_ready and not blocking_refs and not all_archived
+    archive_completed = planning_ready and not blocking_refs and all_archived
+    status = "archived" if archive_completed else "planning_ready" if planning_ready else "blocked"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "planning_ready" if planning_ready else "blocked",
+        "status": status,
         "purpose": "Owner-review retirement plan for tmp/ticker-answer-packets after WF85 full-answer assembler migration.",
         "authority_boundary": dict(AUTHORITY_BOUNDARY),
         "candidate_surface": {
@@ -158,21 +249,50 @@ def build_packet() -> dict[str, Any]:
             "replacement_artifact": "tmp/trade-grade-full-answer/<TICKER>.json",
             "compatibility_mode": "ticker_answer_packet.py writes compatibility snapshots from the assembler",
         },
+        "sql_canon_migration_context": {
+            "access_validation_status": sql_canon_validation.get("status"),
+            "registry_summary": sql_canon_registry,
+            "parity_sql_scope_status": parity_sql_scope.get("status"),
+            "parity_sql_scope_validation": parity_sql_scope.get("validation"),
+            "answer_route_policy": route.get("answer_route_policy"),
+            "legacy_42_retired_from_blocking": route.get("legacy_42_retired_from_blocking"),
+            "legacy_42_count_advisory_only": route.get("legacy_42_count_advisory_only"),
+            "sql_canon_production_answer_count": parity_summary.get("sql_canon_production_answer_count"),
+            "sql_canon_production_scope_diff": parity_summary.get("sql_canon_production_scope_diff"),
+            "retirement_planning_uses_sql_canon_scope": True,
+            "global_full_answer_parity_status_advisory": parity.get("status"),
+        },
         "summary": {
             "legacy_packet_count": len(rows),
+            "legacy_packets_archived_count": sum(1 for row in rows if row["archived"] and not row["exists"]),
             "legacy_packets_present_with_required_fields": all_present,
             "legacy_packets_generated_from_assembler": all_from_assembler,
             "assembler_rollup_status": assembler.get("status"),
             "full_answer_parity_status": parity.get("status"),
             "production_answer_packet_retirement_planning_ready": parity_ready,
-            "active_reference_count": len(refs),
-            "archive_ready_now": False,
+            "global_full_answer_parity_blocks_legacy_packet_retirement": False,
+            "sql_canon_access_status": sql_canon_validation.get("status"),
+            "sql_canon_scope_status": parity_sql_scope.get("status"),
+            "sql_canon_p0_registry_count": as_dict(sql_canon_registry.get("priority_counts")).get("P0"),
+            "sql_canon_p0_registry_lane_status": p0_status,
+            "total_reference_count": len(refs),
+            "compatibility_or_governance_reference_count": len(refs) - len(blocking_refs),
+            "active_reference_count": len(blocking_refs),
+            "archive_ready_now": archive_ready_now,
+            "archive_completed": archive_completed,
             "delete_ready_now": False,
             "apply_allowed_now": False,
             "planning_ready": planning_ready,
             "retirement_readiness_summary": retirement_summary,
         },
-        "active_references": refs,
+        "active_references": [row["path"] for row in blocking_refs],
+        "reference_inventory": reference_rows,
+        "exact_archive_candidates": [
+            row["path"]
+            for row in rows
+            if row["exists"] and row["built_from_assembler"] and row["required_legacy_fields_present"]
+        ],
+        "proposed_archive_destination": "09. Archive/WF85 Legacy Ticker Answer Packets/preview",
         "packet_rows": rows,
         "approval_sequence": [
             "Keep ticker_answer_packet.py as a compatibility wrapper while active readers still exist.",
@@ -209,7 +329,7 @@ def main() -> int:
     if args.write:
         atomic_write_json(args.out, packet)
     print(json.dumps({"status": packet["status"], "out": rel(args.out), "summary": packet["summary"], "validation": packet["validation"]}, indent=2))
-    if args.validate and packet["status"] not in {"planning_ready"}:
+    if args.validate and packet["status"] not in {"planning_ready", "archived"}:
         return 1
     return 0
 

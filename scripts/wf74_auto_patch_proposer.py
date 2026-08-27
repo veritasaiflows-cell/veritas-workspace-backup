@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -112,6 +113,54 @@ PATCHABLE_TITLE_RULES = [
             "python scripts\\wf74_learning_loop_telegram_cron_runner.py --dry-run --write --validate",
         ],
         "scope": "Improve digest wording, dedupe, and operator context without changing delivery authority.",
+    },
+    {
+        "needle": "workflow-maturity follow-ups",
+        "risk_class": "workflow_maturity_routing_patch",
+        "targets": [
+            "scripts/workflow_advancement_scorecard.py",
+            "scripts/wf74_improvement_opportunity_queue.py",
+            "scripts/wf74_autonomy_work_router.py",
+        ],
+        "tests": [
+            "python scripts\\test_workflow_advancement_scorecard.py",
+            "python scripts\\workflow_advancement_scorecard.py --write --validate",
+            "python scripts\\wf74_improvement_opportunity_queue.py --write --validate",
+            "python scripts\\wf74_autonomy_work_router.py --write --validate",
+        ],
+        "scope": "Route residual workflow maturity signals into follow-up rows without reopening completed implementation work.",
+    },
+    {
+        "needle": "wf87 shadow outcomes",
+        "risk_class": "wf87_measurement_followup_patch",
+        "targets": [
+            "scripts/wf87_shadow_outcome_scorecard.py",
+            "scripts/test_wf87_shadow_outcome_scorecard.py",
+            "scripts/workflow_advancement_scorecard.py",
+        ],
+        "tests": [
+            "python scripts\\test_wf87_shadow_outcome_scorecard.py",
+            "python scripts\\wf87_shadow_outcome_scorecard.py --write --validate",
+            "python scripts\\workflow_advancement_scorecard.py --write --validate",
+        ],
+        "scope": "Keep WF87 regular-session follow-up measurement visible without turning measurement into execution readiness.",
+    },
+    {
+        "needle": "wf87 runtime blockers",
+        "risk_class": "wf87_policy_maturity_visibility_patch",
+        "targets": [
+            "scripts/wf87_v2_readiness_rollup.py",
+            "scripts/test_wf87_v2_readiness_rollup.py",
+            "scripts/wf87_runtime_gate_explanation.py",
+            "scripts/workflow_advancement_scorecard.py",
+        ],
+        "tests": [
+            "python scripts\\test_wf87_v2_readiness_rollup.py",
+            "python scripts\\wf87_v2_readiness_rollup.py --write --validate",
+            "python scripts\\wf87_runtime_gate_explanation.py --write --validate",
+            "python scripts\\workflow_advancement_scorecard.py --write --validate",
+        ],
+        "scope": "Separate WF87 policy/maturity blockers from implementation failures while preserving fail-closed execution posture.",
     },
 ]
 
@@ -408,6 +457,7 @@ def build_payload(queue: dict[str, Any], proposals: dict[str, Any], limit: int) 
             "no owner approval inference",
         ],
         "authority_boundary": AUTHORITY_BOUNDARY.copy(),
+        "sql_canon_context": finance_sql_canon_guard_context(consumer="scripts/wf74_auto_patch_proposer.py"),
     }
     payload["validation"] = validate_payload(payload)
     if payload["validation"]["status"] == "error":
@@ -436,6 +486,8 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
                 errors.append(f"forbidden_target_file:{plan_dict.get('plan_id')}:{target}")
     if not as_list(payload.get("patch_plans")) and not as_list(payload.get("skill_workshop_requests")):
         warnings.append("no_code_or_skill_plans_generated")
+    if as_dict(payload.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
     return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
 
 

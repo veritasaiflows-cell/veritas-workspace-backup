@@ -34,9 +34,12 @@ If a note is mostly tool doctrine, keep it in the owning playbook or skill inste
 - `Daily Summary Review-Only Brief Procedure.md`
 - `SQLite Retrieval Index Procedure.md`
 - `Portfolio Truth Surface Ownership Procedure.md`
+- `Subagent Load Budget and Staff Handoff Standard.md`
+- `Veritas Encounter Contract.md`
 
 ## Current gaps to fill next
-- startup / session-opening operating checklist
+- startup / session-opening operating checklist (covered by Startup Truth Index plus `Veritas Encounter Contract.md`)
+- execution-efficiency handoff procedure (owned by `Subagent Load Budget and Staff Handoff Standard.md`; route contract remains in `project_implementation_router.py`)
 - routine morning closeout / post-close review checklist
 - incident / degraded-run response procedure
 - cron proof / promotion review procedure

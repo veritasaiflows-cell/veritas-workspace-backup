@@ -8,6 +8,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 import fundamental_metrics_refresh as mod
+import validate_fundamental_metrics as validator
 
 
 def expect(condition: bool, message: str, errors: list[str]) -> None:
@@ -88,11 +89,68 @@ def test_net_income_definition_match_prefers_like_for_like(errors: list[str]) ->
     expect(any(alt.get("concept") == "NetIncomeLossAvailableToCommonStockholdersBasic" for alt in alternates), f"alternate common-stockholder concept missing: {fact}", errors)
 
 
+def test_ticker_metadata_repair_is_deduplicated_and_review_only(errors: list[str]) -> None:
+    findings = [
+        {
+            "severity": "critical",
+            "code": "bank_official_capital_period_mismatch",
+            "ticker": "JPM",
+            "evidence": {
+                "local_period_end": "2026-06-30",
+                "official_period": "1Q26 / March 31, 2026",
+                "official_period_field": field,
+                "official_source_url": "https://example.test/jpm-capital",
+            },
+        }
+        for field in ("risk_based_capital_period", "cet1_ratio_period", "tier1_ratio_period")
+    ]
+    repairs = validator.build_repair_queue(findings)
+    expect(len(repairs) == 1, f"expected one deduplicated repair: {repairs}", errors)
+    repair = repairs[0] if repairs else {}
+    expect(repair.get("ticker") == "JPM", f"ticker missing: {repair}", errors)
+    expect(repair.get("deduplicated_finding_count") == 3, f"deduplicated count wrong: {repair}", errors)
+    expect(repair.get("blocks_ticker_only") is True, f"ticker scope missing: {repair}", errors)
+    expect(repair.get("source_open_required") is True and repair.get("manual_review_required") is True, f"review posture missing: {repair}", errors)
+    evidence = repair.get("evidence") or {}
+    expect(evidence.get("local_period_end") == "2026-06-30", f"local period evidence missing: {repair}", errors)
+    expect(evidence.get("official_period") == "1Q26 / March 31, 2026", f"official period evidence missing: {repair}", errors)
+    expect(evidence.get("official_period_fields") == ["cet1_ratio_period", "risk_based_capital_period", "tier1_ratio_period"], f"field evidence missing: {repair}", errors)
+    authority = repair.get("authority") or {}
+    for key, expected in validator.REPAIR_AUTHORITY_BOUNDARY.items():
+        expect(authority.get(key) is expected, f"repair authority mismatch for {key}: {repair}", errors)
+    reversed_repairs = validator.build_repair_queue(list(reversed(findings)))
+    expect(reversed_repairs and reversed_repairs[0].get("fingerprint") == repair.get("fingerprint"), f"repair fingerprint is not stable: {reversed_repairs}", errors)
+
+
+def test_distinct_ticker_repairs_remain_isolated(errors: list[str]) -> None:
+    findings = [
+        {
+            "severity": "critical",
+            "code": "bank_official_capital_period_mismatch",
+            "ticker": ticker,
+            "evidence": {
+                "local_period_end": local_period,
+                "official_period": official_period,
+                "official_period_field": "risk_based_capital_period",
+            },
+        }
+        for ticker, local_period, official_period in (
+            ("JPM", "2026-06-30", "1Q26 / March 31, 2026"),
+            ("GS", "2026-06-30", "2Q26 / June 30, 2026 restatement"),
+        )
+    ]
+    repairs = validator.build_repair_queue(findings)
+    expect([item.get("ticker") for item in repairs] == ["GS", "JPM"], f"ticker repairs were merged: {repairs}", errors)
+    expect(all(item.get("blocks_ticker_only") is True for item in repairs), f"ticker-only scope was widened: {repairs}", errors)
+
+
 def main() -> int:
     errors: list[str] = []
     test_period_alias_candidate_order(errors)
     test_sec_fact_alias_match_carries_mapping(errors)
     test_net_income_definition_match_prefers_like_for_like(errors)
+    test_ticker_metadata_repair_is_deduplicated_and_review_only(errors)
+    test_distinct_ticker_repairs_remain_isolated(errors)
     if errors:
         print("fundamental_metrics_period_mapping_tests_failed")
         for error in errors:

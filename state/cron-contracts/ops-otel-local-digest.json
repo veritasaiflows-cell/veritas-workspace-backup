@@ -1,29 +1,26 @@
 {
-  "schema": "veritas.cron_contract.v1",
-  "job_id": "b911d479-13aa-48fe-b662-937e08450363",
-  "name": "Ops - OTEL Local Digest",
-  "required": true,
-  "owner_workflow": "WF74",
-  "contract_reason": "Local-only OTEL/model-quality learning-loop digest. Drift can silently reduce cost/latency/failure learning quality or widen telemetry boundaries.",
-  "description": "WF74 local-only OTEL/model-quality/performance/finance-correctness collection digest. Runs stable owner runner for OTEL ops, Spark canary, model-run ledger, finance-correctness ledger, model-quality scorecard, artifact index, cron ledger, WF74 duplication audit, and cron control packet. Review-only; broad harness checks are intentionally separate so unrelated migration/runtime blockers do not fail OTEL telemetry.",
-  "enabled": true,
-  "schedule": {
-    "kind": "cron",
-    "expr": "40 7,15,21 * * *",
-    "tz": "America/Phoenix"
-  },
-  "sessionTarget": "isolated",
-  "wakeMode": "now",
-  "delivery": {
-    "mode": "none",
-    "bestEffort": true
-  },
-  "payload": {
-    "kind": "agentTurn",
-    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nObjective: run the WF74 model-quality/performance/finance-correctness collection digest through the stable owner runner.\n\nExecute exactly this single command:\npython scripts\\wf74_model_quality_collection_cron_runner.py --write --write-md --validate\n\nDo not run any other commands. Do not inspect files manually. Do not use inline Python. Do not use rg. Do not use PowerShell here-strings. The runner already performs and validates the approved chain:\n- OTEL ops control and multi-window summary\n- OTEL runtime metadata probe\n- changed-file validator routing and timing ledger\n- coding runtime KPI probe\n- Spark canary monitor\n- model-run ledger\n- metadata-only learning ledger\n- finance correctness ledger\n- finance response quality slice\n- model-quality scorecard\n- artifact index validation\n- cron operator ledger\n- WF74 duplication audit\n- cron control packet\n\nRequired clean posture is captured in:\n- tmp\\wf74-model-quality-collection-cron-runner.json\n- tmp\\model-quality-scorecard.json\n- tmp\\cron-control-packet.json\n\nOut of bounds:\n- no external export\n- no raw prompt, response, content, tool payload, secret, or header capture\n- no runtime/config mutation\n- no model-ranking claim\n- no finance correctness claim from telemetry\n- no WF55 outcome grade assignment\n- no owner approval inference\n- no portfolio/canon mutation\n- no capital deployment approval\n- no paper/live/account action\n\nResponse contract: if the command exits 0, reply exactly NO_REPLY. If it fails, report only the failing command and proof path.",
-    "model": "openai/gpt-5.4",
-    "thinking": "high",
-    "timeoutSeconds": 900
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "external_export_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "metadata_only": true,
+    "model_ranking_claim": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF74 observability and model-quality operations",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "raw_prompt_capture_allowed": false,
+    "raw_response_capture_allowed": false,
+    "review_only": true,
+    "schedule_mutation_allowed": false,
+    "tool_payload_capture_allowed": false
   },
   "compare_fields": [
     "enabled",
@@ -34,12 +31,19 @@
     "delivery.mode",
     "delivery.bestEffort",
     "payload.kind",
-    "payload.message",
-    "payload.model",
-    "payload.thinking",
-    "payload.timeoutSeconds",
-    "payload.lightContext"
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
   ],
+  "contract_reason": "Local-only OTEL/model-quality learning-loop digest. Drift can silently reduce cost/latency/failure learning quality or widen telemetry boundaries.",
+  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "bestEffort": true,
+    "mode": "none"
+  },
+  "description": "Command-backed WF74 local-only OTEL/model-quality collection digest. Review-only metadata only; no raw prompt/response/tool capture, external export, runtime config mutation, finance/canon/portfolio, execution, account, or approval authority.",
+  "enabled": true,
   "expected_artifacts": [
     "tmp/wf74-model-quality-collection-cron-runner.json",
     "tmp/model-quality-scorecard.json",
@@ -51,24 +55,30 @@
     "tmp/otel-learning-loop.json",
     "tmp/coding-runtime-kpi-probe.json"
   ],
-  "authority_boundary": {
-    "review_only": true,
-    "cron_contract_only": true,
-    "metadata_only": true,
-    "external_export_allowed": false,
-    "raw_prompt_capture_allowed": false,
-    "raw_response_capture_allowed": false,
-    "tool_payload_capture_allowed": false,
-    "system_prompt_capture_allowed": false,
-    "secret_or_header_capture_allowed": false,
-    "content_capture_allowed": false,
-    "cron_state_mutation_allowed": false,
-    "cron_schedule_mutation_allowed": false,
-    "runtime_config_mutation_allowed": false,
-    "finance_canon_or_portfolio_mutation_allowed": false,
-    "capital_deployment_allowed": false,
-    "paper_or_live_execution_allowed": false,
-    "brokerage_or_account_action_allowed": false,
-    "owner_approval_inferred": false
-  }
+  "job_id": "b911d479-13aa-48fe-b662-937e08450363",
+  "name": "Ops - OTEL Local Digest",
+  "owner_workflow": "WF74 observability and model-quality operations",
+  "payload": {
+    "argv": [
+      "python",
+      "scripts\\wf74_model_quality_collection_cron_runner.py",
+      "--write",
+      "--write-md",
+      "--validate",
+      "--cron-nonblocking-domain-exit"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "kind": "command",
+    "timeoutSeconds": 900
+  },
+  "required": true,
+  "schedule": {
+    "expr": "40 21 * * *",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-06-29T04:55:48Z",
+  "wakeMode": "now"
 }

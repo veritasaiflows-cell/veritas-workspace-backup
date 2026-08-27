@@ -6,6 +6,7 @@ Keep the project queue moving, fresh, and honestly categorized while using paral
 This protocol promotes the live operating posture into a first-class control document.
 
 For major workflow structure, pair this document with `06. Playbooks/Major Workflow Contract Standard.md`.
+For long or multi-surface implementation, pair this document with `skills/disciplined-implementation/SKILL.md`.
 For spawn / closeout governance, pair it with `06. Playbooks/Spawn and Closeout Governance Matrix.md`.
 For closeout artifacts, pair it with `06. Playbooks/Workflow Closeout Artifact Standard.md`.
 
@@ -19,10 +20,10 @@ Veritas remains the:
 - final integrator
 
 Claude CLI, Gemini Flash, OpenClaw subagents, and other helper lanes are support lanes.
-They do not own final queue state, final judgment, or canonical conflict resolution. Prioritize OpenClaw subagents inside the approved Codex-runtime model set, default bounded helpers to `openai/gpt-5.4`, reserve `openai/gpt-5.5` for deliberate high-stakes exceptions, and choose thinking effort by role rather than defaulting every substantial workspace task to high. Spark is the exception: any `codex/gpt-5.3-codex-spark` lane must run with `xhigh` thinking until repeated proof says otherwise.
+They do not own final queue state, final judgment, or canonical conflict resolution. `scripts/project_implementation_router.py` and `veritas.execution_efficiency_policy.v1` own implementation route selection. Use model-free proof first; explicit bounded Codex-native Terra only when eligible; Main/Terra is the default integrator route; Main/Sol is permitted only as an explicit escalation, challenger, or QA exception; otherwise persistent Terra requires fresh strict transport proof. Missing transport does not authorize silent Main fallback.
 
 ## Main-lane reserve rule
-When an approved workflow is being advanced, default to a spawned sub-session for the working pass. Substantial work expected to exceed roughly five minutes, touch multiple artifacts, require broad inspection, or need independent QA should use a file-grounded helper lane, with model/thinking selected from the role-effort matrix instead of a blanket high-effort default.
+When an approved workflow is being advanced, route before spawning. Use deterministic/model-free execution where possible. Use one file-grounded helper when a distinct bounded deliverable justifies the overhead; use multiple helpers only for genuinely independent outputs. Main may own quick bounded fixes, final integration, and authority-sensitive judgment, but is not the implicit implementation fallback.
 
 The main session should remain available as the:
 - PM / orchestrator
@@ -177,63 +178,23 @@ Use when:
 
 If posture is unclear, default to **Serial**.
 
-## Parallel lane posture
-### Veritas main lane
-Owns:
-- project selection
-- queue movement
-- categorization
-- delegation decisions
-- QA judgment
-- synthesis and final decision
+## Execution route and lane roles
 
-### OpenClaw subagents
-Best for:
-- bounded implementation
-- file-grounded inspection
-- mechanical prep
-- isolated workspace execution
+`scripts/project_implementation_router.py` is the single route-policy owner. Run it before material implementation and consume the selected backend/model/thinking contract; provider labels elsewhere are descriptive only.
 
-### Gemini Pro (preferred IC lane)
-Primary contractor lane for implementation-heavy and broad research passes.
-Best for:
-- script/code passes
-- bounded implementation drafts
-- broad research sweeps with explicit output contracts
-- first-pass verification when judgment stakes are moderate
+Route order:
+1. explicit deterministic command plus proof -> `model_free_command`
+2. explicitly eligible bounded read-only or one-file leased task -> Codex-native Terra low/medium, only when the spawn capability proof exposes exact model, thinking, backend, and `fork_turns=none`
+3. explicit quick fix, final integration, or authority-sensitive judgment -> Main/Terra; use Main/Sol only when the route carries an explicit `escalation`, `challenger`, or `qa` use case and reason
+4. other bounded helper work -> persistent Terra only with fresh strict context-transport proof
 
-### Claude CLI (hard-judgment lane)
-Use for harder judgment-heavy work and high-stakes challenge passes.
-Best for:
-- trust/contract adjudication
-- synthesis stress-testing
-- second-opinion pushback on major decisions
-- high-risk reasoning where false-green risk is high
-- serious finance workflow contract/promotion gates where false-ready or authority-drift risk is material
+Missing capability/transport proof blocks dispatch. Never convert it into a silent Main/Terra or Main/Sol fallback. Sol is a named escalation/challenger/QA path, not a default or helper fallback. Manual Claude/Gemini/challenger work is evidence-only and requires Randall's choice; it never rewrites the selected default route.
 
-Effort posture:
-- routine research and read-only audits: use low thinking by default; escalate only when evidence conflict, high-stakes judgment, or broad ambiguous contracts require it
-- implementation and bounded script/workflow edits: use medium thinking by default with exact validation gates
-- hard debugging, cross-contract failures, security/trust-sensitive adjudication, or repeated false-green/false-red residue: use high thinking
-- Spark (`codex/gpt-5.3-codex-spark`) QA/audit/pre-work/challenger lanes: use `xhigh` thinking by default; lower effort is a future optimization only after repeated clean proof
-- hard judgment/trust work in Claude: run Claude with higher effort (`--effort high` or above) only when the task risk justifies it
-- WF84/WF85-class trade-grade OS gates: spawn or route the challenger as `claude-cli/claude-opus-4-8` when available, and verify the actual subagent model path after spawn. A human-readable label containing "Opus" is not proof. If the registry shows another model, treat the result as standard challenger evidence and do not count it as Opus acceptance proof.
-- routine bounded checks: keep effort lower and prompts tighter
-- Gemini CLI has no direct effort flag in this environment; adjust effort by task scope, model choice, and prompt depth
+Main owns selection, queue movement, QC, acceptance, integration, and final judgment. Helpers own only leased bounded deliverables. Actual backend/model/thinking and authoritative usage or a controlled unavailable reason must be recorded at closeout; mismatch blocks acceptance.
 
-## IC runtime fallback rule
-When a preferred contractor lane is unavailable, fail over fast instead of stalling the chain.
+Effort follows scope: low for bounded read-only checks, medium for narrow implementation, high only for broad ambiguity or material trust/security/finance adjudication. Compare like-for-like Main-accepted cohorts; require at least 10 comparable jobs before reviewing a default change; automatic ranking/promotion remains disabled.
 
-Fallback order:
-1. preferred ACP harness lane (Claude/Gemini)
-2. local CLI lane (`claude -p ...` / `gemini -p ...`)
-3. OpenClaw spawned subagent with the same bounded decision contract
-
-Rules:
-- retry ACP once or twice only, then downgrade
-- keep the same scope/contract across fallback lanes
-- record the fallback decision and reason in continuity
-- treat provider-capacity errors (429/resource exhausted) as lane-availability failures, not as final decision evidence
+Resource rules: bounded handoff, `fork_turns=none`, fork-baseline-aware usage, per-lane token/replay/tool/time ceilings, and early incident stop. One repair plus one fresh QA rerun is the normal loop; another rejection returns to Main for scope reduction.
 
 ## IC completion handshake rule
 For any multi-lane decision pass, track expected completions explicitly and close only after all expected lanes are done or intentionally abandoned.
@@ -353,14 +314,13 @@ Failure classification rule:
 Do not respond to a spawn timeout by simply relaunching the same broad prompt. Inspect the child history, classify the failure, and narrow or budget the next spawn.
 
 ## Workflow completion hardening rule
-Default closeout chain for any meaningful workflow:
-1. main session defines scope, acceptance target, and worker handoff
-2. spawned worker performs the implementation or bounded working pass
-3. independent spawned auditor checks closure, proof, and residue in a fresh session
-4. main session applies only the smallest verified quick fixes that the worker/auditor surfaced
-5. main session performs final integration and control-surface updates
+Validation follows the declared budget:
+1. micro: deterministic proof plus Main verification
+2. narrow: focused tests plus Main verification
+3. shared/major, privacy/security/authority/finance semantics, or repeated failure: deterministic preflight, then one fresh independent auditor
+4. one repair plus one fresh QA rerun is the normal loop; another rejection returns to Main for scope/root-cause reclassification rather than spawning another replay-heavy chain
 
-If a workflow skips the worker lane or the independent audit lane, record the exception explicitly instead of pretending the default posture happened.
+The closeout chain must match the route and validation budget. Do not add worker and QA lanes merely to satisfy ceremony.
 
 Main-session quick-fix boundary:
 - allowed: tiny follow-up repairs, truth fixes, and final merge/QC edits
@@ -389,9 +349,12 @@ Bad candidates for parallel help:
 ## Startup posture rule
 When automation or parallel-work governance is active, startup review should include:
 - `06. Playbooks/Automation Orchestration Protocol.md`
-- `06. Playbooks/OpenClaw Parallel Pilot Queue.md`
-- `06. Playbooks/IC Project Registry.md`
-- `06. Playbooks/OpenClaw Parallel Work Plan.md`
+- `06. Playbooks/Spawn and Closeout Governance Matrix.md`
+- `06. Playbooks/Subagent Spawn Handoff Template.md`
+- `tmp/veritas-status-card-frontdoor.json`; open the full status/future packet only through its hashed drilldown when material work requires it
+- `tmp/wiki-bootstrap-proof.json`
+
+`06. Playbooks/OpenClaw Parallel Work Plan.md` is historical planning evidence only and must not be loaded as current startup doctrine.
 
 ## QA rule
 After a meaningful automation-protocol or queue-governance change:
@@ -399,10 +362,12 @@ After a meaningful automation-protocol or queue-governance change:
 - do not claim the new posture is ready merely because the wording sounds good
 - verify the startup/governing files still point at the real posture
 
-Default expectation for meaningful workflow orchestration work:
-- QC/QA and closeout audit should be performed by an **independent auditor** spawned in a **fresh new session**
-- the audit lane should be read-only and file-grounded
+Default expectation for shared/major or risk-triggered workflow orchestration work:
+- QC/QA and closeout audit should be performed by one **independent auditor** in a **fresh new session** after deterministic preflight
+- the audit lane should be read-only, file-grounded, hash-frozen, and limited to the declared file/context budget
 - the audit should return: closure verdict, acceptance-proof check, gaps/residue, reopen triggers, and next-work recommendations
+
+Micro and narrow work may close with deterministic/focused proof plus Main verification when the declared budget and risk triggers support that lower-cost route.
 
 Do not let the implementation lane grade its own closeout unless an explicit exception is recorded.
 
@@ -419,8 +384,7 @@ If one of those is missing, give status instead of closure theater.
 
 ## Current operating decision
 - Veritas remains the orchestrator, auditor, and PoM.
-- Claude CLI and Gemini Flash are on standby for parallel work, not primary ownership.
-- Queue movement should stay category-driven and trust-gated.
-- Research, audit, and workbook lanes are the first parallel categories to use when the contract is clean.
+- Queue movement stays route-selected, category-driven, trust-gated, and instrumented for actual usage/outcomes.
+- Deterministic work is first; bounded Terra lanes are next; Main/Terra integrates by default; Main/Sol is an explicit escalation/challenger/QA exception, never a fallback.
 - Status replies must name the current project and the next queued item explicitly.
 - Final QC should trigger immediate promotion of the next approved project instead of leaving the chain idle.

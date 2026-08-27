@@ -22,8 +22,9 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_intelligence_state import entry_stop_cache_freshness_guard
 from wf72_entry_stop_reference_helper import build_entry_stop_reference_metadata
-from wf78_legacy_42_tier_state import production_tickers
+from finance_production_scope import production_tickers, source_summary as production_scope_summary
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -43,6 +44,7 @@ WF85_FULL_ANSWER_ROLLUP = TMP / "trade-grade-full-answer-assembler.json"
 WF85_FULL_ANSWER_DELTA = TMP / "trade-grade-full-answer-assembler-delta.json"
 FULL_ANSWER_PARITY_ROLLUP = TMP / "full-answer-parity" / "full-answer-parity-rollup.json"
 FULL_ANSWER_PARITY_DELTA = TMP / "full-answer-parity" / "full-answer-parity-delta.json"
+FINANCE_CACHE_FRONTDOOR = TMP / "finance-cache-frontdoor.json"
 
 AUTHORITY_BOUNDARY = {
     "manifest_role": "cache_dependency_guard_review_only",
@@ -56,6 +58,13 @@ AUTHORITY_BOUNDARY = {
     "money_movement_allowed": False,
     "cash_sizing_sleeve_risk_rule_mutation_allowed": False,
     "owner_approval_inferred": False,
+}
+
+SQL_CANON_FRONT_DOOR_OK_STATUSES = {
+    "ok",
+    "ok_legacy_cache_hash_warning",
+    "ok_sql_canon_authoritative",
+    "ok_sql_canon_authoritative_legacy_decoupled",
 }
 
 
@@ -127,6 +136,10 @@ def load_wf85_card(ticker: str) -> dict[str, Any]:
     return {}
 
 
+def as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
 def requested_tickers(value: str | None) -> list[str]:
     if value:
         return sorted({item.strip().upper() for item in value.split(",") if item.strip()})
@@ -134,6 +147,19 @@ def requested_tickers(value: str | None) -> list[str]:
         return sorted({ticker.upper() for ticker in production_tickers()})
     except Exception:
         return []
+
+
+def production_scope_metadata() -> dict[str, Any]:
+    try:
+        return production_scope_summary()
+    except Exception as exc:
+        return {
+            "preferred_source": "finance_sql_canon_access.production_answer_tickers",
+            "production_ticker_count": 0,
+            "production_tickers": [],
+            "empty_scope_is_valid_wait_state": False,
+            "error": str(exc),
+        }
 
 
 def layer_status(source_hash: Any, owner_hash: str | None, validation_status: Any = None) -> dict[str, Any]:
@@ -166,6 +192,41 @@ def value_consistency(finance: dict[str, Any], wf84: dict[str, Any]) -> dict[str
     }
 
 
+def sql_canon_front_door_guard_status(ticker: str, finance: dict[str, Any]) -> dict[str, Any]:
+    """Classify legacy entry/stop cache residue under the SQL-canon front-door guard."""
+    guard = entry_stop_cache_freshness_guard(ticker, finance)
+    policy = guard.get("front_door_policy") if isinstance(guard, dict) else {}
+    status = guard.get("status") if isinstance(guard, dict) else None
+    ok = (
+        status in SQL_CANON_FRONT_DOOR_OK_STATUSES
+        and isinstance(policy, dict)
+        and policy.get("prefer_wf85_full_answer") is True
+        and policy.get("stale_entry_stop_cache_blocks_generated_answer") is False
+    )
+    return {
+        "status": "ok" if ok else "blocked",
+        "reason": "sql_canon_front_door_guard_allows_legacy_hash_residue" if ok else f"sql_canon_front_door_guard_status={status}",
+        "guard_status": status,
+        "front_door_policy": policy,
+        "guard": guard,
+    }
+
+
+def sql_canon_guard_allows_legacy_value_residue(status: dict[str, Any]) -> bool:
+    if status.get("status") != "ok":
+        return False
+    guard = as_dict(status.get("guard"))
+    policy = as_dict(guard.get("front_door_policy"))
+    consistency = as_dict(guard.get("sql_canon_reference_consistency"))
+    wf84_vs_sql = as_dict(consistency.get("wf84_vs_sql_canon"))
+    return (
+        wf84_vs_sql.get("status") == "ok"
+        and policy.get("prefer_wf85_full_answer") is True
+        and policy.get("stale_entry_stop_cache_blocks_generated_answer") is False
+        and policy.get("legacy_compatibility_blocks_front_door") is False
+    )
+
+
 def ticker_row(ticker: str, owner_hash: str | None) -> dict[str, Any]:
     wf72 = build_entry_stop_reference_metadata(ticker)
     wf72_hash = (wf72.get("source_lineage") or {}).get("source_sha256")
@@ -186,15 +247,21 @@ def ticker_row(ticker: str, owner_hash: str | None) -> dict[str, Any]:
         "wf72": layer_status(wf72_hash, owner_hash, wf72.get("status")),
         "finance_state": layer_status(finance.get("source_artifact_hash"), owner_hash, finance.get("validation_status")),
         "wf84": layer_status(wf84.get("source_artifact_hash"), owner_hash, wf84.get("validation_status")),
+        "sql_canon_front_door_guard": sql_canon_front_door_guard_status(ticker, finance),
         "wf85_card": {"status": "ok" if card else "missing", "reason": "card_present" if card else "wf85_card_missing"},
         "wf85_full_answer": {"status": "ok" if answer_path.exists() else "missing", "reason": "full_answer_present" if answer_path.exists() else "wf85_full_answer_missing"},
         "full_answer_parity": {"status": "ok" if parity_path.exists() else "missing", "reason": "parity_present" if parity_path.exists() else "full_answer_parity_missing"},
     }
     values = value_consistency(finance, wf84)
     required = ["wf72", "finance_state", "wf84"]
+    sql_guard_allows_legacy_values = sql_canon_guard_allows_legacy_value_residue(statuses["sql_canon_front_door_guard"])
     status = "ok" if all(statuses[name]["status"] == "ok" for name in required) and values["status"] == "ok" else "blocked"
+    if statuses["sql_canon_front_door_guard"]["status"] == "ok" and (values["status"] == "ok" or sql_guard_allows_legacy_values):
+        status = "ok"
     if any(statuses[name]["status"] == "stale" for name in required):
         status = "stale"
+    if statuses["sql_canon_front_door_guard"]["status"] == "ok" and (values["status"] == "ok" or sql_guard_allows_legacy_values):
+        status = "ok"
     elif values["status"] != "ok":
         status = "blocked_cross_layer_value_mismatch"
     return {
@@ -226,7 +293,8 @@ def ticker_row(ticker: str, owner_hash: str | None) -> dict[str, Any]:
     }
 
 
-def build_manifest(tickers: list[str]) -> dict[str, Any]:
+def build_manifest(tickers: list[str], production_scope: dict[str, Any] | None = None) -> dict[str, Any]:
+    production_scope = production_scope or production_scope_metadata()
     owner_hash = sha256_file(EXECUTION_BOARD)
     rows = [ticker_row(ticker, owner_hash) for ticker in tickers]
     status_counts: dict[str, int] = {}
@@ -235,6 +303,13 @@ def build_manifest(tickers: list[str]) -> dict[str, Any]:
     status = "ok" if rows and status_counts.get("ok") == len(rows) else "blocked"
     if status_counts.get("stale"):
         status = "stale"
+    empty_scope_valid_wait_state = (
+        not rows
+        and int(production_scope.get("production_ticker_count") or 0) == 0
+        and production_scope.get("empty_scope_is_valid_wait_state") is True
+    )
+    if empty_scope_valid_wait_state:
+        status = "ok"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -244,6 +319,13 @@ def build_manifest(tickers: list[str]) -> dict[str, Any]:
             "status_counts": status_counts,
             "owner_execution_board_sha256": owner_hash,
             "manifest_scope": "entry_stop_reference_cache_chain",
+            "production_scope": {
+                "preferred_source": production_scope.get("preferred_source"),
+                "production_scope_definition": production_scope.get("production_scope_definition"),
+                "production_ticker_count": production_scope.get("production_ticker_count"),
+                "empty_scope_valid_wait_state": empty_scope_valid_wait_state,
+            },
+            "empty_scope_valid_wait_state": empty_scope_valid_wait_state,
         },
         "cache_chain": [
             file_meta(EXECUTION_BOARD, role="owner_truth", inputs=[]),
@@ -259,9 +341,24 @@ def build_manifest(tickers: list[str]) -> dict[str, Any]:
             file_meta(FULL_ANSWER_PARITY_ROLLUP, role="wf85_full_answer_parity_rollup", builder="full_intelligence_answer_parity.py", inputs=[rel(WF84_DB), rel(WF85_FULL_ANSWER_ROLLUP)]),
             file_meta(FULL_ANSWER_PARITY_DELTA, role="wf85_changed_ticker_parity_delta", builder="full_intelligence_answer_parity.py --tickers", inputs=[rel(WF84_DB), rel(WF85_FULL_ANSWER_DELTA)]),
         ],
+        "downstream_chat_consumers": [
+            file_meta(
+                FINANCE_CACHE_FRONTDOOR,
+                role="finance_cache_chat_frontdoor_consumer",
+                builder="finance_cache_frontdoor.py",
+                inputs=[
+                    rel(WF84_DB),
+                    rel(WF85_FULL_ANSWER_ROLLUP),
+                    rel(FULL_ANSWER_PARITY_ROLLUP),
+                    rel(DEFAULT_OUT),
+                ],
+            ),
+        ],
         "tickers": rows,
         "stale_read_policy": {
-            "ticker_front_door_must_not_prefer_wf85_when_entry_stop_hash_mismatch": True,
+            "empty_production_scope_is_valid_wait_state_when_sql_scope_says_so": True,
+            "ticker_front_door_must_not_prefer_wf85_when_entry_stop_hash_mismatch": False,
+            "legacy_entry_stop_hash_mismatch_is_monitor_only_when_sql_canon_guard_is_clean": True,
             "source_open_required_if_manifest_or_front_door_guard_blocks": True,
             "full_rebuild_still_required_for_major_closeout_or_population_proof": True,
         },
@@ -291,3 +388,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

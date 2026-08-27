@@ -31,6 +31,13 @@ def main() -> int:
     for deliverable_id in series.DELIVERABLES:
         expect(deliverable_id in cadence, f"missing cadence row: {deliverable_id}", errors)
 
+    delivery_program = series.as_dict(payload.get("delivery_program"))
+    expect(delivery_program.get("automation_status") == "paused_manual_gate", "delivery series must be paused/manual gate", errors)
+    gate = series.as_dict(delivery_program.get("saas_deliverable_gate"))
+    expect(gate.get("cron_generation_allowed") is False, "cron generation must remain disabled", errors)
+    catalog = series.as_dict(payload.get("deliverable_catalog"))
+    expect(set(catalog) == set(series.DELIVERABLES), "deliverable catalog must cover all package types", errors)
+
     rows = [row for row in series.as_list(payload.get("fundamentals_bo_yoy_finance")) if isinstance(row, dict)]
     expect(bool(rows), "missing fundamentals/BO/YoY rows", errors)
     required_columns = {"ticker", "fundamentals", "business_outlook", "eps_yoy_pct", "revenue_yoy_pct"}

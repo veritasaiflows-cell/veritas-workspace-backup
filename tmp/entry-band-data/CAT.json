@@ -1,38 +1,14 @@
 {
   "ticker": "CAT",
   "name": "Caterpillar Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 71.98,
-      "h": 78.7,
-      "l": 70.53,
-      "c": 75.81,
-      "v": 106.06
-    },
-    {
-      "d": "2016-07",
-      "o": 75.38,
-      "h": 84.29,
-      "l": 73.46,
-      "c": 82.76,
-      "v": 103.87
-    },
-    {
-      "d": "2016-08",
-      "o": 82.76,
-      "h": 84.73,
-      "l": 80.92,
-      "c": 81.95,
-      "v": 74.54
-    },
     {
       "d": "2016-09",
       "o": 81.59,
@@ -965,9 +941,33 @@
       "d": "2026-05",
       "o": 896.84,
       "h": 931.35,
-      "l": 869.59,
-      "c": 897.45,
-      "v": 17.22
+      "l": 845.55,
+      "c": 875.87,
+      "v": 52.64
+    },
+    {
+      "d": "2026-06",
+      "o": 860.16,
+      "h": 1073.46,
+      "l": 853.37,
+      "c": 1064.9,
+      "v": 79.67
+    },
+    {
+      "d": "2026-07",
+      "o": 1033.92,
+      "h": 1041.26,
+      "l": 776.0,
+      "c": 814.81,
+      "v": 67.12
+    },
+    {
+      "d": "2026-08",
+      "o": 811.58,
+      "h": 935.0,
+      "l": 801.0,
+      "c": 827.9,
+      "v": 43.82
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 866.48,
     "stop": 784.25,
     "set": "2026-05-06",
-    "label": "811.65–866.48"
+    "label": "811.65-866.48"
   },
   "current_quote": {
-    "close": 897.45,
-    "ma20": 836.28,
-    "ma50": 763.28,
-    "ma200": 600.94,
-    "data_date": "2026-05-08"
+    "close": 827.9,
+    "ma20": 841.36,
+    "ma50": 904.66,
+    "ma200": 758.83,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_MA_CONSTRAINED",
-    "type": "PULLBACK",
-    "status": "ABOVE_BAND_WAIT",
-    "trend_stack": "BULLISH_20_50_200",
-    "suggested_low": 789.57,
-    "suggested_high": 849.67,
-    "suggested_stop": 743.09,
-    "sma_envelope_low": 743.99,
-    "sma_envelope_high": 822.31,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 758.52,
+    "suggested_high": 860.43,
+    "suggested_stop": 712.19,
+    "sma_envelope_low": 828.43,
+    "sma_envelope_high": 915.63,
     "earnings_state": "CLEAR",
-    "band_confidence": 4,
-    "needs_review": true,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:36+00:00"
+  "generated_at": "2026-08-21T20:32:22+00:00"
 }

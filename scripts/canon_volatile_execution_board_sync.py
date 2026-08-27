@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, atomic_write_text
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -225,6 +226,37 @@ def parse_current_table(text: str) -> tuple[int, int, list[str], dict[str, list[
         rows[ticker] = cells
         order.append(ticker)
     return table_start, after, header, rows, order
+
+
+def sql_first_thin_board_sync_decision(thin_contract: dict[str, Any]) -> dict[str, Any]:
+    detected = thin_contract.get("sql_first_thin_board_detected") is True
+    allowed = thin_contract.get("sql_first_thin_board_allowed") is True
+    return {
+        "short_circuit_note_mutation": detected,
+        "status": "ok" if detected and allowed else "blocked" if detected else "legacy_execution_board_table",
+        "reason": (
+            "SQL-first thin board uses SQL/JSON proof for volatile ticker rows; the Markdown execution table is intentionally absent."
+            if detected and allowed
+            else "SQL-first thin board detected but its proof contract is blocked."
+            if detected
+            else "Legacy Markdown execution table remains the volatile sync surface."
+        ),
+    }
+
+
+def build_thin_board_row(ticker: str, config: dict[str, Any], tech: dict[str, Any], dep: dict[str, Any], trig: dict[str, Any]) -> dict[str, Any]:
+    band = (config.get("entry_bands") or {}).get(ticker) or {}
+    close = tech.get("close") if isinstance(tech.get("close"), (int, float)) else dep.get("close")
+    close_f = float(close) if isinstance(close, (int, float)) else None
+    return {
+        "ticker": ticker,
+        "close": close_f,
+        "data_date": str(tech.get("data_date") or dep.get("data_date") or trig.get("data_date") or "") or None,
+        "action_state": str(legacy_state(dep, "action_state") or legacy_state(trig, "action_state") or "WATCH / RESEARCH NEEDED"),
+        "below_stop": bool(tech.get("below_stop") or dep.get("below_stop") or trig.get("below_stop")),
+        "band": fmt_band(band),
+        "stop": fmt_num(band.get("stop")),
+    }
 
 
 def row_dict(header: list[str], cells: list[str]) -> dict[str, str]:
@@ -439,6 +471,60 @@ def main() -> int:
     tech_rows = rows_by_ticker(load_json(TECHNICAL))
     dep_rows = rows_by_ticker(load_json(DEPLOYMENT))
     trig_rows = rows_by_ticker(load_json(TRIGGER))
+    thin_contract = evaluate_sql_first_thin_board_contract(EXECUTION_BOARD)
+    thin_decision = sql_first_thin_board_sync_decision(thin_contract)
+    if thin_decision["short_circuit_note_mutation"]:
+        tickers = sorted(set(tech_rows) | set(dep_rows) | set(trig_rows))
+        updated_rows = [
+            build_thin_board_row(ticker, config, tech_rows.get(ticker) or {}, dep_rows.get(ticker) or {}, trig_rows.get(ticker) or {})
+            for ticker in tickers
+        ]
+        latest_dates = sorted({str(row.get("data_date")) for row in updated_rows if row.get("data_date")})
+        latest_date = latest_dates[-1] if latest_dates else datetime.now(timezone.utc).date().isoformat()
+        status = thin_decision["status"]
+        report = {
+            "schema_version": 1,
+            "generated_at_utc": utc_now(),
+            "mode": "apply" if args.apply else "dry_run",
+            "status": status,
+            "technical_sheet_mode": "sql_first_thin_board",
+            "sql_first_thin_board_contract": thin_contract,
+            "sync_decision": thin_decision,
+            "authority": {
+                "scope": "volatile SQL/JSON proof visibility only; thin Execution Board table intentionally absent",
+                "canonical_note_mutation_allowed": False,
+                "portfolio_mutation_allowed": False,
+                "capital_action_allowed": False,
+                "owner_approval_inferred": False,
+                "trade_or_account_authority": False,
+                "sizing_sleeve_cash_risk_rule_authority": False,
+                "paper_trade_submit_cancel_allowed": False,
+            },
+            "inputs": {
+                "execution_board": str(EXECUTION_BOARD.relative_to(ROOT)),
+                "portfolio_snapshot": str(SNAPSHOT.relative_to(ROOT)),
+                "portfolio_config": str(CONFIG.relative_to(ROOT)),
+                "technical_refresh": str(TECHNICAL.relative_to(ROOT)),
+                "deployment_check": str(DEPLOYMENT.relative_to(ROOT)),
+                "trigger_sheet": str(TRIGGER.relative_to(ROOT)),
+            },
+            "updated_rows": updated_rows,
+            "added_rows": [],
+            "skipped": [],
+            "snapshot_header_updated": False,
+            "config_prose_updates": [],
+            "parser_section_updates": [],
+            "board_mutation_performed": False,
+            "config_mutation_performed": False,
+            "snapshot_mutation_performed": False,
+            "latest_data_date": latest_date,
+        }
+        atomic_write_json(OUT_JSON, report, indent=2, ensure_ascii=False)
+        write_markdown(report)
+        print(f"canon_volatile_sync_status={status} mode={report['mode']} rows={len(updated_rows)} added=0 skipped=0")
+        print(f"audit={OUT_JSON.relative_to(ROOT)}")
+        return 2 if args.strict_exit and status != "ok" else 0
+
     board_text = EXECUTION_BOARD.read_text(encoding="utf-8")
     start, end, header, table_rows, order = parse_current_table(board_text)
 

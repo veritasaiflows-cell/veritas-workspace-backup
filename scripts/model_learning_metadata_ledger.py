@@ -146,9 +146,19 @@ def model_rows(model_run_ledger: dict[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(source_row, dict):
             continue
         attribution = as_dict(source_row.get("attribution"))
-        if not attribution.get("model_applicable"):
+        has_model_observation = bool(source_row.get("model_path") or attribution.get("model_present"))
+        if not has_model_observation:
             continue
-        row = row_base("model", MODEL_RUN_LEDGER, str(source_row.get("run_id")), source_row.get("status"))
+        # A concurrent-lane row is not allowed to fall back to an old
+        # ``model_applicable`` bit.  It needs the explicit eligibility marker
+        # written by model_run_ledger after source-to-lane reverification.
+        lane_source = source_row.get("producer") == "concurrent_lane_manager"
+        scoring_eligible = (
+            attribution.get("model_applicable") is True
+            and (attribution.get("telemetry_eligible") is True if lane_source else attribution.get("telemetry_eligible") is not False)
+        )
+        domain = "model" if scoring_eligible else "model_audit_uncredited"
+        row = row_base(domain, MODEL_RUN_LEDGER, str(source_row.get("run_id")), source_row.get("status"))
         row["metadata"] = {
             "producer": source_row.get("producer"),
             "run_kind": source_row.get("run_kind"),
@@ -156,13 +166,22 @@ def model_rows(model_run_ledger: dict[str, Any]) -> list[dict[str, Any]]:
             "model_path": source_row.get("model_path"),
             "thinking": source_row.get("thinking"),
             "session_present": attribution.get("session_present"),
-            "duration_ms": source_row.get("duration_ms"),
-            "tokens_present": source_row.get("tokens") is not None,
-            "cost_present": source_row.get("cost") is not None,
+            "telemetry_eligible": scoring_eligible,
+            "telemetry_credit_status": attribution.get("telemetry_credit_status"),
+            "telemetry_block_reasons": as_list(attribution.get("telemetry_block_reasons")),
+            # Do not propagate unverified values into a scoreable metadata
+            # surface.  The model-run ledger retains the audit observation.
+            "duration_ms": source_row.get("duration_ms") if scoring_eligible else None,
+            "tokens_present": source_row.get("tokens") is not None if scoring_eligible else False,
+            "cost_present": source_row.get("cost") is not None if scoring_eligible else False,
             "error_type": source_row.get("error_type"),
             "retry_count": source_row.get("retry_count"),
         }
-        row["scoring_use"] = "model attribution, latency, token/cost coverage, and reliability scoring"
+        row["scoring_use"] = (
+            "model attribution, latency, token/cost coverage, and reliability scoring"
+            if scoring_eligible else
+            "audit only; excluded from model attribution, latency, token/cost, reliability, and savings scoring until usage-source reverification succeeds"
+        )
         rows.append(row)
     return rows
 
@@ -515,6 +534,7 @@ def build_ledger(inputs: dict[str, Any]) -> dict[str, Any]:
             "by_domain": by_domain,
             "status_counts": status_counts,
             "model_rows": by_domain.get("model", 0),
+            "model_audit_uncredited_rows": by_domain.get("model_audit_uncredited", 0),
             "tool_rows": by_domain.get("tools", 0),
             "failure_rows": by_domain.get("failures", 0),
             "coding_rows": by_domain.get("coding", 0),
@@ -535,6 +555,7 @@ def build_ledger(inputs: dict[str, Any]) -> dict[str, Any]:
             "Tool/workflow metadata rows capture tool names, status, failure category, workflow/session IDs, and timings only; they never carry raw command output or payloads.",
             "Coding-runtime rows are KPI metadata only; they never carry raw diffs or file contents.",
             "Model ranking remains blocked until sample size, attribution, and graded outcomes support it.",
+            "Post-cutover lane rows without independently reverified usage remain audit-visible only and are excluded from model, cost, latency, reliability, and savings evidence.",
             "Investment correctness cannot be inferred from this ledger.",
             "Finance-response-quality rows score answer contracts and warning coverage only; they do not grade investment outcomes.",
         ],
@@ -551,9 +572,14 @@ def validate(ledger: dict[str, Any]) -> dict[str, Any]:
     if as_dict(ledger.get("privacy_scan")).get("status") != "ok":
         errors.append("privacy scan is not ok")
     summary = as_dict(ledger.get("summary"))
-    for domain in ("model", "tools", "coding", "coding_outcome", "finance_response_quality"):
+    for domain in ("tools", "coding", "coding_outcome", "finance_response_quality"):
         if int(summary.get("by_domain", {}).get(domain, 0)) <= 0:
             warnings.append(f"no rows for expected domain: {domain}")
+    if not {
+        "model",
+        "model_audit_uncredited",
+    } & set(as_dict(summary.get("by_domain")).keys()):
+        warnings.append("no rows for model or model_audit_uncredited domain")
     for row in as_list(ledger.get("rows")):
         if row.get("payload_capture") is not False:
             errors.append(f"payload_capture must be false: {row.get('row_id')}")

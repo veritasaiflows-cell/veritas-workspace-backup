@@ -11,6 +11,25 @@ This note answers three operator questions:
 
 ## Prompt stack
 
+### Layer 0 - governed prompt-book registry
+
+This is the metadata/control layer for reusable prompt families and internal challenge-solving patterns.
+
+Current files:
+- `06. Playbooks/Veritas Prompt Book.md`
+- `tmp/prompt-book-registry.json`
+- `tmp/prompt-book-lint.json`
+- `tmp/prompt-book-eval-gap-packet.json`
+- `tmp/prompt-book-pm-job-packet.json`
+
+Purpose:
+- index reusable prompt families, source paths, hashes, contracts, eval coverage, and stop lines
+- route repeated internal challenges into WF74/WF88, PM jobs, validators, or pending Skill Workshop proposals
+- keep prompt operations metadata-only
+
+Rule:
+- do not store raw prompts, raw responses, tool payloads, system prompts, secrets, or approval authority in the prompt-book registry
+
 ### Layer 1 — reusable prompt packs
 These are the stable libraries.
 
@@ -102,15 +121,18 @@ If a prompt causes repeated drift:
 
 ## Current operator workflow
 
-1. read `06. Playbooks/Active Model Prompt Queue.md`
-2. run the top `ready` prompt for the chosen model
-3. save the output to `tmp/external-research/` when the model is GPT5 or Gemini Flash
-4. ask Veritas to review the saved output if it may affect judgment or machine state
-5. after review, mark the queue item `done`, `hold`, or `stale`
+1. refresh or read `tmp/prompt-book-registry.json` when the prompt pattern should become reusable
+2. read `06. Playbooks/Active Model Prompt Queue.md`
+3. run the top `ready` prompt for the chosen model
+4. save the output to `tmp/external-research/` when the model is GPT5 or Gemini Flash
+5. ask Veritas to review the saved output if it may affect judgment or machine state
+6. after review, mark the queue item `done`, `hold`, or `stale`
+7. route recurring prompt friction through `prompt_book_eval_gap_packet.py` and `prompt_book_pm_job_packet.py`
 
 ## Durable rule
 
 Prompt packs are the library.
+The prompt book is the metadata registry and eval-routing control surface.
 The active queue is the live control surface.
 Raw outputs are evidence, not truth.
 The deployment plan is the routing governor for when multiple local and external model lanes are simultaneously available.

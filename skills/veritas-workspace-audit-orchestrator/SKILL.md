@@ -1,6 +1,6 @@
 ---
 name: "veritas-workspace-audit-orchestrator"
-description: "Run Veritas workspace audits and targeted finding reviews with control-plane proof."
+description: "Run workspace audits, classify findings, route proof-backed follow-ups, and preserve authority stop lines."
 ---
 
 # Veritas Workspace Audit Orchestrator
@@ -116,6 +116,54 @@ When an audit finds repeatable residue:
 - workflow-specific state -> workflow continuity note
 
 Do not create a new skill when an existing skill can be tightened cleanly.
+
+## Audit-To-Implementation Handoff
+
+When Randall approves implementation of audit recommendations, start with a lane lease and implement in this order:
+
+1. Repair live P1 trust/governance blockers.
+2. Add or adjust routing and decision dockets so the system classifies the issue correctly next time.
+3. Add local eval cases for each real failure mode.
+4. Wire the new summary into startup/status/future pickup surfaces.
+5. Use Skill Workshop for durable skill/procedure updates.
+6. Rerun changed-file routing, validators, release contract, and closeout.
+7. Update project continuity and daily memory.
+
+For each material finding include severity, live proof, owner surface, root cause, blast radius, recommended lane type, stop line, acceptance proof, and whether a local eval case or Skill Workshop update is needed.
+
+Recommended lane types:
+- `Lane 0 governance repair`: deterministic local blocker that prevents control/release trust.
+- `V2 decision docket/routing`: classification logic that prevents noisy residue from becoming fake work.
+- `local eval harness`: regression cases from real failures.
+- `startup/status wiring`: boot surfaces show the new truth state without waking on monitor-only rows.
+- `Skill Workshop durability`: repeated operating behavior becomes a skill update proposal and is applied only with explicit approval.
+- `monitor-only`: keep visible and refreshed; no code or schedule mutation.
+- `owner decision`: stop until Randall approves a specific authority boundary.
+
+## Web Calibration Rule
+
+When the audit asks for external/web calibration, use current primary or high-quality sources for patterns, but translate them into local, validator-backed OpenClaw controls. External patterns do not override local finance authority, owner approval, or release-contract gates.
+
+Recommended calibration themes:
+- evals and regression suites for agents
+- tracing and guardrails
+- durable execution/stateful workflows
+- human-in-the-loop approval boundaries
+- routing/classification dockets
+- control-plane observability
+
+## V2 Acceptance Proof
+
+A V2 audit implementation is complete only when:
+- the original audit file exists under `08. Audits/`
+- live P1 governance blockers are repaired or explicitly owner-routed
+- local evals pass
+- startup/status/future surfaces consume the new summary
+- relevant skills/procedures are proposed/applied through Skill Workshop when approved
+- `changed_file_validator_router.py --write --validate` passes
+- `validator_bundle_router.py --write --validate` passes
+- `implementation_release_contract.py --phase blocking --write --validate` is ready to close
+- `control_closeout_bundle.py --validation-budget shared --write --validate` passes or any blocker is honestly lane-routed
 
 ## Output Format
 

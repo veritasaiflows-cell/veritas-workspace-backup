@@ -111,7 +111,7 @@ def classify_from(module, artifacts, now_value: str):
     records = records_for(module, artifacts, now)
     trust = module.source_trust_summary(artifacts)
     session = module.market_session(now)
-    return module.classify(records, trust, session, now)
+    return module.classify(records, trust, session, {"status": "ok"}, now)
 
 
 def main() -> int:

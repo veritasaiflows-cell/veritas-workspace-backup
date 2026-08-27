@@ -25,7 +25,9 @@ DECISION_FACTORY = TMP / "finance-decision-factory.json"
 PH_PACKET = TMP / "wf78-ph-owner-review-candidate-packet.json"
 TIER_RESOLUTION = TMP / "wf78-tier-weighted-freshness-resolution.json"
 FRESHNESS_LEDGER = TMP / "wf78-ticker-freshness-ledger.json"
+TIER_A_COVERAGE_GATE = TMP / "tier-a-trade-grade-coverage-gate.json"
 FINANCE_STATE_DB = TMP / "finance-intelligence-state.sqlite"
+TRADE_GRADE_DECISION_CARDS = TMP / "trade-grade-decision-cards.json"
 
 SCHEMA = "veritas.post_close_final_quote_ledger.v1"
 
@@ -85,8 +87,103 @@ def parse_json(value: Any) -> dict[str, Any]:
     return parsed if isinstance(parsed, dict) else {}
 
 
+def existing_post_close_overlays() -> dict[str, dict[str, Any]]:
+    if not FINANCE_STATE_DB.exists():
+        return {}
+    try:
+        conn = sqlite3.connect(FINANCE_STATE_DB)
+        conn.row_factory = sqlite3.Row
+        try:
+            rows = conn.execute(
+                "SELECT ticker, price_source, source_path, raw_json FROM latest_price_technical"
+            ).fetchall()
+        finally:
+            conn.close()
+    except sqlite3.Error:
+        return {}
+
+    overlays: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        item = dict(row)
+        symbol = ticker(item.get("ticker"))
+        raw = parse_json(item.get("raw_json"))
+        price_band_stop = as_dict(raw.get("price_band_stop"))
+        post_close = as_dict(price_band_stop.get("post_close_final_quote"))
+        sources = {
+            str(item.get("price_source") or ""),
+            str(item.get("source_path") or ""),
+            str(price_band_stop.get("price_source") or ""),
+        }
+        claims_post_close_ledger = any("post-close-final-quote-ledger.json" in source for source in sources)
+        if not symbol or not (post_close or claims_post_close_ledger):
+            continue
+        latest_price = price_band_stop.get("latest_known_price")
+        if latest_price is None:
+            continue
+        overlays[symbol] = {
+            "ticker": symbol,
+            "yfinance_symbol": yfinance_symbol(symbol),
+            "status": "ok",
+            "close": round(float(latest_price), 4),
+            "market_date": post_close.get("market_date"),
+            "source": "finance_state_existing_post_close_overlay",
+            "original_source": post_close.get("source"),
+            "retrieval_method": "local finance_state post_close_final_quote fallback after provider miss",
+            "retrieved_at_utc": post_close.get("retrieved_at_utc"),
+            "cached_overlay_used": True,
+            "cached_overlay_source_path": item.get("source_path") or item.get("price_source"),
+        }
+    return overlays
+
+
 def yfinance_symbol(symbol: str) -> str:
     return symbol.replace(".", "-")
+
+
+def market_date_newer(candidate: Any, current: Any) -> bool:
+    if not candidate or not current:
+        return False
+    return str(candidate) > str(current)
+
+
+def tier_a_coverage_gate_fresh_quote_targets() -> list[str]:
+    gate = load_dict(TIER_A_COVERAGE_GATE)
+    cohorts = as_dict(gate.get("cohorts"))
+    tickers: set[str] = set()
+    for cohort_rows in cohorts.values():
+        for row in as_list(cohort_rows):
+            row = as_dict(row)
+            blockers = {str(item) for item in as_list(row.get("depth_blockers"))}
+            if "fresh_quote_required" not in blockers:
+                continue
+            symbol = ticker(row.get("ticker"))
+            if symbol:
+                tickers.add(symbol)
+    return sorted(tickers)
+
+
+def tier_ab_stale_decision_card_price_targets() -> list[str]:
+    cards_payload = load_dict(TRADE_GRADE_DECISION_CARDS)
+    cards = [as_dict(card) for card in as_list(cards_payload.get("cards"))]
+    tier_cards = [
+        card for card in cards
+        if str(card.get("auto_tier") or card.get("tier") or "") in {"Tier A", "Tier B"}
+    ]
+    market_dates = [
+        str(as_dict(card.get("current_price")).get("market_date"))
+        for card in tier_cards
+        if as_dict(card.get("current_price")).get("market_date")
+    ]
+    expected_date = max(market_dates) if market_dates else None
+    if not expected_date:
+        return []
+    stale: set[str] = set()
+    for card in tier_cards:
+        symbol = ticker(card.get("ticker"))
+        price = as_dict(card.get("current_price"))
+        if symbol and price.get("market_date") != expected_date:
+            stale.add(symbol)
+    return sorted(stale)
 
 
 def collect_targets(extra: list[str]) -> tuple[list[str], dict[str, list[str]]]:
@@ -123,6 +220,12 @@ def collect_targets(extra: list[str]) -> tuple[list[str], dict[str, list[str]]]:
         stale_families = {str(item) for item in as_list(row.get("stale_families"))}
         if stale_families == {"fresh_price_quote"}:
             add(row.get("ticker"), "wf78_raw_fresh_quote_gate")
+
+    for symbol in tier_a_coverage_gate_fresh_quote_targets():
+        add(symbol, "tier_a_trade_grade_coverage_gate_fresh_quote_blocker")
+
+    for symbol in tier_ab_stale_decision_card_price_targets():
+        add(symbol, "tier_a_b_stale_decision_card_price_context")
 
     if FINANCE_STATE_DB.exists():
         try:
@@ -207,21 +310,40 @@ def fetch_close(symbol: str) -> dict[str, Any]:
 
 def build(extra: list[str]) -> dict[str, Any]:
     targets, reasons = collect_targets(extra)
+    cached_overlays = existing_post_close_overlays()
     rows = []
+    provider_warnings = []
     for symbol in targets:
         row = fetch_close(symbol)
+        cached = cached_overlays.get(symbol)
+        if row.get("status") != "ok":
+            provider_warnings.append(f"{symbol}: {row.get('status')} {row.get('error') or ''}".strip())
+            if cached:
+                row = dict(cached)
+                row["provider_status_before_cache"] = provider_warnings[-1]
+        elif cached and market_date_newer(cached.get("market_date"), row.get("market_date")):
+            provider_warnings.append(
+                f"{symbol}: provider_market_date {row.get('market_date')} older than cached_overlay {cached.get('market_date')}"
+            )
+            row = dict(cached)
+            row["provider_status_before_cache"] = provider_warnings[-1]
         row["target_reasons"] = reasons.get(symbol, [])
         row["review_only"] = True
         row["execution_freshness_approved"] = False
         rows.append(row)
 
     ok_rows = [row for row in rows if row.get("status") == "ok"]
+    cached_rows = [row for row in rows if row.get("cached_overlay_used") is True]
     market_dates = sorted({str(row.get("market_date")) for row in ok_rows if row.get("market_date")})
     errors = [f"{row.get('ticker')}: {row.get('status')} {row.get('error') or ''}".strip() for row in rows if row.get("status") != "ok"]
+    warnings = errors + [warning for warning in provider_warnings if warning and warning not in errors]
+    status = "ok" if not errors and rows else "warning" if rows else "blocked"
+    if cached_rows and status == "ok":
+        status = "warning"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "ok" if not errors and rows else "warning" if rows else "blocked",
+        "status": status,
         "purpose": "Closed-market/post-close final quote overlay for recommendation candidates; review-only and non-executing.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": {
@@ -230,12 +352,16 @@ def build(extra: list[str]) -> dict[str, Any]:
             "ph_owner_review_candidate_packet": rel(PH_PACKET),
             "tier_weighted_freshness_resolution": rel(TIER_RESOLUTION),
             "wf78_ticker_freshness_ledger": rel(FRESHNESS_LEDGER),
+            "tier_a_trade_grade_coverage_gate": rel(TIER_A_COVERAGE_GATE),
+            "trade_grade_decision_cards": rel(TRADE_GRADE_DECISION_CARDS),
             "finance_state_existing_post_close_overlay": rel(FINANCE_STATE_DB),
         },
         "summary": {
             "target_count": len(rows),
             "ok_count": len(ok_rows),
             "error_count": len(errors),
+            "cached_overlay_count": len(cached_rows),
+            "provider_warning_count": len(provider_warnings),
             "latest_market_date": market_dates[-1] if market_dates else None,
             "target_tickers": targets,
             "ok_tickers": [row["ticker"] for row in ok_rows],
@@ -243,7 +369,7 @@ def build(extra: list[str]) -> dict[str, Any]:
             "next_safe_action": "Use as the preferred closed-market quote overlay for recommendation prep; do not treat as execution freshness or approval.",
         },
         "rows": rows,
-        "validation": {"status": "ok" if rows else "error", "errors": [] if rows else ["no target tickers"], "warnings": errors},
+        "validation": {"status": "ok" if rows else "error", "errors": [] if rows else ["no target tickers"], "warnings": warnings},
         "stop_lines": [
             "This ledger does not mutate ticker cards, portfolio notes, canon, SQL canon, or brokerage/account state.",
             "Post-close quotes support recommendation review only and do not authorize paper/live execution.",

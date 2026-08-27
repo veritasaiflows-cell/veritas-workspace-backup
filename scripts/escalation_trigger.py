@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,6 +67,34 @@ def as_list(value: Any) -> list[Any]:
 def load_json(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        validation = finance_sql_canon_access().validate()
+    except Exception as exc:  # pragma: no cover - defensive escalation surface
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+        }
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
 
 
 def select_urgent(scorecard: dict[str, Any]) -> list[dict[str, Any]]:
@@ -119,6 +148,17 @@ def build_payload(scorecard_path: Path) -> dict[str, Any]:
     scorecard = load_json(scorecard_path)
     scorecard_present = bool(scorecard)
     urgent = select_urgent(scorecard)
+    sql_health = sql_canon_health()
+    if sql_health.get("status") != "ok" and not any(item.get("source") == "sql_canon:finance_sql_canon_access" for item in urgent):
+        urgent.append({
+            "source": "sql_canon:finance_sql_canon_access",
+            "signal_class": "BLOCKED",
+            "status": sql_health.get("status"),
+            "reason": "finance_sql_canon_guard_blocked",
+            "artifact": "scripts/finance_sql_canon_access.py",
+            "age_hours": 0,
+            "next_action": "Run python scripts\\finance_sql_canon_access.py --write --validate and repair the SQL-canon guard before treating cron/PM readiness as clean.",
+        })
     should_wake = bool(urgent)
     payload = {
         "schema": SCHEMA,
@@ -127,9 +167,11 @@ def build_payload(scorecard_path: Path) -> dict[str, Any]:
         "sources": {
             "cron_signal_scorecard": rel(scorecard_path),
             "cron_freshness_spine": as_dict(scorecard.get("sources")).get("cron_freshness_spine"),
+            "finance_sql_canon_access": "scripts/finance_sql_canon_access.py",
             "scorecard_source_mode": as_dict(scorecard.get("sources")).get("source_mode"),
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_health": sql_health,
         "scorecard_present": scorecard_present,
         "scorecard_generated_at_utc": scorecard.get("generated_at_utc"),
         "should_wake_main_session": should_wake,
@@ -165,6 +207,19 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
     for item in as_list(payload.get("escalation_signals")):
         if as_dict(item).get("signal_class") not in ESCALATION_CLASSES:
             errors.append(f"non_escalation_class_in_list:{as_dict(item).get('source')}")
+    sql_health = as_dict(payload.get("sql_canon_health"))
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            errors.append(f"sql_canon_authority_{key}_not_false")
     return {"status": "ok" if not errors else "error", "errors": errors, "warnings": warnings}
 
 

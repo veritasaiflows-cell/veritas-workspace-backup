@@ -59,7 +59,7 @@ TARGET_QUEUE: list[dict[str, Any]] = [
     {"rank": 9, "ticker": "TMUS", "role": "communication services monitor", "mode": "repair_monitor"},
 ]
 
-MUST_BLOCK = {"NVDA", "MSFT", "JPM", "BRK.B", "LMT", "RTX", "XOM", "HYG", "JNK"}
+ORDER_ALERT_BLOCK = {"NVDA", "MSFT", "JPM", "BRK.B", "LMT", "RTX", "XOM", "HYG", "JNK"}
 NEAR_BAND_PCT = 1.0
 
 
@@ -146,13 +146,14 @@ def classify_target(target: dict[str, Any], price: float | None, band: dict[str,
     distance_to_band_pct: float | None = None
     in_band = False
 
-    if ticker in MUST_BLOCK or mode in {"repair_monitor"}:
+    if mode in {"repair_monitor"}:
         return {
             "entry_state": "blocked_or_repair_monitor",
             "alert_level": "none",
             "distance_to_band_pct": None,
-            "reasons": ["Target is in must-block/repair-monitor posture; no entry alert."],
+            "reasons": ["Target is in repair-monitor posture; no entry alert."],
         }
+    order_alert_blocked = ticker in ORDER_ALERT_BLOCK
 
     if price is None:
         return {
@@ -201,10 +202,18 @@ def classify_target(target: dict[str, Any], price: float | None, band: dict[str,
     else:
         distance_to_band_pct = round((price - high) / high * 100, 2)
 
-    if in_band and mode == "deployable_or_review" and action_state == "DEPLOYABLE NOW":
+    if in_band and mode == "deployable_or_review" and action_state == "DEPLOYABLE NOW" and not order_alert_blocked:
         alert_level = "entry_candidate"
         entry_state = "deployable_in_band_review_required"
         reasons.append("Deployable-now target is inside written entry band; requires owner-approved paper order terms before any trade.")
+    elif in_band and order_alert_blocked:
+        alert_level = "review_candidate"
+        entry_state = "order_alert_blocked_review_attention"
+        reasons.append("Inside written band, but order/buy alert remains blocked; main-session review only.")
+    elif in_band and action_state == "ENTRY POLICY REVIEW":
+        alert_level = "review_candidate"
+        entry_state = "entry_policy_review_in_band"
+        reasons.append("Existing surfaces show an in-band setup, but entry policy is not decision-grade yet; review only.")
     elif in_band and mode == "promotion_review":
         alert_level = "review_candidate"
         entry_state = "promotion_review_in_band"

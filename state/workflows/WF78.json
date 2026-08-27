@@ -1,13 +1,31 @@
 {
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF78",
-  "display_name": "500 Ticker Scaleout / Promotion",
+  "display_name": "Tier A/B Evidence Repair & Auto-Routing",
   "tier": "P1",
-  "effective_status": "ready",
-  "next_action": "WF78 is the non-capital repair/promotion feeder for the finance_intelligence_state -> WF84 -> WF85 answer route. Use wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded as the promoted daily cron surface, with wf78_daily_movement_ledger.py as the operator ledger; keep wf78_daily_freshness_loop.py as a compatibility refresh/routing/debt measurement spine, then use tier-weighted freshness resolution for the 200-row debt answer. Use source-open repair execution, source-open work packets, concrete sizing/deployment/source-capture reviews, integration proposals, Tier A owner-readiness proposals, missing-band repair, source-capture requirements, owner-lineage proposal, freshness ledger, tier-weighted resolver, daily movement ledger, and repair-priority queue for Tier A/B repair routing before owner-card prep. Use the repair debt scoreboard first: review ready sizing/deployment rows, keep owner-lineage rows blocked for owner/source decision, and treat registry apply preview as a separate gated path. Keep CME/LMT/META in invalidation review. The market deployment operating loop now reads WF78 tier movement beside WF85 timing and WF87 daylight proof so tier changes, freshness, opportunity probes, and autonomous review-card materialization are visible as one review-only chain. Ask only for capital/execution/account/sizing/apply mutation.",
-  "helper_safe": true,
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Promoted non-capital daily routing, append-only movement history, repair queue, and freshness proof feed WF84/WF85/WF87 review context.",
+  "next_action": "Improve Tier A/B decision readiness and source-open repair; keep expanded-universe import report-only unless approved.",
+  "authoritative_next_action": "Improve Tier A/B decision readiness and source-open repair; keep expanded-universe import report-only unless approved.",
+  "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "automated non-capital routing; capital/execution gated",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [
+    "WF84",
+    "WF85"
+  ],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/wf78-auto-tier-routing.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [],
   "stop_lines": [
     "Automated routing is non-capital only; no capital deployment, paper/live order, brokerage/account action, money movement, portfolio/cash/sizing execution, customer/public output, or SQL-first/canon authority without separate exact approval/gates. No generated artifact implies trade approval."
@@ -44,11 +62,12 @@
     "scripts/wf78_next_owner_review_and_source_capture_integration.py",
     "scripts/wf78_ticker_freshness_ledger.py",
     "scripts/wf78_tier_weighted_freshness_resolver.py",
+    "scripts/wf78_tier_routing_event_ledger.py",
     "scripts/wf78_daily_freshness_loop.py",
     "scripts/wf78_daily_movement_ledger.py",
     "scripts/wf78_intelligence_routing_v2.py",
+    "scripts/finance_production_grade_policy_gate.py",
     "scripts/parallel_repeatable_work_orchestrator.py",
-    "scripts/repeatable_work_closeout.py",
     "scripts/finance_decision_factory.py",
     "scripts/wf78_evidence_repair_batch_runner.py",
     "scripts/control_closeout_bundle.py",
@@ -85,15 +104,17 @@
     "tmp/wf78-next-owner-review-and-source-capture-integration.json",
     "tmp/wf78-ticker-freshness-ledger.json",
     "tmp/wf78-tier-weighted-freshness-resolution.json",
+    "tmp/wf78-tier-routing-event-ledger.json",
+    "state/workflows/wf78-tier-routing-events.jsonl",
     "tmp/wf78-daily-freshness-loop.json",
     "tmp/wf78-daily-movement-ledger.json",
     "tmp/wf78-repair-priority-queue.json",
     "tmp/wf78-intelligence-routing-v2.json",
+    "tmp/finance-production-grade-policy-gate.json",
     "tmp/parallel-repeatable-work-orchestration.json",
     "tmp/macro-event-guard-loop.json",
     "tmp/wf78-owner-card-prep-loop.json",
     "tmp/wf78-tier-a-evidence-repair-batch.json",
-    "tmp/repeatable-work-closeout.json",
     "tmp/finance-decision-factory.json",
     "tmp/wf78-evidence-repair-batch.json",
     "tmp/control-closeout-bundle.json",
@@ -104,7 +125,7 @@
     "tmp/wf78-routing-dashboard.json"
   ],
   "validator_commands": [
-    "python scripts\\finance_decision_factory.py --write --validate",
+    "python scripts\\finance_decision_factory.py --ledger-only --write --validate",
     "python scripts\\wf78_evidence_repair_batch_runner.py --tier A --write --validate",
     "python scripts\\wf78_evidence_family_repair_runner.py --family price_band_stop --write --validate",
     "python scripts\\wf78_source_open_repair_executor.py --write --validate",
@@ -131,11 +152,12 @@
     "python scripts\\wf78_next_owner_review_and_source_capture_integration.py --write --validate",
     "python scripts\\wf78_ticker_freshness_ledger.py --write --validate",
     "python scripts\\wf78_tier_weighted_freshness_resolver.py --write --validate",
+    "python scripts\\wf78_tier_routing_event_ledger.py --write --write-md --validate",
     "python scripts\\wf78_daily_movement_ledger.py --write --write-md --validate",
     "python scripts\\wf78_intelligence_routing_v2.py --layer ledger_publish --write --validate",
+    "python scripts\\finance_production_grade_policy_gate.py --write --validate",
     "python scripts\\wf78_daily_freshness_loop.py --write --validate",
     "python scripts\\parallel_repeatable_work_orchestrator.py --write --validate",
-    "python scripts\\repeatable_work_closeout.py --write --validate",
     "python scripts\\control_closeout_bundle.py --write --validate",
     "python scripts\\wf78_phase_runner.py --phase all-safe --write --validate",
     "python scripts\\wf78_evidence_drag_reducer.py --write --validate",
@@ -160,14 +182,16 @@
       "no SQL-first authority",
       "no capital deployment or execution authority"
     ],
-    "lane_status": "ready",
+    "lane_status": "refresh_required",
     "readiness_score": 90,
-    "rank": 8,
-    "pm_packet_only": true
+    "rank": 7,
+    "pm_packet_only": true,
+    "source_lane_status": "ready",
+    "superseded_by_route_contract": true
   },
   "pm_job": {
-    "job_id": "pm-08-wf78-scaleout-execute-safe-next-step",
-    "status": "ready_for_main_or_helper",
+    "job_id": "pm-wf78-scaleout-execute-safe-next-step",
+    "status": "completed_by_ledger",
     "validation_budget": {
       "budget": "major",
       "description": "Workflow/control-plane or authority-adjacent contract change.",
@@ -181,6 +205,10 @@
   },
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

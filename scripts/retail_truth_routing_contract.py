@@ -4,8 +4,10 @@
 Phase 1 names the current route contracts, required proof, SQL role, PM role, and
 stop lines for each major answer path. Phase 2 adds a per-route source-open gate:
 the exact source-open proof obligation and ordered fallback condition each material
-answer must emit before a final claim, with SQL/index rows kept as derived proof
-only (never SQL-first authority). Phase 3 adds per-route fallback-decay proof:
+answer must emit before a final claim. Guarded finance SQL canon plus JSON proof
+packets are the primary internal review/routing state for finance decisions, but
+not customer output, execution authority, or source-open replacement. Phase 3 adds
+per-route fallback-decay proof:
 each route declares how stale, missing, unsafe, or contradictory evidence decays
 from fast-path read support to degraded review-only answer to a hard block. It is
 report-only: no SQL writes, no canon/portfolio mutation, no customer delivery, no
@@ -18,6 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import DEFAULT_DB as FINANCE_SQL_CANON_DB, strategic_answer_route_context
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -139,6 +142,15 @@ def a2_state() -> dict[str, Any]:
     }
 
 
+def finance_sql_canon_state() -> dict[str, Any]:
+    context = strategic_answer_route_context(consumer="retail_truth_routing_contract", db_path=FINANCE_SQL_CANON_DB)
+    context["internal_primary_decision_routing_source"] = True
+    context["json_proof_packets_required"] = True
+    context["source_open_required_before_material_claim"] = True
+    context["errors"] = context.get("validation", {}).get("errors", [])
+    return context
+
+
 def source_open_gate(
     sql_role: str,
     owner_artifacts: list[str],
@@ -159,7 +171,15 @@ def source_open_gate(
             "proof_obligation": ["route blocked; no source-open answer path until the export gate clears"],
             "fallback_condition": "No answer path. Route stays blocked until the customer-safe export gate clears.",
         }
-    if sql_role == "bounded_cache":
+    if sql_role == "guarded_finance_canon":
+        fallback = (
+            "Fast path: guarded finance SQL canon (state/finance/finance-canon.sqlite) plus "
+            "current JSON proof packets for internal review/routing state. On guard failure, "
+            "missing ticker state, stale/conflicting proof, or material claim, fall back to "
+            "WF84/WF85 JSON packets and exact source-open owner artifacts. SQL canon is the "
+            "internal current-state route, not customer output, approval, or execution authority."
+        )
+    elif sql_role == "bounded_cache":
         fallback = (
             "Fast path: bounded A2 SQL cache (tmp/veritas-canon-cache.sqlite). On cache "
             "miss, stale, or unsafe key, fall back to Python fallback values "
@@ -211,7 +231,10 @@ def fallback_decay_gate(route_id: str, sql_role: str, *, enabled: bool) -> dict[
             "blocked_conditions": ["route_blocked", "export_gate_not_cleared"],
         }
 
-    if sql_role == "bounded_cache":
+    if sql_role == "guarded_finance_canon":
+        fast_condition = "finance SQL canon guard ok, JSON proof packets current, and exact source-open proof available for material claims"
+        fallback_action = "use WF84/WF85 JSON proof packets and exact source artifacts; block final material claim if guard/source proof is missing"
+    elif sql_role == "bounded_cache":
         fast_condition = "A2 cache live-complete, key present, fresh, safe, and owner note source-opened"
         fallback_action = "use Python fallback values only as read support, then source-open owner note"
     elif sql_role in {"proof_index", "read_support"}:
@@ -280,7 +303,8 @@ def route(
         "required_proof": required_proof,
         "sql": {
             "role": sql_role,
-            "read_support_allowed": sql_role in {"read_support", "proof_index", "bounded_cache"},
+            "read_support_allowed": sql_role in {"read_support", "proof_index", "bounded_cache", "guarded_finance_canon"},
+            "internal_primary_decision_routing_source": sql_role == "guarded_finance_canon",
             "write_allowed": False,
             "sql_first_promotion_allowed": False,
             "canon_or_portfolio_authority": False,
@@ -311,8 +335,10 @@ def route(
     }
 
 
-def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
-    sql_cache_role = "bounded_cache" if a2["live_complete"] else "blocked"
+def build_routes(a2: dict[str, Any], finance_canon: dict[str, Any]) -> list[dict[str, Any]]:
+    finance_canon_live = finance_canon.get("status") == "ok"
+    sql_current_state_role = "guarded_finance_canon" if finance_canon_live else "blocked"
+    sql_cache_role = "guarded_finance_canon" if finance_canon_live else "bounded_cache" if a2["live_complete"] else "blocked"
     return [
         route(
             "ticker_intelligence",
@@ -324,9 +350,10 @@ def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
                 "scripts/finance_intelligence_state.py",
                 "scripts/artifact_index.py",
             ],
-            ["WF77 coverage current", "answer-contract/source-open proof", "authority stop lines false"],
-            sql_role="proof_index",
+            ["guarded finance SQL canon", "WF77 coverage current", "answer-contract/source-open proof", "authority stop lines false"],
+            sql_role=sql_current_state_role,
             pm_role="queue stale coverage and validation refreshes",
+            enabled=finance_canon_live,
         ),
         route(
             "portfolio_status",
@@ -338,24 +365,27 @@ def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
                 "tmp/full-portfolio-view.json",
                 "tmp/dashboard-validation.json",
             ],
-            ["canonical note source-open", "dashboard/full-portfolio validation", "no generated approval inference"],
-            sql_role="proof_index",
+            ["guarded finance SQL canon", "canonical note source-open", "dashboard/full-portfolio validation", "no generated approval inference"],
+            sql_role=sql_current_state_role,
             pm_role="track stale proof and handoff exact refresh request",
+            enabled=finance_canon_live,
         ),
         route(
             "entry_stop_band_check",
             "Entry/Stop/Band Reference Check",
-            "Use WF72 A2 cache/fallback proof for fast lookup, then source-open owner notes before material claims.",
+            "Use guarded finance SQL canon for fast current-state lookup, retain A2/cache fallback, then source-open owner notes before material claims.",
             [
+                "state/finance/finance-canon.sqlite",
+                "scripts/finance_sql_canon_access.py",
                 "tmp/veritas-canon-cache.sqlite",
                 "tmp/wf72-a2-consumer-authority-fallback-values.json",
                 "tmp/go-sql-consumer-authority-guard.json",
                 "03. Portfolio/Execution Board.md",
             ],
-            ["A2 live complete", "0 fallback-missing", "0 stale/unsafe", "owner note source-open for final claim"],
+            ["finance SQL canon guard ok", "JSON proof packet current", "owner note source-open for final claim", "A2/cache fallback retained"],
             sql_role=sql_cache_role,
             pm_role="monitor guard health and route stale/failing guard to main",
-            enabled=a2["live_complete"],
+            enabled=finance_canon_live or a2["live_complete"],
         ),
         route(
             "earnings_freshness_status",
@@ -367,9 +397,10 @@ def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
                 "tmp/fundamental-ir-reconciliation-packets.json",
                 "tmp/finance-data-coverage-current.json",
             ],
-            ["source-labeled freshness proof", "official-source conflict check", "stale data called out explicitly"],
-            sql_role="proof_index",
+            ["guarded finance SQL canon", "source-labeled freshness proof", "official-source conflict check", "stale data called out explicitly"],
+            sql_role=sql_current_state_role,
             pm_role="queue stale official-source/freshness refreshes",
+            enabled=finance_canon_live,
         ),
         route(
             "capital_deployment_candidate",
@@ -381,9 +412,10 @@ def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
                 "tmp/ticker-intelligence-cards/*.current.json",
                 "03. Portfolio/Execution Board.md",
             ],
-            ["Chief gate pass", "source-open card/owner notes", "WF55 probability caution", "no approval inference"],
-            sql_role="proof_index",
+            ["guarded finance SQL canon", "Chief gate pass", "source-open card/owner notes", "WF55 probability caution", "no approval inference"],
+            sql_role=sql_current_state_role,
             pm_role="coordinate proof freshness and packet completeness only",
+            enabled=finance_canon_live,
         ),
         route(
             "paper_card_preparation",
@@ -395,9 +427,10 @@ def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
                 "scripts/wf67_advisor_paper_request_generator.py",
                 "tmp/chief-intelligence-promotion-gate.json",
             ],
-            ["WF67 manager current", "fresh kill-switch proof before any execution", "Randall exact order approval"],
-            sql_role="proof_index",
+            ["guarded finance SQL canon", "WF67 manager current", "fresh kill-switch proof before any execution", "Randall exact order approval"],
+            sql_role=sql_current_state_role,
             pm_role="track readiness/repair status, not execution",
+            enabled=finance_canon_live,
         ),
         route(
             "sql_scaleout_or_universe_expansion",
@@ -409,10 +442,11 @@ def build_routes(a2: dict[str, Any]) -> list[dict[str, Any]]:
                 "tmp/sql-500-ticker-expansion-design-gate.json",
                 "tmp/sql-source-truth-*.json",
             ],
-            ["WF78 phase runner pass", "source-truth gates", "owner decision before import/promotion/apply"],
-            sql_role="read_support",
+            ["finance SQL canon guard ok", "WF78 phase runner pass", "source-truth gates", "owner decision before import/promotion/apply"],
+            sql_role=sql_current_state_role,
             pm_role="own milestone queue and blocker register only",
             decision_needed_before_next_phase=True,
+            enabled=finance_canon_live,
         ),
         route(
             "customer_safe_retail_output",
@@ -443,8 +477,8 @@ def validate_contract(packet: dict[str, Any]) -> tuple[list[str], list[str]]:
     if missing_routes:
         errors.append(f"missing required routes: {', '.join(missing_routes)}")
 
-    if not packet.get("wf72_a2", {}).get("live_complete"):
-        errors.append("WF72 A2 is not live-complete, so bounded SQL cache routing cannot be trusted")
+    if packet.get("finance_sql_canon", {}).get("status") != "ok":
+        errors.append("finance SQL canon guard is not ok, so internal SQL/JSON decision routing cannot be trusted")
 
     for route_item in routes:
         if not isinstance(route_item, dict):
@@ -511,7 +545,8 @@ def validate_contract(packet: dict[str, Any]) -> tuple[list[str], list[str]]:
 
 def build_packet() -> dict[str, Any]:
     a2 = a2_state()
-    routes = build_routes(a2)
+    finance_canon = finance_sql_canon_state()
+    routes = build_routes(a2, finance_canon)
     artifacts = {
         "finance_data_coverage": artifact_status(TMP / "finance-data-coverage-current.json", required=False),
         "artifact_index_sqlite": artifact_status(TMP / "veritas-artifact-index.sqlite", json_expected=False),
@@ -536,6 +571,7 @@ def build_packet() -> dict[str, Any]:
         "fallback_decay_gate_enforced": True,
         "status": "ok",
         "wf72_a2": a2,
+        "finance_sql_canon": finance_canon,
         "routes": routes,
         "artifact_health": artifacts,
         "pm_ownership_contract": {
@@ -582,6 +618,8 @@ def build_packet() -> dict[str, Any]:
             },
         ],
         "global_stop_lines": {
+            "internal_guarded_sql_json_decision_routing_allowed": finance_canon.get("status") == "ok",
+            "retail_or_customer_sql_first_answer_allowed": False,
             "sql_first_promotion_allowed": False,
             "sql_write_or_import_allowed": False,
             "canon_or_portfolio_mutation_allowed": False,
@@ -619,6 +657,7 @@ def main() -> int:
         "retail_truth_routing_contract "
         f"status={packet['status']} "
         f"routes={len(packet['routes'])} "
+        f"finance_sql_canon={packet['finance_sql_canon']['status']} "
         f"a2_live_complete={packet['wf72_a2']['live_complete']} "
         f"out={rel(OUT) if args.write else '<not-written>'}"
     )

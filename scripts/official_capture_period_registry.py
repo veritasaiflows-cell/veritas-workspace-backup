@@ -52,6 +52,7 @@ FORBIDDEN_TRUE_AUTHORITY = [
 CURRENT_STATES = {
     "latest_current",
     "latest_partial",
+    "latest_source_verified_manual_reconciliation_pending",
     "new_source_detected_not_captured",
     "parser_failed_or_manual_required",
     "stale_prior_period",
@@ -174,6 +175,8 @@ def capture_status_counts(capture: dict[str, Any]) -> dict[str, int]:
 def state_for(capture: dict[str, Any], is_latest_valid: bool) -> str:
     if not is_latest_valid:
         return "stale_prior_period"
+    if capture.get("source_capture_status") == "source_verified_manual_reconciliation_pending":
+        return "latest_source_verified_manual_reconciliation_pending"
     counts = capture_status_counts(capture)
     if counts.get("manual_required", 0) > 0:
         return "parser_failed_or_manual_required"
@@ -209,6 +212,8 @@ def build_registry(capture_dir: Path = CAPTURE_DIR) -> dict[str, Any]:
             "resolved_for_apply": capture.get("resolved_for_apply") is True,
             "source_type": (capture.get("source") or {}).get("source_type") if isinstance(capture.get("source"), dict) else None,
             "source_url": (capture.get("source") or {}).get("source_url") if isinstance(capture.get("source"), dict) else None,
+            "source_capture_status": capture.get("source_capture_status"),
+            "source_verified": capture.get("source_verified") is True,
             "status_counts": counts,
             "manual_required_remaining": counts.get("manual_required", 0),
             "addressed_fields": sum(counts.get(status, 0) for status in ADDRESSING_STATUSES),

@@ -1,32 +1,33 @@
 {
-  "generated_at_utc": "2026-05-07T19:48:05.892751+00:00",
-  "week_start": "2026-05-04",
-  "week_end": "2026-05-08",
-  "week_label": "2026-05-04 to 2026-05-08",
-  "week_exists_in_md": true,
+  "generated_at_utc": "2026-07-05T20:29:36.814531+00:00",
+  "week_start": "2026-06-29",
+  "week_end": "2026-07-03",
+  "week_label": "2026-06-29 to 2026-07-03",
+  "week_exists_in_md": false,
   "macro_snapshot": {
-    "last_trading_day": "2026-05-07",
-    "vix": 17.17,
-    "spx": 7370.0098,
-    "y2": 3.93,
-    "y10": 4.334,
-    "2s10s": 40.4,
-    "dxy": 97.886,
-    "brent": 96.45,
-    "wti": 90.46,
+    "last_trading_day": "2026-07-03",
+    "vix": 16.15,
+    "spx": 7483.2402,
+    "y2": 4.14,
+    "y10": 4.485,
+    "2s10s": 34.5,
+    "dxy": 100.86,
+    "brent": 72.13,
+    "wti": 68.78,
     "cut_prob": 0.0
   },
   "deployment_summary": {
     "deployable_now": [
-      "JPM"
-    ],
-    "promotion_review": [
       "ETN"
     ],
-    "almost_deployable": [
+    "promotion_review": [
       "GOOG",
       "GS",
       "MSFT",
+      "VRT"
+    ],
+    "almost_deployable": [
+      "JPM",
       "NVDA"
     ],
     "blocked": [],
@@ -35,46 +36,35 @@
       "LMT",
       "XOM"
     ],
-    "watch": [
-      "VRT"
-    ],
+    "watch": [],
     "error": []
   },
   "top_scores": [
     {
-      "ticker": "JPM",
-      "total": 19,
-      "stance": "PROMOTION REVIEW"
-    },
-    {
       "ticker": "GOOG",
       "total": 18,
-      "stance": "Almost deployable"
+      "stance": "PROMOTION REVIEW"
     },
     {
       "ticker": "MSFT",
       "total": 18,
+      "stance": "PROMOTION REVIEW"
+    },
+    {
+      "ticker": "NVDA",
+      "total": 17,
       "stance": "Almost deployable"
     },
     {
       "ticker": "ETN",
-      "total": 18,
-      "stance": "PROMOTION REVIEW"
+      "total": 17,
+      "stance": "DEPLOYABLE NOW"
     },
     {
-      "ticker": "GS",
-      "total": 17,
-      "stance": "Almost deployable"
+      "ticker": "PH",
+      "total": 16,
+      "stance": "PROMOTION REVIEW"
     }
   ],
-  "this_week_earnings": [
-    {
-      "ticker": "LNG",
-      "date": "2026-05-07"
-    },
-    {
-      "ticker": "EOG",
-      "date": "2026-05-05"
-    }
-  ]
+  "this_week_earnings": []
 }

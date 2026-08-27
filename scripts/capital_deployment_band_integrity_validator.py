@@ -4,8 +4,9 @@
 The validator compares entry bands/stops across WF78 review queue, finance
 decision factory, current recommendation proposals, and WF67 owner cards. It
 does not repair or mutate source artifacts. Current approval-card surfaces are
-domain blockers when they disagree; older review packets are reported as drift
-warnings unless they disagree with another current approval-card surface.
+domain blockers when they disagree. Active review context is warning-level when
+it drifts from the current core band. Superseded artifacts remain visible in the
+report for audit history, but they do not affect the live domain status.
 """
 from __future__ import annotations
 
@@ -103,6 +104,10 @@ def band_signature(low: float | None, high: float | None, stop: float | None) ->
     }
 
 
+def active_band_record(record: dict[str, Any]) -> bool:
+    return not str(record.get("source") or "").endswith("_superseded")
+
+
 def add_record(
     records: list[dict[str, Any]],
     *,
@@ -133,6 +138,22 @@ def add_record(
 
 def artifact_generated_at(payload: dict[str, Any]) -> Any:
     return payload.get("generated_at_utc") or payload.get("created_at_utc")
+
+
+def superseded_artifact(payload: dict[str, Any]) -> bool:
+    risk = as_dict(payload.get("risk_check"))
+    source = as_dict(payload.get("source"))
+    blockers = {str(item) for item in as_list(risk.get("blockers"))}
+    status = str(risk.get("status") or "").lower()
+    scope = str(source.get("owner_or_pilot_scope") or "").lower()
+    rationale = str(risk.get("sizing_rationale") or "").lower()
+    return (
+        source.get("superseded_by_current_gate") is True
+        or "superseded_prior_owner_card_request" in blockers
+        or "superseded" in status
+        or "superseded" in scope
+        or "superseded" in rationale
+    )
 
 
 def find_band_in_mapping(value: dict[str, Any]) -> tuple[Any, Any, Any]:
@@ -176,10 +197,11 @@ def request_band_records(path: Path, payload: dict[str, Any]) -> list[dict[str, 
     order = as_dict(payload.get("order"))
     symbol = order.get("symbol") or path.name.rsplit(".", 1)[0]
     risk = as_dict(payload.get("risk_check"))
+    superseded = superseded_artifact(payload)
     add_record(
         records,
         ticker=symbol,
-        source="wf67_request_risk_check",
+        source="wf67_request_risk_check_superseded" if superseded else "wf67_request_risk_check",
         source_path=path,
         low=risk.get("entry_band_low"),
         high=risk.get("entry_band_high"),
@@ -193,7 +215,7 @@ def request_band_records(path: Path, payload: dict[str, Any]) -> list[dict[str, 
     add_record(
         records,
         ticker=gate.get("ticker") or symbol,
-        source="wf67_request_embedded_promotion_gate",
+        source="wf67_request_embedded_promotion_gate_superseded" if superseded else "wf67_request_embedded_promotion_gate",
         source_path=path,
         low=gate_band.get("low"),
         high=gate_band.get("high"),
@@ -252,10 +274,11 @@ def collect_records() -> tuple[list[dict[str, Any]], dict[str, str]]:
         card = as_dict(load_json_artifact(path))
         risk = as_dict(card.get("risk_check"))
         order = as_dict(card.get("order"))
+        source_name = "wf67_owner_card_superseded" if superseded_artifact(card) else "wf67_owner_card"
         add_record(
             records,
             ticker=order.get("symbol") or path.name.split(".", 1)[0],
-            source="wf67_owner_card",
+            source=source_name,
             source_path=path,
             low=risk.get("entry_band_low"),
             high=risk.get("entry_band_high"),
@@ -291,7 +314,20 @@ def build_report() -> dict[str, Any]:
             (record.get("entry_band_low"), record.get("entry_band_high"))
             for record in ticker_records
         }
-        core_records = [record for record in ticker_records if record.get("source") in CORE_APPROVAL_SOURCES]
+        active_records = [record for record in ticker_records if active_band_record(record)]
+        active_band_only = {
+            (record.get("entry_band_low"), record.get("entry_band_high"))
+            for record in active_records
+        }
+        active_signatures = {
+            (
+                record.get("entry_band_low"),
+                record.get("entry_band_high"),
+                record.get("stop_or_invalidation"),
+            )
+            for record in active_records
+        }
+        core_records = [record for record in active_records if record.get("source") in CORE_APPROVAL_SOURCES]
         core_band_only = {
             (record.get("entry_band_low"), record.get("entry_band_high"))
             for record in core_records
@@ -307,10 +343,13 @@ def build_report() -> dict[str, Any]:
         ticker_summaries.append({
             "ticker": ticker,
             "source_count": len(ticker_records),
+            "active_source_count": len(active_records),
             "core_approval_source_count": len(core_records),
             "distinct_band_count": len(band_only),
+            "distinct_active_band_count": len(active_band_only),
             "distinct_core_band_count": len(core_band_only),
             "distinct_band_stop_count": len(signatures),
+            "distinct_active_band_stop_count": len(active_signatures),
             "distinct_core_band_stop_count": len(core_signatures),
             "current_core_band": sorted([list(item) for item in core_band_only])[0] if len(core_band_only) == 1 else None,
             "records": ticker_records,
@@ -331,21 +370,21 @@ def build_report() -> dict[str, Any]:
                 "distinct_core_band_stop_signatures": sorted([list(item) for item in core_signatures], key=lambda item: json.dumps(item, sort_keys=True)),
                 "records": ticker_records,
             })
-        elif len(band_only) > 1:
+        elif len(active_band_only) > 1:
             findings.append({
                 "severity": "warning",
                 "code": "review_context_entry_band_drift",
                 "ticker": ticker,
                 "current_core_band": sorted([list(item) for item in core_band_only])[0] if len(core_band_only) == 1 else None,
-                "distinct_bands": sorted([list(item) for item in band_only]),
+                "distinct_active_bands": sorted([list(item) for item in active_band_only]),
                 "records": ticker_records,
             })
-        elif len(signatures) > 1:
+        elif len(active_signatures) > 1:
             findings.append({
                 "severity": "warning",
                 "code": "stop_or_invalidation_mismatch",
                 "ticker": ticker,
-                "distinct_band_stop_signatures": sorted([list(item) for item in signatures], key=lambda item: json.dumps(item, sort_keys=True)),
+                "distinct_active_band_stop_signatures": sorted([list(item) for item in active_signatures], key=lambda item: json.dumps(item, sort_keys=True)),
                 "records": ticker_records,
             })
 
@@ -370,7 +409,7 @@ def build_report() -> dict[str, Any]:
                 "Repair owning generator/source artifacts for mismatch tickers, then rebuild WF78 queue, "
                 "owner cards, WF67 request artifacts, decision factory, and this validator."
                 if critical
-                else "Core approval-card band surfaces are internally consistent; stale review-packet drift remains warning-only if present."
+                else "Core and active review-card band surfaces are internally consistent."
             ),
         },
         "ticker_summaries": ticker_summaries,
@@ -384,7 +423,8 @@ def build_report() -> dict[str, Any]:
         "stop_lines": [
             "A matching band does not approve capital deployment or execution.",
             "A core approval-surface band mismatch blocks owner-card use until the owning generator/source is repaired.",
-            "Older review-packet band drift is warning-only when WF78 queue, decision factory, and WF67 owner cards agree.",
+            "Active review-packet band drift is warning-only when WF78 queue, decision factory, and WF67 owner cards agree.",
+            "Superseded review-packet drift is retained as audit history and ignored for live domain status.",
             "This validator never mutates cards, requests, canon, portfolio, account, or cash/sizing state.",
         ],
     }
@@ -414,14 +454,15 @@ def write_markdown(path: Path, payload: dict[str, Any]) -> None:
         "",
         "## Ticker Summary",
         "",
-        "| Ticker | Sources | Core sources | Distinct bands | Core bands | Current core band |",
-        "|---|---:|---:|---:|---:|---|",
+        "| Ticker | Sources | Active sources | Core sources | Distinct bands | Active bands | Core bands | Current core band |",
+        "|---|---:|---:|---:|---:|---:|---:|---|",
     ])
     for row in as_list(payload.get("ticker_summaries")):
         item = as_dict(row)
         lines.append(
-            f"| {item.get('ticker')} | {item.get('source_count')} | "
+            f"| {item.get('ticker')} | {item.get('source_count')} | {item.get('active_source_count')} | "
             f"{item.get('core_approval_source_count')} | {item.get('distinct_band_count')} | "
+            f"{item.get('distinct_active_band_count')} | "
             f"{item.get('distinct_core_band_count')} | {item.get('current_core_band')} |"
         )
     lines.extend([

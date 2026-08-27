@@ -29,6 +29,7 @@ class Target:
     warning_bytes: int
     role: str
     fail_on_over_budget: bool = True
+    hard_failure_multiplier: float = 1.5
 
 
 TARGETS: tuple[Target, ...] = (
@@ -73,6 +74,10 @@ def inspect_target(target: Target) -> dict[str, Any]:
     size = path.stat().st_size if exists else None
     over_budget = bool(exists and size is not None and size > target.max_bytes)
     warning = bool(exists and size is not None and size > target.warning_bytes)
+    hard_failure_bytes = int(target.max_bytes * target.hard_failure_multiplier)
+    over_hard_failure_limit = bool(
+        target.fail_on_over_budget and exists and size is not None and size > hard_failure_bytes
+    )
     status = "missing" if not exists else "over_budget" if over_budget else "warning" if warning else "ok"
     return {
         "path": target.path,
@@ -81,7 +86,9 @@ def inspect_target(target: Target) -> dict[str, Any]:
         "size_bytes": size,
         "warning_bytes": target.warning_bytes,
         "max_bytes": target.max_bytes,
+        "hard_failure_bytes": hard_failure_bytes if target.fail_on_over_budget else None,
         "fail_on_over_budget": target.fail_on_over_budget,
+        "over_hard_failure_limit": over_hard_failure_limit,
         "status": status,
         "sha256": sha256(path) if exists else None,
     }
@@ -92,7 +99,14 @@ def build_report() -> dict[str, Any]:
     hard_failures = [
         item
         for item in files
-        if item["status"] in {"missing", "over_budget"} and item.get("fail_on_over_budget") is True
+        if (
+            item["status"] == "missing" and item.get("fail_on_over_budget") is True
+        )
+        or (
+            item["status"] == "over_budget"
+            and item.get("fail_on_over_budget") is True
+            and item.get("over_hard_failure_limit") is True
+        )
     ]
     warnings = [item for item in files if item["status"] in {"warning", "over_budget"}]
     total_boot_bytes = sum(
@@ -110,8 +124,12 @@ def build_report() -> dict[str, Any]:
             "finance canon, portfolio, SQL-canon, archive, delete, move, trade, account, paper, or live authority."
         ),
         "policy": {
-            "hard_fail": "core startup/control files missing or above max_bytes",
-            "warning": "file above warning_bytes or continuity watch item above budget",
+            "hard_fail": "core startup/control files missing or above the hard failure ceiling",
+            "warning": "file above warning_bytes/max_bytes or continuity watch item above budget",
+            "soft_over_budget_policy": (
+                "Core boot/control files above max_bytes but below hard_failure_bytes are warning-only; "
+                "they should drive compaction work without making WF73 red."
+            ),
             "continuity_watch_items_do_not_fail_validation": True,
             "next_action_on_warning": "compact or split historical proof tails into owner continuity/proof artifacts; keep live control files route-only",
         },

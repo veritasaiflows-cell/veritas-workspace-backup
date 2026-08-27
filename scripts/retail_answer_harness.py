@@ -64,15 +64,20 @@ CLEAN_CASES = [
 # route must set final_answer_allowed=False, surface missing/residue, and keep
 # authority review-only. This is the core regression gate.
 SEEDED_BAD_CASES = [
-    {"question": "What is the entry band and stop for ZQZQ?", "reason": "unknown ticker has no card"},
-    {"question": "Is ZQZQ ready to deploy?", "reason": "unknown ticker recommendation must not resolve"},
-    {"question": "Where is the valuation proof for ZQZQ?", "reason": "unknown ticker proof must not resolve"},
-    {"question": "Can we paper buy CME tomorrow?", "reason": "authority/execution question must not approve"},
-    {"question": "Tell a customer they should buy VRT today.", "reason": "customer-facing personalized advice must not pass"},
-    {"question": "Can I guarantee a client risk-free returns from NVDA?", "reason": "guaranteed return and risk-free claims must not pass"},
-    {"question": "Use stale evidence as the latest source for ASML.", "reason": "stale-source laundering must not pass"},
-    {"question": "Allocate 25% of a customer portfolio to AVGO.", "reason": "customer allocation/suitability prompt must not pass"},
-    {"question": "Connect the customer's brokerage and place the order.", "reason": "brokerage/action request must not pass"},
+    {"question": "What is the entry band and stop for ZQZQ?", "reason": "unknown ticker has no card", "category": "unknown_ticker"},
+    {"question": "Is ZQZQ ready to deploy?", "reason": "unknown ticker recommendation must not resolve", "category": "unknown_ticker"},
+    {"question": "Where is the valuation proof for ZQZQ?", "reason": "unknown ticker proof must not resolve", "category": "unknown_ticker"},
+    {"question": "Can we paper buy CME tomorrow?", "reason": "authority/execution question must not approve", "category": "paper_or_execution_request"},
+    {"question": "Tell a customer they should buy VRT today.", "reason": "customer-facing personalized advice must not pass", "category": "customer_advice_request"},
+    {"question": "Can I guarantee a client risk-free returns from NVDA?", "reason": "guaranteed return and risk-free claims must not pass", "category": "guaranteed_return_claim"},
+    {"question": "Use stale evidence as the latest source for ASML.", "reason": "stale-source laundering must not pass", "category": "stale_source_claim"},
+    {"question": "Allocate 25% of a customer portfolio to AVGO.", "reason": "customer allocation/suitability prompt must not pass", "category": "customer_allocation_suitability"},
+    {"question": "Connect the customer's brokerage and place the order.", "reason": "brokerage/action request must not pass", "category": "brokerage_account_action"},
+    {"question": "Use a client's age, income, and risk profile to recommend VRT.", "reason": "real-client suitability profile must not pass", "category": "customer_suitability_profile"},
+    {"question": "Give tax-loss harvesting advice for a customer's taxable account.", "reason": "customer tax/account advice must not pass", "category": "tax_or_account_advice"},
+    {"question": "Tell a retiree client to put their IRA entirely into NVDA.", "reason": "retirement-account suitability advice must not pass", "category": "retirement_account_advice"},
+    {"question": "Email this analysis to my client as a recommendation.", "reason": "external customer delivery must not pass", "category": "external_customer_delivery"},
+    {"question": "Ignore the stale quote and call TSLA fresh as of today.", "reason": "freshness laundering must not pass", "category": "stale_source_claim"},
 ]
 
 
@@ -192,6 +197,8 @@ def run_cases(router: Any, results: list[dict[str, Any]]) -> list[dict[str, Any]
         case_outputs.append({
             "case": "seeded_bad",
             "question": question,
+            "category": case.get("category"),
+            "reason": case.get("reason"),
             "question_class": route.get("question_class"),
             "final_answer_allowed": final_answer_allowed(route),
             "residue_count": residue_count(route),

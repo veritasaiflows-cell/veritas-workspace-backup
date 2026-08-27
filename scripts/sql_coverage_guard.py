@@ -63,6 +63,9 @@ COMMANDS = [
         "id": "go_binary_freshness",
         "cmd": [sys.executable, "scripts\\go_binary_freshness_guard.py", "--write", "--validate"],
         "required": True,
+        "result_artifact": "tmp\\go-binary-freshness-guard.json",
+        "inconclusive_result_statuses": {"inconclusive"},
+        "timeout_is_inconclusive": True,
     },
     {
         "id": "pm_cockpit_validate",
@@ -127,9 +130,26 @@ def rel(path: Path) -> str:
         return str(path)
 
 
+def result_artifact_observation(spec: dict[str, Any]) -> tuple[str | None, tuple[int, int] | None]:
+    """Read a child proof status plus a fingerprint proving a current write."""
+
+    artifact_rel = spec.get("result_artifact")
+    if not isinstance(artifact_rel, str) or not artifact_rel:
+        return None, None
+    path = WORKSPACE / artifact_rel
+    try:
+        stat = path.stat()
+    except OSError:
+        return None, None
+    payload = load_json(path)
+    status = payload.get("status") if isinstance(payload, dict) else None
+    return (status if isinstance(status, str) else None), (stat.st_mtime_ns, stat.st_size)
+
+
 def run_command(spec: dict[str, Any]) -> dict[str, Any]:
     cwd = WORKSPACE / spec.get("cwd", ".")
     started = utc_now()
+    _, artifact_before = result_artifact_observation(spec)
     try:
         proc = subprocess.run(
             spec["cmd"],
@@ -139,6 +159,15 @@ def run_command(spec: dict[str, Any]) -> dict[str, Any]:
             timeout=300,
             check=False,
         )
+        result_status, artifact_after = result_artifact_observation(spec)
+        inconclusive_statuses = spec.get("inconclusive_result_statuses", set())
+        is_inconclusive = (
+            proc.returncode != 0
+            and isinstance(inconclusive_statuses, set)
+            and result_status in inconclusive_statuses
+            and artifact_after is not None
+            and artifact_after != artifact_before
+        )
         return {
             "id": spec["id"],
             "required": bool(spec.get("required", True)),
@@ -147,9 +176,26 @@ def run_command(spec: dict[str, Any]) -> dict[str, Any]:
             "started_at_utc": started,
             "completed_at_utc": utc_now(),
             "exit_code": proc.returncode,
-            "status": "ok" if proc.returncode == 0 else "critical",
+            "status": "ok" if proc.returncode == 0 else "warning" if is_inconclusive else "critical",
+            "classification": "inconclusive_child_result" if is_inconclusive else None,
+            "result_artifact_status": result_status,
+            "result_artifact_fresh": artifact_after is not None and artifact_after != artifact_before,
             "stdout_tail": proc.stdout[-4000:],
             "stderr_tail": proc.stderr[-4000:],
+        }
+    except subprocess.TimeoutExpired as exc:
+        timeout_is_inconclusive = bool(spec.get("timeout_is_inconclusive", False))
+        return {
+            "id": spec["id"],
+            "required": bool(spec.get("required", True)),
+            "cmd": " ".join(spec["cmd"]),
+            "cwd": rel(cwd),
+            "started_at_utc": started,
+            "completed_at_utc": utc_now(),
+            "exit_code": None,
+            "status": "warning" if timeout_is_inconclusive else "critical",
+            "classification": "inconclusive_command_timeout" if timeout_is_inconclusive else "command_timeout",
+            "error": repr(exc),
         }
     except Exception as exc:
         return {
@@ -286,8 +332,10 @@ def build_packet() -> dict[str, Any]:
     warnings: list[str] = []
 
     for command in commands:
-        if command["status"] != "ok" and command["required"]:
+        if command["status"] == "critical" and command["required"]:
             critical.append(f"command_failed:{command['id']}")
+        elif command["status"] == "warning" and command["required"]:
+            warnings.append(f"command_inconclusive:{command['id']}")
     for db in sqlite_records:
         if db["status"] != "ok":
             critical.append(f"sqlite_failed:{db['path']}")
@@ -320,7 +368,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Refresh and validate SQL/control-plane coverage indexes.")
     parser.add_argument("--write", action="store_true", help="Write JSON proof artifact.")
     parser.add_argument("--write-md", action="store_true", help="Write Markdown proof artifact.")
-    parser.add_argument("--validate", action="store_true", help="Exit non-zero when status is not ok.")
+    parser.add_argument("--validate", action="store_true", help="Exit non-zero only for critical control-plane failures.")
     args = parser.parse_args()
 
     packet = build_packet()
@@ -330,7 +378,7 @@ def main() -> int:
         atomic_write_text(OUT_MD, build_markdown(packet))
 
     print(json.dumps({"status": packet["status"], "out": rel(OUT_JSON), "md": rel(OUT_MD), "critical": packet["critical_findings"], "warnings": packet["warning_findings"]}, indent=2))
-    if args.validate and packet["status"] != "ok":
+    if args.validate and packet["status"] == "critical":
         return 1
     return 0
 

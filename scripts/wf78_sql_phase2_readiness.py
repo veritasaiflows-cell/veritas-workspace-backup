@@ -23,7 +23,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_entries as legacy_42_tier_entries
+from finance_production_scope import production_entries as production_scope_entries
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -42,7 +42,7 @@ TICKER_CARDS_DIR = TMP / "ticker-intelligence-cards"
 
 SCHEMA_VERSION = 1
 SUPPORTED_ACTIVE_UNIVERSE_TICKERS = {100, 200, 300, 400, 500}
-EXPECTED_PRODUCTION_TICKERS = 42
+EXPECTED_DEPRECATED_PRODUCTION_TICKERS = 0
 SUPPORTED_REVIEW_MONITOR_TICKERS = {58, 158, 258, 358, 458}
 EXPECTED_CANON_CACHE_ROWS = 265
 FORBIDDEN_TRUE_AUTHORITY_FLAGS = {
@@ -275,10 +275,20 @@ def audit_finance_intelligence_state() -> dict[str, Any]:
         source_open_missing = scalar(conn, "SELECT COUNT(*) FROM card_registry WHERE source_open_required=0")
         failed_validators = scalar(conn, "SELECT COUNT(*) FROM validation_results WHERE status!='ok' AND severity='error'")
         add_check(report["checks"], "active_sql_rows_supported_scaleout_count", report["row_counts"]["all_ticker_sql_rows"] in SUPPORTED_ACTIVE_UNIVERSE_TICKERS, report["row_counts"])
-        add_check(report["checks"], "production_current_42_present", report["row_counts"]["current_ticker_cards"] == EXPECTED_PRODUCTION_TICKERS and report["row_counts"]["production_answer_path_rows"] == EXPECTED_PRODUCTION_TICKERS, report["row_counts"])
+        add_check(
+            report["checks"],
+            "current_ticker_cards_empty_sql_first_wait_state",
+            report["row_counts"]["current_ticker_cards"] == EXPECTED_DEPRECATED_PRODUCTION_TICKERS and report["row_counts"]["production_answer_path_rows"] == EXPECTED_DEPRECATED_PRODUCTION_TICKERS,
+            report["row_counts"],
+        )
         add_check(report["checks"], "review_monitor_thin_rows_supported_scaleout_count", report["row_counts"]["review_monitor_thin_rows"] in SUPPORTED_REVIEW_MONITOR_TICKERS, report["row_counts"])
         add_check(report["checks"], "all_snapshot_rows_supported_scaleout_count", report["row_counts"]["fundamental_snapshot"] in SUPPORTED_ACTIVE_UNIVERSE_TICKERS and report["row_counts"]["analyst_snapshot"] in SUPPORTED_ACTIVE_UNIVERSE_TICKERS and report["row_counts"]["card_registry"] in SUPPORTED_ACTIVE_UNIVERSE_TICKERS, report["row_counts"])
-        add_check(report["checks"], "latest_valid_entry_stop_refs_42", report["row_counts"]["latest_valid_entry_stop_refs"] == EXPECTED_PRODUCTION_TICKERS, report["row_counts"])
+        add_check(
+            report["checks"],
+            "latest_valid_entry_stop_refs_not_ahead_of_active",
+            report["row_counts"]["latest_valid_entry_stop_refs"] <= report["row_counts"]["all_ticker_sql_rows"],
+            report["row_counts"],
+        )
         pilot_overlap = scalar(conn, "SELECT COUNT(*) FROM current_pilot_fixtures WHERE ticker IN (SELECT ticker FROM current_ticker_cards)")
         add_check(report["checks"], "pilot_fixtures_excluded_from_current_cards", pilot_overlap == 0, {"rows": pilot_overlap})
         add_check(report["checks"], "forbidden_authority_flags_false", bad_authority == 0, {"rows": bad_authority})
@@ -295,11 +305,11 @@ def audit_phase1_inputs() -> dict[str, Any]:
     validation = load_json_artifact(UNIVERSE_VALIDATION_PATH) or {}
     router_qa = load_json_artifact(ROUTER_QA_PATH) or {}
     entries = universe.get("entries") if isinstance(universe, dict) else None
-    production_entries = legacy_42_tier_entries() or [
+    production_entries = production_scope_entries() or [
         row for row in entries or []
         if isinstance(row, dict)
         and row.get("active") is True
-        and row.get("universe_scope", "production_current_42") == "production_current_42"
+        and row.get("production_scope") is True
     ]
     pilot_entries = [
         row for row in entries or []
@@ -325,12 +335,12 @@ def audit_phase1_inputs() -> dict[str, Any]:
     )
     add_check(checks, "universe_exists", UNIVERSE_PATH.exists(), rel(UNIVERSE_PATH))
     add_check(checks, "active_universe_ticker_count_supported_scaleout", isinstance(entries, list) and len(entries) in SUPPORTED_ACTIVE_UNIVERSE_TICKERS, {"active_rows": len(entries) if isinstance(entries, list) else None})
-    add_check(checks, "production_universe_ticker_count_42", isinstance(entries, list) and len(production_entries) == EXPECTED_PRODUCTION_TICKERS, {"production_rows": len(production_entries), "total_rows": len(entries) if isinstance(entries, list) else None})
+    add_check(checks, "production_universe_empty_sql_first_wait_state", isinstance(entries, list) and len(production_entries) == EXPECTED_DEPRECATED_PRODUCTION_TICKERS, {"production_rows": len(production_entries), "expected": EXPECTED_DEPRECATED_PRODUCTION_TICKERS, "total_rows": len(entries) if isinstance(entries, list) else None})
     add_check(checks, "review_monitor_ticker_count_supported_scaleout", isinstance(entries, list) and len([row for row in entries if isinstance(row, dict) and row.get("universe_scope") == "review_100_monitor"]) in SUPPORTED_REVIEW_MONITOR_TICKERS, {"review_rows": len([row for row in entries if isinstance(row, dict) and row.get("universe_scope") == "review_100_monitor"]) if isinstance(entries, list) else None})
     add_check(checks, "pilot_fixture_count_within_contract", len(pilot_entries) <= 11, {"pilot_rows": len(pilot_entries)})
     add_check(checks, "universe_validation_ok", validation.get("status") == "ok", validation.get("summary"))
     add_check(checks, "router_qa_pass", router_qa.get("status") == "pass", router_qa.get("summary"))
-    add_check(checks, "ticker_cards_present_42", len(ticker_cards) >= EXPECTED_PRODUCTION_TICKERS, {"files": len(ticker_cards)})
+    add_check(checks, "ticker_cards_not_required_for_empty_production_scope", len(ticker_cards) >= len(production_entries), {"files": len(ticker_cards), "production_rows": len(production_entries)})
     add_check(checks, "universe_authority_flags_false", not forbidden_true, forbidden_true)
     report["status"] = "ok" if all(check["ok"] for check in checks) else "blocked"
     return report
@@ -394,3 +404,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

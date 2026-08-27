@@ -1,38 +1,14 @@
 {
   "ticker": "CVX",
   "name": "Chevron Corporation",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 100.24,
-      "h": 105.0,
-      "l": 98.77,
-      "c": 104.83,
-      "v": 152.1
-    },
-    {
-      "d": "2016-07",
-      "o": 104.78,
-      "h": 107.58,
-      "l": 99.85,
-      "c": 102.48,
-      "v": 134.26
-    },
-    {
-      "d": "2016-08",
-      "o": 101.33,
-      "h": 103.6,
-      "l": 97.91,
-      "c": 100.58,
-      "v": 132.68
-    },
     {
       "d": "2016-09",
       "o": 100.35,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 191.3,
-      "h": 194.09,
+      "h": 198.87,
       "l": 179.53,
-      "c": 181.62,
-      "v": 72.54
+      "c": 182.46,
+      "v": 205.5
+    },
+    {
+      "d": "2026-06",
+      "o": 184.38,
+      "h": 192.69,
+      "l": 165.2,
+      "c": 165.76,
+      "v": 199.48
+    },
+    {
+      "d": "2026-07",
+      "o": 164.78,
+      "h": 197.69,
+      "l": 164.78,
+      "c": 196.83,
+      "v": 170.58
+    },
+    {
+      "d": "2026-08",
+      "o": 195.38,
+      "h": 208.98,
+      "l": 185.87,
+      "c": 205.27,
+      "v": 120.91
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 196.41,
     "stop": 182.16,
     "set": "2026-05-01",
-    "label": "186.91–196.41"
+    "label": "186.91-196.41"
   },
   "current_quote": {
-    "close": 181.62,
-    "ma20": 187.39,
-    "ma50": 193.18,
-    "ma200": 165.51,
-    "data_date": "2026-05-08"
+    "close": 205.27,
+    "ma20": 194.35,
+    "ma50": 184.17,
+    "ma200": 175.4,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_PRIMARY",
-    "type": "WATCH",
-    "status": "IN_BAND",
-    "trend_stack": "ABOVE_200_BELOW_20_50",
-    "suggested_low": 179.01,
-    "suggested_high": 189.88,
-    "suggested_stop": 172.97,
-    "sma_envelope_low": 178.99,
-    "sma_envelope_high": 197.83,
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "NEAR_BAND",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 186.9,
+    "suggested_high": 196.84,
+    "suggested_stop": 181.26,
+    "sma_envelope_low": 179.69,
+    "sma_envelope_high": 198.61,
     "earnings_state": "CLEAR",
-    "band_confidence": 3,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 4,
     "needs_review": true,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:37+00:00"
+  "generated_at": "2026-08-21T20:32:23+00:00"
 }

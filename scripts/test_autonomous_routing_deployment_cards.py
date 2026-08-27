@@ -170,6 +170,11 @@ def write_sources(paths: dict[str, Path], *, import_allowed: bool = False, drift
 
     for key in ("canon_status_invariant", "canonical_ownership", "canon_drift_gate"):
         write_json(paths[key], base_payload())
+    # The candidate docket now requires these execution-time sources to be
+    # explicitly clean.  Keeping them in the fixture prevents an old test
+    # from treating missing TTL/circuit-breaker/guard proof as clean.
+    for key in ("wf84_data_plane", "wf87_approval_ttl", "wf87_circuit_breakers", "wf67_guard"):
+        write_json(paths[key], base_payload())
 
 
 def test_clean_review_card_is_still_blocked_by_maturity() -> None:

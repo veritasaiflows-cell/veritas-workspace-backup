@@ -30,6 +30,11 @@ SCHEMA = "veritas.wf78_tier_a_confidence_gate.v1"
 
 MAX_OPERATING_COMPANY_PERIOD_AGE_DAYS = 170
 
+# finance_sql_canon.resolve_production_scope admits Tier A and Tier B, and requires
+# tier_a_confidence_status == "ready". Scoping this gate to Tier A alone left every
+# Tier B name with a null verdict, which that join reads as confidence_status_not_ready.
+CONFIDENCE_SCOPE_TIERS = {"Tier A", "Tier B"}
+
 AUTHORITY_BOUNDARY: dict[str, bool] = {
     "review_only": True,
     "derived_confidence_only": True,
@@ -302,7 +307,7 @@ def build_report() -> dict[str, Any]:
 
     routing_rows = [
         row for row in as_list(routing.get("rows"))
-        if isinstance(row, dict) and row.get("auto_tier") == "Tier A" and row.get("ticker")
+        if isinstance(row, dict) and row.get("auto_tier") in CONFIDENCE_SCOPE_TIERS and row.get("ticker")
     ]
     fundamental_rows = by_ticker(as_list(fundamentals.get("rows")))
     rows = [

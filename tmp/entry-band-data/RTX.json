@@ -1,38 +1,14 @@
 {
   "ticker": "RTX",
   "name": "RTX Corporation",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 62.99,
-      "h": 64.73,
-      "l": 60.98,
-      "c": 64.54,
-      "v": 142.77
-    },
-    {
-      "d": "2016-07",
-      "o": 64.49,
-      "h": 68.28,
-      "l": 62.5,
-      "c": 67.75,
-      "v": 115.56
-    },
-    {
-      "d": "2016-08",
-      "o": 67.63,
-      "h": 69.12,
-      "l": 66.64,
-      "c": 66.98,
-      "v": 86.58
-    },
     {
       "d": "2016-09",
       "o": 67.17,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 176.23,
-      "h": 178.09,
-      "l": 171.2,
-      "c": 176.09,
-      "v": 38.59
+      "h": 181.55,
+      "l": 170.78,
+      "c": 179.66,
+      "v": 115.74
+    },
+    {
+      "d": "2026-06",
+      "o": 177.44,
+      "h": 194.17,
+      "l": 172.55,
+      "c": 189.73,
+      "v": 114.75
+    },
+    {
+      "d": "2026-07",
+      "o": 190.48,
+      "h": 221.34,
+      "l": 188.97,
+      "c": 215.22,
+      "v": 112.21
+    },
+    {
+      "d": "2026-08",
+      "o": 216.57,
+      "h": 226.88,
+      "l": 209.86,
+      "c": 209.91,
+      "v": 67.82
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 193.23,
     "stop": 177.91,
     "set": "2026-05-06",
-    "label": "183.01–193.23"
+    "label": "183.01-193.23"
   },
   "current_quote": {
-    "close": 176.09,
-    "ma20": 182.98,
-    "ma50": 193.76,
-    "ma200": 178.57,
-    "data_date": "2026-05-08"
+    "close": 209.91,
+    "ma20": 218.94,
+    "ma50": 202.77,
+    "ma200": 190.13,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "DUAL_MA_RECLAIM",
-    "type": "VAULT_RECLAIM",
-    "status": "BELOW_STOP",
-    "trend_stack": "BELOW_ALL_MAS",
-    "suggested_low": 188.48,
-    "suggested_high": 194.44,
-    "suggested_stop": 183.71,
-    "sma_envelope_low": 179.06,
-    "sma_envelope_high": 197.9,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 206.23,
+    "suggested_high": 216.92,
+    "suggested_stop": 200.29,
+    "sma_envelope_low": 195.67,
+    "sma_envelope_high": 216.27,
     "earnings_state": "CLEAR",
-    "band_confidence": 2,
-    "needs_review": true,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:36+00:00"
+  "generated_at": "2026-08-21T20:32:22+00:00"
 }

@@ -23,7 +23,7 @@ if str(SCRIPTS) not in sys.path:
 from market_data_utils import atomic_write_json, load_json_artifact
 from technical_refresh import classify_posture
 import universe
-from wf78_legacy_42_tier_state import production_entries as legacy_42_tier_entries
+from finance_production_scope import production_entries as production_scope_entries
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -68,6 +68,9 @@ class SupplementalRecord:
     source: str
     retrieved_at_utc: str
     notes: list[str]
+    retrieval_method: str | None = None
+    history_data_date: str | None = None
+    regular_market_time_utc: str | None = None
 
 
 def utc_now() -> str:
@@ -91,7 +94,7 @@ def load_dict(path: Path) -> dict[str, Any]:
 
 
 def production_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
-    migrated = legacy_42_tier_entries()
+    migrated = production_scope_entries()
     if migrated:
         return migrated
     entries = payload.get("entries")
@@ -101,7 +104,7 @@ def production_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
     for row in entries:
         if not isinstance(row, dict) or row.get("active") is not True:
             continue
-        if row.get("universe_scope", "production_current_42") != "production_current_42":
+        if row.get("production_scope") is not True:
             continue
         ticker = str(row.get("ticker") or "").upper().strip()
         if ticker:
@@ -153,6 +156,81 @@ def source_symbol(row: dict[str, Any]) -> str:
     return str(symbols.get("yfinance") or row.get("yfinance") or row.get("ticker") or "").strip()
 
 
+def as_float(value: Any) -> float | None:
+    if value in (None, ""):
+        return None
+    try:
+        out = float(value)
+    except Exception:
+        return None
+    if out != out:
+        return None
+    return out
+
+
+def mean_last(values: list[float], count: int) -> float | None:
+    if len(values) < count:
+        return None
+    return round(sum(values[-count:]) / count, 2)
+
+
+def index_date(value: Any) -> str | None:
+    try:
+        if hasattr(value, "strftime"):
+            return value.strftime("%Y-%m-%d")
+    except Exception:
+        pass
+    text = str(value or "")
+    return text[:10] if text else None
+
+
+def market_time(value: Any) -> tuple[str | None, str | None]:
+    try:
+        timestamp = int(value)
+    except Exception:
+        return None, None
+    dt = datetime.fromtimestamp(timestamp, timezone.utc).replace(microsecond=0)
+    return dt.date().isoformat(), dt.isoformat().replace("+00:00", "Z")
+
+
+def info_value(info: Any, *names: str) -> Any:
+    for name in names:
+        value = None
+        try:
+            value = getattr(info, name)
+        except Exception:
+            value = None
+        if value is None and hasattr(info, "get"):
+            try:
+                value = info.get(name)
+            except Exception:
+                value = None
+        if value is not None:
+            return value
+    return None
+
+
+def regular_market_snapshot(ticker_obj: Any) -> tuple[float | None, str | None, str | None, list[str]]:
+    notes: list[str] = []
+    price: float | None = None
+    market_date: str | None = None
+    market_time_utc: str | None = None
+    try:
+        fast_info = ticker_obj.fast_info
+        price = as_float(info_value(fast_info, "last_price", "lastPrice", "regularMarketPrice"))
+    except Exception as exc:
+        notes.append(f"fast_info unavailable: {exc}")
+    try:
+        info = ticker_obj.info
+        info_price = as_float(info_value(info, "regularMarketPrice", "currentPrice"))
+        if info_price is not None:
+            price = info_price
+        market_date, market_time_utc = market_time(info_value(info, "regularMarketTime"))
+    except Exception as exc:
+        notes.append(f"quote info unavailable: {exc}")
+    return price, market_date, market_time_utc, notes
+
+
 def fetch_record(ticker: str, symbol: str, now: str) -> SupplementalRecord:
     notes: list[str] = []
     try:
@@ -161,16 +239,71 @@ def fetch_record(ticker: str, symbol: str, now: str) -> SupplementalRecord:
         return SupplementalRecord(ticker, symbol, "provider_unavailable", None, None, None, None, None, None, "yfinance", now, [f"yfinance import failed: {exc}"])
 
     try:
-        raw = yf.Ticker(symbol).history(period="1y")
+        ticker_obj = yf.Ticker(symbol)
+        raw = ticker_obj.history(period="1y")
+        regular_price, regular_date, regular_time_utc, regular_notes = regular_market_snapshot(ticker_obj)
+        notes.extend(regular_notes)
         if raw.empty:
-            return SupplementalRecord(ticker, symbol, "no_data", None, None, None, None, None, None, "yfinance", now, ["yfinance returned no rows"])
+            if regular_price is not None and regular_date:
+                return SupplementalRecord(
+                    ticker=ticker,
+                    yfinance_symbol=symbol,
+                    status="ok",
+                    close=round(regular_price, 2),
+                    ma20=None,
+                    ma50=None,
+                    ma200=None,
+                    ma_posture="insufficient history for full posture",
+                    data_date=regular_date,
+                    source="yfinance_fast_info",
+                    retrieved_at_utc=now,
+                    notes=notes + ["history returned no rows; used regular-market quote snapshot"],
+                    retrieval_method="yf.Ticker(symbol).fast_info/info regularMarketPrice fallback",
+                    history_data_date=None,
+                    regular_market_time_utc=regular_time_utc,
+                )
+            return SupplementalRecord(ticker, symbol, "no_data", None, None, None, None, None, None, "yfinance", now, notes + ["yfinance returned no rows"])
+        raw_latest_date = index_date(raw.index[-1]) if len(raw.index) else None
         closes = raw["Close"].dropna()
         if closes.empty:
-            return SupplementalRecord(ticker, symbol, "no_close", None, None, None, None, None, None, "yfinance", now, ["yfinance returned no usable close rows"])
-        close = round(float(closes.iloc[-1]), 2)
-        ma20 = round(float(closes.rolling(20).mean().iloc[-1]), 2) if len(closes) >= 20 else None
-        ma50 = round(float(closes.rolling(50).mean().iloc[-1]), 2) if len(closes) >= 50 else None
-        ma200 = round(float(closes.rolling(200).mean().iloc[-1]), 2) if len(closes) >= 200 else None
+            if regular_price is not None and regular_date:
+                return SupplementalRecord(
+                    ticker=ticker,
+                    yfinance_symbol=symbol,
+                    status="ok",
+                    close=round(regular_price, 2),
+                    ma20=None,
+                    ma50=None,
+                    ma200=None,
+                    ma_posture="insufficient history for full posture",
+                    data_date=regular_date,
+                    source="yfinance_fast_info",
+                    retrieved_at_utc=now,
+                    notes=notes + ["history returned no usable close rows; used regular-market quote snapshot"],
+                    retrieval_method="yf.Ticker(symbol).fast_info/info regularMarketPrice fallback",
+                    history_data_date=None,
+                    regular_market_time_utc=regular_time_utc,
+                )
+            return SupplementalRecord(ticker, symbol, "no_close", None, None, None, None, None, None, "yfinance", now, notes + ["yfinance returned no usable close rows"])
+        history_data_date = index_date(closes.index[-1])
+        values = [as_float(value) for value in closes.tolist()]
+        usable_values = [value for value in values if value is not None]
+        close = round(float(usable_values[-1]), 2)
+        data_date = history_data_date
+        source = "yfinance"
+        retrieval_method = "yf.Ticker(symbol).history(period='1y')"
+        if raw_latest_date and history_data_date and raw_latest_date > history_data_date:
+            notes.append(f"history latest row {raw_latest_date} had no usable close after {history_data_date}")
+        if regular_price is not None and regular_date and (not history_data_date or regular_date > history_data_date):
+            close = round(regular_price, 2)
+            data_date = regular_date
+            source = "yfinance_fast_info"
+            retrieval_method = "yf.Ticker(symbol).fast_info/info regularMarketPrice fallback"
+            usable_values.append(float(regular_price))
+            notes.append(f"used regular-market quote snapshot dated {regular_date} because history close data ended {history_data_date}")
+        ma20 = mean_last(usable_values, 20)
+        ma50 = mean_last(usable_values, 50)
+        ma200 = mean_last(usable_values, 200)
         if ma200 is None:
             notes.append("Less than 200 trading days available.")
         posture = classify_posture(close, ma20, ma50, ma200) if ma20 is not None and ma50 is not None and ma200 is not None else "insufficient data for full posture"
@@ -183,10 +316,13 @@ def fetch_record(ticker: str, symbol: str, now: str) -> SupplementalRecord:
             ma50=ma50,
             ma200=ma200,
             ma_posture=posture,
-            data_date=closes.index[-1].strftime("%Y-%m-%d"),
-            source="yfinance",
+            data_date=data_date,
+            source=source,
             retrieved_at_utc=now,
             notes=notes,
+            retrieval_method=retrieval_method,
+            history_data_date=history_data_date,
+            regular_market_time_utc=regular_time_utc,
         )
     except Exception as exc:
         return SupplementalRecord(ticker, symbol, "fetch_error", None, None, None, None, None, None, "yfinance", now, [str(exc)])
@@ -297,3 +433,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

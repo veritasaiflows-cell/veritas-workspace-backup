@@ -7,12 +7,15 @@ deployment authority, or trading readiness.
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
+
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -152,8 +155,23 @@ def validate_retired_legacy_files() -> list[Finding]:
     return findings
 
 
-def validate_execution_board(config: dict, tickers: list[str], text: str) -> list[Finding]:
+def validate_execution_board(config: dict, tickers: list[str], text: str, thin_contract: dict, *, legacy_table_contract: bool) -> list[Finding]:
     findings: list[Finding] = []
+    if thin_contract.get("sql_first_thin_board_detected"):
+        if thin_contract.get("sql_first_thin_board_allowed"):
+            findings.append(Finding("info", rel(EXECUTION_BOARD), "SQL-first thin Execution Board contract accepted; ticker rows are owned by SQL/JSON proof"))
+            return findings
+        findings.append(
+            Finding(
+                "critical",
+                rel(EXECUTION_BOARD),
+                "Execution Board is thin, but the SQL-first / JSON proof contract is blocked",
+            )
+        )
+        return findings
+    if not legacy_table_contract:
+        findings.append(Finding("info", rel(EXECUTION_BOARD), "Legacy Execution Board table checks skipped; use --legacy-table-contract for pre-thinning table/header validation"))
+        return findings
     if REQUIRED_EXECUTION_HEADER not in text:
         findings.append(Finding("critical", rel(EXECUTION_BOARD), "Execution Board missing required consolidated execution table header"))
     rows = markdown_rows(text)
@@ -174,8 +192,23 @@ def validate_execution_board(config: dict, tickers: list[str], text: str) -> lis
     return findings
 
 
-def validate_coverage_watchlist(tickers: list[str], text: str) -> list[Finding]:
+def validate_coverage_watchlist(tickers: list[str], text: str, thin_contract: dict, *, legacy_table_contract: bool) -> list[Finding]:
     findings: list[Finding] = []
+    if thin_contract.get("sql_first_thin_board_detected"):
+        if thin_contract.get("sql_first_thin_board_allowed"):
+            findings.append(Finding("info", rel(COVERAGE_WATCHLIST), "SQL-first thin Coverage and Watchlist contract accepted; universe rows are owned by SQL/JSON proof"))
+            return findings
+        findings.append(
+            Finding(
+                "critical",
+                rel(COVERAGE_WATCHLIST),
+                "Coverage and Watchlist is thin, but the SQL-first / JSON proof contract is blocked",
+            )
+        )
+        return findings
+    if not legacy_table_contract:
+        findings.append(Finding("info", rel(COVERAGE_WATCHLIST), "Legacy Coverage and Watchlist table/thesis checks skipped; use --legacy-table-contract for pre-thinning validation"))
+        return findings
     if REQUIRED_COVERAGE_HEADER not in text:
         findings.append(Finding("critical", rel(COVERAGE_WATCHLIST), "Coverage and Watchlist missing required consolidated universe table header"))
     if re.search(r"\|[^\n]*Current Deployment State[^\n]*\|", text):
@@ -200,24 +233,59 @@ def validate_coverage_watchlist(tickers: list[str], text: str) -> list[Finding]:
     return findings
 
 
-def validate_snapshot(text: str) -> list[Finding]:
+def validate_snapshot(text: str, *, legacy_table_contract: bool) -> list[Finding]:
     findings: list[Finding] = []
-    for header in LEGACY_SNAPSHOT_HEADERS:
-        if header in text:
-            findings.append(Finding("warning", rel(SNAPSHOT), "legacy thesis/entry/stop table still exists in Snapshot"))
-    if "## Core holdings" in text and "Draft weight" not in text:
-        findings.append(Finding("warning", rel(SNAPSHOT), "Snapshot model tables should own draft weight explicitly"))
+    if legacy_table_contract:
+        for header in LEGACY_SNAPSHOT_HEADERS:
+            if header in text:
+                findings.append(Finding("warning", rel(SNAPSHOT), "legacy thesis/entry/stop table still exists in Snapshot"))
+        if "## Core holdings" in text and "Draft weight" not in text:
+            findings.append(Finding("warning", rel(SNAPSHOT), "Snapshot model tables should own draft weight explicitly"))
+    else:
+        findings.append(Finding("info", rel(SNAPSHOT), "Legacy Snapshot table checks skipped; thin portfolio posture is validated by SQL/JSON proof and owner-note route markers"))
     return findings
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--write", action="store_true", help="Compatibility flag; this validator always writes its JSON proof.")
+    parser.add_argument("--legacy-table-contract", action="store_true", help="Also run pre-thinning table/header/thesis completeness checks.")
+    parser.add_argument("--out", type=Path, default=OUT)
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
     config = load_config()
     tickers = tracked_tickers(config)
+    thin_contract = evaluate_sql_first_thin_board_contract(EXECUTION_BOARD)
+    coverage_thin_contract = evaluate_sql_first_thin_board_contract(
+        COVERAGE_WATCHLIST,
+        route_tokens=[
+            "finance_sql_canon_access.py",
+            "finance_intelligence_state.py",
+            "full_intelligence_answer_parity.py",
+            "canonical_finance_data_plane.py",
+        ],
+        proof_files=[
+            "tmp/full-answer-parity/full-answer-parity-rollup.json",
+            "tmp/trade-grade-full-answer/",
+            "tmp/ticker-intelligence-cards/",
+            "state/finance/finance-canon.sqlite",
+        ],
+        authority_phrases=[
+            "no execution state",
+            "owner approval",
+            "portfolio mutation",
+            "archive/delete/apply authority",
+            "inferred approval",
+        ],
+    )
 
     findings: list[Finding] = []
-    findings.extend(validate_execution_board(config, tickers, read_text(EXECUTION_BOARD)))
-    findings.extend(validate_coverage_watchlist(tickers, read_text(COVERAGE_WATCHLIST)))
-    findings.extend(validate_snapshot(read_text(SNAPSHOT)))
+    findings.extend(validate_execution_board(config, tickers, read_text(EXECUTION_BOARD), thin_contract, legacy_table_contract=args.legacy_table_contract))
+    findings.extend(validate_coverage_watchlist(tickers, read_text(COVERAGE_WATCHLIST), coverage_thin_contract, legacy_table_contract=args.legacy_table_contract))
+    findings.extend(validate_snapshot(read_text(SNAPSHOT), legacy_table_contract=args.legacy_table_contract))
     findings.extend(validate_retired_legacy_files())
 
     summary = {
@@ -231,6 +299,7 @@ def main() -> int:
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "status": status,
         "consumer_posture": "note_layer_hygiene_only",
+        "validation_mode": "legacy_table_contract" if args.legacy_table_contract else "thin_contract_default",
         "canonical_surfaces": {
             "execution": rel(EXECUTION_BOARD),
             "coverage_watchlist": rel(COVERAGE_WATCHLIST),
@@ -251,10 +320,13 @@ def main() -> int:
             "owner_approval_granted": False,
         },
         "summary": summary,
+        "sql_first_thin_board_contract": thin_contract,
+        "sql_first_thin_coverage_watchlist_contract": coverage_thin_contract,
         "findings": [asdict(f) for f in findings],
     }
-    OUT.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"status": status, "summary": summary, "output": str(OUT.relative_to(ROOT))}, indent=2))
+    out = args.out if args.out.is_absolute() else ROOT / args.out
+    out.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"status": status, "summary": summary, "output": str(out.relative_to(ROOT)), "validation_mode": payload["validation_mode"]}, indent=2))
     return 1 if summary["critical"] else 0
 
 

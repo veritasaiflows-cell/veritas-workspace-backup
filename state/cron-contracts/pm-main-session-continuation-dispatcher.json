@@ -1,0 +1,60 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "8d64de93-6a13-4eba-9065-09e7a1637f04",
+  "name": "PM - Main Session Continuation Dispatcher",
+  "required": true,
+  "owner_workflow": "PM continuation dispatcher",
+  "contract_reason": "The twice-daily continuation wake must surface and route current-window, ticker-debt, and cron-error priorities before generic PM work, without treating a cron wake as repair, agent-runner, finance, or execution authority.",
+  "description": "Twice-daily review-only main-session continuation wake. It refreshes the non-aging main-session priority handoff, selects the highest unresolved P0/P1 handoff before generic PM work, and persists a bounded disposition or repair-lane handoff. It does not run --execute-safe, --execute-one, supervised agent packets, or finance execution.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "20 7,14 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "PM priority dispatcher. Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nRun these review-only steps:\n1. python scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate\n2. python scripts\\pm_control_packet.py --write --write-db --validate\n3. python scripts\\main_session_action_executor.py --context main_session --write --validate\n\nRead tmp\\main-session-priority-handoff.json and tmp\\main-session-action-executor.json. If selected priority is P0/P1 and disposition.status is pending, claim it with this exact PowerShell sequence:\n$selectedPriority = (Get-Content -LiteralPath 'tmp\\main-session-priority-handoff.json' -Raw | ConvertFrom-Json).selected_item\npython scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate --priority-id $selectedPriority.priority_id --priority-disposition accepted\nVerify the matching accepted entry in state\\main-session-priority-disposition-ledger.jsonl, then route its named bounded review/repair owner. For defer/block, replace accepted and add a factual --priority-note. P2 is monitor-only and must not preempt generic PM work. Do not close without acceptance proof.\n\nDo not run generic PM proof work, --execute-safe, --execute-one, supervised finance-agent packets, helper spawns, or lane leases. If no P0/P1 is selected, surface only the bounded next handoff; reply NO_REPLY when no new/escalated/blocked item requires attention.\n\nBoundaries: review and routing only; no ticker/SQL import, canon/portfolio/cash/sizing/risk mutation, capital deployment, paper/live/brokerage/account action, money movement, config/auth/runtime mutation, external delivery, archive/delete, or owner approval inference."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [
+    "tmp/main-session-escalation-consumer.json",
+    "tmp/main-session-action-executor.json",
+    "tmp/main-session-priority-handoff.json",
+    "tmp/pm-control-packet.json",
+    "state/main-session-priority-disposition-ledger.jsonl"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "allowlisted_escalation_action_allowed": false,
+    "allowlisted_pm_proof_pickup_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "unscoped_canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_risk_rule_or_execution_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_submit_cancel_sell_replace_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-21T04:23:00Z",
+  "contract_update_reason": "Owner-approved priority-first hardening: replace automatic safe execution and supervised packet pickup with fixed review-only priority routing; schedule is unchanged.",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  }
+}

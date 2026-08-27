@@ -193,6 +193,191 @@ def scope_summary(rows: list[dict[str, Any]], validation_errors: list[str]) -> d
     }
 
 
+def pilot_contract_errors(pilot: list[dict[str, Any]]) -> list[str]:
+    """Return tickers whose pilot rows violate repair-only safety constraints."""
+    allowed_decision_states = {"blocked_missing_freshness", "monitor_only"}
+    return [
+        str(row.get("ticker"))
+        for row in pilot
+        if row.get("source_open_status") != "verified"
+        or row.get("band_status") != "IN_BAND"
+        or row.get("stop_or_invalidation_present") is not True
+        or row.get("auto_tier") not in {"Tier A", "Tier B"}
+        or row.get("decision_state") not in allowed_decision_states
+    ]
+
+
+ATOMIC_FIVE_FAMILIES = (
+    "catalyst_earnings_state",
+    "price_band_stop",
+    "technical_posture",
+    "recommendation_support",
+    "deployment_readiness",
+)
+
+ATOMIC_REPAIR_FALSE_AUTHORITY = {
+    "finance_data_mutation_allowed": False,
+    "canon_mutation_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "customer_or_external_delivery_allowed": False,
+    "capital_deployment_approved": False,
+    "trade_or_execution_approved": False,
+    "paper_or_live_execution_allowed": False,
+    "brokerage_or_account_action_allowed": False,
+    "owner_approval_inferred": False,
+}
+
+EARNINGS_INTAKE_REQUIREMENTS = [
+    "issuer_or_ticker",
+    "event_type",
+    "source_class",
+    "source_url",
+    "publisher",
+    "published_at_utc",
+    "retrieved_at_utc",
+    "fiscal_period_label",
+    "fiscal_period_start",
+    "fiscal_period_end",
+    "fiscal_period_basis",
+    "event_datetime",
+    "event_timezone",
+    "event_session",
+    "timing_status",
+    "evidence_linkage_id",
+    "conflicts",
+    "ambiguity_reason",
+]
+
+
+def atomic_five_family_repair_queue(
+    tier_rows: list[Any], repair_as_of_utc: str
+) -> list[dict[str, Any]]:
+    """Build a deterministic, manual-only intake for unresolved Tier A/B debt."""
+    queue: list[dict[str, Any]] = []
+    for value in tier_rows:
+        row = as_dict(value)
+        symbol = str(row.get("ticker") or "").upper()
+        tier = str(row.get("auto_tier") or row.get("tier") or "")
+        resolution_state = str(row.get("resolution_state") or "")
+        if (
+            not symbol
+            or tier not in {"Tier A", "Tier B"}
+            or resolution_state != "blocked_unresolved_tier_ab_debt"
+        ):
+            continue
+
+        stale_families = {
+            str(item).removeprefix("stale:")
+            for item in as_list(row.get("stale_families"))
+        }
+        dispositions = [
+            {
+                "family": family,
+                "status": "refresh_required" if family in stale_families else "retained_current",
+                "depends_on": (
+                    ["catalyst_earnings_state", "price_band_stop", "technical_posture"]
+                    if family == "recommendation_support"
+                    else list(ATOMIC_FIVE_FAMILIES[:4])
+                    if family == "deployment_readiness"
+                    else []
+                ),
+            }
+            for family in ATOMIC_FIVE_FAMILIES
+        ]
+        queue.append(
+            {
+                "ticker": symbol,
+                "tier": tier,
+                "required_depth": row.get("required_depth"),
+                "current_resolution_state": resolution_state,
+                "repair_bundle_id": f"tier-ab-five-family:{symbol}:{resolution_state}",
+                "repair_input_signature": "|".join(
+                    [symbol, tier, resolution_state, *sorted(stale_families)]
+                ),
+                "repair_as_of_utc": repair_as_of_utc,
+                "first_family": "catalyst_earnings_state",
+                "family_dispositions": dispositions,
+                "official_earnings_intake_requirements": list(EARNINGS_INTAKE_REQUIREMENTS),
+                "official_earnings_intake_status": "pending_source_open",
+                "source_open_manual_only": True,
+                "authority_boundary": dict(ATOMIC_REPAIR_FALSE_AUTHORITY),
+                "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite",
+            }
+        )
+
+    def queue_order(row: dict[str, Any]) -> tuple[int, str]:
+        symbol = str(row["ticker"])
+        if row["tier"] == "Tier A":
+            return (0, symbol)
+        if symbol in {"DASH", "TSM"}:
+            return (1, symbol)
+        if symbol == "AVGO":
+            return (2, symbol)
+        return (3, symbol)
+
+    return sorted(queue, key=queue_order)
+
+
+def atomic_five_family_repair_errors(queue: list[dict[str, Any]]) -> list[str]:
+    """Validate the repair intake without mutating any source data."""
+    errors: list[str] = []
+    tickers = [str(row.get("ticker") or "") for row in queue]
+    if len(tickers) != len(set(tickers)):
+        errors.append("atomic_repair_queue_duplicate_ticker")
+    required_row_keys = {
+        "ticker",
+        "tier",
+        "required_depth",
+        "current_resolution_state",
+        "repair_bundle_id",
+        "repair_input_signature",
+        "repair_as_of_utc",
+        "first_family",
+        "family_dispositions",
+        "official_earnings_intake_requirements",
+        "official_earnings_intake_status",
+        "source_open_manual_only",
+        "authority_boundary",
+    }
+    for row in queue:
+        symbol = str(row.get("ticker") or "unknown")
+        if not required_row_keys.issubset(row):
+            errors.append(f"atomic_repair_queue_required_field_missing:{symbol}")
+        dispositions = as_list(row.get("family_dispositions"))
+        families = [str(as_dict(item).get("family") or "") for item in dispositions]
+        if len(dispositions) != 5 or set(families) != set(ATOMIC_FIVE_FAMILIES):
+            errors.append(f"atomic_repair_queue_family_completeness_failed:{symbol}")
+            continue
+        if row.get("first_family") != "catalyst_earnings_state" or any(
+            not {"family", "status", "depends_on"}.issubset(as_dict(item))
+            for item in dispositions
+        ):
+            errors.append(f"atomic_repair_queue_family_field_missing:{symbol}")
+        by_family = {
+            str(as_dict(item).get("family")): as_dict(item)
+            for item in dispositions
+        }
+        if any(
+            item.get("status") not in {"refresh_required", "retained_current"}
+            for item in by_family.values()
+        ):
+            errors.append(f"atomic_repair_queue_family_status_invalid:{symbol}")
+        if by_family["recommendation_support"].get("depends_on") != list(ATOMIC_FIVE_FAMILIES[:3]):
+            errors.append(f"atomic_repair_queue_recommendation_dependency_invalid:{symbol}")
+        if by_family["deployment_readiness"].get("depends_on") != list(ATOMIC_FIVE_FAMILIES[:4]):
+            errors.append(f"atomic_repair_queue_deployment_dependency_invalid:{symbol}")
+        if set(as_list(row.get("official_earnings_intake_requirements"))) != set(EARNINGS_INTAKE_REQUIREMENTS):
+            errors.append(f"atomic_repair_queue_earnings_intake_incomplete:{symbol}")
+        if row.get("source_open_manual_only") is not True:
+            errors.append(f"atomic_repair_queue_source_open_not_manual:{symbol}")
+        if any(
+            as_dict(row.get("authority_boundary")).get(key) is not False
+            for key in ATOMIC_REPAIR_FALSE_AUTHORITY
+        ):
+            errors.append(f"atomic_repair_queue_unsafe_authority:{symbol}")
+    return errors
+
+
 def classify_lane(
     card: dict[str, Any],
     source_row: dict[str, Any],
@@ -383,28 +568,54 @@ def build() -> dict[str, Any]:
     pilot_tickers = [str(row.get("ticker")) for row in pilot]
 
     validation_errors: list[str] = []
+    validation_warnings: list[str] = [
+        "review_ready pilot candidates are not approval-card drafts",
+        "WF67 paper guard must be fresh before any paper-request draft posture",
+    ]
     for key in FALSE_AUTHORITY_KEYS:
         if AUTHORITY_BOUNDARY.get(key) is not False:
             validation_errors.append(f"authority_boundary_not_false:{key}")
-    bad_pilot = [
-        row.get("ticker")
-        for row in pilot
-        if row.get("source_open_status") != "verified"
-        or row.get("band_status") != "IN_BAND"
-        or row.get("stop_or_invalidation_present") is not True
-        or row.get("decision_state") != "blocked_missing_freshness"
-    ]
+    bad_pilot = pilot_contract_errors(pilot)
     if bad_pilot:
         validation_errors.append(f"pilot_candidate_contract_failed:{','.join(map(str, bad_pilot[:10]))}")
     approval_summary = as_dict(approval_payload.get("summary"))
-    if int(approval_summary.get("approval_card_draft_count") or 0) != 0:
+    approval_card_draft_count = int(approval_summary.get("approval_card_draft_count") or 0)
+    approval_gate_review_ready_count = int(approval_summary.get("review_ready_count") or 0)
+    if approval_card_draft_count != 0:
         validation_errors.append("approval_card_drafts_present_before_conveyor_repair")
 
     ticker_gate_summary = as_dict(ticker_card_gate_payload.get("summary"))
     card_rollup = as_dict(ticker_gate_summary.get("card_rollup"))
-    if int(card_rollup.get("decision_ready_card_count") or 0) > 0:
-        validation_errors.append("ticker_card_gate_decision_ready_nonzero_before_wf85_repair")
+    ticker_gate_decision_ready_count = int(card_rollup.get("decision_ready_card_count") or 0)
+    if ticker_gate_decision_ready_count > 0:
+        validation_warnings.append("ticker_card_gate_decision_ready_requires_owner_approval_gate")
 
+    tier_rows = as_list(tier_payload.get("rows"))
+    atomic_repair_queue = atomic_five_family_repair_queue(tier_rows, generated)
+    atomic_repair_errors = atomic_five_family_repair_errors(atomic_repair_queue)
+    expected_atomic_queue_count = sum(
+        1
+        for value in tier_rows
+        if as_dict(value).get("auto_tier") in {"Tier A", "Tier B"}
+        and as_dict(value).get("resolution_state") == "blocked_unresolved_tier_ab_debt"
+    )
+    if len(atomic_repair_queue) != expected_atomic_queue_count:
+        atomic_repair_errors.append(
+            "atomic_repair_queue_count_mismatch:"
+            f"{len(atomic_repair_queue)}/{expected_atomic_queue_count}"
+        )
+    validation_errors.extend(atomic_repair_errors)
+    atomic_tier_counts = Counter(str(row.get("tier") or "unknown") for row in atomic_repair_queue)
+    atomic_pilot_tickers = [
+        str(row.get("ticker"))
+        for row in atomic_repair_queue
+        if str(row.get("ticker")) in {"DASH", "TSM", "AVGO"}
+    ]
+    atomic_complete_count = sum(
+        1
+        for row in atomic_repair_queue
+        if len(as_list(row.get("family_dispositions"))) == len(ATOMIC_FIVE_FAMILIES)
+    )
     scope = scope_summary(rows, validation_errors)
     status = "blocked" if validation_errors else "ready_for_repair_execution"
     return {
@@ -433,7 +644,14 @@ def build() -> dict[str, Any]:
             "review_ready_pilot_tickers": pilot_tickers,
             "tier_a_b_pilot_candidate_count": sum(1 for row in pilot if row.get("auto_tier") in {"Tier A", "Tier B"}),
             "approval_card_draft_count": approval_summary.get("approval_card_draft_count"),
+            "approval_gate_review_ready_count": approval_gate_review_ready_count,
+            "ticker_card_gate_decision_ready_card_count": ticker_gate_decision_ready_count,
             "wf67_paper_guard_fresh": approval_summary.get("wf67_paper_guard_fresh"),
+            "atomic_five_family_repair_queue_count": len(atomic_repair_queue),
+            "atomic_five_family_tier_a_count": atomic_tier_counts.get("Tier A", 0),
+            "atomic_five_family_tier_b_count": atomic_tier_counts.get("Tier B", 0),
+            "atomic_five_family_pilot_tickers": atomic_pilot_tickers,
+            "atomic_five_family_completeness_count": atomic_complete_count,
             **scope,
             "next_safe_action": "Use these rows as finance-domain repair queue only; create implementation work only if conveyor validation fails or WF84/WF85 quality gates regress.",
         },
@@ -446,14 +664,28 @@ def build() -> dict[str, Any]:
             "implementation_blocker_trigger": "validation_errors_only",
         },
         "pilot_queue": pilot[:25],
+        "atomic_five_family_repair_intake": {
+            "queue": atomic_repair_queue,
+            "summary": {
+                "queue_count": len(atomic_repair_queue),
+                "tier_a_count": atomic_tier_counts.get("Tier A", 0),
+                "tier_b_count": atomic_tier_counts.get("Tier B", 0),
+                "pilot_tickers": atomic_pilot_tickers,
+                "five_family_completeness_count": atomic_complete_count,
+                "first_family": "catalyst_earnings_state",
+                "source_open_manual_only": True,
+                "next_safe_action": (
+                    "Open official sources manually, reconcile fiscal-period evidence, and retain "
+                    "source mismatches without auto-overwriting finance data."
+                ),
+            },
+            "validation_errors": atomic_repair_errors,
+        },
         "rows": rows,
         "validation": {
             "status": "error" if validation_errors else "ok",
             "errors": validation_errors,
-            "warnings": [
-                "review_ready pilot candidates are not approval-card drafts",
-                "WF67 paper guard must be fresh before any paper-request draft posture",
-            ],
+            "warnings": validation_warnings,
         },
         "stop_lines": [
             "No approval-card draft is created by this conveyor.",

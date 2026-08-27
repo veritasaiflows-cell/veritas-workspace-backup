@@ -8,6 +8,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+SCRIPTS = Path(__file__).resolve().parent
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
+
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 OUT_JSON = TMP / "board-canon-guardrail.json"
@@ -180,6 +186,11 @@ def evaluate() -> dict[str, Any]:
     risks = build_risk_records()
     risk_alerts = build_risk_alerts(risks)
     issues: list[dict[str, Any]] = []
+    thin_contract = evaluate_sql_first_thin_board_contract(EXECUTION_NOTE)
+    thin_board_allowed = (
+        thin_contract.get("sql_first_thin_board_detected") is True
+        and thin_contract.get("sql_first_thin_board_allowed") is True
+    )
 
     tech_note = read_text(TECHNICAL_NOTE)
     trigger_note = read_text(TRIGGER_NOTE)
@@ -204,20 +215,21 @@ def evaluate() -> dict[str, Any]:
                 add_issue(issues, "critical", ticker, str(REGIME_NOTE.relative_to(WORKSPACE)), "regime_note_stop_not_visible", f"{ticker} Regime Matrix row does not visibly show stop-breached / do-not-touch state", regime_row)
 
         tech_section = markdown_section(tech_note, ticker)
-        if not tech_section:
-            add_issue(issues, "critical" if below_stop else "warning", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "missing_technical_section", f"{ticker} has a {risk_label} but no technical-note section was found")
-        elif below_stop and not contains_stop_truth(tech_section, hard=True):
-            add_issue(issues, "critical", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "technical_note_stop_missing", f"{ticker} is below stop but its technical section does not make stop breach / invalidation explicit", tech_section)
-        elif not below_stop and not contains_stop_truth(tech_section):
-            add_issue(issues, "warning", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "technical_note_near_stop_missing", f"{ticker} is within {NEAR_STOP_PCT:.1f}% of stop but its technical section does not flag stop/repair risk", tech_section)
-        if contains_contradiction(tech_section) and not contains_stop_truth(tech_section):
-            add_issue(issues, "critical", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "technical_note_contradiction", f"{ticker} technical section has softer action language without stop-risk override", tech_section)
+        if not thin_board_allowed:
+            if not tech_section:
+                add_issue(issues, "critical" if below_stop else "warning", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "missing_technical_section", f"{ticker} has a {risk_label} but no technical-note section was found")
+            elif below_stop and not contains_stop_truth(tech_section, hard=True):
+                add_issue(issues, "critical", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "technical_note_stop_missing", f"{ticker} is below stop but its technical section does not make stop breach / invalidation explicit", tech_section)
+            elif not below_stop and not contains_stop_truth(tech_section):
+                add_issue(issues, "warning", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "technical_note_near_stop_missing", f"{ticker} is within {NEAR_STOP_PCT:.1f}% of stop but its technical section does not flag stop/repair risk", tech_section)
+            if contains_contradiction(tech_section) and not contains_stop_truth(tech_section):
+                add_issue(issues, "critical", ticker, str(TECHNICAL_NOTE.relative_to(WORKSPACE)), "technical_note_contradiction", f"{ticker} technical section has softer action language without stop-risk override", tech_section)
 
         trigger_rec = trigger_records.get(ticker)
         trigger_row = markdown_table_row(trigger_note, ticker)
         if trigger_rec and below_stop and trigger_rec.get("action_state") != "DO NOT TOUCH":
             add_issue(issues, "critical", ticker, "tmp/trigger-sheet.json", "trigger_artifact_not_do_not_touch", f"{ticker} trigger artifact is below stop but action_state is {trigger_rec.get('action_state')}", json.dumps(trigger_rec))
-        if trigger_row:
+        if trigger_row and not thin_board_allowed:
             trigger_lower = trigger_row.lower()
             coverage_lane = str(risk.get("coverage_lane") or "")
             if below_stop:
@@ -230,11 +242,11 @@ def evaluate() -> dict[str, Any]:
                 add_issue(issues, "critical", ticker, str(TRIGGER_NOTE.relative_to(WORKSPACE)), "trigger_note_contradiction", f"{ticker} trigger-note row has stale softer state language", trigger_row)
 
         watch_row = markdown_table_row(watchlist_note, ticker)
-        if watch_row and below_stop and contains_contradiction(watch_row) and not contains_stop_truth(watch_row):
+        if watch_row and below_stop and not thin_board_allowed and contains_contradiction(watch_row) and not contains_stop_truth(watch_row):
             add_issue(issues, "critical", ticker, str(WATCHLIST_NOTE.relative_to(WORKSPACE)), "coverage_watchlist_contradiction", f"{ticker} coverage/watchlist row has stale softer action-state language", watch_row)
 
         snapshot_row = markdown_table_row(snapshot_note, ticker)
-        if snapshot_row and below_stop and contains_contradiction(snapshot_row) and not contains_stop_truth(snapshot_row):
+        if snapshot_row and below_stop and not thin_board_allowed and contains_contradiction(snapshot_row) and not contains_stop_truth(snapshot_row):
             add_issue(issues, "critical", ticker, str(SNAPSHOT_NOTE.relative_to(WORKSPACE)), "snapshot_contradiction", f"{ticker} snapshot row has stale softer state language", snapshot_row)
 
     summary = {
@@ -252,13 +264,15 @@ def evaluate() -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "generated_at_utc": utc_now(),
         "status": "critical" if summary["critical"] else ("warning" if summary["warning"] else "ok"),
+        "technical_sheet_mode": "sql_first_thin_board" if thin_board_allowed else "legacy_markdown_board",
+        "sql_first_thin_board_contract": thin_contract,
         "authority": {
             "posture": "read_only_guardrail",
-            "standing_authority_scope": "main_session_bounded_workspace_canon_portfolio_maintenance",
-            "canonical_mutation_allowed": True,
-            "canonical_note_mutation_allowed": True,
-            "portfolio_mutation_allowed": True,
-            "owner_approval_granted": True,
+            "standing_authority_scope": "read_only_risk_guardrail_no_apply",
+            "canonical_mutation_allowed": False,
+            "canonical_note_mutation_allowed": False,
+            "portfolio_mutation_allowed": False,
+            "owner_approval_granted": False,
             "artifact_mutation_allowed_by_this_guardrail": False,
             "deployment_authority_allowed": False,
             "trade_execution_allowed": False,

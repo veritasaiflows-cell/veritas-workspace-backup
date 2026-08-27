@@ -88,6 +88,34 @@ def fnum(value: Any, field: str) -> float | None:
     return out
 
 
+def rounded_num(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return round(float(value), 2)
+    except (TypeError, ValueError):
+        return None
+
+
+def assert_promotion_gate_band_matches_card(card: dict[str, Any], match: dict[str, Any], symbol: str) -> None:
+    risk = card.get("risk_check") if isinstance(card.get("risk_check"), dict) else {}
+    gate_band = match.get("entry_band") if isinstance(match.get("entry_band"), dict) else {}
+    if not gate_band:
+        raise CardError(f"promotion_gate_entry_band_missing:{symbol}")
+    expected = {
+        "low": rounded_num(risk.get("entry_band_low")),
+        "high": rounded_num(risk.get("entry_band_high")),
+        "stop": rounded_num(risk.get("stop")),
+    }
+    actual = {
+        "low": rounded_num(gate_band.get("low")),
+        "high": rounded_num(gate_band.get("high")),
+        "stop": rounded_num(gate_band.get("stop")),
+    }
+    if expected != actual:
+        raise CardError(f"promotion_gate_band_mismatch:{symbol}:card={expected}:gate={actual}")
+
+
 def full_scope_cap(risk: dict[str, Any]) -> float:
     artifact = risk.get("full_scope_artifact")
     if artifact:
@@ -201,6 +229,7 @@ def validate_promotion_gate(card: dict[str, Any], gate_path: Path) -> dict[str, 
     authority = match.get("authority") if isinstance(match.get("authority"), dict) else {}
     if authority.get("paper_order_execution_allowed") is not False or authority.get("owner_approval_inferred") is not False:
         raise CardError("promotion_gate_authority_drift")
+    assert_promotion_gate_band_matches_card(card, match, symbol)
     return {
         "gate_artifact": rel(gate_path),
         "gate_schema_version": gate.get("schema_version"),

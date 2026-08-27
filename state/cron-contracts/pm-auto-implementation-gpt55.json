@@ -1,0 +1,107 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "b5952d18-a1ea-4a80-85ef-57fdc922ceaf",
+  "name": "PM - Terra Auto Implementation Proof Runner",
+  "required": true,
+  "owner_workflow": "PM/WF74 department delegation automation",
+  "contract_reason": "Randall approved guarded automatic implementation-job proof execution; the reasoning/tool route is Terra with main-session Sol verification and no unattended patch authority.",
+  "description": "Merged guarded PM implementation proof worker (replaces the two former PM proof jobs). Changed-input predispatch prefilter gates the worker; then quiescence refresh. Proof-safe PM jobs only; no code patching, helper spawn, cron mutation, config/auth/runtime change, finance canon/portfolio/customer/external/account/trading action, or owner approval inference.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "45 4,12,20 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nPurpose: run the merged guarded PM implementation proof pass that replaced the former autonomous-worker and GPT-5.5 proof-runner jobs.\n\nRun exactly, in order:\n1. python scripts\\pm_autonomous_worker_predispatch_prefilter.py --execute --write --validate\n2. python scripts\\pm_post_repair_quiescence_refresh.py --write --validate\n\nThe prefilter may safely skip the worker when its input signature is unchanged; count a clean skip as success. Run no other command. Inspect no unrelated file. Do not create, edit, disable, remove, or reschedule cron jobs.\n\nAfter execution inspect only:\n- tmp\\pm-autonomous-worker-predispatch-prefilter.json\n- tmp\\pm-job-worker-runner.json\n- tmp\\pm-autonomy-dispatcher.json\n- tmp\\pm-autonomy-verifier.json\n- tmp\\pm-post-repair-quiescence-refresh.json\n- tmp\\pm-control-packet.json\n\nResponse: if both commands exit 0 and the quiescence packet is ok, or warning-only with no cron blocker and no blocked PM job, reply exactly NO_REPLY. Otherwise report only the failed command, blocked proof path, validation errors, selected job id if any, and next owner.\n\nAuthority: review-only proof refresh and closeout ledger through the named guarded scripts. No code patch, helper spawn, cron/scheduler/config/auth/channel/runtime mutation, archive/delete, SQL import, finance canon/portfolio/cash/sizing/risk mutation, customer/public output, paper/live/brokerage/account action, capital deployment, money movement, or inferred owner approval.",
+    "model": "openai/gpt-5.6-terra",
+    "thinking": "medium",
+    "timeoutSeconds": 1800,
+    "lightContext": true
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    {
+      "path": "tmp/pm-autonomous-worker-predispatch-prefilter.json",
+      "role": "pm_autonomous_worker_predispatch_prefilter",
+      "required": true,
+      "blocking": true
+    },
+    {
+      "path": "tmp/pm-job-worker-runner.json",
+      "role": "pm_job_worker_runner",
+      "required": true,
+      "blocking": true
+    },
+    {
+      "path": "tmp/pm-autonomy-dispatcher.json",
+      "role": "pm_autonomy_dispatcher",
+      "required": true,
+      "blocking": true
+    },
+    {
+      "path": "tmp/pm-autonomy-verifier.json",
+      "role": "pm_autonomy_verifier",
+      "required": true,
+      "blocking": true
+    },
+    {
+      "path": "tmp/pm-post-repair-quiescence-refresh.json",
+      "role": "pm_post_repair_quiescence_refresh",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/pm-control-packet.json",
+      "role": "pm_control_packet",
+      "required": true,
+      "blocking": true
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "proof_refresh_only": true,
+    "runs_pm_worker": true,
+    "repair_execution_allowed": false,
+    "code_patch_allowed": false,
+    "helper_spawn_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-08T05:05:00Z",
+  "contract_update_reason": "Owner-approved payload compression from 2,006 to 1,505 characters; exact commands, proof paths, response contract, schedule, delivery, model, and authority boundaries preserved."
+}

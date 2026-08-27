@@ -1,0 +1,84 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "6ae6d2cb-143e-4404-baf8-d90e58048575",
+  "name": "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar",
+  "required": true,
+  "owner_workflow": "WF85/WF67",
+  "contract_reason": "Midday radar closes the capital-deployment alert loop with one scheduled 11:30 America/Phoenix Telegram review notification. Stale band/card artifacts must be verified before digest/send.",
+  "description": "WF85/WF67 review-only paper-deployment Telegram radar consolidated to the single midday capital-deployment alert at 11:30 America/Phoenix. The upstream card builder owns full refresh; this runner performs bounded ledger-only card/band-integrity verification before digest/send so alerts cannot consume stale approval artifacts. Delivery-only, forced scheduled send, no APPROVE path, no submit/cancel/sell/account action, no approval inference.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 11 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true,
+    "channel_note": "previous non-delivery channel metadata: last"
+  },
+  "internal_delivery": {
+    "mode": "telegram_via_runner",
+    "runner_flag": "--send --force",
+    "recipient_scope": "randall_owner_only",
+    "delivery_only_review_notification": true,
+    "cron_delivery_mode_remains_none": true,
+    "customer_or_public_delivery_allowed": false,
+    "approval_or_execution_authority_allowed": false
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "QUIET CRON OUTPUT RULE (hard): this job uses delivery.mode=none. When the success/no-action path says NO_REPLY, your entire final response must be exactly NO_REPLY and nothing else. Do not add a preface, explanation, markdown, status sentence, tool summary, or trailing note. If blocked, report only the explicit blocked-report fields named below.",
+    "model": "ollama-cloud/minimax-m3:cloud",
+    "timeoutSeconds": 600,
+    "thinking": "high"
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/wf85-paper-deployment-telegram-cron-runner.json",
+    "tmp/wf85-paper-deployment-notification-digest.json",
+    "tmp/wf85-paper-deployment-telegram-notifier.json",
+    "tmp/morning-paper-deployment-recommendation-cards.json",
+    "tmp/morning-paper-deployment-recommendation-cards.md",
+    "tmp/capital-deployment-band-integrity-validator.json",
+    "tmp/capital-deployment-band-integrity-validator.md",
+    "tmp/cron-control-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "owner_telegram_delivery_allowed": true,
+    "customer_or_public_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-06-29T02:58:53Z",
+  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback."
+}

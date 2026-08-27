@@ -1,38 +1,14 @@
 {
   "ticker": "GS",
   "name": "The Goldman Sachs Group, Inc.",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 157.9,
-      "h": 160.55,
-      "l": 138.2,
-      "c": 148.58,
-      "v": 84.29
-    },
-    {
-      "d": "2016-07",
-      "o": 148.49,
-      "h": 164.09,
-      "l": 142.62,
-      "c": 158.81,
-      "v": 65.64
-    },
-    {
-      "d": "2016-08",
-      "o": 158.81,
-      "h": 170.24,
-      "l": 155.37,
-      "c": 169.46,
-      "v": 50.55
-    },
     {
       "d": "2016-09",
       "o": 170.0,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 916.4,
-      "h": 945.29,
+      "h": 1027.22,
       "l": 899.0,
-      "c": 936.48,
-      "v": 11.88
+      "c": 1025.56,
+      "v": 40.45
+    },
+    {
+      "d": "2026-06",
+      "o": 1015.33,
+      "h": 1125.0,
+      "l": 1000.04,
+      "c": 1011.37,
+      "v": 52.77
+    },
+    {
+      "d": "2026-07",
+      "o": 1010.0,
+      "h": 1153.99,
+      "l": 977.7,
+      "c": 1018.38,
+      "v": 43.46
+    },
+    {
+      "d": "2026-08",
+      "o": 1025.0,
+      "h": 1077.21,
+      "l": 1001.68,
+      "c": 1039.28,
+      "v": 27.3
     }
   ],
   "macro_regimes": {
@@ -1025,34 +1025,36 @@
     }
   },
   "preferred_band": {
-    "low": 878.71,
-    "high": 926.76,
-    "stop": 854.68,
-    "set": "2026-04-28",
-    "label": "878.71–926.76"
+    "low": 971.53,
+    "high": 1048.14,
+    "stop": 928.97,
+    "set": "2026-06-18",
+    "label": "971.53–1048.14"
   },
   "current_quote": {
-    "close": 936.48,
-    "ma20": 921.32,
-    "ma50": 871.57,
-    "ma200": 831.19,
-    "data_date": "2026-05-08"
+    "close": 1039.28,
+    "ma20": 1033.05,
+    "ma50": 1053.38,
+    "ma200": 931.4,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
     "method": "KELTNER_MA_CONSTRAINED",
     "type": "PULLBACK",
-    "status": "NEAR_BAND",
+    "status": "IN_BAND",
     "trend_stack": "BULLISH_20_50_200",
-    "suggested_low": 883.87,
-    "suggested_high": 920.93,
-    "suggested_stop": 855.13,
-    "sma_envelope_low": 850.59,
-    "sma_envelope_high": 940.13,
+    "suggested_low": 1019.26,
+    "suggested_high": 1045.58,
+    "suggested_stop": 981.53,
+    "sma_envelope_low": 982.64,
+    "sma_envelope_high": 1086.08,
     "earnings_state": "CLEAR",
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
     "band_confidence": 4,
-    "needs_review": false,
+    "needs_review": true,
     "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:37+00:00"
+  "generated_at": "2026-08-21T20:32:22+00:00"
 }

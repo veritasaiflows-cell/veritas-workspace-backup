@@ -84,11 +84,11 @@ VRT's beat-and-raise improves conviction in the theme but does not create a disc
 
 ## Required follow-up
 
-1. Define entry band and stop for VRT via chart-level discretionary markup — currently listed as "not yet defined" in Technical Entry Sheet
-2. Update Technical Entry Sheet with post-earnings MA posture and support/resistance levels
+1. Define entry band and stop for VRT via chart-level discretionary markup — currently listed as "not yet defined" in Execution Board
+2. Update Execution Board with post-earnings MA posture and support/resistance levels
 3. Confirm full-year guidance numbers from primary IR source
-4. Update Coverage Universe "act when" field to reflect post-earnings beat-and-raise context
-5. Update Event Calendar — VRT closure state changes to "Synced" once Technical Entry Sheet is updated with defined levels
+4. Update Coverage and Watchlist "act when" field to reflect post-earnings beat-and-raise context
+5. Update Event Calendar — VRT closure state changes to "Synced" once Execution Board is updated with defined levels
 
 ---
 
@@ -96,10 +96,10 @@ VRT's beat-and-raise improves conviction in the theme but does not create a disc
 
 - **Reported:** ✅ April 22, 2026
 - **Interpreted:** ✅ Beat-and-raise confirmed, thesis implications mapped
-- **Synced:** ⬜ Pending Technical Entry Sheet update with defined entry band and stop
+- **Synced:** ⬜ Pending Execution Board update with defined entry band and stop
 - **Closed with follow-up:** Entry band definition required before VRT can graduate from Watch to Almost Deployable
 
 ---
 
 *Written: 2026-04-26*
-*Source: Weekly Intelligence Brief (Apr 22 update), Technical Entry Sheet (Apr 24 close), Deployment Trigger Sheet (Apr 24), Event Calendar*
+*Source: Weekly Intelligence Brief (Apr 22 update), Execution Board (Apr 24 close), pre-consolidation deployment surface (Apr 24), Event Calendar*

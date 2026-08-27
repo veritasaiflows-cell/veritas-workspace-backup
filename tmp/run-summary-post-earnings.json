@@ -1,108 +1,353 @@
 {
   "window": "post-earnings",
-  "run_id": "20260508T224209Z_post-earnings",
-  "generated_at_utc": "2026-05-08T22:42:09Z",
-  "status": "blocked",
-  "stop_line": true,
+  "run_id": "20260530T224527Z_post-earnings",
+  "generated_at_utc": "2026-05-30T22:45:27Z",
+  "status": "warning",
+  "stop_line": false,
   "owner": {
     "entrypoint": "python scripts/run_finance_refresh_chain.py post-earnings",
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-05-08T22:42:04Z",
-    "completed_at_utc": "2026-05-08T22:42:08Z",
-    "duration_seconds": 4
+    "started_at_utc": "2026-05-10T17:47:28Z",
+    "completed_at_utc": "2026-05-10T17:47:33Z",
+    "duration_seconds": 5
   },
   "execution": {
-    "chain_status": "recovering",
-    "chain_status_raw": "recovering",
-    "chain_status_normalized": false,
-    "chain_status_reason": "runtime state not safe to normalize",
-    "chain_exit_code": 1,
-    "recovery_triggered": true,
-    "recovery_reason": "test_dashboard_acceptance.py exited with code 1",
-    "failed_step": {
-      "index": 7,
-      "script": "test_dashboard_acceptance.py",
-      "args": [],
-      "command": "test_dashboard_acceptance.py",
-      "exit_code": 1
-    },
-    "skipped_steps": [
-      "generate_dashboard.py",
-      "validate_dashboard_state.py",
-      "workbook_export.py"
-    ],
-    "finalized_after_failure": true
+    "chain_status": "ok",
+    "chain_status_raw": "ok",
+    "chain_status_normalized": true,
+    "chain_status_reason": "runtime status already terminal",
+    "chain_exit_code": 0,
+    "recovery_triggered": false,
+    "recovery_reason": "",
+    "failed_step": null,
+    "skipped_steps": [],
+    "finalized_after_failure": false
   },
   "validation": {
-    "acceptance_passed": false,
+    "acceptance_passed": true,
     "dashboard_validation_status": "warning",
     "critical": 0,
-    "warning": 2,
+    "warning": 1,
     "info": 0,
-    "exec_freshness": "usable_with_caution"
+    "exec_freshness": "stale"
+  },
+  "artifact_index": {
+    "enabled": true,
+    "db_path": "tmp/veritas-artifact-index.sqlite",
+    "authority_boundary": "derived_review_only_index_not_canon_not_apply",
+    "operator_action_required": false,
+    "operator_next_action": "",
+    "status": "ok",
+    "schema_version": 6,
+    "generated_at_utc": "2026-05-30T22:45:27Z",
+    "db_mtime_utc": "2026-05-30T22:44:05Z",
+    "last_rebuilt_at_utc": "2026-05-25T20:11:33Z",
+    "last_incremental_rebuilt_at_utc": "2026-05-30T22:44:05Z",
+    "source_file_count": 58,
+    "checks": {
+      "checks": 28,
+      "failed": 0
+    },
+    "safety_counts": {
+      "forbidden_true_authority_flags": 0,
+      "canon_stage_apply_allowed": 0,
+      "canon_stage_historical_applied_rows": 8,
+      "canon_stage_pending_review_only_rows": 10,
+      "canon_stage_incomplete_review_only_rows": 10,
+      "canon_stage_activation_or_apply_ready_rows": 0,
+      "official_ir_fields_without_lineage": 0
+    },
+    "key_counts": {
+      "artifact_runs": 58,
+      "artifact_file_state": 58,
+      "market_events": 179,
+      "daily_review_objects": 75,
+      "official_ir_capture_runs": 31,
+      "source_field_lineage": 217,
+      "canon_proposal_staging": 18
+    },
+    "drift_fingerprint_tables": 19,
+    "failed_checks": []
   },
   "outputs": {
     "command_center": {
-      "status": "stale",
+      "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-08T22:37:37Z"
+      "generated_at_utc": "2026-05-30T22:43:59Z"
     },
     "dashboard_validation": {
-      "status": "stale",
+      "status": "partial",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-08T13:01:05.736661+00:00"
+      "generated_at_utc": "2026-05-30T22:43:58.040207+00:00"
     },
     "dashboard_acceptance": {
       "status": "ok",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-08T22:42:08Z"
+      "generated_at_utc": "2026-05-30T22:43:57Z"
     },
     "workbook_exports": {
-      "status": "stale",
+      "status": "partial",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-08T13:01:05.837577+00:00"
+      "generated_at_utc": "2026-05-30T22:43:58.183848+00:00"
     },
     "post_earnings_prep": {
-      "status": "partial",
+      "status": "ok",
       "path": "tmp/post-earnings-prep.json",
-      "generated_at_utc": "2026-05-08T22:42:08.007715+00:00"
+      "generated_at_utc": "2026-05-30T22:43:51.777601+00:00"
     },
     "post_earnings_note_targets": {
-      "status": "partial",
+      "status": "ok",
       "path": "tmp/post-earnings-note-targets.json",
-      "generated_at_utc": "2026-05-08T22:42:08.082408+00:00"
+      "generated_at_utc": "2026-05-30T22:43:51.848575+00:00"
+    },
+    "fundamental_metrics_current": {
+      "status": "ok",
+      "path": "tmp/fundamental-metrics-current.json",
+      "generated_at_utc": "2026-05-30T22:41:48Z"
+    },
+    "fundamental_metrics_validation": {
+      "status": "ok",
+      "path": "tmp/fundamental-metrics-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:46Z"
+    },
+    "fundamental_ir_reconciliation_packets": {
+      "status": "ok",
+      "path": "tmp/fundamental-ir-reconciliation-packets.json",
+      "generated_at_utc": "2026-05-30T22:42:58Z"
+    },
+    "fundamental_ir_reconciliation_validation": {
+      "status": "ok",
+      "path": "tmp/fundamental-ir-reconciliation-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:58Z"
+    },
+    "amd_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amd-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:51Z"
+    },
+    "amd_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amd-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "amzn_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amzn-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:48Z"
+    },
+    "amzn_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amzn-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "brk_b_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/brk.b-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:49Z"
+    },
+    "brk_b_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/brk.b-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "cat_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cat-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:52Z"
+    },
+    "cat_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cat-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "cvx_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cvx-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:52Z"
+    },
+    "cvx_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cvx-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "etn_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/etn-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:47Z"
+    },
+    "etn_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/etn-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "ge_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ge-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:53Z"
+    },
+    "ge_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ge-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "goog_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/goog-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:47Z"
+    },
+    "goog_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/goog-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "gs_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/gs-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:50Z"
+    },
+    "gs_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/gs-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "jpm_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/jpm-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:50Z"
+    },
+    "jpm_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/jpm-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "lly_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lly-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:53Z"
+    },
+    "lly_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lly-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "lmt_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lmt-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:50Z"
+    },
+    "lmt_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lmt-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "meta_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/meta-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:53Z"
+    },
+    "meta_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/meta-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "msft_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/msft-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:48Z"
+    },
+    "msft_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/msft-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "nvda_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/nvda-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:49Z"
+    },
+    "nvda_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/nvda-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "ph_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ph-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:53Z"
+    },
+    "ph_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ph-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "pltr_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/pltr-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:52Z"
+    },
+    "pltr_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/pltr-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "rtx_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/rtx-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:51Z"
+    },
+    "rtx_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/rtx-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "vrt_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/vrt-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:48Z"
+    },
+    "vrt_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/vrt-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
+    },
+    "xom_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/xom-q1-2026.json",
+      "generated_at_utc": "2026-05-30T22:42:51Z"
+    },
+    "xom_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/xom-q1-2026-validation.json",
+      "generated_at_utc": "2026-05-30T22:42:57Z"
     }
   },
   "warnings": [
-    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
-    "Policy expectations still rely on manual target-range constants and require explicit review."
+    "Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure."
   ],
-  "blockers": [
-    "Finance refresh chain failed at test_dashboard_acceptance.py (exit code 1)",
-    "Missing, stale, or failed required outputs: command_center, dashboard_validation, workbook_exports",
-    "Dashboard acceptance did not fully pass"
-  ],
+  "blockers": [],
   "operator_action_required": [
-    "Repair or rerun test_dashboard_acceptance.py (exit code 1) before trusting the post-earnings window.",
-    "Refresh the required outputs still marked stale, missing, or failed: command_center, dashboard_validation, workbook_exports, post_earnings_prep, post_earnings_note_targets.",
-    "Inspect tmp/dashboard-acceptance-report.json and clear the failing dashboard acceptance assertions before the next scheduled window.",
-    "Review fallback-dependent macro and policy inputs before trusting any surviving warning-grade artifacts."
+    "Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action."
   ],
-  "next_action": "Inspect tmp/dashboard-acceptance-report.json and fix the failing acceptance assertions before trusting the post-earnings window.",
+  "next_action": "Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action.",
   "fallback_state": {
-    "used": true,
-    "reason": "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.; Policy expectations still rely on manual target-range constants and require explicit review."
+    "used": false,
+    "reason": ""
   },
   "review_only_brief": {
     "enabled": false
   },
+  "generated_reports": {
+    "enabled": false,
+    "outputs": {},
+    "pdf_generation": "print-ready HTML/Markdown only unless a PDF renderer is separately approved and proven"
+  },
   "downstream": {
-    "command_center_badge": "bad",
-    "workbook_trust_grade": "blocked",
+    "command_center_badge": "warn",
+    "workbook_trust_grade": "warning",
     "presentation_allowed": false,
     "canonical_note_mutation_allowed": false,
-    "canonical_note_mutation_reason": "run summary status=blocked"
+    "canonical_note_mutation_reason": "scheduled windows remain fail-closed for canonical note mutation in v1"
   }
 }

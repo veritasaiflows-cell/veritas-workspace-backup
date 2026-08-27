@@ -1,0 +1,12 @@
+{
+  "name": "veritas-openclaw-workspace",
+  "private": true,
+  "description": "Local-only QA dependencies for Veritas interactive training assets.",
+  "scripts": {
+    "training:qa": "python scripts\\interactive_training_qa_validator.py --write --validate"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "axe-core": "^4.12.1"
+  }
+}

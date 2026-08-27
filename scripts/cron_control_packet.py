@@ -16,12 +16,14 @@ from typing import Any
 import cron_freshness_spine
 import cron_signal_scorecard
 import escalation_trigger
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 OUT = TMP / "cron-control-packet.json"
 OTEL_OPS = TMP / "otel-ops-control.json"
+HANDOFF_FIRST_PROOF = TMP / "main-session-handoff-first-proof.json"
 
 SCHEMA = "veritas.cron_control_packet.v1"
 
@@ -66,6 +68,50 @@ def load_json(path: Path) -> dict[str, Any]:
     except (OSError, json.JSONDecodeError):
         return {}
     return data if isinstance(data, dict) else {}
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive fail-closed surface
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "checks": [],
+            "counts": {},
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        "checks": validation.get("checks", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+        "next_safe_action": (
+            "SQL-canon guard is clean for internal readiness context."
+            if validation.get("status") == "ok"
+            else "Treat cron readiness as blocked until finance_sql_canon_access.py validates cleanly."
+        ),
+    }
 
 
 def build_otel_summary(otel_ops: dict[str, Any]) -> dict[str, Any]:
@@ -114,8 +160,13 @@ def build_otel_summary(otel_ops: dict[str, Any]) -> dict[str, Any]:
 def build_scorecard_from_freshness(freshness: dict[str, Any]) -> dict[str, Any]:
     signals = cron_signal_scorecard.freshness_spine_signals(freshness)
     jobs = cron_signal_scorecard.freshness_spine_jobs(freshness)
+    sql_health = sql_canon_health()
+    sql_signal = cron_signal_scorecard.sql_canon_signal(sql_health)
+    if sql_signal:
+        signals.append(sql_signal)
     attention = [item for item in signals if item.get("attention") == "requires_main_attention"]
-    blocked = [item for item in signals if item.get("signal_class") == "BLOCKED"]
+    blocked_breakdown = cron_signal_scorecard.blocked_signal_breakdown(signals)
+    blocked = blocked_breakdown["blocked"]
     quiet = [item for item in signals if item.get("signal_class") == "NO_REPLY"]
     stale = [item for item in signals if item.get("signal_class") == "STALE_OR_NOISE"]
     decayed = [item for item in signals if item.get("decayed_from_stale")]
@@ -127,6 +178,7 @@ def build_scorecard_from_freshness(freshness: dict[str, Any]) -> dict[str, Any]:
             "cron_operator_ledger": rel(cron_freshness_spine.DEFAULT_LEDGER),
             "operating_leverage_spine": rel(cron_freshness_spine.DEFAULT_OPERATING_SPINE),
             "cron_freshness_spine": "in_memory:cron_control_packet.freshness",
+            "finance_sql_canon_access": "scripts/finance_sql_canon_access.py",
             "source_mode": "cron_control_packet_in_memory_freshness",
         },
         "authority_boundary": cron_signal_scorecard.AUTHORITY_BOUNDARY,
@@ -134,11 +186,29 @@ def build_scorecard_from_freshness(freshness: dict[str, Any]) -> dict[str, Any]:
             "signal_count": len(signals),
             "requires_attention_count": len(attention),
             "blocked_count": len(blocked),
+            "total_blocked_signal_count": len(blocked),
+            "cron_job_blocked_count": len(blocked_breakdown["cron_job_blocked"]),
+            "operating_signal_blocked_count": len(blocked_breakdown["operating_signal_blocked"]),
+            "non_cron_blocked_count": len(blocked_breakdown["non_cron_blocked"]),
             "quiet_success_count": len(quiet),
             "stale_or_noise_count": len(stale),
             "decayed_from_stale_count": len(decayed),
             "enabled_job_count": sum(1 for item in jobs if item.get("enabled")),
+            "sql_canon_status": sql_health.get("status"),
+            "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
         },
+        "freshness_spine_reconciliation": {
+            "freshness_blocked_count": as_dict(freshness.get("summary")).get("blocked_count"),
+            "scorecard_blocked_count": len(blocked),
+            "scorecard_blocked_signal_count": len(blocked),
+            "scorecard_cron_job_blocked_count": len(blocked_breakdown["cron_job_blocked"]),
+            "scorecard_non_cron_blocked_count": len(blocked_breakdown["non_cron_blocked"]),
+            "freshness_requires_attention_count": as_dict(freshness.get("summary")).get("requires_attention_count"),
+            "scorecard_requires_attention_count": len(attention),
+            "source_of_truth": "in_memory:cron_control_packet.freshness",
+            "rule": "Cron freshness blocked_count reconciles to scorecard_cron_job_blocked_count; scorecard_blocked_count also includes operating-spine and SQL-canon blocked signals.",
+        },
+        "sql_canon_health": sql_health,
         "signals": signals,
         "jobs": jobs,
         "operator_recommendation": (
@@ -153,6 +223,17 @@ def build_scorecard_from_freshness(freshness: dict[str, Any]) -> dict[str, Any]:
 
 def build_escalation_from_scorecard(scorecard: dict[str, Any]) -> dict[str, Any]:
     urgent = escalation_trigger.select_urgent(scorecard)
+    sql_health = sql_canon_health()
+    if sql_health.get("status") != "ok" and not any(item.get("source") == "sql_canon:finance_sql_canon_access" for item in urgent):
+        urgent.append({
+            "source": "sql_canon:finance_sql_canon_access",
+            "signal_class": "BLOCKED",
+            "status": sql_health.get("status"),
+            "reason": "finance_sql_canon_guard_blocked",
+            "artifact": "scripts/finance_sql_canon_access.py",
+            "age_hours": 0,
+            "next_action": "Run python scripts\\finance_sql_canon_access.py --write --validate and repair the SQL-canon guard before treating cron/PM readiness as clean.",
+        })
     should_wake = bool(urgent)
     payload = {
         "schema": escalation_trigger.SCHEMA,
@@ -161,9 +242,11 @@ def build_escalation_from_scorecard(scorecard: dict[str, Any]) -> dict[str, Any]
         "sources": {
             "cron_signal_scorecard": "in_memory:cron_control_packet.scorecard",
             "cron_freshness_spine": "in_memory:cron_control_packet.freshness",
+            "finance_sql_canon_access": "scripts/finance_sql_canon_access.py",
             "scorecard_source_mode": as_dict(scorecard.get("sources")).get("source_mode"),
         },
         "authority_boundary": escalation_trigger.AUTHORITY_BOUNDARY,
+        "sql_canon_health": sql_health,
         "scorecard_present": bool(scorecard),
         "scorecard_generated_at_utc": scorecard.get("generated_at_utc"),
         "should_wake_main_session": should_wake,
@@ -209,6 +292,14 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("escalation_validation_not_ok")
     if as_dict(scorecard.get("scorecard")).get("blocked_count", 0) > 0:
         warnings.append("cron_blocked_signals_present")
+    reconciliation = as_dict(scorecard.get("freshness_spine_reconciliation"))
+    if reconciliation:
+        scorecard_cron_job_blocked_count = reconciliation.get(
+            "scorecard_cron_job_blocked_count",
+            reconciliation.get("scorecard_blocked_count"),
+        )
+        if reconciliation.get("freshness_blocked_count") != scorecard_cron_job_blocked_count:
+            errors.append("freshness_scorecard_blocked_count_mismatch")
     if escalation.get("should_wake_main_session"):
         warnings.append("cron_escalation_signal_present")
     otel = as_dict(payload.get("otel_ops"))
@@ -218,6 +309,28 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         warnings.append("otel_ops_control_not_ok")
     elif otel.get("ready_attention_action_count", 0) > 0:
         warnings.append("otel_ops_ready_attention_actions_present")
+    handoff = as_dict(payload.get("handoff_first_proof"))
+    if not handoff.get("present"):
+        warnings.append("handoff_first_proof_missing")
+    elif handoff.get("status") == "warning":
+        warnings.append("handoff_first_proof_needs_repair")
+    elif handoff.get("status") not in {"ok", "warning"}:
+        errors.append(f"handoff_first_proof_status_not_ok:{handoff.get('status')}")
+    sql_health = as_dict(payload.get("sql_canon_health"))
+    if sql_health.get("status") != "ok":
+        errors.append(f"sql_canon_guard_blocked:{sql_health.get('status')}")
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            errors.append(f"sql_canon_authority_{key}_not_false")
     return {"status": "ok" if not errors else "error", "errors": errors, "warnings": warnings}
 
 
@@ -230,6 +343,8 @@ def build_packet() -> dict[str, Any]:
     escalation = build_escalation_from_scorecard(scorecard)
     otel_ops = load_json(OTEL_OPS)
     otel_summary = build_otel_summary(otel_ops)
+    handoff_first_proof = as_dict(load_json(HANDOFF_FIRST_PROOF))
+    sql_health = sql_canon_health()
     freshness_summary = as_dict(freshness.get("summary"))
     score_summary = as_dict(scorecard.get("scorecard"))
     payload = {
@@ -241,6 +356,7 @@ def build_packet() -> dict[str, Any]:
             "cron_operator_ledger": rel(cron_freshness_spine.DEFAULT_LEDGER),
             "operating_leverage_spine": rel(cron_freshness_spine.DEFAULT_OPERATING_SPINE),
             "otel_ops_control": rel(OTEL_OPS),
+            "handoff_first_proof": rel(HANDOFF_FIRST_PROOF),
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
         "summary": {
@@ -259,6 +375,10 @@ def build_packet() -> dict[str, Any]:
             "otel_collector_healthy": otel_summary.get("collector_healthy"),
             "otel_ready_action_count": otel_summary.get("ready_action_count"),
             "otel_ready_attention_action_count": otel_summary.get("ready_attention_action_count"),
+            "handoff_first_proof_status": handoff_first_proof.get("status") if handoff_first_proof else "missing",
+            "handoff_first_proof_needs_repair_count": as_dict(handoff_first_proof.get("summary")).get("needs_repair_count"),
+            "sql_canon_status": sql_health.get("status"),
+            "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
             "next_safe_action": (
                 "Inspect escalation_signals and source artifacts."
                 if escalation.get("should_wake_main_session")
@@ -270,6 +390,16 @@ def build_packet() -> dict[str, Any]:
         "scorecard": scorecard,
         "escalation": escalation,
         "otel_ops": otel_summary,
+        "handoff_first_proof": {
+            "present": bool(handoff_first_proof),
+            "status": handoff_first_proof.get("status") if handoff_first_proof else "missing",
+            "generated_at_utc": handoff_first_proof.get("generated_at_utc"),
+            "summary": as_dict(handoff_first_proof.get("summary")),
+            "repair_lane_packet": as_dict(handoff_first_proof.get("repair_lane_packet")),
+            "source": rel(HANDOFF_FIRST_PROOF),
+            "authority_boundary": as_dict(handoff_first_proof.get("authority_boundary")),
+        },
+        "sql_canon_health": sql_health,
         "stop_lines": [
             "Cron control packet is review-only. It sends no messages and mutates no cron schedule, runtime config, notes, canon, portfolio, account, customer, paper, or live surface.",
         ],

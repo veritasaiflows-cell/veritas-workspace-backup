@@ -92,10 +92,10 @@ def validate_source_freshness(block: Any, findings: list[dict[str, Any]], ticker
     missing = sorted(REQUIRED_SOURCE_FRESHNESS_FIELDS - set(block))
     if missing:
         add(findings, "critical", "source_freshness_fields_missing", f"source_freshness missing fields: {', '.join(missing)}.", ticker)
-    if block.get("retrieval_status") not in {"not_fetched", "manual_confirmed"}:
-        add(findings, "critical", "source_freshness_retrieval_invalid", "source_freshness.retrieval_status must be not_fetched or manual_confirmed.", ticker)
-    if block.get("freshness_status") not in {"manual_required", "current", "stale"}:
-        add(findings, "critical", "source_freshness_status_invalid", "source_freshness.freshness_status must be manual_required/current/stale.", ticker)
+    if block.get("retrieval_status") not in {"not_fetched", "manual_confirmed", "source_verified"}:
+        add(findings, "critical", "source_freshness_retrieval_invalid", "source_freshness.retrieval_status must be not_fetched, source_verified, or manual_confirmed.", ticker)
+    if block.get("freshness_status") not in {"manual_required", "source_verified_not_review_fresh", "current", "stale"}:
+        add(findings, "critical", "source_freshness_status_invalid", "source_freshness.freshness_status must be manual_required/source_verified_not_review_fresh/current/stale.", ticker)
     if block.get("freshness_status") == "current" and block.get("retrieval_status") != "manual_confirmed":
         add(findings, "critical", "source_freshness_false_current", "Current source freshness requires manual_confirmed retrieval.", ticker)
 
@@ -179,8 +179,8 @@ def validate_bridge_row(row: Any, findings: list[dict[str, Any]]) -> None:
         return
     ticker = str(row.get("ticker") or "")
     validate_authority(row.get("authority"), findings, "bridge_row", ticker)
-    if row.get("status") not in {"manual_required", "manual_confirmed_official_source"}:
-        add(findings, "critical", "bridge_row_status_invalid", "Bridge row status must be manual_required or manual_confirmed_official_source.", ticker)
+    if row.get("status") not in {"manual_required", "source_verified_manual_reconciliation_pending", "manual_confirmed_official_source"}:
+        add(findings, "critical", "bridge_row_status_invalid", "Bridge row status must be manual_required, source_verified_manual_reconciliation_pending, or manual_confirmed_official_source.", ticker)
     if row.get("source_posture") != "review_only" or row.get("review_only") is not True:
         add(findings, "critical", "bridge_row_not_review_only", "Bridge row must be review-only.", ticker)
     if row.get("manual_review_required") is not True:
@@ -192,10 +192,10 @@ def validate_bridge_row(row: Any, findings: list[dict[str, Any]]) -> None:
     validate_authority(bridge, findings, "official_earnings_bridge", ticker)
     if bridge.get("status") != "manual_required" or bridge.get("reconciled") is not False:
         add(findings, "critical", "official_earnings_bridge_not_manual", "Bridge must remain manual_required and unreconciled.", ticker)
-    if bridge.get("official_evidence_status") not in {"manual_required", "manual_confirmed"} or bridge.get("official_evidence_posture") != "review_only":
-        add(findings, "critical", "official_evidence_posture_invalid", "official evidence must stay manual_required or manual_confirmed, and review_only.", ticker)
-    if bridge.get("source_authority_level") not in {"official_company_ir_metadata_only", "manual_confirmed_official_source"}:
-        add(findings, "critical", "source_authority_level_invalid", "source_authority_level must be metadata-only or manual-confirmed official source.", ticker)
+    if bridge.get("official_evidence_status") not in {"manual_required", "source_verified_manual_reconciliation_pending", "manual_confirmed"} or bridge.get("official_evidence_posture") != "review_only":
+        add(findings, "critical", "official_evidence_posture_invalid", "official evidence must stay manual_required/source_verified/manual_confirmed and review_only.", ticker)
+    if bridge.get("source_authority_level") not in {"official_company_ir_metadata_only", "verified_official_source_pending_reconciliation", "manual_confirmed_official_source"}:
+        add(findings, "critical", "source_authority_level_invalid", "source_authority_level must be metadata-only, source-verified-pending-reconciliation, or manual-confirmed official source.", ticker)
     if bridge.get("source_posture") != "review_only" or bridge.get("review_only") is not True:
         add(findings, "critical", "official_earnings_bridge_not_review_only", "Bridge must remain review-only.", ticker)
     if bridge.get("manual_review_required") is not True:

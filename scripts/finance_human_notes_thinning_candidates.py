@@ -239,12 +239,14 @@ def validate_sql_canon_python() -> dict[str, Any]:
         answer_path = conn.execute("SELECT COUNT(*) FROM current_answer_path").fetchone()[0]
         review_monitor = conn.execute("SELECT COUNT(*) FROM review_monitor_universe").fetchone()[0]
     return {
-        "status": "ok" if integrity == "ok" and active in SUPPORTED_ACTIVE_COUNTS and answer_path == 42 and review_monitor in SUPPORTED_REVIEW_MONITOR_COUNTS else "blocked",
+        "status": "ok" if integrity == "ok" and active in SUPPORTED_ACTIVE_COUNTS and answer_path == 0 and review_monitor in SUPPORTED_REVIEW_MONITOR_COUNTS else "blocked",
         "path": rel(STATE_FINANCE_DB),
         "integrity": integrity,
         "active_ticker_count": active,
         "active_ticker_supported_counts": sorted(SUPPORTED_ACTIVE_COUNTS),
         "legacy_answer_path_count": answer_path,
+        "legacy_answer_path_expected_count": 0,
+        "empty_production_scope_is_valid_wait_state": True,
         "review_monitor_count": review_monitor,
         "review_monitor_supported_counts": sorted(SUPPORTED_REVIEW_MONITOR_COUNTS),
         "route_runtime": "python_fallback",

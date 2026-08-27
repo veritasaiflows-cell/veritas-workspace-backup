@@ -56,6 +56,34 @@ Verified final state:
 - `tmp/dashboard-data.json`: deployable summary `['ETN']`; promotion-review summary `['JPM']`; JPM renders once as `AUTHORITY CONFLICT`; legacy `today_action.actionable` contains only ETN; capital recommendations list ETN / GOOG / GS / MSFT.
 - `tmp/dashboard-validation.json`: 0 critical / 1 warning, the expected NVDA event-risk band-freeze warning.
 
+## Status - 2026-06-18 handoff proof-state simplification
+
+Status: **Implemented / proof-clean; source lanes still repair-needed**.
+
+Randall challenged the Command Center handoff pills because morning, post-close, Sunday weekly, and Sunday research were all stuck as `PENDING_FIRST_PROOF` with no proof artifact. The issue was not just a dashboard display problem: cron/main-session needed an actionable source-of-truth packet instead of pushing the mismatch into a generic queue.
+
+Implemented:
+- Added `scripts/handoff_first_proof_gate.py` and output `tmp/main-session-handoff-first-proof.json`.
+- Replaced hard-coded handoff proof states in `scripts/dashboard_payload.py` with the gate output.
+- Dashboard handoff rows now carry lane state, tone, proof artifact, generated timestamp, source status/blockers, and repair action.
+- Acceptance tests now allow the full lane vocabulary: `PROVED`, `BLOCKED`, `MISSING`, `STALE`, and `PENDING_FIRST_PROOF`.
+
+Current verified lane state:
+- Weekday research: `PROVED`.
+- Morning: `BLOCKED` from the existing blocked run summary / chain recovery state.
+- Post-close: `BLOCKED` from the existing blocked run summary / chain recovery state.
+- Sunday weekly: `BLOCKED` from the current weekly brief trust gate.
+- Sunday research: `MISSING` because no real `tmp/sunday-research-review.json` producer is wired yet.
+
+Proof:
+- `python scripts\handoff_first_proof_gate.py --write --validate` -> `status=warning proved=1 repair=4`
+- `python scripts\test_handoff_first_proof_gate.py`
+- `python scripts\test_dashboard_handoff_sql.py`
+- `python scripts\test_dashboard_acceptance.py`
+- `python scripts\generate_dashboard.py`
+
+Boundary: this did not promote blocked handoff artifacts, run finance producers, mutate portfolio/canon, or imply any capital/execution approval. It made the dashboard honest and gave cron/main-session a repair packet to act from.
+
 Follow-on on 2026-05-15/16: after the sector-expansion pass, all 41 tracked names have reference entry bands/stops in `tmp/portfolio-config.json`, and the dashboard regenerated with fresh earnings dates for newly tracked equities. Current proof from the follow-on pass: `validate_portfolio_config.py` ok with 41 checked tickers / 0 warnings; `generate_dashboard.py` wrote 37 technical records and detected 9 earnings-date shifts; `validate_dashboard_state.py --write` remained 0 critical / 1 expected NVDA event-risk warning. The added earnings/calendar evidence is freshness/catalyst context only; it does not grant promotion, sizing, sleeve, deployment, trade/account, or owner-approval authority.
 
 ## Status - 2026-05-14 WF58/WF56 guarded mutation posture pass

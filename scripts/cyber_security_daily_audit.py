@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -68,29 +69,66 @@ def normalize_output(value: str | bytes | None) -> str:
     return value
 
 
-def run_command(command: list[str], timeout_seconds: int) -> dict[str, Any]:
+def terminate_process_tree(process: subprocess.Popen[str]) -> None:
+    """Stop a timed-out audit command and any child retaining its output pipes.
+
+    On Windows, killing only the CLI wrapper can leave a spawned child holding
+    stdout/stderr open.  That makes ``communicate`` wait past its own timeout
+    and turns this bounded, read-only audit into a scheduler timeout.
+    """
+    if os.name == "nt":
+        try:
+            subprocess.run(
+                ["taskkill.exe", "/PID", str(process.pid), "/T", "/F"],
+                capture_output=True,
+                text=True,
+                timeout=15,
+                check=False,
+            )
+        except (OSError, subprocess.SubprocessError):
+            pass
     try:
-        completed = subprocess.run(
+        process.kill()
+    except OSError:
+        pass
+
+
+def run_command(command: list[str], timeout_seconds: int) -> dict[str, Any]:
+    creationflags = subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0
+    process: subprocess.Popen[str] | None = None
+    try:
+        process = subprocess.Popen(
             command,
             cwd=WORKSPACE,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
-            timeout=timeout_seconds,
+            creationflags=creationflags,
         )
+        stdout, stderr = process.communicate(timeout=timeout_seconds)
         return {
             "command": command,
-            "returncode": completed.returncode,
-            "stdout": completed.stdout,
-            "stderr": completed.stderr,
+            "returncode": process.returncode,
+            "stdout": stdout,
+            "stderr": stderr,
             "timed_out": False,
             "error": None,
         }
     except subprocess.TimeoutExpired as exc:
+        if process is not None:
+            terminate_process_tree(process)
+            try:
+                stdout, stderr = process.communicate(timeout=15)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                stdout, stderr = process.communicate()
+        else:
+            stdout, stderr = normalize_output(exc.stdout), normalize_output(exc.stderr)
         return {
             "command": command,
             "returncode": None,
-            "stdout": normalize_output(exc.stdout),
-            "stderr": normalize_output(exc.stderr),
+            "stdout": normalize_output(stdout) or normalize_output(exc.stdout),
+            "stderr": normalize_output(stderr) or normalize_output(exc.stderr),
             "timed_out": True,
             "error": f"timeout after {timeout_seconds}s",
         }

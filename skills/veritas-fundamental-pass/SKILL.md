@@ -1,6 +1,6 @@
 ---
 name: "veritas-fundamental-pass"
-description: "Run fundamental equity research with source-quality checks and portfolio-fit judgment."
+description: "Prefer SQL-canon then source-open fallback."
 ---
 
 # Veritas Fundamental Pass
@@ -11,6 +11,31 @@ This is not a generic stock writeup skill.
 Use it when the output needs to be decision-grade, risk-aware, explicit about data quality, and aligned to the live watchlist, portfolio notes, and risk rules.
 
 ## Before starting
+
+## SQL-First Finance Context
+
+Before a fundamental pass is used for portfolio fit, deployment readiness, material recommendation language, or source-quality judgment, start with the guarded SQL/JSON finance front door:
+
+```powershell
+python scripts\finance_sql_canon_access.py --write --validate
+python scripts\finance_intelligence_state.py ticker <TICKER> --pretty
+```
+
+When the SQL-canon access layer is clean, treat it as the first current-state routing layer for approved field families such as answer-path scope, evidence freshness, reference levels, source lineage, tier routing, ticker state, and universe membership.
+
+Then drill into exact WF84/WF85/source artifacts only when the question needs material support, the SQL layer is stale/blocked, source-open is required, or the answer would influence capital/deployment judgment.
+
+SQL/JSON proof is not approval authority. It does not authorize portfolio mutation, capital deployment, paper/live execution, brokerage/account action, customer output, or owner approval inference.
+
+Source-open fallback remains required for material finance claims when:
+
+- SQL-canon access is blocked, stale, warning-classed, or missing the needed field
+- the claim depends on a fresh SEC/IR/official-source line item
+- a cached answer is safe for review but not material recommendation language
+- source lineage, evidence freshness, or parity proof is disputed
+- the output supports a deployment card, sizing/staggering recommendation, or owner decision
+
+If source-open proof is missing, cap confidence and keep the name in repair/review context instead of turning business quality into deployment readiness.
 
 ## Effort routing
 
@@ -171,7 +196,7 @@ Before the final verdict, explicitly state:
 
 Use this structure unless the user requests something else.
 
-### TICKER Ã¢â‚¬â€ Fundamental Verdict
+### TICKER - Fundamental Verdict
 - Resolved entity: [company, exchange, country]
 - Verdict: [Bullish / Neutral / Bearish]
 - Operational fit: [core-quality / tactical / speculative / watch-only / avoid]
@@ -222,9 +247,9 @@ If multiple tickers are analyzed:
 Add this section:
 
 ## Peer ranking
-1. [ticker] Ã¢â‚¬â€ why #1
-2. [ticker] Ã¢â‚¬â€ why #2
-3. [ticker] Ã¢â‚¬â€ why #3
+1. [ticker] - why #1
+2. [ticker] - why #2
+3. [ticker] - why #3
 
 ### Best fit now
 - selected name

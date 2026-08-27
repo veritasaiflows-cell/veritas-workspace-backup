@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import DEFAULT_DB as SQL_CANON_DB, strategic_answer_route_context
 from market_data_utils import load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -104,6 +105,19 @@ def load_dict(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def finance_sql_canon_guard_context() -> dict[str, Any]:
+    context = strategic_answer_route_context(consumer="wf78_batch_manifest", db_path=SQL_CANON_DB)
+    context["errors"] = context.get("validation", {}).get("errors", [])
+    return context
+
+
+def require_finance_sql_canon_guard() -> dict[str, Any]:
+    guard = finance_sql_canon_guard_context()
+    if guard.get("status") != "ok":
+        raise RuntimeError(f"finance SQL canon guard blocked batch routing: {guard.get('errors')}")
+    return guard
+
+
 def parse_batch_label(label: str) -> tuple[int, int]:
     match = BATCH_RE.match(str(label or "").strip())
     if not match:
@@ -167,6 +181,7 @@ def batch_spec(label: str, manifest: dict[str, Any] | None = None) -> BatchSpec:
 
 
 def active_universe_tickers(universe_path: Path = DEFAULT_UNIVERSE) -> set[str]:
+    require_finance_sql_canon_guard()
     universe = load_dict(universe_path)
     return {
         symbol(row.get("ticker"))

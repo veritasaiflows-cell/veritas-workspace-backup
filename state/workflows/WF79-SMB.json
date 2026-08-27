@@ -3,11 +3,26 @@
   "workflow_id": "WF79-SMB",
   "display_name": "SMB Workflow Clarity / Marketing Ops Automation",
   "tier": "P1",
-  "effective_status": "ready",
-  "next_action": "Review completed sanitized Lead Rescue and Marketing Ops phase proof: offer/ICP packet, demo packets, automation blueprints, cockpit panel, training/sales practice, outreach kit, pilot scope/intake, vertical ICP targeting, demo polish, pilot-readiness packet, sales conversation drill, demo-selection tree, vertical test framework, rollout-readiness plan, client-rollout checklist, curriculum map, and validator lint. Next gate is Randall exact approval for real outreach or pilot use; do not contact real prospects yet.",
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "route_only",
+  "effective_status": "route_only",
+  "current_state": "**Resumed by Randall on 2026-06-13** as automation-first monetization, starting with Lead Rescue.",
+  "next_action": "Build internal proof: offer packet, demo scenarios, cockpit panels, stop-line lint, training/sales practice.",
+  "authoritative_next_action": "Build internal proof: offer packet, demo scenarios, cockpit panels, stop-line lint, training/sales practice.",
   "helper_safe": true,
   "owner_action_required": true,
   "authority_boundary": "review-only; no customer/outbound/public",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/wf79-smb-phase-closeout.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [
     "No real customer data/outbound/public claims"
   ],
@@ -15,8 +30,9 @@
     "No real customer data, credentials, outbound/writeback, external delivery, ROI/legal/compliance/security claims, spend, ad account action, SQL-as-canon, or certification claims."
   ],
   "continuity_note": null,
-  "primary_route_artifact": "scripts/generic_intelligence_saas_pivot.py",
+  "primary_route_artifact": "tmp/wf79-smb-phase-closeout.json",
   "secondary_artifacts": [
+    "scripts/generic_intelligence_saas_pivot.py",
     "scripts/wf75_training_desk.py",
     "tmp/wf75-smb-boundary-lint.json",
     "tmp/wf79-smb-outreach-prep-validation.json",
@@ -45,14 +61,20 @@
       "no customer-system or ad-account implementation",
       "no guaranteed ROI claim"
     ],
-    "lane_status": "ready",
+    "lane_status": "route_only",
     "readiness_score": 90,
     "rank": 13,
-    "pm_packet_only": true
+    "pm_packet_only": true,
+    "source_lane_status": "ready",
+    "superseded_by_route_contract": true
   },
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

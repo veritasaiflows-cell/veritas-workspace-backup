@@ -13,6 +13,8 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
     original_card = resolver.card
+    original_load_dict = resolver.load_dict
+    original_is_current_card = resolver.is_current_card
     try:
         resolver.card = lambda symbol: {  # type: ignore[assignment]
             "technical_posture": {"data_date": "2026-06-10", "latest_close": 123.45},
@@ -64,8 +66,46 @@ def main() -> int:
             "mixed deployment-readiness blocker should stay explicit",
             errors,
         )
+
+        def fake_load_dict(path):  # type: ignore[no-untyped-def]
+            if path == resolver.LEDGER:
+                return {
+                    "summary": {"ticker_count": 3},
+                    "rows": [
+                        {"ticker": "AAA", "overall_freshness_state": "fresh"},
+                        {"ticker": "BBB", "overall_freshness_state": "fresh"},
+                        {"ticker": "CCC", "overall_freshness_state": "fresh"},
+                    ],
+                }
+            if path == resolver.AUTO_ROUTER:
+                return {
+                    "summary": {"active_ticker_count": 3},
+                    "rows": [
+                        {"ticker": "AAA", "auto_tier": "Tier C", "auto_state": "C-MONITOR"},
+                        {"ticker": "BBB", "auto_tier": "Tier C", "auto_state": "C-MONITOR"},
+                        {"ticker": "CCC", "auto_tier": "Tier C", "auto_state": "C-MONITOR"},
+                    ],
+                }
+            if path == resolver.TIER_C_BAND_STATUS:
+                return {"summary": {"tier_c_count": 3}, "rows": []}
+            if path == resolver.REFRESH_GATE:
+                return {"status": "ok", "validation": {"warnings": []}}
+            return {"rows": []}
+
+        resolver.load_dict = fake_load_dict  # type: ignore[assignment]
+        resolver.is_current_card = lambda symbol, ledger_row: True  # type: ignore[assignment]
+        dynamic_report = resolver.build()
+        expect(dynamic_report["status"] == "ok", "dynamic active-scope report should validate", errors)
+        expect(dynamic_report["summary"]["ticker_count"] == 3, "dynamic active-scope ticker count should be accepted", errors)
+        expect(
+            dynamic_report["summary"]["expected_active_scope_count"] == 3,
+            "expected active scope should come from WF78 router summary",
+            errors,
+        )
     finally:
         resolver.card = original_card
+        resolver.load_dict = original_load_dict  # type: ignore[assignment]
+        resolver.is_current_card = original_is_current_card  # type: ignore[assignment]
 
     if errors:
         print("wf78_tier_weighted_freshness_resolver_tests_failed")

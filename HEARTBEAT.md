@@ -36,7 +36,7 @@ Heartbeat may produce or refresh lightweight continuation signals when all are t
 
 Allowed heartbeat continuation actions:
 - flag the candidate in chat or today's daily note when material
-- refresh `tmp/heartbeat-continuation-candidates.json` with `python scripts\heartbeat_continuation_candidates.py --write --validate` when a current operator packet or automation review already exists; this also refreshes `tmp/pm-main-session-handoff.json` and `tmp/pm-dispatch-ledger.json` as handoff-only main-session continuation signals
+- refresh/classify current-window, ticker-debt, and cron-residue priority through the fixed bridge only: `python scripts\heartbeat_priority_handoff.py --write --validate`. It emits `tmp/heartbeat-priority-receipt.json` and can only route a dry-run main-session handoff; do not invoke `main_session_action_executor.py` or `main_session_escalation_consumer.py` directly from heartbeat.
 - refresh a cheap review surface such as operator-packet validation when it does not perform major phase work
 - wake or queue main-session review for an already-defined safe next action
 
@@ -45,6 +45,9 @@ Blocked heartbeat continuation actions:
 - launching broad helper swarms
 - changing cron definitions
 - applying canonical notes or portfolio state
+- running `main_session_escalation_consumer.py --execute-safe` or `main_session_action_executor.py --execute-safe`
+- passing `--execute-safe` through any heartbeat continuation bridge
+- invoking a priority bridge with `--context cron`, `--execute-one`, lane leasing, or agent/helper-launch flags; heartbeat must use `heartbeat_priority_handoff.py` with its fixed argv only
 - importing SQL/ticker data
 - changing customer/public delivery state
 - paper/live trading or account actions
@@ -63,7 +66,7 @@ Randall approved the guarded portfolio note/model mutation workflow on 2026-05-1
 - `tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json`
 - `tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.md`
 - `tmp/capital-deployment-recommendation-validation.json`
-- `tmp/current-window-artifacts.md`
+- `tmp/current-window-artifacts.json`
 
 Heartbeat may flag or log a material issue when:
 - the validator is blocked/critical

@@ -1,0 +1,681 @@
+{
+  "schema": "veritas.workspace_efficiency_speed_execution_contract.v1",
+  "generated_at_utc": "2026-08-25T01:52:54Z",
+  "generated_at_phoenix": "2026-08-24T18:52:54-07:00",
+  "status": "proposal_only",
+  "project_id": "workspace-efficiency-speed-audit-20260824",
+  "title": "Workspace Efficiency and Speed Deferred Execution Contract",
+  "human_plan_path": "06. Playbooks/Project Continuity/Workspace Efficiency and Speed Audit and Execution Plan - 2026-08-24.md",
+  "upstream_owner_paths": [
+    "06. Playbooks/Project Continuity/Veritas Harness V2 - Governance and Efficiency Upgrade Plan - 2026-08-22.md",
+    "TOOLS.md",
+    "AGENTS.md"
+  ],
+  "purpose": "Persist the audit evidence, recommendation order, authority gates, implementation contracts, acceptance tests, rollback requirements, and pickup state for later execution.",
+  "authority_boundary": {
+    "audit_document_write_authorized": true,
+    "execution_authorized": false,
+    "workspace_code_patch_authorized": false,
+    "cron_contract_patch_authorized": false,
+    "live_cron_or_scheduler_mutation_authorized": false,
+    "config_auth_channel_plugin_startup_service_runtime_mutation_authorized": false,
+    "openclaw_core_source_mutation_authorized": false,
+    "archive_or_delete_authorized": false,
+    "finance_canon_or_portfolio_mutation_authorized": false,
+    "capital_deployment_authorized": false,
+    "paper_or_live_execution_authorized": false,
+    "brokerage_account_or_money_action_authorized": false,
+    "wave3_authorized": false,
+    "route_or_model_promotion_authorized": false,
+    "owner_approval_inferred": false
+  },
+  "measurement_policy": {
+    "actual_billed_cost_status": "not_recorded_do_not_infer",
+    "api_equivalent_estimates_are_invoices": false,
+    "historical_tokens_are_realized_savings": false,
+    "single_sample_timings_are_directional_only": true,
+    "savings_claim_requires_changed_input_skip_rate": true,
+    "route_claim_requires_comparable_main_accepted_jobs": 10,
+    "incident_or_missing_telemetry_receives_success_credit": false
+  },
+  "baseline_snapshot": {
+    "observed_at_utc": "2026-08-25T01:52:54Z",
+    "token_efficiency": {
+      "source": "tmp/token-efficiency-scorecard.json",
+      "source_generated_at_utc": "2026-08-25T00:58:27Z",
+      "status": "warning",
+      "token_event_count": 830,
+      "total_observed_tokens": 42694193,
+      "api_equivalent_cost_event_coverage_percent": 15.4217,
+      "usage_timestamp_coverage_percent": 18.4337,
+      "actual_billed_cost_usd": null,
+      "implementation_token_event_count": 1,
+      "implementation_token_gap_count": 597,
+      "top_six_total_tokens": 8406052,
+      "top_six_total_runs": 190,
+      "top_two_deterministic_agent_turn_tokens": 4105699,
+      "top_two_deterministic_agent_turn_runs": 109,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "name": "Runtime - OS Audit Companion Packets Refresh",
+          "runs": 32,
+          "tokens": 2271631,
+          "tokens_per_run": 70988.47,
+          "payload_kind": "agentTurn",
+          "model": "openai/gpt-5.6-luna",
+          "existing_changed_only_gate": false
+        },
+        {
+          "rank": 2,
+          "name": "Runtime - Status Card Freshness Refresh",
+          "runs": 77,
+          "tokens": 1834068,
+          "tokens_per_run": 23819.06,
+          "payload_kind": "agentTurn",
+          "model": "openai/gpt-5.6-luna",
+          "existing_changed_only_gate": false
+        },
+        {
+          "rank": 3,
+          "name": "Runtime - Future Session Packet Refresh",
+          "runs": 26,
+          "tokens": 1293130,
+          "tokens_per_run": 49735.77,
+          "payload_kind": "command",
+          "existing_changed_only_gate": true
+        },
+        {
+          "rank": 4,
+          "name": "Finance - Daily Canon Drift Freshness Gate",
+          "runs": 18,
+          "tokens": 1146862,
+          "tokens_per_run": 63714.56,
+          "payload_kind": "command",
+          "existing_changed_only_gate": true
+        },
+        {
+          "rank": 5,
+          "name": "Cron Reduction - Control Fail-Closed Dispatcher",
+          "runs": 20,
+          "tokens": 1020321,
+          "tokens_per_run": 51016.05,
+          "payload_kind": "command",
+          "existing_changed_only_gate": true
+        },
+        {
+          "rank": 6,
+          "name": "Finance - WF87 Autonomy Command Center Refresh",
+          "runs": 17,
+          "tokens": 840040,
+          "tokens_per_run": 49414.12,
+          "payload_kind": "command",
+          "existing_changed_only_gate": false
+        }
+      ]
+    },
+    "cron_control": {
+      "source_contract_validator": "tmp/cron-contract-validator.json",
+      "source_freshness_spine": "tmp/cron-freshness-spine.json",
+      "contract_count": 43,
+      "live_job_count": 58,
+      "contract_drift_count": 1,
+      "missing_live_job_count": 0,
+      "live_scheduler_last_run_exception_count": 16,
+      "blocked_or_urgent_count": 25,
+      "quiet_success_count": 30,
+      "fresh_count": 13,
+      "stale_count": 2,
+      "latest_three_digest_validator_failure_seconds": 87.604,
+      "drift": {
+        "contract_path": "state/cron-contracts/finance-daily-sql-canon-tier-routing-sync.json",
+        "job_id": "2845ff7e-59cc-43f4-89e6-f4d12be0d5c4",
+        "name": "Finance - Daily SQL Canon Tier Routing Sync",
+        "expected_model": "openai/gpt-5.6-luna",
+        "actual_model": null,
+        "expected_thinking": "low",
+        "actual_thinking": null,
+        "preferred_direction": "verify_and_codify_intended_model_free_command"
+      }
+    },
+    "validation": {
+      "normal_profile_commands": 5,
+      "normal_profile_elapsed_seconds": 7.235,
+      "normal_profile_target_seconds": 10.0,
+      "normal_profile_slow": false,
+      "unscoped_changed_path_count": 501,
+      "unscoped_recommendation_count": 230,
+      "shared_bundle_selected_commands": 228,
+      "shared_bundle_executed_commands": 0,
+      "shared_bundle_preflight_error": "required_trade_grade_producer_excluded_by_budget"
+    },
+    "lane_control": {
+      "source": "tmp/concurrent-lane-register.json",
+      "source_bytes_at_audit": 5991035,
+      "full_history_is_append_only": true,
+      "active_projection_already_present": "summary.open_lanes",
+      "downstream_parallel_gate_requires_global_validation_ok": true,
+      "historical_debt_must_remain_visible": true
+    },
+    "status_and_retrieval": {
+      "frontdoor_source": "tmp/veritas-status-card-frontdoor.json",
+      "frontdoor_bytes": 7928,
+      "direct_frontdoor_read_ms_single_sample": 30,
+      "status_card_command_seconds_single_sample": 1.082,
+      "empty_python_start_seconds_single_sample": 0.986,
+      "literal_twelve_surface_bytes_single_sample": 149302,
+      "frontdoor_plus_wiki_index_bytes_single_sample": 10132,
+      "status_runner_status": "failed",
+      "status_runner_steps_executed": 1,
+      "status_runner_step_count": 5,
+      "status_runner_failed_step": "wf84_capsule_refresh",
+      "status_runner_failure_reason": "routing_index_stale",
+      "vector_source_count": 353,
+      "vector_chunk_count": 2828,
+      "stale_vector_chunk_count": 672,
+      "stale_vector_source_count": 1,
+      "stale_vector_source": "tmp/finance-vector-retrieval-summary.json",
+      "semantic_maintenance_action": "no_refresh_needed",
+      "frontdoor_local_fallback_available": false,
+      "wiki_page_count": 15,
+      "wiki_expected_page_count": 15,
+      "wiki_hash_mismatch_count": 0
+    },
+    "harness_v2": {
+      "source": "tmp/wave2-rebuild-r3-artifacts/producer-restoration-r4/deployment-readiness-r4/wave2-r4-post-restart-acceptance-r1.json",
+      "status": "p0_pass_wave2_measurement_cohort_pending",
+      "p0_protected_receipt_gate": "pass",
+      "wave2_runtime_acceptance": "pass",
+      "comparable_cohort_accepted_jobs": 0,
+      "comparable_cohort_required_jobs": 10,
+      "route_or_model_promotion_allowed": false,
+      "wave3_authorized": false
+    }
+  },
+  "dependency_order": [
+    "WES-06",
+    "WES-00",
+    "WES-01",
+    "WES-03",
+    "WES-04",
+    "WES-02",
+    "WES-05"
+  ],
+  "work_packets": [
+    {
+      "id": "WES-00",
+      "title": "Refresh evidence and freeze an execution snapshot",
+      "route_state": "preflight",
+      "authority": "review_only_model_free",
+      "approval_required_before_packet": false,
+      "dependencies": [],
+      "targets": [
+        "tmp/token-efficiency-scorecard.json",
+        "tmp/cron-predispatch-efficiency-plan.json",
+        "tmp/cron-contract-validator.json",
+        "tmp/cron-freshness-spine.json",
+        "tmp/status-card-freshness-runner.json",
+        "tmp/semantic-memory-maintenance.json",
+        "tmp/concurrent-lane-register.json",
+        "tmp/validator-timing-ledger.json",
+        "tmp/wave2-rebuild-r3-artifacts/producer-restoration-r4/deployment-readiness-r4/wave2-r4-post-restart-acceptance-r1.json"
+      ],
+      "implementation_contract": [
+        "run_project_implementation_router",
+        "refresh_only_packet_required_proof",
+        "rehash_all_sources_and_targets",
+        "classify_deltas_before_writes",
+        "check_workflow_pause_and_current_lane_admission",
+        "lease_exact_writes_and_declare_route_metadata"
+      ],
+      "acceptance": [
+        "all_required_json_parses",
+        "current_hashes_and_timestamps_recorded",
+        "no_pause_or_collision_ignored",
+        "no_implementation_on_stale_material_proof"
+      ],
+      "rollback": "not_applicable_to_read_only_checks",
+      "stop_lines": [
+        "authority_boundary_changed",
+        "active_write_collision",
+        "material_owner_stale",
+        "preflight_newly_red"
+      ]
+    },
+    {
+      "id": "WES-01",
+      "title": "Reconcile the SQL canon tier-routing cron contract drift",
+      "route_state": "owner_config_decision",
+      "authority": "owner_gated_cron_contract_and_live_payload",
+      "approval_required_before_packet": true,
+      "dependencies": [
+        "WES-00"
+      ],
+      "targets": [
+        "state/cron-contracts/finance-daily-sql-canon-tier-routing-sync.json"
+      ],
+      "preferred_direction": "verify_and_codify_model_free_live_command_without_restoring_a_model_call",
+      "implementation_contract": [
+        "verify_live_command_schedule_timezone_delivery_timeout_artifact_and_authority",
+        "produce_exact_preimage_diff_hash_backup_and_rollback",
+        "present_exact_patch_for_owner_approval",
+        "after_approval_use_cron_patch_manager",
+        "preserve_schedule_cadence_delivery_and_authority"
+      ],
+      "acceptance": [
+        "cron_contract_drift_count_zero",
+        "schedule_expression_unchanged",
+        "timezone_unchanged",
+        "cadence_unchanged",
+        "delivery_semantics_unchanged",
+        "timeout_unchanged",
+        "authority_boundary_unchanged",
+        "expected_artifact_fresh",
+        "direct_consumers_not_blocked_by_this_drift",
+        "manual_post_patch_validation_passes",
+        "one_natural_scheduled_run_verified"
+      ],
+      "rollback": "restore_contract_and_live_payload_preimages_then_rerun_contract_validator",
+      "stop_lines": [
+        "live_route_not_unambiguously_model_free",
+        "schema_cannot_safely_represent_intended_payload",
+        "exact_owner_approval_missing"
+      ]
+    },
+    {
+      "id": "WES-02",
+      "title": "Convert deterministic agentTurn cron payloads to guarded commands",
+      "route_state": "owner_config_decision",
+      "authority": "owner_gated_live_cron_payload",
+      "approval_required_before_packet": true,
+      "dependencies": [
+        "WES-00",
+        "WES-01",
+        "WES-03"
+      ],
+      "targets": [
+        "state/cron-contracts/runtime-os-audit-companion-packets-refresh.json",
+        "state/cron-contracts/runtime-status-card-freshness-refresh.json",
+        "state/cron-contracts/pm-auto-implementation-gpt55.json"
+      ],
+      "implementation_contract": [
+        "one_job_per_patch_with_own_backup_and_rollback",
+        "preserve_schedule_timezone_delivery_timeout_artifacts_and_authority",
+        "perform_changed_input_comparison_before_model_spawn",
+        "approved_target_is_command_payload_for_deterministic_paths",
+        "unchanged_input_writes_skipped_unchanged_proof",
+        "changed_input_updates_signature_only_after_success"
+      ],
+      "acceptance": [
+        "unchanged_input_spawns_no_model_turn",
+        "changed_input_produces_semantically_equivalent_artifacts",
+        "failure_output_remains_bounded_and_fail_closed",
+        "cron_contract_validator_green",
+        "manual_proof_passes",
+        "two_natural_runs_pass_per_job"
+      ],
+      "measurement": [
+        "changed_input_frequency",
+        "skip_rate",
+        "gross_tokens",
+        "uncached_tokens",
+        "elapsed_time",
+        "failure_rate",
+        "retry_tax"
+      ],
+      "rollback": "restore_each_prior_payload_and_contract_then_validate_and_manual_run",
+      "stop_lines": [
+        "no_cadence_change",
+        "no_model_reroute",
+        "no_authority_expansion",
+        "no_job_merge",
+        "exact_owner_approval_missing"
+      ]
+    },
+    {
+      "id": "WES-03",
+      "title": "Repair the status-card, artifact-index, and retrieval freshness chain",
+      "route_state": "patch_plan",
+      "authority": "future_scoped_workspace_code_patch",
+      "approval_required_before_packet": true,
+      "dependencies": [
+        "WES-00"
+      ],
+      "lanes": [
+        {
+          "id": "WES-03A",
+          "targets": [
+            "scripts/status_card_freshness_runner.py",
+            "scripts/workflow_routing_index.py",
+            "scripts/artifact_index.py",
+            "scripts/test_workflow_routing_index.py",
+            "scripts/test_artifact_index.py"
+          ],
+          "conditional_new_test_target": {
+            "path": "scripts/test_status_card_freshness_runner.py",
+            "condition": "existing_tests_cannot_cover_runner_sequence"
+          }
+        },
+        {
+          "id": "WES-03B",
+          "targets": [
+            "scripts/status_card_packet.py",
+            "scripts/semantic_memory_maintenance.py",
+            "scripts/test_status_card_packet.py",
+            "scripts/test_semantic_memory_maintenance.py"
+          ],
+          "conditional_targets": [
+            {
+              "path": "scripts/vector_memory_index.py",
+              "condition": "classifier_contract_requires_vector_index_change"
+            }
+          ]
+        }
+      ],
+      "implementation_contract": [
+        "refresh_or_validate_routing_index_before_wf84_wf85_capsules",
+        "refresh_artifact_index_once_at_batch_closeout",
+        "classify_stale_sources_by_family",
+        "keep_stale_finance_source_blocked_for_finance_claims",
+        "preserve_healthy_memory_and_wiki_retrieval",
+        "expire_stale_benchmark_fallback_claims",
+        "keep_frontdoor_reads_cached_and_bounded"
+      ],
+      "acceptance": [
+        "positive_production_equivalent_run_passes_and_validates_5_of_5_steps",
+        "separate_negative_test_truthfully_names_exact_failure_and_exits_fail_closed",
+        "artifact_index_current",
+        "stale_finance_evidence_excluded",
+        "healthy_memory_wiki_fallback_visible",
+        "wiki_15_of_15_and_zero_hash_mismatches",
+        "focused_tests_pass",
+        "fresh_independent_qa_passes"
+      ],
+      "rollback": "restore_each_lane_preimage_and_rebuild_prior_status_frontdoor",
+      "stop_lines": [
+        "no_openclaw_core_plugin_or_runtime_patch_without_fresh_reproduced_failure",
+        "no_finance_staleness_guard_downgrade",
+        "no_cross_lane_write_collision"
+      ]
+    },
+    {
+      "id": "WES-04",
+      "title": "Decouple current-lane admission from historical debt and enforce exact validation scope",
+      "route_state": "patch_plan",
+      "authority": "future_scoped_workspace_code_patch",
+      "approval_required_before_packet": true,
+      "dependencies": [
+        "WES-00"
+      ],
+      "lanes": [
+        {
+          "id": "WES-04A",
+          "targets": [
+            "scripts/concurrent_lane_manager.py",
+            "scripts/parallel_lane_recommender.py",
+            "scripts/test_concurrent_lane_manager.py",
+            "scripts/test_parallel_lane_recommender.py"
+          ]
+        },
+        {
+          "id": "WES-04B",
+          "targets": [
+            "scripts/changed_file_validator_router.py",
+            "scripts/validator_bundle_router.py",
+            "scripts/test_changed_file_validator_router.py",
+            "scripts/test_validator_bundle_router.py"
+          ]
+        }
+      ],
+      "implementation_contract": [
+        "preserve_append_only_full_lane_history_and_errors",
+        "add_explicit_current_admission_validation",
+        "current_admission_covers_collisions_forbidden_writes_lease_owner_and_active_route",
+        "historical_debt_remains_separate_visible_audit_classification",
+        "parallel_recommender_uses_current_admission_only_after_fail_closed_tests",
+        "require_exact_path_scope_for_shared_or_major_execution",
+        "select_heavy_validators_only_for_relevant_paths",
+        "consume_canonical_workflow_pause_state_before_eligibility"
+      ],
+      "acceptance": [
+        "safe_active_lane_not_blocked_only_by_pre_cutover_terminal_debt",
+        "active_collisions_and_forbidden_paths_hard_fail",
+        "historical_errors_remain_queryable",
+        "paused_workflows_ineligible",
+        "two_file_doc_scope_does_not_select_hundreds_of_commands",
+        "focused_tests_pass",
+        "fresh_independent_qa_passes"
+      ],
+      "rollback": "revert_current_admission_consumer_switch_without_deleting_additive_audit_fields_or_history",
+      "stop_lines": [
+        "no_archive_or_delete",
+        "no_historical_rewrite",
+        "no_active_safety_downgrade",
+        "no_unscoped_broad_execution_without_main_authority"
+      ]
+    },
+    {
+      "id": "WES-05",
+      "title": "Complete the Harness V2 comparable measurement cohort",
+      "route_state": "monitor_only",
+      "authority": "observation_only",
+      "approval_required_before_packet": false,
+      "dependencies": [
+        "WES-00",
+        "wave2_p0_acceptance"
+      ],
+      "implementation_contract": [
+        "collect_ten_comparable_main_accepted_jobs",
+        "require_trusted_usage_and_outcome_receipts",
+        "keep_task_shape_validation_cache_and_acceptance_comparable",
+        "record_actual_route_gross_uncached_elapsed_retry_first_pass_and_defects"
+      ],
+      "acceptance": [
+        "comparable_accepted_jobs_10_of_10",
+        "no_incident_or_missing_telemetry_success_credit",
+        "main_acceptance_recorded_for_each_job"
+      ],
+      "rollback": "not_applicable_observation_only",
+      "stop_lines": [
+        "no_wave3_start",
+        "no_route_or_model_promotion",
+        "no_savings_claim_before_cohort"
+      ]
+    },
+    {
+      "id": "WES-06",
+      "title": "Adopt the operator fast path",
+      "route_state": "operating_practice",
+      "authority": "safe_no_mutation",
+      "approval_required_before_packet": false,
+      "dependencies": [],
+      "implementation_contract": [
+        "direct_cached_frontdoor_for_shallow_status",
+        "wiki_index_and_targeted_corpus_before_broad_scan",
+        "batch_independent_reads_and_index_lookups",
+        "reuse_fresh_cached_routes_and_frontdoors",
+        "model_free_commands_for_deterministic_proof",
+        "helper_context_max_six_files_120000_bytes_30000_tokens",
+        "json_proof_default_markdown_only_for_durable_human_decisions",
+        "validate_exact_leased_paths"
+      ],
+      "acceptance": [
+        "correctness_and_authority_preserved",
+        "unnecessary_process_launches_avoided",
+        "broad_reads_and_repeated_context_transport_reduced",
+        "output_bounded"
+      ],
+      "rollback": "not_applicable_no_mutation",
+      "stop_lines": [
+        "speed_never_overrides_freshness",
+        "speed_never_overrides_finance_authority",
+        "speed_never_overrides_collision_safety",
+        "speed_never_overrides_artifact_proof"
+      ]
+    }
+  ],
+  "global_acceptance": [
+    "WES-01_contract_drift_zero",
+    "approved_WES-02_jobs_prove_no_model_spawn_on_unchanged_input",
+    "WES-03_preserves_finance_staleness_guards_and_truthful_healthy_retrieval",
+    "WES-04_preserves_history_and_active_fail_closed_safety",
+    "WES-05_comparable_accepted_jobs_10_of_10_before_route_promotion",
+    "savings_reports_separate_baseline_avoided_work_api_equivalent_and_actual_billing",
+    "every_mutation_has_approval_lease_preimage_diff_validation_rollback_natural_run_proof_where_applicable_and_main_acceptance"
+  ],
+  "source_artifacts": [
+    {
+      "path": "tmp/token-efficiency-scorecard.json",
+      "sha256": "8fe8886ca624154e9737e67688f5b23467def3f5e86d2805bc9b283a1ebb1e1a"
+    },
+    {
+      "path": "tmp/cron-predispatch-efficiency-plan.json",
+      "sha256": "e04ee45a468342b4cb801125df18330f771a2ba9dad59149dafa0cb4b48591bc"
+    },
+    {
+      "path": "tmp/cron-contract-validator.json",
+      "sha256": "4c06f0924c015cec1a35927f0d0c7f112e2c7e36100a2a8e4db9f505e657c4f5"
+    },
+    {
+      "path": "tmp/cron-freshness-spine.json",
+      "sha256": "f6a8d1702b8da0a00a64a65ab2d04f47619f4c7e389e085dd0bb59fbeb16e664"
+    },
+    {
+      "path": "tmp/validator-timing-ledger.json",
+      "sha256": "286e505c9cc95ffc4f603eb222737fa9019a35c78ae4975f57a21c2c7b55f95f"
+    },
+    {
+      "path": "tmp/changed-file-validator-router.json",
+      "sha256": "7d8951952c3d8f911d689cd1a520690936ef86d624665c4801c89109717504f5"
+    },
+    {
+      "path": "tmp/validator-bundle-router.json",
+      "sha256": "f5dba443d8236619b7f51d52fa8f16c90ada5a84b534787081aec053291de04a"
+    },
+    {
+      "path": "tmp/veritas-status-card-frontdoor.json",
+      "sha256": "423261f9a2630bcada6eaba5f5a041c55b982e53a9fcb12e8fa270bd4777219d"
+    },
+    {
+      "path": "tmp/status-card-freshness-runner.json",
+      "sha256": "f18a0e2104e8c6f9af1fbd6967c82ec56c511ef76fc3bf009605943424469150"
+    },
+    {
+      "path": "tmp/vector-memory-index.json",
+      "sha256": "9fc7e9f9410a7b00d1e67e11c00e357b54c0c85733f6e5ae36629a99e22e2538"
+    },
+    {
+      "path": "tmp/semantic-memory-maintenance.json",
+      "sha256": "2f8f0fcf7eb4c6ebc624cc19303e5a4c9034b515c74717fd00dc05905473c18d"
+    },
+    {
+      "path": "tmp/wiki-bootstrap-proof.json",
+      "sha256": "0ea6b38bb52391923567f8c70e1c984ed3784d6520ec5e9a3a40836d4ef6db10"
+    },
+    {
+      "path": "tmp/wave2-rebuild-r3-artifacts/producer-restoration-r4/deployment-readiness-r4/wave2-r4-post-restart-acceptance-r1.json",
+      "sha256": "7b79c8acef69d41772bba13705e3291bb8da052b3262418904c81d45aaabc29d"
+    }
+  ],
+  "target_hash_coverage": {
+    "status": "partial_primary_owner_snapshot",
+    "covered_target_count": 12,
+    "contract": "WES-00 must hash every existing target selected for the future packet, including tests and conditional targets, before any write."
+  },
+  "target_hashes_at_audit": [
+    {
+      "path": "state/cron-contracts/finance-daily-sql-canon-tier-routing-sync.json",
+      "sha256": "a011ec76fa6ba29759747c1086d93577b29502e0755a0ef78c2586f1b1a83fa0"
+    },
+    {
+      "path": "state/cron-contracts/runtime-os-audit-companion-packets-refresh.json",
+      "sha256": "59f9aa35f415953e6576358ac832e78deb0787aeac1c203dc4f8b6c233b57ef8"
+    },
+    {
+      "path": "state/cron-contracts/runtime-status-card-freshness-refresh.json",
+      "sha256": "2bd950dee5293d7b9a599ca9d7cdec0c673e1e4f0325517322dffb1064fc0990"
+    },
+    {
+      "path": "state/cron-contracts/pm-auto-implementation-gpt55.json",
+      "sha256": "9b0e6d2d03c1b2f0ef42882b9cb870046de0a94699007f08f19242a551323e68"
+    },
+    {
+      "path": "scripts/status_card_freshness_runner.py",
+      "sha256": "d462b3c32de43f9b0b4a1b0255540e0379a9f51ad1927dbb5bcf6d92ae5548ab"
+    },
+    {
+      "path": "scripts/status_card_packet.py",
+      "sha256": "2ba7f472a92076fb68322bb83b07478e9f6a25e5f091ba3e64847f7fcf2138b8"
+    },
+    {
+      "path": "scripts/artifact_index.py",
+      "sha256": "64e6556b5fedcc0199b6c8c94a01f201b81777951bc53ab650af48f9e8360a0b"
+    },
+    {
+      "path": "scripts/semantic_memory_maintenance.py",
+      "sha256": "6da70be54bd7f2d3ac2507a0a9c8cfb95c0854858bee2aa499e07022cef1d24a"
+    },
+    {
+      "path": "scripts/concurrent_lane_manager.py",
+      "sha256": "fefaf100ece7cc4c8785150a75529566b81ff83997cf8751b29b33ddc48b6411"
+    },
+    {
+      "path": "scripts/parallel_lane_recommender.py",
+      "sha256": "f8446ed331da7ec026255f63b35b891dcb62d824b410d606f3a0b77ada1c4071"
+    },
+    {
+      "path": "scripts/changed_file_validator_router.py",
+      "sha256": "1597d9926345af05234c30b30f75226fa8396253b45f9fb338d8e4635000e828"
+    },
+    {
+      "path": "scripts/validator_bundle_router.py",
+      "sha256": "b08aa579455854f7b6e7fadddcb1ff2faefb0d53a9b45649b975830b6e506146"
+    }
+  ],
+  "pickup": {
+    "current_phase": "deferred_proposal",
+    "start_packet": "WES-00",
+    "first_owner_decision": "approve_or_reject_exact_WES-01_diff_after_preparation",
+    "next_safe_action": "Adopt WES-06 now; at the next authorized implementation session refresh WES-00 and prepare WES-01 without applying it.",
+    "rerun_router_required": true,
+    "lane_lease_required": true,
+    "rehash_sources_and_targets_required": true,
+    "main_acceptance_required": true,
+    "owner_approval_must_be_explicit": true
+  },
+  "validation": {
+    "status": "ok_with_snapshot_warning",
+    "validated_at_utc": "2026-08-25T02:13:43Z",
+    "checks": [
+      "json_parse_pass",
+      "wes_00_through_wes_06_cross_file_parity_pass",
+      "authority_boundary_fail_closed_pass",
+      "baseline_arithmetic_pass",
+      "all_literal_targets_exist",
+      "recorded_partial_target_hashes_12_of_12_match",
+      "source_snapshot_hashes_12_of_13_still_match",
+      "known_advanced_source_reproduces_same_failure",
+      "fresh_independent_read_only_qa_pass"
+    ],
+    "independent_qa": {
+      "status": "pass",
+      "material_findings": 0,
+      "scope_file_count": 2,
+      "scope_bytes": 49196,
+      "write_mode": "read_only",
+      "main_retains_acceptance_authority": true
+    },
+    "errors": [],
+    "warnings": [
+      {
+        "code": "audit_snapshot_source_advanced",
+        "path": "tmp/status-card-freshness-runner.json",
+        "audit_sha256": "f18a0e2104e8c6f9af1fbd6967c82ec56c511ef76fc3bf009605943424469150",
+        "qa_observed_sha256": "6ab19e8eca361ed35d86ca239442a19aecae6c8f7c6d2110a640fb53eb6d0bcf",
+        "qa_observed_at_utc": "2026-08-25T02:02:49Z",
+        "classification": "expected_deferred_snapshot_drift_same_wf84_routing_index_stale_failure_reproduced",
+        "required_action": "WES-00 must capture a fresh source and target snapshot before any future execution."
+      }
+    ]
+  }
+}

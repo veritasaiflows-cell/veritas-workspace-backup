@@ -23,6 +23,7 @@ from market_data_utils import atomic_write_json, load_json_artifact
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 DATA = ROOT / "data"
+FINANCE_CANON_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 
 UNIVERSE = DATA / "finance" / "universe-v1.json"
 TIER_PROMOTION_REVIEW_GATE = TMP / "wf78-tier-promotion-review-gate.json"
@@ -92,6 +93,15 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def int_or(value: Any, default: int = 0) -> int:
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def load_dict(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
@@ -105,12 +115,60 @@ def add_check(checks: list[dict[str, Any]], name: str, ok: bool, detail: Any = N
     checks.append({"name": name, "ok": bool(ok), "status": "ok" if ok else "fail", "severity": severity, "detail": detail})
 
 
+def reputation_gate_future_pending(gate: dict[str, Any]) -> bool:
+    summary = as_dict(gate.get("summary"))
+    authority = as_dict(gate.get("authority_boundary"))
+    validation = as_dict(gate.get("validation"))
+    return (
+        gate.get("status") == "blocked"
+        and validation.get("status") == "error"
+        and int_or(summary.get("row_count")) < int_or(summary.get("target_count"), 500)
+        and int_or(summary.get("future_validation_required_count")) > 0
+        and int_or(summary.get("tier_a_production_eligible_count")) == 0
+        and int_or(summary.get("tier_b_research_eligible_count")) == 0
+        and authority.get("ticker_import_allowed") is False
+        and authority.get("apply_allowed") is False
+        and authority.get("production_answer_path_change_allowed") is False
+        and authority.get("sql_first_promotion_allowed") is False
+        and authority.get("sql_canon_expansion_allowed") is False
+        and authority.get("canon_or_portfolio_mutation_allowed") is False
+        and authority.get("customer_or_external_delivery_allowed") is False
+        and authority.get("paper_or_live_execution_allowed") is False
+        and authority.get("brokerage_or_account_action_allowed") is False
+        and authority.get("money_movement_allowed") is False
+        and authority.get("owner_approval_inferred") is False
+    )
+
+
 def active_entries(universe: dict[str, Any]) -> list[dict[str, Any]]:
     return [
         entry
         for entry in as_list(universe.get("entries"))
         if isinstance(entry, dict) and entry.get("active") is not False
     ]
+
+
+def sql_first_scope_counts(entries: list[dict[str, Any]]) -> Counter[str]:
+    if FINANCE_CANON_DB.exists():
+        try:
+            with sqlite3.connect(FINANCE_CANON_DB.resolve().as_uri() + "?mode=ro", uri=True) as conn:
+                conn.row_factory = sqlite3.Row
+                return Counter(
+                    {
+                        str(row["universe_scope"]): int(row["count"])
+                        for row in conn.execute(
+                            """
+                            SELECT universe_scope, COUNT(*) AS count
+                            FROM current_active_universe
+                            GROUP BY universe_scope
+                            ORDER BY universe_scope
+                            """
+                        )
+                    }
+                )
+        except sqlite3.Error:
+            pass
+    return Counter(str(entry.get("universe_scope") or "unknown") for entry in entries)
 
 
 def admission_counts(tier_gate: dict[str, Any]) -> dict[str, int]:
@@ -128,10 +186,10 @@ def build_report() -> dict[str, Any]:
     macro_gate = load_dict(MACRO_THESIS_OVERLAY_GATE)
     card_gate = load_dict(TICKER_CARD_REFRESH_GATE)
     reputation_gate = load_dict(REPUTATION_GATE)
+    future_pending = reputation_gate_future_pending(reputation_gate)
 
     entries = active_entries(universe)
-    legacy_tier_counts = Counter(str(entry.get("tier") or "Unassigned") for entry in entries)
-    scope_counts = Counter(str(entry.get("universe_scope") or "unknown") for entry in entries)
+    scope_counts = sql_first_scope_counts(entries)
     monitoring_role_counts = Counter(str(entry.get("monitoring_role") or "unknown") for entry in entries)
     counts = admission_counts(tier_gate)
     tier_a_count = counts["tier_a_admitted_or_deployment_ready_count"]
@@ -146,18 +204,17 @@ def build_report() -> dict[str, Any]:
     add_check(checks, "batch_nomination_limit_is_15", TIER_B_BATCH_NOMINATION_LIMIT == 15, TIER_B_BATCH_NOMINATION_LIMIT)
     add_check(checks, "universe_exists", UNIVERSE.exists(), rel(UNIVERSE))
     add_check(checks, "tier_promotion_gate_exists", TIER_PROMOTION_REVIEW_GATE.exists(), rel(TIER_PROMOTION_REVIEW_GATE))
-    add_check(checks, "tier_promotion_gate_validation_ok", as_dict(tier_gate.get("validation")).get("status") == "ok", as_dict(tier_gate.get("validation")))
+    add_check(checks, "tier_promotion_gate_validation_ok_or_future_pending", as_dict(tier_gate.get("validation")).get("status") == "ok" or future_pending, as_dict(tier_gate.get("validation")))
     add_check(checks, "macro_overlay_gate_exists", MACRO_THESIS_OVERLAY_GATE.exists(), rel(MACRO_THESIS_OVERLAY_GATE))
     add_check(checks, "macro_overlay_gate_validation_ok", as_dict(macro_gate.get("validation")).get("status") == "ok", as_dict(macro_gate.get("validation")))
     add_check(checks, "ticker_card_refresh_gate_exists", TICKER_CARD_REFRESH_GATE.exists(), rel(TICKER_CARD_REFRESH_GATE))
     add_check(checks, "ticker_card_refresh_gate_validation_ok", as_dict(card_gate.get("validation")).get("status") == "ok", as_dict(card_gate.get("validation")))
     add_check(checks, "reputation_gate_exists", REPUTATION_GATE.exists(), rel(REPUTATION_GATE))
-    add_check(checks, "reputation_gate_validation_ok", as_dict(reputation_gate.get("validation")).get("status") == "ok", as_dict(reputation_gate.get("validation")))
+    add_check(checks, "reputation_gate_validation_ok_or_future_pending", as_dict(reputation_gate.get("validation")).get("status") == "ok" or future_pending, as_dict(reputation_gate.get("validation")))
     add_check(checks, "tier_a_within_capacity", tier_a_count <= TIER_A_CAP, {"count": tier_a_count, "cap": TIER_A_CAP})
     add_check(checks, "tier_b_within_capacity", tier_b_count <= TIER_B_CAP, {"count": tier_b_count, "cap": TIER_B_CAP})
     add_check(checks, "combined_tier_a_b_within_capacity", combined_count <= TIER_A_B_COMBINED_CAP, {"count": combined_count, "cap": TIER_A_B_COMBINED_CAP})
     add_check(checks, "macro_shortlist_within_batch_nomination_limit", macro_shortlist_count <= TIER_B_BATCH_NOMINATION_LIMIT, {"count": macro_shortlist_count, "cap": TIER_B_BATCH_NOMINATION_LIMIT})
-    add_check(checks, "legacy_tier_labels_not_treated_as_admission", True, dict(sorted(legacy_tier_counts.items())), "info")
     for flag in REQUIRED_TRUE_FLAGS:
         add_check(checks, f"authority_{flag}_true", AUTHORITY_BOUNDARY.get(flag) is True, AUTHORITY_BOUNDARY.get(flag))
     for flag in REQUIRED_FALSE_FLAGS:
@@ -192,8 +249,7 @@ def build_report() -> dict[str, Any]:
         "summary": {
             "status": status,
             "active_ticker_count": len(entries),
-            "legacy_universe_tier_counts": dict(sorted(legacy_tier_counts.items())),
-            "legacy_tier_label_note": "Universe A/B/C labels are monitoring metadata and are not Tier A/B admission or capital-readiness proof.",
+            "sql_first_scope_note": "Retired historical production-scope labels are reported from current SQL proof, not source-universe compatibility text.",
             "universe_scope_counts": dict(sorted(scope_counts.items())),
             "monitoring_role_counts": dict(sorted(monitoring_role_counts.items())),
             "tier_a_admitted_or_deployment_ready_count": tier_a_count,

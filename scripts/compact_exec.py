@@ -41,7 +41,22 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()
 
 
+def workspace_cwd(cwd: Path) -> Path:
+    """Return an existing directory contained by ROOT, or fail before execution."""
+    try:
+        resolved = cwd.resolve(strict=True)
+    except FileNotFoundError as exc:
+        raise ValueError(f"cwd does not exist: {cwd}") from exc
+    if not resolved.is_dir():
+        raise ValueError(f"cwd is not a directory: {resolved}")
+    try:
+        resolved.relative_to(ROOT.resolve())
+    except ValueError as exc:
+        raise ValueError(f"cwd is outside workspace root: {resolved}") from exc
+    return resolved
+
 def run_command(command: list[str], label: str, cwd: Path) -> dict[str, Any]:
+    cwd = workspace_cwd(cwd)
     started = utc_now()
     proc = subprocess.run(command, cwd=str(cwd), text=True, encoding="utf-8", errors="replace", capture_output=True)
     finished = utc_now()
@@ -97,7 +112,7 @@ def main() -> int:
     if not command:
         print(json.dumps({"status": "error", "error": "missing command after --"}, sort_keys=True))
         return 2
-    report = run_command(command, args.label, args.cwd.resolve())
+    report = run_command(command, args.label, args.cwd)
     print(
         "status={status} returncode={returncode} stdout_chars={stdout_chars} stderr_chars={stderr_chars} report={report} stdout={stdout} stderr={stderr}".format(
             status="ok" if report["ok"] else "failed",

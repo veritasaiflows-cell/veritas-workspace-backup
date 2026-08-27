@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,11 @@ DEFAULT_FRESHNESS_SPINE = TMP / "cron-freshness-spine.json"
 
 SCHEMA = "veritas.cron_signal_scorecard.v1"
 SIGNAL_CLASSES = {"NO_REPLY", "MAIN_SESSION_REQUIRED", "BLOCKED", "OWNER_DECISION", "STALE_OR_NOISE"}
+
+QUIET_REPLACEMENT_DIGEST_BY_SPINE_SOURCE = {
+    "operating_spine:morning_control_digest": "Cron Reduction - Morning Control Digest",
+    "operating_spine:post_close_control_digest": "Cron Reduction - Post-Close Control Digest",
+}
 
 # Phase 4: per-window staleness windows. A MAIN_SESSION_REQUIRED run-summary
 # signal older than its window auto-decays to STALE_OR_NOISE so recurring stale
@@ -80,6 +86,60 @@ def rel(path: Path) -> str:
         return path.relative_to(ROOT).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive attention flag
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+            "checks": [],
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
+def sql_canon_signal(health: dict[str, Any]) -> dict[str, Any] | None:
+    if health.get("status") == "ok":
+        return None
+    return {
+        "source": "sql_canon:finance_sql_canon_access",
+        "artifact": "scripts/finance_sql_canon_access.py",
+        "signal_class": "BLOCKED",
+        "attention": "requires_main_attention",
+        "status": health.get("status"),
+        "generated_at_utc": utc_now(),
+        "age_hours": 0,
+        "reason": "finance_sql_canon_guard_blocked",
+        "next_action": "Run python scripts\\finance_sql_canon_access.py --write --validate and repair the SQL-canon guard before treating cron finance readiness as clean.",
+    }
 
 
 def parse_utc(value: Any) -> datetime | None:
@@ -227,11 +287,42 @@ def freshness_spine_jobs(freshness_spine: dict[str, Any]) -> list[dict[str, Any]
 
 def freshness_spine_signals(freshness_spine: dict[str, Any]) -> list[dict[str, Any]]:
     signals = []
+    jobs_by_name = {
+        str(job.get("name") or ""): as_dict(job)
+        for job in as_list(freshness_spine.get("jobs"))
+    }
     for signal in as_list(freshness_spine.get("signals")):
         signal_dict = as_dict(signal)
         cls = signal_dict.get("signal_class")
+        source = signal_dict.get("source")
+        replacement_job = jobs_by_name.get(QUIET_REPLACEMENT_DIGEST_BY_SPINE_SOURCE.get(source, ""))
+        if replacement_job and replacement_job.get("enabled") is True:
+            replacement_quiet = (
+                replacement_job.get("standing_review_quiet") is True
+                or replacement_job.get("status") == "standing_review_quiet"
+                or (
+                    replacement_job.get("attention_class") == "known_monitor_only"
+                    and replacement_job.get("attention_bucket") == "quiet_success"
+                )
+            )
+            if replacement_quiet:
+                signals.append({
+                    "source": source,
+                    "artifact": signal_dict.get("artifact"),
+                    "signal_class": "NO_REPLY",
+                    "attention": "quiet_success",
+                    "status": signal_dict.get("status"),
+                    "generated_at_utc": signal_dict.get("generated_at_utc"),
+                    "age_hours": signal_dict.get("age_hours"),
+                    "reason": "paired_replacement_digest_standing_review_quiet",
+                    "next_action": signal_dict.get("next_action") or "",
+                    "original_signal_class": cls,
+                    "original_attention": signal_dict.get("attention"),
+                    "quieted_by_job": replacement_job.get("name"),
+                })
+                continue
         signals.append({
-            "source": signal_dict.get("source"),
+            "source": source,
             "artifact": signal_dict.get("artifact"),
             "signal_class": cls if cls in SIGNAL_CLASSES else "STALE_OR_NOISE",
             "attention": signal_dict.get("attention") or "inspect_if_relevant",
@@ -244,10 +335,28 @@ def freshness_spine_signals(freshness_spine: dict[str, Any]) -> list[dict[str, A
     return signals
 
 
+def signal_source(item: dict[str, Any]) -> str:
+    return str(item.get("source") or "")
+
+
+def blocked_signal_breakdown(signals: list[dict[str, Any]]) -> dict[str, Any]:
+    blocked = [item for item in signals if item.get("signal_class") == "BLOCKED"]
+    cron_job_blocked = [item for item in blocked if signal_source(item).startswith("cron_job:")]
+    operating_signal_blocked = [item for item in blocked if signal_source(item).startswith("operating_spine:")]
+    non_cron_blocked = [item for item in blocked if not signal_source(item).startswith("cron_job:")]
+    return {
+        "blocked": blocked,
+        "cron_job_blocked": cron_job_blocked,
+        "operating_signal_blocked": operating_signal_blocked,
+        "non_cron_blocked": non_cron_blocked,
+    }
+
+
 def build_payload(ledger_path: Path, spine_path: Path, freshness_spine_path: Path) -> dict[str, Any]:
     ledger = load_json(ledger_path)
     spine = load_json(spine_path)
     freshness_spine = load_json(freshness_spine_path)
+    sql_health = sql_canon_health()
     if freshness_spine.get("schema") == "veritas.cron_freshness_spine.v1":
         all_signals = freshness_spine_signals(freshness_spine)
         jobs = freshness_spine_jobs(freshness_spine)
@@ -257,8 +366,12 @@ def build_payload(ledger_path: Path, spine_path: Path, freshness_spine_path: Pat
         all_signals = run_signals + spine_signals(spine)
         jobs = job_records(ledger)
         source_mode = "legacy_ledger_and_operating_spine"
+    sql_signal = sql_canon_signal(sql_health)
+    if sql_signal:
+        all_signals.append(sql_signal)
     attention = [item for item in all_signals if item.get("attention") == "requires_main_attention"]
-    blocked = [item for item in all_signals if item.get("signal_class") == "BLOCKED"]
+    blocked_breakdown = blocked_signal_breakdown(all_signals)
+    blocked = blocked_breakdown["blocked"]
     quiet = [item for item in all_signals if item.get("signal_class") == "NO_REPLY"]
     stale = [item for item in all_signals if item.get("signal_class") == "STALE_OR_NOISE"]
     decayed = [item for item in all_signals if item.get("decayed_from_stale")]
@@ -270,6 +383,7 @@ def build_payload(ledger_path: Path, spine_path: Path, freshness_spine_path: Pat
             "cron_operator_ledger": rel(ledger_path),
             "operating_leverage_spine": rel(spine_path),
             "cron_freshness_spine": rel(freshness_spine_path),
+            "finance_sql_canon_access": "scripts/finance_sql_canon_access.py",
             "source_mode": source_mode,
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
@@ -277,11 +391,18 @@ def build_payload(ledger_path: Path, spine_path: Path, freshness_spine_path: Pat
             "signal_count": len(all_signals),
             "requires_attention_count": len(attention),
             "blocked_count": len(blocked),
+            "total_blocked_signal_count": len(blocked),
+            "cron_job_blocked_count": len(blocked_breakdown["cron_job_blocked"]),
+            "operating_signal_blocked_count": len(blocked_breakdown["operating_signal_blocked"]),
+            "non_cron_blocked_count": len(blocked_breakdown["non_cron_blocked"]),
             "quiet_success_count": len(quiet),
             "stale_or_noise_count": len(stale),
             "decayed_from_stale_count": len(decayed),
             "enabled_job_count": sum(1 for item in jobs if item.get("enabled")),
+            "sql_canon_status": sql_health.get("status"),
+            "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
         },
+        "sql_canon_health": sql_health,
         "signals": all_signals,
         "jobs": jobs,
         "operator_recommendation": (
@@ -308,6 +429,21 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"bad_signal_class:{item.get('source')}")
     if as_dict(payload.get("scorecard")).get("blocked_count", 0) > 0:
         warnings.append("blocked_signals_present")
+    sql_health = as_dict(payload.get("sql_canon_health"))
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            errors.append(f"sql_canon_authority_{key}_not_false")
+    if sql_health.get("status") != "ok":
+        warnings.append(f"sql_canon_guard_attention:{sql_health.get('status')}")
     return {"status": "ok" if not errors else "error", "errors": errors, "warnings": warnings}
 
 

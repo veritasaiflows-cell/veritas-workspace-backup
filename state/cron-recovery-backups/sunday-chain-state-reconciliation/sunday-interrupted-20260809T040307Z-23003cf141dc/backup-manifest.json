@@ -1,0 +1,21 @@
+{
+  "created_at_utc": "2026-08-09T04:03:10Z",
+  "kind": "pre_reconciliation_backup",
+  "reconciliation_id": "sunday-interrupted-20260809T040307Z-23003cf141dc",
+  "schema": "veritas.finance_refresh_chain_state_reconcile.v1",
+  "source": {
+    "log": {
+      "backup_file": "run-chain-sunday.jsonl",
+      "byte_count": 162606,
+      "path": "C:/Users/Veritas/.openclaw/workspace/tmp/run-chain-sunday.jsonl",
+      "sha256": "8b403c8852883e9668cb94c2d9c01a02bcb9f023b56c79796bad756feff9ea02"
+    },
+    "state": {
+      "backup_file": "run-chain-sunday.json",
+      "byte_count": 45078,
+      "path": "C:/Users/Veritas/.openclaw/workspace/tmp/run-chain-sunday.json",
+      "sha256": "23003cf141dcb9e04dbd0ae10861de21d4d8bf87ad48614ca31bd0c86740a50b"
+    }
+  },
+  "window": "sunday"
+}

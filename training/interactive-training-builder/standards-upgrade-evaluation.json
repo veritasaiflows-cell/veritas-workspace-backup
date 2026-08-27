@@ -1,0 +1,49 @@
+{
+  "generated_at_utc": "2026-07-04T14:40:03Z",
+  "status": "implemented_local_first",
+  "standards": [
+    {
+      "name": "H5P",
+      "fit": "P2 evaluation",
+      "use_when": "Need LMS/CMS-native reusable interaction types or easy author editing.",
+      "current_action": "Do not adopt yet; keep as import/export candidate after internal schema stabilizes."
+    },
+    {
+      "name": "Adapt Learning",
+      "fit": "P2 evaluation",
+      "use_when": "Need responsive course authoring, SCORM delivery, localization, and larger course assembly.",
+      "current_action": "Do not migrate yet; compare against local builder after two modules exist."
+    },
+    {
+      "name": "xAPI",
+      "fit": "P1 implemented locally",
+      "use_when": "Need event-level learning telemetry beyond completion.",
+      "current_action": "Generate local statements only; no external LRS endpoint configured."
+    },
+    {
+      "name": "SCORM 1.2",
+      "fit": "P1 package, runtime bridge, and local smoke validator implemented",
+      "use_when": "Need a zip package shape for LMS upload tests.",
+      "current_action": "Generate manifest/package scaffold, SCO runtime calls, and local mock-LMS smoke proof; external LMS import testing remains deferred."
+    },
+    {
+      "name": "cmi5",
+      "fit": "P3 later",
+      "use_when": "Need modern LMS launch rules plus xAPI tracking.",
+      "current_action": "Defer until xAPI and SCORM package tests prove useful."
+    },
+    {
+      "name": "WCAG 2.2 / Playwright / axe",
+      "fit": "P1 local validator implemented",
+      "use_when": "Need automated browser accessibility gates.",
+      "current_action": "Use local Playwright and axe-core against generated HTML; no external service required."
+    }
+  ],
+  "authority_boundary": {
+    "local_files_only": true,
+    "external_lms_configured": false,
+    "external_lrs_configured": false,
+    "customer_data_allowed": false,
+    "public_delivery_approved": false
+  }
+}

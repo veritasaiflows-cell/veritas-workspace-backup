@@ -50,6 +50,8 @@ AUTHORITY_BOUNDARY = {
 }
 
 EXPECTED_ARTIFACTS = {
+    "shadow_eligibility": TMP / "paper-autotrader" / "shadow-eligibility.json",
+    "shadow_decision_ledger": TMP / "paper-autotrader" / "shadow-decisions.json",
     "position_sizing": TMP / "wf87-position-sizing-runtime-check.json",
     "circuit_breakers": TMP / "wf87-portfolio-circuit-breakers.json",
     "approval_ttl": TMP / "wf87-approval-freshness-ttl.json",
@@ -121,8 +123,12 @@ def py_cmd(*parts: str) -> list[str]:
     return [sys.executable, *parts]
 
 
-def command_plan() -> list[tuple[str, list[str], int]]:
-    return [
+def command_plan(*, include_shadow_threshold_refresh: bool = True) -> list[tuple[str, list[str], int]]:
+    threshold_steps = [
+        ("wf86_shadow_eligibility", py_cmd("scripts\\wf86_shadow_eligibility_validator.py", "--write", "--validate"), 240),
+        ("wf86_shadow_decision_ledger", py_cmd("scripts\\wf86_shadow_decision_ledger.py", "--write", "--validate"), 240),
+    ]
+    gate_steps = [
         ("position_sizing", py_cmd("scripts\\wf87_position_sizing_runtime_check.py", "--write", "--validate"), 180),
         ("portfolio_circuit_breakers", py_cmd("scripts\\wf87_portfolio_circuit_breakers.py", "--write", "--validate"), 180),
         ("approval_freshness_ttl", py_cmd("scripts\\wf87_approval_freshness_ttl.py", "--write", "--validate"), 180),
@@ -131,6 +137,7 @@ def command_plan() -> list[tuple[str, list[str], int]]:
         ("shadow_outcome_scorecard", py_cmd("scripts\\wf87_shadow_outcome_scorecard.py", "--write", "--validate"), 180),
         ("v2_readiness_rollup", py_cmd("scripts\\wf87_v2_readiness_rollup.py", "--write", "--validate"), 180),
     ]
+    return (threshold_steps if include_shadow_threshold_refresh else []) + gate_steps
 
 
 def tail(text: str | None, limit: int = 1000) -> str:
@@ -213,8 +220,10 @@ def artifact_record(name: str, path: Path) -> dict[str, Any]:
 
 def build_summary(market: dict[str, Any], artifacts: list[dict[str, Any]]) -> dict[str, Any]:
     rollup = load(EXPECTED_ARTIFACTS["v2_rollup"])
+    shadow = load(EXPECTED_ARTIFACTS["shadow_decision_ledger"])
     taxonomy = as_dict(rollup.get("blocker_taxonomy"))
     counts = as_dict(taxonomy.get("counts"))
+    shadow_summary = as_dict(shadow.get("summary"))
     runtime_clean = as_dict(rollup.get("phase_readiness")).get("phase_a_runtime_gates_clean") is True
     missing = [row["name"] for row in artifacts if row.get("exists") is not True]
     authority_drift = [row["name"] for row in artifacts if row.get("authority_drift_paths")]
@@ -226,6 +235,11 @@ def build_summary(market: dict[str, Any], artifacts: list[dict[str, Any]]) -> di
         "fail_closed_at_rest_count": counts.get("fail_closed_at_rest_count"),
         "runtime_blocker_count": counts.get("runtime_blocker_count"),
         "binding_blocker_count": counts.get("binding_blocker_count"),
+        "clean_shadow_decision_count": shadow_summary.get("clean_shadow_decision_count"),
+        "required_clean_decisions": shadow_summary.get("required_clean_decisions"),
+        "unique_clean_market_sessions": shadow_summary.get("unique_clean_market_sessions"),
+        "required_clean_market_sessions": shadow_summary.get("required_clean_market_sessions"),
+        "shadow_threshold_met": shadow_summary.get("shadow_threshold_met") is True,
         "missing_artifacts": missing,
         "authority_drift_artifacts": authority_drift,
         "daylight_gate_result": (
@@ -313,7 +327,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    steps = [] if args.skip_refresh else [run_step(name, command, timeout) for name, command, timeout in command_plan()]
+    market = market_session_context()
+    plan = command_plan(include_shadow_threshold_refresh=market["regular_market_hours"] is True)
+    steps = [] if args.skip_refresh else [run_step(name, command, timeout) for name, command, timeout in plan]
     payload = build_payload(steps)
     out = args.out if args.out.is_absolute() else ROOT / args.out
     if args.write:

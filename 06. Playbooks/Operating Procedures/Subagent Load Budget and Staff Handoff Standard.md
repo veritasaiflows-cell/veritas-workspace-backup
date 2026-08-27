@@ -6,6 +6,8 @@ Prevent new sessions/helper lanes from being overloaded with the entire workspac
 ## Core Rule
 A helper lane should receive only the doctrine slice, owner surfaces, exact task files, stop lines, output contract, and proof requirements needed for its assignment.
 
+Route authority is `scripts/project_implementation_router.py` (`veritas.execution_efficiency_policy.v1`): model-free first; explicit bounded Codex-native Terra; explicit Main/Sol exceptions; otherwise persistent Terra only with fresh strict transport proof. A missing transport proof blocks dispatch and does not justify silent Main fallback.
+
 ## WF71 Department Routing Gate
 Before spawning a helper lane, Veritas main should run two checks:
 
@@ -18,12 +20,14 @@ Use WF71 department ownership as a routing index, not a new authority layer. Sta
 - Doctrine: cite or summarize `SOUL.md`/`AGENTS.md` hard boundaries in the handoff; do not paste broad doctrine unless needed.
 - Skills: read at most one relevant skill up front unless the lane is explicitly multi-domain.
 - Artifact awareness: when a helper needs generated artifact/proof/provenance context, prefer SQL cockpit command output (`scripts/artifact_index.py cockpit`, `ticker-cockpit`, `trust-cockpit`, `proof-field`, `stoplines`, `validate`) over handing it broad `tmp/` directory scans. Include only the specific target artifact paths it must inspect after SQL routing.
-- Files-to-read-first: 3-8 exact files for normal lanes; 10-15 max for broad audit lanes.
+- Files-to-read-first: at most 6 exact files, 120,000 total bytes, and 30,000 estimated context tokens per frozen handoff. Split a broad audit rather than widening these ceilings.
 - Broad audit lanes: read-only by default and must return a claim matrix plus priority recommendations.
 - Outputs: one summary artifact/final response plus exact proof paths; JSON artifacts must parse.
 - Runtime: fresh isolated sessions by default; forked context only when transcript context is required.
 - Ownership: exactly one primary department/helper lane per delegated task; no two helper lanes may write the same canonical owner surface.
 - Main-session fallback: if routing is ambiguous, authority-sensitive, or lacks exact read-first files, keep the decision in main or ask the smallest concrete question.
+- Frozen proof: require an explicit workspace-relative base path, sorted file inventory and SHA-256 hashes, deterministic preflight, frozen snapshot id, and closeout rehash.
+- Route telemetry: require parent job, phase, attempt/retry, expected/actual backend/model/thinking, handoff files/bytes/tokens, elapsed time, authoritative usage or truthful unavailable status, QA verdict, and Main acceptance.
 
 ## Required Handoff Fields
 Every helper-lane prompt should include:
@@ -38,6 +42,9 @@ Every helper-lane prompt should include:
 8. **Timeout / partial-output expectation**
 9. **Merge expectation** - read-only, patch proposal, artifact write, or implementation
 10. **Authority boundary** - especially finance/trading/config/destructive boundaries
+11. **Route proof** - router artifact, selected backend/model/thinking, and persistent transport proof when applicable
+12. **Frozen handoff** - base path, manifest, snapshot id, exact file/byte/context totals
+13. **Incident/attempt contract** - 90-second provisional update, attempt id, retry reason, and first-pass separation
 
 ## Staff Lane Defaults
 
@@ -63,6 +70,8 @@ Each handoff should state why the selected department/skill is positively trigge
 Minimum acceptance checks:
 - exactly one primary department/helper lane named;
 - read-first list stays within budget or the broad-audit exception is explicit;
+- manifest file/byte/context totals are within the non-widenable handoff budget;
+- expected and actual backend/model/thinking match at closeout;
 - allowed write surfaces are named and collision-free;
 - validator/test/direct-inspection proof is named;
 - authority flags remain hard-false unless a separate exact approved gate is in scope;
@@ -76,6 +85,11 @@ A helper closeout must state:
 - blockers/trust gaps
 - exact next action
 - whether output is safe to merge, needs audit, or is review-only
+- uncached and gross tokens when authoritative, elapsed time, retry tax, and whether the result was first-pass Main-accepted
+
+Validation budget: micro work uses deterministic proof plus Main verification; narrow work uses focused tests plus Main; shared/major or privacy/security/authority/finance/repeated-failure work uses one fresh independent QA after deterministic preflight. After one repair and one rerun, another rejection returns to Main for root-cause/scope reclassification.
+
+Efficiency comparison is like-for-like and quality-weighted. Incidents, invalid telemetry, unavailable route evidence, and mismatches receive no success credit. Ten comparable Main-accepted jobs is the evidence gate; automatic ranking and promotion remain disabled.
 
 ## Security Boundary
 Config/auth/channel/network/service/credential changes are never helper-default. They require explicit owner approval and main-session review.

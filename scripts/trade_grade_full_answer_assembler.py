@@ -25,8 +25,10 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import FinanceSqlCanonAccess, p0_registry_lane_status
 from wf84_sqlite_mutex import wf84_sqlite_mutex
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
+from route_readiness import route_readiness_from_wf85_card
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -39,6 +41,7 @@ POST_CLOSE_LEDGER = TMP / "post-close-final-quote-ledger.json"
 MACRO_METRICS = TMP / "macro-metrics-current.json"
 MACRO_JUDGMENT = TMP / "macro-judgment-draft.json"
 MARKET_TODAY = TMP / "market-today-answer-packet.json"
+TIER_A_FUNDAMENTAL_ENRICHMENT = TMP / "tier-a-fundamental-enrichment-pass.json"
 OUT_DIR = TMP / "trade-grade-full-answer"
 ROLLUP_OUT = TMP / "trade-grade-full-answer-assembler.json"
 
@@ -116,7 +119,6 @@ AUTHORITY_BOUNDARY = {
     "source_open_required_before_material_finance_claims": True,
 }
 
-
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -171,7 +173,7 @@ def legacy_packet_path(ticker: str) -> Path:
 
 
 def production_tickers() -> list[str]:
-    return legacy_42_tier_tickers()
+    return production_scope_tickers()
 
 
 def wf84_tickers() -> list[str]:
@@ -195,6 +197,97 @@ def wf85_cards_by_ticker() -> dict[str, dict[str, Any]]:
         str(as_dict(card).get("ticker") or "").upper(): as_dict(card)
         for card in as_list(payload.get("cards"))
         if as_dict(card).get("ticker")
+    }
+
+
+def sql_canon_scope_context(tickers: list[str]) -> dict[str, Any]:
+    requested = sorted({str(ticker).upper() for ticker in tickers if str(ticker).strip()})
+    legacy_production = sorted(production_tickers())
+    client = FinanceSqlCanonAccess()
+    validation = client.validate()
+    critical: list[str] = []
+    warnings: list[str] = []
+    registry: dict[str, Any] = {}
+    strategic_production: list[str] = []
+    sql_production: list[str] = []
+    state_tickers: list[str] = []
+    missing_state_tickers: list[str] = []
+    evaluated_scope_mismatches: list[dict[str, Any]] = []
+
+    if validation.get("status") != "ok":
+        critical.append("sql_canon_access_validation_blocked")
+    else:
+        try:
+            strategic_production = client.production_answer_tickers()
+            sql_production = strategic_production
+            states = client.ticker_states(requested)
+            registry = client.migration_registry_summary()
+        except RuntimeError as exc:
+            critical.append("sql_canon_access_guard_blocked")
+            warnings.append(str(exc))
+            strategic_production = []
+            states = {}
+        state_tickers = sorted(states)
+        missing_state_tickers = sorted(set(requested) - set(states))
+        if missing_state_tickers:
+            critical.append("sql_canon_requested_tickers_missing_state")
+
+        legacy_set = set(legacy_production)
+        sql_production_set = set(sql_production)
+        if sql_production_set != legacy_set:
+            critical.append("sql_canon_production_answer_scope_drift")
+
+        for ticker in requested:
+            state = states.get(ticker)
+            if state is None:
+                continue
+            expected_in_scope = ticker in legacy_set
+            sql_in_scope = ticker in sql_production_set
+            if expected_in_scope != sql_in_scope:
+                evaluated_scope_mismatches.append({
+                    "ticker": ticker,
+                    "expected_strategic_production_scope": expected_in_scope,
+                    "sql_strategic_production_scope": sql_in_scope,
+                    "sql_production_card_generation_allowed": state.production_card_generation_allowed,
+                })
+        if evaluated_scope_mismatches:
+            critical.append("sql_canon_evaluated_scope_mismatch")
+        p0_status = p0_registry_lane_status(registry)
+        if not p0_status["ok"]:
+            critical.extend(p0_status["errors"])
+
+    status = "blocked" if critical else "ok"
+    return {
+        "schema": "veritas.trade_grade_full_answer_assembler.sql_canon_scope.v1",
+        "status": status,
+        "access_validation_status": validation.get("status"),
+        "requested_ticker_count": len(requested),
+        "requested_state_ticker_count": len(state_tickers),
+        "missing_state_tickers": missing_state_tickers,
+        "expected_production_answer_tickers": legacy_production,
+        "strategic_production_answer_tickers": strategic_production,
+        "strategic_production_answer_count": len(strategic_production),
+        "strategic_production_definition": "proof-joined routing Tier A/B, decision-grade fresh, confident, carded, in coverage",
+        "sql_canon_production_answer_tickers": sql_production,
+        "sql_canon_production_answer_count": len(sql_production),
+        "sql_canon_production_answer_definition": "proof-joined strategic production scope",
+        "production_scope_diff": {
+            "missing_from_sql": sorted(set(legacy_production) - set(sql_production)),
+            "extra_in_sql": sorted(set(sql_production) - set(legacy_production)),
+        },
+        "evaluated_scope_mismatches": evaluated_scope_mismatches,
+        "migration_registry_summary": registry,
+        "p0_registry_lane_status": p0_registry_lane_status(registry),
+        "validation": {"status": status, "critical_errors": critical, "warnings": warnings},
+        "authority_boundary": {
+            "sql_canon_scope_validation_only": True,
+            "read_only_access_layer_required": True,
+            "consumer_cutover_allowed_by_this_packet": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "owner_approval_inferred": False,
+        },
     }
 
 
@@ -456,6 +549,10 @@ def decision_grade_gate(wf85: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def route_readiness_from_wf85(wf85: dict[str, Any]) -> dict[str, Any]:
+    return route_readiness_from_wf85_card(wf85)
+
+
 def portfolio_fit_with_current_route(card: dict[str, Any], wf85: dict[str, Any]) -> dict[str, Any]:
     """Return portfolio fit with the current WF85/WF78 route overlaid.
 
@@ -468,12 +565,20 @@ def portfolio_fit_with_current_route(card: dict[str, Any], wf85: dict[str, Any])
     current_state = wf85.get("auto_state")
     previous_tier = fit.get("wf78_auto_tier")
     previous_state = fit.get("wf78_auto_state")
+    route_readiness = route_readiness_from_wf85(wf85)
     if current_tier:
         fit["wf78_auto_tier"] = current_tier
         fit["current_route_tier"] = current_tier
+        fit["routing_tier"] = current_tier
     if current_state:
         fit["wf78_auto_state"] = current_state
         fit["current_route_state"] = current_state
+        fit["routing_state"] = current_state
+    fit["route_readiness"] = route_readiness
+    fit["timing_state"] = route_readiness["timing_state"]
+    fit["trade_readiness_state"] = route_readiness["trade_readiness_state"]
+    fit["authority_state"] = route_readiness["authority_state"]
+    fit["route_next_action"] = route_readiness["next_route_action"]
     if previous_tier and current_tier and previous_tier != current_tier:
         fit["prior_card_wf78_auto_tier"] = previous_tier
     if previous_state and current_state and previous_state != current_state:
@@ -497,6 +602,15 @@ def technical_setup_data(card: dict[str, Any], wf84: dict[str, Any]) -> dict[str
     return {}
 
 
+def tier_a_fundamental_enrichment(ticker: str) -> dict[str, Any]:
+    payload = as_dict(load_json(TIER_A_FUNDAMENTAL_ENRICHMENT, {}))
+    for row in as_list(payload.get("rows")):
+        item = as_dict(row)
+        if str(item.get("ticker") or "").upper() == ticker.upper():
+            return item
+    return {}
+
+
 def source_lineage(ticker: str, card: dict[str, Any], wf84: dict[str, Any], wf85: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = [
         {"kind": "wf85_decision_card", "path": rel(WF85_CARDS), "authority": "derived_review_only"},
@@ -511,6 +625,8 @@ def source_lineage(ticker: str, card: dict[str, Any], wf84: dict[str, Any], wf85
         path = as_dict(row).get("path")
         if path:
             rows.append({"kind": "card_source_artifact", "path": str(path).replace("\\", "/"), "authority": "derived_review_only"})
+    if TIER_A_FUNDAMENTAL_ENRICHMENT.exists() and tier_a_fundamental_enrichment(ticker):
+        rows.append({"kind": "tier_a_fundamental_enrichment", "path": rel(TIER_A_FUNDAMENTAL_ENRICHMENT), "authority": "derived_review_only"})
     seen: set[tuple[str, str]] = set()
     deduped: list[dict[str, Any]] = []
     for row in rows:
@@ -655,18 +771,20 @@ def build_sections(ticker: str, card: dict[str, Any], wf84: dict[str, Any], wf85
     portfolio_fit = portfolio_fit_with_current_route(card, wf85)
     technical_data = technical_setup_data(card, wf84)
     macro_context = macro_risk_context()
+    fundamental_enrichment = tier_a_fundamental_enrichment(ticker)
     return {
         "thesis": section("thesis", "Thesis", card.get("thesis_bull_bear_entry_context")),
         "business_quality_moat": section("business_quality_moat", "Business / Moat / Quality", {
             "universe_metadata": card.get("universe_metadata"),
             "competitive_moat": card.get("competitive_moat"),
             "capital_allocation_quality": card.get("capital_allocation_quality"),
+            "tier_a_fundamental_enrichment": fundamental_enrichment,
         }),
         "bull_case": section("bull_case", "Bull Case", {"bull_case": as_dict(card.get("thesis_bull_bear_entry_context")).get("bull_case_inputs"), "wf85_bull_case": wf85.get("bull_case")}),
         "bear_case": section("bear_case", "Bear Case", {"bear_case": as_dict(card.get("thesis_bull_bear_entry_context")).get("bear_case_inputs"), "wf85_bear_case": wf85.get("bear_case"), "risks": card.get("risk_register")}),
-        "earnings_guidance": section("earnings_guidance", "Earnings + Guidance", {"latest_earnings": card.get("latest_earnings_performance"), "catalyst_earnings_state": card.get("catalyst_earnings_state")}),
-        "financial_metrics": section("financial_metrics", "Financial Metrics", {"key_financial_metrics": card.get("key_financial_metrics"), "official_fundamentals": card.get("official_fundamentals"), "fundamental_reconciliation": card.get("fundamental_reconciliation")}),
-        "valuation": section("valuation", "Valuation", card.get("valuation")),
+        "earnings_guidance": section("earnings_guidance", "Earnings + Guidance", {"latest_earnings": card.get("latest_earnings_performance"), "catalyst_earnings_state": card.get("catalyst_earnings_state"), "official_capture_summary": fundamental_enrichment.get("official_capture_summary")}),
+        "financial_metrics": section("financial_metrics", "Financial Metrics", {"key_financial_metrics": card.get("key_financial_metrics"), "official_fundamentals": card.get("official_fundamentals"), "fundamental_reconciliation": card.get("fundamental_reconciliation"), "tier_a_fundamental_enrichment": fundamental_enrichment}),
+        "valuation": section("valuation", "Valuation", {"card_valuation": card.get("valuation"), "derived_book_value": fundamental_enrichment.get("derived_book_value"), "field_availability": as_dict(fundamental_enrichment.get("field_availability")).get("valuation_and_book_value")}),
         "technical_setup": section("technical_setup", "Technical Setup", technical_data),
         "catalyst_news_macro": section("catalyst_news_macro", "Catalyst / News / Macro Sensitivity", {
             "recent_developments": card.get("recent_developments"),
@@ -674,6 +792,7 @@ def build_sections(ticker: str, card: dict[str, Any], wf84: dict[str, Any], wf85
             "etf_or_macro_proxy_profile": card.get("etf_or_macro_proxy_profile"),
             "orders_backlog_book_to_bill": card.get("orders_backlog_book_to_bill"),
             "macro_risk_context": macro_context,
+            "official_capture_summary": fundamental_enrichment.get("official_capture_summary"),
         }),
         "risk_invalidation": section("risk_invalidation", "Risk + Invalidation", {"risk_register": card.get("risk_register"), "wf85_key_risks": wf85.get("key_risks"), "counterargument": wf85.get("counterargument"), "stop_or_invalidation": wf85.get("stop_or_invalidation"), "macro_risk_context": macro_context}),
         "portfolio_fit": section("portfolio_fit", "Portfolio Fit", portfolio_fit),
@@ -691,19 +810,38 @@ def section_summary(section_row: dict[str, Any]) -> str:
     if not present(raw):
         return "source-open required"
     if isinstance(raw, dict):
+        enrichment = raw.get("tier_a_fundamental_enrichment")
+        if isinstance(enrichment, dict) and enrichment:
+            summary = as_dict(enrichment.get("summary"))
+            api_groups = summary.get("api_automatic_available_groups")
+            capture_groups = summary.get("official_capture_available_groups")
+            manual_groups = summary.get("manual_or_source_open_required_groups")
+            return f"fundamental enrichment: {api_groups} API-auto group(s), {capture_groups} official-capture group(s), {manual_groups} manual/source-open group(s)"
+        derived_book = as_dict(raw.get("derived_book_value"))
+        if derived_book:
+            derived_pb = derived_book.get("price_to_book_derived")
+            book_ps = derived_book.get("book_value_per_diluted_share")
+            if derived_pb is not None or book_ps is not None:
+                return f"derived book value: book/share {book_ps}; derived P/B {derived_pb}"
+        official_capture = as_dict(raw.get("official_capture_summary"))
+        if official_capture:
+            captured = official_capture.get("captured_fields") or []
+            unresolved = official_capture.get("unresolved_official_fields") or []
+            return f"official capture: {len(captured)} captured field(s), {len(unresolved)} unresolved field(s)"
         if isinstance(raw.get("decision_grade_gate"), dict):
             gate = raw["decision_grade_gate"]
             status = gate.get("decision_grade_status") or "unknown"
             repair = gate.get("specific_repair_required") or "none"
             return f"decision-grade gate: {status}; repair: {repair}"
-        if raw.get("current_route_tier") or raw.get("prior_card_wf78_auto_tier"):
-            current = raw.get("current_route_tier") or raw.get("wf78_auto_tier") or "unknown"
-            current_state = raw.get("current_route_state") or raw.get("wf78_auto_state") or "unknown"
-            prior = raw.get("prior_card_wf78_auto_tier")
-            prior_state = raw.get("prior_card_wf78_auto_state")
-            prior_note = f"; prior card: {prior} / {prior_state or 'unknown'}" if prior or prior_state else ""
-            decision = f"; decision: {raw.get('wf85_decision_state')}" if raw.get("wf85_decision_state") else ""
-            return f"current route: {current} / {current_state}{prior_note}{decision}"
+        readiness = as_dict(raw.get("route_readiness"))
+        if readiness or raw.get("routing_tier") or raw.get("current_route_tier"):
+            current = raw.get("routing_tier") or raw.get("current_route_tier") or raw.get("wf78_auto_tier") or "unknown"
+            current_state = raw.get("routing_state") or raw.get("current_route_state") or raw.get("wf78_auto_state") or "unknown"
+            timing = raw.get("timing_state") or readiness.get("timing_state") or "unknown"
+            decision = raw.get("wf85_decision_state") or readiness.get("decision_state") or "unknown"
+            trade_state = raw.get("trade_readiness_state") or readiness.get("trade_readiness_state") or "unknown"
+            authority_state = raw.get("authority_state") or readiness.get("authority_state") or "unknown"
+            return f"route: {current} / {current_state}; timing: {timing}; decision: {decision}; trade readiness: {trade_state}; authority: {authority_state}"
         for key in ("summary", "thesis", "grade", "decision_state", "owner_action", "status", "band_status"):
             value = raw.get(key)
             if value not in (None, "", [], {}):
@@ -763,6 +901,13 @@ def legacy_portfolio_fit(card: dict[str, Any], wf85: dict[str, Any]) -> dict[str
         "tier": fit.get("wf78_tier"),
         "wf78_auto_tier": fit.get("wf78_auto_tier"),
         "wf78_auto_state": fit.get("wf78_auto_state"),
+        "routing_tier": fit.get("routing_tier"),
+        "routing_state": fit.get("routing_state"),
+        "timing_state": fit.get("timing_state"),
+        "decision_state": fit.get("wf85_decision_state"),
+        "trade_readiness_state": fit.get("trade_readiness_state"),
+        "authority_state": fit.get("authority_state"),
+        "route_readiness": fit.get("route_readiness"),
         "current_route_tier": fit.get("current_route_tier"),
         "current_route_state": fit.get("current_route_state"),
         "prior_card_wf78_auto_tier": fit.get("prior_card_wf78_auto_tier"),
@@ -1079,6 +1224,17 @@ def write_legacy_packet(ticker: str, packet: dict[str, Any]) -> Path:
 def build_rollup(tickers: list[str], *, write: bool, write_legacy_packets: bool, validate: bool) -> dict[str, Any]:
     results: list[dict[str, Any]] = []
     validation_checks: list[dict[str, Any]] = []
+    sql_canon_context = sql_canon_scope_context(tickers)
+    sql_canon_errors = as_dict(sql_canon_context.get("validation")).get("critical_errors") or []
+    sql_canon_warnings = as_dict(sql_canon_context.get("validation")).get("warnings") or []
+    validation_checks.extend(
+        {"ticker": "SQL_CANON", "name": item, "passed": False, "severity": "error", "detail": sql_canon_context}
+        for item in sql_canon_errors
+    )
+    validation_checks.extend(
+        {"ticker": "SQL_CANON", "name": item, "passed": False, "severity": "warning", "detail": sql_canon_context}
+        for item in sql_canon_warnings
+    )
     for ticker in tickers:
         full, issues = build_full_answer(ticker)
         if full is None:
@@ -1122,9 +1278,17 @@ def build_rollup(tickers: list[str], *, write: bool, write_legacy_packets: bool,
             "validation_error_count": len(errors),
             "validation_warning_count": len(warnings),
             "required_section_count": len(REQUIRED_SECTION_IDS),
+            "sql_canon_scope_status": sql_canon_context.get("status"),
+            "strategic_production_answer_count": sql_canon_context.get("strategic_production_answer_count"),
+            "strategic_production_answer_definition": sql_canon_context.get("strategic_production_definition"),
+            "legacy_compatibility_answer_count": sql_canon_context.get("sql_canon_production_answer_count"),
+            "legacy_compatibility_scope_diff": sql_canon_context.get("production_scope_diff"),
+            "sql_canon_production_answer_count": sql_canon_context.get("sql_canon_production_answer_count"),
+            "sql_canon_production_scope_diff": sql_canon_context.get("production_scope_diff"),
         },
         "required_sections": REQUIRED_SECTION_IDS,
         "results": results,
+        "sql_canon_scope": sql_canon_context,
         "validation": {
             "status": "ok" if not errors else "blocked",
             "errors": errors[:100],

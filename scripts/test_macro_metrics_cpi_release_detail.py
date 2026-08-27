@@ -34,6 +34,20 @@ The lodging away from home index also rose 0.4 percent over the month.</p>
 </body></html>
 """
 
+FALLING_JUNE_HTML = (
+    SAMPLE_HTML
+    .replace("CONSUMER PRICE INDEX - MAY 2026", "CONSUMER PRICE INDEX - JUNE 2026")
+    .replace(
+        "owners' equivalent rent rose 0.3 percent in May",
+        "owners' equivalent rent fell 0.2 percent in June",
+    )
+    .replace("index for rent increased 0.4 percent", "index for rent declined 0.1 percent")
+    .replace(
+        "lodging away from home index also rose 0.4 percent",
+        "lodging away from home index fell 2.3 percent",
+    )
+)
+
 
 def main() -> int:
     parsed = ingest.parse_bls_cpi_release_html(SAMPLE_HTML, source_url="https://example.test/cpi")
@@ -50,6 +64,21 @@ def main() -> int:
     summary = ingest.summarize_cpi_release_detail(parsed)
     assert summary["gasoline"]["latest_mom_pct"] == 7.0
     assert summary["rent"]["latest_mom_pct"] == 0.4
+
+    falling = ingest.parse_bls_cpi_release_html(FALLING_JUNE_HTML, source_url="https://example.test/cpi")
+    assert falling["status"] == "ok", falling
+    assert falling["release_period"] == "June 2026"
+    falling_by_key = {
+        row["key"]: row
+        for row in falling["components"] + falling["narrative_components"]
+    }
+    assert falling_by_key["owners_equivalent_rent"]["latest_mom_pct"] == -0.2
+    assert falling_by_key["rent_of_primary_residence"]["latest_mom_pct"] == -0.1
+    assert falling_by_key["lodging_away_from_home"]["latest_mom_pct"] == -2.3
+    falling_summary = ingest.summarize_cpi_release_detail(falling)
+    assert falling_summary["owners_equivalent_rent"]["latest_mom_pct"] == -0.2
+    assert falling_summary["rent"]["latest_mom_pct"] == -0.1
+
     payload = {
         "schema": ingest.SCHEMA,
         "generated_at_utc": "2026-06-10T14:18:53Z",

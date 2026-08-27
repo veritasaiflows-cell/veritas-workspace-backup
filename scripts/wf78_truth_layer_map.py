@@ -3,7 +3,8 @@
 
 This artifact explains which WF78 surfaces may decide current tier membership,
 which surfaces are repair/readiness queues, which are audit-only label previews,
-which are legacy/shadow migration aids, and which are execution guardrails.
+which retired Legacy 42 archive proofs are preserved, and which are execution
+guardrails.
 
 It does not mutate any roster, universe, canon, portfolio, account, execution,
 or approval surface.
@@ -11,6 +12,7 @@ or approval surface.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,8 +30,8 @@ LABEL_REGISTER = TMP / "wf78-tier-label-decision-register.json"
 PROMOTION_REVIEW = TMP / "wf78-tier-promotion-review-gate.json"
 DEPLOYMENT_SURFACE = TMP / "deployment-readiness-surface.json"
 DEPLOYMENT_REVIEW = TMP / "wf78-deployment-readiness-review.json"
-LEGACY_MIGRATION = TMP / "wf78-legacy-42-tier-migration-planner.json"
-LEGACY_SHADOW_DB = TMP / "wf78-legacy-42-tier-state-shadow.sqlite"
+LEGACY_ARCHIVE_PACKET = TMP / "legacy-42-full-archive-packet.json"
+LEGACY_NO_RUNTIME_GUARD = TMP / "legacy-42-no-runtime-imports-guard.json"
 PAPER_READINESS_DIR = TMP / "alpaca-paper-readiness"
 DEFAULT_OUT = TMP / "wf78-truth-layer-map.json"
 SCHEMA = "veritas.wf78_truth_layer_map.v1"
@@ -56,6 +58,21 @@ AUTHORITY_BOUNDARY: dict[str, bool] = {
 
 TRUE_AUTHORITY = {"review_only", "map_only", "automated_non_capital_routing_allowed"}
 FALSE_AUTHORITY = {key for key in AUTHORITY_BOUNDARY if key not in TRUE_AUTHORITY}
+
+ROUTER_IDENTITY_VOLATILE_KEYS = {
+    "generated_at",
+    "generated_at_utc",
+    "completed_at",
+    "completed_at_utc",
+    "started_at",
+    "started_at_utc",
+    "duration_ms",
+    "elapsed_seconds",
+    "age_hours",
+    "mtime",
+    "mtime_utc",
+    "path_mtime_utc",
+}
 
 FORBIDDEN_DECISIONS = [
     "current_tier_membership",
@@ -156,24 +173,24 @@ LAYER_SPECS: list[dict[str, Any]] = [
         "not_current_tier_authority": True,
     },
     {
-        "layer_id": "legacy_42_migration_planner",
-        "category": "legacy_shadow",
-        "artifact": LEGACY_MIGRATION,
-        "role": "shadow_migration_and_deprecation_gate_not_live_routing",
+        "layer_id": "legacy_42_full_archive_packet",
+        "category": "retired_archive_proof",
+        "artifact": LEGACY_ARCHIVE_PACKET,
+        "role": "archive_completion_proof_not_live_routing",
         "required": True,
-        "can_decide": ["legacy_shadow_parity", "deprecation_readiness_review"],
+        "can_decide": ["legacy_42_archive_completion"],
         "cannot_decide": FORBIDDEN_DECISIONS,
         "current_tier_authority": False,
         "model_safe_answer_surface": False,
         "not_current_tier_authority": True,
     },
     {
-        "layer_id": "legacy_42_shadow_db",
-        "category": "legacy_shadow",
-        "artifact": LEGACY_SHADOW_DB,
-        "role": "sqlite_shadow_lookup_not_live_routing",
-        "required": False,
-        "can_decide": ["legacy_shadow_lookup"],
+        "layer_id": "legacy_42_no_runtime_imports_guard",
+        "category": "retired_archive_proof",
+        "artifact": LEGACY_NO_RUNTIME_GUARD,
+        "role": "no_runtime_imports_guard_not_live_routing",
+        "required": True,
+        "can_decide": ["legacy_42_runtime_import_absence"],
         "cannot_decide": FORBIDDEN_DECISIONS,
         "current_tier_authority": False,
         "model_safe_answer_surface": False,
@@ -211,6 +228,44 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def normalize_router_for_identity(value: Any) -> Any:
+    """Return stable router content without artifact-generation residue."""
+    if isinstance(value, dict):
+        return {
+            str(key): normalize_router_for_identity(item)
+            for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+            if str(key) not in ROUTER_IDENTITY_VOLATILE_KEYS
+        }
+    if isinstance(value, (list, tuple)):
+        return [normalize_router_for_identity(item) for item in value]
+    return value
+
+
+def source_router_lineage(router: dict[str, Any]) -> dict[str, Any]:
+    normalized = normalize_router_for_identity(router)
+    encoded = json.dumps(normalized, sort_keys=True, separators=(",", ":"), default=str)
+    return {
+        "path": rel(AUTO_ROUTER),
+        "content_sha256": hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
+        "generated_at_utc": router.get("generated_at_utc") or router.get("generated_at"),
+    }
+
+
+def router_lineage_complete(lineage: dict[str, Any]) -> bool:
+    return bool(
+        str(lineage.get("path") or "")
+        and str(lineage.get("content_sha256") or "")
+        and str(lineage.get("generated_at_utc") or "")
+    )
+
+
+def router_lineage_matches(lineage: dict[str, Any], live_lineage: dict[str, Any]) -> bool:
+    return router_lineage_complete(lineage) and router_lineage_complete(live_lineage) and all(
+        lineage.get(key) == live_lineage.get(key)
+        for key in ("path", "content_sha256", "generated_at_utc")
+    )
 
 
 def load_dict(path: Path) -> dict[str, Any]:
@@ -293,8 +348,8 @@ def instruction_for(spec: dict[str, Any]) -> str:
         return "Use for repair/readiness/actionability context only; do not change current tier membership from this layer."
     if spec["category"] == "audit_only":
         return "Audit or preview context only; never answer current tier membership from this layer."
-    if spec["category"] == "legacy_shadow":
-        return "Legacy migration/deprecation context only; current router wins on conflict."
+    if spec["category"] == "retired_archive_proof":
+        return "Retired Legacy 42 archive proof only; never answer current tier membership from this layer."
     return "Execution guardrail context only; never use as Tier A/B truth."
 
 
@@ -322,6 +377,8 @@ def build_report() -> dict[str, Any]:
     layers = [layer_record(spec) for spec in LAYER_SPECS]
     roster = load_dict(CLEAN_ROSTER)
     router = load_dict(AUTO_ROUTER)
+    live_router_lineage = source_router_lineage(router)
+    roster_router_lineage = as_dict(roster.get("source_router_lineage"))
     checks: list[dict[str, Any]] = []
     membership_layers = current_membership_layers(layers)
     non_authority_membership_layers = [
@@ -332,13 +389,25 @@ def build_report() -> dict[str, Any]:
     layer_by_id = {str(layer.get("layer_id")): layer for layer in layers}
     promotion_boundary = as_dict(load_dict(PROMOTION_REVIEW).get("authority_boundary"))
     deployment_boundary = as_dict(load_dict(DEPLOYMENT_REVIEW).get("authority_boundary"))
-    legacy_boundary = as_dict(load_dict(LEGACY_MIGRATION).get("authority_boundary"))
+    legacy_archive = load_dict(LEGACY_ARCHIVE_PACKET)
+    legacy_archive_summary = as_dict(legacy_archive.get("summary"))
+    legacy_archive_boundary = as_dict(legacy_archive.get("authority_boundary"))
+    legacy_guard = load_dict(LEGACY_NO_RUNTIME_GUARD)
+    legacy_guard_summary = as_dict(legacy_guard.get("summary"))
     label_contract = as_dict(load_dict(LABEL_PREVIEW).get("semantic_contract"))
 
     add_check(checks, "auto_router_exists", AUTO_ROUTER.exists(), rel(AUTO_ROUTER))
     add_check(checks, "auto_router_status_ok", router.get("status") == "ok", router.get("status"))
+    add_check(checks, "live_auto_router_lineage_complete", router_lineage_complete(live_router_lineage), live_router_lineage)
     add_check(checks, "clean_roster_exists", CLEAN_ROSTER.exists(), rel(CLEAN_ROSTER))
     add_check(checks, "clean_roster_status_ok", roster.get("status") == "ok", roster.get("status"))
+    add_check(checks, "clean_roster_router_lineage_complete", router_lineage_complete(roster_router_lineage), roster_router_lineage)
+    add_check(
+        checks,
+        "clean_roster_router_lineage_matches_live_router",
+        router_lineage_matches(roster_router_lineage, live_router_lineage),
+        {"clean_roster": roster_router_lineage, "live_router": live_router_lineage},
+    )
     add_check(checks, "exactly_two_membership_answer_layers", len(membership_layers) == 2, [layer.get("layer_id") for layer in membership_layers])
     add_check(checks, "only_router_is_source_authority", [layer.get("layer_id") for layer in layers if layer.get("current_tier_authority")] == ["current_tier_authority"], [layer.get("layer_id") for layer in layers if layer.get("current_tier_authority")])
     add_check(checks, "only_roster_is_model_safe_answer_surface", [layer.get("layer_id") for layer in layers if layer.get("model_safe_answer_surface")] == ["model_safe_current_roster"], [layer.get("layer_id") for layer in layers if layer.get("model_safe_answer_surface")])
@@ -347,7 +416,25 @@ def build_report() -> dict[str, Any]:
     add_check(checks, "label_preview_declares_not_current_authority", label_contract.get("not_current_tier_authority") is True, label_contract)
     add_check(checks, "promotion_review_cannot_apply_promotions", promotion_boundary.get("tier_b_promotion_allowed") is False and promotion_boundary.get("tier_a_promotion_allowed") is False, promotion_boundary)
     add_check(checks, "deployment_review_cannot_mutate_or_execute", deployment_boundary.get("deployment_surface_mutation_allowed") is False and deployment_boundary.get("paper_or_live_execution_allowed") is False, deployment_boundary)
-    add_check(checks, "legacy_migration_is_shadow_only", legacy_boundary.get("shadow_migration_only") is True and legacy_boundary.get("tier_router_mutation_allowed") is False, legacy_boundary)
+    add_check(
+        checks,
+        "legacy_42_full_archive_complete",
+        legacy_archive.get("status") == "owner_approved_archive_ready"
+        and legacy_archive_summary.get("source_exists_count") == 0
+        and legacy_archive_summary.get("already_archived_count") == legacy_archive_summary.get("candidate_count")
+        and legacy_archive_boundary.get("archive_move_only") is True
+        and legacy_archive_boundary.get("delete_allowed") is False
+        and legacy_archive_boundary.get("cron_schedule_mutation_allowed") is False,
+        {"status": legacy_archive.get("status"), "summary": legacy_archive_summary, "authority_boundary": legacy_archive_boundary},
+    )
+    add_check(
+        checks,
+        "legacy_42_no_runtime_imports",
+        legacy_guard_summary.get("active_runtime_blocker_count") == 0
+        and legacy_guard_summary.get("archive_candidate_script_count") == 5
+        and legacy_guard.get("status") == "ready_for_archive_packet_prep",
+        {"status": legacy_guard.get("status"), "summary": legacy_guard_summary},
+    )
     add_check(checks, "paper_readiness_is_execution_guardrail_only", layer_by_id["paper_readiness_guardrails"].get("category") == "execution_guardrail" and layer_by_id["paper_readiness_guardrails"].get("not_current_tier_authority") is True, layer_by_id["paper_readiness_guardrails"])
     for key in sorted(TRUE_AUTHORITY):
         add_check(checks, f"authority_{key}_true", AUTHORITY_BOUNDARY.get(key) is True, AUTHORITY_BOUNDARY.get(key))
@@ -364,18 +451,25 @@ def build_report() -> dict[str, Any]:
         "generated_at_utc": utc_now(),
         "status": "ok" if not errors else "blocked",
         "workflow": "WF78 - Truth Layer Map",
-        "purpose": "Make WF78 tier, readiness, audit, legacy, and execution-guardrail layers explicit so lower models do not merge their authority.",
+        "purpose": "Make WF78 tier, readiness, audit, retired Legacy 42 archive proof, and execution-guardrail layers explicit so lower models do not merge their authority.",
         "semantic_contract": {
             "current_tier_membership_source_of_record": rel(AUTO_ROUTER),
             "preferred_model_safe_current_roster": rel(CLEAN_ROSTER),
+            "source_router_lineage_required": True,
+            "clean_roster_router_lineage_must_match_live_router": True,
             "repair_readiness_layers_are_not_membership_authority": True,
             "audit_only_layers_are_not_membership_authority": True,
-            "legacy_shadow_layers_are_not_membership_authority": True,
+            "retired_legacy_archive_proof_is_not_membership_authority": True,
             "paper_readiness_layers_are_not_tier_truth": True,
             "tier_state_is_substate_not_membership": True,
-            "lower_model_instruction": "Answer current Tier A/B/C only from wf78-clean-tier-roster or wf78-auto-tier-routing. Treat readiness, promotion review, label sync, legacy migration, and paper readiness as separate context layers.",
+            "lower_model_instruction": "Answer current Tier A/B/C only from wf78-clean-tier-roster or wf78-auto-tier-routing. Treat readiness, promotion review, label sync, retired Legacy 42 archive proof, and paper readiness as separate context layers.",
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "source_router_lineage": live_router_lineage,
+        "source_roster_lineage": {
+            "path": rel(CLEAN_ROSTER),
+            "source_router_lineage": roster_router_lineage,
+        },
         "summary": {
             "status": "ok" if not errors else "blocked",
             "layer_count": len(layers),
@@ -388,6 +482,9 @@ def build_report() -> dict[str, Any]:
             "tier_state_substate_count": len(as_dict(as_dict(roster.get("summary")).get("current_state_counts"))),
             "not_current_tier_authority_layer_count": len([layer for layer in layers if layer.get("not_current_tier_authority")]),
             "paper_readiness_json_file_count": as_dict(layer_by_id["paper_readiness_guardrails"].get("artifact")).get("json_file_count"),
+            "source_router_sha256": live_router_lineage.get("content_sha256"),
+            "source_router_generated_at_utc": live_router_lineage.get("generated_at_utc"),
+            "clean_roster_router_lineage_matches_live_router": router_lineage_matches(roster_router_lineage, live_router_lineage),
             "capital_deployment_approved_count": 0,
             "trade_or_execution_approved_count": 0,
             "next_safe_action": "Run the tier semantics guard after this map; consumers should read the map before any WF78 tier answer or cleanup decision.",
@@ -398,13 +495,13 @@ def build_report() -> dict[str, Any]:
             "tier_state_substate": [rel(CLEAN_ROSTER), rel(AUTO_ROUTER)],
             "repair_or_promotion_review": [rel(PROMOTION_REVIEW), rel(DEPLOYMENT_REVIEW), rel(DEPLOYMENT_SURFACE)],
             "label_sync_audit": [rel(LABEL_PREVIEW), rel(LABEL_REGISTER)],
-            "legacy_shadow_migration": [rel(LEGACY_MIGRATION), rel(LEGACY_SHADOW_DB)],
+            "retired_legacy_archive_proof": [rel(LEGACY_ARCHIVE_PACKET), rel(LEGACY_NO_RUNTIME_GUARD)],
             "paper_execution_guardrails": [rel(PAPER_READINESS_DIR)],
         },
         "forbidden_merges": [
             "Do not merge deployment readiness into current tier membership.",
             "Do not merge promotion review queue status into current tier membership.",
-            "Do not merge legacy/shadow migration counts into live routing.",
+            "Do not merge retired Legacy 42 archive proof into live routing.",
             "Do not merge label-sync preview labels into current Tier A/B/C membership.",
             "Do not use Alpaca/paper readiness artifacts as Tier A/B truth.",
             "Do not treat A-READY/A-CHALLENGED/A-REPAIR or B-CANDIDATE/B-VALIDATED/B-STALE as separate tiers.",
@@ -416,7 +513,7 @@ def build_report() -> dict[str, Any]:
             "checks": checks,
         },
         "stop_lines": [
-            "This map is read-only and does not mutate tier routing, labels, deployment readiness, legacy migration, paper readiness, canon, portfolio, SQL, or account surfaces.",
+            "This map is read-only and does not mutate tier routing, labels, deployment readiness, retired legacy archives, paper readiness, canon, portfolio, SQL, or account surfaces.",
             "A clean map is not capital deployment, trade, paper/live execution, brokerage/account action, money movement, or owner approval.",
         ],
     }

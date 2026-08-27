@@ -1,0 +1,55 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "e70a39b4-1203-49c5-8088-b9a33dd88bd3",
+  "name": "Memory Dreaming Promotion",
+  "required": true,
+  "owner_workflow": "WF74/OpenClaw memory-core Dreaming",
+  "contract_reason": "Randall approved OpenClaw Dreaming inside the 2 AM-6 AM quiet window. The managed memory-core job needs a local contract so cron freshness can track it without classifying the new built-in job as unregistered.",
+  "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.800, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 3 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "__openclaw_memory_core_short_term_promotion_dream__",
+    "lightContext": true
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "payload.kind",
+    "payload.message",
+    "payload.lightContext"
+  ],
+  "expected_artifacts": [
+    "tmp/dream-review-packet.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "managed_openclaw_memory_core_job": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "manual_memory_promotion_allowed_by_contract": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-06-19T23:52:00Z",
+  "contract_update_reason": "OpenClaw Dreaming enabled at 3 AM America/Phoenix with review-only local proof packet."
+}

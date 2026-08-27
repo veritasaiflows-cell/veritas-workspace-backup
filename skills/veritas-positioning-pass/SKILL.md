@@ -150,23 +150,23 @@ Use this structure unless the user asks for something else.
 - [2-4 bullets]
 
 **Best positioned names now**
-- [ticker] Ã¢â‚¬â€ [why]
-- [ticker] Ã¢â‚¬â€ [why]
-- [ticker] Ã¢â‚¬â€ [why]
+- [ticker] - [why]
+- [ticker] - [why]
+- [ticker] - [why]
 
 **Hold / maintain**
-- [ticker] Ã¢â‚¬â€ [why]
+- [ticker] - [why]
 
 **Bench / wait**
-- [ticker] Ã¢â‚¬â€ [why]
+- [ticker] - [why]
 
 **Avoid / do not deploy**
-- [ticker] Ã¢â‚¬â€ [why]
+- [ticker] - [why]
 
 **Capital priority order**
-1. [ticker] Ã¢â‚¬â€ [why first]
-2. [ticker] Ã¢â‚¬â€ [why second]
-3. [ticker] Ã¢â‚¬â€ [why third]
+1. [ticker] - [why first]
+2. [ticker] - [why second]
+3. [ticker] - [why third]
 
 **Risk notes**
 - [3-6 bullets tied to portfolio concentration, catalyst risk, or invalidation clarity]

@@ -7,12 +7,14 @@ from pathlib import Path
 from typing import Any
 
 from artifact_index import DEFAULT_DB as ARTIFACT_INDEX_DB, connect as connect_artifact_index, validate_index
+from finance_sql_canon_access import strategic_answer_route_context
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 OUT_JSON = TMP / "today-card.json"
 OUT_MD = TMP / "today-card.md"
+SQL_CANON_DB = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
 SCHEMA_VERSION = "wf72.today_card.v1"
 
 REQUIRED_SOURCE_ROLES: dict[str, Path] = {
@@ -26,7 +28,7 @@ REQUIRED_SOURCE_ROLES: dict[str, Path] = {
 OPTIONAL_SOURCE_ROLES: dict[str, Path] = {
     "intraday_delivery_router_status": TMP / "intraday-alerts" / "delivery-router-status.json",
 }
-CANONICAL_READ_ONLY_LINKS = [
+HUMAN_CONTEXT_LINKS = [
     "03. Portfolio/Execution Board.md",
     "03. Portfolio/Portfolio Snapshot.md",
     "04. Research/Coverage and Watchlist.md",
@@ -42,6 +44,8 @@ AUTHORITY = {
     "trade_execution_allowed": False,
     "live_trade_or_account_action_allowed": False,
     "paper_trade_submit_cancel_allowed_by_today_card": False,
+    "durable_sql_canon_current_state_allowed": True,
+    "sql_canon_mutation_allowed_by_today_card": False,
     "money_movement_allowed": False,
     "owner_approval_inferred": False,
 }
@@ -159,6 +163,14 @@ def load_sql_source_records(roles: list[str]) -> tuple[dict[str, dict[str, Any]]
     return records, health
 
 
+def load_finance_sql_canon_context() -> dict[str, Any]:
+    context = strategic_answer_route_context(consumer="today_card_generator", db_path=SQL_CANON_DB)
+    context["schema"] = "wf72.today_card.finance_sql_canon_context.v2"
+    context["sql_canon_db"] = rel(SQL_CANON_DB)
+    context["registry_summary"] = context.get("migration_registry_summary", {})
+    return context
+
+
 def sql_health_degraded(sql_health: dict[str, Any] | None) -> bool:
     if not sql_health:
         return False
@@ -202,6 +214,7 @@ def build_trust_banner(
     sources: dict[str, dict[str, Any]],
     source_records: list[dict[str, Any]],
     sql_health: dict[str, Any] | None = None,
+    finance_sql_canon: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     index = sources["current_window_artifact_index"]
     run_summary = sources["run_summary"]
@@ -218,6 +231,7 @@ def build_trust_banner(
     source_freshness = as_dict(dashboard_validation.get("source_freshness"))
 
     sql_degraded = sql_health_degraded(sql_health)
+    finance_sql_blocked = as_dict(finance_sql_canon).get("status") != "ok"
     blocked = bool(missing_required or index.get("status") != "ok" or cap_summary.get("critical", 0) or dashboard_summary.get("critical", 0))
     degraded = not blocked and (
         run_summary.get("status") == "warning"
@@ -225,6 +239,7 @@ def build_trust_banner(
         or source_freshness.get("trust_level") == "review_required"
         or guard_summary.get("warning", 0)
         or sql_degraded
+        or finance_sql_blocked
     )
     if blocked:
         label = "BLOCKED"
@@ -247,6 +262,10 @@ def build_trust_banner(
             "SQL artifact index status="
             f"{(sql_health or {}).get('status')} action_required={bool((sql_health or {}).get('operator_action_required'))}; "
             "falling back to compatibility artifacts for Today-card proof routing."
+        )
+    if finance_sql_blocked:
+        reasons.append(
+            "Durable finance SQL-canon guard is blocked; Today card remains review-only and cannot be treated as SQL-primary finance state."
         )
     return {
         "label": label,
@@ -401,7 +420,8 @@ def build_payload() -> dict[str, Any]:
         all_records.append(record)
 
     sql_source_records, sql_health = load_sql_source_records(sorted(source_records))
-    trust_banner = build_trust_banner(source_data, all_records, sql_health)
+    finance_sql_canon = load_finance_sql_canon_context()
+    trust_banner = build_trust_banner(source_data, all_records, sql_health, finance_sql_canon)
     decision_items = build_decision_items(source_data, source_records, trust_banner, sql_source_records)
     blocked_items = build_blocked_and_repair_items(source_data["board_canon_guardrail"], source_records["board_canon_guardrail"])
     owner_decisions = [
@@ -422,8 +442,15 @@ def build_payload() -> dict[str, Any]:
         "status": "blocked" if trust_banner["status"] == "blocked" else "review_only_warning" if trust_banner["status"] == "warning" else "review_only_ok",
         "trust_banner": trust_banner,
         "authority": AUTHORITY,
+        "finance_sql_canon_context": finance_sql_canon,
         "source_artifacts": all_records,
-        "canonical_read_only_links": CANONICAL_READ_ONLY_LINKS,
+        "structured_owner": {
+            "kind": "sql_json_proof",
+            "database": rel(SQL_CANON_DB),
+            "typed_access_layer": "scripts/finance_sql_canon_access.py",
+            "authority_boundary": "review-only current-state proof; no owner approval, canon mutation, portfolio mutation, or execution authority",
+        },
+        "human_context_links": HUMAN_CONTEXT_LINKS,
         "validator_status": validator_status(source_data),
         "intraday_alert_status": {
             "status": intraday.get("status") or "not_available",
@@ -463,6 +490,15 @@ def render_markdown(payload: dict[str, Any]) -> str:
     for key, value in as_dict(payload.get("authority")).items():
         lines.append(f"- `{key}`: `{value}`")
     lines.append("")
+    lines.append("## Structured owner and human context")
+    lines.append("")
+    structured_owner = as_dict(payload.get("structured_owner"))
+    lines.append(f"- Structured owner: `{structured_owner.get('database')}` via `{structured_owner.get('typed_access_layer')}`")
+    lines.append(f"- Structured owner boundary: {structured_owner.get('authority_boundary')}")
+    lines.append("- Human context links:")
+    for link in as_list(payload.get("human_context_links")):
+        lines.append(f"  - `{link}`")
+    lines.append("")
     lines.append("## Decision items")
     lines.append("")
     lines.append("| Rank | Ticker | State | Posture | Owner action? | Close | Band | Band status | Boundary |")
@@ -488,7 +524,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
     lines.append("## Blocked and repair items")
     for item in as_list(payload.get("blocked_and_repair_items")):
         if isinstance(item, dict):
-            lines.append(f"- **{item.get('ticker_or_scope')}**: {item.get('risk_state')} / {legacy_state(item, "workflow_state")} / {item.get('deployment_action_state')} (close {item.get('close')}, stop {item.get('stop')}).")
+            lines.append(f"- **{item.get('ticker_or_scope')}**: {item.get('risk_state')} / {legacy_state(item, 'workflow_state')} / {item.get('deployment_action_state')} (close {item.get('close')}, stop {item.get('stop')}).")
     lines.append("")
     lines.append("## Proof freshness and source map")
     pf = as_dict(payload.get("proof_freshness"))
@@ -512,24 +548,78 @@ def render_markdown(payload: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    errors: list[dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = []
+    structured_owner = as_dict(payload.get("structured_owner"))
+    authority = as_dict(payload.get("authority"))
+    human_context_links = as_list(payload.get("human_context_links"))
+    if structured_owner.get("kind") != "sql_json_proof":
+        errors.append({"field": "structured_owner.kind", "expected": "sql_json_proof", "actual": structured_owner.get("kind")})
+    if structured_owner.get("database") != rel(SQL_CANON_DB):
+        errors.append({"field": "structured_owner.database", "expected": rel(SQL_CANON_DB), "actual": structured_owner.get("database")})
+    if not human_context_links:
+        errors.append({"field": "human_context_links", "reason": "missing human note context links"})
+    if "canonical_read_only_links" in payload:
+        errors.append({"field": "canonical_read_only_links", "reason": "legacy owner label must not be emitted"})
+    forbidden_true = [
+        key
+        for key in (
+            "canonical_note_mutation_allowed_by_today_card",
+            "portfolio_mutation_allowed_by_today_card",
+            "proposal_apply_allowed_by_today_card",
+            "trade_execution_allowed",
+            "live_trade_or_account_action_allowed",
+            "paper_trade_submit_cancel_allowed_by_today_card",
+            "sql_canon_mutation_allowed_by_today_card",
+            "money_movement_allowed",
+            "owner_approval_inferred",
+        )
+        if authority.get(key) is True
+    ]
+    if forbidden_true:
+        errors.append({"field": "authority", "forbidden_true_flags": forbidden_true})
+    if payload.get("status") == "review_only_ok" and as_dict(payload.get("trust_banner")).get("capital_action_allowed") is True:
+        errors.append({"field": "trust_banner.capital_action_allowed", "reason": "Today card must never allow capital action"})
+    if payload.get("status") != "review_only_ok":
+        warnings.append({"field": "status", "value": payload.get("status"), "reason": "payload is usable only with review-only caution or blocked status"})
+    return {
+        "status": "ok" if not errors else "blocked",
+        "errors": errors,
+        "warnings": warnings,
+    }
+
+
+def resolve_out(value: str) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else WORKSPACE / path
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build WF72 review-only Today-card prototype artifacts under tmp/.")
     parser.add_argument("--json-out", default=rel(OUT_JSON))
     parser.add_argument("--md-out", default=None, help="Optional Markdown output path; JSON is the default proof contract.")
+    parser.add_argument("--write", action="store_true", help="Compatibility flag; this generator always writes its JSON proof artifact.")
+    parser.add_argument("--validate", action="store_true", help="Validate the generated review-only ownership contract.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     payload = build_payload()
-    json_out = WORKSPACE / args.json_out
+    validation = validate_payload(payload)
+    payload["validation"] = validation
+    json_out = resolve_out(args.json_out)
     atomic_write_json(json_out, payload)
     if args.md_out:
-        md_out = WORKSPACE / args.md_out
+        md_out = resolve_out(args.md_out)
         atomic_write_text(md_out, render_markdown(payload))
         print(f"today_card_generator: wrote {rel(json_out)} and {rel(md_out)} ({len(payload.get('decision_items') or [])} decision items)")
     else:
         print(f"today_card_generator: wrote {rel(json_out)} ({len(payload.get('decision_items') or [])} decision items)")
+    if args.validate and validation.get("status") != "ok":
+        print(f"today_card_generator: validation blocked ({len(validation.get('errors') or [])} errors)")
+        return 1
     return 0
 
 

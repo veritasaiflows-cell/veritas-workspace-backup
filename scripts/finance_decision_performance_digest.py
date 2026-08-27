@@ -18,6 +18,7 @@ from market_data_utils import atomic_write_json, atomic_write_text
 
 ROOT = Path(__file__).resolve().parents[1]
 WF55_LEDGER = ROOT / "data" / "state-history" / "outcome-ledger-v2.jsonl"
+WF55_GRADE_HISTORY = ROOT / "data" / "state-history" / "recommendation-outcome-grades.jsonl"
 WF87_JOURNAL = ROOT / "tmp" / "paper-autotrader" / "trade-decision-journal.jsonl"
 WF87_SHADOW_SCORECARD = ROOT / "tmp" / "wf87-shadow-outcome-scorecard.json"
 WF87_READINESS = ROOT / "tmp" / "wf87-v2-readiness-rollup.json"
@@ -105,7 +106,29 @@ def parse_utc(value: Any) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
-def summarize_wf55(rows: list[dict[str, Any]], now: datetime) -> dict[str, Any]:
+def summarize_grade_history(rows: list[dict[str, Any]], source_path: Path) -> dict[str, Any]:
+    clean = [row for row in rows if not row.get("_parse_error")]
+    assigned = [row for row in clean if row.get("grade_status") == "assigned" and row.get("assigned_grade")]
+    grade_counts: dict[str, int] = {}
+    for row in assigned:
+        grade = str(row.get("assigned_grade") or "unknown")
+        grade_counts[grade] = grade_counts.get(grade, 0) + 1
+    return {
+        "source": rel(source_path),
+        "row_count": len(clean),
+        "parse_error_count": len(rows) - len(clean),
+        "assigned_grade_event_count": len(assigned),
+        "graded_ledger_event_count": len({str(row.get("ledger_event_id") or "") for row in assigned if row.get("ledger_event_id")}),
+        "grade_counts": dict(sorted(grade_counts.items())),
+    }
+
+
+def summarize_wf55(
+    rows: list[dict[str, Any]],
+    now: datetime,
+    grade_rows: list[dict[str, Any]] | None = None,
+    grade_history_path: Path = WF55_GRADE_HISTORY,
+) -> dict[str, Any]:
     clean = [row for row in rows if not row.get("_parse_error")]
     tracking = [row for row in clean if row.get("event_family") == "recommendation_tracking"]
     checkpoint_status_counts: dict[str, int] = {}
@@ -128,6 +151,9 @@ def summarize_wf55(rows: list[dict[str, Any]], now: datetime) -> dict[str, Any]:
                 else:
                     observed += 1
     tickers = sorted({str(row.get("ticker") or "").upper() for row in tracking if row.get("ticker")})
+    grade_summary = summarize_grade_history(grade_rows or [], grade_history_path)
+    legacy_assigned = sum(1 for row in tracking if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True)
+    history_assigned = int(grade_summary.get("graded_ledger_event_count") or 0)
     return {
         "source": rel(WF55_LEDGER),
         "row_count": len(clean),
@@ -139,7 +165,9 @@ def summarize_wf55(rows: list[dict[str, Any]], now: datetime) -> dict[str, Any]:
         "due_checkpoint_counts_by_horizon": dict(sorted(horizon_due_counts.items())),
         "due_unobserved_checkpoint_count": due_unobserved,
         "observed_checkpoint_count": observed,
-        "outcome_grade_assigned_count": sum(1 for row in tracking if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True),
+        "outcome_grade_assigned_count": max(legacy_assigned, history_assigned),
+        "legacy_forward_scorecard_grade_count": legacy_assigned,
+        "grade_history": grade_summary,
     }
 
 
@@ -206,10 +234,16 @@ def build_payload(paths: dict[str, Path], now: datetime | None = None) -> dict[s
     current = current.astimezone(timezone.utc)
 
     wf55_rows = load_jsonl(paths["wf55_ledger"])
+    wf55_grade_rows = load_jsonl(paths.get("wf55_grade_history", WF55_GRADE_HISTORY))
     journal_rows = load_jsonl(paths["wf87_journal"])
     shadow_scorecard = as_dict(load_json(paths["wf87_shadow_scorecard"]))
     readiness = as_dict(load_json(paths["wf87_readiness"]))
-    wf55_summary = summarize_wf55(wf55_rows, current)
+    wf55_summary = summarize_wf55(
+        wf55_rows,
+        current,
+        wf55_grade_rows,
+        paths.get("wf55_grade_history", WF55_GRADE_HISTORY),
+    )
     journal_summary = summarize_journal(journal_rows)
     shadow_summary = as_dict(shadow_scorecard.get("summary"))
     readiness_phase = as_dict(readiness.get("phase_readiness"))
@@ -276,6 +310,7 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- Status: `{payload.get('status')}`",
         f"- Validation: `{as_dict(payload.get('validation')).get('status')}`",
         f"- WF55 recommendation rows: `{wf55.get('recommendation_tracking_rows')}` across `{wf55.get('tracked_ticker_count')}` tickers",
+        f"- WF55 later-outcome graded rows: `{wf55.get('outcome_grade_assigned_count')}`",
         f"- WF55 due unobserved checkpoints: `{wf55.get('due_unobserved_checkpoint_count')}`",
         f"- WF87 journal rows: `{journal.get('record_count')}`; terminal order outcomes: `{journal.get('terminal_order_outcome_count')}`",
         f"- WF87 shadow scoreable decisions: `{shadow.get('scoreable_decision_count')}`; pending follow-up: `{shadow.get('pending_regular_session_followup_count')}`",
@@ -293,6 +328,7 @@ def render_md(payload: dict[str, Any]) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--wf55-ledger", type=Path, default=WF55_LEDGER)
+    parser.add_argument("--wf55-grade-history", type=Path, default=WF55_GRADE_HISTORY)
     parser.add_argument("--wf87-journal", type=Path, default=WF87_JOURNAL)
     parser.add_argument("--wf87-shadow-scorecard", type=Path, default=WF87_SHADOW_SCORECARD)
     parser.add_argument("--wf87-readiness", type=Path, default=WF87_READINESS)
@@ -312,6 +348,7 @@ def main() -> int:
     args = parse_args()
     paths = {
         "wf55_ledger": abs_path(args.wf55_ledger),
+        "wf55_grade_history": abs_path(args.wf55_grade_history),
         "wf87_journal": abs_path(args.wf87_journal),
         "wf87_shadow_scorecard": abs_path(args.wf87_shadow_scorecard),
         "wf87_readiness": abs_path(args.wf87_readiness),

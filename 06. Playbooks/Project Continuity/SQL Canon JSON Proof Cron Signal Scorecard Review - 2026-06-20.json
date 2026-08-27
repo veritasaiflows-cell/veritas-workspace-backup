@@ -1,0 +1,926 @@
+{
+  "schema": "veritas.cron_signal_scorecard.v1",
+  "generated_at_utc": "2026-06-21T02:22:18Z",
+  "status": "ok",
+  "sources": {
+    "cron_operator_ledger": "tmp/cron-operator-ledger.json",
+    "operating_leverage_spine": "tmp/operating-leverage-spine.json",
+    "cron_freshness_spine": "06. Playbooks/Project Continuity/SQL Canon JSON Proof Cron Freshness Review - 2026-06-20.json",
+    "finance_sql_canon_access": "scripts/finance_sql_canon_access.py",
+    "source_mode": "legacy_ledger_and_operating_spine"
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "scorecard": {
+    "signal_count": 11,
+    "requires_attention_count": 4,
+    "blocked_count": 0,
+    "quiet_success_count": 4,
+    "stale_or_noise_count": 3,
+    "decayed_from_stale_count": 3,
+    "enabled_job_count": 43,
+    "sql_canon_status": "ok",
+    "sql_canon_production_answer_count": 3
+  },
+  "sql_canon_health": {
+    "status": "ok",
+    "source": "scripts/finance_sql_canon_access.py",
+    "db_path": "state/finance/finance-canon.sqlite",
+    "counts": {
+      "answer_path_scope": 200,
+      "authority_events": 3,
+      "consumer_migration_registry": 501,
+      "evidence_freshness": 200,
+      "evidence_status": 200,
+      "migration_validation_runs": 27,
+      "reference_levels": 200,
+      "securities": 200,
+      "source_lineage": 3034,
+      "tier_routing_state": 200,
+      "universe_membership": 200
+    },
+    "errors": [],
+    "production_answer_count": 3,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 18,
+        "P1": 381,
+        "P2": 102
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 18,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 361,
+        "test_parity_lane": 101,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 2
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 4,
+        "source_producer": 361,
+        "sql_primary_guarded": 136
+      },
+      "p0_answer_path_lane_count": 18,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 18,
+        "answer_path_lane_count": 18,
+        "p0_answer_path_lane_count": 18,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "authority_boundary": {
+      "read_only_access_layer": true,
+      "db_mutation_allowed": false,
+      "sql_canon_cutover_allowed": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "customer_or_external_delivery_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "signals": [
+    {
+      "source": "run_summary:morning",
+      "artifact": "tmp/run-summary-morning.json",
+      "signal_class": "STALE_OR_NOISE",
+      "attention": "inspect_if_relevant",
+      "status": "warning",
+      "generated_at_utc": "2026-06-19T13:14:07Z",
+      "age_hours": 37.14,
+      "stop_line": false,
+      "staleness_window_hours": 24.0,
+      "decayed_from_stale": true,
+      "next_action": "Ask Veritas to generate and lint the review-only pre-market commercial brief from the packet, or inspect the packet JSON directly."
+    },
+    {
+      "source": "run_summary:post-close",
+      "artifact": "tmp/run-summary-post-close.json",
+      "signal_class": "MAIN_SESSION_REQUIRED",
+      "attention": "requires_main_attention",
+      "status": "warning",
+      "generated_at_utc": "2026-06-20T05:21:47Z",
+      "age_hours": 21.01,
+      "stop_line": false,
+      "staleness_window_hours": 24.0,
+      "decayed_from_stale": false,
+      "next_action": "Ask Veritas to generate and lint the review-only post-close commercial brief from the packet, or inspect the packet JSON directly."
+    },
+    {
+      "source": "run_summary:post-earnings",
+      "artifact": "tmp/run-summary-post-earnings.json",
+      "signal_class": "STALE_OR_NOISE",
+      "attention": "inspect_if_relevant",
+      "status": "warning",
+      "generated_at_utc": "2026-05-30T22:45:27Z",
+      "age_hours": 507.61,
+      "stop_line": false,
+      "staleness_window_hours": 48.0,
+      "decayed_from_stale": true,
+      "next_action": "Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action."
+    },
+    {
+      "source": "run_summary:sunday",
+      "artifact": "tmp/run-summary-sunday.json",
+      "signal_class": "STALE_OR_NOISE",
+      "attention": "inspect_if_relevant",
+      "status": "warning",
+      "generated_at_utc": "2026-06-14T15:12:02Z",
+      "age_hours": 155.17,
+      "stop_line": false,
+      "staleness_window_hours": 48.0,
+      "decayed_from_stale": true,
+      "next_action": "Review warning-grade outputs and decide whether any warning changes the next queue or monitoring action."
+    },
+    {
+      "source": "operating_spine:pm_main_session_handoff",
+      "artifact": null,
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success",
+      "status": "recently_dispatched",
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "selected_action_recently_dispatched"
+    },
+    {
+      "source": "operating_spine:heartbeat_continuation_candidates",
+      "artifact": null,
+      "signal_class": "OWNER_DECISION",
+      "attention": "requires_main_attention",
+      "status": null,
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "one_or_more_candidates_need_human_gate"
+    },
+    {
+      "source": "operating_spine:operator_packet_index",
+      "artifact": null,
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success",
+      "status": "ok",
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "operator_index_is_routing_proof_only"
+    },
+    {
+      "source": "operating_spine:morning_control_digest",
+      "artifact": "tmp/morning-control-digest.json",
+      "signal_class": "MAIN_SESSION_REQUIRED",
+      "attention": "requires_main_attention",
+      "status": "warning",
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "digest_requests_main_handoff"
+    },
+    {
+      "source": "operating_spine:post_close_control_digest",
+      "artifact": "tmp/post-close-control-digest.json",
+      "signal_class": "MAIN_SESSION_REQUIRED",
+      "attention": "requires_main_attention",
+      "status": "warning",
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "digest_requests_main_handoff"
+    },
+    {
+      "source": "operating_spine:helper_completion_handshake",
+      "artifact": "tmp/helper-completion-handshake.json",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success",
+      "status": "ok",
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "no_active_helper_lanes"
+    },
+    {
+      "source": "operating_spine:finance_sql_canon_access",
+      "artifact": null,
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success",
+      "status": "ok",
+      "generated_at_utc": null,
+      "age_hours": null,
+      "reason": "sql_canon_guard_clean"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "1f061a69-b390-4f00-8646-dd0576e8cc1c",
+      "name": "Cron Reduction - Control Fail-Closed Dispatcher",
+      "enabled": true,
+      "schedule": "{\"expr\":\"17 7,14 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T14:17:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "59f0b198-5067-48b7-9d71-cfc1d13803fb",
+      "name": "Cron Reduction - Morning Control Digest",
+      "enabled": true,
+      "schedule": "{\"expr\":\"13 7 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T14:13:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "e220c30e-c0ab-4f5a-8a7a-a2c0d16207ad",
+      "name": "Cron Reduction - Post-Close Control Digest",
+      "enabled": true,
+      "schedule": "{\"expr\":\"22 15 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T22:22:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "b5339f15-208c-4091-805e-6bb8c001619e",
+      "name": "Finance - Autonomy Spine Readiness Rollup",
+      "enabled": true,
+      "schedule": "{\"expr\":\"25 15 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T22:25:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "814ad19c-e6a4-4496-bdb5-7f04d1858727",
+      "name": "Finance - Daily Canon Drift Freshness Gate",
+      "enabled": true,
+      "schedule": "{\"expr\":\"0 15 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T22:00:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "bcae8cbb-f568-44cb-9ae2-554319c6d6b9",
+      "name": "Finance - Main Session Sunday Weekly Artifact/Note Sync Handoff",
+      "enabled": true,
+      "schedule": "{\"expr\":\"55 9 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T16:55:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "2321c9e9-a3d6-4706-a666-fe8fc6336ebd",
+      "name": "Finance - Midday Paper Deployment Recommendation Cards",
+      "enabled": true,
+      "schedule": "{\"expr\":\"55 11 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T18:55:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "249c5db9-f920-4fd0-a6ce-cd0077b35498",
+      "name": "Finance - Morning Paper Deployment Recommendation Cards",
+      "enabled": true,
+      "schedule": "{\"expr\":\"20 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:20:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "25aef99b-7b2b-40a9-823c-2cfff7d5493d",
+      "name": "Finance - Research Freshness and Opportunity Review",
+      "enabled": true,
+      "schedule": "{\"expr\":\"5 14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T21:05:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "fb08c152-c5b5-48d2-881b-ecde220f994a",
+      "name": "Finance - Sector Allocation Decision Matrix",
+      "enabled": true,
+      "schedule": "{\"expr\":\"58 5 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T12:58:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "54486d58-a2b1-492d-86bd-7b431cfe46a9",
+      "name": "Finance - Silent Tier A Confirmation Market Readiness Probe",
+      "enabled": true,
+      "schedule": "{\"expr\":\"14 7 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T14:14:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "894e3374-e105-492e-9e2d-2599fe24e646",
+      "name": "Finance - Silent Tier A Intraday Market Readiness Probe",
+      "enabled": true,
+      "schedule": "{\"expr\":\"42 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:42:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "63aff057-7456-4022-804c-79a7c8b62a0f",
+      "name": "Finance - Silent Tier A Late-Session Market Readiness Probe",
+      "enabled": true,
+      "schedule": "{\"expr\":\"7 12 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T19:07:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "f14ec666-a9a9-4dd7-ad98-ac210800c544",
+      "name": "Finance - Sunday Generated Artifact Cleanup Dry Run",
+      "enabled": true,
+      "schedule": "{\"expr\":\"15 9 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T16:15:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "5918839c-25a0-4220-8d4a-75f8e71b8e4e",
+      "name": "Finance - Sunday Research Opportunity Reset",
+      "enabled": true,
+      "schedule": "{\"expr\":\"35 9 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T16:35:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "1d3355fd-a322-455e-a3e9-19393652c837",
+      "name": "Finance - Sunday Weekly Printable Intelligence Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"0 8 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T15:00:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "f6fa19f4-a86d-4675-bcb4-b44c1f08132d",
+      "name": "Finance - Ticker Card Freshness Owner Runner",
+      "enabled": true,
+      "schedule": "{\"expr\":\"55 13 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T20:55:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "63512442-b4cf-4c9c-a704-158e6bc36a9b",
+      "name": "Finance - Weekday Morning Review Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"5 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:05:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "58fc5f27-4cc1-470f-8af5-eba29327a0d5",
+      "name": "Finance - Weekday Post-Close Review Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"20 13 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T20:20:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "5e33df77-ebc5-4b09-84a6-feaa5832142c",
+      "name": "Finance - WF63/WF67 Paper Position Read-Only Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"50 13 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T20:50:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "f8418a21-1231-48ee-9135-b530e170cfbc",
+      "name": "Finance - WF68 Grouped Alert Digest Handoff",
+      "enabled": true,
+      "schedule": "{\"expr\":\"10 13 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T20:10:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "a9f14c77-9223-4760-9e8e-e83417708b38",
+      "name": "Finance - WF68 Intraday Alert Producer",
+      "enabled": true,
+      "schedule": "{\"expr\":\"5 8 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T15:05:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "93de5b09-94ea-4b4c-bfd2-24bedd4e9f78",
+      "name": "Finance - WF78 Daily Freshness and Promotion Proof",
+      "enabled": true,
+      "schedule": "{\"expr\":\"8 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:08:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "c93504f5-4772-4e1d-bc95-9dbbc34ddfbe",
+      "name": "Finance - WF78 Open-Ready Owner Review Proof",
+      "enabled": true,
+      "schedule": "{\"expr\":\"20 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:20:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "94f4c7f5-7f76-4cf6-8555-08f4d697d0e4",
+      "name": "Finance - WF85 Paper Deployment Telegram Radar",
+      "enabled": true,
+      "schedule": "{\"expr\":\"42 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:42:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "6ae6d2cb-143e-4404-baf8-d90e58048575",
+      "name": "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar",
+      "enabled": true,
+      "schedule": "{\"expr\":\"30 11 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T18:30:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "b9b1b275-b259-4885-a947-e43e5eb0138e",
+      "name": "Finance - WF86 Daily Shadow and Paper Reconciliation",
+      "enabled": true,
+      "schedule": "{\"expr\":\"36 14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T21:36:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "de274a52-aaf1-4b28-926d-60421ddcbdcc",
+      "name": "Finance - WF87 Autonomy Command Center Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"50 6,11 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:50:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "9a6dcdd4-40e9-4032-89df-31a4f4f5c26b",
+      "name": "Finance - WF87 Market-Hours Fresh Gate Probe",
+      "enabled": true,
+      "schedule": "{\"expr\":\"45 6,11 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T13:45:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "36b1623b-a06b-4494-846d-cd538a6fd59d",
+      "name": "Macro - Energy and Geopolitical Inputs Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"35 5 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T12:35:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "5a27129c-3fd5-4556-acaa-b18a77b5e742",
+      "name": "Memory Dream Review Packet",
+      "enabled": true,
+      "schedule": "{\"expr\":\"20 3 * * *\",\"kind\":\"cron\",\"staggerMs\":0,\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T10:20:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "e70a39b4-1203-49c5-8088-b9a33dd88bd3",
+      "name": "Memory Dreaming Promotion",
+      "enabled": true,
+      "schedule": "{\"expr\":\"0 3 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T10:00:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "b911d479-13aa-48fe-b662-937e08450363",
+      "name": "Ops - OTEL Local Digest",
+      "enabled": true,
+      "schedule": "{\"expr\":\"40 21 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T04:40:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "8d64de93-6a13-4eba-9065-09e7a1637f04",
+      "name": "PM - Main Session Continuation Dispatcher",
+      "enabled": true,
+      "schedule": "{\"expr\":\"20 7,14 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T14:20:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "dde73f9e-8ab1-4d90-85b2-5fddb77841a9",
+      "name": "Runtime - Future Session Packet Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"30 6,18 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T13:30:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "00a93ab7-27b0-4452-881e-fc449c9c6142",
+      "name": "Runtime - OTEL Collector Log Retention",
+      "enabled": true,
+      "schedule": "{\"expr\":\"30 3 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T10:30:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "a9d1978a-7d52-4790-bfe4-ab211e49f560",
+      "name": "Runtime - Weekly OS Improvement Radar Proof Refresh",
+      "enabled": true,
+      "schedule": "{\"expr\":\"20 16 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T23:20:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "d5e9feed-7ff2-4cb7-bac7-40f162cbdb4f",
+      "name": "Runtime - Weekly OS Improvement Radar Review",
+      "enabled": true,
+      "schedule": "{\"expr\":\"30 16 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-21T23:30:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "d2cbac10-f1fb-4060-8445-cb13f3dfc6be",
+      "name": "Security Audit - Daily Bounded Hardening",
+      "enabled": true,
+      "schedule": "{\"expr\":\"10 17 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T00:10:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "b2e04ef2-843b-4736-9d08-115f7bd9ffc7",
+      "name": "SQL Coverage - Daily Control Plane Guard",
+      "enabled": true,
+      "schedule": "{\"expr\":\"55 14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T21:55:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "a27acb79-4178-4809-90b3-805d34a6fd16",
+      "name": "WF74 - Learning Loop Telegram Digest",
+      "enabled": true,
+      "schedule": "{\"expr\":\"15 18 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T01:15:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "bd1c1f4d-b2e1-4307-9130-36f635f2a56c",
+      "name": "WF76 - Weekly Cron Authority and OS Maintenance",
+      "enabled": true,
+      "schedule": "{\"expr\":\"5 18 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T01:05:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "95da55c1-5288-4aab-972e-b730ad140c55",
+      "name": "WF77 Weekly Analyst Consensus Refresh - Tier A/B Review",
+      "enabled": true,
+      "schedule": "{\"expr\":\"30 15 * * 1\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "2026-06-22T22:30:00Z",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "e467754a-9f5c-4c58-a5ba-016eb7339616",
+      "name": "Cron - Main Session Auto-Green Watchdog",
+      "enabled": false,
+      "schedule": "{\"expr\":\"10 7,14 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "dc60070f-02ec-41fc-ab3f-b2da0465946d",
+      "name": "Finance - Layered Morning Advancement Audit",
+      "enabled": false,
+      "schedule": "{\"expr\":\"15 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "2e14907e-b58e-48f8-a841-7769daf6851d",
+      "name": "Finance - Layered Post-Close Advancement Audit",
+      "enabled": false,
+      "schedule": "{\"expr\":\"20 15 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "974be802-356e-43db-947b-ca270eee2762",
+      "name": "Finance - Main Session Canon Drift Gate Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"10 15 * * 0,6\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "5f79ded8-c39c-449e-9f7e-3c9d0e92c169",
+      "name": "Finance - Main Session Morning Artifact/Note Sync Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"50 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "c4cbca02-8c05-46a8-891a-b30f025dd52d",
+      "name": "Finance - Main Session Post-Close Artifact/Note Sync Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"55 13 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "cb43f463-3ea4-40b2-9e6b-d80dd0086c87",
+      "name": "Finance - Main Session Research Opportunity Sync Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"35 14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "6d0c08d8-4014-4c23-9c09-0491fb72bf09",
+      "name": "Finance - Main Session Sunday Research Opportunity Sync Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"10 10 * * 0\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "a6b30d94-629f-44f6-b9c7-e3bd16f25a44",
+      "name": "Finance - Main Session WF68 Intraday Alert Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"8,38 6-12 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "c0433649-0e62-437f-9513-40e284a6b1ca",
+      "name": "Finance - Morning Control Digest Proof Refresh",
+      "enabled": false,
+      "schedule": "{\"expr\":\"12 7 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "2c861b98-fa1e-4459-99a7-f84a23400643",
+      "name": "Finance - Open-Ready Paper Deployment Recommendation Cards",
+      "enabled": false,
+      "schedule": "{\"expr\":\"35 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "2de55f44-4db8-4ba9-97a1-50fd37b25f93",
+      "name": "Finance - Post-Close Control Digest Consolidated Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"12 15 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "f5ec4cce-2830-482d-9f3b-9f92f5d3176d",
+      "name": "Finance - Tier A Confirmation Opportunity Probe",
+      "enabled": false,
+      "schedule": "{\"expr\":\"14 7 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "e05ce666-e745-4697-acd8-1d6b9146017f",
+      "name": "Finance - Tier A Intraday Opportunity Probe",
+      "enabled": false,
+      "schedule": "{\"expr\":\"42 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "978f36d2-d192-41c0-bef2-bafd5266d903",
+      "name": "Finance - Tier A Late-Session Opportunity Probe",
+      "enabled": false,
+      "schedule": "{\"expr\":\"7 12 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "67c3eeaf-4040-4be4-a2b3-7a6dd3280baf",
+      "name": "Finance - WF68 Telegram Shadow Alert Notifier",
+      "enabled": false,
+      "schedule": "{\"expr\":\"10,40 6-12 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "612c1894-4035-4eb8-b6bb-d2dcb1dd5a5b",
+      "name": "Finance - WF85 Open-Ready Telegram Radar",
+      "enabled": false,
+      "schedule": "{\"expr\":\"40 6 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "6a1b2efd-3c27-4911-8a5f-c6124e96be54",
+      "name": "GPT54mini canary - Sector Allocation Decision Matrix",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-06-14T19:09:58.837Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "1c9a3aa1-0348-4168-abba-c4e6f16d5ea8",
+      "name": "GPT54mini canary - WF74 Learning Loop Telegram Digest",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-06-14T19:14:10.797Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "543292e6-eeac-429d-afc2-a1357aa5b534",
+      "name": "GPT54mini canary - WF78 Daily Freshness and Promotion Proof",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-06-14T19:09:58.586Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "6ab3d7e6-424a-418b-9c40-9cdba230c5e6",
+      "name": "Operating Leverage - Escalation Trigger Check",
+      "enabled": false,
+      "schedule": "{\"expr\":\"15 7,14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "62dacc19-3fa4-4988-b742-146e8febb020",
+      "name": "P0 Retail Automation Control Plane Guard",
+      "enabled": false,
+      "schedule": "{\"expr\":\"25 14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "98fb99a0-2285-41af-aa43-6aef7cd8bc94",
+      "name": "Reminder - observe next WF68 in-band event evidence gate",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-05-22T13:40:00.000Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "2d8e4d5d-b20c-45f9-abc0-44abbb0d2813",
+      "name": "Rollback - 30m local OTEL tool-audit window",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-05-25T15:57:30.641Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "c6d56ea9-b0d3-4e00-ae15-fb88b2ba635f",
+      "name": "Runtime Pilot - Main Session WF68/WF72 Snapshot Refresh and Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"55 5,12 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "aaed4652-f8a7-415b-8d86-7d2d803edceb",
+      "name": "Security Audit - Main Session Proof Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"25 17 * * *\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "3446b555-8b84-4ac7-b6b5-29d4a8e93922",
+      "name": "WF40 Closeout and Automation Audit Priority Follow-up",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-05-10T00:22:00.000Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "2dac495a-c300-425f-8616-54f39a494891",
+      "name": "WF67 - Monday Autonomous Paper Manager Packet Builder",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-06-01T13:35:00.000Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "69a8332e-4e4e-40ac-80b8-89614ae7d834",
+      "name": "WF67 - Monday Paper Manager Review Reminder",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-06-01T13:45:00.000Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "65c59ebb-842a-44d3-b1d3-ac2a2d045089",
+      "name": "WF67 MSFT filled-position pilot post-open reconciliation",
+      "enabled": false,
+      "schedule": "{\"at\":\"2026-05-18T13:35:00.000Z\",\"kind\":\"at\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "934597d9-94da-4a9b-a1c3-0d6428d63164",
+      "name": "WF75 PM Weekly Artifact Builder",
+      "enabled": false,
+      "schedule": "{\"expr\":\"30 16 * * 5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "b5913c42-237d-445d-b86d-8887b9c381fc",
+      "name": "WF75 PM Weekly Main Intelligence Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"40 16 * * 5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "9b3ee682-8d2c-41b5-ac9c-deca4fdff5a7",
+      "name": "WF77 Weekly Analyst Consensus Main-Session Handoff",
+      "enabled": false,
+      "schedule": "{\"expr\":\"50 15 * * 1\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    },
+    {
+      "id": "0b5ceb46-110d-47a8-bfde-0525745ca58d",
+      "name": "Workspace Index - Daily Post-Close Freshness Guard",
+      "enabled": false,
+      "schedule": "{\"expr\":\"45 14 * * 1-5\",\"kind\":\"cron\",\"tz\":\"America/Phoenix\"}",
+      "next_run_utc": "",
+      "signal_class": "NO_REPLY",
+      "attention": "quiet_success"
+    }
+  ],
+  "operator_recommendation": "Use cron_freshness_spine as the first freshness route. Wake main for concrete BLOCKED or owner-decision signals; keep MAIN_SESSION_REQUIRED visible for on-route review unless the paired escalation gate promotes it.",
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

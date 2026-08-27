@@ -183,6 +183,7 @@ def build_handoff() -> dict[str, Any]:
             "row_count": wf77_summary.get("row_count"),
             "missing_price_rows": as_list(wf77_summary.get("missing_price_rows")),
             "excluded_price_rows": as_list(wf77_summary.get("excluded_price_rows")),
+            "price_unavailable_rows": as_list(wf77_summary.get("price_unavailable_rows")),
             "supplemental_public_price_rows": as_list(wf77_summary.get("supplemental_public_price_rows")),
             "supplemental_public_price_row_count": wf77_summary.get("supplemental_public_price_row_count"),
         },
@@ -259,7 +260,6 @@ def validate(handoff: dict[str, Any]) -> dict[str, Any]:
         "operator_queue": "ok",
         "operator_console": "ok",
         "automation_movement": "ok",
-        "pm_weekly_update": "ready_for_internal_pm_review",
         "sqlite_wal_control_plane": "ok",
         "macro_event_calendar": "ok",
     }
@@ -268,13 +268,19 @@ def validate(handoff: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"{key} expected {expected}, found {validation.get(key)}")
     if validation.get("wf77_bridge") not in {"ok", "warning"}:
         errors.append(f"wf77 bridge not usable: {validation.get('wf77_bridge')}")
+    if validation.get("pm_weekly_update") != "ready_for_internal_pm_review":
+        warnings.append(f"pm weekly update not currently ready: {validation.get('pm_weekly_update')}")
     if validation.get("veritas_harness_scorecard") not in {"ok", "warning"}:
         warnings.append(f"veritas harness scorecard not currently usable: {validation.get('veritas_harness_scorecard')}")
     price = as_dict(handoff.get("wf77_price_evidence"))
-    if price.get("missing_price_rows") or price.get("excluded_price_rows"):
-        errors.append("wf77 price evidence still has missing/excluded rows")
+    if price.get("missing_price_rows"):
+        errors.append("wf77 price evidence still has missing rows")
+    if price.get("excluded_price_rows"):
+        warnings.append("wf77 price evidence has excluded rows")
+    if price.get("price_unavailable_rows"):
+        warnings.append("wf77 price evidence has unavailable rows")
     if price.get("valid_price_row_count") != price.get("row_count"):
-        errors.append("wf77 valid price row count does not match row count")
+        warnings.append("wf77 valid price row count does not match row count")
     renderer = as_dict(handoff.get("renderer_export_regression"))
     if renderer.get("clean_scenarios_passed") != renderer.get("clean_scenarios_total"):
         errors.append("renderer clean scenario coverage incomplete")

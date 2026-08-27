@@ -295,7 +295,7 @@ def build_protocol(generated_at_utc: str) -> dict[str, Any]:
         ],
         "consumer_rules": {
             "dashboard_payload.py": "proof/trust metadata only unless a later no-drift activation explicitly approves more; recommendation/deployment/action state must not change",
-            "today_card_generator.py": "eligible only for additive proof metadata; review-only/no-execution banner and fallback must remain",
+            "scripts/today_card_generator.py": "eligible only for additive proof metadata; review-only/no-execution banner and fallback must remain",
             "dashboard_run_summary_consumer.py": "cache health may be summarized as warning/degrade metadata; never upgrade severity/authority",
             "deployment_readiness_surface.py": "not an early authority consumer; status fields must remain shadow-only until separate no-drift proof",
         },
@@ -677,7 +677,7 @@ def build_shadow_activation_plan(generated_at_utc: str, preflight: dict[str, Any
             "approved_for_this_plan": "review_only_shadow_metadata_packet_only",
             "future_activation_candidate_consumers": [
                 "dashboard_payload.py trust/proof metadata only",
-                "today_card_generator.py additive source/proof metadata only",
+                "scripts/today_card_generator.py additive source/proof metadata only",
                 "dashboard_run_summary_consumer.py cache health warning/degrade metadata only",
             ],
             "explicitly_not_approved": [
@@ -1134,7 +1134,9 @@ def main() -> int:
         "entry_stop_activation_allowed_now": entry_stop_pilot["activation_allowed_now"],
         "outputs": [rel(PROTOCOL_JSON), rel(PROTOCOL_MD), rel(PREFLIGHT_JSON), rel(PREFLIGHT_MD), rel(SHADOW_PLAN_JSON), rel(SHADOW_PLAN_MD), rel(ENTRY_STOP_PILOT_JSON), rel(ENTRY_STOP_PILOT_MD), rel(SQL_TRUTH_PHASE_JSON), rel(SQL_TRUTH_PHASE_MD)] if args.write else [],
     }, indent=2, sort_keys=True))
-    return 0 if preflight["status"] == "ok" and shadow_plan["status"] != "blocked" else 1
+    if args.validate and (preflight["status"] != "ok" or shadow_plan["status"] == "blocked"):
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

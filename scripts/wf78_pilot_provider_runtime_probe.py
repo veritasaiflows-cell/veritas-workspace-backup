@@ -26,7 +26,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_entries as legacy_42_tier_entries
+from finance_production_scope import production_entries as production_scope_entries
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -101,7 +101,7 @@ def fixture_rows() -> list[dict[str, Any]]:
 
 
 def production_rows() -> list[dict[str, Any]]:
-    migrated = legacy_42_tier_entries()
+    migrated = production_scope_entries()
     if migrated:
         return migrated
     rows = load_dict(UNIVERSE_PATH).get("entries")
@@ -111,7 +111,7 @@ def production_rows() -> list[dict[str, Any]]:
         row for row in rows
         if isinstance(row, dict)
         and row.get("active") is True
-        and row.get("universe_scope", "production_current_42") == "production_current_42"
+        and row.get("production_scope") is True
     ]
 
 
@@ -411,3 +411,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

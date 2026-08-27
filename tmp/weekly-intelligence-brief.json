@@ -1,23 +1,97 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:29.765363+00:00",
-  "week_heading": "## Week of April 27–May 3, 2026",
-  "week_start": "2026-04-27",
-  "week_end": "2026-05-01",
-  "market_data_as_of": "2026-05-01",
-  "action": "delta_only",
-  "canonical_mutation_allowed": true,
-  "trust_reason": "dashboard validation clean",
-  "trust_gate_blocked": false,
-  "wrote_to": "05. Intelligence/Weekly Intelligence Brief.md",
+  "generated_at_utc": "2026-07-05T20:29:41.230044+00:00",
+  "week_heading": "## Week of June 29–July 5, 2026",
+  "week_start": "2026-06-29",
+  "week_end": "2026-07-03",
+  "market_data_as_of": "2026-07-03",
+  "action": "appended_machine",
+  "canonical_mutation_allowed": false,
+  "trust_reason": "machine-sidecar-only scheduled proof; canonical gate result was allowed (dashboard validation clean)",
+  "trust_gate_blocked": true,
+  "wrote_to": "05. Intelligence/Weekly Intelligence Brief - machine.md",
   "deployable_now": [
-    "GS",
+    "ETN"
+  ],
+  "almost_deployable": [
     "JPM",
     "NVDA"
   ],
-  "almost_deployable": [
-    "ETN",
-    "GOOG",
-    "MSFT"
+  "blocked": [],
+  "do_not_touch": [
+    "BRK.B",
+    "LMT",
+    "XOM"
   ],
-  "blocked": []
+  "below_stop": [
+    "AMZN",
+    "CME",
+    "CVX",
+    "LNG",
+    "META",
+    "NFLX",
+    "PLTR",
+    "TMUS",
+    "XLC",
+    "XLE"
+  ],
+  "fundamental_quality_tracker": {
+    "generated_at_utc": "2026-07-05T20:20:32Z",
+    "summary": {
+      "covered_tickers": 300,
+      "equity_tickers": 289,
+      "clean_equity_tickers": 284,
+      "quality_counts": {
+        "clean": 284,
+        "not_applicable": 11,
+        "partial": 5
+      },
+      "sec_reconciliation_counts": {
+        "matched": 244,
+        "not_applicable": 11,
+        "foreign_issuer_ir_required": 3,
+        "conflict": 4,
+        "manual_review_required": 3,
+        "matched_via_period_alias": 22,
+        "sec_lag_wait": 13
+      },
+      "company_ir_reconciliation_counts": {
+        "configured_manual_review_required": 31,
+        "manual_required": 266,
+        "matched": 2,
+        "conflict_local_repair_required": 1
+      },
+      "capital_allocation_quality_counts": {
+        "caution": 237,
+        "bank_manual_review": 2,
+        "tracked": 50,
+        "not_applicable": 11
+      },
+      "capital_allocation_anomaly_counts": {
+        "capital_return_exceeds_fcf": 117,
+        "debt_funded_capital_return_risk": 99,
+        "leverage_elevated": 94,
+        "bank_fcf_not_applicable": 2,
+        "eps_fcf_per_share_divergence": 59,
+        "sbc_offsets_buybacks": 28,
+        "capital_returns_with_negative_fcf": 59,
+        "share_count_dilution": 28,
+        "buybacks_with_net_dilution": 41,
+        "low_roic_proxy": 56,
+        "net_share_issuance": 29
+      },
+      "valuation_context_counts": {
+        "available": 289,
+        "not_applicable": 11
+      },
+      "authority": "review_only_no_apply"
+    },
+    "validation_summary": {
+      "tracked_tickers": 300,
+      "critical": 0,
+      "warning": 23,
+      "findings": 23
+    },
+    "review_only": true,
+    "capital_action_allowed": false
+  }
 }

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import tempfile
 from pathlib import Path
 
 
@@ -96,10 +97,56 @@ def test_legacy_main_session_row_accrues_threshold_credit_from_session_key() -> 
     assert ledger.threshold_accrual_eligible(row) is True
 
 
+def test_build_decision_preserves_plain_english_root_cause_fields() -> None:
+    row = {
+        "ticker": "NVDA",
+        "shadow_decision": "repair_only_shadow",
+        "shadow_eligible": True,
+        "execution_ready": False,
+        "assisted_review_ready": False,
+        "root_cause_blockers": ["entry_band_review"],
+        "plain_english_blockers": ["NVDA was in band, but band review debt still blocked promotion."],
+    }
+    decision = ledger.build_decision(
+        "2026-06-17:main-session-shadow",
+        row,
+        Path("tmp/paper-autotrader/shadow-eligibility.json"),
+        "2026-06-17T18:00:00Z",
+    )
+    assert decision["root_cause_blockers"] == ["entry_band_review"]
+    assert "NVDA was in band" in decision["plain_english_blockers"][0]
+
+
+def test_no_current_shadow_decisions_is_warning_not_error() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        eligibility = tmp_path / "shadow-eligibility.json"
+        out = tmp_path / "shadow-decisions.json"
+        eligibility.write_text(
+            '{"status":"ok","generated_at_utc":"2026-06-12T06:21:33Z","decisions":[]}',
+            encoding="utf-8",
+        )
+        out.write_text(
+            '{"decisions":[{"decision_id":"old","session_key":"2026-06-11:main-session-shadow",'
+            '"ticker":"GOOG","shadow_eligible":true,"shadow_decision":"would_buy_shadow",'
+            '"execution_ready":false,"authority":{"owner_approval_inferred":false}}]}',
+            encoding="utf-8",
+        )
+
+        report = ledger.build_report(eligibility, out)
+
+    assert report["status"] == "ok"
+    assert report["validation"]["status"] == "ok"
+    assert "no_current_shadow_decisions" in report["validation"]["warnings"]
+    assert report["summary"]["execution_ready_count"] == 0
+
+
 if __name__ == "__main__":
     test_same_ticker_same_session_replaces_prior_action()
     test_different_sessions_are_preserved()
     test_after_hours_session_does_not_accrue_threshold_credit()
     test_regular_market_session_accrues_threshold_credit()
     test_legacy_main_session_row_accrues_threshold_credit_from_session_key()
+    test_build_decision_preserves_plain_english_root_cause_fields()
+    test_no_current_shadow_decisions_is_warning_not_error()
     print("wf86_shadow_decision_ledger_tests_passed")

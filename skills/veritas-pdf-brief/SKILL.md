@@ -1,6 +1,6 @@
 ---
-name: veritas-pdf-brief
-description: Build a Veritas finance-first or product-readiness PDF deliverable from the live note layer, report assets, or staged artifacts. Use when the output should become a printable, shareable, fixed-layout decision document such as a Weekly Intelligence PDF, Post-Earnings PDF, Equity Research / Thesis PDF, Portfolio Positioning PDF, PM Weekly Update, WF75 Readiness PDF, or roadmap/timeline presentation packet.
+name: "veritas-pdf-brief"
+description: "Build finance and PM/Product Readiness PDF briefs from grounded sources"
 ---
 
 # Veritas PDF Brief

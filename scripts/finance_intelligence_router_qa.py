@@ -13,7 +13,8 @@ SCRIPTS = WORKSPACE / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers
+from finance_production_scope import production_tickers as production_scope_tickers
+from finance_sql_canon_access import FinanceSqlCanonAccess, p0_registry_lane_status
 
 TMP = WORKSPACE / "tmp"
 QA_DEFAULT = TMP / "finance-intelligence-router-qa-2026-05-26.json"
@@ -22,8 +23,10 @@ COVERAGE_PATH = TMP / "finance-data-coverage-current.json"
 CARD_DIR = TMP / "ticker-intelligence-cards"
 FULL_ANSWER_DIR = TMP / "trade-grade-full-answer"
 FULL_ANSWER_ROLLUP = TMP / "trade-grade-full-answer-assembler.json"
-ROUTER_PATH = WORKSPACE / "scripts" / "veritas_question_router.py"
+ROUTER_SCRIPT = "scripts/veritas_question_router.py"
+ROUTER_PATH = WORKSPACE / ROUTER_SCRIPT
 UNIVERSE_PATH = WORKSPACE / "data" / "finance" / "universe-v1.json"
+SQL_CANON_DB = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
 
 FORBIDDEN_TRUE_FLAGS = {
     "canonical_mutation_allowed",
@@ -90,6 +93,49 @@ def check(name: str, passed: bool, detail: str, severity: str = "error") -> dict
     return {"name": name, "passed": bool(passed), "severity": severity, "detail": detail}
 
 
+def sql_canon_production_answer_scope_ok(production: list[str], p0_status: dict[str, Any]) -> bool:
+    """Current SQL-first production may be empty after legacy answer retirement."""
+
+    return bool(production) or p0_status.get("ok") is True
+
+
+def sql_canon_legacy_answer_scope_ok(legacy: list[str]) -> bool:
+    """Legacy 42 compatibility is clean when present as 42 or fully retired as 0."""
+
+    return len(legacy) in {0, 42}
+
+
+TIER_A_REVIEW_ONLY_STATES = {"A-WATCH", "A-CHALLENGED"}
+
+
+def sql_canon_ticker_state_scope_ok(state: Any) -> bool:
+    if state is None or state.auto_tier != "Tier A":
+        return False
+    if state.auto_state == "A-READY":
+        return True
+    # A-WATCH and A-CHALLENGED are both valid non-promoted Tier A states. They are
+    # in scope only while they stay review-only, which is the posture a contested
+    # thesis should hold.
+    return (
+        state.auto_state in TIER_A_REVIEW_ONLY_STATES
+        and state.answer_scope == "sql_first_review_monitor"
+        and state.production_scope_member is False
+        and state.production_card_generation_allowed is False
+    )
+
+
+def wf78_legacy_coverage_scope_ok(
+    production_tickers: list[str],
+    registry_tickers: list[str],
+    production_missing_from_coverage: list[str],
+) -> bool:
+    if production_missing_from_coverage:
+        return False
+    if len(production_tickers) == 42:
+        return True
+    return len(production_tickers) == 0 and bool(registry_tickers)
+
+
 def find_true_forbidden_flags(obj: Any, path: str = "$", hits: list[dict[str, str]] | None = None) -> list[dict[str, str]]:
     if hits is None:
         hits = []
@@ -112,6 +158,56 @@ def import_router():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def validate_sql_canon_guard(results: list[dict[str, Any]]) -> dict[str, Any]:
+    context: dict[str, Any] = {
+        "db": rel(SQL_CANON_DB),
+        "status": "blocked",
+        "production_answer_count": None,
+        "registry_summary": {},
+    }
+    try:
+        client = FinanceSqlCanonAccess(SQL_CANON_DB)
+        validation = client.validate()
+        context["access_validation_status"] = validation.get("status")
+        results.append(check("sql_canon_access_validation_ok", validation.get("status") == "ok", validation.get("errors")))
+        if validation.get("status") != "ok":
+            return context
+        production = client.production_answer_tickers()
+        legacy = client.legacy_production_answer_tickers()
+        registry = client.migration_registry_summary()
+        context["production_answer_count"] = len(production)
+        context["legacy_production_answer_count"] = len(legacy)
+        context["production_answer_definition"] = "proof-joined routing Tier A/B, decision-grade fresh, confident, carded, in coverage"
+        context["registry_summary"] = registry
+        context["status"] = "ok"
+        p0_status = p0_registry_lane_status(registry)
+        results.append(check(
+            "sql_canon_production_answer_scope_tier_a_ready",
+            sql_canon_production_answer_scope_ok(production, p0_status),
+            f"count={len(production)} tickers={production} p0_status={p0_status!r}",
+        ))
+        results.append(check(
+            "sql_canon_legacy_answer_scope_42_compatibility",
+            sql_canon_legacy_answer_scope_ok(legacy),
+            f"legacy_count={len(legacy)} retired_ok={len(legacy) == 0}",
+        ))
+        results.append(check("sql_canon_p0_consumer_registry_lane", p0_status["ok"], f"registry={registry!r} p0_status={p0_status!r}"))
+        for ticker in ["NVDA", "VRT"]:
+            state = client.ticker_state(ticker)
+            ref = client.reference_level(ticker)
+            results.append(check(f"sql_canon_ticker_state_present:{ticker}", sql_canon_ticker_state_scope_ok(state), f"state={state!r}"))
+            refs_complete = (
+                ref is not None
+                and ref.reference_price_low is not None
+                and ref.reference_price_high is not None
+                and ref.reference_invalidation_level is not None
+            )
+            results.append(check(f"sql_canon_reference_levels_complete:{ticker}", refs_complete, f"reference={ref!r}"))
+    except Exception as exc:  # noqa: BLE001 - QA must fail closed on SQL-canon access errors.
+        results.append(check("sql_canon_access_exception", False, repr(exc)))
+    return context
 
 
 def validate_analyst_artifact(results: list[dict[str, Any]]) -> None:
@@ -155,7 +251,7 @@ def validate_optional_artifacts(results: list[dict[str, Any]]) -> None:
         for row in ((universe or {}).get("entries") or [])
         if isinstance(row, dict) and row.get("ticker") and row.get("active") is True
     ) if isinstance(universe, dict) else []
-    production_tickers = legacy_42_tier_tickers()
+    production_tickers = production_scope_tickers()
     if not production_tickers:
         production_tickers = sorted(
             str(row.get("ticker", "")).upper()
@@ -163,7 +259,7 @@ def validate_optional_artifacts(results: list[dict[str, Any]]) -> None:
             if isinstance(row, dict)
             and row.get("ticker")
             and row.get("active") is True
-            and row.get("universe_scope", "production_current_42") == "production_current_42"
+            and row.get("production_scope") is True
         ) if isinstance(universe, dict) else []
     review_100_tickers = sorted(
         str(row.get("ticker", "")).upper()
@@ -194,9 +290,12 @@ def validate_optional_artifacts(results: list[dict[str, Any]]) -> None:
         production_missing_from_coverage = sorted(set(production_tickers) - set(registry_tickers))
         review_100_missing_from_coverage = sorted(set(review_100_tickers) - set(registry_tickers))
         results.append(check(
-            "wf78_universe_current_42_represented_in_coverage",
-            not production_missing_from_coverage and len(production_tickers) == 42,
-            f"coverage={len(registry_tickers)} production={len(production_tickers)} missing={production_missing_from_coverage}",
+            "wf78_universe_legacy_42_represented_in_coverage",
+            wf78_legacy_coverage_scope_ok(production_tickers, registry_tickers, production_missing_from_coverage),
+            (
+                f"coverage={len(registry_tickers)} production={len(production_tickers)} "
+                f"missing={production_missing_from_coverage} retired_ok={len(production_tickers) == 0}"
+            ),
         ))
         results.append(check(
             "wf78_review_100_monitor_rows_routed_when_present",
@@ -270,7 +369,7 @@ def validate_optional_artifacts(results: list[dict[str, Any]]) -> None:
 
 
 def _production_42_tickers() -> list[str]:
-    migrated = legacy_42_tier_tickers()
+    migrated = production_scope_tickers()
     if migrated:
         return migrated
     universe, _ = load_json(UNIVERSE_PATH)
@@ -282,7 +381,7 @@ def _production_42_tickers() -> list[str]:
         if isinstance(row, dict)
         and row.get("ticker")
         and row.get("active") is True
-        and row.get("universe_scope", "production_current_42") == "production_current_42"
+        and row.get("production_scope") is True
     )
 
 
@@ -315,7 +414,7 @@ def validate_full_answer_assembler(results: list[dict[str, Any]]) -> None:
     if production_tickers:
         missing_answers = sorted(set(production_tickers) - set(answer_tickers))
         results.append(check(
-            "full_answer_production_42_coverage",
+            "full_answer_legacy_42_coverage",
             not missing_answers and len(production_tickers) == 42,
             f"expected={len(production_tickers)} full_answers={len(answer_tickers)} missing={missing_answers[:20]}",
         ))
@@ -409,6 +508,7 @@ def validate_router(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def build_qa() -> dict[str, Any]:
     results: list[dict[str, Any]] = []
+    sql_canon_context = validate_sql_canon_guard(results)
     validate_analyst_artifact(results)
     validate_optional_artifacts(results)
     validate_full_answer_assembler(results)
@@ -435,11 +535,14 @@ def build_qa() -> dict[str, Any]:
             "checks_total": len(results),
             "checks_failed_error": len(errors),
             "checks_failed_warning": len(warnings),
+            "sql_canon_guard_status": sql_canon_context.get("status"),
+            "sql_canon_production_answer_count": sql_canon_context.get("production_answer_count"),
             "router_examples_checked": len(EXAMPLE_EXPECTATIONS),
             "phase1_coverage_registry_exists": COVERAGE_PATH.exists(),
             "phase2_ticker_cards_found": len(sorted(CARD_DIR.glob("*.current.json"))) if CARD_DIR.exists() else 0,
             "full_answers_found": len(sorted(FULL_ANSWER_DIR.glob("*.json"))) if FULL_ANSWER_DIR.exists() else 0,
         },
+        "sql_canon_context": sql_canon_context,
         "checks": results,
         "router_example_outputs": routes,
         "residue": [
@@ -464,3 +567,5 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import json; d=json.load\\(open\\('tmp/dashboard-data.json',encoding='utf-8'\\)\\); print\\(list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(python scripts/alpaca_paper_readiness_validator.py --write)",
+      "Bash(python scripts/test_dashboard_acceptance.py)",
+      "Bash(python scripts/generate_dashboard.py)",
+      "Bash(python scripts/validate_dashboard_state.py --write)",
+      "Bash(python -c ' *)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 *)",
+      "Bash(Get-ChildItem *)"
+    ]
+  }
+}

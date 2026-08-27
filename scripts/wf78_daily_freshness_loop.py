@@ -10,96 +10,32 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
-import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from market_data_utils import atomic_write_json, load_json_artifact
+from wf_manifest import as_runner_tuples, build_daily_steps, selected_phases, steps_for_phases
+from wf_registry import SCHEMA_WF78_DAILY_FRESHNESS_LOOP, TMP, WF78_DAILY_FRESHNESS_LOOP
+from wf_registry import WF78_INTELLIGENCE_ROUTING_V2
+from wf_runner_lib import (
+    as_dict,
+    atomic_write_json,
+    authority_true_paths,
+    DANGEROUS_ARTIFACT_AUTHORITY_KEYS,
+    load_dict,
+    rel,
+    run_dependency_batches,
+    run_serial_chain,
+    utc_now,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
-TMP = ROOT / "tmp"
-OUT = TMP / "wf78-daily-freshness-loop.json"
-SCHEMA = "veritas.wf78_daily_freshness_loop.v1"
+OUT = WF78_DAILY_FRESHNESS_LOOP
+SCHEMA = SCHEMA_WF78_DAILY_FRESHNESS_LOOP
+V2_COMPAT_PHASE = "daily_core_v2"
 
-PHASE_ALIASES = {
-    "all": {
-        "card_refresh",
-        "tier_routing",
-        "fundamentals",
-        "evidence_repair",
-        "source_capture",
-        "owner_review",
-        "wf84_sync",
-    },
-    "daily_core": {
-        "card_refresh",
-        "tier_routing",
-        "fundamentals",
-        "evidence_repair",
-        "wf84_sync",
-    },
-}
-
-STEP_PHASES = {
-    "ticker_card_refresh_gate": "card_refresh",
-    "wf77_price_freshness_bridge": "card_refresh",
-    "wf78_tier_a_confidence_gate": "tier_routing",
-    "wf78_auto_tier_router_initial": "tier_routing",
-    "wf78_tier_c_attention_trigger": "tier_routing",
-    "wf78_tier_c_hold_recheck": "tier_routing",
-    "wf78_tier_c_to_b_auto_promotion_pipeline": "tier_routing",
-    "wf78_tier_b_research_packet": "tier_routing",
-    "wf78_tier_b_research_packet_phase2_eval": "tier_routing",
-    "wf78_auto_tier_router_post_phase2_gate": "tier_routing",
-    "wf78_tier_a_competitive_promotion_gate": "tier_routing",
-    "wf78_auto_tier_router_post_promotion_gates": "tier_routing",
-    "wf78_clean_tier_roster": "tier_routing",
-    "wf78_truth_layer_map": "tier_routing",
-    "wf78_tier_semantics_guard": "tier_routing",
-    "wf78_routing_delta": "tier_routing",
-    "wf78_event_triggered_rerouting": "tier_routing",
-    "wf78_evidence_drag_reducer": "evidence_repair",
-    "wf78_evidence_family_repair": "evidence_repair",
-    "wf78_source_open_repair_executor": "evidence_repair",
-    "wf78_source_open_work_packet": "evidence_repair",
-    "bank_native_sec_concept_probe": "fundamentals",
-    "fundamental_metrics_refresh": "fundamentals",
-    "validate_fundamental_metrics": "fundamentals",
-    "wf78_missing_band_context_repair": "evidence_repair",
-    "wf78_repair_debt_scoreboard": "evidence_repair",
-    "wf78_ticker_freshness_ledger": "evidence_repair",
-    "tier_c_band_status_refresh": "evidence_repair",
-    "wf78_tier_weighted_freshness_resolver": "evidence_repair",
-    "finance_decision_factory": "evidence_repair",
-    "wf78_source_capture_requirements_queue": "source_capture",
-    "wf78_official_source_discovery": "source_capture",
-    "wf78_official_registry_proposal": "source_capture",
-    "wf78_official_registry_apply_preview": "source_capture",
-    "wf78_promotion_owner_lineage_queue": "source_capture",
-    "wf78_contract_state_guard": "source_capture",
-    "wf78_owner_lineage_discovery": "source_capture",
-    "wf78_owner_lineage_proposal": "source_capture",
-    "wf78_official_source_capture_packet": "source_capture",
-    "wf78_next_owner_review_and_source_capture_integration": "source_capture",
-    "wf78_position_sizing_surface_review": "owner_review",
-    "wf78_deployment_readiness_review": "owner_review",
-    "wf78_source_artifact_capture_review": "owner_review",
-    "wf78_position_sizing_integration_proposal": "owner_review",
-    "wf78_tier_a_owner_readiness_proposal": "owner_review",
-    "wf78_scaleout_policy_dry_run": "owner_review",
-    "wf78_ph_owner_review_candidate_packet": "owner_review",
-    "wf78_tier_a_invalidation_review_queue": "owner_review",
-    "post_freshness_ticker_card_refresh_gate": "wf84_sync",
-    "post_card_price_freshness_bridge": "wf84_sync",
-    "wf84_canonical_finance_data_plane": "wf84_sync",
-    "trade_grade_decision_cards": "wf84_sync",
-    "wf78_missing_band_context_repair_post_cards": "wf84_sync",
-    "trade_grade_repair_conveyor": "wf84_sync",
-    "tier_ab_band_freshness_cron_guard": "wf84_sync",
-    "wf84_retirement_readiness": "wf84_sync",
-    "wf84_phase6_10_proof": "wf84_sync",
-}
+# Phase and step definitions live in scripts/wf_manifest.py.
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -121,10 +57,6 @@ AUTHORITY_BOUNDARY = {
 }
 
 
-def utc_now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-
 def parse_utc(value: Any) -> datetime | None:
     if not value:
         return None
@@ -134,157 +66,167 @@ def parse_utc(value: Any) -> datetime | None:
         return None
 
 
-def rel(path: Path) -> str:
-    try:
-        return path.relative_to(ROOT).as_posix()
-    except ValueError:
-        return path.as_posix()
-
-
-def py_cmd(*parts: str) -> list[str]:
-    return [sys.executable, *parts]
-
-
-def run_step(name: str, command: list[str], timeout: int) -> dict[str, Any]:
-    started = utc_now()
-    try:
-        proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=timeout)
-        return {
-            "name": name,
-            "command": command,
-            "started_at_utc": started,
-            "completed_at_utc": utc_now(),
-            "returncode": proc.returncode,
-            "ok": proc.returncode == 0,
-            "stdout_preview": proc.stdout.strip()[-2500:],
-            "stderr_preview": proc.stderr.strip()[-1500:],
-        }
-    except subprocess.TimeoutExpired as exc:
-        return {
-            "name": name,
-            "command": command,
-            "started_at_utc": started,
-            "completed_at_utc": utc_now(),
-            "returncode": None,
-            "ok": False,
-            "timeout_seconds": timeout,
-            "stdout_preview": (exc.stdout or "")[-2500:] if isinstance(exc.stdout, str) else "",
-            "stderr_preview": (exc.stderr or "")[-1500:] if isinstance(exc.stderr, str) else "",
-        }
-
-
 def load(path: Path) -> dict[str, Any]:
-    payload = load_json_artifact(path)
-    return payload if isinstance(payload, dict) else {}
+    return load_dict(path)
 
 
-def as_dict(value: Any) -> dict[str, Any]:
-    return value if isinstance(value, dict) else {}
-
-
-def selected_phases(raw_phases: list[str] | None) -> set[str]:
-    phases: set[str] = set()
-    for raw in raw_phases or ["all"]:
-        for part in str(raw).split(","):
-            name = part.strip()
-            if not name:
-                continue
-            phases.update(PHASE_ALIASES.get(name, {name}))
-    return phases or set(PHASE_ALIASES["all"])
+def artifact_authority_findings(artifacts: dict[str, dict[str, Any]]) -> list[str]:
+    findings: list[str] = []
+    for name, payload in artifacts.items():
+        for path in authority_true_paths(payload, false_keys=DANGEROUS_ARTIFACT_AUTHORITY_KEYS):
+            findings.append(f"{name}:{path}")
+    return findings
 
 
 def all_steps(args: argparse.Namespace) -> list[tuple[str, list[str], int]]:
-    refresh = [
-        "scripts\\finance_ticker_card_refresh_gate.py",
-        "--write",
-        "--validate",
-        "--full-answer-mode",
-        args.full_answer_mode,
-    ]
-    if args.skip_provider_refresh:
-        refresh.append("--skip-provider-refresh")
-    return [
-        ("ticker_card_refresh_gate", py_cmd(*refresh), 360),
-        ("wf77_price_freshness_bridge", py_cmd("scripts\\wf77_price_freshness_bridge.py", "--write", "--validate"), 180),
-        ("wf78_tier_a_confidence_gate", py_cmd("scripts\\wf78_tier_a_confidence_gate.py", "--write", "--validate"), 180),
-        ("wf78_auto_tier_router_initial", py_cmd("scripts\\wf78_auto_tier_router.py", "--write", "--validate"), 180),
-        ("wf78_tier_c_attention_trigger", py_cmd("scripts\\wf78_tier_c_attention_trigger.py", "--write", "--write-db", "--validate"), 240),
-        ("wf78_tier_c_hold_recheck", py_cmd("scripts\\wf78_tier_c_hold_recheck.py", "--write", "--validate"), 420),
-        ("wf78_tier_c_to_b_auto_promotion_pipeline", py_cmd("scripts\\wf78_tier_c_to_b_auto_promotion_pipeline.py", "--from-attention", "--max-candidates", "10", "--write", "--validate"), 300),
-        ("wf78_tier_b_research_packet", py_cmd("scripts\\wf78_tier_b_research_packet.py", "--write", "--write-db", "--validate"), 180),
-        ("wf78_tier_b_research_packet_phase2_eval", py_cmd("scripts\\wf78_tier_funnel_promotion_gate.py", "--requests", "tmp\\wf78-tier-b-research-packet-requests.json", "--out", "tmp\\wf78-tier-b-research-packet-phase2-eval.json", "--write", "--validate"), 180),
-        ("wf78_auto_tier_router_post_phase2_gate", py_cmd("scripts\\wf78_auto_tier_router.py", "--write", "--validate"), 180),
-        ("wf78_tier_a_competitive_promotion_gate", py_cmd("scripts\\wf78_tier_a_competitive_promotion_gate.py", "--write", "--validate"), 180),
-        ("wf78_auto_tier_router_post_promotion_gates", py_cmd("scripts\\wf78_auto_tier_router.py", "--write", "--validate"), 180),
-        ("wf78_clean_tier_roster", py_cmd("scripts\\wf78_clean_tier_roster.py", "--write", "--validate"), 180),
-        ("wf78_truth_layer_map", py_cmd("scripts\\wf78_truth_layer_map.py", "--write", "--validate"), 180),
-        ("wf78_tier_semantics_guard", py_cmd("scripts\\wf78_tier_semantics_guard.py", "--write", "--validate"), 180),
-        ("wf78_routing_delta", py_cmd("scripts\\wf78_routing_delta.py", "--write", "--validate"), 180),
-        ("wf78_event_triggered_rerouting", py_cmd("scripts\\wf78_event_triggered_rerouting.py", "--write", "--write-db", "--validate"), 180),
-        ("wf78_evidence_drag_reducer", py_cmd("scripts\\wf78_evidence_drag_reducer.py", "--write", "--validate"), 180),
-        ("wf78_evidence_family_repair", py_cmd("scripts\\wf78_evidence_family_repair_runner.py", "--family", "price_band_stop", "--tier", "all", "--cursor", "0", "--limit", "250", "--write", "--validate"), 180),
-        ("wf78_source_open_repair_executor", py_cmd("scripts\\wf78_source_open_repair_executor.py", "--tier", "all", "--write", "--validate"), 180),
-        ("wf78_source_open_work_packet", py_cmd("scripts\\wf78_source_open_work_packet.py", "--write", "--validate"), 180),
-        ("bank_native_sec_concept_probe", py_cmd("scripts\\bank_native_sec_concept_probe.py", "--write"), 240),
-        ("fundamental_metrics_refresh", py_cmd("scripts\\fundamental_metrics_refresh.py"), 900),
-        ("validate_fundamental_metrics", py_cmd("scripts\\validate_fundamental_metrics.py", "--write"), 120),
-        ("wf78_position_sizing_surface_review", py_cmd("scripts\\wf78_position_sizing_surface_review.py", "--write", "--validate"), 180),
-        ("wf78_deployment_readiness_review", py_cmd("scripts\\wf78_deployment_readiness_review.py", "--write", "--validate"), 180),
-        ("wf78_source_artifact_capture_review", py_cmd("scripts\\wf78_source_artifact_capture_review.py", "--write", "--validate"), 180),
-        ("wf78_position_sizing_integration_proposal", py_cmd("scripts\\wf78_position_sizing_integration_proposal.py", "--write", "--validate"), 180),
-        ("wf78_tier_a_owner_readiness_proposal", py_cmd("scripts\\wf78_tier_a_owner_readiness_proposal.py", "--write", "--validate"), 180),
-        ("wf78_missing_band_context_repair", py_cmd("scripts\\wf78_missing_band_context_repair.py", "--write", "--validate"), 180),
-        ("wf78_source_capture_requirements_queue", py_cmd("scripts\\wf78_source_capture_requirements_queue.py", "--write", "--validate"), 180),
-        ("wf78_official_source_discovery", py_cmd("scripts\\wf78_official_source_discovery_runner.py", "--write", "--validate"), 180),
-        ("wf78_official_registry_proposal", py_cmd("scripts\\wf78_official_registry_proposal.py", "--write", "--validate"), 180),
-        ("wf78_official_registry_apply_preview", py_cmd("scripts\\wf78_official_registry_apply_preview.py", "--write", "--write-proposed", "--validate"), 180),
-        ("wf78_promotion_owner_lineage_queue", py_cmd("scripts\\wf78_promotion_owner_lineage_queue.py", "--write", "--validate"), 180),
-        ("wf78_contract_state_guard", py_cmd("scripts\\wf78_contract_state_guard.py", "--write", "--validate"), 180),
-        ("wf78_owner_lineage_discovery", py_cmd("scripts\\wf78_owner_lineage_discovery.py", "--write", "--validate"), 180),
-        ("wf78_owner_lineage_proposal", py_cmd("scripts\\wf78_owner_lineage_proposal.py", "--write", "--validate"), 180),
-        ("wf78_repair_debt_scoreboard", py_cmd("scripts\\wf78_repair_debt_scoreboard.py", "--write", "--validate"), 180),
-        ("wf78_scaleout_policy_dry_run", py_cmd("scripts\\wf78_scaleout_policy_dry_run.py", "--write", "--validate"), 180),
-        ("wf78_ph_owner_review_candidate_packet", py_cmd("scripts\\wf78_ph_owner_review_candidate_packet.py", "--write", "--validate"), 180),
-        ("wf78_tier_a_invalidation_review_queue", py_cmd("scripts\\wf78_tier_a_invalidation_review_queue.py", "--write", "--validate"), 180),
-        ("wf78_official_source_capture_packet", py_cmd("scripts\\wf78_official_source_capture_packet.py", "--write", "--validate"), 180),
-        ("wf78_next_owner_review_and_source_capture_integration", py_cmd("scripts\\wf78_next_owner_review_and_source_capture_integration.py", "--write", "--validate"), 180),
-        ("wf78_ticker_freshness_ledger", py_cmd("scripts\\wf78_ticker_freshness_ledger.py", "--write", "--validate"), 180),
-        ("tier_c_band_status_refresh", py_cmd("scripts\\tier_c_band_status_refresh.py", "--no-skip-provider-refresh", "--write", "--validate"), 420),
-        ("wf78_tier_weighted_freshness_resolver", py_cmd("scripts\\wf78_tier_weighted_freshness_resolver.py", "--write", "--validate"), 180),
-        ("finance_decision_factory", py_cmd("scripts\\finance_decision_factory.py", "--ledger-only", "--write", "--validate"), 180),
-        ("post_freshness_ticker_card_refresh_gate", py_cmd("scripts\\finance_ticker_card_refresh_gate.py", "--write", "--validate", "--skip-provider-refresh", "--full-answer-mode", "never"), 360),
-        ("post_card_price_freshness_bridge", py_cmd("scripts\\wf77_price_freshness_bridge.py", "--write", "--validate"), 180),
-        ("wf84_canonical_finance_data_plane", py_cmd("scripts\\canonical_finance_data_plane.py", "--write", "--write-db", "--validate"), 240),
-        ("trade_grade_decision_cards", py_cmd("scripts\\trade_grade_decision_cards.py", "--write", "--validate"), 180),
-        ("wf78_missing_band_context_repair_post_cards", py_cmd("scripts\\wf78_missing_band_context_repair.py", "--write", "--validate"), 180),
-        ("trade_grade_repair_conveyor", py_cmd("scripts\\trade_grade_repair_conveyor.py", "--write", "--validate"), 180),
-        ("tier_ab_band_freshness_cron_guard", py_cmd("scripts\\tier_ab_band_freshness_cron_guard.py", "--write", "--validate"), 180),
-        ("wf84_retirement_readiness", py_cmd("scripts\\canonical_finance_data_plane_retirement_readiness.py", "--write", "--validate"), 120),
-        ("wf84_phase6_10_proof", py_cmd("scripts\\canonical_finance_data_plane_phase6_10.py", "--write", "--validate"), 120),
-    ]
+    return as_runner_tuples(
+        build_daily_steps(
+            skip_provider_refresh=bool(args.skip_provider_refresh),
+            full_answer_mode=str(args.full_answer_mode),
+        )
+    )
 
+
+def _requested_phase_names(args: argparse.Namespace) -> set[str]:
+    names: set[str] = set()
+    for raw in args.phase or [V2_COMPAT_PHASE]:
+        for part in str(raw).split(","):
+            name = part.strip()
+            if name:
+                names.add(name)
+    return names
+
+
+def _use_v2_compat(args: argparse.Namespace) -> bool:
+    names = _requested_phase_names(args)
+    return not names or names == {V2_COMPAT_PHASE}
+
+
+def _step_dependencies(args: argparse.Namespace, runnable_names: set[str]) -> dict[str, tuple[str, ...]]:
+    return {
+        step.name: tuple(dep for dep in step.depends_on if dep in runnable_names)
+        for step in build_daily_steps(
+            skip_provider_refresh=bool(args.skip_provider_refresh),
+            full_answer_mode=str(args.full_answer_mode),
+        )
+        if step.name in runnable_names
+    }
 
 def build_steps(args: argparse.Namespace) -> list[tuple[str, list[str], int]]:
-    phases = selected_phases(args.phase)
-    return [
-        step
-        for step in all_steps(args)
-        if STEP_PHASES.get(step[0], "unclassified") in phases
+    runnable, _skipped, _phases = steps_for_phases(
+        args.phase,
+        skip_provider_refresh=bool(args.skip_provider_refresh),
+        full_answer_mode=str(args.full_answer_mode),
+    )
+    return as_runner_tuples(runnable)
+
+
+def build_v2_compat_report(args: argparse.Namespace) -> dict[str, Any]:
+    command = [
+        "python",
+        "scripts\\wf78_intelligence_routing_v2.py",
+        "--layer",
+        "daily_core_v2",
+        "--fail-on-budget-exceeded",
+        "--write",
+        "--validate",
     ]
+    started = time.perf_counter()
+    if bool(getattr(args, "dry_run", False)):
+        completed = subprocess.CompletedProcess(command, 0, stdout="dry-run", stderr="")
+    else:
+        completed = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=180)
+    duration_ms = int((time.perf_counter() - started) * 1000)
+    v2 = load(WF78_INTELLIGENCE_ROUTING_V2)
+    v2_validation = as_dict(v2.get("validation"))
+    errors: list[str] = []
+    if completed.returncode != 0:
+        errors.append("wf78_intelligence_routing_v2_failed")
+    if v2_validation.get("status") not in (None, "ok"):
+        errors.append(f"wf78_intelligence_routing_v2_validation_{v2_validation.get('status')}")
+    authority_findings = artifact_authority_findings({
+        "wf78_intelligence_routing_v2": v2,
+        "wf78_auto_tier_routing": load(TMP / "wf78-auto-tier-routing.json"),
+        "wf78_tier_weighted_freshness_resolution": load(TMP / "wf78-tier-weighted-freshness-resolution.json"),
+        "canonical_finance_data_plane": load(TMP / "canonical-finance-data-plane.json"),
+        "trade_grade_decision_cards": load(TMP / "trade-grade-decision-cards.json"),
+        "tier_ab_band_freshness_cron_guard": load(TMP / "tier-ab-band-freshness-cron-guard.json"),
+    })
+    if authority_findings:
+        errors.append("artifact authority drift detected")
+    return {
+        "schema": SCHEMA,
+        "generated_at_utc": utc_now(),
+        "status": "blocked" if errors else "ok",
+        "purpose": "Compatibility wrapper for the current WF78 daily-core-v2 review-only freshness route.",
+        "compatibility_mode": V2_COMPAT_PHASE,
+        "authority_boundary": AUTHORITY_BOUNDARY,
+        "parameters": {
+            "skip_provider_refresh": bool(args.skip_provider_refresh),
+            "requested_phase": args.phase or [V2_COMPAT_PHASE],
+            "selected_phases": [V2_COMPAT_PHASE],
+            "dry_run": bool(getattr(args, "dry_run", False)),
+            "parallel": int(getattr(args, "parallel", 1)),
+        },
+        "steps": [{
+            "name": "wf78_intelligence_routing_v2_daily_core",
+            "command": command,
+            "ok": completed.returncode == 0,
+            "returncode": completed.returncode,
+            "duration_ms": duration_ms,
+            "stdout_tail": (completed.stdout or "")[-1000:],
+            "stderr_tail": (completed.stderr or "")[-1000:],
+        }],
+        "skipped_steps": [{
+            "name": "legacy_all_phase_daily_freshness_loop",
+            "reason": "compatibility_default_uses_time_boxed_daily_core_v2; pass --phase all for the legacy broad runner",
+        }],
+        "dependency_batches": [["wf78_intelligence_routing_v2_daily_core"]],
+        "summary": {
+            "steps_run": 1,
+            "steps_skipped": 1,
+            "failed_steps": [] if completed.returncode == 0 else ["wf78_intelligence_routing_v2_daily_core"],
+            "total_step_duration_ms": duration_ms,
+            "authority_drift_count": len(authority_findings),
+            "v2_status": v2.get("status"),
+            "v2_summary": v2.get("summary"),
+            "next_safe_action": "Use the time-boxed WF78 daily-core-v2 route for normal green pickup; reserve --phase all for explicit broad audits.",
+        },
+        "validation": {
+            "status": "blocked" if errors else "ok",
+            "errors": errors,
+            "warnings": [],
+            "authority_drift_paths": authority_findings,
+        },
+        "stop_lines": [
+            "Daily loop is review-only and creates proof/routing artifacts only.",
+            "No capital deployment, paper/live execution, brokerage/account action, money movement, customer output, canon/portfolio mutation, or owner approval inference.",
+        ],
+    }
 
 
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
-    phases = selected_phases(args.phase)
-    planned_steps = all_steps(args)
-    runnable_steps = [
-        step for step in planned_steps if STEP_PHASES.get(step[0], "unclassified") in phases
-    ]
-    skipped_steps = [
-        {"name": name, "phase": STEP_PHASES.get(name, "unclassified"), "reason": "phase_not_selected"}
-        for name, _command, _timeout in planned_steps
-        if STEP_PHASES.get(name, "unclassified") not in phases
-    ]
-    steps = [run_step(name, command, timeout) for name, command, timeout in runnable_steps]
+    if _use_v2_compat(args):
+        return build_v2_compat_report(args)
+    runnable_defs, skipped_steps, phases = steps_for_phases(
+        args.phase,
+        skip_provider_refresh=bool(args.skip_provider_refresh),
+        full_answer_mode=str(args.full_answer_mode),
+    )
+    runnable_steps = as_runner_tuples(runnable_defs)
+    runnable_names = {name for name, _command, _timeout in runnable_steps}
+    dependencies = _step_dependencies(args, runnable_names)
+    if getattr(args, "parallel", 1) > 1:
+        steps, dependency_batches, dependency_errors = run_dependency_batches(
+            runnable_steps,
+            dependencies=dependencies,
+            max_workers=int(args.parallel),
+            dry_run=bool(getattr(args, "dry_run", False)),
+        )
+    else:
+        steps = run_serial_chain(runnable_steps, dry_run=bool(getattr(args, "dry_run", False)))
+        dependency_batches = [[name] for name, _command, _timeout in runnable_steps]
+        dependency_errors = []
     def _summary_int(payload: dict[str, Any], default: int = 0, *keys: str) -> int:
         current: Any = payload
         for key in keys:
@@ -339,6 +281,13 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     ticker_card_refresh_gate = load(TMP / "finance-ticker-card-refresh-gate.json")
     fundamentals = load(TMP / "fundamental-metrics-current.json")
     fundamentals_validation = load(TMP / "fundamental-metrics-validation.json")
+    authority_findings = artifact_authority_findings({
+        "wf78_auto_tier_routing": auto_router,
+        "wf78_tier_weighted_freshness_resolution": tier_weighted_resolution,
+        "canonical_finance_data_plane": wf84_packet,
+        "trade_grade_decision_cards": decision_cards,
+        "tier_ab_band_freshness_cron_guard": tier_ab_guard,
+    })
     fundamentals_generated_at = parse_utc(fundamentals.get("generated_at_utc"))
     fundamentals_validation_input_at = parse_utc(fundamentals_validation.get("input_generated_at_utc"))
     fundamentals_validation_generated_at = parse_utc(fundamentals_validation.get("generated_at_utc"))
@@ -366,14 +315,23 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         if not step["ok"] and not soft_ok_if_empty_steps.get(step["name"], False)
     ]
     errors = [f"{len(failed)} loop step(s) failed: {', '.join(failed)}"] if failed else []
+    errors.extend(dependency_errors)
+    warnings: list[str] = []
     if any(AUTHORITY_BOUNDARY[key] for key in ("capital_deployment_allowed", "trade_or_execution_allowed", "paper_or_live_execution_allowed", "owner_approval_inferred")):
         errors.append("authority boundary widened unexpectedly")
+    if authority_findings:
+        errors.append("artifact authority drift detected")
+    fundamentals_errors: list[str] = []
     if fundamentals_generated_at and fundamentals_validation_input_at and fundamentals_validation_input_at < fundamentals_generated_at:
-        errors.append("fundamental_metrics_validation_stale")
+        fundamentals_errors.append("fundamental_metrics_validation_stale")
     if fundamentals_generated_at and fundamentals_validation_generated_at and fundamentals_validation_generated_at < fundamentals_generated_at:
-        errors.append("fundamental_metrics_validation_generated_before_input")
+        fundamentals_errors.append("fundamental_metrics_validation_generated_before_input")
     if fundamentals_validation.get("status") == "critical":
-        errors.append("fundamental_metrics_validation_critical")
+        fundamentals_errors.append("fundamental_metrics_validation_critical")
+    if "fundamentals" in phases:
+        errors.extend(fundamentals_errors)
+    else:
+        warnings.extend(f"{error}_outside_selected_phase" for error in fundamentals_errors)
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -384,13 +342,18 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "skip_provider_refresh": bool(args.skip_provider_refresh),
             "requested_phase": args.phase,
             "selected_phases": sorted(phases),
+            "dry_run": bool(getattr(args, "dry_run", False)),
+            "parallel": int(getattr(args, "parallel", 1)),
         },
         "steps": steps,
         "skipped_steps": skipped_steps,
+        "dependency_batches": dependency_batches,
         "summary": {
             "steps_run": len(steps),
             "steps_skipped": len(skipped_steps),
             "failed_steps": failed,
+            "total_step_duration_ms": sum(int(step.get("duration_ms") or 0) for step in steps),
+            "authority_drift_count": len(authority_findings),
             "freshness_ledger": ledger.get("summary"),
             "source_open_executor": executor.get("summary"),
             "source_open_work_packets": packets.get("summary"),
@@ -439,7 +402,12 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "wf84_retirement_readiness": wf84_retirement.get("summary"),
             "next_safe_action": "Use tier-weighted resolution and the refreshed WF84 canonical finance data-plane as read-only internal routing/decision support. Preserve source feeders, fallback paths, and retirement/apply blocks until separate parity and lifecycle approval gates clear.",
         },
-        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": []},
+        "validation": {
+            "status": "blocked" if errors else "ok",
+            "errors": errors,
+            "warnings": warnings,
+            "authority_drift_paths": authority_findings,
+        },
         "stop_lines": [
             "Daily loop is review-only and creates proof/routing artifacts only.",
             "No capital deployment, paper/live execution, brokerage/account action, money movement, customer output, canon/portfolio mutation, or owner approval inference.",
@@ -462,7 +430,8 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help=(
             "Comma-separated phase selector. Choices: all, daily_core, card_refresh, "
-            "tier_routing, fundamentals, evidence_repair, source_capture, owner_review, wf84_sync."
+            "tier_routing, fundamentals, evidence_repair, source_capture, owner_review, wf84_sync, "
+            "daily_core_v2. Default daily_core_v2 uses the current time-boxed WF78 route."
         ),
     )
     parser.add_argument(
@@ -471,6 +440,8 @@ def parse_args() -> argparse.Namespace:
         default="changed",
         help="Pass-through WF85 full-answer rebuild mode for the first ticker-card refresh gate.",
     )
+    parser.add_argument("--dry-run", action="store_true", help="Build the phase plan without invoking subprocesses.")
+    parser.add_argument("--parallel", type=int, default=1, help="Maximum workers for dependency-safe batches. Default preserves serial behavior.")
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--out", type=Path, default=OUT)

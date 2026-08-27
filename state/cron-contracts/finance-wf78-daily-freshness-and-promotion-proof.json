@@ -1,34 +1,20 @@
 {
-  "schema": "veritas.cron_contract.v1",
-  "job_id": "93de5b09-94ea-4b4c-bfd2-24bedd4e9f78",
-  "name": "Finance - WF78 Daily Freshness and Promotion Proof",
-  "required": true,
-  "owner_workflow": "WF78",
-  "contract_reason": "High-risk finance freshness and promotion proof cron. Drift here can create false readiness or hide runtime-budget regressions.",
-  "enabled": true,
-  "deleteAfterRun": false,
-  "schedule": {
-    "kind": "cron",
-    "expr": "8 6 * * 1-5",
-    "tz": "America/Phoenix"
-  },
-  "sessionTarget": "isolated",
-  "wakeMode": "now",
-  "delivery": {
-    "mode": "none",
-    "bestEffort": true
-  },
-  "failureAlert": {
-    "after": 1,
-    "mode": "announce"
-  },
-  "payload": {
-    "kind": "agentTurn",
-    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nRun the deterministic WF78 Intelligence Routing V2 daily core proof:\n\npython scripts\\wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate\n\nThen inspect tmp\\wf78-intelligence-routing-v2.json. If status is ok, validation.status is ok, failed_layers is empty, budget_exceeded_layers is empty, ledger_status is ok, and repair_queue_status is ok, reply NO_REPLY. If blocked, report only V2 status, failed/budget-exceeded layers, failing artifact, and next repair owner.\n\nBoundary: review-only WF78/WF84/WF85 proof and routing. No registry apply, canon/portfolio/cash/sizing/sleeve/risk-rule mutation, capital approval, paper/live execution, brokerage/account action, money movement, customer/public output, config/auth/channel/runtime mutation, or owner approval inference.",
-    "model": "openai/gpt-5.4",
-    "thinking": "xhigh",
-    "timeoutSeconds": 1500,
-    "lightContext": false
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF78",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "review_only": true,
+    "schedule_mutation_allowed": false
   },
   "compare_fields": [
     "enabled",
@@ -41,29 +27,86 @@
     "delivery.bestEffort",
     "failureAlert",
     "payload.kind",
-    "payload.message",
-    "payload.model",
-    "payload.thinking",
-    "payload.timeoutSeconds",
-    "payload.lightContext"
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
   ],
+  "contract_reason": "High-risk finance freshness and promotion proof cron. Drift here can create false readiness or hide runtime-budget regressions.",
+  "contract_update_reason": "Pre-open Tier A/B/C repair automation: use pre_market_repair_v2, require source-open patch proof, and run before downstream owner-review/card jobs.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "bestEffort": true,
+    "mode": "none"
+  },
+  "description": "Command-backed WF78 pre_market_repair_v2 proof. Runs Tier A/B/C routing, Tier C attention repair, official-source capture, owner-review proof, WF84/WF85 sync, and card materialization before market open. Review-only; no registry apply, canon/portfolio mutation, capital deployment, paper/live/account action, or approval inference.",
+  "enabled": true,
   "expected_artifacts": [
     "tmp/wf78-intelligence-routing-v2.json",
     "tmp/wf78-daily-movement-ledger.json",
     "tmp/wf78-repair-priority-queue.json",
-    "tmp/wf78-daily-freshness-loop.json",
+    "tmp/wf78-tier-c-attention-trigger.json",
+    "tmp/wf78-tier-c-hold-recheck.json",
+    "tmp/wf78-tier-c-to-b-auto-promotion-pipeline.json",
+    "tmp/wf78-tier-label-decision-register.json",
+    "tmp/wf78-tier-label-sync-preview.json",
+    "tmp/wf78-tier-c-attention-evidence-repair-bridge.json",
+    "tmp/wf78-tier-b-research-packets.json",
+    "tmp/wf78-tier-a-competitive-promotion-gate.json",
+    "tmp/wf78-tier-weighted-freshness-resolution.json",
+    "tmp/wf78-source-open-patch-current.json",
+    "tmp/wf78-source-capture-requirements-queue.json",
+    "tmp/wf78-official-source-discovery.json",
+    "tmp/wf78-official-registry-proposal.json",
+    "tmp/wf78-official-registry-apply-preview.json",
+    "tmp/wf78-promotion-owner-lineage-queue.json",
+    "tmp/wf78-contract-state-guard.json",
+    "tmp/wf78-owner-lineage-discovery.json",
+    "tmp/wf78-owner-lineage-proposal.json",
+    "tmp/wf78-official-source-capture-packet.json",
+    "tmp/wf78-next-owner-review-and-source-capture-integration.json",
+    "tmp/canonical-finance-data-plane.json",
+    "tmp/canonical-finance-data-plane.sqlite",
+    "tmp/trade-grade-decision-cards.json",
+    "tmp/tier-ab-band-freshness-cron-guard.json",
+    "tmp/wf78-position-sizing-surface-review.json",
+    "tmp/wf78-deployment-readiness-review.json",
+    "tmp/wf78-source-artifact-capture-review.json",
+    "tmp/wf78-position-sizing-integration-proposal.json",
+    "tmp/wf78-tier-a-owner-readiness-proposals.json",
+    "tmp/trade-grade-source-freshness-gate.json",
+    "tmp/trade-grade-approval-card-gate.json",
     "tmp/cron-control-packet.json",
     "tmp/veritas-artifact-index.sqlite"
   ],
-  "authority_boundary": {
-    "review_only": true,
-    "cron_contract_only": true,
-    "cron_state_mutation_allowed": false,
-    "canon_or_portfolio_mutation_allowed": false,
-    "capital_deployment_allowed": false,
-    "paper_or_live_execution_allowed": false,
-    "brokerage_or_account_action_allowed": false,
-    "owner_approval_inferred": false
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
   },
-  "description": "Weekday WF78 Intelligence Routing V2 pre-open proof. Runs daily_core_v2 with fail-on-budget and postflight artifact-index validation at 6:08 AM Phoenix. Review-only; no registry apply, canon/portfolio mutation, capital deployment, paper/live/account action, or approval inference."
+  "job_id": "93de5b09-94ea-4b4c-bfd2-24bedd4e9f78",
+  "name": "Finance - WF78 Daily Freshness and Promotion Proof",
+  "owner_workflow": "WF78",
+  "payload": {
+    "argv": [
+      "python",
+      "scripts\\wf78_intelligence_routing_v2.py",
+      "--layer",
+      "pre_market_repair_v2",
+      "--fail-on-budget-exceeded",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "kind": "command",
+    "timeoutSeconds": 2400
+  },
+  "required": true,
+  "schedule": {
+    "expr": "45 5 * * 1-5",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-06-30T03:42:00Z",
+  "wakeMode": "now"
 }

@@ -4,7 +4,10 @@ Read-only band staleness detector and proposal generator.
 
 Reads:
   tmp/technical-refresh.json  -- live prices, MAs, posture per ticker
-  tmp/portfolio-config.json   -- current entry bands and band_last_set dates
+  state/finance/finance-canon.sqlite (reference_levels) -- current drift baseline
+    (low/high/stop/band_last_set); this is the authoritative current-state surface
+  tmp/portfolio-config.json   -- tracked_universe meta/entitlement + baseline fallback
+    when a ticker has no SQL reference_levels row
 
 For each tracked name with a defined or partially defined band:
   - Computes days since band_last_set
@@ -29,7 +32,10 @@ Requirements:
 
 from __future__ import annotations
 
+import argparse
 import json
+import re
+import sqlite3
 import sys
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, timezone
@@ -50,6 +56,7 @@ TECH_PATH = TMP / "technical-refresh.json"
 CONFIG_PATH = TMP / "portfolio-config.json"
 EARNINGS_PATH = TMP / "earnings-calendar.json"
 OUT_PATH = TMP / "band-proposals.json"
+CANON_DB = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
 
 STALE_TRADING_DAYS = 7       # flag needs_review if band older than this many trading days
 PRICE_DRIFT_PCT = 5.0        # flag needs_review if price moved >5% from band midpoint
@@ -109,6 +116,7 @@ class BandProposal:
     earnings_primary_confirmed: bool | None = None
     band_confidence: int | None = None
     canonical_apply_eligible: bool = True
+    reference_band_apply_eligible: bool = True
     calculation_warnings: list[str] = field(default_factory=list)
     engine_version: str = ENGINE_VERSION
     needs_review: bool = False
@@ -121,6 +129,34 @@ def load_json(path: Path, label: str) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Required file not found: {path} ({label})")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_sql_reference_bands(db_path: Path = CANON_DB) -> dict[str, dict[str, Any]]:
+    """Load current drift-baseline bands from SQL canon reference_levels.
+
+    SQL canon is the authoritative current-state surface; portfolio-config.json
+    entry_bands is retired as the drift baseline (it was never written back after
+    apply, so it perpetually re-proposed the same deltas). Returned band_last_set
+    is normalized to a YYYY-MM-DD date so calendar_days_old can parse it.
+    """
+    bands: dict[str, dict[str, Any]] = {}
+    if not db_path.exists():
+        return bands
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    try:
+        rows = conn.execute(
+            "SELECT ticker, reference_price_low, reference_price_high, "
+            "reference_invalidation_level, source_generated_at_utc "
+            "FROM reference_levels"
+        ).fetchall()
+    finally:
+        conn.close()
+    for ticker, low, high, stop, generated_at in rows:
+        last_set = None
+        if generated_at:
+            last_set = str(generated_at)[:10]
+        bands[ticker] = {"low": low, "high": high, "stop": stop, "band_last_set": last_set}
+    return bands
 
 
 def calendar_days_old(band_last_set: str | None, as_of_date: str | None = None) -> int | None:
@@ -300,10 +336,39 @@ def post_earnings_review_clears_freeze(meta: dict[str, Any], earnings_date: date
     return bool(last_earnings and review_date and last_earnings >= earnings_date and review_date >= earnings_date)
 
 
+def post_earnings_lifecycle_clears_unknown(record: dict[str, Any] | None, meta: dict[str, Any]) -> bool:
+    """Return True when the prior event is closed and the next date is pending.
+
+    Some providers stop returning a usable next earnings date immediately after
+    a covered event. If the lifecycle surface explicitly confirms the
+    post-earnings review, the lack of a future date is not an event-risk blocker
+    for routine band maintenance. It remains only a deployment caution.
+    """
+    record = record or {}
+    lifecycle = record.get("lifecycle") if isinstance(record.get("lifecycle"), dict) else {}
+    evidence = lifecycle.get("evidence") if isinstance(lifecycle.get("evidence"), dict) else {}
+    source_class = str(record.get("date_source_class") or record.get("source") or "")
+    lifecycle_status = str(lifecycle.get("status") or "")
+    lifecycle_closeout = (
+        source_class == "post_earnings_lifecycle_closeout"
+        or lifecycle_status == "post_event_review_confirmed_next_date_pending"
+    )
+    confirmed = evidence.get("post_earnings_review_confirmed")
+    if confirmed is None:
+        confirmed = meta.get("post_earnings_review_confirmed")
+    last_earnings = parse_date(evidence.get("last_earnings_date") or meta.get("last_earnings_date"))
+    review_date = parse_date(evidence.get("post_earnings_review_date") or meta.get("post_earnings_review_date"))
+    return bool(lifecycle_closeout and confirmed is True and last_earnings and review_date and review_date >= last_earnings)
+
+
 def earnings_state(ticker: str, earnings_records: dict[str, dict[str, Any]], as_of_date: str | None, meta: dict[str, Any] | None = None) -> tuple[str, int | None]:
     record = earnings_records.get(ticker)
     meta = meta or {}
-    if not record or not record.get("next_earnings_date") or not as_of_date:
+    if not record:
+        return "UNKNOWN", None
+    if not record.get("next_earnings_date") or not as_of_date:
+        if post_earnings_lifecycle_clears_unknown(record, meta):
+            return "CLEAR", None
         return "UNKNOWN", None
     earnings_date = parse_date(record.get("next_earnings_date"))
     as_of = parse_date(as_of_date)
@@ -502,6 +567,7 @@ def build_proposal(
         current_stop=current_stop,
     )
 
+    skip_reason = None  # main path has no hard skip; review flags live in reasons/needs_review
     midpoint = band_midpoint(current_low, current_high)
     ma20_vs_mid = pct_diff(ma20, midpoint)
     price_vs_mid = pct_diff(close, midpoint)
@@ -584,6 +650,23 @@ def build_proposal(
     if apply_blockers:
         reasons.extend(apply_blockers)
 
+    # Reference-band refreshes are allowed more broadly than execution-band updates.
+    # They update SQL reference_levels only (not owner execution bands) and remain
+    # review-only metadata. They must still be technically sound and not earnings-frozen.
+    reference_apply_blockers: list[str] = []
+    if not calc.get("apply_eligible"):
+        reference_apply_blockers.append("engine marked proposal non-applyable")
+    method = calc.get("method")
+    if method == "EARNINGS_FROZEN":
+        reference_apply_blockers.append("blocked method EARNINGS_FROZEN")
+    if earnings == "IMMINENT":
+        reference_apply_blockers.append(f"earnings imminent ({days_to_earnings} days)")
+    for field in ("low", "high", "stop"):
+        if calc.get(field) is None:
+            reference_apply_blockers.append(f"missing suggested {field}")
+    if not ticker or not re.match(r"^[A-Z][A-Z0-9.\-]*$", str(ticker)):
+        reference_apply_blockers.append("invalid ticker")
+
     return BandProposal(
         ticker=ticker,
         coverage_lane=coverage_lane,
@@ -625,9 +708,10 @@ def build_proposal(
         earnings_primary_confirmed=earnings_primary_confirmed,
         band_confidence=calc.get("confidence"),
         canonical_apply_eligible=not apply_blockers,
+        reference_band_apply_eligible=not reference_apply_blockers,
         calculation_warnings=list(calc.get("warnings") or []),
         needs_review=needs_review,
-        skip_reason=None,
+        skip_reason=skip_reason,
         reasons=reasons,
         data_date=data_date,
     )
@@ -750,6 +834,14 @@ def print_summary(proposals: list[BandProposal]) -> None:
 def main() -> None:
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+    parser = argparse.ArgumentParser(description="Generate entry-band refresh proposals")
+    parser.add_argument("--include-tracked-missing", action="store_true", help="Also generate proposals for tracked-universe tickers that have no entry band")
+    parser.add_argument("--output", type=str, default=str(OUT_PATH), help="Output JSON path")
+    args = parser.parse_args()
+
+    out_path = Path(args.output)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
     print("Loading technical-refresh.json...")
     tech = load_json(TECH_PATH, "technical-refresh")
     tech_records: dict[str, dict[str, Any]] = {
@@ -760,6 +852,10 @@ def main() -> None:
     config = load_json(CONFIG_PATH, "portfolio-config")
     entry_bands: dict[str, dict[str, Any]] = config.get("entry_bands") or {}
     tracked_universe: dict[str, dict[str, Any]] = config.get("tracked_universe") or {}
+
+    print("Loading drift baseline from SQL canon reference_levels...")
+    sql_reference_bands = load_sql_reference_bands()
+    print(f"  {len(sql_reference_bands)} reference_levels rows loaded from canon")
 
     earnings_data = load_json(EARNINGS_PATH, "earnings-calendar") if EARNINGS_PATH.exists() else {}
     earnings_records = {rec.get("ticker"): rec for rec in (earnings_data.get("records") or []) if rec.get("ticker")}
@@ -773,16 +869,28 @@ def main() -> None:
 
     proposals: list[BandProposal] = []
     excluded_tickers: list[str] = []
-    for ticker, band in entry_bands.items():
+    backfill_tickers: list[str] = []
+
+    def process_one(ticker: str, band: dict[str, Any]) -> None:
         meta = tracked_universe.get(ticker, {}) if isinstance(tracked_universe, dict) else {}
         if not isinstance(meta, dict) or not universe.is_entitled(ticker, meta, "band_drift"):
             excluded_tickers.append(ticker)
             print(f"  Processing {ticker}... excluded (lane not band-drift entitled)")
-            continue
+            return
+        # SQL canon reference_levels is the authoritative current-band baseline; overlay
+        # it onto the portfolio-config band, falling back to config only when no SQL row.
+        effective_band = dict(band)
+        sql_row = sql_reference_bands.get(ticker)
+        if sql_row:
+            for key in ("low", "high", "stop"):
+                if sql_row.get(key) is not None:
+                    effective_band[key] = sql_row[key]
+            if sql_row.get("band_last_set"):
+                effective_band["band_last_set"] = sql_row["band_last_set"]
         tech_rec = tech_records.get(ticker)
         yf_ticker = yf_map.get(ticker, ticker)
         print(f"  Processing {ticker}...", end=" ", flush=True)
-        proposal = build_proposal(ticker, band, meta, tech_rec, yf_ticker, earnings_records, earnings_as_of)
+        proposal = build_proposal(ticker, effective_band, meta, tech_rec, yf_ticker, earnings_records, earnings_as_of)
         proposals.append(proposal)
         if proposal.skip_reason:
             print("skipped")
@@ -790,6 +898,19 @@ def main() -> None:
             print("NEEDS REVIEW")
         else:
             print("ok")
+
+    for ticker, band in entry_bands.items():
+        process_one(ticker, band)
+
+    if args.include_tracked_missing:
+        print("\nIncluding tracked-universe tickers missing an entry band...")
+        for ticker, meta in sorted(tracked_universe.items()):
+            if ticker in entry_bands:
+                continue
+            if not isinstance(meta, dict) or not universe.is_entitled(ticker, meta, "band_drift"):
+                continue
+            backfill_tickers.append(ticker)
+            process_one(ticker, {})
 
     needs_review_count = sum(1 for p in proposals if p.needs_review)
     blocking_review_tickers = [p.ticker for p in proposals if is_blocking_review(p)]
@@ -800,6 +921,7 @@ def main() -> None:
     ]
     ok_count = sum(1 for p in proposals if not p.needs_review and not p.skip_reason)
     skipped_count = sum(1 for p in proposals if p.skip_reason)
+    backfill_count = sum(1 for p in proposals if p.current_band_low is None and p.current_band_high is None)
 
     output = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -820,6 +942,7 @@ def main() -> None:
             "monitor_only_review": len(monitor_only_review_tickers),
             "within_tolerance": ok_count,
             "skipped_no_band": skipped_count,
+            "backfill_missing_band_context": backfill_count,
             "needs_review_tickers": [p.ticker for p in proposals if p.needs_review],
             "blocking_review_tickers": blocking_review_tickers,
             "accepted_repair_mode_blockers": accepted_repair_mode_blocker_tickers,
@@ -827,16 +950,26 @@ def main() -> None:
             "within_tolerance_tickers": [p.ticker for p in proposals if not p.needs_review and not p.skip_reason],
             "skipped_tickers": [p.ticker for p in proposals if p.skip_reason],
             "excluded_tickers": excluded_tickers,
+            "backfill_missing_band_context_tickers": [p.ticker for p in proposals if p.current_band_low is None and p.current_band_high is None],
         },
-        "proposals": [asdict(p) for p in proposals],
+        "proposals": [
+            {
+                **asdict(p),
+                "blocking_review": is_blocking_review(p),
+                "review_class": "blocking_review" if is_blocking_review(p) else "monitor_only_review" if p.needs_review and not p.skip_reason else "within_tolerance",
+            }
+            for p in proposals
+        ],
     }
 
-    atomic_write_json(OUT_PATH, output, indent=2, ensure_ascii=True)
+    atomic_write_json(out_path, output, indent=2, ensure_ascii=True)
     print_summary(proposals)
-    print(f"Output written to {OUT_PATH}  [status: {output['status']}]")
+    print(f"Output written to {out_path}  [status: {output['status']}]")
     print(f"  {needs_review_count} band(s) need review | "
           f"{ok_count} within tolerance | "
-          f"{skipped_count} skipped\n")
+          f"{skipped_count} skipped | "
+          f"{backfill_count} backfill")
+
 
 
 if __name__ == "__main__":

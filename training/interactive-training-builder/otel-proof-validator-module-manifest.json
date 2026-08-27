@@ -1,0 +1,51 @@
+{
+  "schema": "veritas.interactive_training_module_manifest.v1",
+  "generated_at_utc": "2026-07-04T14:40:02Z",
+  "status": "ok",
+  "module_id": "otel-proof-validator-practice",
+  "outputs": {
+    "module_json": "training/interactive-training-builder/otel-proof-validator-module.json",
+    "module_html": "training/interactive-training-builder/otel-proof-validator-module.html",
+    "xapi_seed": "training/interactive-training-builder/otel-proof-validator-module.xapi.json",
+    "scorm_manifest": "training/interactive-training-builder/scorm-otel-proof-validator-module/imsmanifest.xml",
+    "scorm_zip": "training/interactive-training-builder/otel-proof-validator-module-scorm.zip",
+    "module_manifest": "training/interactive-training-builder/otel-proof-validator-module-manifest.json"
+  },
+  "capabilities": {
+    "schema_backed_module": true,
+    "static_html_runtime": true,
+    "local_scoring": true,
+    "local_progress_storage": true,
+    "xapi_style_events": true,
+    "local_xapi_ledger_optional": true,
+    "scorm_package_scaffold": true,
+    "scorm_runtime_api_adapter": true,
+    "external_lms_lrs_configured": false,
+    "customer_data_allowed": false
+  },
+  "counts": {
+    "lessons": 3,
+    "interactions": 10,
+    "xapi_seed_statements": 2,
+    "standards_reviewed": 0
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "collector_config_mutation_approved": false,
+    "runtime_config_mutation_approved": false,
+    "cron_schedule_mutation_approved": false,
+    "telemetry_capture_depth_expansion_approved": false,
+    "external_telemetry_export_approved": false,
+    "raw_prompt_tool_payload_capture_approved": false,
+    "finance_canon_portfolio_mutation_approved": false,
+    "paper_live_account_action_approved": false
+  }
+}

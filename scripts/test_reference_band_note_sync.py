@@ -73,6 +73,30 @@ def test_missing_watch_sections_do_not_block(errors: list[str]) -> None:
     )
 
 
+def test_sql_first_thin_board_short_circuits_markdown_mutation(errors: list[str]) -> None:
+    ok = ref_sync.sql_first_thin_board_sync_decision(
+        {
+            "sql_first_thin_board_detected": True,
+            "sql_first_thin_board_allowed": True,
+        }
+    )
+    expect(ok["short_circuit_note_mutation"] is True, f"thin board should short-circuit note mutation, got {ok}", errors)
+    expect(ok["status"] == "ok", f"allowed thin board should be ok, got {ok}", errors)
+    blocked = ref_sync.sql_first_thin_board_sync_decision(
+        {
+            "sql_first_thin_board_detected": True,
+            "sql_first_thin_board_allowed": False,
+        }
+    )
+    expect(blocked["status"] == "blocked", f"blocked thin board contract should block, got {blocked}", errors)
+    legacy = ref_sync.sql_first_thin_board_sync_decision({"sql_first_thin_board_detected": False})
+    expect(
+        legacy["short_circuit_note_mutation"] is False and legacy["status"] == "legacy_markdown_sections",
+        f"non-thin board should use legacy section sync, got {legacy}",
+        errors,
+    )
+
+
 def test_manifest_runs_reference_sync_after_auto_apply(errors: list[str]) -> None:
     for window in ("morning", "post-close", "sunday"):
         scripts = [step["script"] for step in manifest_steps(window)]
@@ -90,6 +114,7 @@ def main() -> int:
     test_restriction_label_preserves_non_execution_authority(errors)
     test_note_sync_inserts_reference_band_without_touching_preferred_band(errors)
     test_missing_watch_sections_do_not_block(errors)
+    test_sql_first_thin_board_short_circuits_markdown_mutation(errors)
     test_manifest_runs_reference_sync_after_auto_apply(errors)
     if errors:
         print("reference_band_note_sync_tests_failed")

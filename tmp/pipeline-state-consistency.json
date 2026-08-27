@@ -1,13 +1,46 @@
 {
-  "generated_at_utc": "2026-05-10T03:38:40.673424+00:00",
+  "generated_at_utc": "2026-08-14T13:15:49.031460+00:00",
+  "window": "morning",
   "status": "ok",
   "contradictions_count": 0,
   "authority_findings_count": 0,
+  "authority_ceiling_source": "static_fail_closed_window_policy",
+  "authority_ceiling": {
+    "canonical_mutation_allowed": false,
+    "presentation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_state_mutation_allowed": false,
+    "trade_execution_allowed": false,
+    "owner_approval_granted": false
+  },
+  "authority_surfaces_checked": [
+    "premarket_brief_input",
+    "premarket_review_brief"
+  ],
+  "expected_sources": [
+    "deployment_check",
+    "premarket_snapshot",
+    "trigger_sheet"
+  ],
   "missing_sources": [],
+  "skipped_sources": [],
+  "ignored_sources": [
+    {
+      "surface": "daily_brief",
+      "reason": "not_expected_for_window",
+      "window": "morning",
+      "generated_at_utc": "2026-08-13T23:33:40.754741+00:00"
+    },
+    {
+      "surface": "postmarket_snapshot",
+      "reason": "not_expected_for_window",
+      "window": "morning",
+      "generated_at_utc": "2026-08-13T23:33:40.366759+00:00"
+    }
+  ],
   "sources_checked": [
     "trigger_sheet",
     "deployment_check",
-    "daily_brief",
     "premarket_snapshot"
   ],
   "contradictions": [],
@@ -16,110 +49,172 @@
     "AMD": {
       "trigger_sheet": null,
       "deployment_check": "watch",
-      "daily_brief": null,
       "premarket_snapshot": null
     },
-    "AMZN": {
+    "BKNG": {
       "trigger_sheet": null,
-      "deployment_check": "watch",
-      "daily_brief": null,
+      "deployment_check": "bench",
       "premarket_snapshot": null
     },
     "BRK.B": {
       "trigger_sheet": "do_not_touch",
       "deployment_check": "bench",
-      "daily_brief": "bench",
-      "premarket_snapshot": null
+      "premarket_snapshot": "do_not_touch"
     },
-    "CAT": {
+    "CME": {
       "trigger_sheet": null,
-      "deployment_check": "watch",
-      "daily_brief": null,
+      "deployment_check": "do_not_touch",
       "premarket_snapshot": null
     },
     "CVX": {
       "trigger_sheet": null,
-      "deployment_check": "do_not_touch",
-      "daily_brief": "do_not_touch",
+      "deployment_check": "watch",
       "premarket_snapshot": null
     },
     "ETN": {
       "trigger_sheet": "almost",
       "deployment_check": "almost",
-      "daily_brief": null,
+      "premarket_snapshot": "almost"
+    },
+    "GE": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
       "premarket_snapshot": null
     },
     "GOOG": {
       "trigger_sheet": "almost",
       "deployment_check": "almost",
-      "daily_brief": "almost",
       "premarket_snapshot": "almost"
     },
     "GS": {
       "trigger_sheet": "almost",
       "deployment_check": "almost",
-      "daily_brief": "almost",
+      "premarket_snapshot": "almost"
+    },
+    "ITA": {
+      "trigger_sheet": null,
+      "deployment_check": "almost",
       "premarket_snapshot": null
     },
     "JPM": {
       "trigger_sheet": "almost",
       "deployment_check": "almost",
-      "daily_brief": "almost",
       "premarket_snapshot": "almost"
+    },
+    "LIN": {
+      "trigger_sheet": null,
+      "deployment_check": "do_not_touch",
+      "premarket_snapshot": null
     },
     "LLY": {
       "trigger_sheet": null,
       "deployment_check": "watch",
-      "daily_brief": null,
       "premarket_snapshot": null
     },
     "LMT": {
       "trigger_sheet": "do_not_touch",
-      "deployment_check": "do_not_touch",
-      "daily_brief": "do_not_touch",
-      "premarket_snapshot": null
+      "deployment_check": "bench",
+      "premarket_snapshot": "do_not_touch"
     },
-    "LNG": {
+    "META": {
       "trigger_sheet": null,
       "deployment_check": "do_not_touch",
-      "daily_brief": "do_not_touch",
       "premarket_snapshot": null
     },
     "MSFT": {
       "trigger_sheet": "almost",
       "deployment_check": "almost",
-      "daily_brief": "almost",
       "premarket_snapshot": "almost"
+    },
+    "NFLX": {
+      "trigger_sheet": null,
+      "deployment_check": "do_not_touch",
+      "premarket_snapshot": null
     },
     "NVDA": {
       "trigger_sheet": "almost",
       "deployment_check": "almost",
-      "daily_brief": "almost",
       "premarket_snapshot": "almost"
+    },
+    "PAVE": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
+      "premarket_snapshot": null
+    },
+    "PH": {
+      "trigger_sheet": null,
+      "deployment_check": "almost",
+      "premarket_snapshot": null
     },
     "PLTR": {
       "trigger_sheet": null,
       "deployment_check": "watch",
-      "daily_brief": null,
       "premarket_snapshot": null
     },
     "RTX": {
       "trigger_sheet": null,
+      "deployment_check": "watch",
+      "premarket_snapshot": null
+    },
+    "TMUS": {
+      "trigger_sheet": null,
       "deployment_check": "do_not_touch",
-      "daily_brief": "do_not_touch",
+      "premarket_snapshot": null
+    },
+    "VAW": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
+      "premarket_snapshot": null
+    },
+    "VMC": {
+      "trigger_sheet": null,
+      "deployment_check": "do_not_touch",
       "premarket_snapshot": null
     },
     "VRT": {
-      "trigger_sheet": "watch",
+      "trigger_sheet": "almost",
+      "deployment_check": "almost",
+      "premarket_snapshot": "almost"
+    },
+    "VXUS": {
+      "trigger_sheet": null,
       "deployment_check": "watch",
-      "daily_brief": null,
+      "premarket_snapshot": null
+    },
+    "WMB": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
+      "premarket_snapshot": null
+    },
+    "XLB": {
+      "trigger_sheet": null,
+      "deployment_check": "almost",
+      "premarket_snapshot": null
+    },
+    "XLC": {
+      "trigger_sheet": null,
+      "deployment_check": "do_not_touch",
+      "premarket_snapshot": null
+    },
+    "XLE": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
+      "premarket_snapshot": null
+    },
+    "XLF": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
+      "premarket_snapshot": null
+    },
+    "XLI": {
+      "trigger_sheet": null,
+      "deployment_check": "watch",
       "premarket_snapshot": null
     },
     "XOM": {
       "trigger_sheet": "do_not_touch",
       "deployment_check": "bench",
-      "daily_brief": "bench",
-      "premarket_snapshot": null
+      "premarket_snapshot": "do_not_touch"
     }
   },
   "canonical_truth_note": "Source files remain authoritative. This report is a consistency cross-check only."

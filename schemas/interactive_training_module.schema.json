@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "veritas.interactive_training_module.schema.v1",
+  "title": "Veritas Interactive Training Module",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "module_id",
+    "title",
+    "audience",
+    "summary",
+    "authority_boundary",
+    "learning_objectives",
+    "lessons",
+    "interactions",
+    "xapi"
+  ],
+  "properties": {
+    "schema": {
+      "const": "veritas.interactive_training_module.v1"
+    },
+    "module_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,80}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "audience": {
+      "type": "string",
+      "minLength": 3
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 20
+    },
+    "authority_boundary": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "required": [
+        "internal_training_only",
+        "external_delivery_approved",
+        "customer_data_allowed",
+        "credential_access_allowed",
+        "owner_approval_inferred"
+      ]
+    },
+    "learning_objectives": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 8
+      }
+    },
+    "lessons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "body",
+          "key_points"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{2,80}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3
+          },
+          "body": {
+            "type": "string",
+            "minLength": 20
+          },
+          "key_points": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "string",
+              "minLength": 5
+            }
+          }
+        }
+      }
+    },
+    "interactions": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "title",
+          "prompt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{2,80}$"
+          },
+          "type": {
+            "enum": [
+              "scenario",
+              "multiple_choice",
+              "checklist",
+              "reflection",
+              "boundary_ack"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 10
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "text",
+                "correct"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]{1,40}$"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 2
+                },
+                "correct": {
+                  "type": "boolean"
+                },
+                "feedback": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "expected": {
+            "type": "string"
+          },
+          "checklist_items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 3
+            }
+          },
+          "rubric": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 3
+            }
+          },
+          "xapi_object": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "xapi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activity_id",
+        "verbs"
+      ],
+      "properties": {
+        "activity_id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "verbs": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "enum": [
+              "started",
+              "answered",
+              "completed",
+              "passed",
+              "failed",
+              "reviewed_boundary"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -13,6 +13,7 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 OUT_JSON = TMP / "post-close-control-digest.json"
 OUT_MD = OUT_JSON.with_suffix(".md")
+CRON_FRESHNESS_SPINE = TMP / "cron-freshness-spine.json"
 SCHEMA_VERSION = 1
 
 AUTHORITY = {
@@ -310,6 +311,10 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
 def expected_suspended_weight_warning(value: Any) -> bool:
     text = str(value)
     return EXPECTED_SUSPENDED_WEIGHT_WARNING in text or "portfolio_suspended_weight_gap" in text
@@ -346,6 +351,30 @@ def cron_ledger_warning_is_expected(data: Any) -> bool:
     return bool(warning_windows) and warning_windows.issubset(expected_windows)
 
 
+def cron_freshness_spine_is_clean() -> bool:
+    freshness = load_json_artifact(CRON_FRESHNESS_SPINE)
+    if not isinstance(freshness, dict):
+        return False
+    if freshness.get("schema") != "veritas.cron_freshness_spine.v1":
+        return False
+    if freshness.get("status") != "ok":
+        return False
+    if as_dict(freshness.get("validation")).get("status") != "ok":
+        return False
+    summary = as_dict(freshness.get("summary"))
+    return all(
+        int(summary.get(key) or 0) == 0
+        for key in (
+            "blocked_count",
+            "requires_attention_count",
+            "stale_count",
+            "urgent_attention_count",
+            "review_queue_count",
+            "monitor_only_or_stale_count",
+        )
+    )
+
+
 def review_only_opportunity_radar(data: Any) -> bool:
     if not isinstance(data, dict):
         return False
@@ -361,10 +390,20 @@ def review_only_opportunity_radar(data: Any) -> bool:
 
 
 def effective_source_status(source_id: str, data: Any, status: str) -> tuple[str, str]:
+    if source_id == "cron_operator_ledger" and status in {"blocked", "critical", "error"}:
+        freshness = load_json_artifact(CRON_FRESHNESS_SPINE)
+        if (
+            isinstance(freshness, dict)
+            and freshness.get("schema") == "veritas.cron_freshness_spine.v1"
+            and as_dict(freshness.get("validation")).get("status") == "ok"
+        ):
+            return "ok", "superseded_by_current_cron_freshness_spine"
     if status == "warning" and source_id.endswith("_run") and expected_run_summary_warning(data):
         return "ok", "expected_suspended_legacy_weight_info_only"
     if status == "warning" and source_id == "cron_operator_ledger" and cron_ledger_warning_is_expected(data):
         return "ok", "ledger_warning_windows_are_expected_info_only"
+    if status == "warning" and source_id == "cron_operator_ledger" and cron_freshness_spine_is_clean():
+        return "ok", "ledger_warning_superseded_by_current_cron_freshness_spine"
     if status == "warning" and source_id == "market_today_answer_packet" and isinstance(data, dict):
         readiness = data.get("answer_readiness") if isinstance(data.get("answer_readiness"), dict) else {}
         validation = data.get("validation") if isinstance(data.get("validation"), dict) else {}
@@ -425,6 +464,9 @@ def build_digest() -> dict[str, Any]:
     sources = [source_record(spec) for spec in SOURCES]
     status, critical, warnings = classify(sources)
     post_close = next((source for source in sources if source["id"] == "post_close_run"), {})
+    freshness = load_json_artifact(CRON_FRESHNESS_SPINE)
+    freshness_summary = as_dict(freshness.get("summary")) if isinstance(freshness, dict) else {}
+    cron_ledger = next((source for source in sources if source["id"] == "cron_operator_ledger"), {})
     operator_action = "BLOCKED" if critical else "MAIN_HANDOFF_REQUIRED" if warnings else "NO_REPLY"
     return {
         "schema_version": SCHEMA_VERSION,
@@ -434,6 +476,17 @@ def build_digest() -> dict[str, Any]:
         "authority": AUTHORITY,
         "purpose": "Single post-close control digest to reduce main-session wake pressure without weakening safety.",
         "sources": sources,
+        "cron_signal_reconciliation": {
+            "primary_current_signal_source": rel(CRON_FRESHNESS_SPINE),
+            "freshness_spine_present": isinstance(freshness, dict) and bool(freshness),
+            "freshness_spine_status": freshness.get("status") if isinstance(freshness, dict) else "missing",
+            "freshness_spine_validation": as_dict(freshness.get("validation")).get("status") if isinstance(freshness, dict) else "missing",
+            "freshness_spine_blocked_count": freshness_summary.get("blocked_count"),
+            "cron_operator_ledger_status": cron_ledger.get("status"),
+            "cron_operator_ledger_effective_status": cron_ledger.get("effective_status"),
+            "cron_operator_ledger_downgrade_reason": cron_ledger.get("downgrade_reason"),
+            "rule": "cron_freshness_spine is primary current signal truth; ledger residue is not double-counted when freshness spine validates.",
+        },
         "post_close_summary": summarize_post_close_run(post_close) if post_close else {},
         "critical_findings": critical,
         "warning_findings": warnings,

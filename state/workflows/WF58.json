@@ -3,11 +3,26 @@
   "workflow_id": "WF58",
   "display_name": "Dashboard / Capital Packets Monitor",
   "tier": "P2",
-  "effective_status": "route_only",
+  "priority": "P2",
+  "lifecycle": "monitor",
+  "readiness": "monitor_only",
+  "effective_status": "monitor_only",
+  "current_state": "Monitor: dashboard/capital packet validation + deployment-state contract proof.",
   "next_action": "Escalate on validator warning/critical, false-green dashboard, packet-vs-canon conflict, or duplicated legacy deployment-state fields reappearing in presentation artifacts.",
-  "helper_safe": true,
+  "authoritative_next_action": "Escalate on validator warning/critical, false-green dashboard, packet-vs-canon conflict, or duplicated legacy deployment-state fields reappearing in presentation artifacts.",
+  "helper_safe": false,
   "owner_action_required": false,
   "authority_boundary": "monitor-only",
+  "authority_class": "monitor_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "scripts/deployment_contract_migration_validation_bundle.py",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": false
+  },
   "blockers": [],
   "stop_lines": [
     "No self-apply, trade/account authority, per-packet approval inference, or legacy/source-field deletion outside compatibility proof."
@@ -26,6 +41,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

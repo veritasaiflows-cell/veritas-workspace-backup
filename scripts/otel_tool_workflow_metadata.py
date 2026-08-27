@@ -50,7 +50,7 @@ AUTHORITY_BOUNDARY = {
     "owner_approval_inferred": False,
 }
 
-FORBIDDEN_TEXT_MARKERS = (
+FORBIDDEN_FIELD_NAMES = {
     "prompt",
     "raw_prompt",
     "response_text",
@@ -59,7 +59,6 @@ FORBIDDEN_TEXT_MARKERS = (
     "tool_payload",
     "system_prompt",
     "authorization",
-    "bearer ",
     "api_key",
     "oauth_token",
     "access_token",
@@ -67,6 +66,23 @@ FORBIDDEN_TEXT_MARKERS = (
     "credential",
     "password",
     "cookie",
+}
+
+FORBIDDEN_VALUE_MARKERS = (
+    "raw_prompt",
+    "response_text",
+    "tool_input",
+    "tool_output",
+    "tool_payload",
+    "system_prompt",
+    "authorization:",
+    "bearer ",
+    "api_key",
+    "oauth_token",
+    "access_token",
+    "password=",
+    "password:",
+    "cookie:",
 )
 
 
@@ -318,14 +334,33 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def privacy_scan(payload: dict[str, Any]) -> dict[str, Any]:
-    text = json.dumps(payload.get("rows", []), sort_keys=True).lower()
+    counts: Counter[str] = Counter()
+
+    def scan_value(value: Any, path: tuple[str, ...] = ()) -> None:
+        if isinstance(value, dict):
+            for key, child in value.items():
+                normalized_key = str(key).lower()
+                if normalized_key in FORBIDDEN_FIELD_NAMES:
+                    counts[f"field:{normalized_key}"] += 1
+                scan_value(child, (*path, normalized_key))
+            return
+        if isinstance(value, list):
+            for item in value:
+                scan_value(item, path)
+            return
+        if not isinstance(value, str):
+            return
+        lowered = value.lower()
+        for marker in FORBIDDEN_VALUE_MARKERS:
+            if marker in lowered:
+                counts[f"value:{marker}"] += lowered.count(marker)
+
+    scan_value(payload.get("rows", []))
     findings = [
-        {"marker": marker, "count": text.count(marker)}
-        for marker in FORBIDDEN_TEXT_MARKERS
-        if text.count(marker)
+        {"marker": marker, "count": count}
+        for marker, count in sorted(counts.items())
+        if count
     ]
-    # The allowed schema has safe boolean names containing payload_capture.
-    findings = [item for item in findings if item["marker"] not in {"tool_payload"}]
     return {"status": "blocked" if findings else "ok", "findings": findings[:50], "finding_count": len(findings)}
 
 

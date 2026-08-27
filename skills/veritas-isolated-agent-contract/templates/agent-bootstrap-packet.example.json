@@ -1,0 +1,49 @@
+{
+  "schema": "openclaw.agent_bootstrap_packet.v1",
+  "agent_id": "example-agent",
+  "generated_at_utc": "2026-07-03T00:00:00Z",
+  "freshness": {
+    "status": "example",
+    "source_window": "latest validated packets"
+  },
+  "authority_disclaimer": "This packet is a routing and context aid only. It is not approval, canon, execution authority, or a replacement for workspace doctrine.",
+  "doctrine_hierarchy": [
+    "SOUL.md",
+    "AGENTS.md",
+    "IDENTITY.md",
+    "USER.md",
+    "TOOLS.md",
+    "skills and playbooks",
+    "MEMORY.md",
+    "generated proof packets"
+  ],
+  "current_assignment": {
+    "objective": "example objective",
+    "owner_workflow": "WF75",
+    "authority_class": "workspace_read_only",
+    "allowed_writes": [],
+    "forbidden_writes": [
+      "config/auth/runtime/channel/credential surfaces",
+      "external delivery surfaces",
+      "finance/account/execution surfaces"
+    ]
+  },
+  "evidence_delta": [
+    {
+      "source": "tmp/otel-ops-control.json",
+      "summary": "metadata-only operational signal",
+      "trust_limit": "not proof of model quality or correctness"
+    }
+  ],
+  "next_actions": [
+    "Read required sources",
+    "Confirm boundaries",
+    "Produce scoped deliverable",
+    "Return proof and unresolved decisions"
+  ],
+  "stop_lines": [
+    "Do not change runtime config",
+    "Do not enable external bindings",
+    "Do not infer owner approval"
+  ]
+}

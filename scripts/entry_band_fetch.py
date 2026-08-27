@@ -52,6 +52,7 @@ except ImportError:
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP_DATA_DIR = WORKSPACE / "tmp" / "entry-band-data"
 HTML_DIR = WORKSPACE / "tmp" / "entry-band-reports"
+BATCH_MANIFEST_PATH = TMP_DATA_DIR / "_batch-manifest.json"
 JSX_PATH = WORKSPACE / "scripts" / "entry_band_viewer.jsx"
 PORTFOLIO_CONFIG_PATH = WORKSPACE / "tmp" / "portfolio-config.json"
 TECH_REFRESH_PATH = WORKSPACE / "tmp" / "technical-refresh.json"
@@ -380,6 +381,7 @@ def run_all_tracked(args: argparse.Namespace) -> int:
         print(f"[entry_band_fetch] Batch mode: {len(tickers)} tickers — {', '.join(tickers)}", flush=True)
 
     failed: list[str] = []
+    succeeded: list[str] = []
     for ticker in tickers:
         if not args.quiet:
             print(f"\n[entry_band_fetch] --- {ticker} ---", flush=True)
@@ -415,6 +417,28 @@ def run_all_tracked(args: argparse.Namespace) -> int:
             except Exception as exc:
                 print(f"[entry_band_fetch] {ticker}: HTML render failed — {exc}", file=sys.stderr)
                 failed.append(ticker)
+
+        if ticker not in failed:
+            succeeded.append(ticker)
+
+    manifest = {
+        "schema": "entry_band_fetch_batch_manifest.v1",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "status": "error" if failed else "ok",
+        "html_enabled": bool(args.html),
+        "interval": args.interval,
+        "years": args.years,
+        "start": args.start,
+        "ticker_count": len(tickers),
+        "succeeded_count": len(succeeded),
+        "failed_count": len(failed),
+        "succeeded_tickers": succeeded,
+        "failed_tickers": failed,
+        "data_dir": str(TMP_DATA_DIR.relative_to(WORKSPACE)),
+        "html_dir": str(HTML_DIR.relative_to(WORKSPACE)),
+    }
+    BATCH_MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
+    BATCH_MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"\n[entry_band_fetch] Batch complete: {len(tickers) - len(failed)}/{len(tickers)} succeeded.", flush=True)
     if failed:

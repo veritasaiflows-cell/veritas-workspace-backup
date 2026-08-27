@@ -141,6 +141,109 @@ def manifest_record(path: Path) -> dict[str, Any]:
     }
 
 
+def candidate_digest(candidates: list[Path]) -> str:
+    payload = [
+        {
+            "path": str(path.relative_to(WORKSPACE)).replace("\\", "/"),
+            "kind": "dir" if path.is_dir() else "file",
+            "newest_mtime_utc": newest_mtime(path).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "bytes": path.stat().st_size if path.is_file() else None,
+            "sha256": sha256_path(path),
+        }
+        for path in candidates
+    ]
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def protection_assertions(candidates: list[Path], moved: list[dict[str, Any]], apply_requested: bool) -> dict[str, Any]:
+    violations = [str(path.relative_to(WORKSPACE)).replace("\\", "/") for path in candidates if is_protected(path)]
+    return {
+        "protected_file_count": len(PROTECTED_FILES),
+        "protected_prefixes": list(PROTECTED_PREFIXES),
+        "protected_dir_count": len(PROTECTED_DIRS),
+        "protected_dirs": sorted(PROTECTED_DIRS),
+        "candidate_protected_violation_count": len(violations),
+        "candidate_protected_violations": violations,
+        "all_candidates_pass_protection_filter": len(violations) == 0,
+        "apply_requested": apply_requested,
+        "dry_run_no_delete_assertion": (not apply_requested) and len(moved) == 0,
+        "move_count_matches_mode": (len(moved) == 0) if not apply_requested else True,
+        "destructive_cleanup_requires_separate_owner_approval": True,
+    }
+
+
+def rollback_plan(archive_dir: Path, moved: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "available_only_after_apply": bool(moved),
+        "archive_dir": str(archive_dir.relative_to(WORKSPACE)).replace("\\", "/"),
+        "moved_record_count": len(moved),
+        "restore_method": (
+            "Move each destination path back to its source path from moved[]. "
+            "Then rerun the cleanup dry-run and affected validators before closing."
+        ),
+        "rollback_manifest_source": "moved",
+    }
+
+
+def authority_boundary(apply_requested: bool) -> dict[str, Any]:
+    return {
+        "review_only_dry_run": not apply_requested,
+        "apply_requested": apply_requested,
+        "archive_move_allowed": apply_requested,
+        "delete_allowed": False,
+        "cron_state_mutation_allowed": False,
+        "cron_schedule_mutation_allowed": False,
+        "runtime_config_mutation_allowed": False,
+        "finance_canon_mutation_allowed": False,
+        "portfolio_mutation_allowed": False,
+        "paper_or_live_execution_allowed": False,
+        "brokerage_or_account_action_allowed": False,
+        "money_movement_allowed": False,
+        "customer_or_external_delivery_allowed": False,
+        "owner_approval_inferred": False,
+    }
+
+
+def validate_report(report: dict[str, Any]) -> dict[str, Any]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    protection = report.get("protection_assertions", {})
+    boundary = report.get("authority_boundary", {})
+
+    if protection.get("candidate_protected_violation_count") != 0:
+        errors.append("protected_candidates_present")
+    if protection.get("all_candidates_pass_protection_filter") is not True:
+        errors.append("candidate_protection_filter_failed")
+    if protection.get("move_count_matches_mode") is not True:
+        errors.append("move_count_does_not_match_mode")
+    if report.get("mode") == "dry-run" and protection.get("dry_run_no_delete_assertion") is not True:
+        errors.append("dry_run_move_or_delete_detected")
+    if protection.get("destructive_cleanup_requires_separate_owner_approval") is not True:
+        errors.append("destructive_cleanup_owner_approval_gate_missing")
+
+    for key in (
+        "delete_allowed",
+        "cron_state_mutation_allowed",
+        "cron_schedule_mutation_allowed",
+        "runtime_config_mutation_allowed",
+        "finance_canon_mutation_allowed",
+        "portfolio_mutation_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "money_movement_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if boundary.get(key) is not False:
+            errors.append(f"authority_boundary_{key}_not_false")
+
+    if report.get("mode") == "apply":
+        warnings.append("cleanup_apply_mode_requires_operator_closeout_review")
+
+    return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
+
+
 def move_path(src: Path, dest_root: Path) -> dict[str, Any]:
     before = manifest_record(src)
     rel = src.relative_to(TMP)
@@ -168,16 +271,28 @@ def main() -> int:
 
     output = {
         "generated_at_utc": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "status": "draft",
+        "operator_action": "NO_REPLY",
         "mode": "apply" if args.apply else "dry-run",
         "retention_days": max(0, args.days),
         "archive_root": str(archive_dir.relative_to(WORKSPACE)).replace("\\", "/"),
         "summary": {
             "eligible_count": len(candidates),
             "moved_count": len(moved),
+            "candidate_digest": candidate_digest(candidates),
+            "protected_violation_count": 0,
         },
+        "protection_assertions": protection_assertions(candidates, moved, args.apply),
+        "authority_boundary": authority_boundary(args.apply),
+        "rollback_plan": rollback_plan(archive_dir, moved),
         "candidates": [manifest_record(path) for path in candidates],
         "moved": moved,
     }
+    output["summary"]["protected_violation_count"] = output["protection_assertions"]["candidate_protected_violation_count"]
+    validation = validate_report(output)
+    output["validation"] = validation
+    output["status"] = "blocked" if validation["errors"] else validation["status"]
+    output["operator_action"] = "BLOCKED" if validation["errors"] else "MAIN_SESSION_REQUIRED" if validation["warnings"] else "NO_REPLY"
     atomic_write_json(OUT_PATH, output)
     print(json.dumps(output, indent=2))
     return 0

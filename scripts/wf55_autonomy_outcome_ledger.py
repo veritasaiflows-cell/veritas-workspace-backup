@@ -20,6 +20,23 @@ TMP = ROOT / "tmp"
 OUT = TMP / "wf55-autonomy-outcome-ledger.json"
 SCHEMA = "veritas.wf55_autonomy_outcome_ledger.v1"
 
+DURABLE_APPEND_APPROVAL = {
+    "status": "approved",
+    "approved_by": "Randall",
+    "approved_at": "2026-06-19",
+    "scope": "append-only review-only WF55 autonomy measurement grades",
+    "blocked_authority": [
+        "predictive scoring",
+        "success-frequency claims",
+        "return-forecast claims",
+        "model-ranked deployment",
+        "capital deployment",
+        "paper/live execution",
+        "portfolio or canon mutation",
+        "owner approval inference",
+    ],
+}
+
 SOURCES = {
     "shadow_decisions": TMP / "paper-autotrader" / "shadow-decisions.json",
     "shadow_outcomes": TMP / "wf87-shadow-outcome-scorecard.json",
@@ -125,13 +142,70 @@ def classify_decision(row: dict[str, Any]) -> str:
     return "still_pending"
 
 
+def measurement_grade_for_event(event_type: str) -> dict[str, Any]:
+    if event_type == "invalid_due_to_stale_data":
+        return {
+            "grade": "stale_data_failure",
+            "grade_group": "process_failure",
+            "grade_status": "assigned_measurement_only",
+            "is_failure_mode": True,
+            "meaning": "The shadow event is useful as a process-quality lesson, not as predictive performance evidence.",
+        }
+    if event_type == "stop_breached":
+        return {
+            "grade": "stop_or_invalidation_hit",
+            "grade_group": "risk",
+            "grade_status": "assigned_measurement_only",
+            "is_failure_mode": True,
+            "meaning": "The event breached a risk/invalidation condition; use for guardrail review only.",
+        }
+    if event_type == "band_rejected":
+        return {
+            "grade": "entry_poor_even_if_thesis_right",
+            "grade_group": "entry_quality",
+            "grade_status": "assigned_measurement_only",
+            "is_failure_mode": True,
+            "meaning": "The entry/band behavior was poor or rejected; use for entry-discipline review only.",
+        }
+    if event_type == "band_touched":
+        return {
+            "grade": "band_reclaim_held",
+            "grade_group": "entry_band",
+            "grade_status": "assigned_measurement_only",
+            "is_failure_mode": False,
+            "meaning": "The event touched/reclaimed the band; follow-up evidence is still required before stronger claims.",
+        }
+    if event_type == "decision_observed":
+        return {
+            "grade": "followup_pending",
+            "grade_group": "measurement_lifecycle",
+            "grade_status": "pending_regular_session_followup",
+            "is_failure_mode": False,
+            "meaning": "The shadow decision was observed, but later outcome evidence is not mature enough for scoring.",
+        }
+    return {
+        "grade": "still_pending",
+        "grade_group": "measurement_lifecycle",
+        "grade_status": "pending",
+        "is_failure_mode": False,
+        "meaning": "The event remains open for future measurement.",
+    }
+
+
 def event_from_decision(row: dict[str, Any]) -> dict[str, Any]:
+    event_type = classify_decision(row)
+    measurement_grade = measurement_grade_for_event(event_type)
     return {
         "event_id": str(row.get("decision_id") or f"{row.get('session_key')}:{row.get('ticker')}"),
         "ticker": row.get("ticker"),
         "session_key": row.get("session_key"),
         "observed_at_utc": row.get("generated_at_utc"),
-        "event_type": classify_decision(row),
+        "event_type": event_type,
+        "measurement_grade": measurement_grade["grade"],
+        "measurement_grade_group": measurement_grade["grade_group"],
+        "measurement_grade_status": measurement_grade["grade_status"],
+        "measurement_failure_mode": measurement_grade["is_failure_mode"],
+        "measurement_grade_meaning": measurement_grade["meaning"],
         "shadow_decision": row.get("shadow_decision"),
         "shadow_eligible": row.get("shadow_eligible") is True,
         "execution_ready": row.get("execution_ready") is True,
@@ -183,8 +257,17 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
     decisions = [row for row in as_list(shadow.get("decisions")) if isinstance(row, dict)]
     events = [event_from_decision(row) for row in decisions]
     event_counts: dict[str, int] = {}
+    grade_counts: dict[str, int] = {}
+    grade_status_counts: dict[str, int] = {}
+    failure_grade_count = 0
     for event in events:
         event_counts[event["event_type"]] = event_counts.get(event["event_type"], 0) + 1
+        grade = str(event.get("measurement_grade") or "unknown")
+        grade_status = str(event.get("measurement_grade_status") or "unknown")
+        grade_counts[grade] = grade_counts.get(grade, 0) + 1
+        grade_status_counts[grade_status] = grade_status_counts.get(grade_status, 0) + 1
+        if event.get("measurement_failure_mode") is True:
+            failure_grade_count += 1
 
     shadow_summary = as_dict(shadow.get("summary"))
     outcome_summary = as_dict(payloads["shadow_outcomes"].get("summary"))
@@ -221,6 +304,15 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         "summary": {
             "decision_event_count": len(events),
             "event_type_counts": event_counts,
+            "measurement_grade_count": len(events),
+            "measurement_grade_counts": grade_counts,
+            "measurement_grade_status_counts": grade_status_counts,
+            "measurement_failure_grade_count": failure_grade_count,
+            "measurement_grade_assignment_status": "assigned_measurement_only_durable_v2_append_enabled_review_only",
+            "durable_v2_append_allowed": True,
+            "durable_v2_append_scope": DURABLE_APPEND_APPROVAL["scope"],
+            "durable_v2_append_approval": DURABLE_APPEND_APPROVAL,
+            "decision_quality_claim_allowed_now": False,
             "clean_shadow_decision_count": clean_decisions,
             "required_clean_decisions": required_decisions,
             "unique_clean_market_sessions": clean_sessions,
@@ -242,6 +334,7 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         "source_artifacts": {name: rel(path) for name, path in paths.items()},
         "stop_lines": [
             "WF55 outcome events are measurement only; they are not predictive scores.",
+            "Durable append is allowed only for append-only review-only measurement rows under Randall's 2026-06-19 approval.",
             "Do not make probability, win-rate, expected-return, model-performance, or deployment-ranking claims from this ledger.",
             "No capital deployment, paper/live execution, account action, canon/portfolio mutation, or owner approval inference.",
         ],

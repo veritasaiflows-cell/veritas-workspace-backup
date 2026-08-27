@@ -381,12 +381,13 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         for item in items
     ):
         errors.append("row authority boundary widened")
-    if args.validate and not items:
-        errors.append("no source-open work items found")
+    no_work_available = not items
+    validation_status = "blocked" if errors else "ok"
+    packet_status = "blocked" if errors else "ok"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "blocked" if errors else "ok",
+        "status": packet_status,
         "purpose": "Convert WF78 source-open repair dispositions into parallel-safe review work packets.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": [
@@ -400,6 +401,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "summary": {
             "work_item_count": len(items),
             "packet_count": len(packets),
+            "no_work_available": no_work_available,
             "parallel_recommended_count": len(recommended_parallel_lanes(packets)),
             "tier_counts": dict(tier_counts.most_common()),
             "repair_disposition_counts": dict(disposition_counts.most_common()),
@@ -411,7 +413,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         },
         "packets": packets,
         "recommended_parallel_lanes": recommended_parallel_lanes(packets),
-        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": []},
+        "validation": {"status": validation_status, "errors": errors, "warnings": []},
         "stop_lines": [
             "This work-packet artifact is review-only and does not write repair rows into owner/canon/card surfaces.",
             "Packet acceptance can make evidence ready for owner review, not approved for capital deployment or execution.",

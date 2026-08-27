@@ -7,7 +7,17 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from cron_freshness_spine import JOB_CONTRACTS, artifact_record, attention_bucket, attention_class, build_payload, expected_warning_quiet
+from cron_freshness_spine import (
+    JOB_CONTRACTS,
+    artifact_record,
+    attention_bucket,
+    attention_class,
+    build_payload,
+    classify_job,
+    expected_warning_quiet,
+    merged_job_contracts,
+    router_lineage,
+)
 
 
 def test_quote_first_warning_is_quiet_with_nonfresh_backlog() -> None:
@@ -114,6 +124,177 @@ def test_cron_operator_ledger_warning_rollup_quiet_only_when_clean() -> None:
 
     assert expected_warning_quiet(payload) is True
     assert expected_warning_quiet(blocked_payload) is False
+
+
+def test_pm_no_action_status_refresh_residue_is_quiet() -> None:
+    payload = {
+        "schema": "veritas.pm_autonomy_verifier.v1",
+        "status": "warning",
+        "summary": {"action_type": "no_action"},
+        "validation": {
+            "status": "ok",
+            "warnings": ["status_packet_refresh_validation_residue"],
+        },
+    }
+
+    assert expected_warning_quiet(payload) is True
+
+
+def test_main_session_action_executor_no_action_warning_is_quiet() -> None:
+    payload = {
+        "schema": "veritas.main_session_action_executor.v1",
+        "status": "warning",
+        "summary": {
+            "action_type": "no_action",
+            "classification": "no_reply",
+            "executed": False,
+            "execution_failed": [],
+        },
+        "validation": {
+            "status": "ok",
+            "warnings": ["no_action_available"],
+        },
+    }
+    blocked_payload = {
+        **payload,
+        "summary": {
+            **payload["summary"],
+            "execution_failed": ["pm_execution_loop"],
+        },
+    }
+
+    assert expected_warning_quiet(payload) is True
+    assert expected_warning_quiet(blocked_payload) is False
+
+
+def test_pm_worker_ignores_stale_blocked_subordinate_execution_loop_when_parent_is_quiet() -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        worker = tmp_path / "pm-job-worker-runner.json"
+        loop = tmp_path / "pm-execution-loop.json"
+        worker.write_text(
+            json.dumps(
+                {
+                    "schema": "veritas.pm_job_worker_runner.v1",
+                    "status": "quiet_success",
+                    "generated_at_utc": now,
+                    "summary": {
+                        "action_type": "no_action",
+                        "execution_failures": [],
+                    },
+                    "validation": {"status": "ok", "errors": [], "warnings": []},
+                }
+            ),
+            encoding="utf-8",
+        )
+        loop.write_text(
+            json.dumps(
+                {
+                    "schema": "veritas.pm_execution_loop.v1",
+                    "status": "blocked",
+                    "generated_at_utc": now,
+                    "validation": {"status": "blocked", "errors": ["implementation_completion_ledger"]},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        job = {
+            "name": "PM - GPT-5.5 Auto Implementation Proof Runner",
+            "enabled": True,
+            "schedule": {"expr": "45 4,12,20 * * *", "kind": "cron", "tz": "America/Phoenix"},
+            "last_status": "ok",
+            "consecutive_errors": 0,
+        }
+        contract = {
+            "owner_workflow": "test",
+            "freshness_hours": 36,
+            "expected_artifacts": [
+                {"path": str(worker), "role": "pm_job_worker_runner", "required": True, "blocking": True},
+                {"path": str(loop), "role": "pm_execution_loop", "required": True, "blocking": True},
+            ],
+        }
+
+        classified = classify_job(job, contract)
+
+    assert classified["status"] == "fresh"
+    assert classified["signal_class"] == "NO_REPLY"
+    loop_record = next(item for item in classified["expected_artifacts"] if item["role"] == "pm_execution_loop")
+    assert loop_record["blocked_semantic"] is True
+    assert loop_record["blocking"] is False
+
+
+def test_status_card_cron_migration_self_loop_residue_is_not_urgent_blocker() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "veritas-status-card.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "status": "critical",
+                    "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "validation": {
+                        "status": "critical",
+                        "errors": ["wf74_pickup.missing_cron_migration_repair"],
+                    },
+                    "authority_boundary": {
+                        "paper_or_live_execution_allowed": False,
+                        "brokerage_or_account_action_allowed": False,
+                        "owner_approval_inferred": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        record = artifact_record(
+            {
+                "role": "veritas_status_card",
+                "path": str(path),
+                "required": True,
+                "blocking": True,
+            },
+            default_freshness_hours=36,
+        )
+
+    assert record["blocked_semantic"] is False
+    assert record["authority_widened"] is False
+
+
+def test_startup_brief_wf88_wiki_status_residue_is_not_main_dispatcher_blocker() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "startup-brief-packet.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "status": "critical",
+                    "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "validation": {
+                        "status": "critical",
+                        "errors": ["wf88_wiki_synthesis.validation_blocked"],
+                    },
+                    "authority_boundary": {
+                        "paper_or_live_execution_allowed": False,
+                        "brokerage_or_account_action_allowed": False,
+                        "owner_approval_inferred": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        record = artifact_record(
+            {
+                "role": "startup_brief_packet",
+                "path": str(path),
+                "required": True,
+                "blocking": True,
+            },
+            default_freshness_hours=36,
+        )
+
+    assert record["blocked_semantic"] is False
+    assert record["authority_widened"] is False
 
 
 def test_attention_class_separates_known_review_from_new_review() -> None:
@@ -340,6 +521,146 @@ def test_wf85_delivered_blocker_is_review_only_handoff_not_urgent_blocker() -> N
     assert record["authority_widened"] is False
 
 
+def test_paper_recommendation_blocked_card_is_review_only_handoff_not_urgent_blocker() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "morning-paper-deployment-recommendation-cards.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "status": "blocked",
+                    "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "validation": {"status": "ok"},
+                    "summary": {
+                        "candidate_count": 0,
+                        "clean_approval_card_count": 0,
+                        "next_safe_action": "Do not ask for approval yet; repair/freshness/posture blockers remain.",
+                    },
+                    "authority_boundary": {
+                        "review_only": True,
+                        "capital_deployment_allowed": False,
+                        "trade_or_execution_allowed": False,
+                        "paper_or_live_execution_allowed": False,
+                        "brokerage_or_account_action_allowed": False,
+                        "owner_approval_inferred": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        record = artifact_record(
+            {
+                "role": "morning_paper_deployment_recommendation_cards",
+                "path": str(path),
+                "required": True,
+                "blocking": True,
+            },
+            default_freshness_hours=18,
+        )
+
+    assert record["blocked_semantic"] is False
+    assert record["review_only_blocked_semantic"] is True
+    assert record["main_handoff_semantic"] is True
+    assert record["authority_widened"] is False
+
+
+def test_wf78_owner_card_prep_no_rows_ok_no_work_is_not_urgent_blocker() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "wf78-owner-card-prep-loop.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "status": "ok_no_work",
+                    "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "validation": {
+                        "status": "ok",
+                        "warnings": ["no_capital_review_card_preparable_rows"],
+                    },
+                    "summary": {
+                        "capital_review_rows": 0,
+                        "owner_cards_written": 0,
+                        "wf67_request_artifacts_written": 0,
+                        "reducer_status": "ok",
+                    },
+                    "authority_boundary": {
+                        "review_only": True,
+                        "non_executing_owner_card_prep_allowed": True,
+                        "capital_deployment_allowed": False,
+                        "trade_or_execution_allowed": False,
+                        "paper_or_live_execution_allowed": False,
+                        "brokerage_or_account_action_allowed": False,
+                        "owner_approval_inferred": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        record = artifact_record(
+            {
+                "role": "wf78_owner_card_prep_loop",
+                "path": str(path),
+                "required": True,
+                "blocking": True,
+            },
+            default_freshness_hours=18,
+        )
+
+    assert record["blocked_semantic"] is False
+    assert record["review_only_blocked_semantic"] is False
+    assert record["main_handoff_semantic"] is False
+    assert record["authority_widened"] is False
+
+
+def test_wf78_owner_card_prep_wf67_blocked_warning_is_not_urgent_blocker() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "wf78-owner-card-prep-loop.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "status": "ok",
+                    "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "validation": {
+                        "status": "ok",
+                        "warnings": ["wf67_request_generation_blocked_review_only:NVDA"],
+                    },
+                    "summary": {
+                        "capital_review_rows": 1,
+                        "owner_cards_written": 1,
+                        "wf67_request_artifacts_written": 0,
+                        "wf67_request_blocked_count": 1,
+                        "reducer_status": "ok",
+                    },
+                    "authority_boundary": {
+                        "review_only": True,
+                        "non_executing_owner_card_prep_allowed": True,
+                        "capital_deployment_allowed": False,
+                        "trade_or_execution_allowed": False,
+                        "paper_or_live_execution_allowed": False,
+                        "brokerage_or_account_action_allowed": False,
+                        "owner_approval_inferred": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        record = artifact_record(
+            {
+                "role": "wf78_owner_card_prep_loop",
+                "path": str(path),
+                "required": True,
+                "blocking": True,
+            },
+            default_freshness_hours=18,
+        )
+
+    assert record["blocked_semantic"] is False
+    assert record["review_only_blocked_semantic"] is False
+    assert record["main_handoff_semantic"] is False
+    assert record["authority_widened"] is False
+
+
 def test_wf85_undelivered_blocker_stays_urgent() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "wf85-paper-deployment-telegram-cron-runner.json"
@@ -388,11 +709,200 @@ def test_wf85_radar_treats_wf85_runner_as_nonblocking_source_context() -> None:
         assert runner_specs[0]["blocking"] is False
 
 
+def test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs() -> None:
+    for job_name in (
+        "Finance - Morning Paper Deployment Recommendation Cards",
+        "Finance - Midday Paper Deployment Recommendation Cards",
+        "Finance - Open-Ready Paper Deployment Recommendation Cards",
+        "Finance - WF85 Paper Deployment Telegram Radar",
+        "Finance - WF85 Open-Ready Telegram Radar",
+        "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar",
+        "Finance - Weekday Post-Close Review Refresh",
+    ):
+        specs = JOB_CONTRACTS[job_name]["expected_artifacts"]
+        roles = [item["role"] for item in specs]
+
+        assert "finance_decision_sync_spine" in roles, job_name
+        assert "veritas_finance_brief" in roles, job_name
+        assert roles.index("finance_decision_sync_spine") < roles.index("veritas_finance_brief"), job_name
+
+        md_specs = [item for item in specs if item["role"] == "veritas_finance_brief_md"]
+        assert md_specs, job_name
+        assert md_specs[0]["required"] is False
+        assert md_specs[0]["blocking"] is False
+
+
+def test_pm_autonomous_proof_worker_has_freshness_contract() -> None:
+    contract = JOB_CONTRACTS["PM - Autonomous Implementation Proof Worker"]
+    roles = [item["role"] for item in contract["expected_artifacts"]]
+
+    assert contract["freshness_hours"] == 24
+    assert roles[:3] == ["pm_autonomy_dispatcher", "pm_job_worker_runner", "pm_autonomy_verifier"]
+
+    inbox_specs = [item for item in contract["expected_artifacts"] if item["role"] == "pm_main_session_action_inbox"]
+    assert inbox_specs
+    assert inbox_specs[0]["required"] is False
+    assert inbox_specs[0]["blocking"] is False
+
+
+def test_file_backed_runtime_os_audit_contract_registers_expected_artifacts() -> None:
+    contracts = merged_job_contracts()
+    contract = contracts["Runtime - OS Audit Companion Packets Refresh"]
+    roles = [item["role"] for item in contract["expected_artifacts"]]
+
+    assert contract["contract_source"] == "state/cron-contracts/runtime-os-audit-companion-packets-refresh.json"
+    assert "tmp_lifecycle_guard" in roles
+    assert "token_budget_status" in roles
+    assert "security_warning_ledger" in roles
+    assert "wf78_promotion_visibility_top10" in roles
+    assert "pm_autonomy_verifier" in roles
+    assert "veritas_status_card" in roles
+
+
+def test_file_backed_finance_review_contracts_surface_nested_refresh_outputs() -> None:
+    contracts = merged_job_contracts()
+    morning = contracts["Finance - Weekday Morning Review Refresh"]
+    post_close = contracts["Finance - Weekday Post-Close Review Refresh"]
+    morning_roles = [item["role"] for item in morning["expected_artifacts"]]
+    post_close_roles = [item["role"] for item in post_close["expected_artifacts"]]
+
+    for role in ("earnings_calendar", "earnings_date_source_confidence", "event_calendar_rollforward"):
+        assert role in morning_roles, role
+        assert role in post_close_roles, role
+
+    for role in (
+        "post_close_final_quote_ledger",
+        "ticker_card_freshness_owner_runner",
+        "trade_grade_os_freshness_cron_runner",
+        "wf85_deployment_timing_gate",
+        "trade_grade_os_readiness_rollup",
+    ):
+        assert role in post_close_roles, role
+
+
+def test_weekly_os_radar_keeps_cron_control_packet_as_nonblocking_context() -> None:
+    for job_name in (
+        "Runtime - Weekly OS Improvement Radar Proof Refresh",
+        "Runtime - Weekly OS Improvement Radar Review",
+    ):
+        contract = merged_job_contracts()[job_name]
+        specs = [item for item in contract["expected_artifacts"] if item["role"] == "cron_control_packet"]
+        assert specs, job_name
+        assert specs[0]["required"] is True
+        assert specs[0]["blocking"] is False
+
+
+def test_cron_control_packet_context_does_not_block_freshness_spine() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "cron-control-packet.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "schema": "veritas.cron_control_packet.v1",
+                    "status": "error",
+                    "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                    "validation": {"status": "error", "errors": ["freshness_status_not_ok"]},
+                    "authority_boundary": {
+                        "cron_state_mutation_allowed": False,
+                        "cron_schedule_mutation_allowed": False,
+                        "runtime_config_mutation_allowed": False,
+                        "paper_or_live_execution_allowed": False,
+                        "brokerage_or_account_action_allowed": False,
+                        "owner_approval_inferred": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        record = artifact_record(
+            {
+                "role": "cron_control_packet",
+                "path": str(path),
+                "required": True,
+                "blocking": True,
+            },
+            default_freshness_hours=18,
+        )
+
+    assert record["blocked_semantic"] is True
+    assert record["blocking"] is False
+    assert record["authority_widened"] is False
+
+
+def test_wf78_tier_semantic_lineage_mismatch_blocks_inside_generic_ttl() -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        router_path = tmp_path / "wf78-auto-tier-routing.json"
+        truth_map_path = tmp_path / "wf78-truth-layer-map.json"
+        published_router = {
+            "status": "ok",
+            "generated_at_utc": "2026-08-08T12:00:00Z",
+            "rows": [{"ticker": "NVDA", "auto_tier": "Tier B", "auto_state": "B-VALIDATED"}],
+        }
+        live_router = {
+            "status": "ok",
+            "generated_at_utc": "2026-08-08T12:05:00Z",
+            "rows": [{"ticker": "NVDA", "auto_tier": "Tier A", "auto_state": "A-READY"}],
+        }
+        published_lineage = router_lineage(published_router, router_path)
+        router_path.write_text(json.dumps(live_router), encoding="utf-8")
+        truth_map_path.write_text(
+            json.dumps(
+                {
+                    "status": "ok",
+                    "generated_at_utc": now,
+                    "validation": {"status": "ok"},
+                    "source_router_lineage": published_lineage,
+                    "source_roster_lineage": {
+                        "path": "tmp/wf78-clean-tier-roster.json",
+                        "source_router_lineage": published_lineage,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        job = {
+            "name": "WF78 lineage test",
+            "enabled": True,
+            "schedule": {"expr": "0 * * * *", "kind": "cron", "tz": "America/Phoenix"},
+            "last_status": "ok",
+            "consecutive_errors": 0,
+        }
+        contract = {
+            "owner_workflow": "test",
+            "freshness_hours": 36,
+            "expected_artifacts": [
+                {
+                    "path": str(truth_map_path),
+                    "role": "wf78_truth_layer_map",
+                    "required": True,
+                    "blocking": False,
+                    "source_router_path": str(router_path),
+                }
+            ],
+        }
+
+        classified = classify_job(job, contract)
+
+    record = classified["expected_artifacts"][0]
+    assert record["stale"] is False
+    assert record["blocking"] is True
+    assert record["wf78_tier_semantic_lineage"]["status"] == "mismatched"
+    assert record["wf78_tier_semantic_lineage_blocked"] is True
+    assert classified["status"] == "blocked"
+    assert classified["signal_class"] == "BLOCKED"
+    assert classified["reason"] == "wf78_tier_semantic_lineage_missing_or_mismatched"
+
+
 if __name__ == "__main__":
     test_quote_first_warning_is_quiet_with_nonfresh_backlog()
     test_quote_first_warning_does_not_quiet_stale_or_critical()
     test_no_reply_operator_action_is_not_handoff()
     test_cron_operator_ledger_warning_rollup_quiet_only_when_clean()
+    test_pm_no_action_status_refresh_residue_is_quiet()
+    test_status_card_cron_migration_self_loop_residue_is_not_urgent_blocker()
     test_attention_class_separates_known_review_from_new_review()
     test_known_review_uses_underlying_signal_when_prior_run_was_quieted()
     test_known_monitor_only_bucket_is_quiet_success()
@@ -400,6 +910,16 @@ if __name__ == "__main__":
     test_paper_positions_blocked_packet_is_review_only_handoff_not_urgent_blocker()
     test_wf87_runtime_blocked_packet_is_review_only_handoff_not_urgent_blocker()
     test_wf85_delivered_blocker_is_review_only_handoff_not_urgent_blocker()
+    test_paper_recommendation_blocked_card_is_review_only_handoff_not_urgent_blocker()
+    test_wf78_owner_card_prep_no_rows_ok_no_work_is_not_urgent_blocker()
+    test_wf78_owner_card_prep_wf67_blocked_warning_is_not_urgent_blocker()
     test_wf85_undelivered_blocker_stays_urgent()
     test_wf85_radar_treats_wf85_runner_as_nonblocking_source_context()
+    test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs()
+    test_pm_autonomous_proof_worker_has_freshness_contract()
+    test_file_backed_runtime_os_audit_contract_registers_expected_artifacts()
+    test_file_backed_finance_review_contracts_surface_nested_refresh_outputs()
+    test_weekly_os_radar_keeps_cron_control_packet_as_nonblocking_context()
+    test_cron_control_packet_context_does_not_block_freshness_spine()
+    test_wf78_tier_semantic_lineage_mismatch_blocks_inside_generic_ttl()
     print("cron_freshness_spine_tests_passed")

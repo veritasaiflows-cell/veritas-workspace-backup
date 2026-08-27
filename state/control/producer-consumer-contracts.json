@@ -1,0 +1,120 @@
+{
+  "schema": "veritas.producer_consumer_contracts.v1",
+  "generated_at_utc": "2026-06-22T20:40:00Z",
+  "status": "ok",
+  "summary": {
+    "producer_count": 7,
+    "required_surface_families": [
+      "closeout",
+      "cron_contracts",
+      "finance_proof",
+      "go_validators",
+      "pm_queue",
+      "provider_failure_policy",
+      "source_lineage"
+    ],
+    "final_proof_after_last_producer": true,
+    "owner_route_required_for_metadata_apply": true
+  },
+  "producers": {
+    "cron_contracts": {
+      "producer": "scripts/cron_contract_validator.py",
+      "consumers": [
+        "scripts/implementation_release_contract.py",
+        "scripts/control_closeout_bundle.py",
+        "scripts/go_fast_proof_validators.py"
+      ],
+      "required_after_change": [
+        "python scripts\\cron_contract_validator.py --require-contracts --fail-on-drift --fail-on-prompt-bloat --write --validate"
+      ],
+      "finalizer_rule": "Run after any local or live cron payload edit and prove drift=0, missing=0, prompt_bloat=0, multiline_truncation_risk=0."
+    },
+    "go_validators": {
+      "producer": "scripts/go_binary_freshness_guard.py",
+      "consumers": [
+        "scripts/go_fast_proof_validators.py",
+        "scripts/control_closeout_bundle.py"
+      ],
+      "required_after_change": [
+        "python scripts\\go_binary_freshness_guard.py --write --validate",
+        "python scripts\\go_fast_proof_validators.py --profile implementation --write --validate"
+      ],
+      "finalizer_rule": "If scripts/go source is newer than bin/*.exe, rebuild the affected Go validator before final proof."
+    },
+    "source_lineage": {
+      "producer": "scripts/go_fast_proof_validators.py",
+      "consumers": [
+        "scripts/implementation_release_contract.py",
+        "scripts/control_closeout_bundle.py"
+      ],
+      "required_after_change": [
+        "python scripts\\go_fast_proof_validators.py --profile implementation --write --validate"
+      ],
+      "finalizer_rule": "Run source-lineage proof after the last producer that regenerates SQL/source-lineage artifacts."
+    },
+    "provider_failure_policy": {
+      "producer": "provider-backed finance/calendar/quote scripts",
+      "consumers": [
+        "scripts/implementation_release_contract.py",
+        "scripts/trade_grade_decision_cards.py"
+      ],
+      "required_after_change": [
+        "python scripts\\test_implementation_release_contract.py"
+      ],
+      "finalizer_rule": "Provider unavailable plus zero staged proposals may be no-op; provider unavailable plus staged mutation blocks."
+    },
+    "pm_queue": {
+      "producer": "scripts/pm_control_packet.py and scripts/pm_implementation_job_queue.py",
+      "consumers": [
+        "scripts/main_session_action_executor.py",
+        "scripts/control_closeout_bundle.py",
+        "scripts/implementation_release_contract.py"
+      ],
+      "required_after_change": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate",
+        "python scripts\\pm_implementation_job_queue.py --write --write-db --validate"
+      ],
+      "finalizer_rule": "Handoff may select a ready job only when queue authority proves it is not ledger-completed."
+    },
+    "finance_proof": {
+      "producer": "finance proof packet builders and Go proof validators",
+      "consumers": [
+        "scripts/implementation_release_contract.py",
+        "scripts/go_fast_proof_validators.py"
+      ],
+      "required_after_change": [
+        "python scripts\\finance_sql_canon_access.py --write --validate",
+        "python scripts\\go_fast_proof_validators.py --profile implementation --write --validate"
+      ],
+      "finalizer_rule": "Generated finance packets are review/proof surfaces only and must not become approval, execution, or portfolio mutation authority."
+    },
+    "closeout": {
+      "producer": "scripts/control_closeout_bundle.py",
+      "consumers": [
+        "scripts/implementation_release_contract.py",
+        "scripts/go_fast_proof_validators.py"
+      ],
+      "required_after_change": [
+        "python scripts\\control_closeout_bundle.py --validation-budget shared --write --validate",
+        "python scripts\\implementation_release_contract.py --phase blocking --write --validate"
+      ],
+      "finalizer_rule": "Run release contract after closeout producers so regenerated proof artifacts cannot create hidden drift."
+    }
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "release_gate_only": true,
+    "cron_schedule_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

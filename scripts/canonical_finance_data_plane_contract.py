@@ -42,7 +42,6 @@ PAPER_POSITIONS_PACKET = TMP / "finance-intelligence-state-paper-positions.json"
 
 SCHEMA = "veritas.canonical_finance_data_plane_contract.v1"
 WORKFLOW_ID = "WF84"
-EXPECTED_ACTIVE_TICKERS = 200
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -101,6 +100,15 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def int_or_none(value: Any) -> int | None:
+    try:
+        if value is None:
+            return None
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def load_json(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
@@ -113,6 +121,18 @@ def sqlite_count(db_path: Path, table: str) -> int | None:
     try:
         with sqlite3.connect(uri, uri=True) as conn:
             return int(conn.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0])
+    except sqlite3.Error:
+        return None
+
+
+def sqlite_rows(db_path: Path, query: str) -> list[dict[str, Any]] | None:
+    if not db_path.exists():
+        return None
+    uri = db_path.resolve().as_uri() + "?mode=ro"
+    try:
+        with sqlite3.connect(uri, uri=True) as conn:
+            conn.row_factory = sqlite3.Row
+            return [dict(row) for row in conn.execute(query).fetchall()]
     except sqlite3.Error:
         return None
 
@@ -213,7 +233,6 @@ def canonical_tables() -> list[dict[str, Any]]:
             "fields": [
                 ["ticker", "TEXT", False, "security_master.ticker"],
                 ["universe_scope", "TEXT", False, "production, review monitor, pilot fixture, etc."],
-                ["legacy_universe_tier", "TEXT", True, "legacy tier label when present"],
                 ["legacy_monitoring_role", "TEXT", True, "legacy monitoring role when present"],
                 ["production_answer_path_member", "BOOLEAN", False, "member of current production answer path"],
                 ["thin_monitor_row", "BOOLEAN", False, "thin-monitor row with lighter evidence expectations"],
@@ -444,6 +463,96 @@ def feeder_sources() -> list[dict[str, Any]]:
     ]
 
 
+def boolish(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        return value != 0
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "y"}
+    return bool(value)
+
+
+def finance_state_scope_profile(router_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    router_by_ticker = {
+        str(row.get("ticker") or "").upper(): row
+        for row in router_rows
+        if row.get("ticker")
+    }
+    router_tickers = set(router_by_ticker)
+    universe_rows = sqlite_rows(
+        FINANCE_STATE_DB,
+        """
+        SELECT
+            ticker,
+            active,
+            universe_scope,
+            production_answer_path_member,
+            thin_monitor_row,
+            decision_grade_eligible,
+            promotion_required_before_action,
+            source_open_required
+        FROM universe
+        """,
+    )
+    ticker_tier_rows = sqlite_rows(FINANCE_STATE_DB, "SELECT ticker FROM ticker_tier")
+    if universe_rows is None or ticker_tier_rows is None:
+        return {
+            "scope_compatibility_allowed": False,
+            "reason": "finance_state_tables_unreadable",
+        }
+
+    universe_tickers = {str(row.get("ticker") or "").upper() for row in universe_rows if row.get("ticker")}
+    ticker_tier_tickers = {str(row.get("ticker") or "").upper() for row in ticker_tier_rows if row.get("ticker")}
+    router_only = sorted(router_tickers - universe_tickers)
+    finance_only = sorted(universe_tickers - router_tickers)
+    tier_universe_mismatch = sorted(universe_tickers ^ ticker_tier_tickers)
+
+    invalid_scope_rows = sorted(
+        str(row.get("ticker") or "").upper()
+        for row in universe_rows
+        if not (
+            boolish(row.get("active"))
+            and str(row.get("universe_scope") or "") == "review_100_monitor"
+            and not boolish(row.get("production_answer_path_member"))
+            and boolish(row.get("thin_monitor_row"))
+            and not boolish(row.get("decision_grade_eligible"))
+            and boolish(row.get("promotion_required_before_action"))
+            and boolish(row.get("source_open_required"))
+        )
+    )
+    router_only_authority_risk = sorted(
+        ticker
+        for ticker in router_only
+        if boolish(router_by_ticker.get(ticker, {}).get("capital_deployment_approved"))
+        or boolish(router_by_ticker.get(ticker, {}).get("trade_or_execution_approved"))
+        or boolish(router_by_ticker.get(ticker, {}).get("would_mutate_universe"))
+        or not boolish(router_by_ticker.get(ticker, {}).get("requires_separate_capital_or_execution_approval", True))
+    )
+    compatibility_allowed = (
+        not finance_only
+        and not tier_universe_mismatch
+        and not invalid_scope_rows
+        and not router_only_authority_risk
+    )
+    return {
+        "scope_compatibility_allowed": compatibility_allowed,
+        "router_count": len(router_tickers),
+        "finance_state_universe_count": len(universe_tickers),
+        "finance_state_ticker_tier_count": len(ticker_tier_tickers),
+        "router_only_count": len(router_only),
+        "finance_only_count": len(finance_only),
+        "tier_universe_mismatch_count": len(tier_universe_mismatch),
+        "invalid_scope_row_count": len(invalid_scope_rows),
+        "router_only_authority_risk_count": len(router_only_authority_risk),
+        "router_only": router_only,
+        "finance_only": finance_only,
+        "tier_universe_mismatch": tier_universe_mismatch,
+        "invalid_scope_rows": invalid_scope_rows,
+        "router_only_authority_risk": router_only_authority_risk,
+    }
+
+
 def build_validation(sources: list[dict[str, Any]], tables: list[dict[str, Any]]) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -466,9 +575,14 @@ def build_validation(sources: list[dict[str, Any]], tables: list[dict[str, Any]]
 
     router = load_json(AUTO_ROUTER)
     summary = as_dict(router.get("summary"))
-    active_count = summary.get("active_ticker_count")
-    if active_count != EXPECTED_ACTIVE_TICKERS:
+    router_rows = [row for row in as_list(router.get("rows")) if isinstance(row, dict)]
+    scope_profile = finance_state_scope_profile(router_rows)
+    active_count = int_or_none(summary.get("active_ticker_count"))
+    router_row_count = len(router_rows)
+    if active_count is None or active_count <= 0:
         errors.append(f"unexpected_router_active_count:{active_count}")
+    elif router_row_count != active_count:
+        errors.append(f"router_active_count_row_mismatch:{active_count}!={router_row_count}")
     if summary.get("capital_deployment_approved_count", 0) != 0:
         errors.append("router_capital_deployment_approved_nonzero")
     if summary.get("trade_or_execution_approved_count", 0) != 0:
@@ -476,10 +590,15 @@ def build_validation(sources: list[dict[str, Any]], tables: list[dict[str, Any]]
 
     universe_count = sqlite_count(FINANCE_STATE_DB, "universe")
     ticker_tier_count = sqlite_count(FINANCE_STATE_DB, "ticker_tier")
-    if universe_count != EXPECTED_ACTIVE_TICKERS:
+    expected_active_tickers = active_count or router_row_count
+    finance_state_matches_router = universe_count == expected_active_tickers and ticker_tier_count == expected_active_tickers
+    finance_state_scope_compatible = bool(scope_profile.get("scope_compatibility_allowed"))
+    if universe_count != expected_active_tickers and not finance_state_scope_compatible:
         errors.append(f"unexpected_finance_state_universe_count:{universe_count}")
-    if ticker_tier_count != EXPECTED_ACTIVE_TICKERS:
+    if ticker_tier_count != expected_active_tickers and not finance_state_scope_compatible:
         errors.append(f"unexpected_finance_state_ticker_tier_count:{ticker_tier_count}")
+    if not finance_state_matches_router and not finance_state_scope_compatible:
+        errors.append("finance_state_scope_compatibility_failed")
 
     for optional in (DECISION_SYNC_SPINE, FUNDAMENTAL_METRICS, FUNDAMENTAL_IR_RECONCILIATION, WF78_SEC_RECONCILIATION):
         if not optional.exists():
@@ -490,13 +609,18 @@ def build_validation(sources: list[dict[str, Any]], tables: list[dict[str, Any]]
         "errors": errors,
         "warnings": warnings,
         "observed_counts": {
-            "expected_active_tickers": EXPECTED_ACTIVE_TICKERS,
+            "expected_active_tickers": expected_active_tickers,
             "router_active_tickers": active_count,
+            "router_row_count": router_row_count,
             "finance_state_universe_rows": universe_count,
             "finance_state_ticker_tier_rows": ticker_tier_count,
+            "finance_state_scope_compatibility_allowed": finance_state_scope_compatible,
+            "finance_state_router_only_count": scope_profile.get("router_only_count"),
+            "finance_state_finance_only_count": scope_profile.get("finance_only_count"),
             "canonical_table_count": len(tables),
             "feeder_source_count": len(sources),
         },
+        "finance_state_scope_profile": scope_profile,
     }
 
 

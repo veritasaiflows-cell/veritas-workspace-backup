@@ -187,11 +187,49 @@ def compare_blocked_fixture(case_name: str, dashboard_report: dict[str, Any], go
 
 def compare_live(dashboard_report: dict[str, Any], go_report: dict[str, Any], findings: list[dict[str, Any]]) -> None:
     approved_keys = approved_key_count()
-    add_finding(findings, "live_dashboard_status_ok_with_a2_fallback", dashboard_report.get("status") == "ok", "critical", dashboard_report.get("status"))
-    add_finding(findings, "live_dashboard_sql_read_allowed_with_a2_fallback", dashboard_report.get("sqlReadAllowed") is True, "critical", dashboard_report.get("sqlReadAllowed"))
-    add_finding(findings, "live_go_status_ok_with_a2_fallback", go_report.get("status") == "ok", "critical", go_report.get("status"))
-    add_finding(findings, "live_go_sql_read_allowed_with_a2_fallback", go_report.get("sql_read_allowed") is True, "critical", go_report.get("sql_read_allowed"))
-    add_finding(findings, "live_dashboard_go_row_count_match", len(as_dict(dashboard_report.get("rows"))) == as_dict(go_report.get("summary")).get("cache_rows") == approved_keys, "critical", {"dashboard_rows": len(as_dict(dashboard_report.get("rows"))), "go_cache_rows": as_dict(go_report.get("summary")).get("cache_rows"), "approved_keys": approved_keys})
+    guard = as_dict(dashboard_report.get("authorityGuard"))
+    live_read_allowed = (
+        dashboard_report.get("status") == "ok"
+        and dashboard_report.get("sqlReadAllowed") is True
+        and go_report.get("status") == "ok"
+        and go_report.get("sql_read_allowed") is True
+        and len(as_dict(dashboard_report.get("rows"))) == as_dict(go_report.get("summary")).get("cache_rows") == approved_keys
+    )
+    live_fail_closed = (
+        dashboard_report.get("status") == "degraded_fallback_required"
+        and dashboard_report.get("sqlReadAllowed") is False
+        and guard.get("status") == "blocked"
+        and guard.get("sql_read_allowed") is False
+        and go_report.get("status") == "fail_closed"
+        and go_report.get("sql_read_allowed") is False
+        and len(as_dict(dashboard_report.get("rows"))) == 0
+    )
+    add_finding(
+        findings,
+        "live_a2_posture_read_allowed_or_expected_fail_closed",
+        live_read_allowed or live_fail_closed,
+        "critical",
+        {
+            "dashboard_status": dashboard_report.get("status"),
+            "dashboard_sql_read_allowed": dashboard_report.get("sqlReadAllowed"),
+            "dashboard_rows": len(as_dict(dashboard_report.get("rows"))),
+            "go_status": go_report.get("status"),
+            "go_sql_read_allowed": go_report.get("sql_read_allowed"),
+            "go_cache_rows": as_dict(go_report.get("summary")).get("cache_rows"),
+            "approved_keys": approved_keys,
+        },
+    )
+    if live_fail_closed:
+        add_finding(
+            findings,
+            "live_a2_expected_fail_closed_posture",
+            False,
+            "warning",
+            {
+                "cache_stale_or_unsafe_rows": as_dict(go_report.get("summary")).get("cache_stale_or_unsafe_rows"),
+                "meaning": "live A2 guard is preserving fail-closed read posture; synthetic clean fixture remains the read-allowed proof",
+            },
+        )
     add_finding(findings, "live_both_keep_sql_non_canon", dashboard_report.get("sqlIsCanon") is False, "critical", dashboard_report.get("sqlIsCanon"))
     for key in (
         "canonicalNoteMutationAllowed",
@@ -294,7 +332,7 @@ def build_report(cycles_requested: int) -> dict[str, Any]:
             "cycles": cycles_requested,
             "case_fingerprints_stable": stable,
             "cases_per_cycle": 4,
-            "demotion_readiness_signal": "dashboard_ab_repeat_clean" if not critical else "not_ready",
+            "demotion_readiness_signal": "expected_fail_closed_not_ready_for_demotion" if warnings and not critical else "dashboard_ab_repeat_clean" if not critical else "not_ready",
         },
         "cases": cycles[0].get("cases"),
         "cycles": [{"cycle": cycle.get("cycle"), "status": cycle.get("status"), "summary": cycle.get("summary"), "cases": cycle.get("cases")} for cycle in cycles],

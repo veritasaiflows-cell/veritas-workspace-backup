@@ -1,38 +1,14 @@
 {
   "ticker": "LLY",
   "name": "Eli Lilly and Company",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 74.9,
-      "h": 78.81,
-      "l": 71.87,
-      "c": 78.75,
-      "v": 103.82
-    },
-    {
-      "d": "2016-07",
-      "o": 78.89,
-      "h": 83.59,
-      "l": 78.37,
-      "c": 82.89,
-      "v": 74.2
-    },
-    {
-      "d": "2016-08",
-      "o": 83.02,
-      "h": 83.79,
-      "l": 77.53,
-      "c": 77.75,
-      "v": 69.8
-    },
     {
       "d": "2016-09",
       "o": 77.75,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 948.95,
-      "h": 996.49,
-      "l": 943.8,
-      "c": 948.45,
-      "v": 25.22
+      "h": 1149.1,
+      "l": 943.26,
+      "c": 1105.0,
+      "v": 66.35
+    },
+    {
+      "d": "2026-06",
+      "o": 1095.0,
+      "h": 1238.0,
+      "l": 1052.15,
+      "c": 1199.43,
+      "v": 71.57
+    },
+    {
+      "d": "2026-07",
+      "o": 1217.51,
+      "h": 1249.45,
+      "l": 1119.0,
+      "c": 1148.84,
+      "v": 53.06
+    },
+    {
+      "d": "2026-08",
+      "o": 1152.0,
+      "h": 1292.65,
+      "l": 1109.15,
+      "c": 1255.4,
+      "v": 44.42
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 969.88,
     "stop": 876.52,
     "set": "2026-05-06",
-    "label": "907.64–969.88"
+    "label": "907.64-969.88"
   },
   "current_quote": {
-    "close": 948.45,
-    "ma20": 924.64,
-    "ma50": 941.78,
-    "ma200": 914.68,
-    "data_date": "2026-05-08"
+    "close": 1255.4,
+    "ma20": 1196.91,
+    "ma50": 1178.11,
+    "ma200": 1049.74,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_PRIMARY",
-    "type": "WATCH",
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
     "status": "NEAR_BAND",
-    "trend_stack": "ABOVE_ALL_MAS",
-    "suggested_low": 877.75,
-    "suggested_high": 944.98,
-    "suggested_stop": 840.4,
-    "sma_envelope_low": 900.12,
-    "sma_envelope_high": 994.86,
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 1146.8,
+    "suggested_high": 1217.12,
+    "suggested_stop": 1093.23,
+    "sma_envelope_low": 1109.81,
+    "sma_envelope_high": 1226.63,
     "earnings_state": "CLEAR",
-    "band_confidence": 3,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 4,
     "needs_review": true,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:38+00:00"
+  "generated_at": "2026-08-21T20:32:24+00:00"
 }

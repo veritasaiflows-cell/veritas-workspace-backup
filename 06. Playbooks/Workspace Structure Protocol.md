@@ -42,10 +42,12 @@ Use `Home.md` as the top-level navigator.
 - `07. Risk/` -> risk doctrine and constraints
 - `08. Audits/` -> dated audits, QA notes, hardening reports
 - `09. Archive/` -> retired but worth-keeping material
+- `10. Deliverables/` -> human-facing PDFs, Excel workbooks, HTML views, and CSV exports copied from machine/staging surfaces for retrieval
 - `memory/` -> dated daily continuity only
 - `scripts/` -> durable implementation and tooling
 - `skills/` -> reusable AgentSkills only
 - `tmp/` -> machine-generated or staged outputs
+- `state/deliverables/` -> machine-readable manifest and SQLite index for `10. Deliverables/`; not canon, approval, or proof replacement
 - `data/` -> approved durable append-only derived state/history datasets only; not credentials, runtime config, or canonical portfolio truth
 - entry-band HTML reports now live under `tmp/entry-band-reports/`, not in a root-level generated-documents exception
 
@@ -96,6 +98,7 @@ A real active project should have:
 - active project continuity -> `06. Playbooks/Project Continuity/`
 - project audit outputs -> `08. Audits/`
 - project-generated machine artifacts -> `tmp/`
+- human-facing project deliverables -> `10. Deliverables/` through a manifest-backed publisher, while source proof remains in `tmp/`
 
 ## Protocol vs playbook vs audit vs script
 Use this routing rule:
@@ -208,4 +211,30 @@ Guardrail:
 - keep `Home.md` as the navigator
 - keep active continuity in `memory/` and `06. Playbooks/Project Continuity/`
 - keep protocols and control documents clearly named in `06. Playbooks/`
+- keep human deliverables in `10. Deliverables/` and their machine manifest in `state/deliverables/`
 - use audits and QA notes to catch drift early
+
+## `10. Deliverables/` policy
+
+Purpose:
+- give Randall a stable place to find PDFs, Excel workbooks, HTML views, and CSV exports without searching `tmp/`
+- preserve the separation between human presentation files and machine proof files
+
+Allowed content:
+- final or current review-ready PDFs
+- Excel workbooks and CSV exports meant for human review
+- HTML dashboard or briefing exports meant to be opened directly
+- a generated `INDEX.md` built from `state/deliverables/current-manifest.json`
+
+Not allowed:
+- JSON proof packets
+- validator outputs
+- source histories
+- runtime config
+- canonical portfolio truth
+- approval records
+
+Execution rule:
+- use `python scripts\deliverables_publisher.py --write --validate`
+- publisher copies files; it does not move, delete, archive, or replace `tmp/` proof
+- archive writes, restores, and deletes remain separately gated

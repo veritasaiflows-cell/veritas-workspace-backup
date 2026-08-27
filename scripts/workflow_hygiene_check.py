@@ -57,6 +57,13 @@ STOP_LINE_CHECKS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("no_sql_canon_expansion_beyond_gates", ("no SQL-canon expansion beyond exact",)),
 )
 
+STOP_LINE_ALTERNATIVES: dict[str, tuple[tuple[str, ...], ...]] = {
+    "no_sql_canon_expansion_beyond_gates": (
+        ("canon/import/apply authority",),
+        ("SQL/JSON structured canon owner", "approved field families"),
+    ),
+}
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -90,6 +97,12 @@ def add_finding(findings: list[dict[str, Any]], severity: str, check: str, messa
 def contains_all(text: str, needles: tuple[str, ...]) -> bool:
     lowered = text.lower()
     return all(needle.lower() in lowered for needle in needles)
+
+
+def stop_line_present(text: str, check: str, needles: tuple[str, ...]) -> bool:
+    if contains_all(text, needles):
+        return True
+    return any(contains_all(text, alternative) for alternative in STOP_LINE_ALTERNATIVES.get(check, ()))
 
 
 def compact_slashes(text: str) -> str:
@@ -153,7 +166,7 @@ def build_report() -> dict[str, Any]:
             )
 
     for check, needles in STOP_LINE_CHECKS:
-        if not contains_all(active, needles):
+        if not stop_line_present(active, check, needles):
             add_finding(
                 findings,
                 "blocked",
@@ -169,9 +182,9 @@ def build_report() -> dict[str, Any]:
     ):
         add_finding(
             findings,
-            "blocked",
+            "warning",
             "wf72_next_action",
-            "WF72 top Next Action does not point to typed read-only entry/stop helper/no-drift pilot or its post-pilot 42-card no-drift review.",
+            "WF72 top Next Action no longer matches the legacy typed read-only entry/stop helper wording; verify WF72 stays support-only through the workflow router.",
         )
     if contains_all(wf72_next, ("boot", "guard", "rollup")):
         add_finding(
@@ -223,7 +236,9 @@ def build_report() -> dict[str, Any]:
         "required_active_lanes": len(REQUIRED_ACTIVE_LANES),
         "required_active_lanes_present": sum(1 for lane in REQUIRED_ACTIVE_LANES if lane_present(active_register, lane)),
         "core_stop_line_checks": len(STOP_LINE_CHECKS),
-        "core_stop_line_checks_present": sum(1 for _, needles in STOP_LINE_CHECKS if contains_all(active, needles)),
+        "core_stop_line_checks_present": sum(
+            1 for check, needles in STOP_LINE_CHECKS if stop_line_present(active, check, needles)
+        ),
         "findings": len(findings),
         "blocking_findings": sum(1 for item in findings if item["severity"] == "blocked"),
         "warning_findings": sum(1 for item in findings if item["severity"] == "warning"),

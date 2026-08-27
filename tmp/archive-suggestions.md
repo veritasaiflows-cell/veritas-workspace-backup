@@ -1,6 +1,6 @@
 # Workspace Archive Suggestions
 
-Generated: `2026-05-10T04:13:11Z`
+Generated: `2026-07-06T02:52:03Z`
 
 ## Verdict
 
@@ -11,73 +11,10 @@ Generated: `2026-05-10T04:13:11Z`
 
 ## Counts
 
-- Suggestions: 9
-- Suggestions with inbound references: 7
+- Suggestions: 2
+- Suggestions with inbound references: 0
 
 ## Suggestions
-
-### `backups/`
-- Kind: `undocumented_root_backup_surface`
-- Confidence: `low`
-- Reference count: `47`
-- Recommendation: classify as active migration backup, archive under `09. Archive/`, or remove only after owner approval and reference check
-- Proposed destination: `09. Archive/backups - Archived/`
-- Apply allowed: `False`
-- Blockers: root `backups/` is not documented as an active root entitlement; inbound references found; inspect before moving
-
-### `tmp/dump_bands.py`
-- Kind: `tmp_executable_helper`
-- Confidence: `low`
-- Reference count: `6`
-- Recommendation: promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval
-- Proposed destination: `09. Archive/tmp-python-helpers - Archived/dump_bands.py`
-- Apply allowed: `False`
-- Blockers: executable helper lives in generated-artifact tmp/ surface; inbound references found; promote/archive only after inspecting current use
-
-### `tmp/find_band_refs.py`
-- Kind: `tmp_executable_helper`
-- Confidence: `low`
-- Reference count: `6`
-- Recommendation: promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval
-- Proposed destination: `09. Archive/tmp-python-helpers - Archived/find_band_refs.py`
-- Apply allowed: `False`
-- Blockers: executable helper lives in generated-artifact tmp/ surface; inbound references found; promote/archive only after inspecting current use
-
-### `tmp/find_disallowed_model_refs.py`
-- Kind: `tmp_executable_helper`
-- Confidence: `low`
-- Reference count: `6`
-- Recommendation: promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval
-- Proposed destination: `09. Archive/tmp-python-helpers - Archived/find_disallowed_model_refs.py`
-- Apply allowed: `False`
-- Blockers: executable helper lives in generated-artifact tmp/ surface; inbound references found; promote/archive only after inspecting current use
-
-### `tmp/find_disallowed_openclaw_refs.py`
-- Kind: `tmp_executable_helper`
-- Confidence: `low`
-- Reference count: `6`
-- Recommendation: promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval
-- Proposed destination: `09. Archive/tmp-python-helpers - Archived/find_disallowed_openclaw_refs.py`
-- Apply allowed: `False`
-- Blockers: executable helper lives in generated-artifact tmp/ surface; inbound references found; promote/archive only after inspecting current use
-
-### `tmp/find_model_refs.py`
-- Kind: `tmp_executable_helper`
-- Confidence: `low`
-- Reference count: `6`
-- Recommendation: promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval
-- Proposed destination: `09. Archive/tmp-python-helpers - Archived/find_model_refs.py`
-- Apply allowed: `False`
-- Blockers: executable helper lives in generated-artifact tmp/ surface; inbound references found; promote/archive only after inspecting current use
-
-### `tmp/market_close_quick.py`
-- Kind: `tmp_executable_helper`
-- Confidence: `low`
-- Reference count: `7`
-- Recommendation: promote to scripts/ if durable; otherwise archive out of active tmp/ after owner approval
-- Proposed destination: `09. Archive/tmp-python-helpers - Archived/market_close_quick.py`
-- Apply allowed: `False`
-- Blockers: executable helper lives in generated-artifact tmp/ surface; inbound references found; promote/archive only after inspecting current use
 
 ### `scripts/__pycache__/`
 - Kind: `runtime_cache`
@@ -88,7 +25,7 @@ Generated: `2026-05-10T04:13:11Z`
 - Apply allowed: `False`
 - Blockers: deletion is destructive; keep as approval-gated even for cache cleanup
 
-### `scripts/operators/__pycache__/`
+### `scripts/lib/__pycache__/`
 - Kind: `runtime_cache`
 - Confidence: `medium`
 - Reference count: `0`

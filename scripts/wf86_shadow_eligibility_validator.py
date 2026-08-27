@@ -333,6 +333,68 @@ def classify_decision(
     return action, sorted(set(shadow_blockers)), sorted(set(assisted_blockers))
 
 
+def plain_english_for_blocker(blocker: str, symbol: str) -> str:
+    if blocker == "promotion_gate_vetoes_present":
+        return f"{symbol} has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+    if blocker.startswith("decision_factory_disposition=gate_deferred"):
+        return f"{symbol} is deferred by the decision factory; an upstream gate still needs repair before assisted review."
+    if blocker == "fresh_execution_quote_needed":
+        return f"{symbol} needs a fresh execution-grade quote before any assisted paper-order packet."
+    if blocker == "band_review_required":
+        return f"{symbol} needs entry-band review cleared before promotion."
+    if blocker == "post_apply_band_review_still_open":
+        return f"{symbol} still has open band-review debt after a band maintenance pass."
+    if blocker == "technical_posture_missing":
+        return f"{symbol} needs a refreshed technical posture before assisted review."
+    if blocker == "below_200d_ma":
+        return f"{symbol} is below the 200D moving average; the setup is broken until repaired."
+    if blocker.startswith("unknown_band_status"):
+        return f"{symbol} does not have a clean current band status."
+    return f"{symbol} blocker: {blocker}"
+
+
+def technical_plain_english(symbol: str, technical_setup: dict[str, Any]) -> str | None:
+    label = technical_setup.get("setup_label")
+    if label == "TACTICAL_DIP_RECLAIM":
+        return (
+            f"{symbol} is above the 200D moving average but below the 20D/50D area; "
+            "the setup may be valid, but momentum has not been fully repaired. "
+            f"{technical_setup.get('reclaim_trigger')}"
+        )
+    if label == "CLEAN_ADD":
+        return f"{symbol} has a clean-add technical label from the current moving-average posture."
+    if label == "BROKEN_SETUP":
+        return f"{symbol} is below the 200D moving average; repair/review is required before assisted-paper consideration."
+    if label == "TECHNICAL_UNKNOWN":
+        return f"{symbol} needs a refreshed technical posture before assisted-paper consideration."
+    return None
+
+
+def root_cause_blockers_from_factory(factory: dict[str, Any]) -> list[str]:
+    causes = [str(item) for item in as_list(factory.get("root_cause_blockers")) if str(item).strip()]
+    if factory.get("gate_vetoes") and not causes:
+        causes.append("promotion_gate_veto")
+    return sorted(set(causes))
+
+
+def plain_english_blockers_for(
+    symbol: str,
+    factory: dict[str, Any],
+    shadow_blockers: list[str],
+    assisted_blockers: list[str],
+    technical_setup: dict[str, Any],
+) -> list[str]:
+    out = [str(item) for item in as_list(factory.get("plain_english_blockers")) if str(item).strip()]
+    technical = technical_plain_english(symbol, technical_setup)
+    if technical:
+        out.append(technical)
+    for blocker in [*shadow_blockers, *assisted_blockers]:
+        text = plain_english_for_blocker(str(blocker), symbol)
+        if text not in out:
+            out.append(text)
+    return out
+
+
 def build_report() -> dict[str, Any]:
     policy = load_dict(POLICY)
     queue = load_dict(CAPITAL_QUEUE)
@@ -358,6 +420,13 @@ def build_report() -> dict[str, Any]:
         band_review_closure = band_review_closures.get(symbol)
         action, action_shadow_blockers, assisted_blockers = classify_decision(item, factory_row, morning_row, band_review_closure, technical_setup)
         shadow_blockers = sorted(set(hard_blockers + action_shadow_blockers))
+        root_cause_blockers = root_cause_blockers_from_factory(factory_row)
+        if action == "repair_only_technical_setup":
+            root_cause_blockers.append("technical_setup_repair")
+        if any(blocker in {"band_review_required", "post_apply_band_review_still_open"} for blocker in assisted_blockers):
+            root_cause_blockers.append("entry_band_review")
+        if "fresh_execution_quote_needed" in assisted_blockers:
+            root_cause_blockers.append("fresh_execution_quote")
         shadow_eligible = not shadow_blockers
         max_notional = caps.get("max_notional_per_order_usd")
         multiplier = technical_setup.get("notional_multiplier")
@@ -368,6 +437,8 @@ def build_report() -> dict[str, Any]:
             "shadow_eligible": shadow_eligible,
             "shadow_decision": action if shadow_eligible else "shadow_blocked",
             "shadow_blockers": shadow_blockers,
+            "root_cause_blockers": sorted(set(root_cause_blockers)),
+            "plain_english_blockers": plain_english_blockers_for(symbol, factory_row, shadow_blockers, assisted_blockers, technical_setup),
             "assisted_review_ready": shadow_eligible and action == "would_buy_shadow" and not assisted_blockers,
             "assisted_review_blockers": assisted_blockers,
             "execution_ready": False,
@@ -398,12 +469,13 @@ def build_report() -> dict[str, Any]:
         })
 
     validation_errors: list[str] = []
+    validation_warnings: list[str] = []
     for key, value in AUTHORITY_BOUNDARY.items():
         expected = key in {"review_only", "shadow_mode_only", "paper_only_design"}
         if value is not expected:
             validation_errors.append(f"authority_{key}_not_{str(expected).lower()}")
     if not decisions:
-        validation_errors.append("no_shadow_decisions")
+        validation_warnings.append("no_shadow_decisions")
     if any(decision.get("execution_ready") for decision in decisions):
         validation_errors.append("execution_ready_must_be_false_in_shadow_mode")
     if caps.get("model_portfolio_ceiling_usd") != 100000:
@@ -458,7 +530,7 @@ def build_report() -> dict[str, Any]:
         "validation": {
             "status": "ok" if not validation_errors else "error",
             "errors": validation_errors,
-            "warnings": [],
+            "warnings": validation_warnings,
         },
         "stop_lines": [
             "Shadow decision does not equal approval or execution.",

@@ -1,0 +1,56 @@
+{
+  "schema": "openclaw.agent_capabilities.v1",
+  "agent_id": "example-agent",
+  "department": "research",
+  "owner_workflow": "WF75",
+  "authority_class": "workspace_read_only",
+  "model_route": {
+    "default_model": "openai/gpt-5.4-mini",
+    "upgrade_model": "openai/gpt-5.5",
+    "upgrade_when": [
+      "judgment-heavy synthesis",
+      "safety-heavy decision",
+      "integration across multiple owner surfaces"
+    ]
+  },
+  "tools_allowed": [
+    "read-only workspace inspection",
+    "web research when authorized",
+    "local validation commands listed in this manifest"
+  ],
+  "tools_denied": [
+    "credential changes",
+    "runtime/config mutation",
+    "external posting or messaging",
+    "finance execution",
+    "destructive cleanup"
+  ],
+  "write_scope": [
+    "workspace-local drafts",
+    "tmp proof packets approved by lane contract"
+  ],
+  "forbidden_surfaces": [
+    "~/.openclaw/openclaw.json unless explicitly approved",
+    "auth profiles and credentials",
+    "brokerage/account/payment/customer external systems",
+    "live skills unless Skill Workshop apply is approved"
+  ],
+  "source_surfaces_first": [
+    "SOUL.md",
+    "AGENTS.md",
+    "TOOLS.md",
+    "relevant workflow router output",
+    "current bootstrap packet"
+  ],
+  "validation_commands": [
+    "openclaw config validate",
+    "openclaw agents list --json",
+    "openclaw agents bindings --json"
+  ],
+  "closeout_required": [
+    "deliverable path or summary",
+    "proof commands run",
+    "stop lines preserved",
+    "owner decisions still needed"
+  ]
+}

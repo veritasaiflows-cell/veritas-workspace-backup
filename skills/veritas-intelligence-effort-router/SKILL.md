@@ -1,194 +1,152 @@
 ---
 name: "veritas-intelligence-effort-router"
-description: "Route Veritas intelligence effort by risk, scope, freshness, and authority."
+description: "Absorb practical opportunity next-action routing."
 ---
 
 # Veritas Intelligence Effort Router
 
-Use this skill before substantial Veritas intelligence work when the prompt could touch markets, portfolio posture, ticker routing, macro/geopolitical context, product/workflow strategy, PM queue movement, or durable automation design.
+## Purpose
 
-The goal is not to do less work. The goal is to spend the right amount of work in the right place, avoid broad scans by default, and preserve decision quality where money, workflow authority, or durable state is involved.
+Route finance intelligence effort by current WF78 scarce-attention tier before spending model time, helper lanes, source-open research effort, owner attention, or practical recommendation-review effort.
 
-This skill is a dispatcher. It does not replace `veritas-response-contract`, `veritas-macro-pass`, `veritas-positioning-pass`, `veritas-fundamental-pass`, `veritas-technical-pass`, `veritas-pm-department`, `cron-automation-manager`, or implementation/QA skills. It decides which of them is actually needed.
+This skill decides how much effort to spend, which truth surfaces to trust, and what the next non-capital recommendation-review action should be. It does not approve capital deployment, paper/live orders, brokerage/account action, portfolio/canon mutation, external/customer delivery, or owner approval.
 
-## Core Principle
+Use this skill when Randall asks for opportunity review, ticker recommendations, candidate ranking, deployment readiness, blocker explanation, approval-card preparation, or whether something should move toward capital-deployment review. Use `veritas-response-contract` for the final Randall-facing answer shape and authority wording.
 
-Route by consequence and uncertainty:
+## Primary Route
 
-- Low consequence + fresh exact artifact = answer from the artifact.
-- Medium consequence + mixed/stale evidence = refresh or inspect the narrow producer/consumer chain.
-- High consequence + capital/execution/canon/customer/runtime implications = run full gated proof, state boundaries, and ask for owner decision where required.
+For finance/ticker effort routing:
 
-Do not run the full finance stack just because the topic is financial. Do not answer from memory when exact current artifacts exist.
+1. Run or read the SQL/JSON guard first:
 
-## Effort Bands
+```powershell
+python scripts\finance_sql_canon_access.py --write --validate
+```
 
-### Band 0 - Direct Answer
+2. Use current WF78 lane-qualified truth for tier/routing:
+   - `tmp\wf78-auto-tier-routing.json`
+   - `tmp\wf78-clean-tier-roster.json`
 
-Use when:
-- The user asks a conceptual, explanatory, or yes/no question.
-- No current market/portfolio/state claim is needed.
-- No durable artifact, code change, or operational decision is implied.
+3. Treat `lane_tier` and `review_lane` as the forward route. Flat `auto_tier` remains compatibility for older consumers.
 
-Do:
-- Answer directly.
-- Mention uncertainty if relevant.
-- Do not run tools unless freshness materially matters.
+4. Use WF84 data plane for review context after the router is fresh:
 
-Examples:
-- "What does Sahm Rule mean?"
-- "Is CAPE a timing signal?"
-- "Can we make skill routing more efficient?" before implementation is requested.
+```powershell
+python scripts\canonical_finance_data_plane.py --write --write-db --validate
+```
 
-### Band 1 - Thin Artifact Read
+5. Use WF85 cards/timing for approval-card readiness only after current routing/data proof is clean:
+   - `tmp\trade-grade-decision-cards.json`
+   - `tmp\trade-grade-approval-card-gate.json`
+   - `tmp\wf85-deployment-timing-gate.json`
 
-Use when:
-- The answer depends on current workspace truth, but a front-door artifact exists.
-- The decision is review-only or status-level.
-- The evidence stack was recently refreshed.
+6. Use WF86/WF87 artifacts when the question is specifically about assisted decisions, shadow decisions, promotion outcomes, command-center state, or follow-on workflow queues.
 
-Read only the thinnest truth surface first:
-- `tmp/cron-control-packet.json` for cron state.
-- `tmp/pm-control-packet.json` for PM state.
-- `tmp/macro-signal-spine.json` and `tmp/macro-judgment-draft.json` for broad macro state.
-- `tmp/deployment-readiness-surface.json` for deployment posture.
-- `tmp/wf78-capital-review-queue.json`, WF78 route packet, or ticker card/answer packet for ticker routing.
-- `workflow_router.py WF## --answer summary|all` for named workflow state.
+7. For material Tier A, A-READY, SQL-canon production answer, trade-grade coverage, or Retail-Grade Truth Routing claims, route through the Tier A gates after the SQL-canon front door:
 
-Do:
-- Answer from the current artifact.
-- State `ok`, `warning`, `stale`, `blocked`, or `partial` status.
-- Avoid opening broad notes unless the artifact says source detail is needed.
+```powershell
+python scripts\tier_a_trade_grade_coverage_gate.py --write --validate
+python scripts\tier_a_depth_repair_phase_executor.py --write --validate
+```
 
-### Band 2 - Narrow Refresh
+Then inspect:
 
-Use when:
-- The artifact is warning/stale/partial but repairable through one narrow chain.
-- The user asks for current intelligence and the producer is cheap and bounded.
-- The answer could affect prioritization but not capital/execution approval by itself.
+- `tmp\tier-a-trade-grade-coverage-gate.json`
+- `tmp\tier-a-depth-repair-phase-execution-packet.json`
+- ticker-specific WF85 full answer/card/parity when naming a ticker
 
-Run the smallest relevant producer/consumer chain:
-- Macro: `macro_metrics_ingest.py`, `macro_signal_spine.py`, then `macro_judgment_draft.py` when broad macro claims matter.
-- Cron: `cron_control_packet.py`; drill into `cron_freshness_spine.py` only when attention/stale/blocker counts matter.
-- PM: `pm_control_packet.py --write --write-db --validate` for PM queue truth.
-- Ticker/card: use existing ticker front door or answer packet before broad source reads.
-- WF78: use the specific WF78 gate or route packet named by the question.
+## Scarce-Attention Policy
 
-Do:
-- Refresh, validate, then answer.
-- Say which warnings remain.
-- Do not escalate into full audit unless the narrow refresh fails or exposes a high-consequence conflict.
+- Tier A: highest attention, but not automatic deployment. Requires current quote, current band/stop, source freshness, source-open status, earnings/sector/macro gates, WF85 timing gate, and production/authority proof before owner review. If paper is involved, require WF67 guard plus fresh short-lived kill switch and exact Randall approval.
+- Tier B: research bench and promotion/repair queue. Spend effort on source-open repair, owner lineage, quote/band context, fundamentals, analyst/earnings/technical coverage, and promotion evidence. Tier B does not create owner approval or execution authority.
+- Tier C: thin monitor. Spend only cheap monitor effort unless an attention trigger, catalyst, repair signal, or promotion candidate exists. Do not spend Tier A depth on broad Tier C.
 
-### Band 3 - Integrated Decision Pass
+## Practical Next-Action Route
 
-Use when:
-- The user asks what to do next, what to prioritize, what to buy/add/trim/hold/bench, or how current macro/portfolio/ticker evidence changes action.
-- Multiple evidence layers are needed: macro, fundamental, technical, positioning, risk, and source freshness.
-- The output could influence capital, portfolio posture, or workflow priority.
+Use this route after the primary truth surfaces are current enough for the requested consequence level.
 
-Route to the relevant domain skills:
-- `veritas-macro-pass` for macro/regime/rates/inflation/geopolitical backdrop.
-- `veritas-fundamental-pass` for business quality and financial evidence.
-- `veritas-technical-pass` / `technical-chart-pass` for entry/timing/invalidation.
-- `veritas-positioning-pass` for portfolio implications, priority order, and owner-gated action states.
-- `veritas-response-contract` for final answer shape.
+- **Tier A / A-READY:** run quote/band/stop reconciliation, WF85 timing gate, source freshness/source-open checks, concentration/crowding review, and paper-card readiness only when paper preparation is in scope. If clean, prepare an owner approval card with sizing/notional proposal and explicit blockers. Do not imply approval.
+- **Tier B:** route to research-bench repair: source-open, owner lineage, missing band/quote context, fundamentals, analyst coverage, earnings, technical coverage, and promotion evidence. Do not produce deployment cards from Tier B unless the ticker is promoted and revalidated.
+- **Tier C:** thin monitor only. Surface trigger candidates, catalyst flags, or promotion-worthy names; otherwise keep cheap watch status.
 
-Do:
-- Include thesis, risk, entry/invalidation, evidence freshness, and owner action required where capital may be influenced.
-- Separate review-ready, deployable, paper-ready, and approved.
-- Preserve no-trade/no-account/no-owner-approval-inference boundary.
+Translate machine state into practical decision labels:
 
-### Band 4 - Proof-Heavy Implementation / Audit
+- `watch-only`: useful to monitor, not worth deeper work now
+- `repair-needed`: interesting but blocked by missing/stale evidence or conflicting gates
+- `review-ready`: enough evidence for Randall review, not capital approval
+- `assisted-ready`: decision-assist artifacts are ready for review, not approval
+- `approval-card-ready`: exact owner approval card can be presented, still not approval or execution
 
-Use when:
-- The user asks to implement, harden, audit, repair, or automate a durable workflow.
-- Multiple files/artifacts/cron jobs/skills are touched.
-- A wrong change could create runtime, canon, portfolio, customer, or execution authority drift.
+## Approval-Card Readiness Gate
 
-Use implementation and QA skills:
-- `disciplined-implementation` for scripts, validators, manifests, workflow code, boot/control surfaces.
-- `cron-automation-manager` for scheduled workflow design or cron payload changes.
-- `workspace-qa-pass` and `code-review-auditor` for proof-heavy validation.
-- `skill_workshop` for durable skill/procedure changes.
+An approval-ready review card requires:
 
-Do:
-- Inspect existing pattern first.
-- Make scoped edits.
-- Run focused tests plus relevant integration validators.
-- Update memory/continuity when meaningful.
-- Preserve owner gates and report exact proof.
+- current market-window quote proof when the market is open or the action depends on execution freshness
+- current written band/stop or explicit missing-band blocker
+- clean WF85 timing gate for the intended action state
+- source freshness and source-open proof appropriate to the decision
+- concentration/crowding and portfolio-fit context when relevant
+- explicit authority boundary
+- WF67 paper guard proof if paper is involved
+- fresh kill switch only when execution preparation is actually in scope
+- exact Randall approval before any paper action
 
-## Routing Matrix
+A card can be ready for review without approving capital deployment or execution.
 
-Use this quick matrix before starting work.
+## Tier A Coverage / Depth Effort Rule
 
-| User intent | Default band | Primary evidence | Skills/tools |
-|---|---:|---|---|
-| Concept/explanation | 0 | none or one source | response contract if substantial |
-| Current status | 1 | front-door artifact | response contract |
-| Cron/PM/workflow status | 1-2 | cron/PM/router packets | PM/cron skills if changing schedules |
-| Macro state | 1-2 | macro signal spine + judgment | macro pass if interpreting consequences |
-| Ticker Q&A | 1-3 | ticker card/answer packet | fundamental/technical/positioning as needed |
-| Portfolio action | 3 | portfolio snapshot, execution board, macro, readiness | positioning pass + response contract |
-| Capital/paper order prep | 3-4 | WF67/WF78/WF85 proof | wf67-paper-trading-operator; owner approval required |
-| Automation/cron design | 4 | existing scripts/cron state | disciplined implementation + cron automation manager |
-| Skill/procedure change | 4 | skill files + workshop | skill_workshop only for proposal/apply lifecycle |
-| Full audit | 4 | WF73/control packets/artifact index | disciplined implementation + QA skills |
+If the Tier A coverage floor is green but depth readiness is blocked, answer with:
 
-## Source Order
+- coverage floor status
+- depth blockers
+- unique ticker or blocker-instance denominator
+- current customer/capital/execution boundary
+- next repair phase
 
-Use front doors before broad scans:
+Do not run a broad source-open research pass unless Randall asks to repair specific tickers or approves a bounded helper-lane batch.
 
-1. Exact route or packet named by the user.
-2. `TOOLS.md` first-hop route if unsure.
-3. Workflow router/capsule for named workflow.
-4. Current JSON proof artifact under `tmp/`.
-5. Exact owner note or continuity file.
-6. Broad `rg` search only when the route is unknown or artifacts conflict.
-7. Web/current external lookup only when source freshness, market data, laws, product data, or external facts matter.
+Never call Tier A trade-grade, deployable, customer-safe, approval-ready, or execution-ready solely because SQL-canon access, WF85 assembly, parity, A-READY routing, or 17/17 sections are clean.
 
-Do not let generated SQL/JSON/capsules become canon, approval, trade/account authority, or portfolio truth. They are routing/proof surfaces unless explicitly promoted through a gated path.
+## Historical Surface Rule
 
-## Freshness Rules
+Do not use stale lineage artifacts, old Tier B evidence repair packets, old legacy-42 surfaces, or readiness-review labels as quote source or current tier authority. Use the current WF78 router, current WF84 data plane, and current WF85 generated proof.
 
-If the answer depends on current markets or macro:
-- Prefer latest generated artifacts if they are fresh enough and validated.
-- If the artifact is warning-classed, name the warning and downgrade confidence.
-- If a source is stale but slow-moving, say stale but useful for long-horizon context only.
-- If a current-price, band, stop, or readiness claim matters and the artifact is stale/missing, refresh narrowly before answering or state the gap plainly.
+If current surfaces conflict, downgrade confidence, name the conflict plainly, and route the repair instead of forcing a recommendation.
 
-Never convert stale data into clean posture language.
+## Recommendation And Blocker Handoff
 
-## Authority Rules
+Use `veritas-response-contract` for final answer shape, but this skill should supply the practical recommendation state and plain-English blocker root cause.
 
-Always classify authority before effort:
+Preferred blocker translation:
 
-- Review-only routing: may automate within validated derived artifacts.
-- Workspace maintenance: only inside approved bounded gates and validators.
-- Capital recommendation: may recommend or prepare owner approval card, but no approval is inferred.
-- Paper execution: requires WF63/WF67 guardrails, fresh kill switch, exact scoped artifact, and Randall exact approval.
-- Live execution/account/money movement: blocked unless Randall gives a separate explicit live-action instruction with full scope and risk acceptance.
-- Config/auth/channel/runtime/network mutation: ask first unless already explicitly approved for the current task.
+```text
+<Ticker> was <positive condition>, but could not move to <target state> because <review debt/gate/source issue>. Cron/main should <automatic repair>. Randall is needed only for <capital/execution/policy decision>.
+```
 
-If authority is unclear, stop and state the decision needed.
+For serious finance recommendations, make sure the final answer has enough context for `veritas-response-contract` to state thesis/timeframe, current price versus written band when available, source freshness/confidence, base/bull/bear cases when decision-grade, entry/no-chase logic, invalidation/stop context, concentration/crowding, action state, and owner approval required for capital or execution.
+
+## Automation Allowed
+
+Automate non-capital ticker research, routing, tier state, repair packets, freshness classification, review packets, rankings, blocker explanations, sizing/staggering proposals for review, paper-order request drafts, and review-card preparation when validators pass.
+
+Use bounded helper lanes for broad research, repair batches, source-open sweeps, or QA only after exact outputs, stop lines, validation proof, and writable surfaces are defined.
+
+## Current Known Truth Split
+
+If SQL canon `tier_routing_state` conflicts with the WF78 router, prefer the current WF78 router for live scarce-attention routing and open the narrow SQL refresh path:
+
+```powershell
+python scripts\sql_canon_tier_routing_refresh.py --write --validate
+```
+
+Apply only through the gated DB apply lane with backup/rollback and validation. Do not mutate SQL/canon state from this skill alone.
 
 ## Stop Lines
 
-Stop or escalate when:
-- Evidence is stale or partial and the answer would influence capital or execution.
-- Generated artifacts conflict with canonical notes.
-- A result would imply owner approval, portfolio mutation, or trade/account authority.
-- The task requires credentials, account mutation, external delivery, public/customer action, or destructive cleanup.
-- A skill/procedure change is needed but has not gone through Skill Workshop.
-- A broad audit finds a blocker outside the current scope.
+Never infer capital deployment approval, paper/live order approval, brokerage/account action, money movement, live endpoint use, customer delivery, portfolio/canon/cash/sizing/risk mutation, or owner approval.
 
-## Final Answer Shape
+Generated artifacts are proof/review surfaces unless an exact gated apply path says otherwise.
 
-After routing and work, use `veritas-response-contract`:
+No recommendation label creates capital deployment approval, order submit/cancel/sell authority, live endpoint authority, account action, money movement, external delivery, portfolio/canon/cash/sizing/risk mutation, or owner approval.
 
-1. Conclusion.
-2. Evidence/proof or files changed.
-3. Trust limits and remaining warnings.
-4. Next concrete action.
-
-For finance answers, include owner-gated boundary when capital, paper/live execution, portfolio mutation, or approval could be inferred.
+Stop or downgrade confidence when sources are stale/conflicting, gates disagree, the answer would influence capital without fresh proof, a recommendation lacks downside/invalidation, approval-card preconditions are missing, or a proposed action needs Randall approval.

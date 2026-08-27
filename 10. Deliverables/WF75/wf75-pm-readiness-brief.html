@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WF75 PM Readiness Brief</title>
+<style>
+  @page { size: Letter; margin: 0.42in; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #162033; background: #fff; font-size: 10px; line-height: 1.34; }
+  .page { min-height: 9.7in; page-break-after: always; position: relative; padding-bottom: 0.18in; }
+  .page:last-child { page-break-after: auto; }
+  .top { border-bottom: 3px solid #12345c; padding-bottom: 9px; margin-bottom: 10px; display:flex; justify-content:space-between; gap: 18px; }
+  h1 { margin: 0; color: #0e294a; font-size: 25px; line-height: 1.02; }
+  h2 { margin: 0 0 7px; color: #0e294a; font-size: 17px; }
+  h3 { margin: 10px 0 5px; color: #284f7a; text-transform: uppercase; letter-spacing: .08em; font-size: 9px; }
+  ul { margin: 5px 0 8px 16px; padding: 0; }
+  li { margin: 3px 0; }
+  table { width:100%; border-collapse: collapse; table-layout: fixed; margin: 6px 0 9px; }
+  td, th { border: 1px solid #d7e0ea; padding: 6px; vertical-align: top; }
+  th { background:#12345c; color:white; text-align:left; }
+  .kicker { color:#5a6f88; font-size:8px; text-transform:uppercase; letter-spacing:.12em; font-weight:bold; }
+  .subtitle { color:#50647c; margin-top:4px; }
+  .panel { border:1px solid #d7e0ea; border-radius:8px; padding:8px; background:#f7f9fc; margin:6px 0; }
+  .panel.dark { background:#102a4a; color:white; border-color:#102a4a; font-size:12px; }
+  .panel.warn { background:#fff7dd; border-color:#d5a736; }
+  .grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin: 7px 0; }
+  .metric { border:1px solid #d7e0ea; border-radius:8px; padding:7px; background:white; min-height:.58in; }
+  .label { color:#5a6f88; font-size:7.5px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:3px; }
+  .value { font-weight:700; color:#0e294a; font-size:14px; line-height:1.1; }
+  .muted { color:#65778c; font-size:8px; }
+  .badge { display:inline-block; border-radius:999px; padding:2px 7px; font-size:7.5px; font-weight:bold; background:#e8eef7; color:#244b73; }
+  .badge.good { background:#e5f4ea; color:#176238; }
+  .badge.warn { background:#fff0c6; color:#765200; }
+  .badge.bad { background:#fde8e8; color:#8f1d1d; }
+  .footer { position:absolute; left:0; right:0; bottom:0; border-top:1px solid #e3e8f1; padding-top:4px; display:flex; justify-content:space-between; color:#6b7b91; font-size:7.5px; }
+</style>
+</head>
+<body>
+<section class="page">
+  <div class="top">
+    <div>
+      <div class="kicker">Internal PM artifact-only brief</div>
+      <h1>WF75 PM Readiness Brief</h1>
+      <div class="subtitle">Generated 2026-06-18T20:05:26Z from validated workspace artifacts</div>
+    </div>
+    <div><span class='badge good'>ready_for_internal_pm_review</span></div>
+  </div>
+  <div class="panel dark"><strong>Verdict:</strong> WF75 is the active product-readiness sprint: anonymous-scenario internal/service-led work can advance with real public evidence; public/customer/external use remains blocked.</div>
+  <div class="grid">
+    <div class="metric"><div class="label">PM update</div><div class="value"><span class='badge good'>ready_for_internal_pm_review</span></div></div>
+    <div class="metric"><div class="label">Artifact handoff</div><div class="value"><span class='badge good'>ready_for_internal_artifact_only_pm_handoff</span></div></div>
+    <div class="metric"><div class="label">SQLite WAL</div><div class="value"><span class='badge good'>control_plane_ready</span></div><div class="muted">journal </div></div>
+    <div class="metric"><div class="label">Required proof</div><div class="value">23/23</div></div>
+  </div>
+  <div class="panel"><strong>Operator console:</strong> <span class='badge neutral'>ready</span> validation <span class='badge good'>ok</span>. Use `tmp/wf75-operator-console.json` as the required source for queue, lifecycle, artifact health, scenario, renderer, and PM handoff review; rendered HTML is optional proof only.</div>
+  <h3>Completed this week</h3>
+  <ul><li>PM department skill created and routed for weekly updates, WF75 timelines, roadmaps, and PDF/presentation handoffs.</li>
+<li>PDF skill updated so WF75 PM/readiness packets are first-class internal deliverables.</li>
+<li>WF75 service-led readiness plan exists and validates as internal_service_led_readiness_plan_ready.</li>
+<li>Phase C/D JSON service-state, service-run, operator queue, and movement proof exist for anonymous-scenario handoff.</li>
+<li>SQLite WAL control-plane proof exists for local Veritas artifact refs, queue state, and one-worker claim exclusion.</li>
+<li>Artifact-only PM handoff exists and validates from WF77 bridge, renderer regression, scenario library, service state, operator queue, PM update, and SQLite control-plane proof.</li>
+<li>Retail SaaS operator packet is structurally valid and keeps all customer/external/execution authority false.</li>
+<li>Veritas harness scorecard now classifies command/tool failures separately from validator and authority failures.</li>
+<li>Macro-event calendar is now a first-class proof artifact for CPI, PPI, labor, FOMC, and PCE tracking.</li></ul>
+  <h3>Control-plane queue</h3>
+  <table><tr><th>Field</th><th>Current value</th></tr><tr><td>Queue item</td><td></td></tr>
+<tr><td>Status</td><td><span class='badge neutral'>unknown</span></td></tr>
+<tr><td>Claim owner</td><td></td></tr>
+<tr><td>Claim validation</td><td><span class='badge good'>ok</span></td></tr></table>
+  <div class="footer"><span>WF75 PM Readiness Brief</span><span>Page 1</span></div>
+</section>
+<section class="page">
+  <div class="top"><div><div class="kicker">Next sprint</div><h2>Enhancements, blockers, and proof</h2></div><div><span class='badge good'>ok</span></div></div>
+  <h3>Upcoming enhancements</h3>
+  <ul><li>1-2 / Phase 1: service-state table/JSON contract</li>
+<li>1-2 / Phase 1: run lifecycle state model</li>
+<li>1-2 / Phase 1: renderer/export contract</li>
+<li>1-2 / Phase 1: QA event contract</li>
+<li>1-2 / Phase 1: infrastructure backlog with stop lines</li>
+<li>2-4 / Phase 2: anonymous-scenario service-state SQLite or JSON store</li>
+<li>2-4 / Phase 2: SQLite WAL control-plane proof</li>
+<li>2-4 / Phase 2: service run writer</li>
+<li>2-4 / Phase 2: current status query packet</li>
+<li>2-4 / Phase 2: rollback/backup proof</li>
+<li>2-4 / Phase 2: production finance-canon isolation proof</li></ul>
+  <h3>Blockers and decisions</h3>
+  <ul><li>service_state_store: JSON v0 service-state exists when tmp/wf75-service-state-current.json is present; it remains the source proof surface for WF75 service state. Resolution: Keep JSON v0 validator clean and keep supplemental WF77 public price evidence fresh; use SQLite WAL only as a local control-plane index/queue, not as customer/canon truth.</li>
+<li>operator_console_work_queue: JSON v0 operator queue exists when tmp/wf75-operator-queue.json is present. Resolution: Keep the queue validator clean and consume it through the local operator console/control cockpit.</li>
+<li>operator_console_control_cockpit: Local operator console/control cockpit exists when tmp/wf75-operator-console.json and .html validate cleanly. Resolution: Use the console as the primary internal WF75 operating view while keeping it local-only and artifact-backed.</li>
+<li>sqlite_wal_control_plane: SQLite WAL control-plane proof exists when tmp/wf75-service-state-sqlite.json and tmp/wf75-service-state.sqlite are present. Resolution: Keep WAL, busy_timeout, foreign_keys, artifact refs, queue rows, and one-worker claim exclusion validating; do not treat the DB as finance canon, customer DB, approval authority, SQL/ticker import, or execution surface.</li>
+<li>customer_safe_renderer_export_pipeline: Reusable local renderer/export regression proof exists when tmp/wf75-renderer-export-regression.json is present; a full UI/operator console remains future work. Resolution: Keep the renderer/export regression harness clean and fail-closed before any new scenario, UI surface, or PM handoff consumes the outputs.</li>
+<li>qa_regression_harness: Compact repeated-run regression proof exists when tmp/wf75-renderer-export-regression.json is present; future expansion should add more seeded edge cases only when they represent real failure modes. Resolution: Keep clean scenarios passing and seeded-bad scenarios failing before treating any regenerated output as review-ready.</li>
+<li>scenario_template_library: Anonymous scenario-template library exists when tmp/wf75-scenario-template-library.json is present; future work should expand it only with validator-backed scenario needs. Resolution: Maintain at least three anonymous scenarios covering AI infrastructure, Materials diversification, and supplemental-price/risk edge cases without fake-person profiles.</li>
+<li>artifact_only_pm_handoff: Artifact-only PM handoff exists when tmp/wf75-artifact-only-pm-handoff.json validates cleanly. Resolution: Keep the handoff fed by WF77 bridge, renderer regression, scenario library, service state, operator queue, PM weekly update, and SQLite WAL control-plane proof.</li></ul>
+  <h3>Trust gates</h3>
+  <ul><li>No items surfaced.</li></ul>
+  <div class="panel warn"><strong>Boundary:</strong> Internal review/proof only. No public launch, real customer data, external delivery, source-licensing claim, legal/compliance claim, portfolio/canon mutation, trading, account, paper/live action, or owner approval inference.</div>
+  <h3>Source stack</h3>
+  <ul><li>pm_update: tmp/wf75-pm-weekly-update.json</li>
+<li>artifact_handoff: tmp/wf75-artifact-only-pm-handoff.json</li>
+<li>sqlite_control_plane: tmp/wf75-service-state-sqlite.json</li>
+<li>operator_console: tmp/wf75-operator-console.json</li>
+<li>operator_packet: tmp/operator-packets/retail-saas-wf75.json</li></ul>
+  <div class="footer"><span>Review/proof only. No launch, customer, account, trade, or approval authority.</span><span>Page 2</span></div>
+</section>
+</body>
+</html>

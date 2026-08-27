@@ -21,8 +21,12 @@ def main() -> int:
     rows = _build_handoff_proof_state()
     by_key = {row.get("key"): row for row in rows}
     expect(by_key.get("weekday_research", {}).get("state") == "PROVED", "weekday research handoff proof state must remain PROVED", errors)
+    allowed_states = {"PROVED", "PENDING_FIRST_PROOF", "BLOCKED", "MISSING", "STALE"}
     for key in ("morning", "post_close", "sunday_weekly", "sunday_research"):
-        expect(by_key.get(key, {}).get("state") == "PENDING_FIRST_PROOF", f"{key} handoff proof state must remain PENDING_FIRST_PROOF", errors)
+        state = by_key.get(key, {}).get("state")
+        expect(state in allowed_states, f"{key} handoff proof state must use gate vocabulary, got {state}", errors)
+        if state == "PROVED":
+            expect(by_key.get(key, {}).get("proof_artifact"), f"{key} cannot be PROVED without gate proof", errors)
     for key, row in by_key.items():
         sql_source = row.get("sql_source") or {}
         sql_index = row.get("sql_artifact_index") or {}

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "seed-started",
+    "timestamp": "2026-07-04T14:40:02Z",
+    "actor": {
+      "name": "local learner"
+    },
+    "verb": {
+      "id": "https://adlnet.gov/expapi/verbs/started",
+      "display": {
+        "en-US": "started"
+      }
+    },
+    "object": {
+      "id": "https://veritas.local/training/otel-proof-validator-practice",
+      "definition": {
+        "name": {
+          "en-US": "OTEL Proof Validator Practice Lab"
+        }
+      }
+    },
+    "context": {
+      "platform": "Veritas local HTML training runtime"
+    }
+  },
+  {
+    "id": "seed-reviewed-boundary",
+    "timestamp": "2026-07-04T14:40:02Z",
+    "actor": {
+      "name": "local learner"
+    },
+    "verb": {
+      "id": "https://adlnet.gov/expapi/verbs/reviewed_boundary",
+      "display": {
+        "en-US": "reviewed_boundary"
+      }
+    },
+    "object": {
+      "id": "https://veritas.local/training/otel-proof-validator-practice/authority-boundary"
+    },
+    "result": {
+      "completion": true,
+      "success": true
+    },
+    "context": {
+      "extensions": {
+        "https://veritas.local/extensions/internal_training_only": true,
+        "https://veritas.local/extensions/external_delivery_approved": false
+      }
+    }
+  }
+]

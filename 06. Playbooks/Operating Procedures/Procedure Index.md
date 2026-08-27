@@ -14,10 +14,12 @@ Provide one operator-facing map of the procedure repository without pretending e
 ### 01. Control plane / operating model
 - `06. Playbooks/Operating Model.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`
+- `06. Playbooks/Operating Procedures/Veritas Encounter Contract.md`
 
 ### 02. Workflow governance standards
 - `06. Playbooks/Major Workflow Contract Standard.md`
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md`
+- `06. Playbooks/Operating Procedures/Subagent Load Budget and Staff Handoff Standard.md`
 - `06. Playbooks/Workflow Closeout Artifact Standard.md`
 
 ### 03. Automation & scheduling procedures
@@ -54,6 +56,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `08. Audits/`
 
 ## Current priority operator procedures
+- `06. Playbooks/Operating Procedures/Veritas Encounter Contract.md`
 - `06. Playbooks/Operating Procedures/Daily Summary Review-Only Brief Procedure.md`
 - `06. Playbooks/Operating Procedures/SQLite Retrieval Index Procedure.md`
 - `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md`
@@ -62,6 +65,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `06. Playbooks/Cron Job Protocol.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`
 - `06. Playbooks/Spawn and Closeout Governance Matrix.md`
+- `06. Playbooks/Operating Procedures/Subagent Load Budget and Staff Handoff Standard.md`
 - `06. Playbooks/Workspace Structure Protocol.md`
 
 ## Plain-English SOP companion layer

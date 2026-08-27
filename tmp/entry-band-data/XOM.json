@@ -1,38 +1,14 @@
 {
   "ticker": "XOM",
-  "name": "Exxon Mobil Corporation",
-  "asof": "2026-05-09",
+  "name": "ExxonMobil Holdings Corporation",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 88.43,
-      "h": 93.83,
-      "l": 87.61,
-      "c": 93.74,
-      "v": 252.09
-    },
-    {
-      "d": "2016-07",
-      "o": 93.36,
-      "h": 95.55,
-      "l": 86.12,
-      "c": 88.95,
-      "v": 209.72
-    },
-    {
-      "d": "2016-08",
-      "o": 88.08,
-      "h": 88.94,
-      "l": 85.58,
-      "c": 87.14,
-      "v": 235.41
-    },
     {
       "d": "2016-09",
       "o": 86.72,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 152.61,
-      "h": 155.29,
+      "h": 163.68,
       "l": 143.92,
-      "c": 144.57,
-      "v": 123.95
+      "c": 145.26,
+      "v": 351.63
+    },
+    {
+      "d": "2026-06",
+      "o": 147.02,
+      "h": 154.91,
+      "l": 134.95,
+      "c": 136.72,
+      "v": 381.29
+    },
+    {
+      "d": "2026-07",
+      "o": 136.53,
+      "h": 159.07,
+      "l": 135.63,
+      "c": 155.44,
+      "v": 317.81
+    },
+    {
+      "d": "2026-08",
+      "o": 153.46,
+      "h": 168.64,
+      "l": 149.09,
+      "c": 165.11,
+      "v": 208.62
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 158.44,
     "stop": 146.14,
     "set": "2026-05-01",
-    "label": "150.24–158.44"
+    "label": "150.24-158.44"
   },
   "current_quote": {
-    "close": 144.57,
-    "ma20": 150.16,
-    "ma50": 154.89,
-    "ma200": 127.83,
-    "data_date": "2026-05-08"
+    "close": 165.11,
+    "ma20": 157.58,
+    "ma50": 148.11,
+    "ma200": 140.74,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "KELTNER_PRIMARY",
-    "type": "WATCH",
-    "status": "IN_BAND",
-    "trend_stack": "ABOVE_200_BELOW_20_50",
-    "suggested_low": 142.98,
-    "suggested_high": 152.36,
-    "suggested_stop": 137.77,
-    "sma_envelope_low": 143.6,
-    "sma_envelope_high": 158.72,
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "NEAR_BAND",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 150.65,
+    "suggested_high": 159.09,
+    "suggested_stop": 145.78,
+    "sma_envelope_low": 144.97,
+    "sma_envelope_high": 160.23,
     "earnings_state": "CLEAR",
-    "band_confidence": 3,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 4,
     "needs_review": true,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:35+00:00"
+  "generated_at": "2026-08-21T20:32:19+00:00"
 }

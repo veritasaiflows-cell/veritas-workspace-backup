@@ -3,11 +3,43 @@
 Opened: 2026-06-11
 Workflow: WF87
 Owner: Veritas main session
-Status: Official workflow, plan approved for registration; execution authority unchanged
+Status: Narrowed to paper-autonomy runtime governor; execution authority unchanged
+
+## 2026-06-27 WF87 Narrowing Checkpoint
+
+WF87 is no longer the broad "Veritas OS V2" owner. WF88 now owns OS-wide learning, cleanup, coding outcomes, behavior portability, route contraction, and cross-workflow control.
+
+WF87 is now the paper-autonomy runtime governor and evidence harness:
+
+- consumes WF85 candidates and WF67 guard proof
+- checks TTL, kill switch, circuit breakers, position sizing, stale quote/band/stop state, intraday monitor, and reconciliation proof
+- maintains paper-autonomy readiness evidence, trade-decision journal routing, shadow/assisted outcome classification, and owner-review card readiness
+- exports outcome signals to WF88 for grading and experiment work
+- never infers paper/live execution approval
+
+Current corrected diagnosis:
+
+- shadow threshold is met: 21/20 clean decisions and 7/5 market sessions
+- reconciliation maturity is true
+- shadow outcome scoreable count is 22
+- Phase C autonomous paper buy remains false
+- Phase E live remains false
+- runtime is still blocked by fail-closed-at-rest gates: approval/TTL freshness, intraday monitor, and portfolio circuit breakers
+- Phase B assisted maturity is not met: 0/5 clean assisted filled round trips
+- no exact owner-approved paper action exists
+
+New front door:
+
+- `tmp/wf87-paper-autonomy-runtime-governor.json`
+- `scripts/wf87_paper_autonomy_runtime_governor.py --write --write-md --validate`
+
+Phase C is a separate owner approval event, not an automatic promotion from clean validators.
 
 ## V2 Plan - Part 1 Executive Summary
 
-V2 is not a rebuild. The current spine is already close: WF84 data plane -> WF85 decision OS -> WF86 paper autotrader, guarded by WF67. The $5k autonomous-pilot approval artifact is valid, the WF67 guard is ok, and the cap bridge passed. The remaining autonomy blockers are shadow proof and reconciliation maturity: currently 3/20 decisions and 1/5 sessions. Those accrue through the 14:36 daily cron, so they are time-gated, not rebuild-gated.
+Historical note retained for context. The original V2 plan below has been superseded by the 2026-06-27 narrowing checkpoint above. WF87 remains useful, but only as the execution-adjacent paper-autonomy runtime proof layer under WF88.
+
+V2 is not a rebuild. The current spine is already close: WF84 data plane -> WF85 decision OS -> WF86 paper autotrader, guarded by WF67. The original plan treated shadow proof and reconciliation maturity as the main blockers. Current proof has moved past those maturity blockers, but runtime still fails closed and assisted paper round-trip maturity remains insufficient.
 
 V2 has three workstreams.
 
@@ -358,3 +390,29 @@ Closed the loop between WF86 assisted-card preparation and the WF87 command-cent
   - cron control: `ok`, escalation `0`
 
 Boundary unchanged: command-center visibility does not create approval, paper execution, live execution, account action, money movement, kill-switch lifecycle authority, owner approval inference, or paper-to-live promotion.
+
+## WF87/WF88 Runtime Thinning Checkpoint - 2026-06-27
+
+WF87 remains the narrow paper-autonomy runtime proof layer under WF88. WF88 now owns the wider V2 truth-thinning, cleanup-readiness, outcome-learning, and route-budget layer.
+
+Current WF87 runtime proof:
+
+- Status: `runtime_fail_closed_maturity_improved`
+- Shadow threshold: met
+- Reconciliation maturity: true
+- Scoreable shadow decisions: `22`
+- Assisted filled round trips: `0/5`
+- Stale input count: `1`, from WF67 paper guard age outside its review window
+- Execution allowed: `false`
+
+Current WF88 V2 routing proof:
+
+- Source-open blocked rows are classified, not treated as implementation blockers.
+- WF88 source-open classifier reports `42` blocked rows, `0` default-runtime blockers, `19` active SQL/JSON repair rows, `17` below-stop/invalidation review-only rows, `6` monitor-only context rows, and `0` unknown rows.
+- Delete readiness is packet-only: `9` stale tmp files and `1` DB archive candidate are ready for exact owner approval packets; no script deletion or cron mutation is ready.
+
+V3 direction:
+
+- Keep WF87 fail-closed until WF67 guard freshness, Phase B assisted filled round trips, and exact owner approval gates are all clean.
+- Move V2 toward a route-budget dashboard with one truth source per decision type and explicit compatibility/migration/delete modes.
+- Do not use source-open residue, legacy compatibility wrappers, or stale improvement debt as default runtime blockers once they are classified.

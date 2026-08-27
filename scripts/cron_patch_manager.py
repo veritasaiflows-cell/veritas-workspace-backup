@@ -8,6 +8,7 @@ before any live mutation.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import subprocess
@@ -21,6 +22,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,6 +71,29 @@ def openclaw_cmd() -> str:
         return found
     known = Path.home() / "AppData" / "Roaming" / "npm" / "openclaw.cmd"
     return str(known) if known.exists() else "openclaw.cmd"
+
+
+def openclaw_command_prefix(platform: str | None = None) -> list[str]:
+    """Return an argv-safe OpenClaw CLI prefix.
+
+    Windows npm ``.cmd`` shims expand ``%*`` through ``cmd.exe``. A multiline
+    argument can therefore be truncated even though ``subprocess.run`` was
+    given a list and the shim exits successfully. Bypass that extra parser
+    when the shim's Node entry point is available; retain the existing CLI
+    resolution as a conservative fallback on other installs and platforms.
+    """
+    cli = Path(openclaw_cmd())
+    if (platform or sys.platform).startswith("win"):
+        entry = cli.parent / "node_modules" / "openclaw" / "openclaw.mjs"
+        bundled_node = cli.parent / "node.exe"
+        node = str(bundled_node) if bundled_node.is_file() else shutil.which("node.exe") or shutil.which("node")
+        if node and entry.is_file():
+            return [node, str(entry)]
+    return [str(cli)]
+
+
+def openclaw_command(*args: str) -> list[str]:
+    return [*openclaw_command_prefix(), *args]
 
 
 def utc_now() -> str:
@@ -136,7 +161,10 @@ def run_openclaw_json(command: list[str], timeout: int = 60) -> tuple[Any, dict[
 
 
 def cron_list() -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    payload, result = run_openclaw_json([openclaw_cmd(), "cron", "list", "--all", "--json", "--timeout", "30000"], timeout=45)
+    payload, result = run_openclaw_json(
+        openclaw_command("cron", "list", "--all", "--json", "--timeout", "30000"),
+        timeout=45,
+    )
     jobs = payload.get("jobs") if isinstance(payload, dict) else None
     if not isinstance(jobs, list):
         return [], {**result, "ok": False, "error": "cron_list_missing_jobs"}
@@ -144,7 +172,10 @@ def cron_list() -> tuple[list[dict[str, Any]], dict[str, Any]]:
 
 
 def cron_get(job_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
-    payload, result = run_openclaw_json([openclaw_cmd(), "cron", "get", job_id, "--timeout", "30000"], timeout=45)
+    payload, result = run_openclaw_json(
+        openclaw_command("cron", "get", job_id, "--timeout", "30000"),
+        timeout=45,
+    )
     return (payload if isinstance(payload, dict) else {}), result
 
 
@@ -166,6 +197,47 @@ def read_patch_file(path: Path | None) -> dict[str, Any]:
         return {}
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
+
+
+def read_rollback_backup(path: Path) -> tuple[dict[str, Any], list[str]]:
+    """Load a cron backup strictly enough that rollback cannot invent state.
+
+    ``load_json_artifact`` intentionally treats missing and malformed artifacts
+    as ``None`` for read-side consumers. A rollback source is mutation
+    authority, so those states must remain distinguishable and fail closed.
+    Backups written by :func:`backup_job` are complete cron job objects with a
+    stable id and payload object.
+    """
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return {}, ["rollback_backup_missing"]
+    except OSError as exc:
+        return {}, [f"rollback_backup_unreadable:{type(exc).__name__}"]
+    if not raw.strip():
+        return {}, ["rollback_backup_empty"]
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}, ["rollback_backup_invalid_json"]
+    if not isinstance(payload, dict):
+        return {}, ["rollback_backup_not_object"]
+
+    errors: list[str] = []
+    if not isinstance(payload.get("id"), str) or not str(payload.get("id") or "").strip():
+        errors.append("rollback_backup_missing_job_id")
+    if not isinstance(payload.get("name"), str) or not str(payload.get("name") or "").strip():
+        errors.append("rollback_backup_missing_job_name")
+    job_payload = payload.get("payload")
+    if not isinstance(job_payload, dict):
+        errors.append("rollback_backup_payload_not_object")
+    elif not isinstance(job_payload.get("kind"), str) or not str(job_payload.get("kind") or "").strip():
+        errors.append("rollback_backup_missing_payload_kind")
+    elif job_payload.get("kind") == "agentTurn" and (
+        not isinstance(job_payload.get("message"), str) or not str(job_payload.get("message") or "").strip()
+    ):
+        errors.append("rollback_backup_missing_agent_turn_message")
+    return payload, errors
 
 
 def build_requested_patch(args: argparse.Namespace) -> dict[str, Any]:
@@ -201,6 +273,83 @@ def current_field(job: dict[str, Any], key: str) -> Any:
     return job.get(key)
 
 
+def exact_value_equal(expected: Any, actual: Any) -> bool:
+    """Compare JSON-like values without Python's bool/int equivalence."""
+    if type(expected) is not type(actual):
+        return False
+    if isinstance(expected, dict):
+        return expected.keys() == actual.keys() and all(
+            exact_value_equal(expected[key], actual[key]) for key in expected
+        )
+    if isinstance(expected, list):
+        return len(expected) == len(actual) and all(
+            exact_value_equal(expected_item, actual_item)
+            for expected_item, actual_item in zip(expected, actual)
+        )
+    return expected == actual
+
+
+def text_sha256(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def compare_patch_to_live_job(patch: dict[str, Any], live_job: dict[str, Any]) -> dict[str, Any]:
+    fields: list[dict[str, Any]] = []
+    mismatches: list[str] = []
+    for key in sorted(patch):
+        expected = patch[key]
+        actual = current_field(live_job, key)
+        matches = exact_value_equal(expected, actual)
+        field = {
+            "field": key,
+            "matches": matches,
+            "expected": expected,
+            "actual": actual,
+        }
+        if key == "message":
+            field.update(
+                {
+                    "expected_length": len(expected) if isinstance(expected, str) else None,
+                    "actual_length": len(actual) if isinstance(actual, str) else None,
+                    "expected_sha256": text_sha256(expected),
+                    "actual_sha256": text_sha256(actual),
+                }
+            )
+        fields.append(field)
+        if not matches:
+            mismatches.append(key)
+    return {
+        "status": "ok" if not mismatches else "error",
+        "exact_match": not mismatches,
+        "mismatched_fields": mismatches,
+        "fields": fields,
+    }
+
+
+def verify_live_round_trip(job_id: str, patch: dict[str, Any]) -> dict[str, Any]:
+    live_job, lookup_result = cron_get(job_id)
+    result = compare_patch_to_live_job(patch, live_job) if live_job else {
+        "status": "error",
+        "exact_match": False,
+        "mismatched_fields": sorted(patch),
+        "fields": [],
+    }
+    result["lookup_result"] = lookup_result
+    errors: list[str] = []
+    if not lookup_result.get("ok") or not live_job:
+        errors.append("round_trip_job_refetch_failed")
+    elif str(live_job.get("id") or "") != job_id:
+        errors.append("round_trip_job_id_mismatch")
+    errors.extend(f"round_trip_field_mismatch:{key}" for key in result.get("mismatched_fields", []))
+    result["errors"] = errors
+    if errors:
+        result["status"] = "error"
+        result["exact_match"] = False
+    return result
+
+
 def proposed_job(job: dict[str, Any], patch: dict[str, Any]) -> dict[str, Any]:
     result = json.loads(json.dumps(job))
     payload = result.setdefault("payload", {})
@@ -222,7 +371,7 @@ def diff_fields(job: dict[str, Any], patch: dict[str, Any]) -> list[dict[str, An
     for key in sorted(patch):
         before = current_field(job, key)
         after = patch[key]
-        if before != after:
+        if not exact_value_equal(before, after):
             diffs.append({"field": key, "before": before, "after": after})
     return diffs
 
@@ -287,7 +436,7 @@ def backup_job(job: dict[str, Any], reason: str) -> Path:
 
 
 def edit_command(job_id: str, patch: dict[str, Any]) -> list[str]:
-    cmd = [openclaw_cmd(), "cron", "edit", job_id, "--timeout", "30000"]
+    cmd = openclaw_command("cron", "edit", job_id, "--timeout", "30000")
     if "description" in patch:
         cmd += ["--description", str(patch["description"])]
     if "message" in patch:
@@ -358,21 +507,53 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     requested_patch: dict[str, Any] = {}
     backup_path = ""
     rollback_source: dict[str, Any] = {}
+    rollback_errors: list[str] = []
     if args.rollback:
         backup = Path(args.rollback)
-        rollback_source = load_json_artifact(backup)
-        if not isinstance(rollback_source, dict):
-            rollback_source = {}
-        requested_patch = patch_from_backup(rollback_source)
-        job_id = str(rollback_source.get("id") or args.job_id or "")
-        job, lookup = resolve_job(job_id, None)
+        rollback_source, rollback_errors = read_rollback_backup(backup)
+        if rollback_errors:
+            job = {}
+            lookup = {
+                "mode": "rollback",
+                "lookup": rel(backup),
+                "error": "rollback_source_invalid",
+            }
+        else:
+            requested_patch = patch_from_backup(rollback_source)
+            job_id = str(rollback_source.get("id") or "")
+            job, lookup = resolve_job(job_id, None)
     else:
         requested_patch = build_requested_patch(args)
         job, lookup = resolve_job(args.job_id, args.name)
     patch_errors, patch_warnings = validate_patch(requested_patch, allow_schedule_or_delivery=False)
+    patch_errors = [*rollback_errors, *patch_errors]
     diffs = diff_fields(job, requested_patch) if job else []
     impact = classify_impact(requested_patch, job) if job else {}
+    finance_guard_required = bool(
+        args.apply
+        and not args.rollback
+        and impact.get("risk") == "finance_control"
+    )
+    if finance_guard_required:
+        sql_canon_context = {
+            **finance_sql_canon_guard_context(consumer=rel(Path(__file__))),
+            "required": True,
+            "reason": "forward_finance_control_apply",
+        }
+        if sql_canon_context.get("status") != "ok":
+            patch_errors.append("sql_canon_guard_blocked")
+    else:
+        sql_canon_context = {
+            "status": "not_required",
+            "required": False,
+            "reason": (
+                "rollback_must_not_depend_on_unrelated_finance_state"
+                if args.rollback
+                else "non_finance_control_operation"
+            ),
+        }
     apply_result: dict[str, Any] | None = None
+    round_trip_result: dict[str, Any] | None = None
     verify_result: dict[str, Any] | None = None
     if args.apply or args.rollback:
         if not job:
@@ -382,6 +563,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         else:
             backup_path = rel(backup_job(job, "pre-rollback" if args.rollback else "pre-apply"))
             apply_result = run_command(edit_command(str(job.get("id")), requested_patch), timeout=60)
+            round_trip_result = verify_live_round_trip(str(job.get("id")), requested_patch)
             if args.verify:
                 verify_result = run_ordered_verify()
     elif args.verify:
@@ -389,10 +571,12 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
 
     validation_errors = list(patch_errors)
     validation_warnings = list(patch_warnings)
-    if not job:
+    if not job and "job_not_resolved" not in validation_errors:
         validation_errors.append("job_not_resolved")
     if (args.apply or args.rollback) and apply_result and not apply_result.get("ok"):
         validation_errors.append("cron_edit_failed")
+    if round_trip_result and round_trip_result.get("status") != "ok":
+        validation_errors.extend(round_trip_result.get("errors", []))
     if verify_result and verify_result.get("status") != "ok":
         validation_errors.extend(f"verify:{error}" for error in verify_result.get("errors", []))
     payload = {
@@ -412,9 +596,15 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         "impact": impact,
         "backup_path": backup_path,
         "apply_result": apply_result,
+        "round_trip_result": round_trip_result,
         "verify_result": verify_result,
         "rollback_source": rel(Path(args.rollback)) if args.rollback else "",
+        "rollback_source_validation": {
+            "status": "error" if rollback_errors else "ok" if args.rollback else "not_applicable",
+            "errors": rollback_errors,
+        },
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_context": sql_canon_context,
         "validation": {
             "status": "error" if validation_errors else "warning" if validation_warnings else "ok",
             "errors": validation_errors,

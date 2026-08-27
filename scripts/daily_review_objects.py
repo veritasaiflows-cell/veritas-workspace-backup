@@ -10,6 +10,13 @@ from typing import Any
 
 from market_data_utils import atomic_write_json, load_json_artifact
 from source_freshness_classifier import classify_source_state, summarize_source_freshness
+from disciplined_band_gate import (
+    build_staleness_alert_payload,
+    extension_assessment,
+    load_disciplined_bands,
+    proposal_index as disciplined_proposal_index,
+    staleness_assessment,
+)
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
@@ -929,7 +936,7 @@ def action_family_for(recommended_action: str) -> str:
     """Map existing recommendation classes into the WF42 deploy/wait/reject/review vocabulary."""
     if recommended_action == "deploy_candidate":
         return "deploy"
-    if recommended_action in {"wait_for_band", "wait_for_catalyst_clearance"}:
+    if recommended_action in {"wait_for_band", "wait_for_catalyst_clearance", "extended_no_disciplined_entry"}:
         return "wait"
     if recommended_action in {"owner_decision_required", "owner_gated_band_review", "manual_review_required"}:
         return "review"
@@ -1331,7 +1338,10 @@ def capital_recommendations(
     portfolio_config: dict[str, Any] | None = None,
     fundamental_metrics: dict[str, Any] | None = None,
     fundamental_ir_packets: dict[str, Any] | None = None,
+    band_proposals: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    disciplined_bands = load_disciplined_bands()
+    prop_index = disciplined_proposal_index(band_proposals or {})
     recommendations: list[dict[str, Any]] = []
     for item in review_objects:
         if item.get("object_type") != "ticker":
@@ -1353,9 +1363,22 @@ def capital_recommendations(
         else:
             action = "no_new_approval"
 
+        # Disciplined no-chase gate: bind the deployable slate to the fixed disciplined
+        # band (SQL-canon companion table), not the price-chasing tracking band. A name
+        # extended > threshold above the disciplined high is auto-dropped to watch.
+        _dt = str(item.get("ticker") or "").upper()
+        _drow = disciplined_bands.get(_dt)
+        _dprop = prop_index.get(_dt) or {}
+        extension_gate = extension_assessment(_dprop.get("close"), _drow, _dprop.get("atr14"))
+        staleness_alert = staleness_assessment(_drow, price=_dprop.get("close"), atr14=_dprop.get("atr14"))
+        if extension_gate.get("auto_drop") and action == "deploy_candidate":
+            action = "extended_no_disciplined_entry"
+
         guidance = item.get("recommended_next_step") or "owner review required"
         if system["trust_level"] != "clean" and action == "deploy_candidate":
             guidance = f"Trust ceiling applies: {guidance}"
+        if action == "extended_no_disciplined_entry":
+            guidance = f"No-chase gate (disciplined band): {extension_gate.get('reason')}"
 
         risk_invalidation = item.get("blockers") or []
         sector_context = sector_context_for_ticker(str(item.get("ticker") or ""), sector_board, sector_correlation)
@@ -1410,6 +1433,8 @@ def capital_recommendations(
             "recommendation_class": rec_class,
             "recommendation_action": action_family_for(action),
             "action_vocabulary": "WF42 deploy/wait/reject/review; existing recommended_action retained for compatibility.",
+            "disciplined_extension_gate": extension_gate,
+            "disciplined_staleness_alert": staleness_alert,
             "confidence": "moderate" if item.get("signal_score", 0) >= 75 else "guarded",
             "confidence_basis": "Heuristic-only qualitative confidence; uncalibrated, non-predictive, and not_probability.",
             "signal_score_basis": item.get("signal_score_basis") or "Heuristic-only triage score; uncalibrated, non-predictive, and not_probability.",
@@ -1518,6 +1543,13 @@ def build_packet(window: str) -> dict[str, Any]:
         optional.get("portfolio_config"),
         optional.get("fundamental_metrics"),
         optional.get("fundamental_ir_packets"),
+        band_proposals,
+    )
+
+    disciplined_staleness_alerts = build_staleness_alert_payload(
+        load_disciplined_bands(),
+        disciplined_proposal_index(band_proposals),
+        window=window,
     )
 
     top_tickers = [item.get("ticker") for item in escalations if item.get("ticker")]
@@ -1556,6 +1588,7 @@ def build_packet(window: str) -> dict[str, Any]:
         "review_objects": review_objects,
         "escalations": escalations,
         "capital_deployment_recommendations": capital_packets,
+        "disciplined_band_staleness_alerts": disciplined_staleness_alerts,
         "known_gaps": known_gaps(),
         "promotion_rule": "This packet may rank and recommend, but it may not mutate canonical notes, change deployment state, or trigger execution.",
     }
@@ -1567,6 +1600,9 @@ def main() -> int:
     packet = build_packet(args.window)
     output_path = WINDOW_SPECS[args.window]["output"]
     atomic_write_json(output_path, packet)
+    staleness = packet.get("disciplined_band_staleness_alerts")
+    if staleness:
+        atomic_write_json(TMP / "disciplined-band-staleness-alerts.json", staleness)
     print(json.dumps({
         "status": "ok",
         "window": args.window,

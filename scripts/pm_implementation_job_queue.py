@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from lib.command_guard import command_is_review_only_safe
 from lib.proof_budget import (
     closeout_commands,
     scope_split as budget_scope_split,
@@ -31,9 +32,11 @@ DEFAULT_PM_STATE = TMP / "pm-program-state.json"
 DEFAULT_PM_ACTIONS = TMP / "pm-next-actions.json"
 DEFAULT_CRON_CANDIDATES = TMP / "cron-retire-merge-candidates.json"
 DEFAULT_HELPER_PACKETS = TMP / "helper-spawn-packets.json"
+DEFAULT_WF74_ROUTER = TMP / "wf74-autonomy-work-router.json"
 DEFAULT_OUT = TMP / "pm-implementation-job-queue.json"
 DEFAULT_DB = TMP / "pm-implementation-job-queue.sqlite"
 DEFAULT_CONTROL_PACKET = TMP / "pm-control-packet.json"
+DEFAULT_COMPLETION_LEDGER = ROOT / "state" / "implementation-completion-ledger.jsonl"
 
 SCHEMA = "veritas.pm_implementation_job_queue.v1"
 
@@ -69,7 +72,96 @@ GLOBAL_STOP_LINES = [
 PM_CONTROL_WRITE_DB_COMMAND = "python scripts\\pm_control_packet.py --write --write-db --validate"
 PM_CONTROL_WRITE_COMMAND = "python scripts\\pm_control_packet.py --write --validate"
 
+AUTO_CRON_PROOF_CLASSES = {
+    "finance_validation_pass",
+    "pm_packet_refresh",
+    "qa_validation_pass",
+    "service_state_slice",
+    "ticker_card_refresh_gate",
+    "trade_grade_decision_os",
+    "wf74_cron_migration_repair_plan",
+    "wf74_dependency_rollup",
+    "wf74_planning_followthrough",
+    "wf74_workflow_followup_routing",
+    "wf74_workflow_maturity_followup",
+    "wf74_workflow_measurement_followup",
+}
+
+CRON_PROOF_REFRESH_APPROVAL_FIELDS = (
+    "cron_proof_refresh_approved",
+    "rsi_cron_graduation_approved",
+    "auto_cron_proof_refresh_approved",
+)
+
+CRON_GRADUATION_RULE = (
+    "Cron proof refresh requires explicit per-job cron graduation approval plus "
+    "proof-safe commands, narrow/micro validation budget, queue_only/pm_state closeout, "
+    "clean PM worker/verifier proof, and clean cron contracts."
+)
+
+PRIORITY_BAND_RANK = {
+    "P0": 0,
+    "P1": 1,
+    "P2": 2,
+    "P3": 3,
+    "P4": 4,
+    "P5": 5,
+}
+
+HELPER_LANE_CLASSES = {
+    "bounded_product_implementation",
+    "canonical_finance_data_plane",
+    "finance_validation_pass",
+    "local_ui_control_surface",
+    "narrow_validation_and_ui_visibility",
+    "parallel_overhead_reduction_orchestration",
+    "pm_packet_refresh",
+    "qa_validation_pass",
+    "service_state_slice",
+    "ticker_card_refresh_gate",
+    "trade_grade_decision_os",
+    "wf74_cron_migration_repair_plan",
+    "wf74_dependency_rollup",
+    "wf74_planning_followthrough",
+    "wf74_workflow_followup_routing",
+    "wf74_workflow_maturity_followup",
+    "wf74_workflow_measurement_followup",
+    "wf78_auto_router_consumer_sync",
+    "wf78_reputation_scaleout_gate",
+}
+
+BOUNDED_PATCH_CLASSES = {
+    "bounded_product_implementation",
+    "local_ui_control_surface",
+    "narrow_validation_and_ui_visibility",
+    "parallel_overhead_reduction_orchestration",
+    "service_state_slice",
+}
+
 LANE_TEMPLATES: dict[str, dict[str, Any]] = {
+    "smb_saas_parallel_morning_plan": {
+        "owner_surface": "WF75 internal SaaS deliverable gate + WF79-SMB workflow clarity",
+        "job_title": "Execute SMB + internal SaaS deliverable-gate morning sprint",
+        "implementation_class": "bounded_product_implementation",
+        "target_files": [
+            "09. Archive/Legacy Audit Roots - Archived/Audit/SMB-SaaS-Parallel-Implementation-Plan-2026-06-18.md",
+            "06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md",
+            "06. Playbooks/Project Continuity/Workflow 79-SMB - SMB Workflow Clarity and Marketing Ops Automation.md",
+            "scripts/generic_intelligence_saas_pivot.py",
+            "scripts/wf75_deliverable_packager.py",
+            "scripts/wf75_training_desk.py",
+            "tmp/wf79-smb-phase-closeout.json",
+            "tmp/wf75-deliverable-packager.json",
+        ],
+        "proof_commands": [
+            "python scripts\\generic_intelligence_saas_pivot.py --write --write-db --validate",
+            "python scripts\\wf75_deliverable_packager.py --write --validate",
+            "python scripts\\wf75_training_desk.py --write --write-md --write-training-assets --validate",
+            "python scripts\\pm_control_packet.py --write --write-db --validate",
+        ],
+        "helper_role": "SMB/SaaS morning sprint implementation helper",
+        "collision_group": "smb_saas_parallel_morning_plan",
+    },
     "retail_truth_routing": {
         "owner_surface": "P0 Retail Finance / PM cockpit Retail tab",
         "job_title": "Keep retail truth routing implementation surface green",
@@ -84,6 +176,7 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
         "proof_commands": [
             "python scripts\\retail_truth_routing_contract.py --write --validate",
             "python scripts\\retail_answer_harness.py --write --validate",
+            "python scripts\\retail_customer_output_decision_packet.py --write --validate",
             "python scripts\\retail_automation_control_plane.py --write --validate",
             "python scripts\\veritas_harness_scorecard.py --run --write --validate",
         ],
@@ -218,6 +311,7 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
             "python scripts\\runtime_performance_scorecard.py --write --write-md --validate",
             "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
             "python scripts\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate",
+            "python scripts\\artifact_index.py incremental",
             "python scripts\\artifact_index.py validate",
         ],
         "helper_role": "Finance proof helper",
@@ -290,15 +384,18 @@ LANE_TEMPLATES: dict[str, dict[str, Any]] = {
         "implementation_class": "sql_support_validation",
         "target_files": [
             "scripts/json_sql_promotion_index.py",
-            "scripts/python_sql_contract_lint.py",
-            "scripts/sql_schema_drift_lint.py",
-            "scripts/sql_proof_probe.py",
+            "scripts/go/bin/python-sql-contract-lint.exe",
+            "scripts/go/bin/sql-schema-drift-lint.exe",
+            "scripts/go/bin/sql-proof-probe.exe",
+            "scripts/go/cmd/python-sql-contract-lint/main.go",
+            "scripts/go/cmd/sql-schema-drift-lint/main.go",
+            "scripts/go/cmd/sql-proof-probe/main.go",
         ],
         "proof_commands": [
             "python scripts\\json_sql_promotion_index.py --write --write-md --validate",
-            "python scripts\\python_sql_contract_lint.py --write --validate",
-            "python scripts\\sql_schema_drift_lint.py --write --validate",
-            "python scripts\\sql_proof_probe.py --write --validate",
+            ".\\scripts\\go\\bin\\python-sql-contract-lint.exe --root . --out tmp\\python-sql-contract-lint.json",
+            ".\\scripts\\go\\bin\\sql-schema-drift-lint.exe --root . --out tmp\\sql-schema-drift-lint.json",
+            ".\\scripts\\go\\bin\\sql-proof-probe.exe --root . --out tmp\\sql-proof-probe.json",
         ],
         "helper_role": "SQL support proof helper",
         "collision_group": "sql_support_mode",
@@ -419,6 +516,131 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def load_completed_job_ids(path: Path | None = None) -> set[str]:
+    path = path or DEFAULT_COMPLETION_LEDGER
+    if not path.exists():
+        return set()
+    completed: set[str] = set()
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        job_id = as_dict(row.get("job")).get("job_id")
+        if isinstance(job_id, str) and job_id:
+            completed.add(job_id)
+    return completed
+
+
+def completion_text_key(value: Any) -> str:
+    return " ".join(str(value or "").casefold().split())
+
+
+def parse_completion_utc(value: Any) -> datetime | None:
+    if not value:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def load_completion_markers(path: Path | None = None) -> dict[str, Any]:
+    path = path or DEFAULT_COMPLETION_LEDGER
+    markers: dict[str, Any] = {
+        "job_ids": set(),
+        "lane_title": set(),
+        "collision_title": set(),
+        "job_completed_at_utc": {},
+    }
+    if not path.exists():
+        return markers
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        job = as_dict(row.get("job"))
+        job_id = job.get("job_id")
+        title = completion_text_key(job.get("title"))
+        lane_id = job.get("lane_id")
+        collision_group = job.get("collision_group")
+        if isinstance(job_id, str) and job_id:
+            markers["job_ids"].add(job_id)
+            completed_at = parse_completion_utc(row.get("completed_at_utc") or row.get("recorded_at_utc"))
+            if completed_at is not None:
+                latest_by_job = markers["job_completed_at_utc"]
+                previous = latest_by_job.get(job_id)
+                if previous is None or completed_at > previous:
+                    latest_by_job[job_id] = completed_at
+        if title and isinstance(lane_id, str) and lane_id:
+            markers["lane_title"].add((lane_id, title))
+        if title and isinstance(collision_group, str) and collision_group:
+            markers["collision_title"].add((collision_group, title))
+    return markers
+
+
+def newer_exact_completion_for_regression(job: dict[str, Any], markers: dict[str, Any]) -> bool:
+    job_id = job.get("job_id")
+    if not isinstance(job_id, str) or job_id not in markers.get("job_ids", set()):
+        return False
+    prior_completed_at = parse_completion_utc(
+        as_dict(job.get("prior_completion")).get("latest_completed_at_utc")
+    )
+    if prior_completed_at is None:
+        return False
+    completed_by_job = markers.get("job_completed_at_utc")
+    if not isinstance(completed_by_job, dict):
+        return False
+    exact_completed_at = completed_by_job.get(job_id)
+    return isinstance(exact_completed_at, datetime) and exact_completed_at > prior_completed_at
+
+
+def prior_completion_is_in_ledger(job: dict[str, Any], markers: dict[str, Any]) -> bool:
+    matched = as_list(as_dict(job.get("prior_completion")).get("matched_job_ids"))
+    known = markers.get("job_ids", set())
+    return bool(matched) and all(isinstance(item, str) and item in known for item in matched)
+
+
+def completion_match_reason(job: dict[str, Any], markers: dict[str, Any]) -> str | None:
+    # Residual-visibility rows must not re-enter the ready queue just because the
+    # opportunity id changed; resolve them off their recorded prior completion.
+    if job.get("completion_status") == "residual_followup_after_completion":
+        if prior_completion_is_in_ledger(job, markers):
+            return "prior_completion_residual_visibility_only"
+        return None
+    if job.get("completion_status") == "current_regression_after_completion":
+        if newer_exact_completion_for_regression(job, markers):
+            return "exact_job_id_after_regression"
+        return None
+    job_id = job.get("job_id")
+    if isinstance(job_id, str) and job_id in markers.get("job_ids", set()):
+        return "exact_job_id"
+    source_action = str(job.get("source_action_id") or "")
+    if not source_action.endswith("-inspect_blocker"):
+        return None
+    title = completion_text_key(job.get("title"))
+    if not title:
+        return None
+    lane_id = job.get("lane_id")
+    collision_group = job.get("collision_group")
+    if isinstance(collision_group, str) and (collision_group, title) in markers.get("collision_title", set()):
+        return "inspect_blocker_collision_title_alias"
+    if isinstance(lane_id, str) and (lane_id, title) in markers.get("lane_title", set()):
+        return "inspect_blocker_lane_title_alias"
+    return None
+
+
 def control_pm_program_state() -> dict[str, Any]:
     packet = load_json(DEFAULT_CONTROL_PACKET)
     sections = as_dict(packet.get("sections"))
@@ -530,10 +752,293 @@ def helper_packet(job: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def proof_commands_review_only_safe(commands: list[Any]) -> tuple[bool, list[str]]:
+    unsafe: list[str] = []
+    for command in commands:
+        text = str(command)
+        if not command_is_review_only_safe(text):
+            unsafe.append(text)
+    return (not unsafe, unsafe)
+
+
+def job_owner_gate_required(job: dict[str, Any]) -> bool:
+    status = str(job.get("status") or "")
+    if status == "owner_decision_required":
+        return True
+    if job.get("safe_to_disable_without_more_proof") is False:
+        return True
+    return False
+
+
+DEPARTMENT_OWNER_BY_DEPARTMENT = {
+    "cron": "cron-automation-manager",
+    "runtime_ops": "automation-hardening-manager",
+    "pm": "veritas-pm-department",
+    "finance_wf78_wf84_wf85": "main-session-veritas-finance",
+    "product_wf75_wf79": "smb-workflow-automation-operator",
+    "qa": "workspace-qa-pass",
+    "skills_procedure": "operating-procedure-repository-manager",
+    "memory_continuity": "memory-continuity-manager",
+    "main_session_veritas": "main-session-veritas",
+}
+
+
+DEPARTMENT_WORKFLOW_BY_DEPARTMENT = {
+    "cron": "CRON/WF73/WF76",
+    "runtime_ops": "Runtime Ops/WF74",
+    "pm": "PM/WF74",
+    "finance_wf78_wf84_wf85": "WF78/WF84/WF85",
+    "product_wf75_wf79": "WF75/WF79",
+    "qa": "QA/WF73",
+    "skills_procedure": "Skills/Procedures/WF74",
+    "memory_continuity": "Memory/Continuity",
+    "main_session_veritas": "Main Session Veritas",
+}
+
+
+def infer_department(job: dict[str, Any]) -> str:
+    text = " ".join(
+        str(job.get(key) or "").casefold()
+        for key in (
+            "implementation_class",
+            "owner_surface",
+            "lane_id",
+            "collision_group",
+            "source",
+            "source_category",
+            "title",
+        )
+    )
+    if "cron" in text:
+        return "cron"
+    if any(token in text for token in ("wf78", "wf84", "wf85", "finance", "trade_grade", "ticker", "portfolio", "paper_deployment")):
+        return "finance_wf78_wf84_wf85"
+    if any(token in text for token in ("wf75", "wf79", "retail", "smb", "product", "service_state", "customer_output")):
+        return "product_wf75_wf79"
+    if any(token in text for token in ("qa", "validator", "validation", "harness", "source_trust", "proof_budget")):
+        return "qa"
+    if any(token in text for token in ("skill", "procedure", "playbook", "response_contract")):
+        return "skills_procedure"
+    if any(token in text for token in ("memory", "continuity", "future_session", "status_card", "startup_brief")):
+        return "memory_continuity"
+    if any(token in text for token in ("wf74", "otel", "runtime", "ops", "dispatcher", "greenkeeper", "worker", "verifier")):
+        return "runtime_ops"
+    if any(token in text for token in ("pm", "parallel_lane", "implementation_job", "lane")):
+        return "pm"
+    return "main_session_veritas"
+
+
+def allowed_execution_mode_for_job(job: dict[str, Any], capabilities: dict[str, Any]) -> str:
+    if job.get("status") == "completed_by_ledger" or job.get("completed_by_ledger") is True:
+        return "completed_by_ledger_resolved"
+    if capabilities.get("owner_gate_required") is True:
+        return "owner_gated_review"
+    if capabilities.get("auto_cron_may_execute") is True:
+        return "cron_review_only_proof_refresh"
+    if capabilities.get("auto_main_may_execute") is True:
+        return "main_review_only_proof_refresh"
+    if capabilities.get("auto_lane_prepare_allowed") is True or capabilities.get("helper_lane_allowed") is True:
+        return "main_or_helper_plan_only"
+    return "main_session_review"
+
+
+def attach_department_contract(job: dict[str, Any], capabilities: dict[str, Any] | None = None) -> None:
+    capabilities = capabilities or as_dict(job.get("automation_capabilities"))
+    department = str(job.get("department") or infer_department(job))
+    job["department"] = department
+    job["department_owner"] = str(job.get("department_owner") or DEPARTMENT_OWNER_BY_DEPARTMENT.get(department, "main-session-veritas"))
+    job["owner_workflow"] = str(job.get("owner_workflow") or DEPARTMENT_WORKFLOW_BY_DEPARTMENT.get(department, "Main Session Veritas"))
+    job["accountable_integrator"] = str(job.get("accountable_integrator") or "main_session_veritas")
+    job["allowed_execution_mode"] = allowed_execution_mode_for_job(job, capabilities)
+
+
+def automation_capabilities(job: dict[str, Any]) -> dict[str, Any]:
+    implementation_class = str(job.get("implementation_class") or "")
+    status = str(job.get("status") or "")
+    proof_commands = as_list(job.get("proof_commands"))
+    validation_budget = as_dict(job.get("validation_budget")).get("budget")
+    closeout_mode = str(job.get("closeout_mode") or "")
+    proof_safe, unsafe_commands = proof_commands_review_only_safe(proof_commands)
+    owner_gate_required = job_owner_gate_required(job)
+    ready_for_main = status == "ready_for_main_or_helper"
+    ready_for_review = status == "ready_for_review"
+    artifact_refresh = any("--write" in str(command).lower() for command in proof_commands)
+    helper_lane_allowed = (
+        status in {"ready_for_main_or_helper", "ready_for_review"}
+        and implementation_class in HELPER_LANE_CLASSES
+        and not owner_gate_required
+        and bool(as_list(job.get("target_files")))
+    )
+    bounded_patch_allowed = implementation_class in BOUNDED_PATCH_CLASSES and helper_lane_allowed
+    main_proof_refresh_candidate = (
+        proof_safe
+        and validation_budget in {"micro", "narrow"}
+        and closeout_mode in {"queue_only", "pm_state"}
+    )
+    auto_main_may_execute = (
+        ready_for_main
+        and main_proof_refresh_candidate
+        and not owner_gate_required
+        and not bounded_patch_allowed
+    )
+    cron_proof_refresh_candidate = (
+        auto_main_may_execute
+        and implementation_class in AUTO_CRON_PROOF_CLASSES
+        and validation_budget in {"micro", "narrow"}
+        and closeout_mode in {"queue_only", "pm_state"}
+    )
+    cron_graduation_satisfied = cron_proof_refresh_candidate and any(
+        job.get(field) is True for field in CRON_PROOF_REFRESH_APPROVAL_FIELDS
+    )
+    auto_cron_may_execute = cron_graduation_satisfied
+    return {
+        "schema": "veritas.pm_job_automation_capabilities.v1",
+        "proof_only": proof_safe,
+        "artifact_refresh": artifact_refresh,
+        "bounded_patch_allowed": bounded_patch_allowed,
+        "helper_lane_allowed": helper_lane_allowed,
+        "owner_gate_required": owner_gate_required,
+        "main_proof_refresh_candidate": main_proof_refresh_candidate,
+        "auto_main_may_execute": auto_main_may_execute,
+        "auto_cron_may_execute": auto_cron_may_execute,
+        "cron_proof_refresh_candidate": cron_proof_refresh_candidate,
+        "cron_graduation_required": cron_proof_refresh_candidate and not cron_graduation_satisfied,
+        "cron_graduation_satisfied": cron_graduation_satisfied,
+        "auto_heartbeat_may_execute": False,
+        "auto_lane_prepare_allowed": (helper_lane_allowed or ready_for_review) and not owner_gate_required,
+        "auto_helper_spawn_allowed": False,
+        "unsafe_proof_commands": unsafe_commands,
+        "execution_scope": (
+            "review_only_proof_and_budgeted_closeout"
+            if auto_main_may_execute
+            else "helper_lane_or_main_review_required"
+            if helper_lane_allowed or ready_for_review
+            else "blocked_or_owner_gate"
+        ),
+        "heartbeat_rule": "heartbeat may surface or prepare a main-session action only; it must not execute PM phases.",
+        "cron_rule": CRON_GRADUATION_RULE,
+    }
+
+
+def attach_automation_capabilities(job: dict[str, Any]) -> None:
+    capabilities = automation_capabilities(job)
+    job["automation_capabilities"] = capabilities
+    attach_department_contract(job, capabilities)
+    # Compatibility fields keep the most important booleans easy to query from
+    # JSON, SQLite mirrors, and compact startup packets.
+    for key in (
+        "proof_only",
+        "artifact_refresh",
+        "bounded_patch_allowed",
+        "helper_lane_allowed",
+        "owner_gate_required",
+        "main_proof_refresh_candidate",
+        "auto_main_may_execute",
+        "auto_cron_may_execute",
+        "cron_proof_refresh_candidate",
+        "cron_graduation_required",
+        "cron_graduation_satisfied",
+        "auto_heartbeat_may_execute",
+    ):
+        job[key] = capabilities[key]
+
+
+def priority_band_rank(priority: Any) -> int:
+    return PRIORITY_BAND_RANK.get(str(priority or "P9").upper(), 9)
+
+
+def numeric_priority(value: Any, fallback_band: Any = None) -> float:
+    if isinstance(value, bool):
+        return 0.0
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str) and value.strip():
+        try:
+            return float(value.strip())
+        except ValueError:
+            pass
+    band = str(fallback_band or "").upper()
+    return {
+        "P0": 100.0,
+        "P1": 85.0,
+        "P2": 65.0,
+        "P3": 40.0,
+        "P4": 20.0,
+        "P5": 10.0,
+    }.get(band, 0.0)
+
+
+def annotate_priority_fields(job: dict[str, Any]) -> None:
+    priority = str(job.get("priority") or "P9").upper()
+    source_score = numeric_priority(
+        job.get("source_priority_score")
+        or job.get("priority_score")
+        or job.get("source_priority"),
+        priority,
+    )
+    job["priority"] = priority
+    job["priority_band_rank"] = priority_band_rank(priority)
+    job["source_priority_score"] = source_score
+    job["priority_sort_key"] = {
+        "status_ready_rank": 0 if job.get("status") in {"ready_for_main_or_helper", "ready_for_review"} else 1,
+        "completed_rank": 1 if job.get("status") == "completed_by_ledger" or job.get("completed_by_ledger") is True else 0,
+        "priority_band_rank": priority_band_rank(priority),
+        "source_priority_desc": -source_score,
+        "readiness_desc": -float(job.get("readiness_score") or 0),
+        "rank": int(job.get("rank") or 9999),
+    }
+
+
+def job_sort_tuple(job: dict[str, Any]) -> tuple[Any, ...]:
+    annotate_priority_fields(job)
+    key = as_dict(job.get("priority_sort_key"))
+    return (
+        int(key.get("completed_rank") or 0),
+        int(key.get("status_ready_rank") or 1),
+        int(key.get("priority_band_rank") or 9),
+        float(key.get("source_priority_desc") or 0),
+        float(key.get("readiness_desc") or 0),
+        int(key.get("rank") or 9999),
+        str(job.get("job_id") or ""),
+    )
+
+
+def wf74_priority_lookup(wf74_router: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    lookup: dict[str, dict[str, Any]] = {}
+    for row in as_list(wf74_router.get("recommendation_action_ledger")):
+        item = as_dict(row)
+        keys = [
+            item.get("recommendation_id"),
+            item.get("opportunity_id"),
+            item.get("pm_job_id"),
+        ]
+        value = {
+            "source_priority_score": item.get("priority"),
+            "source_priority_band": item.get("priority_band"),
+            "source_recommendation_id": item.get("recommendation_id"),
+            "source_opportunity_id": item.get("opportunity_id"),
+            "source_recommendation_title": item.get("title"),
+        }
+        for key in keys:
+            if key:
+                lookup[str(key)] = value
+    return lookup
+
+
+def stable_job_id(prefix: str, *parts: Any) -> str:
+    raw = "-".join(str(part or "").strip() for part in parts if str(part or "").strip())
+    chars = [ch.lower() if ch.isalnum() else "-" for ch in raw]
+    slug = "".join(chars)
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    slug = slug.strip("-") or "unknown"
+    return f"{prefix}-{slug}"
+
+
 def build_pm_job(action: dict[str, Any], rank: int) -> dict[str, Any]:
     lane_id = str(action.get("lane_id") or "unknown")
     template = action_template(action)
-    job_id = f"pm-{rank:02d}-{lane_id}-{action.get('action_type', 'action')}".replace("_", "-")
+    job_id = stable_job_id("pm", lane_id, action.get("action_type", "action"))
     lane_status = action.get("lane_status")
     if lane_status == "blocked":
         status = "blocked"
@@ -579,6 +1084,7 @@ def build_pm_job(action: dict[str, Any], rank: int) -> dict[str, Any]:
     job["acceptance_criteria"] = acceptance_criteria(job)
     job["scope_split"] = budget_scope_split(job_id, job["implementation_class"], budget["budget"])
     job["helper_packet"] = helper_packet(job)
+    attach_automation_capabilities(job)
     return job
 
 
@@ -642,6 +1148,69 @@ def build_cron_decision_job(candidate: dict[str, Any], rank: int) -> dict[str, A
     job["scope_split"] = budget_scope_split(job_id, job["implementation_class"], budget["budget"])
     job["closeout_required"] = closeout_commands(str(job["closeout_mode"]))
     job["helper_packet"] = helper_packet(job)
+    attach_automation_capabilities(job)
+    return job
+
+
+def build_wf74_router_job(candidate: dict[str, Any], rank: int) -> dict[str, Any]:
+    job_id = str(candidate.get("job_id") or stable_job_id("pm-wf74", candidate.get("source_key"), rank))
+    proof_commands = [str(command) for command in as_list(candidate.get("proof_commands")) if str(command).strip()]
+    job = {
+        "job_id": job_id,
+        "rank": rank,
+        "priority": candidate.get("priority") or ("P1" if rank <= 3 else "P2"),
+        "status": candidate.get("status") or "ready_for_main_or_helper",
+        "source": "wf74_autonomy_work_router",
+        "source_action_id": candidate.get("source_key"),
+        "source_recommendation_id": candidate.get("source_recommendation_id") or candidate.get("source_key"),
+        "source_opportunity_id": candidate.get("source_opportunity_id"),
+        "source_recommendation_title": candidate.get("source_recommendation_title"),
+        "source_priority_score": candidate.get("source_priority_score") or candidate.get("priority_score"),
+        "source_priority_band": candidate.get("source_priority_band") or candidate.get("priority_band"),
+        "source_category": candidate.get("source_category"),
+        "completion_status": candidate.get("completion_status"),
+        "prior_completion": candidate.get("prior_completion"),
+        "lane_id": candidate.get("lane_id") or "wf74_autonomy_work_router",
+        "lane_status": candidate.get("lane_status") or "ready",
+        "readiness_score": candidate.get("readiness_score", 85),
+        "title": candidate.get("title") or job_id,
+        "objective": candidate.get("objective") or candidate.get("title") or "Advance routed WF74 follow-through job.",
+        "implementation_class": candidate.get("implementation_class") or "wf74_workflow_followup_routing",
+        "owner_surface": candidate.get("owner_surface") or "WF74 autonomy work router",
+        "target_files": [str(path) for path in as_list(candidate.get("target_files"))],
+        "collision_group": candidate.get("collision_group") or "wf74_autonomy_work_router",
+        "dependencies": as_list(candidate.get("dependencies")) or [
+            "WF74 autonomy work router must be current and validator-clean",
+            "main session remains final integrator",
+            "cron may execute only proof-safe narrow jobs when automation capabilities allow it",
+        ],
+        "proof_commands": proof_commands,
+        "acceptance_criteria": as_list(candidate.get("acceptance_criteria")) or [
+            {
+                "criterion": "wf74_route_consumed",
+                "done_means": "router output is reflected in PM queue/control packets",
+            },
+            {
+                "criterion": "proof_commands_pass",
+                "done_means": "listed review-only proof commands pass or produce an exact blocker",
+            },
+        ],
+        "scope_split": [],
+        "helper_role": candidate.get("helper_role") or "WF74 follow-through helper",
+        "validation_budget": {},
+        "closeout_mode": None,
+        "closeout_required": [],
+        "stop_lines": sorted(set(GLOBAL_STOP_LINES + [str(item) for item in as_list(candidate.get("stop_lines"))])),
+        "authority_boundary": AUTHORITY_BOUNDARY,
+    }
+    budget = validation_budget_contract(str(job["implementation_class"]), proof_commands)
+    job["validation_budget"] = budget
+    job["closeout_mode"] = budget["closeout_mode"]
+    job["scope_split"] = budget_scope_split(job_id, str(job["implementation_class"]), budget["budget"])
+    job["closeout_required"] = closeout_commands(str(job["closeout_mode"]))
+    job["helper_packet"] = helper_packet(job)
+    attach_automation_capabilities(job)
+    annotate_priority_fields(job)
     return job
 
 
@@ -684,6 +1253,43 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"job_missing_closeout_required:{job.get('job_id')}")
         if not as_dict(job.get("helper_packet")):
             errors.append(f"job_missing_helper_packet:{job.get('job_id')}")
+        capabilities = as_dict(job.get("automation_capabilities"))
+        required_capability_keys = {
+            "proof_only",
+            "artifact_refresh",
+            "bounded_patch_allowed",
+            "helper_lane_allowed",
+            "owner_gate_required",
+            "main_proof_refresh_candidate",
+            "auto_main_may_execute",
+            "auto_cron_may_execute",
+            "cron_proof_refresh_candidate",
+            "cron_graduation_required",
+            "cron_graduation_satisfied",
+            "auto_heartbeat_may_execute",
+            "auto_lane_prepare_allowed",
+            "auto_helper_spawn_allowed",
+        }
+        missing = sorted(key for key in required_capability_keys if key not in capabilities)
+        if missing:
+            errors.append(f"job_missing_automation_capabilities:{job.get('job_id')}:{','.join(missing)}")
+        if capabilities.get("auto_heartbeat_may_execute") is not False:
+            errors.append(f"job_heartbeat_execution_enabled:{job.get('job_id')}")
+        if capabilities.get("auto_helper_spawn_allowed") is not False:
+            errors.append(f"job_helper_spawn_enabled:{job.get('job_id')}")
+        if capabilities.get("owner_gate_required") and capabilities.get("auto_main_may_execute"):
+            errors.append(f"owner_gate_job_auto_main_enabled:{job.get('job_id')}")
+        if capabilities.get("unsafe_proof_commands") and capabilities.get("auto_main_may_execute"):
+            errors.append(f"unsafe_job_auto_main_enabled:{job.get('job_id')}")
+        if capabilities.get("auto_cron_may_execute") and capabilities.get("cron_graduation_satisfied") is not True:
+            errors.append(f"cron_job_missing_graduation:{job.get('job_id')}")
+        for key in ("department", "department_owner", "owner_workflow", "accountable_integrator", "allowed_execution_mode"):
+            if not str(job.get(key) or "").strip():
+                errors.append(f"job_missing_department_contract:{job.get('job_id')}:{key}")
+        if job.get("accountable_integrator") != "main_session_veritas":
+            errors.append(f"job_non_main_integrator:{job.get('job_id')}:{job.get('accountable_integrator')}")
+        if job.get("department") not in DEPARTMENT_OWNER_BY_DEPARTMENT:
+            errors.append(f"job_unknown_department:{job.get('job_id')}:{job.get('department')}")
     if as_dict(payload.get("collision_summary")).get("colliding_group_count"):
         warnings.append("one_or_more_collision_groups_have_multiple_candidate_jobs")
     if as_dict(payload.get("summary")).get("owner_decision_job_count"):
@@ -696,6 +1302,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     pm_actions_path = workspace_path(args.pm_actions, DEFAULT_PM_ACTIONS)
     cron_candidates_path = workspace_path(args.cron_candidates, DEFAULT_CRON_CANDIDATES)
     helper_packets_path = workspace_path(args.helper_packets, DEFAULT_HELPER_PACKETS)
+    wf74_router_path = workspace_path(getattr(args, "wf74_router", None), DEFAULT_WF74_ROUTER)
     control_program = (
         control_pm_program_state()
         if path_is_default(args.pm_state, DEFAULT_PM_STATE) and path_is_default(args.pm_actions, DEFAULT_PM_ACTIONS)
@@ -705,6 +1312,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     pm_actions = getattr(args, "pm_actions_payload", None) or (actions_from_program_state(control_program) if control_program else load_json(pm_actions_path))
     cron_candidates = getattr(args, "cron_candidates_payload", None) or load_json(cron_candidates_path)
     helper_packets = getattr(args, "helper_packets_payload", None) or load_json(helper_packets_path)
+    wf74_router = getattr(args, "wf74_router_payload", None) or load_json(wf74_router_path)
 
     actions = [item for item in as_list(pm_actions.get("next_actions")) if isinstance(item, dict)]
     selected_actions = actions[: args.max_pm_jobs]
@@ -715,12 +1323,49 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         if isinstance(candidate, dict)
     ]
     jobs.extend(cron_jobs)
-    jobs.sort(key=lambda item: (str(item.get("priority", "P9")), int(item.get("rank", 9999))))
+    wf74_priorities = wf74_priority_lookup(wf74_router)
+    wf74_candidates = []
+    for candidate in as_list(wf74_router.get("pm_job_candidates"))[: getattr(args, "max_wf74_jobs", 8)]:
+        if not isinstance(candidate, dict):
+            continue
+        enriched = dict(candidate)
+        for lookup_key in (candidate.get("source_key"), candidate.get("job_id")):
+            if lookup_key and str(lookup_key) in wf74_priorities:
+                for key, value in wf74_priorities[str(lookup_key)].items():
+                    enriched.setdefault(key, value)
+        wf74_candidates.append(enriched)
+    wf74_jobs = [
+        build_wf74_router_job(candidate, index + len(jobs))
+        for index, candidate in enumerate(wf74_candidates, start=1)
+    ]
+    jobs.extend(wf74_jobs)
+    for job in jobs:
+        annotate_priority_fields(job)
+    completion_markers = load_completion_markers()
+    completable_statuses = {"ready_for_main_or_helper", "ready_for_review"}
+    for job in jobs:
+        match_reason = completion_match_reason(job, completion_markers)
+        if match_reason and (
+            job.get("status") in completable_statuses
+            or str(match_reason).startswith("inspect_blocker_")
+        ):
+            job["status"] = "completed_by_ledger"
+            job["completed_by_ledger"] = True
+            job["completion_match"] = match_reason
+            attach_automation_capabilities(job)
+            annotate_priority_fields(job)
+    jobs.sort(key=job_sort_tuple)
     for index, job in enumerate(jobs, start=1):
         job["rank"] = index
+        annotate_priority_fields(job)
 
     ready_jobs = [job for job in jobs if job.get("status") in {"ready_for_main_or_helper", "ready_for_review"}]
     owner_decision_jobs = [job for job in jobs if job.get("status") == "owner_decision_required"]
+    completed_jobs = [job for job in jobs if job.get("status") == "completed_by_ledger" or job.get("completed_by_ledger") is True]
+    completed_object_ids = {id(job) for job in completed_jobs}
+    active_jobs = [job for job in jobs if id(job) not in completed_object_ids]
+    top_job = ready_jobs[0] if ready_jobs else (active_jobs[0] if active_jobs else {})
+    top_completed_job = completed_jobs[0] if completed_jobs else {}
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -731,12 +1376,16 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "pm_next_actions": rel(pm_actions_path),
             "cron_retire_merge_candidates": rel(cron_candidates_path),
             "helper_spawn_packets": rel(helper_packets_path),
+            "wf74_autonomy_work_router": rel(wf74_router_path),
+            "implementation_completion_ledger": rel(DEFAULT_COMPLETION_LEDGER),
         },
         "source_status": {
             "pm_program_state_status": pm_state.get("status"),
             "pm_next_actions_status": pm_actions.get("status"),
             "cron_candidates_status": cron_candidates.get("status"),
             "helper_spawn_packets_status": helper_packets.get("status"),
+            "wf74_router_status": wf74_router.get("status"),
+            "wf74_router_validation_status": as_dict(wf74_router.get("validation")).get("status"),
             "pm_program_state_effective_source": (
                 "tmp/pm-control-packet.json#sections.pm_program_state" if control_program else rel(pm_state_path)
             ),
@@ -751,8 +1400,65 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "blocked_job_count": len([job for job in jobs if job.get("status") == "blocked"]),
             "pm_action_job_count": len(selected_actions),
             "cron_decision_job_count": len(cron_jobs),
-            "top_job_id": jobs[0]["job_id"] if jobs else None,
-            "top_job_title": jobs[0]["title"] if jobs else None,
+            "wf74_router_pm_job_candidate_count": len(wf74_candidates),
+            "wf74_router_job_count": len(wf74_jobs),
+            "wf74_recommendation_to_route_conversion_rate": as_dict(wf74_router.get("kpis")).get("recommendation_to_route_conversion_rate"),
+            "wf74_route_to_pm_job_conversion_rate": as_dict(wf74_router.get("kpis")).get("route_to_pm_job_conversion_rate"),
+            "wf74_high_priority_overdue_count": as_dict(wf74_router.get("kpis")).get("high_priority_overdue_count"),
+            "wf74_planning_followthrough_clean_rate": as_dict(wf74_router.get("kpis")).get("planning_followthrough_clean_rate"),
+            "completed_by_ledger_job_count": len(completed_jobs),
+            "active_job_count": len(active_jobs),
+            "auto_main_executable_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("auto_main_may_execute") is True
+            ]),
+            "auto_cron_executable_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("auto_cron_may_execute") is True
+            ]),
+            "cron_proof_refresh_candidate_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("cron_proof_refresh_candidate") is True
+            ]),
+            "cron_graduation_required_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("cron_graduation_required") is True
+            ]),
+            "cron_graduation_satisfied_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("cron_graduation_satisfied") is True
+            ]),
+            "auto_heartbeat_executable_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("auto_heartbeat_may_execute") is True
+            ]),
+            "helper_lane_allowed_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("helper_lane_allowed") is True
+            ]),
+            "bounded_patch_allowed_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("bounded_patch_allowed") is True
+            ]),
+            "owner_gate_required_job_count": len([
+                job for job in jobs if as_dict(job.get("automation_capabilities")).get("owner_gate_required") is True
+            ]),
+            "department_counts": {
+                department: len([job for job in jobs if job.get("department") == department])
+                for department in sorted({str(job.get("department") or "unknown") for job in jobs})
+            },
+            "department_ready_counts": {
+                department: len([
+                    job for job in ready_jobs
+                    if job.get("department") == department
+                ])
+                for department in sorted({str(job.get("department") or "unknown") for job in jobs})
+            },
+            "allowed_execution_mode_counts": {
+                mode: len([job for job in jobs if job.get("allowed_execution_mode") == mode])
+                for mode in sorted({str(job.get("allowed_execution_mode") or "unknown") for job in jobs})
+            },
+            "top_job_id": top_job.get("job_id"),
+            "top_job_title": top_job.get("title"),
+            "top_job_source_priority_score": top_job.get("source_priority_score"),
+            "top_ready_job_id": ready_jobs[0].get("job_id") if ready_jobs else None,
+            "top_ready_job_title": ready_jobs[0].get("title") if ready_jobs else None,
+            "top_ready_job_source_priority_score": ready_jobs[0].get("source_priority_score") if ready_jobs else None,
+            "top_completed_job_id": top_completed_job.get("job_id"),
+            "top_completed_job_title": top_completed_job.get("title"),
+            "top_completed_job_source_priority_score": top_completed_job.get("source_priority_score"),
             "validation_budget_counts": {
                 budget: len([job for job in jobs if as_dict(job.get("validation_budget")).get("budget") == budget])
                 for budget in ("micro", "narrow", "shared", "major")
@@ -799,6 +1505,11 @@ def rebuild_sqlite(payload: dict[str, Any], db_path: Path) -> dict[str, Any]:
               lane_id TEXT NOT NULL,
               implementation_class TEXT NOT NULL,
               owner_surface TEXT NOT NULL,
+              department TEXT NOT NULL,
+              department_owner TEXT NOT NULL,
+              owner_workflow TEXT NOT NULL,
+              accountable_integrator TEXT NOT NULL,
+              allowed_execution_mode TEXT NOT NULL,
               title TEXT NOT NULL,
               objective TEXT NOT NULL,
               collision_group TEXT NOT NULL,
@@ -806,7 +1517,15 @@ def rebuild_sqlite(payload: dict[str, Any], db_path: Path) -> dict[str, Any]:
               validation_budget TEXT NOT NULL,
               closeout_mode TEXT NOT NULL,
               phase_count INTEGER NOT NULL,
-              helper_role TEXT NOT NULL
+              helper_role TEXT NOT NULL,
+              proof_only INTEGER NOT NULL,
+              artifact_refresh INTEGER NOT NULL,
+              bounded_patch_allowed INTEGER NOT NULL,
+              helper_lane_allowed INTEGER NOT NULL,
+              owner_gate_required INTEGER NOT NULL,
+              auto_main_may_execute INTEGER NOT NULL,
+              auto_cron_may_execute INTEGER NOT NULL,
+              auto_heartbeat_may_execute INTEGER NOT NULL
             );
             CREATE TABLE pm_implementation_job_files (
               job_id TEXT NOT NULL,
@@ -821,8 +1540,9 @@ def rebuild_sqlite(payload: dict[str, Any], db_path: Path) -> dict[str, Any]:
             """
         )
         for job in as_list(payload.get("jobs")):
+            capabilities = as_dict(job.get("automation_capabilities"))
             conn.execute(
-                "INSERT INTO pm_implementation_jobs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO pm_implementation_jobs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     job["job_id"],
                     job["rank"],
@@ -831,6 +1551,11 @@ def rebuild_sqlite(payload: dict[str, Any], db_path: Path) -> dict[str, Any]:
                     job["lane_id"],
                     job["implementation_class"],
                     job["owner_surface"],
+                    job["department"],
+                    job["department_owner"],
+                    job["owner_workflow"],
+                    job["accountable_integrator"],
+                    job["allowed_execution_mode"],
                     job["title"],
                     job["objective"],
                     job["collision_group"],
@@ -839,6 +1564,14 @@ def rebuild_sqlite(payload: dict[str, Any], db_path: Path) -> dict[str, Any]:
                     job.get("closeout_mode"),
                     len(as_list(job.get("scope_split"))),
                     job["helper_role"],
+                    int(capabilities.get("proof_only") is True),
+                    int(capabilities.get("artifact_refresh") is True),
+                    int(capabilities.get("bounded_patch_allowed") is True),
+                    int(capabilities.get("helper_lane_allowed") is True),
+                    int(capabilities.get("owner_gate_required") is True),
+                    int(capabilities.get("auto_main_may_execute") is True),
+                    int(capabilities.get("auto_cron_may_execute") is True),
+                    int(capabilities.get("auto_heartbeat_may_execute") is True),
                 ),
             )
             for path in as_list(job.get("target_files")):
@@ -871,8 +1604,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pm-actions", default=str(DEFAULT_PM_ACTIONS))
     parser.add_argument("--cron-candidates", default=str(DEFAULT_CRON_CANDIDATES))
     parser.add_argument("--helper-packets", default=str(DEFAULT_HELPER_PACKETS))
+    parser.add_argument("--wf74-router", default=str(DEFAULT_WF74_ROUTER))
     parser.add_argument("--max-pm-jobs", type=int, default=10)
     parser.add_argument("--max-cron-jobs", type=int, default=4)
+    parser.add_argument("--max-wf74-jobs", type=int, default=8)
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--write-db", action="store_true")
     parser.add_argument("--validate", action="store_true")

@@ -343,6 +343,11 @@ def cron_ledger_warning_is_expected(data: Any) -> bool:
     if as_list(attention.get("stop_line_windows")) or as_list(attention.get("blocked_windows")):
         return False
     warning_windows = set(str(item) for item in as_list(attention.get("warning_windows")))
+    # This is the morning consolidation digest. Warning-only residue from
+    # other cron windows stays visible in the ledger, but it should not force a
+    # morning handoff when the morning window itself is clean.
+    if warning_windows and "morning" not in {item.lower() for item in warning_windows}:
+        return True
     summaries = [item for item in as_list(data.get("run_summaries")) if isinstance(item, dict)]
     expected_windows = {str(item.get("window")) for item in summaries if expected_run_summary_warning(item)}
     return bool(warning_windows) and warning_windows.issubset(expected_windows)

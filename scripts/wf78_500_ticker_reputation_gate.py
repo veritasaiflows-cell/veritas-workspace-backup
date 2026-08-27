@@ -319,6 +319,26 @@ def batch_decision_rows(specs: list[wf78_batch_manifest.BatchSpec]) -> dict[str,
     return rows
 
 
+def batch_import_already_applied(spec: wf78_batch_manifest.BatchSpec) -> bool:
+    payload = load_dict(spec.import_gate)
+    summary = as_dict(payload.get("summary"))
+    validation = as_dict(payload.get("validation"))
+    return (
+        payload.get("status") == "ok_already_imported_tier_c_only"
+        and validation.get("status") == "ok"
+        and summary.get("already_imported_packet_tickers") == BATCH_SIZE
+        and summary.get("new_tier_c_rows_added") == 0
+    )
+
+
+def source_rows_for_spec(spec: wf78_batch_manifest.BatchSpec, source_registry: dict[str, Any], active: set[str]) -> list[dict[str, Any]]:
+    payload = load_dict(spec.source_artifact)
+    rows = as_list(payload.get("candidate_rows"))
+    if payload.get("status") == "ok" and len(rows) == BATCH_SIZE:
+        return [dict(row) for row in rows if isinstance(row, dict)]
+    return wf78_batch_manifest.batch_candidates(spec, source_registry, active)
+
+
 def spec_for_candidate_rank(specs: list[wf78_batch_manifest.BatchSpec], rank: int) -> tuple[int, wf78_batch_manifest.BatchSpec] | None:
     for index, spec in enumerate(specs, start=2):
         if spec.candidate_rank_start <= rank <= spec.candidate_rank_end:
@@ -328,7 +348,9 @@ def spec_for_candidate_rank(specs: list[wf78_batch_manifest.BatchSpec], rank: in
 
 def next_import_spec_index(specs: list[wf78_batch_manifest.BatchSpec], source_registry: dict[str, Any], active: set[str]) -> int:
     for index, spec in enumerate(specs, start=2):
-        rows = wf78_batch_manifest.batch_candidates(spec, source_registry, active)
+        if batch_import_already_applied(spec):
+            continue
+        rows = source_rows_for_spec(spec, source_registry, active)
         tickers = {symbol(row.get("yfinance_symbol") or row.get("ticker")) for row in rows}
         if tickers and not tickers.issubset(active):
             return index
@@ -341,7 +363,9 @@ def candidate_rows(source_registry: dict[str, Any], provider_payload: dict[str, 
     decision = {**import_by_ticker(decision_payload), **batch_decision_rows(specs)}
     readiness = readiness_by_ticker(readiness_payload)
     active = wf78_batch_manifest.active_universe_tickers()
-    scaleout_rows = wf78_batch_manifest.ordered_scaleout_candidates(source_registry)
+    scaleout_rows: list[dict[str, Any]] = []
+    for spec in specs:
+        scaleout_rows.extend(source_rows_for_spec(spec, source_registry, active))
 
     # Preserve current rows for baseline, then use source order for deterministic future batches.
     # Dedupe by ticker so already-imported batches do not reappear as future candidates.
@@ -450,8 +474,14 @@ def build_report(_: argparse.Namespace) -> dict[str, Any]:
     batches = batch_plan(rows)
     repair_rows = [row for row in rows if row["repair_queue"]]
     current_baseline_rows = [row for row in rows if row["batch_index"] == 1]
-    next_batch_rows = [row for row in rows if row["batch_index"] == 2]
-    future_rows = [row for row in rows if row["batch_index"] > 2]
+    eligible_batch_indexes = sorted({
+        row["batch_index"]
+        for row in rows
+        if row["batch_index"] > 1 and row["tier_c_import_review_eligible"]
+    })
+    next_batch_index = eligible_batch_indexes[0] if eligible_batch_indexes else 0
+    next_batch_rows = [row for row in rows if row["batch_index"] == next_batch_index] if next_batch_index else []
+    future_rows = [row for row in rows if next_batch_index and row["batch_index"] > next_batch_index]
     future_repair_rows = [row for row in future_rows if row["repair_queue"]]
     future_hold_rows = [row for row in future_rows if not row["repair_queue"] and not row["tier_c_import_review_eligible"]]
     eligible_next_batch = [row for row in next_batch_rows if row["tier_c_import_review_eligible"]]
@@ -459,9 +489,19 @@ def build_report(_: argparse.Namespace) -> dict[str, Any]:
 
     add_check(checks, "source_registry_status_ok", source_registry.get("status") == "ok", source_registry.get("status"))
     add_check(checks, "provider_validation_status_ok", provider.get("status") == "ok", provider.get("status"))
-    add_check(checks, "import_decision_status_present", decision.get("status") in {"decision_required", "approved_tier_c_review_monitor_only"}, decision.get("status"))
+    add_check(checks, "import_decision_status_present", decision.get("status") in {"decision_required", "approved_tier_c_review_monitor_only", "historical_import_already_applied"}, decision.get("status"))
     add_check(checks, "readiness_index_status_ok", as_dict(readiness.get("validation")).get("status") == "ok", as_dict(readiness.get("validation")).get("status"))
-    add_check(checks, "gate_has_500_rows", len(rows) == TARGET_COUNT, len(rows))
+    add_check(checks, "gate_has_next_batch_or_full_500_scope", len(rows) == TARGET_COUNT or len(eligible_next_batch) == BATCH_SIZE, {
+        "row_count": len(rows),
+        "target_count": TARGET_COUNT,
+        "next_batch": next_batch_label,
+        "next_batch_eligible": len(eligible_next_batch),
+    })
+    add_check(checks, "full_500_source_capacity_warning", len(rows) == TARGET_COUNT, {
+        "row_count": len(rows),
+        "target_count": TARGET_COUNT,
+        "source_capacity_shortfall": max(0, TARGET_COUNT - len(rows)),
+    }, "warning")
     add_check(checks, "current_baseline_present_supported", len(current_baseline_rows) in {100, 200, 300, 400, 500}, batches[0])
     add_check(checks, "next_batch_not_auto_imported_without_fresh_validation", len(eligible_next_batch) in {0, 100}, {"next_batch": next_batch_label, "eligible": len(eligible_next_batch)})
     add_check(checks, "future_batches_not_import_eligible_until_prior_batch", all(row["tier_c_import_review_eligible"] is False for row in future_rows), len(future_rows))

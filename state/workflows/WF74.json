@@ -3,11 +3,26 @@
   "workflow_id": "WF74",
   "display_name": "Recursive Self-Improvement",
   "tier": "P1",
-  "effective_status": "route_only",
-  "next_action": "Use WF55 outcome measurement and validation telemetry only for safe improvement candidates; do not expand authority.",
-  "helper_safe": true,
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Monitor/use loop with OTEL multi-window evidence through one scorecard owner.",
+  "next_action": "Use OTEL control and WF74 scorecards; implement only safe, approved, proof-clean improvements.",
+  "authoritative_next_action": "Use OTEL control and WF74 scorecards; implement only safe, approved, proof-clean improvements.",
+  "helper_safe": false,
   "owner_action_required": false,
-  "authority_boundary": "review-only; no self-modification/authority expansion",
+  "authority_boundary": "review-only proposal and routing loop under WF88; no self-modification/authority expansion",
+  "authority_class": "review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/autonomy-spine-readiness-rollup.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [],
   "stop_lines": [
     "No base-model self-modification, self-preservation/replication, autonomous authority expansion, second memory tree, owner-approval inference, portfolio/trade/account/paper/live authority, or RSI theater."
@@ -16,10 +31,22 @@
   "primary_route_artifact": "tmp/autonomy-spine-readiness-rollup.json",
   "secondary_artifacts": [
     "tmp/wf55-autonomy-outcome-ledger.json",
-    "tmp/wf74-improvement-opportunity-queue.json"
+    "tmp/wf74-improvement-opportunity-queue.json",
+    "tmp/wf74-decision-docket.json",
+    "tmp/retrieval-live-eval.json",
+    "data/state-history/retrieval-live-eval.jsonl",
+    "tmp/wf88-os2-control-packet.json",
+    "tmp/wf88-wiki-synthesis-packet.json"
   ],
   "validator_commands": [
     "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
+    "python scripts\\wf74_improvement_opportunity_queue.py --write --validate",
+    "python scripts\\wf74_autonomy_work_router.py --write --validate",
+    "python scripts\\wf74_decision_docket.py --write --write-md --validate",
+    "python scripts\\wf74_learning_loop_eval_harness.py --write --validate",
+    "python scripts\\retrieval_live_eval.py --write --write-md --validate",
+    "python scripts\\test_retrieval_live_eval.py",
+    "python scripts\\wf74_rsi.py --outcome-eval-v2",
     "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
     "python scripts\\wf74_rsi.py --validate-only"
   ],
@@ -29,6 +56,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

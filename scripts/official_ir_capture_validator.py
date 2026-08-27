@@ -72,7 +72,12 @@ def validate_source(payload: dict[str, Any], findings: list[dict[str, Any]]) -> 
     if not isinstance(source, dict):
         add(findings, "critical", "source_missing", "source block is required")
         return
-    if source.get("source_type") not in {"sec_8k_exhibit_99_1", "issuer_ir_release", "sec_10q_official_report"}:
+    if source.get("source_type") not in {
+        "sec_8k_exhibit_99_1",
+        "issuer_ir_release",
+        "sec_10q_official_report",
+        "sec_10k_official_report",
+    }:
         add(findings, "critical", "source_type_invalid", "source_type must be an official SEC/IR release/report type", "source.source_type")
     if not str(source.get("source_url", "")).startswith("https://"):
         add(findings, "critical", "source_url_invalid", "source_url must be https", "source.source_url")

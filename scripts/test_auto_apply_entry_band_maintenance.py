@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import json
+import sys
+import tempfile
+from pathlib import Path
+
 import auto_apply_entry_band_maintenance as auto_band
 from chain_manifest import manifest_steps
 
@@ -239,6 +244,80 @@ def test_post_apply_refresh_contract_is_serial_and_fail_closed(errors: list[str]
     expect(skipped["status"] == "skipped_no_applied_changes", f"no-change refresh should skip cleanly, got {skipped}", errors)
 
 
+def test_thin_board_sql_reference_repair_allows_only_trade_grade_freshness_blockers(errors: list[str]) -> None:
+    allowed_contract = {
+        "sql_first_thin_board_detected": True,
+        "sql_first_thin_board_allowed": False,
+        "errors": [
+            {"name": "trade_grade_freshness_status"},
+            {"name": "trade_grade_freshness_validation"},
+        ],
+    }
+    unsafe_contract = {
+        "sql_first_thin_board_detected": True,
+        "sql_first_thin_board_allowed": False,
+        "errors": [
+            {"name": "trade_grade_freshness_status"},
+            {"name": "authority_false:tmp/example.json"},
+        ],
+    }
+    expect(
+        auto_band.thin_board_contract_allows_sql_reference_repair(allowed_contract) is True,
+        "thin-board SQL reference repair should allow the circular trade-grade freshness blocker",
+        errors,
+    )
+    expect(
+        auto_band.thin_board_contract_allows_sql_reference_repair(unsafe_contract) is False,
+        "thin-board SQL reference repair must fail closed for any non-freshness contract error",
+        errors,
+    )
+    expect(
+        auto_band.thin_board_contract_allows_sql_reference_repair({"sql_first_thin_board_allowed": True}) is True,
+        "already-allowed thin-board contract should remain allowed",
+        errors,
+    )
+
+
+def test_dry_run_emits_fail_closed_authority_contract(errors: list[str]) -> None:
+    """A compact audit payload must still carry the fields cron validates."""
+    with tempfile.TemporaryDirectory(dir=auto_band.TMP) as directory:
+        root = Path(directory)
+        proposals = root / "band-proposals.json"
+        config = root / "portfolio-config.json"
+        sheet = root / "Execution Board.md"
+        audit = root / "auto-band-apply.json"
+        log = root / "auto-band-apply.md"
+        proposals.write_text(json.dumps({"proposals": []}), encoding="utf-8")
+        config.write_text(json.dumps({}), encoding="utf-8")
+        sheet.write_text("# unused for no-change dry run\n", encoding="utf-8")
+
+        previous_args = sys.argv
+        previous_audit = auto_band.AUDIT_PATH
+        previous_log = auto_band.LOG_PATH
+        try:
+            sys.argv = [
+                "auto_apply_entry_band_maintenance.py",
+                "--dry-run",
+                "--proposals", str(proposals),
+                "--config", str(config),
+                "--technical-sheet", str(sheet),
+            ]
+            auto_band.AUDIT_PATH = audit
+            auto_band.LOG_PATH = log
+            exit_code = auto_band.main()
+        finally:
+            sys.argv = previous_args
+            auto_band.AUDIT_PATH = previous_audit
+            auto_band.LOG_PATH = previous_log
+
+        payload = json.loads(audit.read_text(encoding="utf-8"))
+        authority = payload.get("authority") or {}
+        expect(exit_code == 0, f"dry run should succeed, got {exit_code}", errors)
+        expect(authority.get("capital_action_allowed") is False, "audit must explicitly deny capital action", errors)
+        expect(authority.get("owner_approval_inferred") is False, "audit must explicitly deny inferred approval", errors)
+        expect(authority.get("trade_or_account_authority") is False, "audit must explicitly deny trade/account authority", errors)
+
+
 def main() -> int:
     errors: list[str] = []
     test_eligible_proposal_filter(errors)
@@ -248,6 +327,8 @@ def main() -> int:
     test_missing_table_and_section_blocks(errors)
     test_manifest_runs_auto_apply_after_band_refresh(errors)
     test_post_apply_refresh_contract_is_serial_and_fail_closed(errors)
+    test_thin_board_sql_reference_repair_allows_only_trade_grade_freshness_blockers(errors)
+    test_dry_run_emits_fail_closed_authority_contract(errors)
     if errors:
         print("auto_apply_entry_band_maintenance_tests_failed")
         for error in errors:

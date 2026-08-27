@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import FinanceSqlCanonAccess, connect_readonly as connect_sql_canon_ro
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +36,10 @@ WF67_MANAGER = BASE / "wf67-autonomous-paper-manager-current.json"
 WF67_MANAGER_VALIDATION = BASE / "wf67-autonomous-paper-manager-validation.json"
 WF67_EXECUTION_GUARD = BASE / "paper-execution-guard-validation.json"
 SYNC_SPINE = TMP / "finance-decision-sync-spine.json"
+QUOTE_PROOF = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+SQL_CANON_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
+
+MAX_QUOTE_DISPLAY_AGE_SECONDS = 15 * 60
 
 SCHEMA = "veritas.wf85_paper_deployment_notification_digest.v1"
 
@@ -147,6 +152,15 @@ def source_meta(path: Path, payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def source_stale_reason(name: str, meta: dict[str, Any], max_age_hours: int) -> str | None:
+    age = meta.get("age_hours")
+    if age is None:
+        return f"{name}_generated_at_missing"
+    if age > max_age_hours:
+        return f"{name}_stale:{age}h_gt_{max_age_hours}h"
+    return None
+
+
 def authority_violations(value: Any, prefix: str = "") -> list[str]:
     violations: list[str] = []
     if isinstance(value, dict):
@@ -183,14 +197,182 @@ def fmt_money(value: Any) -> str:
     return f"${float(value):,.2f}"
 
 
+def fnum(value: Any) -> float | None:
+    try:
+        if value in (None, ""):
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def classify_band_status(price: Any, low: Any, high: Any, stop: Any) -> str | None:
+    price_f = fnum(price)
+    if price_f is None:
+        return None
+    stop_f = fnum(stop)
+    low_f = fnum(low)
+    high_f = fnum(high)
+    if stop_f is not None and price_f < stop_f:
+        return "BELOW_STOP"
+    if low_f is not None and price_f < low_f:
+        return "BELOW_BAND"
+    if high_f is not None and price_f > high_f:
+        return "ABOVE_BAND"
+    if low_f is not None and high_f is not None:
+        return "IN_BAND"
+    return None
+
+
+def normalized_band_status(value: Any) -> str:
+    raw = str(value or "").upper()
+    return "ABOVE_BAND" if raw == "ABOVE_BAND_WAIT" else raw
+
+
+def quote_index() -> dict[str, dict[str, Any]]:
+    payload = load_dict(QUOTE_PROOF)
+    return {
+        ticker(snapshot.get("symbol")): snapshot
+        for snapshot in as_list(payload.get("snapshots"))
+        if isinstance(snapshot, dict) and ticker(snapshot.get("symbol"))
+    }
+
+
+def quote_display_context(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Require the direct intraday proof before displaying numeric market data."""
+    try:
+        age = int(snapshot.get("age_seconds"))
+    except (TypeError, ValueError):
+        age = MAX_QUOTE_DISPLAY_AGE_SECONDS + 1
+    allowed = (
+        snapshot.get("freshness_status") == "fresh"
+        and fnum(snapshot.get("price")) is not None
+        and age <= MAX_QUOTE_DISPLAY_AGE_SECONDS
+    )
+    return {
+        "price_display_allowed": allowed,
+        "price_display_reason": (
+            "fresh_intraday_quote_proof"
+            if allowed
+            else "fresh_intraday_quote_proof_required"
+        ),
+    }
+
+
+def apply_quote_display_dependency(row: dict[str, Any], snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Keep stale candidates visible while stripping misleading numeric displays."""
+    out = dict(row)
+    context = quote_display_context(snapshot)
+    out.update(context)
+    if context["price_display_allowed"] is True:
+        out["current_price"] = snapshot.get("price")
+        out["latest_known_price"] = snapshot.get("price")
+        return out
+
+    out["current_price"] = None
+    out["latest_known_price"] = None
+    out["entry_band_low"] = None
+    out["entry_band_high"] = None
+    out["stop_or_invalidation"] = None
+    out["computed_band_status"] = None
+    out["band_status"] = "FRESH_QUOTE_REQUIRED"
+    out["band_display_conflict"] = False
+    out["prior_reclaim_band"] = None
+    out["prior_reclaim_not_met"] = False
+    out["blockers"] = list(dict.fromkeys(as_list(out.get("blockers")) + ["fresh_quote_required"]))
+    return out
+
+
+def sql_reference_index() -> dict[str, dict[str, Any]]:
+    client = FinanceSqlCanonAccess()
+    validation = client.validate()
+    if validation.get("status") != "ok":
+        return {}
+    query = """
+        SELECT *
+        FROM reference_levels
+        WHERE reference_price_low IS NOT NULL
+          AND reference_price_high IS NOT NULL
+          AND reference_invalidation_level IS NOT NULL
+        ORDER BY ticker
+    """
+    with connect_sql_canon_ro(client.db_path) as conn:
+        return {str(row["ticker"]).upper(): dict(row) for row in conn.execute(query)}
+
+
+def apply_sql_reference(row: dict[str, Any], references: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    symbol = ticker(row.get("ticker"))
+    ref = references.get(symbol)
+    out = dict(row)
+    price = out.get("current_price") if out.get("current_price") is not None else out.get("latest_known_price")
+    original_status = out.get("band_status")
+    original_low = fnum(out.get("entry_band_low"))
+    original_high = fnum(out.get("entry_band_high"))
+    original_stop = fnum(out.get("stop_or_invalidation"))
+    original_computed = classify_band_status(price, original_low, original_high, original_stop)
+    if original_computed and original_status and normalized_band_status(original_computed) != normalized_band_status(original_status):
+        out["pre_sql_overlay_band_display_conflict"] = True
+
+    if ref:
+        out["entry_band_low"] = fnum(ref.get("reference_price_low"))
+        out["entry_band_high"] = fnum(ref.get("reference_price_high"))
+        out["stop_or_invalidation"] = fnum(ref.get("reference_invalidation_level"))
+        out["band_field_source"] = "state/finance/finance-canon.sqlite:reference_levels"
+        out["sql_canon_reference_level"] = {
+            "source_artifact_path": ref.get("source_artifact_path"),
+            "source_generated_at_utc": ref.get("source_generated_at_utc"),
+            "fallback_rule": ref.get("fallback_rule"),
+            "authority_class": ref.get("authority_class"),
+        }
+        computed = classify_band_status(price, out.get("entry_band_low"), out.get("entry_band_high"), out.get("stop_or_invalidation"))
+        out["source_band_status_before_sql_overlay"] = original_status
+        out["computed_band_status"] = computed
+        out["band_status"] = computed or ref.get("reference_band_status") or original_status
+        out["band_display_conflict"] = False
+        if original_low is not None and original_high is not None and (
+            original_low,
+            original_high,
+            original_stop,
+        ) != (
+            out.get("entry_band_low"),
+            out.get("entry_band_high"),
+            out.get("stop_or_invalidation"),
+        ):
+            out["prior_reclaim_band"] = {
+                "band_status": original_status,
+                "entry_band_low": original_low,
+                "entry_band_high": original_high,
+                "stop_or_invalidation": original_stop,
+                "source": out.get("band_field_source_before_sql_overlay") or out.get("source") or "legacy_display_band",
+                "role": "prior_reclaim_filter_not_current_reference_band",
+            }
+            price_f = fnum(price)
+            if price_f is not None:
+                out["prior_reclaim_not_met"] = price_f < original_low
+    else:
+        computed = original_computed
+        out["computed_band_status"] = computed
+        out["band_display_conflict"] = bool(
+            computed
+            and original_status
+            and normalized_band_status(computed) != normalized_band_status(original_status)
+        )
+        if computed:
+            out["band_status"] = computed
+    return out
+
+
 def fmt_band(row: dict[str, Any]) -> str:
-    raw_status = str(row.get("band_status") or "UNKNOWN")
+    if row.get("price_display_allowed") is False:
+        return "fresh quote required; price/band/stop display suppressed"
+    raw_status = "BAND_DISPLAY_CONFLICT" if row.get("band_display_conflict") else str(row.get("band_status") or "UNKNOWN")
     status = {
         "IN_BAND": "in band",
         "ABOVE_BAND": "above band",
         "ABOVE_BAND_WAIT": "above buy band / wait",
         "BELOW_BAND": "below band",
         "BELOW_STOP": "below stop",
+        "BAND_DISPLAY_CONFLICT": "band display conflict",
         "UNKNOWN": "band unknown",
     }.get(raw_status, raw_status.replace("_", " ").lower())
     low = row.get("entry_band_low")
@@ -200,7 +382,13 @@ def fmt_band(row: dict[str, Any]) -> str:
     if isinstance(low, (int, float)) and isinstance(high, (int, float)):
         band = f"; range {fmt_money(low)}-{fmt_money(high)}"
     stop_text = f", stop {fmt_money(stop)}" if isinstance(stop, (int, float)) else ""
-    return f"{status}{band}{stop_text}"
+    prior = as_dict(row.get("prior_reclaim_band"))
+    prior_low = prior.get("entry_band_low")
+    prior_high = prior.get("entry_band_high")
+    prior_text = ""
+    if isinstance(prior_low, (int, float)) and isinstance(prior_high, (int, float)):
+        prior_text = f"; prior reclaim {fmt_money(prior_low)}-{fmt_money(prior_high)}"
+    return f"{status}{band}{stop_text}{prior_text}"
 
 
 READINESS_LABELS = {
@@ -246,6 +434,8 @@ def human_blocker(value: Any) -> str:
         "gate_veto_present": "promotion veto still present",
         "gate_band_status": "band gate says wait",
         "band_review_required": "band review still open",
+        "band_display_conflict": "displayed price/band/status conflict",
+        "prior_reclaim_band_not_reclaimed": "below prior reclaim filter",
         "post_apply_band_review_still_open": "auto-applied band still marked open",
         "band_hygiene_exception_owner_review": "band maintenance needs owner/main review",
         "band_exception_owner_review": "band exception needs owner/main review",
@@ -277,9 +467,11 @@ def human_blockers(values: Any, limit: int = 3) -> str:
 
 
 def rank_sort(row: dict[str, Any]) -> tuple[int, int, str]:
+    packet_rank = row.get("packet_rank")
+    rank = row.get("rank")
     return (
-        int(row.get("packet_rank") or row.get("rank") or 999),
-        int(row.get("rank") or 999),
+        int(packet_rank if packet_rank is not None else rank if rank is not None else 999),
+        int(rank if rank is not None else 999),
         str(row.get("ticker") or row.get("symbol") or ""),
     )
 
@@ -299,14 +491,21 @@ def manager_target_stale(manager: dict[str, Any], max_age_hours: int) -> tuple[b
     return bool(reasons), reasons
 
 
-def build_manager_rows(manager: dict[str, Any], max_age_hours: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def build_manager_rows(
+    manager: dict[str, Any],
+    max_age_hours: int,
+    quotes: dict[str, dict[str, Any]] | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     stale, stale_reasons = manager_target_stale(manager, max_age_hours)
     deployment_ready: list[dict[str, Any]] = []
     near_deployment: list[dict[str, Any]] = []
+    legacy_audit: list[dict[str, Any]] = []
     for raw in as_list(manager.get("candidate_card_reviews")):
         if not isinstance(raw, dict):
             continue
         symbol = ticker(raw.get("ticker"))
+        if not symbol:
+            continue
         row = {
             "ticker": symbol,
             "source": "wf67_autonomous_paper_manager",
@@ -316,8 +515,13 @@ def build_manager_rows(manager: dict[str, Any], max_age_hours: int) -> tuple[lis
             "rank": raw.get("rank"),
             "band_status": raw.get("band_status"),
             "order_text": row_order_text(as_dict(raw.get("order"))),
-            "card_path": raw.get("card_path"),
-            "request_path": raw.get("request_path"),
+            "card_path": None,
+            "request_path": None,
+            "wf67_manager_card_reference_suppressed": bool(raw.get("card_path") or raw.get("request_path")),
+            "wf67_manager_card_reference_policy": (
+                "WF67 manager paths are historical/audit context only; current digest card paths must come from "
+                "morning-paper-deployment-recommendation-cards or trade-grade-approval-card-gate."
+            ),
             "owner_approval_status": raw.get("owner_approval_status"),
             "blockers": list(as_list(raw.get("blockers"))),
             "required_before_execution": list(as_list(raw.get("required_before_execution"))),
@@ -325,36 +529,60 @@ def build_manager_rows(manager: dict[str, Any], max_age_hours: int) -> tuple[lis
             "paper_submit_allowed": False,
             "owner_approval_inferred": False,
         }
-        if raw.get("status") == "conditional_ready_after_fresh_monday_quote" and not stale:
+        row.update(quote_display_context((quotes or {}).get(symbol, {})))
+        if raw.get("status") == "conditional_ready_after_fresh_monday_quote" and not stale and row["price_display_allowed"] is True:
             deployment_ready.append(row)
-        else:
-            if raw.get("status") == "conditional_ready_after_fresh_monday_quote":
-                row["readiness_kind"] = "near_deployment_stale_conditional_ready"
-                row["blockers"] = row["blockers"] + stale_reasons
-            else:
-                row["readiness_kind"] = "near_deployment_blocked_candidate"
+        elif raw.get("status") == "conditional_ready_after_fresh_monday_quote" and not stale:
+            row["readiness_kind"] = "near_deployment_stale_conditional_ready"
+            row["blockers"] = list(dict.fromkeys(row["blockers"] + ["fresh_quote_required"]))
+            row["order_text"] = f"{symbol}: fresh quote required; order terms suppressed"
             near_deployment.append(row)
-    return sorted(deployment_ready, key=rank_sort), sorted(near_deployment, key=rank_sort)
+        else:
+            row["readiness_kind"] = "wf67_manager_legacy_audit_only"
+            row["blockers"] = list(dict.fromkeys(row["blockers"] + stale_reasons))
+            row["legacy_audit_only"] = True
+            row["current_surface_eligible"] = False
+            row["legacy_audit_reason"] = (
+                "stale_wf67_manager_target_session"
+                if stale
+                else "wf67_manager_blocked_row_not_current_review_surface"
+            )
+            legacy_audit.append(row)
+    return (
+        sorted(deployment_ready, key=rank_sort),
+        sorted(near_deployment, key=rank_sort),
+        sorted(legacy_audit, key=rank_sort),
+    )
 
 
-def build_morning_rows(morning: dict[str, Any]) -> list[dict[str, Any]]:
+def build_morning_rows(
+    morning: dict[str, Any],
+    references: dict[str, dict[str, Any]],
+    quotes: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for raw in as_list(morning.get("cards")):
         if not isinstance(raw, dict):
             continue
         if raw.get("clean_for_randall_approval_review") is True:
             continue
-        rows.append(
+        symbol = ticker(raw.get("ticker"))
+        snapshot = quotes.get(symbol, {})
+        row = apply_sql_reference(
             {
-                "ticker": ticker(raw.get("ticker")),
+                "ticker": symbol,
                 "source": "morning_paper_deployment_recommendation_cards",
                 "readiness_kind": "near_deployment_not_clean_for_approval_review",
                 "status": raw.get("status"),
-                "current_price": raw.get("current_price"),
+                "current_price": snapshot.get("price"),
+                "latest_known_price": snapshot.get("price"),
                 "band_status": raw.get("band_status"),
                 "entry_band_low": raw.get("entry_band_low"),
                 "entry_band_high": raw.get("entry_band_high"),
                 "stop_or_invalidation": raw.get("stop_or_invalidation"),
+                "prior_reclaim_band": raw.get("prior_reclaim_band"),
+                "prior_reclaim_not_met": raw.get("prior_reclaim_not_met") is True,
+                "band_display_conflict": raw.get("band_display_conflict") is True,
                 "blockers": list(as_list(raw.get("blockers")))[:12],
                 "warnings": list(as_list(raw.get("warnings")))[:8],
                 "owner_card_path": raw.get("owner_card_path"),
@@ -362,12 +590,28 @@ def build_morning_rows(morning: dict[str, Any]) -> list[dict[str, Any]]:
                 "paper_execution_ready": False,
                 "paper_submit_allowed": False,
                 "owner_approval_inferred": False,
-            }
+            },
+            references,
         )
+        row = apply_quote_display_dependency(row, snapshot)
+        if row.get("band_display_conflict") and "band_display_conflict" not in row["blockers"]:
+            row["blockers"].append("band_display_conflict")
+        if row.get("prior_reclaim_not_met") and "prior_reclaim_band_not_reclaimed" not in row["blockers"]:
+            row["blockers"].append("prior_reclaim_band_not_reclaimed")
+        if row.get("band_display_conflict") or row.get("prior_reclaim_not_met"):
+            row["digest_category"] = "watch"
+            row["decision_state"] = "monitor_only"
+            row["packet_rank"] = row.get("packet_rank") or 0
+        rows.append(row)
     return rows
 
 
-def build_watch_rows(cards: dict[str, Any], limit: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def build_watch_rows(
+    cards: dict[str, Any],
+    limit: int,
+    references: dict[str, dict[str, Any]],
+    quotes: dict[str, dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     watch: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
     for raw in as_list(cards.get("cards")):
@@ -379,14 +623,16 @@ def build_watch_rows(cards: dict[str, Any], limit: int) -> tuple[list[dict[str, 
             continue
         current = as_dict(raw.get("current_price"))
         band = as_dict(raw.get("entry_band"))
-        base = {
-            "ticker": ticker(raw.get("ticker")),
+        symbol = ticker(raw.get("ticker"))
+        snapshot = quotes.get(symbol, {})
+        base = apply_sql_reference({
+            "ticker": symbol,
             "source": "trade_grade_decision_cards",
             "auto_tier": tier,
             "auto_state": raw.get("auto_state"),
             "decision_state": state,
             "primary_state": raw.get("primary_state"),
-            "latest_known_price": current.get("latest_known_price"),
+            "latest_known_price": snapshot.get("price"),
             "market_date": current.get("market_date"),
             "band_status": band.get("band_status"),
             "entry_band_low": band.get("low"),
@@ -395,7 +641,8 @@ def build_watch_rows(cards: dict[str, Any], limit: int) -> tuple[list[dict[str, 
             "paper_execution_ready": False,
             "paper_submit_allowed": False,
             "owner_approval_inferred": False,
-        }
+        }, references)
+        base = apply_quote_display_dependency(base, snapshot)
         if state in {"monitor_only", "no_chase"}:
             watch.append(base)
         elif state in {"below_stop_or_invalidation", "blocked_missing_freshness"}:
@@ -448,7 +695,7 @@ def build_message_preview(packet: dict[str, Any], limit: int) -> str:
     if near:
         lines.append("Near Deployment")
         for row in near[:limit]:
-            price = row.get("current_price") or row.get("latest_known_price")
+            price = None if row.get("price_display_allowed") is False else row.get("current_price") or row.get("latest_known_price")
             price_text = f" at {fmt_money(price)}" if isinstance(price, (int, float)) else ""
             lines.append(f"- {row.get('ticker')}: {human_readiness(row.get('readiness_kind'))}{price_text}; {fmt_band(row)}")
             lines.append(f"  Blocker: {human_blockers(row.get('blockers'))}.")
@@ -456,22 +703,44 @@ def build_message_preview(packet: dict[str, Any], limit: int) -> str:
     if watch:
         lines.append("Watch")
         for row in watch[:limit]:
-            price = row.get("latest_known_price")
+            price = None if row.get("price_display_allowed") is False else row.get("latest_known_price")
             price_text = f" at {fmt_money(price)}" if isinstance(price, (int, float)) else ""
             lines.append(f"- {row.get('ticker')}: {human_state(row.get('decision_state'))}{price_text}; {fmt_band(row)}")
         lines.append("")
     if blocked:
         lines.append("Repair / Blocked Sample")
         for row in blocked[:limit]:
-            price = row.get("latest_known_price")
+            price = None if row.get("price_display_allowed") is False else row.get("latest_known_price")
             price_text = f" at {fmt_money(price)}" if isinstance(price, (int, float)) else ""
             lines.append(f"- {row.get('ticker')}: {human_state(row.get('decision_state'))}{price_text}; {fmt_band(row)}")
         lines.append("")
+    validation = as_dict(packet.get("validation"))
+    row_band_conflicts = any(
+        as_dict(row).get("band_display_conflict")
+        for group in (ready, near, watch, blocked)
+        for row in as_list(group)
+    )
+    row_freshness_blocked = any(
+        any("fresh" in str(blocker).lower() for blocker in as_list(as_dict(row).get("blockers")))
+        for group in (ready, near, watch, blocked)
+        for row in as_list(group)
+    )
+    no_deployment_path = (
+        int(summary.get("deployment_ready_count") or 0) == 0
+        and int(summary.get("near_deployment_count") or 0) == 0
+    )
+    prepare_blocked = bool(validation.get("errors")) or row_band_conflicts or row_freshness_blocked or no_deployment_path
     lines.extend(
         [
             "Actions",
             "- Reply REVIEW to inspect the clean and near-deployment names.",
-            "- Reply PREPARE to build or refresh a WF67 request artifact.",
+            (
+                "- PREPARE is disabled until a name reaches near-deployment or clean approval-card state."
+                if no_deployment_path
+                else "- PREPARE is disabled until band display and freshness guards are clean."
+                if prepare_blocked
+                else "- Reply PREPARE to build or refresh a WF67 request artifact."
+            ),
             "- APPROVE is not active from this alert.",
             "",
             "Guardrail",
@@ -492,11 +761,27 @@ def build_digest(args: argparse.Namespace) -> dict[str, Any]:
     manager_validation = load_dict(WF67_MANAGER_VALIDATION)
     guard = load_dict(WF67_EXECUTION_GUARD)
     sync = load_dict(SYNC_SPINE)
+    quotes = quote_index()
+    sql_references = sql_reference_index()
 
-    deployment_ready, manager_near = build_manager_rows(manager, args.max_source_age_hours)
-    morning_near = build_morning_rows(morning)
-    watch, blocked = build_watch_rows(wf85_cards, args.max_watch_rows)
+    deployment_ready, manager_near, legacy_manager_audit = build_manager_rows(manager, args.max_source_age_hours, quotes)
+    morning_rows = build_morning_rows(morning, sql_references, quotes)
+    morning_near = [row for row in morning_rows if row.get("digest_category") != "watch"]
+    morning_watch = [row for row in morning_rows if row.get("digest_category") == "watch"]
+    watch, blocked = build_watch_rows(wf85_cards, args.max_watch_rows, sql_references, quotes)
     near = merge_near_rows(manager_near, morning_near)
+    morning_watch_tickers = {ticker(row.get("ticker")) for row in morning_watch}
+    near = [row for row in near if ticker(row.get("ticker")) not in morning_watch_tickers]
+    near_tickers = {ticker(row.get("ticker")) for row in near}
+    watch = sorted(
+        morning_watch
+        + [
+            row for row in watch
+            if ticker(row.get("ticker")) not in near_tickers
+            and ticker(row.get("ticker")) not in morning_watch_tickers
+        ],
+        key=rank_sort,
+    )[: args.max_watch_rows]
 
     guard_ready = bool(guard.get("ready_for_paper_submit_cancel") is True and guard.get("status") == "ok")
     if not guard_ready:
@@ -514,6 +799,8 @@ def build_digest(args: argparse.Namespace) -> dict[str, Any]:
         "wf67_manager_validation": source_meta(WF67_MANAGER_VALIDATION, manager_validation),
         "wf67_execution_guard": source_meta(WF67_EXECUTION_GUARD, guard),
         "finance_decision_sync_spine": source_meta(SYNC_SPINE, sync),
+        "quote_snapshot_proof": source_meta(QUOTE_PROOF, load_dict(QUOTE_PROOF)),
+        "sql_canon_reference_levels": source_meta(SQL_CANON_DB, {"status": "ok" if sql_references else "blocked"}),
     }
 
     validation_errors: list[str] = []
@@ -521,6 +808,8 @@ def build_digest(args: argparse.Namespace) -> dict[str, Any]:
     validation_errors.extend(f"digest_authority_drift:{item}" for item in authority_violations(AUTHORITY_BOUNDARY))
     if wf85_runner.get("status") != "ok":
         validation_errors.append(f"wf85_runner_not_ok:{wf85_runner.get('status')}")
+    if not sql_references:
+        validation_errors.append("sql_canon_reference_levels_unavailable")
     auth_summary = as_dict(wf85_authority.get("summary"))
     if wf85_authority.get("status") != "ok":
         validation_errors.append(f"wf85_authority_validation_not_ok:{wf85_authority.get('status')}")
@@ -542,6 +831,11 @@ def build_digest(args: argparse.Namespace) -> dict[str, Any]:
         if not meta.get("exists"):
             validation_errors.append(f"missing_source_artifact:{name}:{meta.get('path')}")
 
+    for name in ("morning_paper_cards", "finance_decision_sync_spine"):
+        stale_reason = source_stale_reason(name, as_dict(source_artifacts.get(name)), args.max_source_age_hours)
+        if stale_reason:
+            validation_warnings.append(stale_reason)
+
     stale, stale_reasons = manager_target_stale(manager, args.max_source_age_hours)
     if stale:
         validation_warnings.extend(stale_reasons)
@@ -551,9 +845,11 @@ def build_digest(args: argparse.Namespace) -> dict[str, Any]:
         validation_warnings.append(f"wf67_manager_not_ok:{manager.get('status')}")
     if manager_validation.get("status") != "ok":
         validation_warnings.append(f"wf67_manager_validation_not_ok:{manager_validation.get('status')}")
+    if not any(quote_display_context(snapshot)["price_display_allowed"] for snapshot in quotes.values()):
+        validation_warnings.append("fresh_quote_display_dependency_unavailable")
 
     execution_ready_count = 0
-    operator_action = "TELEGRAM_NOTIFY" if deployment_ready or near or watch or blocked or validation_warnings else "NO_REPLY"
+    operator_action = "TELEGRAM_NOTIFY" if deployment_ready or near or watch else "NO_REPLY"
     status = "blocked" if validation_errors else "ok"
     packet: dict[str, Any] = {
         "schema": SCHEMA,
@@ -561,26 +857,51 @@ def build_digest(args: argparse.Namespace) -> dict[str, Any]:
         "workflow": "WF85/WF67",
         "status": status,
         "operator_action": operator_action,
-        "purpose": "Review-only paper deployment notification digest for WF85/WF67 readiness radar.",
+        "purpose": "Compatibility paper deployment digest for WF85/WF67 readiness review; current deployment truth comes from WF85 cards, autonomous review queue, and position sizing readiness.",
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "source_policy": {
+            "current_deployment_surfaces": [
+                "tmp/trade-grade-decision-cards.json",
+                "tmp/autonomous-routing-deployment-cards.json",
+                "tmp/position-sizing-readiness-current.json",
+                "tmp/finance-market-deployment-operating-loop.json",
+            ],
+            "legacy_audit_only_sources": [
+                "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json:candidate_card_reviews",
+            ],
+            "retirement_note": (
+                "Legacy WF67 manager candidate_card_reviews are retained for audit/compatibility only and must not "
+                "create near-deployment, paper-prep, approval-card, or execution-ready signals."
+            ),
+        },
         "source_artifacts": source_artifacts,
         "summary": {
             "deployment_ready_count": len(deployment_ready),
             "deployment_ready_tickers": [row["ticker"] for row in deployment_ready],
             "near_deployment_count": len(near),
             "near_deployment_tickers": [row["ticker"] for row in near],
+            "legacy_wf67_manager_audit_count": len(legacy_manager_audit),
+            "legacy_wf67_manager_audit_tickers": [row["ticker"] for row in legacy_manager_audit],
             "watch_count": len(watch),
+            "watch_tickers": [row["ticker"] for row in watch],
             "blocked_or_repair_count": len(blocked),
+            "blocked_or_repair_tickers": [row["ticker"] for row in blocked],
             "execution_ready_count": execution_ready_count,
             "wf67_guard_ready_for_submit_cancel": guard_ready,
             "wf67_guard_status": guard.get("status"),
             "wf85_review_ready_count": gate_summary.get("review_ready_count"),
             "wf85_approval_card_draft_count": draft_count,
             "finance_decision_sync_clean_for_paper_deployment_review_count": as_dict(sync.get("summary")).get("clean_for_paper_deployment_review_count"),
+            "sql_canon_reference_level_count": len(sql_references),
+            "fresh_quote_display_ticker_count": len([
+                snapshot for snapshot in quotes.values()
+                if quote_display_context(snapshot)["price_display_allowed"]
+            ]),
         },
         "categories": {
             "deployment_ready": deployment_ready,
             "near_deployment": near,
+            "legacy_wf67_manager_audit": legacy_manager_audit,
             "watch": watch,
             "blocked_or_repair": blocked,
         },

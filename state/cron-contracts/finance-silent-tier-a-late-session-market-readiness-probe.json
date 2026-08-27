@@ -1,0 +1,75 @@
+{
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF78/WF85/WF87 market readiness",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "review_only": true,
+    "schedule_mutation_allowed": false
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "contract_reason": "Silent market-readiness producer added after capital-deployment alert consolidation so quote/readiness proof remains fresh without re-enabling send-capable Tier A alert jobs.",
+  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "mode": "none"
+  },
+  "description": "Command-backed silent Tier A late-session readiness probe. Review-only; no send, approval, execution, canon/portfolio, account, or capital authority.",
+  "enabled": true,
+  "expected_artifacts": [
+    "tmp/finance-market-deployment-operating-loop.json",
+    "tmp/finance-market-deployment-operating-loop.md",
+    "tmp/tier-a-intraday-opportunity-probe.json",
+    "tmp/market-execution-readiness-cron-hardening.json"
+  ],
+  "job_id": "63aff057-7456-4022-804c-79a7c8b62a0f",
+  "name": "Finance - Silent Tier A Late-Session Market Readiness Probe",
+  "owner_workflow": "WF78/WF85/WF87 market readiness",
+  "payload": {
+    "argv": [
+      "python",
+      "scripts\\finance_market_deployment_operating_loop.py",
+      "--window",
+      "late_session",
+      "--refresh-readiness",
+      "--refresh-intraday",
+      "--write",
+      "--write-md",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "kind": "command",
+    "timeoutSeconds": 900
+  },
+  "required": true,
+  "schedule": {
+    "expr": "7 12 * * 1-5",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-06-29T04:55:48Z",
+  "wakeMode": "now"
+}

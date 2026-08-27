@@ -25,6 +25,9 @@ They are **not** a freeform research swarm and do not own final truth.
 
 | Mode | Use when | Allowed outputs | Not allowed |
 |---|---|---|---|
+| Model-free command | explicit deterministic command and deterministic proof both exist | exact local proof | hidden model fallback |
+| Codex-native bounded | explicitly opted-in read-only work, or one exact leased implementation file | Terra low/medium bounded result | broad/multi-file implementation, Kimi/Sol override, silent eligibility expansion |
+| Persistent isolated agent | bounded specialist work with fresh strict context-transport proof | Terra low/medium/high by role/scope | dispatch without valid transport proof, silent Main fallback |
 | Main-session only | final judgment, shared canonical semantics, emergency truth fix, final merge / QC | direct decision, bounded edits, final synthesis | offloading final truth ownership |
 | Spawn read-only | evidence gathering, audits, contradiction checks, inventory, contract challenge | findings, gap maps, review packets | queue movement, canonical note mutation, final verdict |
 | Spawn distinct-output | separate artifacts can be produced without touching the same owner surface | draft docs, packet artifacts, report assets, validators, isolated code changes | competing writes on the same canonical surface |
@@ -32,18 +35,20 @@ They are **not** a freeform research swarm and do not own final truth.
 
 If a workflow cannot be classified cleanly, stop and default to blocked or main-session serial work until clarified.
 
-## Single spawn decision tree
+## Single route and spawn decision tree
 
-1. Is the blocker human judgment, unresolved trust, auth/network/destructive action, or owner ambiguity?
+0. Run `python scripts\project_implementation_router.py ... --validate`; `veritas.execution_efficiency_policy.v1` is the machine owner.
+1. Is there a complete deterministic command/proof contract?
+   - yes -> **Model-free command**
+2. Is explicit bounded Codex-native eligibility proven?
+   - yes -> **Codex-native bounded**
+3. Is the blocker human judgment, unresolved trust, auth/network/destructive action, or owner ambiguity?
    - yes -> **Blocked / operator-gated**
-2. Is final canonical judgment or shared semantic interpretation central?
+4. Is final canonical judgment, quick bounded repair, or final integration central, with an explicit Main exception?
    - yes -> **Main-session only**
-3. Is the helper output evidence, audit, contradiction, inventory, or contract challenge only?
-   - yes -> **Spawn read-only**
-4. Can a helper produce a distinct artifact without touching the same owner surface as another lane?
-   - yes -> **Spawn distinct-output**
-5. If none of the above are clearly true:
-   - stop and treat the workflow as blocked or serial until clarified
+5. Does a fresh strict persistent context-transport proof pass for the selected specialist?
+   - yes -> **Persistent isolated agent**, read-only or distinct-output as classified
+   - no -> **Blocked**; do not fall back silently to Main
 
 ## Main-session exception rule
 
@@ -72,15 +77,17 @@ Ambiguity is not permission to guess the queue direction. Ask a concrete questio
 Before opening a spawned helper lane, the main session must make the spawn contract explicit enough that the child does not burn its runtime reconstructing context.
 
 Minimum preflight:
-1. classify the lane mode from the execution-mode matrix
+1. validate the selected backend/model/thinking with `project_implementation_router.py`
 2. name the objective in one sentence
 3. name the exact files to read first
 4. name the stop line / what not to touch
-5. choose model and thinking level from the role-effort matrix; do not default to high just because the task is spawned
-6. set an explicit `runTimeoutSeconds` budget instead of relying on the runtime default
+5. record expected backend/model/thinking and require actual values at closeout; mismatch blocks acceptance
+6. record an explicit runtime budget in the packet, using a tool timeout only when the tool exposes one
 7. require an artifact-first partial output when the work may exceed 10 minutes
 8. for implementation lanes, require an early progress checkpoint within 3-5 minutes when practical
 9. name the acceptance proof before launch
+10. declare a workspace-relative base path and freeze no more than 6 files / 120,000 bytes / 30,000 estimated context tokens with sorted hashes and a snapshot id
+11. record parent job, phase, attempt/retry identity, and the 90-second provisional incident SLA
 
 ### Narrow-packet default
 
@@ -111,15 +118,17 @@ Role-effort matrix:
 | Implementation, validator/script edits, workflow artifact production | medium | repeated test failures, shared-contract drift, or unclear downstream consumers |
 | Hard debugging, runtime failures, auth/config diagnosis, false-green/false-red residue, trust adjudication | high | already high; narrow scope before increasing runtime |
 
-Use `openai/gpt-5.4` through the Codex runtime as the default bounded helper/subagent workhorse, and route thinking effort independently from model choice. Reserve `openai/gpt-5.5` for deliberate high-stakes exceptions that truly require main-tier synthesis or hard judgment. Use `codex/gpt-5.3-codex-spark` only for narrow proof/canary/QA/pre-work lanes after canary proof is clean, and always set Spark thinking to `xhigh` until repeated proof says a lower effort is equally reliable.
+Use `scripts/project_implementation_router.py` as route authority and `skills/veritas-model-routing-helper-lanes/SKILL.md` as the human procedure. Model-free remains model-free; bounded native and persistent helpers use Terra; Main/Terra is the default integrator; Sol is Main-only and requires an explicit escalation, challenger, or QA use case plus reason. `openai/gpt-5.6-luna` remains restricted to proven deterministic scheduled proof/status work, `openai/gpt-5.5` is fallback, and `openai/gpt-5.4` is rollback/control.
 
 Use `06. Playbooks/Subagent Spawn Handoff Template.md` for the copyable packet.
 
-Default timeout guidance:
+Default runtime-budget guidance:
 - quick read-only check: 900-1200 seconds
 - bounded multi-file audit: 2400-3600 seconds
 - broad inventory / architecture audit: 5400-7200 seconds, or split into smaller phases
 - implementation pass: 3600-7200 seconds with exact validation gates
+
+For cron `agentTurn` jobs, also set `timeoutSeconds`. For `sessions_spawn`, use a narrow contract, artifact-first checkpoints, and `sessions_yield` rather than polling.
 
 If the task needs more than that, the contract is probably too broad. Split it before spawning.
 
@@ -161,7 +170,7 @@ If helper output starts behaving like a second truth layer, stop the workflow im
 
 ## Independent auditor closeout rule
 
-For any meaningful workflow closeout, QC/QA should default to an **independent auditor** spawned in a **fresh new session**.
+For shared/major validation, privacy/security/authority/finance semantics, or repeated failure, QC/QA requires one **independent auditor** spawned in a **fresh new session** after deterministic preflight. Micro and narrow work may close with deterministic/focused proof plus Main verification.
 
 Meaning here:
 - not the implementation lane that just did the working pass
@@ -189,7 +198,7 @@ Default spawn posture for that audit:
 - explicit file-grounded handoff packet
 - no queue movement, no canonical mutation, no final closeout authority
 
-If a meaningful workflow closes without this independent audit, record the exception explicitly and say why that lower bar was still honest.
+After one repair and one fresh QA rerun, another rejection returns to Main for scope/root-cause reclassification. Do not keep replaying the same frozen context through additional agents.
 
 ## Executive-summary gate
 

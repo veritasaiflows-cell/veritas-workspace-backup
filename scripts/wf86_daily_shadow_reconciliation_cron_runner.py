@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -371,6 +372,8 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         warnings.append(f"paper_reconciliation_status:{summary.get('paper_reconciliation_status')}")
     if summary.get("shadow_threshold_met") is True and summary.get("post_trade_reconciliation_blocker_present") is False:
         warnings.append("autonomous_threshold_and_reconciliation_may_be_ready_for_main_review")
+    if as_dict(payload.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
     return {
         "status": "error" if errors else "warning" if warnings else "ok",
         "errors": errors,
@@ -386,6 +389,7 @@ def build_payload(steps: list[dict[str, Any]], skip_paper_reconciliation: bool) 
         "operator_action": "NO_REPLY",
         "purpose": "Scheduled WF86 shadow accumulation plus GET-only paper reconciliation proof.",
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_context": finance_sql_canon_guard_context(consumer="scripts/wf86_daily_shadow_reconciliation_cron_runner.py"),
         "parameters": {
             "skip_paper_reconciliation": skip_paper_reconciliation,
         },

@@ -364,6 +364,16 @@ def test_forward_scorecard_and_durable_append(errors: list[str]) -> None:
         payload = durable_rows[0]["payload"]
         expect(payload["append_decision"] == "durable_append_recorded_review_only", "durable append stamp missing", errors)
         expect(durable_rows[0]["authority"]["trade_execution_allowed"] is False, "durable row keeps authority false", errors)
+        grade_history = tmp / "recommendation-outcome-grades.jsonl"
+        write_jsonl(grade_history, [{
+            "grade_event_id": "grade-1",
+            "ledger_event_id": durable_rows[0]["ledger_event_id"],
+            "grade_status": "assigned",
+            "assigned_grade": "band_reclaim_held",
+        }])
+        summary = mod.durable_summary(durable, grade_history)
+        expect(summary["later_outcome_graded_rows"] == 1, f"grade history should count graded recommendation rows: {summary}", errors)
+        expect(summary["grade_history"]["assigned_grade_event_count"] == 1, "grade history assigned count", errors)
 
 
 def main() -> int:

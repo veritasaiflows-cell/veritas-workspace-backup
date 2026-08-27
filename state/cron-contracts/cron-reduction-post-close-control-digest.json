@@ -1,0 +1,74 @@
+{
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "CRON phase1 post-close control reduction",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "review_only": true,
+    "schedule_mutation_allowed": false
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "contract_reason": "Phase 1 cron reduction replacement for duplicate post-close control handoff and layered post-close advancement audit after shadow parity passed.",
+  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "bestEffort": true,
+    "mode": "none"
+  },
+  "description": "Command-backed post-close cron/control digest. Review-only; no repair execution, schedule mutation, finance/canon/portfolio, paper/live/account, or approval authority.",
+  "enabled": true,
+  "expected_artifacts": [
+    "tmp/cron-control-digest-runner-post-close.json",
+    "tmp/cron-contract-validator.json",
+    "tmp/cron-control-packet.json",
+    "tmp/post-close-control-digest.json"
+  ],
+  "job_id": "e220c30e-c0ab-4f5a-8a7a-a2c0d16207ad",
+  "name": "Cron Reduction - Post-Close Control Digest",
+  "owner_workflow": "CRON phase1 post-close control reduction",
+  "payload": {
+    "argv": [
+      "python",
+      "scripts\\cron_control_digest_runner.py",
+      "--window",
+      "post-close",
+      "--write",
+      "--write-md",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "kind": "command",
+    "timeoutSeconds": 420
+  },
+  "required": true,
+  "schedule": {
+    "expr": "22 15 * * 1-5",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-06-29T04:55:48Z",
+  "wakeMode": "now"
+}

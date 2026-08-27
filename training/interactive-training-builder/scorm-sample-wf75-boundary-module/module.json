@@ -1,0 +1,130 @@
+{
+  "schema": "veritas.interactive_training_module.v1",
+  "module_id": "wf75-boundary-practice",
+  "title": "WF75 Boundary Practice Lab",
+  "audience": "Randall internal operator training",
+  "summary": "Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "learning_objectives": [
+    "Explain the offer in plain English without hype.",
+    "Identify unsafe claims before they reach a prospect.",
+    "Separate internal training readiness from external outreach approval.",
+    "Export local xAPI-style practice events for review without sending data externally."
+  ],
+  "lessons": [
+    {
+      "id": "offer-scope",
+      "title": "Offer Scope",
+      "body": "The AI Workflow Clarity Sprint is a narrow diagnostic review of one workflow. It creates a map and improvement checklist. It is not a live automation build, not a revenue guarantee, and not a request for credentials or customer data.",
+      "key_points": [
+        "Lead with the workflow problem, not the tool.",
+        "Keep claims diagnostic and evidence-bound.",
+        "Never imply outreach approval from a training score."
+      ]
+    },
+    {
+      "id": "boundary-discipline",
+      "title": "Boundary Discipline",
+      "body": "Training artifacts help Randall rehearse. They do not approve contact, public launch, CRM import, phone/SMS outreach, payment collection, customer-data intake, or production access.",
+      "key_points": [
+        "Owner approval must name batch, channel, and copy.",
+        "Customer data and credentials stay blocked in first-scope training.",
+        "High scores mean readiness for review, not permission to act."
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "plain-english-offer",
+      "type": "scenario",
+      "title": "Explain The Offer",
+      "prompt": "A business owner asks what Randall is offering. Write the 30-second version.",
+      "expected": "A five-day review of one intake or callback workflow that returns a practical map and improvement checklist, without production access, customer data, or revenue promises.",
+      "rubric": [
+        "Names one workflow.",
+        "Says diagnostic review or map/checklist.",
+        "Avoids revenue and automation guarantees.",
+        "Avoids requesting credentials or customer data."
+      ],
+      "xapi_object": "activity/plain-english-offer"
+    },
+    {
+      "id": "unsafe-claim-check",
+      "type": "multiple_choice",
+      "title": "Spot The Unsafe Claim",
+      "prompt": "Which sentence should be blocked before it reaches a prospect?",
+      "choices": [
+        {
+          "id": "safe",
+          "text": "I noticed your site emphasizes fast service, so intake and callback handoffs may be worth reviewing.",
+          "correct": false,
+          "feedback": "This is framed as a possible review angle from public evidence."
+        },
+        {
+          "id": "unsafe",
+          "text": "Your company is losing calls and our AI can recover that revenue.",
+          "correct": true,
+          "feedback": "Correct. This asserts loss, promises AI recovery, and implies revenue lift."
+        },
+        {
+          "id": "neutral",
+          "text": "The first step would be a narrow workflow map, not a system change.",
+          "correct": false,
+          "feedback": "This is a safe scope statement."
+        }
+      ],
+      "xapi_object": "activity/unsafe-claim-check"
+    },
+    {
+      "id": "approval-minimums",
+      "type": "checklist",
+      "title": "Approval Card Minimums",
+      "prompt": "Check every field required before any first-batch outreach can be treated as approved.",
+      "checklist_items": [
+        "Named prospect batch",
+        "Approved channel",
+        "Approved copy",
+        "Explicit not-approved list",
+        "Owner approval is current and exact"
+      ],
+      "xapi_object": "activity/approval-minimums"
+    },
+    {
+      "id": "boundary-review",
+      "type": "boundary_ack",
+      "title": "Boundary Review",
+      "prompt": "Confirm that this training lab is internal only and does not approve outreach, customer data collection, CRM import, payment collection, credentials, or production access.",
+      "expected": "I confirm this is internal readiness training only.",
+      "xapi_object": "activity/boundary-review"
+    },
+    {
+      "id": "reflection-next-step",
+      "type": "reflection",
+      "title": "Operator Reflection",
+      "prompt": "What should Randall do after passing this module, and what remains blocked?",
+      "rubric": [
+        "Names review or approval-card prep as next step.",
+        "States outreach remains owner-gated.",
+        "Keeps customer data, credentials, and production access blocked."
+      ],
+      "xapi_object": "activity/reflection-next-step"
+    }
+  ],
+  "xapi": {
+    "activity_id": "https://veritas.local/training/wf75-boundary-practice",
+    "verbs": [
+      "answered",
+      "completed",
+      "failed",
+      "passed",
+      "reviewed_boundary",
+      "started"
+    ]
+  }
+}

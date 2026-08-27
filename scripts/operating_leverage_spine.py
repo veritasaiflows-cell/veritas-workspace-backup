@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from lib.pm_control_reader import heartbeat_candidates, main_session_handoff, pm_next_actions, pm_program_state
 from market_data_utils import atomic_write_json, load_json_artifact
 
@@ -78,6 +79,62 @@ def as_list(value: Any) -> list[Any]:
 def load_json(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive handoff surface
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+
+
+def classify_sql_canon(health: dict[str, Any]) -> dict[str, Any]:
+    if health.get("status") == "ok":
+        return {
+            "source": "finance_sql_canon_access",
+            "class": "NO_REPLY",
+            "reason": "sql_canon_guard_clean",
+            "status": health.get("status"),
+            "production_answer_count": health.get("production_answer_count"),
+        }
+    return {
+        "source": "finance_sql_canon_access",
+        "class": "BLOCKED",
+        "reason": "sql_canon_guard_blocked",
+        "status": health.get("status"),
+        "error_count": len(as_list(health.get("errors"))),
+        "next_action": "Run python scripts\\finance_sql_canon_access.py --write --validate and repair guard failures before finance readiness claims.",
+    }
 
 
 def path_status(path: Path) -> dict[str, Any]:
@@ -231,20 +288,41 @@ def classify_digest(name: str, digest: dict[str, Any], path: Path) -> dict[str, 
             "validation_status": "unknown",
             "validation_status_derived": True,
         }
-    text = json.dumps(digest, sort_keys=True).upper()
-    if "BLOCKED" in text:
+    validation = derive_digest_validation(digest)
+    status = str(digest.get("status") or "").lower()
+    operator_action = str(digest.get("operator_action") or "").upper()
+    if status in {"error", "critical", "blocked"} or validation["critical_findings_count"]:
         queue_class = "BLOCKED"
-        reason = "digest_contains_blocked_semantic"
-    elif "MAIN_HANDOFF_REQUIRED" in text:
+        reason = "digest_structured_blocked"
+    elif operator_action == "BLOCKED":
+        queue_class = "BLOCKED"
+        reason = "digest_operator_action_blocked"
+    elif operator_action == "MAIN_HANDOFF_REQUIRED":
         queue_class = "MAIN_SESSION_REQUIRED"
         reason = "digest_requests_main_handoff"
-    elif "OWNER_DECISION" in text:
+    elif operator_action == "OWNER_DECISION":
         queue_class = "OWNER_DECISION"
         reason = "digest_requests_owner_decision"
-    else:
+    elif validation["validation_status"] == "warning":
+        queue_class = "MAIN_SESSION_REQUIRED"
+        reason = "digest_warning_requires_review"
+    elif validation["validation_status"] == "ok":
         queue_class = "NO_REPLY"
-        reason = "digest_has_no_interrupt_semantic"
-    validation = derive_digest_validation(digest)
+        reason = "digest_structured_clean"
+    else:
+        text = json.dumps(digest, sort_keys=True).upper()
+        if "BLOCKED" in text:
+            queue_class = "BLOCKED"
+            reason = "digest_contains_blocked_semantic"
+        elif "MAIN_HANDOFF_REQUIRED" in text:
+            queue_class = "MAIN_SESSION_REQUIRED"
+            reason = "digest_requests_main_handoff"
+        elif "OWNER_DECISION" in text:
+            queue_class = "OWNER_DECISION"
+            reason = "digest_requests_owner_decision"
+        else:
+            queue_class = "NO_REPLY"
+            reason = "digest_has_no_interrupt_semantic"
     return {
         "source": name,
         "class": queue_class,
@@ -372,6 +450,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     morning = load_json(paths["morning_digest"])
     post_close = load_json(paths["post_close_digest"])
     helper_completion = load_json(paths["helper_completion"])
+    sql_health = sql_canon_health()
     signals = [
         classify_pm_handoff(pm_handoff),
         classify_heartbeat(heartbeat),
@@ -379,6 +458,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         classify_digest("morning_control_digest", morning, paths["morning_digest"]),
         classify_digest("post_close_control_digest", post_close, paths["post_close_digest"]),
         classify_helper_completion(helper_completion, paths["helper_completion"]),
+        classify_sql_canon(sql_health),
     ]
     payload = {
         "schema": SCHEMA,
@@ -437,7 +517,14 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         "source_status": {
             **{key: path_status(path) for key, path in paths.items()},
             "pm_control_packet": path_status(DEFAULT_PM_CONTROL),
+            "finance_sql_canon_access": {
+                "path": "scripts/finance_sql_canon_access.py",
+                "exists": (ROOT / "scripts" / "finance_sql_canon_access.py").exists(),
+                "status": sql_health.get("status"),
+                "validation_status": sql_health.get("status"),
+            },
         },
+        "sql_canon_health": sql_health,
         "authority_boundary": AUTHORITY_BOUNDARY,
     }
     payload["validation"] = validate_payload(payload)
@@ -497,6 +584,21 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
     for optional_key in ("morning_digest", "post_close_digest", "helper_completion"):
         if not as_dict(source_status.get(optional_key)).get("exists"):
             warnings.append(f"{optional_key}_missing_optional")
+    sql_health = as_dict(payload.get("sql_canon_health"))
+    if sql_health.get("status") != "ok":
+        warnings.append(f"sql_canon_guard_attention:{sql_health.get('status')}")
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            errors.append(f"sql_canon_authority_{key}_not_false")
     return {
         "status": "ok" if not errors else "error",
         "errors": errors,

@@ -1,0 +1,52 @@
+{
+  "schema": "veritas.wf75.hvac_outreach_training_manifest.v1",
+  "generated_at_utc": "2026-07-04T02:44:32Z",
+  "status": "ready",
+  "outputs": {
+    "source_json": "training/wf75-academy/hvac-prospect-outreach-training-stack-2026-07-03.json",
+    "markdown_training": "training/wf75-academy/hvac-prospect-outreach-training-2026-07-03.md",
+    "markdown_simulation_lab": "training/wf75-academy/hvac-prospect-outreach-simulation-lab-2026-07-03.md",
+    "html_handout": "training/wf75-academy/hvac-prospect-outreach-handout-2026-07-03.html",
+    "pdf_handout": "training/wf75-academy/hvac-prospect-outreach-handout-2026-07-03.pdf",
+    "html_interactive_simulation": "training/wf75-academy/hvac-prospect-outreach-simulation-deck-2026-07-03.html",
+    "docx_book": "training/wf75-academy/hvac-prospect-outreach-training-book-2026-07-03.docx",
+    "pptx_activity_deck": "training/wf75-academy/hvac-prospect-outreach-activity-deck-2026-07-03.pptx",
+    "manifest": "training/wf75-academy/hvac-prospect-outreach-training-manifest-2026-07-03.json"
+  },
+  "source_packet": "tmp/wf75-hvac-prospect-outreach-20260703/packet.json",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "customer_outreach_approved": false,
+    "payment_collection_approved": false,
+    "customer_data_collection_approved": false,
+    "channel_binding_approved": false,
+    "crm_import_approved": false,
+    "bulk_automation_approved": false,
+    "phone_sms_approved": false,
+    "credential_or_production_access_approved": false,
+    "owner_approval_inferred": false
+  },
+  "simulation_count": 12,
+  "prospect_count": 5,
+  "pdf_result": {
+    "status": "ok",
+    "browser": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "returncode": 0,
+    "stdout_tail": "",
+    "stderr_tail": "[19232:33112:0703/194426.002:ERROR:chrome\\browser\\task_manager\\providers\\fallback_task_provider.cc:126] Every renderer should have at least one task provided by a primary task provider. If a \"Renderer\" fallback task is shown, it is a bug. If you have repro steps, please file a new bug and tag it as a dependency of crbug.com/40528867.\n157507 bytes written to file C:\\Users\\Veritas\\.openclaw\\workspace\\training\\wf75-academy\\hvac-prospect-outreach-handout-2026-07-03.pdf\n",
+    "pdf_size_bytes": 157507
+  },
+  "docx_result": {
+    "status": "ok",
+    "docx_size_bytes": 39862
+  },
+  "pptx_result": {
+    "status": "ok",
+    "pptx_size_bytes": 49272
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

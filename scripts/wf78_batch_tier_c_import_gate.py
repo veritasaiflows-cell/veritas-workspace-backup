@@ -39,10 +39,10 @@ from wf78_batch_manifest import (  # noqa: E402
     utc_now,
 )
 from wf78_batch_owner_decision_packet import build_report as build_owner_packet  # noqa: E402
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers  # noqa: E402
+from finance_production_scope import production_tickers as production_scope_tickers  # noqa: E402
 
 SCHEMA = "veritas.wf78_batch_tier_c_import_gate.v1"
-PRODUCTION_SCOPE = "production_current_42"
+PRODUCTION_SCOPE = "strategic_production_grade"
 
 AUTHORITY_BOUNDARY = {
     "review_only_metadata_import": True,
@@ -186,6 +186,18 @@ def tier_c_entry(row: dict[str, Any], batch: str, owner_packet_path: Path, appro
     }
 
 
+def universe_production_symbols(entries: list[dict[str, Any]]) -> set[str]:
+    return {
+        symbol(row.get("ticker"))
+        for row in entries
+        if row.get("active") is not False
+        and (
+            row.get("production_scope") is True
+            or row.get("universe_scope") == PRODUCTION_SCOPE
+        )
+    }
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     spec = batch_spec(args.batch)
     owner_packet = owner_packet_for(args)
@@ -197,11 +209,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     entries = [row for row in as_list(universe.get("entries")) if isinstance(row, dict)]
     active_entries = [row for row in entries if row.get("active") is not False]
     active_symbols = {symbol(row.get("ticker")) for row in active_entries}
-    production_symbols = set(legacy_42_tier_tickers()) or {
-        symbol(row.get("ticker"))
-        for row in active_entries
-        if row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE
-    }
+    production_symbols = set(production_scope_tickers())
     packet_symbols = [symbol(row.get("ticker")) for row in rows]
     existing_packet_symbols = sorted(set(packet_symbols).intersection(active_symbols))
     production_overlap = sorted(set(packet_symbols).intersection(production_symbols))
@@ -241,12 +249,12 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     post_universe = load_dict(universe_path) if write_performed else universe
     post_entries = [row for row in as_list(post_universe.get("entries")) if isinstance(row, dict) and row.get("active") is not False]
     post_review = [row for row in post_entries if row.get("universe_scope") == REVIEW_100_SCOPE and row.get("decision_grade_eligible") is False]
-    post_production_tickers = set(legacy_42_tier_tickers()) or {
-        symbol(row.get("ticker"))
-        for row in post_entries
-        if row.get("universe_scope", PRODUCTION_SCOPE) == PRODUCTION_SCOPE
-    }
-    add("production_answer_path_locked_42", len(post_production_tickers) == 42, len(post_production_tickers))
+    post_production_tickers = set(production_scope_tickers())
+    add(
+        "sql_first_dynamic_production_scope_unchanged",
+        post_production_tickers == production_symbols,
+        {"before": len(production_symbols), "after": len(post_production_tickers)},
+    )
     add("active_total_supported_after_import", len(post_entries) in {100, 200, 300, 400, 500}, len(post_entries))
     add("apply_mode_used_when_requested", (not args.apply) or write_performed or idempotent_already_imported, {"apply": args.apply, "write_performed": write_performed, "idempotent": idempotent_already_imported})
 
@@ -286,9 +294,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "packet_ticker_count": len(rows),
             "new_tier_c_rows_added": len(new_rows) if write_performed else 0,
             "already_imported_packet_tickers": len(existing_packet_symbols),
-            "active_ticker_count_before": as_dict(universe.get("summary")).get("active_ticker_count") or len(active_entries),
+            "active_ticker_count_before": len(active_entries),
             "active_ticker_count_after": len(post_entries),
-            "production_answer_path_count_after": len(post_production_tickers),
+            "dynamic_production_scope_count_after": len(post_production_tickers),
             "review_monitor_count_after": len(post_review),
             "sector_counts": dict(sorted(Counter(str(row.get("sector") or "Unknown") for row in rows).items())),
             "tier_b_research_eligible_now": 0,
@@ -338,3 +346,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

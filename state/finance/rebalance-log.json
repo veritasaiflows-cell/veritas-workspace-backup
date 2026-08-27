@@ -1,0 +1,26 @@
+{
+  "schema_version": "rebalance_log_replacement.v1",
+  "generated_at_utc": "2026-05-31T06:21:16Z",
+  "status": "ok",
+  "authority_boundary": {
+    "owner_archive_approval_required": true,
+    "archive_approval_reference_required": true,
+    "delete_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "owner_approval_inferred": false,
+    "paper_or_live_execution_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "money_movement_allowed": false
+  },
+  "source_path": "03. Portfolio/Rebalance Log.md",
+  "archive_path": "09. Archive/Core Finance Human Surfaces/2026-05-30/03. Portfolio/Rebalance Log.md",
+  "source_sha256": "a5716776c6c8c0f1772802203537c9314a5b3521ed9ef6bc920cad532a39d929",
+  "entries": [
+    {
+      "date_or_label": "2026-04-19",
+      "text": "- Workspace pivoted to a finance-first operating model.\n- No actual rebalance recommendation logged yet.\n- Next step is to define current portfolio state and target framework."
+    }
+  ]
+}

@@ -86,6 +86,10 @@ def ticker(value: Any) -> str:
     return str(value or "").strip().upper()
 
 
+def yfinance_symbol(symbol: str) -> str:
+    return symbol.replace(".", "-")
+
+
 def as_float(value: Any) -> float | None:
     try:
         if value in (None, ""):
@@ -181,8 +185,9 @@ def decision_card_tiers() -> dict[str, str]:
 
 
 def fetch_close(symbol: str) -> dict[str, Any]:
+    yf_symbol = yfinance_symbol(symbol)
     try:
-        hist = yf.Ticker(symbol).history(period="1y")
+        hist = yf.Ticker(yf_symbol).history(period="1y")
     except Exception as exc:
         return {"status": "blocked_fetch_error", "error": f"{type(exc).__name__}: {exc}"}
     if hist is None or hist.empty or "Close" not in hist:
@@ -193,6 +198,7 @@ def fetch_close(symbol: str) -> dict[str, Any]:
     return {
         "status": "ok",
         "source": "yfinance",
+        "yfinance_symbol": yf_symbol,
         "retrieval_method": "yf.Ticker(symbol).history(period='1y')",
         "latest_close": round(float(closes.iloc[-1]), 2),
         "data_date": closes.index[-1].strftime("%Y-%m-%d"),
@@ -201,8 +207,9 @@ def fetch_close(symbol: str) -> dict[str, Any]:
 
 
 def fetch_technical_band_inputs(symbol: str) -> dict[str, Any]:
+    yf_symbol = yfinance_symbol(symbol)
     try:
-        hist = yf.Ticker(symbol).history(period="260d")
+        hist = yf.Ticker(yf_symbol).history(period="260d")
     except Exception as exc:
         return {"status": "blocked_fetch_error", "error": f"{type(exc).__name__}: {exc}"}
     if hist is None or hist.empty:
@@ -232,6 +239,7 @@ def fetch_technical_band_inputs(symbol: str) -> dict[str, Any]:
     return {
         "status": "ok",
         "source": "yfinance",
+        "yfinance_symbol": yf_symbol,
         "retrieval_method": "yf.Ticker(symbol).history(period='260d')",
         "latest_close": round(latest_close, 2),
         "data_date": close.index[-1].strftime("%Y-%m-%d"),

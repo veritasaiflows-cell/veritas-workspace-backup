@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import model_learning_metadata_ledger as ledger
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "model_learning_metadata_ledger.py"
 REPORT = ROOT / "tmp" / "model-learning-metadata-ledger.json"
@@ -16,8 +18,65 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
+def test_uncredited_model_lane_is_audit_only() -> None:
+    rows = ledger.model_rows({
+        "rows": [
+            {
+                "run_id": "unverified-lane",
+                "producer": "concurrent_lane_manager",
+                "run_kind": "workspace_lane",
+                "model_path": "openai/gpt-5.6-terra",
+                "status": "complete",
+                "duration_ms": 900,
+                "tokens": 1234,
+                "cost": 0.12,
+                "attribution": {
+                    "model_present": True,
+                    "model_applicable": False,
+                    "telemetry_eligible": False,
+                    "telemetry_credit_status": "blocked_unverified_usage_source",
+                    "telemetry_block_reasons": ["source_reverification_not_verified"],
+                },
+            },
+            {
+                "run_id": "direct-cron",
+                "producer": "openclaw_cron_runs",
+                "run_kind": "cron_agent_turn",
+                "model_path": "openai/gpt-5.6-terra",
+                "status": "ok",
+                "duration_ms": 800,
+                "tokens": 42,
+                "cost": 0.01,
+                "attribution": {
+                    "model_present": True,
+                    "model_applicable": True,
+                    "telemetry_eligible": True,
+                    "telemetry_credit_status": "direct_gateway_cron_usage",
+                },
+            },
+        ]
+    })
+    assert len(rows) == 2
+    row = next(row for row in rows if row["source_id"] == "unverified-lane")
+    assert row["domain"] == "model_audit_uncredited"
+    assert row["metadata"]["telemetry_eligible"] is False
+    assert row["metadata"]["duration_ms"] is None
+    assert row["metadata"]["tokens_present"] is False
+    assert row["metadata"]["cost_present"] is False
+    assert "audit only" in str(row["scoring_use"])
+    cron_row = next(row for row in rows if row["source_id"] == "direct-cron")
+    assert cron_row["domain"] == "model"
+    assert cron_row["metadata"]["duration_ms"] == 800
+    assert cron_row["metadata"]["tokens_present"] is True
+    assert cron_row["metadata"]["cost_present"] is True
+
+
 def main() -> int:
     errors: list[str] = []
+    try:
+        test_uncredited_model_lane_is_audit_only()
+    except AssertionError as exc:
+        errors.append(f"uncredited model lane regression failed: {exc}")
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--write", "--write-md", "--validate"],
         cwd=ROOT,
@@ -48,8 +107,13 @@ def main() -> int:
         ):
             expect(boundary.get(flag) is False, f"authority flag must be false: {flag}", errors)
         domains = set(report.get("summary", {}).get("by_domain", {}))
-        for domain in {"model", "tools", "coding", "coding_outcome", "finance_response_quality"}:
+        for domain in {"tools", "coding", "coding_outcome", "finance_response_quality"}:
             expect(domain in domains, f"missing domain: {domain}", errors)
+        expect(
+            bool({"model", "model_audit_uncredited"} & domains),
+            "missing both scoreable and audit-only model domains",
+            errors,
+        )
         expect(
             report.get("summary", {}).get("coding_outcome_rows", 0) > 0,
             "coding_outcome rows should be present",

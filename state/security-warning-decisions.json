@@ -1,0 +1,47 @@
+{
+  "schema": "veritas.security_warning_decisions.v1",
+  "generated_at_utc": "2026-08-08T17:40:00Z",
+  "purpose": "Explicit owner decisions for warning conditions that are safe only while their scope constraints remain true.",
+  "authority_boundary": {
+    "decision_record_only": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "network_exposure_change_allowed": false,
+    "credential_or_secret_change_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "decisions": [
+    {
+      "match_message": "Reverse proxy headers are not trusted",
+      "evidence_contains": [
+        "gateway.bind is loopback"
+      ],
+      "status": "accepted_risk",
+      "reason": "The Control UI is verified loopback-only on 127.0.0.1 and no reverse proxy is configured. Adding a fictitious trusted proxy would not improve security.",
+      "decided_by": "Randall",
+      "decided_at_utc": "2026-08-08T17:40:00Z",
+      "decision_source": "WebChat request to review and rectify the OpenClaw Doctor/security warnings.",
+      "review_triggers": [
+        "gateway bind changes away from loopback",
+        "a reverse proxy, tunnel, Tailscale serve/funnel, or other remote exposure is enabled",
+        "Control UI access is delegated to another user"
+      ]
+    },
+    {
+      "match_message": "Potential multi-user setup detected (personal-assistant model warning)",
+      "evidence_contains": [
+        "groupPolicy=\"allowlist\""
+      ],
+      "status": "accepted_risk",
+      "reason": "This remains a one-trusted-operator personal assistant. Telegram sender allowlists are populated from the paired owner record, group access remains allowlisted and mention-gated, and the gateway remains loopback-only. Full sandboxing would break the approved local workspace operating model without creating a real second trust boundary.",
+      "decided_by": "Randall",
+      "decided_at_utc": "2026-08-08T17:40:00Z",
+      "decision_source": "WebChat request to review and rectify the OpenClaw Doctor/security warnings.",
+      "review_triggers": [
+        "a second human receives gateway or channel access",
+        "Telegram group policy becomes open or the owner allowlist is removed",
+        "the gateway is exposed beyond loopback",
+        "untrusted workloads share this OS user or gateway"
+      ]
+    }
+  ]
+}

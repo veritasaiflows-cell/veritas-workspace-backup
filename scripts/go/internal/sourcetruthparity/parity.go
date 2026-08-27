@@ -2,6 +2,7 @@ package sourcetruthparity
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"encoding/hex"
 	"errors"
 	"os"
@@ -16,8 +17,9 @@ import (
 )
 
 const (
-	schemaVersion = "sql_source_truth_parity_validation_go.v1"
-	tolerance     = 0.005
+	schemaVersion           = "sql_source_truth_parity_validation_go.v1"
+	tolerance               = 0.005
+	sqlFirstThinBoardStatus = "phase2_sql_first_thin_board_contract_ok"
 )
 
 type ExecutionRow struct {
@@ -222,6 +224,9 @@ func buildReport(root, boardPath, driver string, rows []ExecutionRow, financeRef
 		summary.MismatchRows == 0 && summary.MissingFinanceRows == 0 && summary.MissingCanonRows == 0 {
 		status = "phase2_parity_green_for_entry_stop_reference_metadata"
 	}
+	if summary.MarkdownRows == 0 && thinBoardAllowed(root, boardPath) {
+		status = sqlFirstThinBoardStatus
+	}
 	return Report{
 		SchemaVersion: schemaVersion, GeneratedAtUTC: reporting.UTCNow(), Status: status,
 		SQLiteDriver:      driver,
@@ -334,12 +339,152 @@ func Validate(report Report) error {
 		return errors.New("authority false flag widened")
 	}
 	if report.Summary.MarkdownRows == 0 {
-		return errors.New("no execution board rows parsed")
+		if report.Status != sqlFirstThinBoardStatus {
+			return errors.New("no execution board rows parsed")
+		}
+		return nil
 	}
 	if report.Status != "phase2_parity_green_for_entry_stop_reference_metadata" {
 		return errors.New("parity not ready")
 	}
 	return nil
+}
+
+func thinBoardAllowed(root, boardPath string) bool {
+	bytes, err := os.ReadFile(boardPath)
+	if err != nil {
+		return false
+	}
+	text := string(bytes)
+	requiredText := []string{
+		"THIN HUMAN SURFACE",
+		"Structured owner: state/finance/finance-canon.sqlite",
+		"finance_sql_canon_access.py",
+		"trade_grade_os_freshness_cron_runner.py",
+		"full_intelligence_answer_parity.py",
+		"canonical_finance_data_plane_phase6_10.py",
+		"tmp/trade-grade-os-freshness-cron-runner.json",
+		"tmp/full-answer-parity/full-answer-parity-rollup.json",
+		"tmp/canonical-finance-data-plane-phase6-10.json",
+	}
+	for _, token := range requiredText {
+		if !strings.Contains(text, token) {
+			return false
+		}
+	}
+	lower := strings.ToLower(text)
+	for _, phrase := range []string{"no owner approval", "portfolio mutation", "order authority", "archive/delete/apply authority", "execution"} {
+		if !strings.Contains(lower, phrase) {
+			return false
+		}
+	}
+	backupPattern := regexp.MustCompile(`Backup before thinning:\s*(.+)`)
+	match := backupPattern.FindStringSubmatch(text)
+	if len(match) != 2 {
+		return false
+	}
+	backupPath := strings.TrimSpace(match[1])
+	if !filepath.IsAbs(backupPath) {
+		backupPath = filepath.Join(root, filepath.FromSlash(backupPath))
+	}
+	if _, err := os.Stat(backupPath); err != nil {
+		return false
+	}
+	for _, rel := range []string{
+		filepath.Join("tmp", "finance-sql-canon-access-validation.json"),
+		filepath.Join("tmp", "canonical-finance-data-plane.json"),
+		filepath.Join("tmp", "canonical-finance-data-plane-phase6-10.json"),
+		filepath.Join("tmp", "full-answer-parity", "full-answer-parity-rollup.json"),
+		filepath.Join("tmp", "trade-grade-os-freshness-cron-runner.json"),
+	} {
+		payload, ok := loadJSONMap(filepath.Join(root, rel))
+		if !ok || hasUnsafeTrueAuthority(payload) {
+			return false
+		}
+		if !proofStatusAccepted(rel, payload) {
+			return false
+		}
+	}
+	return true
+}
+
+func loadJSONMap(path string) (map[string]any, bool) {
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		return nil, false
+	}
+	var payload map[string]any
+	if err := json.Unmarshal(bytes, &payload); err != nil {
+		return nil, false
+	}
+	return payload, true
+}
+
+func proofStatusAccepted(path string, payload map[string]any) bool {
+	status, _ := payload["status"].(string)
+	if strings.Contains(path, "trade-grade-os-freshness-cron-runner") {
+		validation := nestedMap(payload, "validation")
+		validationStatus, _ := validation["status"].(string)
+		summary := nestedMap(payload, "summary")
+		return status == "ok" && (validationStatus == "ok" || validationStatus == "warning") &&
+			asBool(summary["trade_grade_data_ready_for_decisions"]) &&
+			asBool(summary["wf84_forbidden_authority_true_count"]) == false
+	}
+	return status == "ok"
+}
+
+func nestedMap(row map[string]any, key string) map[string]any {
+	if row == nil {
+		return map[string]any{}
+	}
+	if value, ok := row[key].(map[string]any); ok {
+		return value
+	}
+	return map[string]any{}
+}
+
+func asBool(value any) bool {
+	switch typed := value.(type) {
+	case bool:
+		return typed
+	case float64:
+		return typed != 0
+	case int:
+		return typed != 0
+	default:
+		return false
+	}
+}
+
+func hasUnsafeTrueAuthority(value any) bool {
+	badKeys := map[string]bool{
+		"capital_deployment_allowed": true, "capital_deployment_approved": true,
+		"paper_or_live_execution_allowed": true, "paper_order_execution_allowed": true,
+		"trade_or_execution_allowed": true, "trade_or_execution_approved": true,
+		"brokerage_or_account_action_allowed": true, "money_movement_allowed": true,
+		"customer_or_external_delivery_allowed": true, "owner_approval_inferred": true,
+		"archive_delete_apply_allowed": true, "canonical_mutation_allowed": true,
+		"canon_or_portfolio_mutation_allowed": true, "portfolio_mutation_allowed": true,
+		"sql_write_allowed": true, "db_mutation_allowed": true,
+	}
+	switch typed := value.(type) {
+	case map[string]any:
+		for key, child := range typed {
+			if badKeys[key] && child == true {
+				return true
+			}
+			if hasUnsafeTrueAuthority(child) {
+				return true
+			}
+		}
+	case []any:
+		for _, child := range typed {
+			if hasUnsafeTrueAuthority(child) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func splitMarkdownRow(line string) []string {

@@ -17,6 +17,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_decision_state_compiler import (
+    ABOVE_BAND_STATES,
+    ABOVE_BAND_VETO,
+    BAND_POSITION_VETOES,
+    BELOW_STOP_VETO,
+    IN_BAND_HOLD_VERDICT,
+    PROMOTE_VERDICT,
+    STATE_ORDER,
+    normalized_promotion_gate_fields,
+    primary_state_from_states,
+    state_for_promotion_gate_verdict,
+)
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,21 +83,7 @@ TRUE_FLAGS = {
     "owner_action_required_for_capital",
 }
 
-STATE_ORDER = [
-    "below_stop_or_invalidation",
-    "blocked_missing_freshness",
-    "repair_mode",
-    "promotion_vetoed",
-    "in_band_not_clean",
-    "wf67_request_blocked",
-    "approval_card_clean",
-    "paper_request_ready_pending_exact_approval",
-    "owner_card_preparable",
-    "alert_only",
-    "paper_position_monitor",
-    "evidence_repair",
-    "route_monitor",
-]
+APPLIED_BAND_MAINTENANCE_STATES = {"applied_auto_maintenance", "applied_auto_maintenance_watch"}
 
 
 def utc_now() -> str:
@@ -124,6 +122,204 @@ def index_rows(rows: list[Any], key: str = "ticker") -> dict[str, dict[str, Any]
         if symbol:
             out[symbol] = row_dict
     return out
+
+
+def first_present(*values: Any) -> Any:
+    for value in values:
+        if value is not None:
+            return value
+    return None
+
+
+def money_equal(left: Any, right: Any) -> bool:
+    try:
+        return round(float(left), 2) == round(float(right), 2)
+    except (TypeError, ValueError):
+        return left == right
+
+
+def infer_band_status_from_levels(
+    price: Any,
+    low: Any,
+    high: Any,
+    stop: Any,
+    fallback: Any = None,
+) -> Any:
+    try:
+        price_f = float(price)
+        low_f = float(low)
+        high_f = float(high)
+    except (TypeError, ValueError):
+        return fallback
+    try:
+        stop_f = float(stop)
+    except (TypeError, ValueError):
+        stop_f = None
+    if stop_f is not None and price_f < stop_f:
+        return "BELOW_STOP"
+    if price_f < low_f:
+        return "BELOW_BAND_WAIT"
+    if price_f > high_f:
+        return "ABOVE_BAND_WAIT"
+    return "IN_BAND"
+
+
+def band_proposal_current_context(band_row: dict[str, Any]) -> dict[str, Any]:
+    if not band_row:
+        return {}
+    use_suggested = band_row.get("canonical_apply_eligible") is True
+    low_key = "suggested_band_low" if use_suggested else "current_band_low"
+    high_key = "suggested_band_high" if use_suggested else "current_band_high"
+    stop_key = "suggested_stop" if use_suggested else "current_stop"
+    status = infer_band_status_from_levels(
+        band_row.get("close"),
+        band_row.get(low_key),
+        band_row.get(high_key),
+        band_row.get(stop_key),
+        fallback=band_row.get("band_status"),
+    )
+    return {
+        "entry_band_low": band_row.get(low_key),
+        "entry_band_high": band_row.get(high_key),
+        "stop_or_invalidation": band_row.get(stop_key),
+        "band_status": status,
+        "current_price": band_row.get("close"),
+        "canonical_apply_eligible": bool(band_row.get("canonical_apply_eligible")),
+        "needs_review": bool(band_row.get("needs_review")),
+        "source": "sql_first_band_proposal" if use_suggested else "band_proposal_current_legacy",
+        "supersedes_legacy_band": use_suggested,
+        "legacy_current_band": {
+            "entry_band_low": band_row.get("current_band_low"),
+            "entry_band_high": band_row.get("current_band_high"),
+            "stop_or_invalidation": band_row.get("current_stop"),
+        },
+    }
+
+
+def canonical_band_context(
+    morning_row: dict[str, Any],
+    capital_row: dict[str, Any],
+    decision_row: dict[str, Any],
+    band_row: dict[str, Any],
+) -> dict[str, Any]:
+    """Pick the current band/stop route before older card/proposal snapshots."""
+
+    capital_wf84 = as_dict(capital_row.get("wf84_canonical_data_plane"))
+    decision_wf84 = as_dict(decision_row.get("wf84_canonical_data_plane"))
+    written_band = as_dict(capital_row.get("written_band"))
+    band_proposal_context = band_proposal_current_context(band_row)
+    context_candidates: list[tuple[str, dict[str, Any], str, str, str, str, str]] = [
+        (
+            "band_proposals.sql_first_current",
+            band_proposal_context,
+            "entry_band_low",
+            "entry_band_high",
+            "stop_or_invalidation",
+            "band_status",
+            "current_price",
+        ),
+        (
+            "wf78_capital_review_queue.wf84_canonical_data_plane",
+            capital_wf84,
+            "entry_band_low",
+            "entry_band_high",
+            "stop_or_invalidation",
+            "band_status",
+            "latest_known_price",
+        ),
+        (
+            "finance_decision_factory.wf84_canonical_data_plane",
+            decision_wf84,
+            "entry_band_low",
+            "entry_band_high",
+            "stop_or_invalidation",
+            "band_status",
+            "latest_known_price",
+        ),
+        (
+            "wf78_capital_review_queue.written_band",
+            written_band,
+            "entry_band_low",
+            "entry_band_high",
+            "stop_or_invalidation",
+            "current_band_status",
+            "card_reference_price",
+        ),
+        (
+            "finance_decision_factory",
+            decision_row,
+            "entry_band_low",
+            "entry_band_high",
+            "stop_or_invalidation",
+            "current_band_status",
+            "current_price",
+        ),
+        (
+            "morning_paper_deployment_cards",
+            morning_row,
+            "entry_band_low",
+            "entry_band_high",
+            "stop_or_invalidation",
+            "band_status",
+            "current_price",
+        ),
+        (
+            "band_proposals.legacy_current",
+            band_row,
+            "current_band_low",
+            "current_band_high",
+            "current_stop",
+            "band_status",
+            "close",
+        ),
+    ]
+    selected: dict[str, Any] = {}
+    selected_source = "missing"
+    for source, row, low_key, high_key, stop_key, status_key, price_key in context_candidates:
+        if not row:
+            continue
+        low = row.get(low_key)
+        high = row.get(high_key)
+        stop = row.get(stop_key)
+        if any(value is not None for value in (low, high, stop)):
+            selected = {
+                "entry_band_low": low,
+                "entry_band_high": high,
+                "stop_or_invalidation": stop,
+                "band_status": row.get(status_key),
+                "current_price": row.get(price_key),
+            }
+            selected_source = source
+            break
+
+    legacy_contexts: list[dict[str, Any]] = []
+    for source, row, low_key, high_key, stop_key, status_key, price_key in context_candidates:
+        if source == selected_source or not row:
+            continue
+        low = row.get(low_key)
+        high = row.get(high_key)
+        stop = row.get(stop_key)
+        if not any(value is not None for value in (low, high, stop)):
+            continue
+        if (
+            money_equal(low, selected.get("entry_band_low"))
+            and money_equal(high, selected.get("entry_band_high"))
+            and money_equal(stop, selected.get("stop_or_invalidation"))
+        ):
+            continue
+        legacy_contexts.append({
+            "status": "superseded_by_current_wf84_sql_canon_route",
+            "source": source,
+            "entry_band_low": low,
+            "entry_band_high": high,
+            "stop_or_invalidation": stop,
+            "band_status": row.get(status_key),
+            "current_price": row.get(price_key),
+        })
+
+    selected["band_source"] = selected_source
+    selected["superseded_legacy_band_context"] = legacy_contexts
+    return selected
 
 
 def add_source(sources: set[str], path: Path) -> None:
@@ -211,11 +407,7 @@ def authority_clean(*payloads: dict[str, Any]) -> bool:
     return True
 
 
-def primary_state(states: set[str]) -> str:
-    for state in STATE_ORDER:
-        if state in states:
-            return state
-    return "route_monitor"
+primary_state = primary_state_from_states
 
 
 def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -298,9 +490,9 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             add_source(sources, path)
 
         event_types = {str(alert.get("event_type") or "") for alert in alert_rows}
+        band_context = canonical_band_context(morning_row, capital_row, decision_row, band_row)
         band_status = (
-            morning_row.get("band_status")
-            or capital_row.get("current_band_status")
+            band_context.get("band_status")
             or promotion_row.get("band_status")
             or band_row.get("band_status")
         )
@@ -308,6 +500,11 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             morning_row.get("gate_verdict")
             or decision_row.get("gate_verdict")
             or promotion_row.get("chief_intelligence_verdict")
+        )
+        promotion_gate_vetoes = (
+            morning_row.get("gate_vetoes")
+            or decision_row.get("gate_vetoes")
+            or promotion_row.get("vetoes")
         )
         wf67_status = (
             morning_row.get("wf67_request_generation_status")
@@ -323,7 +520,12 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             morning_row.get("confidence_gate_state")
             or confidence_row.get("tier_a_confidence_status")
         )
-        current_price = morning_row.get("current_price") or capital_row.get("current_price") or band_row.get("close")
+        current_price = first_present(
+            band_context.get("current_price"),
+            morning_row.get("current_price"),
+            capital_row.get("current_price"),
+            band_row.get("close"),
+        )
         if current_price is None and alert_rows:
             current_price = as_dict(as_dict(alert_rows[0]).get("trigger")).get("observed_price")
 
@@ -332,24 +534,41 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         band_blocking = symbol in set(as_list(as_dict(bands.get("summary")).get("blocking_review_tickers")))
         hygiene_state = hygiene_row.get("state")
         hygiene_blockers = as_list(hygiene_row.get("blockers"))
+        entry_policy_review = as_dict(hygiene_row.get("entry_policy_review"))
         morning_clean = bool(morning_row.get("clean_for_randall_approval_review"))
+        legacy_band_context = as_list(band_context.get("superseded_legacy_band_context"))
+        if legacy_band_context:
+            warnings.append("superseded_legacy_band_context_present")
 
-        if "price_breaches_stop" in event_types or band_status == "BELOW_STOP":
+        gate_fields = normalized_promotion_gate_fields(
+            gate_verdict,
+            promotion_gate_vetoes,
+            band_status,
+        )
+        gate_verdict = gate_fields.get("gate_verdict")
+        promotion_gate_vetoes = gate_fields.get("gate_vetoes")
+        warnings.extend(as_list(gate_fields.get("warnings")))
+
+        if band_status == "BELOW_STOP":
             states.add("below_stop_or_invalidation")
             blockers.append("price_breaches_stop_or_below_stop")
-        if "no_chase_upper_band_breach" in event_types or band_status == "ABOVE_BAND":
+        elif "price_breaches_stop" in event_types:
+            warnings.append("superseded_legacy_stop_alert_present")
+        if band_status in ABOVE_BAND_STATES:
             states.add("no_chase")
             blockers.append("no_chase_or_above_band")
+        elif "no_chase_upper_band_breach" in event_types:
+            warnings.append("superseded_legacy_no_chase_alert_present")
         if band_repair_mode:
             states.add("repair_mode")
             blockers.append("band_entry_policy_repair_mode")
-        if (band_needs_review or band_blocking) and hygiene_state != "applied_auto_maintenance":
+        if (band_needs_review or band_blocking) and hygiene_state not in APPLIED_BAND_MAINTENANCE_STATES:
             if band_status == "IN_BAND":
                 states.add("in_band_not_clean")
             else:
                 states.add("repair_mode")
             blockers.append("band_proposal_needs_review")
-        if hygiene_state == "applied_auto_maintenance":
+        if hygiene_state in APPLIED_BAND_MAINTENANCE_STATES:
             warnings.append("routine_band_maintenance_applied")
         elif hygiene_state == "post_apply_review_still_open":
             states.add("in_band_not_clean" if band_status == "IN_BAND" else "repair_mode")
@@ -369,8 +588,9 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         if morning_row and as_dict(morning_row.get("quote_snapshot")).get("freshness_status") != "fresh":
             states.add("blocked_missing_freshness")
             blockers.append("morning_card_quote_not_fresh")
-        if gate_verdict and gate_verdict != "promote_for_owner_review":
-            states.add("promotion_vetoed")
+        gate_state = state_for_promotion_gate_verdict(gate_verdict)
+        if gate_state:
+            states.add(gate_state)
             blockers.append(f"promotion_gate_verdict={gate_verdict}")
         if wf67_status == "blocked":
             states.add("wf67_request_blocked")
@@ -379,6 +599,9 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             states.add("evidence_repair")
         if alert_rows:
             states.add("alert_only")
+        if entry_policy_review.get("candidate") is True:
+            states.add("entry_policy_review_required")
+            warnings.append("entry_policy_review_candidate_non_authorizing")
         if position_row:
             states.add("paper_position_monitor")
         if capital_row.get("capital_review_card_preparable"):
@@ -397,7 +620,7 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         if not states:
             states.add("route_monitor")
 
-        primary = primary_state(states)
+        primary = primary_state_from_states(states)
         rows.append({
             "ticker": symbol,
             "primary_state": primary,
@@ -407,20 +630,25 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             "warnings": sorted(set(warnings)),
             "current_price": current_price,
             "band_status": band_status,
+            "band_source": band_context.get("band_source"),
             "band_needs_review": band_needs_review,
             "band_repair_mode": band_repair_mode,
             "band_review_reasons": as_list(band_row.get("reasons")),
             "band_hygiene_state": hygiene_state,
             "band_hygiene_blockers": hygiene_blockers,
             "band_hygiene_auto_apply": as_dict(hygiene_row.get("auto_apply")),
-            "entry_band_low": morning_row.get("entry_band_low") or capital_row.get("entry_band_low") or band_row.get("current_band_low"),
-            "entry_band_high": morning_row.get("entry_band_high") or capital_row.get("entry_band_high") or band_row.get("current_band_high"),
-            "stop_or_invalidation": morning_row.get("stop_or_invalidation") or capital_row.get("stop_or_invalidation") or band_row.get("current_stop"),
+            "entry_policy_review_candidate": entry_policy_review.get("candidate") is True,
+            "entry_policy_review_action": entry_policy_review.get("recommended_entry_policy_action"),
+            "entry_policy_review": entry_policy_review,
+            "entry_band_low": band_context.get("entry_band_low"),
+            "entry_band_high": band_context.get("entry_band_high"),
+            "stop_or_invalidation": band_context.get("stop_or_invalidation"),
+            "superseded_legacy_band_context": legacy_band_context,
             "route_state": route_state,
             "confidence_gate_state": confidence_state,
             "confidence_promotion_effect": confidence_row.get("promotion_effect"),
             "promotion_gate_verdict": gate_verdict,
-            "promotion_gate_vetoes": morning_row.get("gate_vetoes") or decision_row.get("gate_vetoes") or promotion_row.get("vetoes"),
+            "promotion_gate_vetoes": promotion_gate_vetoes,
             "morning_card_status": morning_row.get("status"),
             "owner_card_path": morning_row.get("owner_card_path") or decision_row.get("owner_card_path") or owner_row.get("card_path"),
             "wf67_request_path": morning_row.get("wf67_request_path") or decision_row.get("wf67_request_path") or owner_row.get("wf67_request_path"),
@@ -436,14 +664,17 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
                 "unrealized_pl_percent": position_row.get("unrealized_pl_percent"),
             } if position_row else None),
             "source_artifacts": sorted(sources),
-            "owner_action_required": primary in {
-                "approval_card_clean",
-                "paper_request_ready_pending_exact_approval",
-                "below_stop_or_invalidation",
-                "promotion_vetoed",
-                "in_band_not_clean",
-                "wf67_request_blocked",
-            },
+            "owner_action_required": (
+                entry_policy_review.get("candidate") is True
+                or primary in {
+                    "approval_card_clean",
+                    "paper_request_ready_pending_exact_approval",
+                    "below_stop_or_invalidation",
+                    "promotion_vetoed",
+                    "in_band_not_clean",
+                    "wf67_request_blocked",
+                }
+            ),
             "capital_deployment_approved": False,
             "trade_or_execution_approved": False,
             "paper_or_live_execution_allowed": False,
@@ -478,6 +709,7 @@ def build_payload() -> dict[str, Any]:
         state_counts[state] = state_counts.get(state, 0) + 1
     clean = [row["ticker"] for row in rows if row.get("clean_for_paper_deployment_review")]
     owner_required = [row["ticker"] for row in rows if row.get("owner_action_required")]
+    entry_policy_review = [row["ticker"] for row in rows if row.get("entry_policy_review_candidate")]
     sync_conflicts = [
         row["ticker"] for row in rows
         if "morning_card_clean_conflicts_with_sync_blockers" in as_list(row.get("warnings"))
@@ -494,6 +726,8 @@ def build_payload() -> dict[str, Any]:
             "clean_for_paper_deployment_review_count": len(clean),
             "clean_for_paper_deployment_review_tickers": clean,
             "owner_action_required_count": len(owner_required),
+            "entry_policy_review_candidate_count": len(entry_policy_review),
+            "entry_policy_review_candidate_tickers": entry_policy_review,
             "sync_conflict_count": len(sync_conflicts),
             "sync_conflict_tickers": sync_conflicts,
             "next_safe_action": (
@@ -530,11 +764,20 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
     for row in rows:
         row_dict = as_dict(row)
         symbol = row_dict.get("ticker")
+        band_status = str(row_dict.get("band_status") or "").strip().upper()
+        gate_verdict = row_dict.get("promotion_gate_verdict")
+        gate_vetoes = {str(item).strip() for item in as_list(row_dict.get("promotion_gate_vetoes"))}
         for key in ("capital_deployment_approved", "trade_or_execution_approved", "paper_or_live_execution_allowed", "owner_approval_inferred"):
             if row_dict.get(key) is not False:
                 errors.append(f"{symbol}:{key}_not_false")
         if row_dict.get("clean_for_paper_deployment_review") and row_dict.get("blockers"):
             errors.append(f"{symbol}:clean_with_blockers")
+        if band_status == "IN_BAND" and gate_vetoes.intersection(BAND_POSITION_VETOES):
+            errors.append(f"{symbol}:in_band_with_band_position_veto")
+        if band_status in ABOVE_BAND_STATES and gate_verdict in {PROMOTE_VERDICT, IN_BAND_HOLD_VERDICT}:
+            errors.append(f"{symbol}:above_band_with_in_band_gate_verdict")
+        if band_status == "BELOW_STOP" and BELOW_STOP_VETO not in gate_vetoes:
+            errors.append(f"{symbol}:below_stop_missing_gate_veto")
     source_payloads = [load_dict(Path(str(as_dict(src).get("path") or ""))) for src in as_dict(payload.get("sources")).values()]
     if not authority_clean(*source_payloads):
         errors.append("source_authority_widened")

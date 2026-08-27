@@ -1,0 +1,79 @@
+{
+  "schema": "veritas.pm_autonomy_policy.v1",
+  "enabled": true,
+  "cadence": {
+    "target_runs_per_day": 3,
+    "timezone": "America/Phoenix",
+    "recommended_cron": "52 7,14,20 * * *"
+  },
+  "default_model": {
+    "model": "openai/gpt-5.5",
+    "thinking": "high",
+    "role": "isolated scheduled PM implementation proof worker"
+  },
+  "allowed_action_classes": {
+    "proof_refresh": true,
+    "main_proof_refresh": true,
+    "implementation_plan": true,
+    "low_risk_code_change": false,
+    "main_verification": true
+  },
+  "automation_boundary": {
+    "proof_only_without_prompt": true,
+    "planning_without_prompt": true,
+    "code_patch_without_prompt": false,
+    "helper_spawn_without_main": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "selection": {
+    "max_jobs_per_run": 1,
+    "minimum_ready_statuses": [
+      "ready_for_main_or_helper",
+      "ready_for_review"
+    ],
+    "blocked_statuses": [
+      "blocked",
+      "owner_decision_required",
+      "completed_by_ledger"
+    ],
+    "prefer_cron_proof_eligible": true,
+    "cron_proof_refresh_requires_explicit_graduation": true,
+    "sort_order": [
+      "automation_action_rank",
+      "priority_band_rank",
+      "source_priority_score_desc",
+      "readiness_score_desc",
+      "rank"
+    ]
+  },
+  "required_frontdoor_refresh_commands": [
+    "python scripts\\pm_control_packet.py --write --write-db --validate",
+    "python scripts\\pm_implementation_job_queue.py --write --write-db --validate"
+  ],
+  "post_run_verification_commands": [
+    "python scripts\\pm_control_packet.py --write --write-db --validate",
+    "python scripts\\startup_brief_packet.py --write --validate",
+    "python scripts\\status_card_packet.py --write --validate"
+  ],
+  "stop_lines": [
+    "No unattended code patches in phase 1.",
+    "No helper spawning from cron/heartbeat.",
+    "No cron schedule/config/runtime mutation from the worker.",
+    "No canon/portfolio/SQL import/customer/external/paper/live/account/capital action."
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

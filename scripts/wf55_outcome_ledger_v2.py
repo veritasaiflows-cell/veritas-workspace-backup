@@ -16,6 +16,7 @@ DEFAULT_PREVIEW = ROOT / "tmp" / "wf55-outcome-ledger-v2-migration-preview.json"
 DEFAULT_VALIDATION = ROOT / "tmp" / "wf55-outcome-ledger-v2-validation.json"
 DEFAULT_CURRENT = ROOT / "tmp" / "recommendation-outcome-ledger-current.json"
 DEFAULT_DURABLE_V2 = ROOT / "data" / "state-history" / "outcome-ledger-v2.jsonl"
+DEFAULT_GRADE_HISTORY = ROOT / "data" / "state-history" / "recommendation-outcome-grades.jsonl"
 CALL_LOG = ROOT / "04. Research" / "Call Log.md"
 CAPITAL_RECOMMENDATIONS = ROOT / "tmp" / "portfolio-mutation-proposals" / "current-capital-deployment-recommendations.json"
 MONDAY_PACKET_INDEX = ROOT / "tmp" / "alpaca-paper-readiness" / "monday-band-gated-packet-index.2026-06-01.json"
@@ -58,6 +59,22 @@ RECOMMENDATION_OUTCOME_GRADES: list[dict[str, Any]] = [
      "definition": "A boundary/authority guard was crossed or nearly crossed (approval inference, execution drift).",
      "evidence_required": ["authority_snapshot", "boundary_incident_evidence"]},
 ]
+
+DURABLE_APPEND_APPROVAL = {
+    "status": "approved",
+    "approved_by": "Randall",
+    "approved_at": "2026-06-19",
+    "scope": "append-only review-only WF55 outcome/recommendation measurement rows",
+    "blocked_authority": [
+        "predictive-performance claims",
+        "model-ranked deployment",
+        "capital action",
+        "paper/live execution",
+        "brokerage/account action",
+        "portfolio or canon mutation",
+        "owner approval inference",
+    ],
+}
 
 AUTHORITY_FALSE_FIELDS = {
     "canonical_mutation_allowed",
@@ -891,21 +908,27 @@ def recommendation_tracking_summary(rows: list[dict[str, Any]]) -> dict[str, Any
         "paper_position_observed_rows": len(paper_positions),
         "tracked_tickers": tickers,
         "forward_scorecard_status_counts": score_statuses,
-        "durable_append_allowed": False,
+        "durable_append_allowed": True,
+        "durable_append_approval": DURABLE_APPEND_APPROVAL,
         "predictive_or_model_claims_allowed": False,
         "paper_or_live_execution_allowed": False,
     }
 
 
 def outcome_grading_taxonomy() -> dict[str, Any]:
-    """Review-only later-outcome grading vocabulary. No grade is assigned to any
-    live row yet; assignment requires a separate explicit gate."""
+    """Review-only later-outcome grading vocabulary.
+
+    Assignment is now owner-approved for deterministic mature evidence, but no
+    live row receives a semantic outcome grade until the required evidence is
+    present.
+    """
     return {
-        "status": "defined_not_assigned",
+        "status": "defined_assignment_gate_open_when_evidence_mature",
         "purpose": "Grade recommendations/decisions once outcomes resolve, as semantic decision/outcome grades while blocking predictive-performance and model-ranking claims.",
-        "assignment_status": "not_yet_assigned",
+        "assignment_status": "enabled_for_deterministic_review_only_evidence",
         "applied_to_rows": 0,
-        "requires_separate_gate_before_assignment": True,
+        "requires_separate_gate_before_assignment": False,
+        "assignment_approval": DURABLE_APPEND_APPROVAL,
         "grade_count": len(RECOMMENDATION_OUTCOME_GRADES),
         "grades": RECOMMENDATION_OUTCOME_GRADES,
         "consumer_note": "WF74/RSI may read these grades as semantic outcome dimensions; they do not authorize approval, execution, model training, or canon/portfolio mutation.",
@@ -1200,7 +1223,7 @@ def append_durable_rows(preview: dict[str, Any], durable_path: Path = DEFAULT_DU
             to_write = dict(row)
             payload = dict(as_dict(to_write.get("payload")))
             payload["append_decision"] = "durable_append_recorded_review_only"
-            payload["durable_append_authority"] = "owner_requested_2026-06-11_outcome_quality_loop; review-only append with no approval, execution, predictive-performance, or model-ranking authority"
+            payload["durable_append_authority"] = "owner_requested_2026-06-11_outcome_quality_loop; owner_requested_2026-06-19_learning_loop_hardening; review-only append with no approval, execution, predictive-performance, or model-ranking authority"
             to_write["payload"] = payload
             to_write["durable_append"] = {
                 "status": "recorded",
@@ -1225,13 +1248,39 @@ def append_durable_rows(preview: dict[str, Any], durable_path: Path = DEFAULT_DU
     }
 
 
-def durable_summary(path: Path = DEFAULT_DURABLE_V2) -> dict[str, Any]:
+def load_outcome_grade_rows(path: Path = DEFAULT_GRADE_HISTORY) -> list[dict[str, Any]]:
+    return load_jsonl(path)
+
+
+def grade_history_summary(path: Path = DEFAULT_GRADE_HISTORY) -> dict[str, Any]:
+    rows = [row for row in load_outcome_grade_rows(path) if not row.get("_parse_error")]
+    assigned = [row for row in rows if row.get("grade_status") == "assigned" and row.get("assigned_grade")]
+    grade_counts: dict[str, int] = {}
+    for row in assigned:
+        grade = str(row.get("assigned_grade") or "unknown")
+        grade_counts[grade] = grade_counts.get(grade, 0) + 1
+    return {
+        "path": rel(path),
+        "exists": path.exists(),
+        "row_count": len(rows),
+        "assigned_grade_event_count": len(assigned),
+        "graded_ledger_event_count": len({str(row.get("ledger_event_id") or "") for row in assigned if row.get("ledger_event_id")}),
+        "grade_counts": dict(sorted(grade_counts.items())),
+        "append_only": True,
+        "review_only": True,
+    }
+
+
+def durable_summary(path: Path = DEFAULT_DURABLE_V2, grade_history_path: Path = DEFAULT_GRADE_HISTORY) -> dict[str, Any]:
     rows = [row for row in load_durable_rows(path) if not row.get("_parse_error")]
     tracking = [row for row in rows if row.get("event_family") == "recommendation_tracking"]
     score_counts: dict[str, int] = {}
     for row in tracking:
         status = str(as_dict(row.get("forward_scorecard")).get("status") or "not_available")
         score_counts[status] = score_counts.get(status, 0) + 1
+    grade_summary = grade_history_summary(grade_history_path)
+    legacy_graded = sum(1 for row in rows if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True)
+    history_graded = int(grade_summary.get("graded_ledger_event_count") or 0)
     return {
         "path": rel(path),
         "exists": path.exists(),
@@ -1239,7 +1288,9 @@ def durable_summary(path: Path = DEFAULT_DURABLE_V2) -> dict[str, Any]:
         "recommendation_tracking_rows": len(tracking),
         "ticker_count": len({str(row.get("ticker") or "") for row in tracking if row.get("ticker")}),
         "forward_scorecard_status_counts": score_counts,
-        "later_outcome_graded_rows": sum(1 for row in rows if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True),
+        "later_outcome_graded_rows": max(legacy_graded, history_graded),
+        "legacy_forward_scorecard_graded_rows": legacy_graded,
+        "grade_history": grade_summary,
         "append_only": True,
         "review_only": True,
     }
@@ -1259,6 +1310,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--validation", type=Path, default=DEFAULT_VALIDATION)
     parser.add_argument("--current", type=Path, default=DEFAULT_CURRENT)
     parser.add_argument("--durable", type=Path, default=DEFAULT_DURABLE_V2)
+    parser.add_argument("--grade-history", type=Path, default=DEFAULT_GRADE_HISTORY)
     parser.add_argument("--md", type=Path, default=ROOT / "tmp" / "wf55-outcome-ledger-v2-migration-preview.md")
     return parser.parse_args()
 
@@ -1273,6 +1325,7 @@ def main() -> int:
     validation_path = abs_path(args.validation)
     current_path = abs_path(args.current)
     durable_path = abs_path(args.durable)
+    grade_history_path = abs_path(args.grade_history)
     state_history = abs_path(args.state_history)
     if args.command in {"preview", "record"}:
         preview = build_preview(
@@ -1293,7 +1346,7 @@ def main() -> int:
     preview_path.write_text(json.dumps(preview, indent=2, ensure_ascii=False), encoding="utf-8")
     validation_path.write_text(json.dumps(validation, indent=2, ensure_ascii=False), encoding="utf-8")
     append_report = append_durable_rows(preview, durable_path) if args.command == "record" and validation.get("critical") == 0 else None
-    durable = durable_summary(durable_path)
+    durable = durable_summary(durable_path, grade_history_path)
     current = {
         "schema_version": "wf55.recommendation_outcome_ledger_current.2",
         "generated_at_utc": utc_now(),

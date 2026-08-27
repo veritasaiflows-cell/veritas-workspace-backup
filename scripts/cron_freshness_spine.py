@@ -12,6 +12,7 @@ accounts, or owner approvals.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -27,6 +28,7 @@ TMP = ROOT / "tmp"
 DEFAULT_OUT = TMP / "cron-freshness-spine.json"
 DEFAULT_LEDGER = TMP / "cron-operator-ledger.json"
 DEFAULT_OPERATING_SPINE = TMP / "operating-leverage-spine.json"
+DEFAULT_CONTRACT_DIR = ROOT / "state" / "cron-contracts"
 LOCAL_TZ = ZoneInfo("America/Phoenix")
 
 SCHEMA = "veritas.cron_freshness_spine.v1"
@@ -62,6 +64,39 @@ REVIEW_ONLY_BLOCKED_ROLES = {
     "wf87_position_sizing_runtime_check",
     "wf85_paper_deployment_notification_digest",
     "wf85_paper_deployment_telegram_cron_runner",
+    "morning_paper_deployment_recommendation_cards",
+    "wf78_owner_card_prep_loop",
+}
+
+CONTEXT_ONLY_ROLES = {
+    "cron_control_packet",
+    "pm_execution_loop",
+}
+
+STATUS_ROUTE_RESIDUE_ROLES = {
+    "startup_brief_packet",
+    "veritas_status_card",
+}
+
+WF78_TIER_SEMANTIC_ROLES = {
+    "wf78_clean_tier_roster",
+    "wf78_truth_layer_map",
+    "wf78_tier_semantics_guard",
+}
+WF78_AUTO_TIER_ROUTER = TMP / "wf78-auto-tier-routing.json"
+ROUTER_IDENTITY_VOLATILE_KEYS = {
+    "generated_at",
+    "generated_at_utc",
+    "completed_at",
+    "completed_at_utc",
+    "started_at",
+    "started_at_utc",
+    "duration_ms",
+    "elapsed_seconds",
+    "age_hours",
+    "mtime",
+    "mtime_utc",
+    "path_mtime_utc",
 }
 
 
@@ -75,22 +110,68 @@ def artifact(path: str, role: str | None = None, required: bool = True, blocking
 
 
 JOB_CONTRACTS: dict[str, dict[str, Any]] = {
+    "Cron Reduction - Control Fail-Closed Dispatcher": {
+        "owner_workflow": "CRON phase1 control reduction",
+        "freshness_hours": 18,
+        "expected_artifacts": [
+            artifact("tmp/cron-control-digest-runner-control.json", "phase1_control_fail_closed_dispatcher"),
+        ],
+    },
+    "Cron Reduction - Morning Control Digest": {
+        "owner_workflow": "CRON phase1 morning control reduction",
+        "freshness_hours": 36,
+        "expected_artifacts": [
+            artifact("tmp/cron-control-digest-runner-morning.json", "phase1_morning_control_digest"),
+        ],
+    },
+    "Cron Reduction - Post-Close Control Digest": {
+        "owner_workflow": "CRON phase1 post-close control reduction",
+        "freshness_hours": 36,
+        "expected_artifacts": [
+            artifact("tmp/cron-control-digest-runner-post-close.json", "phase1_post_close_control_digest"),
+        ],
+    },
+    "Memory Dreaming Promotion": {
+        "owner_workflow": "WF74/OpenClaw memory-core Dreaming",
+        "freshness_hours": 30,
+        "expected_artifacts": [
+            artifact("tmp/dream-review-packet.json", "openclaw_dreaming_review_packet"),
+        ],
+    },
+    "Memory Dream Review Packet": {
+        "owner_workflow": "WF74/OpenClaw memory-core Dreaming review packet",
+        "freshness_hours": 30,
+        "expected_artifacts": [
+            artifact("tmp/dream-review-packet.json", "openclaw_dreaming_review_packet"),
+        ],
+    },
+    "Governance - Monthly Execution Board SQL-First Review": {
+        "owner_workflow": "Execution Board SQL-first governance review",
+        "freshness_hours": 744,
+        "expected_artifacts": [
+            artifact("tmp/execution-board-governance-review.json", "execution_board_governance_review"),
+        ],
+    },
     "Cron - Main Session Auto-Green Watchdog": {
         "owner_workflow": "WF73/WF76 cron oversight",
         "freshness_hours": 18,
         "expected_artifacts": [
-            artifact("tmp/cron-operator-ledger.json", "cron_operator_ledger"),
+            artifact("tmp/cron-operator-ledger.json", "cron_operator_ledger", blocking=False),
+            artifact("tmp/main-session-handoff-first-proof.json", "handoff_first_proof_gate", blocking=False),
             artifact("tmp/cron-signal-scorecard.json", "cron_signal_scorecard"),
             artifact("tmp/escalation-trigger.json", "escalation_trigger"),
+            artifact("tmp/main-session-escalation-consumer.json", "main_session_escalation_consumer", required=False, blocking=False),
         ],
     },
     "Cron - Main Session Failure and Action Watchdog": {
         "owner_workflow": "WF73/WF76 cron oversight",
         "freshness_hours": 18,
         "expected_artifacts": [
-            artifact("tmp/cron-operator-ledger.json", "cron_operator_ledger"),
+            artifact("tmp/cron-operator-ledger.json", "cron_operator_ledger", blocking=False),
+            artifact("tmp/main-session-handoff-first-proof.json", "handoff_first_proof_gate", blocking=False),
             artifact("tmp/cron-signal-scorecard.json", "cron_signal_scorecard"),
             artifact("tmp/escalation-trigger.json", "escalation_trigger"),
+            artifact("tmp/main-session-escalation-consumer.json", "main_session_escalation_consumer", required=False, blocking=False),
         ],
     },
     "Cron Spark Canary Review Reminder": {
@@ -186,7 +267,10 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
     "Finance - Sunday Weekly Printable Intelligence Refresh": {
         "owner_workflow": "Sunday weekly finance refresh",
         "freshness_hours": 192,
-        "expected_artifacts": [artifact("tmp/run-summary-sunday.json", "sunday_run_summary")],
+        "expected_artifacts": [
+            artifact("tmp/run-summary-sunday.json", "sunday_run_summary"),
+            artifact("tmp/earnings-rollforward-guard.json", "earnings_rollforward_guard"),
+        ],
     },
     "Finance - Weekday Morning Review Refresh": {
         "owner_workflow": "weekday morning finance chain",
@@ -196,6 +280,7 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/weekday-morning-review-cron-runner.json", "weekday_morning_review_cron_runner"),
             artifact("tmp/run-summary-morning.json", "morning_run_summary"),
             artifact("tmp/run-chain-morning.json", "morning_run_chain"),
+            artifact("tmp/earnings-rollforward-guard.json", "earnings_rollforward_guard"),
         ],
     },
     "GPT54mini canary - Weekday Morning Review Refresh": {
@@ -238,6 +323,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf78-owner-card-prep-loop.json", "wf78_owner_card_prep_loop"),
             artifact("tmp/finance-decision-factory.json", "finance_decision_factory"),
             artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
         ],
     },
     "Finance - Midday Paper Deployment Recommendation Cards": {
@@ -252,6 +339,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf78-owner-card-prep-loop.json", "wf78_owner_card_prep_loop"),
             artifact("tmp/finance-decision-factory.json", "finance_decision_factory"),
             artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
         ],
     },
     "Finance - Open-Ready Paper Deployment Recommendation Cards": {
@@ -266,6 +355,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf78-owner-card-prep-loop.json", "wf78_owner_card_prep_loop"),
             artifact("tmp/finance-decision-factory.json", "finance_decision_factory"),
             artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
         ],
     },
     "Finance - WF85 Paper Deployment Telegram Radar": {
@@ -282,6 +373,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json", "wf67_autonomous_paper_manager"),
             artifact("tmp/alpaca-paper-readiness/paper-execution-guard-validation.json", "wf67_paper_execution_guard_validation", blocking=False),
             artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
         ],
     },
     "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar": {
@@ -298,6 +391,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json", "wf67_autonomous_paper_manager"),
             artifact("tmp/alpaca-paper-readiness/paper-execution-guard-validation.json", "wf67_paper_execution_guard_validation", blocking=False),
             artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
         ],
     },
     "Finance - WF85 Open-Ready Telegram Radar": {
@@ -314,6 +409,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json", "wf67_autonomous_paper_manager"),
             artifact("tmp/alpaca-paper-readiness/paper-execution-guard-validation.json", "wf67_paper_execution_guard_validation", blocking=False),
             artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
         ],
     },
     "Finance - WF86 Daily Shadow and Paper Reconciliation": {
@@ -384,6 +481,36 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/workflow-advancement-scorecard.json", "workflow_advancement_scorecard"),
         ],
     },
+    "Finance - Silent Tier A Intraday Market Readiness Probe": {
+        "owner_workflow": "WF78/WF84/WF85/WF87 silent market-readiness producer",
+        "freshness_hours": 12,
+        "expected_artifacts": [
+            artifact("tmp/finance-market-deployment-operating-loop.json", "finance_market_deployment_operating_loop", blocking=False),
+            artifact("tmp/finance-market-deployment-operating-loop.md", "finance_market_deployment_operating_loop_md", required=False, blocking=False),
+            artifact("tmp/tier-a-intraday-opportunity-probe.json", "tier_a_intraday_opportunity_probe"),
+            artifact("tmp/market-execution-readiness-cron-hardening.json", "market_execution_readiness_cron_hardening"),
+        ],
+    },
+    "Finance - Silent Tier A Confirmation Market Readiness Probe": {
+        "owner_workflow": "WF78/WF84/WF85/WF87 silent market-readiness producer",
+        "freshness_hours": 12,
+        "expected_artifacts": [
+            artifact("tmp/finance-market-deployment-operating-loop.json", "finance_market_deployment_operating_loop", blocking=False),
+            artifact("tmp/finance-market-deployment-operating-loop.md", "finance_market_deployment_operating_loop_md", required=False, blocking=False),
+            artifact("tmp/tier-a-intraday-opportunity-probe.json", "tier_a_intraday_opportunity_probe"),
+            artifact("tmp/market-execution-readiness-cron-hardening.json", "market_execution_readiness_cron_hardening"),
+        ],
+    },
+    "Finance - Silent Tier A Late-Session Market Readiness Probe": {
+        "owner_workflow": "WF78/WF84/WF85/WF87 silent market-readiness producer",
+        "freshness_hours": 12,
+        "expected_artifacts": [
+            artifact("tmp/finance-market-deployment-operating-loop.json", "finance_market_deployment_operating_loop", blocking=False),
+            artifact("tmp/finance-market-deployment-operating-loop.md", "finance_market_deployment_operating_loop_md", required=False, blocking=False),
+            artifact("tmp/tier-a-intraday-opportunity-probe.json", "tier_a_intraday_opportunity_probe"),
+            artifact("tmp/market-execution-readiness-cron-hardening.json", "market_execution_readiness_cron_hardening"),
+        ],
+    },
     "Finance - Tier A Intraday Opportunity Probe": {
         "owner_workflow": "WF85/WF68/WF87 Tier A intraday opportunity probe",
         "freshness_hours": 12,
@@ -447,6 +574,7 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/position-sizing-readiness-current.json", "position_sizing_readiness_current"),
             artifact("tmp/finance-ticker-card-refresh-gate.json", "finance_ticker_card_refresh_gate"),
             artifact("tmp/finance-data-coverage-current.json", "finance_data_coverage"),
+            artifact("tmp/earnings-rollforward-guard.json", "earnings_rollforward_guard"),
         ],
     },
     "Finance - Weekday Post-Close Review Refresh": {
@@ -460,7 +588,11 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/ticker-card-freshness-owner-runner.json", "ticker_card_freshness_owner_runner"),
             artifact("tmp/wf78-capital-review-queue.json", "wf78_capital_review_queue"),
             artifact("tmp/finance-decision-factory.json", "finance_decision_factory"),
+            artifact("tmp/finance-decision-sync-spine.json", "finance_decision_sync_spine"),
+            artifact("tmp/veritas-finance-brief.json", "veritas_finance_brief"),
+            artifact("tmp/veritas-finance-brief.md", "veritas_finance_brief_md", required=False, blocking=False),
             artifact("tmp/market-today-answer-packet.json", "market_today_answer_packet"),
+            artifact("tmp/earnings-rollforward-guard.json", "earnings_rollforward_guard"),
         ],
     },
     "Finance - WF63/WF67 Paper Position Read-Only Refresh": {
@@ -500,6 +632,7 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf78-tier-c-attention-trigger.json", "wf78_tier_c_attention_trigger"),
             artifact("tmp/wf78-tier-c-hold-recheck.json", "wf78_tier_c_hold_recheck"),
             artifact("tmp/wf78-tier-c-to-b-auto-promotion-pipeline.json", "wf78_tier_c_to_b_auto_promotion_pipeline"),
+            artifact("tmp/wf78-tier-c-attention-evidence-repair-bridge.json", "wf78_tier_c_attention_evidence_repair_bridge"),
             artifact("tmp/wf78-clean-tier-roster.json", "wf78_clean_tier_roster"),
             artifact("tmp/wf78-truth-layer-map.json", "wf78_truth_layer_map"),
             artifact("tmp/wf78-tier-semantics-guard.json", "wf78_tier_semantics_guard"),
@@ -511,6 +644,16 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf78-tier-weighted-freshness-resolution.json", "wf78_tier_weighted_freshness_resolution"),
             artifact("tmp/wf78-ticker-freshness-ledger.json", "wf78_ticker_freshness_ledger"),
             artifact("tmp/tier-c-band-status.json", "tier_c_band_status"),
+            artifact("tmp/wf78-source-capture-requirements-queue.json", "wf78_source_capture_requirements_queue"),
+            artifact("tmp/wf78-official-source-discovery.json", "wf78_official_source_discovery"),
+            artifact("tmp/wf78-official-registry-proposal.json", "wf78_official_registry_proposal"),
+            artifact("tmp/wf78-official-registry-apply-preview.json", "wf78_official_registry_apply_preview"),
+            artifact("tmp/wf78-promotion-owner-lineage-queue.json", "wf78_promotion_owner_lineage_queue"),
+            artifact("tmp/wf78-contract-state-guard.json", "wf78_contract_state_guard"),
+            artifact("tmp/wf78-owner-lineage-discovery.json", "wf78_owner_lineage_discovery"),
+            artifact("tmp/wf78-owner-lineage-proposal.json", "wf78_owner_lineage_proposal"),
+            artifact("tmp/wf78-official-source-capture-packet.json", "wf78_official_source_capture_packet"),
+            artifact("tmp/wf78-next-owner-review-and-source-capture-integration.json", "wf78_next_owner_review_and_source_capture_integration"),
             artifact("tmp/market-execution-readiness-cron-hardening.json", "market_execution_readiness_cron_hardening"),
             artifact("tmp/finance-decision-factory.json", "finance_decision_factory"),
             artifact("tmp/post-close-final-quote-ledger.json", "post_close_final_quote_ledger"),
@@ -529,6 +672,28 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/trade-grade-approval-card-gate.json", "wf85_approval_card_gate"),
             artifact("tmp/trade-grade-risk-sizing-overlay.json", "wf85_risk_sizing_overlay"),
             artifact("tmp/trade-grade-repair-conveyor.json", "wf85_repair_conveyor"),
+            artifact("tmp/wf78-position-sizing-surface-review.json", "wf78_position_sizing_surface_review"),
+            artifact("tmp/wf78-deployment-readiness-review.json", "wf78_deployment_readiness_review"),
+            artifact("tmp/wf78-source-artifact-capture-review.json", "wf78_source_artifact_capture_review"),
+            artifact("tmp/wf78-position-sizing-integration-proposal.json", "wf78_position_sizing_integration_proposal"),
+            artifact("tmp/wf78-tier-a-owner-readiness-proposals.json", "wf78_tier_a_owner_readiness_proposals"),
+        ],
+    },
+    "Finance - WF78 Opportunity Refresh Controller": {
+        "owner_workflow": "WF78/WF84/WF85 opportunity refresh and promotion visibility top-10",
+        "freshness_hours": 30,
+        "expected_artifacts": [
+            artifact("tmp/wf78-opportunity-refresh-controller.json", "wf78_opportunity_refresh_controller"),
+            artifact("tmp/wf78-opportunity-visibility-queue.json", "wf78_opportunity_visibility_queue"),
+            artifact("tmp/wf78-promotion-visibility-top10.json", "wf78_promotion_visibility_top10"),
+            artifact("tmp/wf78-tier-b-research-packets.json", "wf78_tier_b_research_packets"),
+            artifact("tmp/wf78-tier-b-research-packet-requests.json", "wf78_tier_b_research_packet_requests"),
+            artifact("tmp/wf78-tier-b-research-packets.sqlite", "wf78_tier_b_research_packets_sqlite"),
+            artifact("tmp/wf78-tier-c-to-b-auto-promotion-pipeline.json", "wf78_tier_c_to_b_auto_promotion_pipeline"),
+            artifact("tmp/wf78-tier-c-to-b-auto-promotion-pipeline.closeout.json", "wf78_tier_c_to_b_auto_promotion_pipeline_closeout"),
+            artifact("tmp/wf85-opportunity-visibility-queue.json", "wf85_opportunity_visibility_queue"),
+            artifact("tmp/finance-decision-factory.json", "finance_decision_factory"),
+            artifact("tmp/finance-market-deployment-operating-loop.json", "finance_market_deployment_operating_loop"),
         ],
     },
     "GPT54mini canary - WF78 Daily Freshness and Promotion Proof": {
@@ -541,6 +706,7 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf78-tier-c-attention-trigger.json", "wf78_tier_c_attention_trigger"),
             artifact("tmp/wf78-tier-c-hold-recheck.json", "wf78_tier_c_hold_recheck"),
             artifact("tmp/wf78-tier-c-to-b-auto-promotion-pipeline.json", "wf78_tier_c_to_b_auto_promotion_pipeline"),
+            artifact("tmp/wf78-tier-c-attention-evidence-repair-bridge.json", "wf78_tier_c_attention_evidence_repair_bridge"),
             artifact("tmp/wf78-clean-tier-roster.json", "wf78_clean_tier_roster"),
             artifact("tmp/wf78-truth-layer-map.json", "wf78_truth_layer_map"),
             artifact("tmp/wf78-tier-semantics-guard.json", "wf78_tier_semantics_guard"),
@@ -590,6 +756,8 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
         "expected_artifacts": [
             artifact("tmp/cron-signal-scorecard.json", "cron_signal_scorecard"),
             artifact("tmp/escalation-trigger.json", "escalation_trigger"),
+            artifact("tmp/main-session-handoff-first-proof.json", "handoff_first_proof_gate", blocking=False),
+            artifact("tmp/main-session-escalation-consumer.json", "main_session_escalation_consumer", required=False, blocking=False),
         ],
     },
     "Ops - OTEL Local Digest": {
@@ -617,6 +785,36 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/wf74-cron-duplication-audit.json", "wf74_cron_duplication_audit"),
         ],
     },
+    "Runtime - OTEL Collector Log Retention": {
+        "owner_workflow": "runtime OTEL log retention",
+        "freshness_hours": 36,
+        "expected_artifacts": [
+            artifact("tmp/otel-log-retention.json", "otel_log_retention"),
+            artifact("tmp/otel-ops-control.json", "otel_ops_control", required=False, blocking=False),
+            artifact("tmp/otel-runtime-metadata-probe.json", "otel_runtime_metadata_probe", required=False, blocking=False),
+        ],
+    },
+    "Runtime - Future Session Packet Refresh": {
+        "owner_workflow": "future session carryover packet refresh",
+        "freshness_hours": 18,
+        "expected_artifacts": [
+            artifact("tmp/future-session-enhancement-packet.json", "future_session_enhancement_packet"),
+            artifact("tmp/future-session-enhancement-packet.md", "future_session_enhancement_packet_md", required=False, blocking=False),
+        ],
+    },
+    "Runtime - Weekly OS Improvement Radar Proof Refresh": {
+        "owner_workflow": "runtime OS improvement radar",
+        "freshness_hours": 192,
+        "expected_artifacts": [
+            artifact("tmp/artifact-staleness-explainer.json", "artifact_staleness_explainer"),
+            artifact("tmp/lane-collision-preflight.json", "lane_collision_preflight"),
+            artifact("tmp/validator-bundle-router.json", "validator_bundle_router"),
+            artifact("tmp/worktree-checkpoint-planner.json", "worktree_checkpoint_planner"),
+            artifact("tmp/cron-contract-validator.json", "cron_contract_validator"),
+            artifact("tmp/cron-control-packet.json", "cron_control_packet", blocking=False),
+            artifact("tmp/pm-control-packet.json", "pm_control_packet"),
+        ],
+    },
     "Runtime - Weekly OS Improvement Radar Review": {
         "owner_workflow": "runtime OS improvement radar",
         "freshness_hours": 192,
@@ -626,7 +824,7 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
             artifact("tmp/validator-bundle-router.json", "validator_bundle_router"),
             artifact("tmp/worktree-checkpoint-planner.json", "worktree_checkpoint_planner"),
             artifact("tmp/cron-contract-validator.json", "cron_contract_validator"),
-            artifact("tmp/cron-control-packet.json", "cron_control_packet"),
+            artifact("tmp/cron-control-packet.json", "cron_control_packet", blocking=False),
             artifact("tmp/pm-control-packet.json", "pm_control_packet"),
         ],
     },
@@ -676,6 +874,18 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
         "freshness_hours": 18,
         "expected_artifacts": [
             artifact("tmp/pm-control-packet.json", "pm_control_packet"),
+            artifact("tmp/main-session-escalation-consumer.json", "main_session_escalation_consumer", required=False, blocking=False),
+            artifact("tmp/main-session-action-executor.json", "main_session_action_executor"),
+        ],
+    },
+    "PM - Autonomous Implementation Proof Worker": {
+        "owner_workflow": "PM autonomous implementation proof worker",
+        "freshness_hours": 24,
+        "expected_artifacts": [
+            artifact("tmp/pm-autonomy-dispatcher.json", "pm_autonomy_dispatcher"),
+            artifact("tmp/pm-job-worker-runner.json", "pm_job_worker_runner"),
+            artifact("tmp/pm-autonomy-verifier.json", "pm_autonomy_verifier"),
+            artifact("tmp/pm-main-session-action-inbox.json", "pm_main_session_action_inbox", required=False, blocking=False),
         ],
     },
     "Security Audit - Daily Bounded Hardening": {
@@ -822,10 +1032,202 @@ def workspace_path(value: str) -> Path:
     return path if path.is_absolute() else ROOT / path
 
 
+def artifact_role_from_path(path: str) -> str:
+    return Path(path).stem.replace("-", "_")
+
+
+def normalize_artifact_spec(value: Any, base_specs: dict[str, dict[str, Any]] | None = None) -> dict[str, Any] | None:
+    if isinstance(value, str):
+        raw: dict[str, Any] = {"path": value}
+    elif isinstance(value, dict):
+        raw = dict(value)
+    else:
+        return None
+    path = str(raw.get("path") or "").replace("\\", "/")
+    if not path:
+        return None
+    base = dict(as_dict((base_specs or {}).get(path)))
+    merged = {**base, **raw}
+    merged["path"] = path
+    merged["role"] = str(merged.get("role") or artifact_role_from_path(path))
+    merged["required"] = bool(merged.get("required", True))
+    merged["blocking"] = bool(merged.get("blocking", merged.get("required", True)))
+    return merged
+
+
+def inferred_contract_freshness_hours(contract: dict[str, Any]) -> float:
+    schedule = as_dict(contract.get("schedule"))
+    expr = str(schedule.get("expr") or "")
+    fields = expr.split()
+    if len(fields) >= 5 and fields[4] not in {"*", "1-5", "MON-FRI", "Mon-Fri", "mon-fri"}:
+        return 192.0
+    return 36.0
+
+
+def load_file_contracts(contract_dir: Path = DEFAULT_CONTRACT_DIR) -> dict[str, dict[str, Any]]:
+    if not contract_dir.exists():
+        return {}
+    contracts: dict[str, dict[str, Any]] = {}
+    for path in sorted(contract_dir.glob("*.json")):
+        payload = load_json(path)
+        if not isinstance(payload, dict):
+            continue
+        name = str(payload.get("name") or payload.get("job_name") or "")
+        if not name:
+            continue
+        payload["_contract_source"] = rel(path)
+        contracts[name] = payload
+    return contracts
+
+
+def merged_job_contracts(contract_dir: Path = DEFAULT_CONTRACT_DIR) -> dict[str, dict[str, Any]]:
+    contracts: dict[str, dict[str, Any]] = {
+        name: {
+            **contract,
+            "expected_artifacts": [dict(item) for item in as_list(contract.get("expected_artifacts"))],
+        }
+        for name, contract in JOB_CONTRACTS.items()
+    }
+    for name, file_contract in load_file_contracts(contract_dir).items():
+        base = as_dict(contracts.get(name))
+        base_specs = {
+            str(as_dict(item).get("path") or "").replace("\\", "/"): as_dict(item)
+            for item in as_list(base.get("expected_artifacts"))
+            if as_dict(item).get("path")
+        }
+        expected_artifacts = [
+            spec for spec in (
+                normalize_artifact_spec(item, base_specs)
+                for item in as_list(file_contract.get("expected_artifacts"))
+            )
+            if spec
+        ]
+        merged = {
+            **base,
+            "owner_workflow": file_contract.get("owner_workflow") or base.get("owner_workflow"),
+            "freshness_hours": float(file_contract.get("freshness_hours") or base.get("freshness_hours") or inferred_contract_freshness_hours(file_contract)),
+            "contract_source": file_contract.get("_contract_source"),
+        }
+        if expected_artifacts:
+            merged["expected_artifacts"] = expected_artifacts
+        elif "expected_artifacts" not in merged:
+            merged["expected_artifacts"] = []
+        contracts[name] = merged
+    return contracts
+
+
 def load_json(path: Path) -> Any:
     if not path.exists():
         return None
     return load_json_artifact(path)
+
+
+def normalize_router_for_identity(value: Any) -> Any:
+    """Return stable router content without artifact-generation residue."""
+    if isinstance(value, dict):
+        return {
+            str(key): normalize_router_for_identity(item)
+            for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+            if str(key) not in ROUTER_IDENTITY_VOLATILE_KEYS
+        }
+    if isinstance(value, (list, tuple)):
+        return [normalize_router_for_identity(item) for item in value]
+    return value
+
+
+def router_lineage(router: dict[str, Any], router_path: Path = WF78_AUTO_TIER_ROUTER) -> dict[str, Any]:
+    normalized = normalize_router_for_identity(router)
+    encoded = json.dumps(normalized, sort_keys=True, separators=(",", ":"), default=str)
+    return {
+        "path": rel(router_path),
+        "content_sha256": hashlib.sha256(encoded.encode("utf-8")).hexdigest(),
+        "generated_at_utc": router.get("generated_at_utc") or router.get("generated_at"),
+    }
+
+
+def router_lineage_complete(lineage: dict[str, Any]) -> bool:
+    return bool(
+        str(lineage.get("path") or "")
+        and str(lineage.get("content_sha256") or "")
+        and str(lineage.get("generated_at_utc") or "")
+    )
+
+
+def router_lineage_matches(lineage: dict[str, Any], live_lineage: dict[str, Any]) -> bool:
+    return router_lineage_complete(lineage) and router_lineage_complete(live_lineage) and all(
+        lineage.get(key) == live_lineage.get(key)
+        for key in ("path", "content_sha256", "generated_at_utc")
+    )
+
+
+def wf78_tier_semantic_lineage(
+    payload: dict[str, Any],
+    role: Any,
+    router_path: Path = WF78_AUTO_TIER_ROUTER,
+) -> dict[str, Any]:
+    """Fail closed when a WF78 tier-truth artifact is not bound to the live router."""
+    if role not in WF78_TIER_SEMANTIC_ROLES:
+        return {"applicable": False, "status": "not_applicable", "errors": []}
+
+    live_router = as_dict(load_json(router_path))
+    if not live_router:
+        return {
+            "applicable": True,
+            "status": "live_router_missing",
+            "live_router_lineage": None,
+            "checked_lineages": [],
+            "errors": ["live_router_missing"],
+        }
+
+    live_lineage = router_lineage(live_router, router_path)
+    if not router_lineage_complete(live_lineage):
+        return {
+            "applicable": True,
+            "status": "live_router_lineage_incomplete",
+            "live_router_lineage": live_lineage,
+            "checked_lineages": [],
+            "errors": ["live_router_lineage_incomplete"],
+        }
+
+    checked = [("artifact_source_router", as_dict(payload.get("source_router_lineage")))]
+    if role in {"wf78_truth_layer_map", "wf78_tier_semantics_guard"}:
+        checked.append(
+            (
+                "downstream_roster_source_router",
+                as_dict(as_dict(payload.get("source_roster_lineage")).get("source_router_lineage")),
+            )
+        )
+    if role == "wf78_tier_semantics_guard":
+        checked.append(
+            (
+                "downstream_truth_layer_map_source_router",
+                as_dict(as_dict(payload.get("source_truth_layer_map_lineage")).get("source_router_lineage")),
+            )
+        )
+
+    records: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for name, lineage in checked:
+        complete = router_lineage_complete(lineage)
+        matches_live = router_lineage_matches(lineage, live_lineage)
+        records.append({
+            "name": name,
+            "lineage": lineage,
+            "complete": complete,
+            "matches_live_router": matches_live,
+        })
+        if not complete:
+            errors.append(f"{name}_missing_or_incomplete")
+        elif not matches_live:
+            errors.append(f"{name}_mismatched_live_router")
+
+    return {
+        "applicable": True,
+        "status": "ok" if not errors else "missing" if any("missing_or_incomplete" in item for item in errors) else "mismatched",
+        "live_router_lineage": live_lineage,
+        "checked_lineages": records,
+        "errors": errors,
+    }
 
 
 def parse_utc(value: Any) -> datetime | None:
@@ -883,6 +1285,27 @@ def expected_warning_quiet(payload: dict[str, Any]) -> bool:
     )
     if cron_ledger_rollup_quiet:
         return True
+    pm_no_action_status_residue_quiet = (
+        payload.get("schema") == "veritas.pm_autonomy_verifier.v1"
+        and str(payload.get("status") or "").lower() == "warning"
+        and as_dict(payload.get("summary")).get("action_type") == "no_action"
+        and as_dict(payload.get("validation")).get("status") == "ok"
+        and as_list(as_dict(payload.get("validation")).get("warnings")) == ["status_packet_refresh_validation_residue"]
+    )
+    if pm_no_action_status_residue_quiet:
+        return True
+    main_session_no_action_quiet = (
+        payload.get("schema") == "veritas.main_session_action_executor.v1"
+        and str(payload.get("status") or "").lower() == "warning"
+        and summary.get("action_type") == "no_action"
+        and summary.get("classification") == "no_reply"
+        and summary.get("executed") is False
+        and not as_list(summary.get("execution_failed"))
+        and as_dict(payload.get("validation")).get("status") == "ok"
+        and as_list(as_dict(payload.get("validation")).get("warnings")) == ["no_action_available"]
+    )
+    if main_session_no_action_quiet:
+        return True
     return (
         str(payload.get("status") or "").lower() == "warning"
         and payload.get("stop_line") is not True
@@ -891,6 +1314,20 @@ def expected_warning_quiet(payload: dict[str, Any]) -> bool:
         and as_dict(payload.get("validation")).get("acceptance_passed") is True
         and warnings
         and all(EXPECTED_SUSPENDED_WEIGHT_WARNING in str(warning) for warning in warnings)
+    )
+
+
+def status_route_self_loop_residue(payload: dict[str, Any]) -> bool:
+    validation = as_dict(payload.get("validation"))
+    errors = as_list(validation.get("errors"))
+    return (
+        str(payload.get("status") or "").lower() == "critical"
+        and validation.get("status") == "critical"
+        and errors
+        and set(errors).issubset({
+            "wf74_pickup.missing_cron_migration_repair",
+            "wf88_wiki_synthesis.validation_blocked",
+        })
     )
 
 
@@ -912,8 +1349,24 @@ def artifact_record(spec: dict[str, Any], default_freshness_hours: float) -> dic
     validation_status = str(as_dict(payload_dict.get("validation")).get("status") or "").lower()
     operator_action = str(payload_dict.get("operator_action") or payload_dict.get("operator_action_required") or "")
     has_forbidden_authority = authority_widened(payload_dict)
-    role = spec.get("role")
-    raw_blocked_semantic = status in {"blocked", "error", "critical"} or validation_status == "error" or operator_action == "BLOCKED"
+    role = str(spec.get("role") or "")
+    context_only = role in CONTEXT_ONLY_ROLES or rel(path) == "tmp/cron-control-packet.json"
+    status_route_residue = role in STATUS_ROUTE_RESIDUE_ROLES and status_route_self_loop_residue(payload_dict)
+    lineage_router_path = workspace_path(str(spec.get("source_router_path") or WF78_AUTO_TIER_ROUTER))
+    tier_semantic_lineage = wf78_tier_semantic_lineage(payload_dict, role, lineage_router_path)
+    tier_semantic_lineage_blocked = bool(
+        tier_semantic_lineage.get("applicable")
+        and tier_semantic_lineage.get("status") != "ok"
+    )
+    raw_blocked_semantic = (
+        not status_route_residue
+        and (
+            status in {"blocked", "error", "critical"}
+            or validation_status == "error"
+            or operator_action == "BLOCKED"
+            or tier_semantic_lineage_blocked
+        )
+    )
     review_only_blocked_semantic = bool(
         role in REVIEW_ONLY_BLOCKED_ROLES
         and status == "blocked"
@@ -921,11 +1374,18 @@ def artifact_record(spec: dict[str, Any], default_freshness_hours: float) -> dic
         and operator_action != "BLOCKED"
         and not has_forbidden_authority
     )
+    blocking = (
+        False
+        if context_only
+        else True
+        if role in WF78_TIER_SEMANTIC_ROLES
+        else bool(spec.get("blocking", spec.get("required", True)))
+    )
     return {
         "role": role,
         "path": rel(path),
         "required": bool(spec.get("required", True)),
-        "blocking": bool(spec.get("blocking", spec.get("required", True))),
+        "blocking": blocking,
         "exists": path.exists(),
         "parseable_json": isinstance(payload, dict),
         "status": status,
@@ -941,6 +1401,8 @@ def artifact_record(spec: dict[str, Any], default_freshness_hours: float) -> dic
         "owner_decision_semantic": operator_action == "OWNER_DECISION",
         "expected_warning_quiet": expected_warning_quiet(payload_dict),
         "authority_widened": has_forbidden_authority,
+        "wf78_tier_semantic_lineage": tier_semantic_lineage,
+        "wf78_tier_semantic_lineage_blocked": tier_semantic_lineage_blocked,
     }
 
 
@@ -1033,6 +1495,10 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
     missing = [item for item in artifacts if item.get("required") and not item.get("exists")]
     stale = [item for item in artifacts if item.get("required") and item.get("stale")]
     blocked = [item for item in artifacts if item.get("blocking") and (item.get("blocked_semantic") or item.get("authority_widened"))]
+    tier_semantic_lineage_blocked = [
+        item for item in artifacts
+        if item.get("wf78_tier_semantic_lineage_blocked")
+    ]
     main_required = [item for item in artifacts if item.get("main_handoff_semantic")]
     owner_decision = [item for item in artifacts if item.get("owner_decision_semantic")]
     warning = [
@@ -1049,6 +1515,11 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
         signal_class = "BLOCKED"
         attention = "requires_main_attention"
         reason = "one_or_more_required_artifacts_missing"
+    elif tier_semantic_lineage_blocked:
+        status = "blocked"
+        signal_class = "BLOCKED"
+        attention = "requires_main_attention"
+        reason = "wf78_tier_semantic_lineage_missing_or_mismatched"
     elif blocked:
         status = "blocked"
         signal_class = "BLOCKED"
@@ -1102,6 +1573,8 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
             if live_last_run_exception
             else "last_scheduler_status_clean_or_absent"
         ),
+        "wf78_tier_semantic_lineage_blocked_count": len(tier_semantic_lineage_blocked),
+        "wf78_tier_semantic_lineage_blocked_roles": [item.get("role") for item in tier_semantic_lineage_blocked],
         "expected_artifacts": artifacts,
     }
 
@@ -1220,7 +1693,7 @@ def build_payload(
         for job in as_list(previous.get("jobs"))
     }
     ledger_jobs = as_list(ledger.get("jobs"))
-    contracts = job_contracts or JOB_CONTRACTS
+    contracts = job_contracts or merged_job_contracts()
     jobs = [classify_job(as_dict(job), contracts.get(str(as_dict(job).get("name") or ""))) for job in ledger_jobs]
     enabled_jobs = [job for job in jobs if job.get("enabled")]
     unregistered = [job for job in enabled_jobs if job.get("status") == "unregistered"]
@@ -1298,6 +1771,14 @@ def build_payload(
             "monitor_only_or_stale_count": attention_buckets["monitor_only_or_stale"],
             "quiet_success_count": attention_buckets["quiet_success"],
             "blocked_count": len(blocked),
+            "wf78_tier_semantic_lineage_blocked_job_count": len([
+                job for job in enabled_jobs
+                if int(job.get("wf78_tier_semantic_lineage_blocked_count") or 0) > 0
+            ]),
+            "wf78_tier_semantic_lineage_blocked_jobs": [
+                job.get("name") for job in enabled_jobs
+                if int(job.get("wf78_tier_semantic_lineage_blocked_count") or 0) > 0
+            ],
             "unregistered_enabled_count": len(unregistered),
             "missing_expected_artifact_contract_count": len(missing_contract),
             "attention_buckets": attention_buckets,

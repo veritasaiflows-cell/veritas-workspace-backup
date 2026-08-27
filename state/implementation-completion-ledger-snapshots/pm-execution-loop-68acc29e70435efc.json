@@ -1,0 +1,234 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-29T21:03:58Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-finance-engine-refresh-artifact"
+  },
+  "summary": {
+    "queue_job_count": 15,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-finance-engine-refresh-artifact"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 0,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "worker_state": {
+      "candidate_selected": true,
+      "selected_job_ids": [
+        "pm-finance-engine-refresh-artifact"
+      ],
+      "lane_prepared": false,
+      "proof_executed": true,
+      "proof_ok": true,
+      "closeout_executed": true,
+      "closeout_ok": true,
+      "closeout_ledgered": false,
+      "frontdoors_refreshed": true,
+      "job_resolved_or_completed": false,
+      "terminal_state": "executed_waiting_for_ledger"
+    },
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-finance-engine-refresh-artifact",
+        "budget": "shared",
+        "closeout_mode": "handoff",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-finance-engine-refresh-artifact",
+      "rank": 1,
+      "priority": "P1",
+      "title": "Refresh unified finance route proof without capital authority",
+      "implementation_class": "finance_validation_pass",
+      "owner_surface": "WF84/WF85 finance route proof lane",
+      "collision_group": "finance_proof_refresh",
+      "validation_budget": {
+        "budget": "shared",
+        "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
+        "closeout_mode": "handoff",
+        "proof_command_count": 6,
+        "max_default_proof_commands": 5,
+        "phase_count": 4
+      },
+      "closeout_mode": "handoff",
+      "target_files": [
+        "scripts/finance_data_coverage.py",
+        "scripts/runtime_performance_scorecard.py",
+        "scripts/artifact_index.py",
+        "scripts/finance_intelligence_state.py",
+        "tmp/canonical-finance-data-plane.json",
+        "tmp/trade-grade-full-answer-assembler.json"
+      ],
+      "proof_commands": [
+        "python scripts\\finance_data_coverage.py --validate --write-contract",
+        "python scripts\\runtime_performance_scorecard.py --write --write-md --validate",
+        "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+        "python scripts\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate",
+        "python scripts\\artifact_index.py incremental",
+        "python scripts\\artifact_index.py validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "worker_state": {
+    "candidate_selected": true,
+    "selected_job_ids": [
+      "pm-finance-engine-refresh-artifact"
+    ],
+    "lane_prepared": false,
+    "proof_executed": true,
+    "proof_ok": true,
+    "closeout_executed": true,
+    "closeout_ok": true,
+    "closeout_ledgered": false,
+    "frontdoors_refreshed": true,
+    "job_resolved_or_completed": false,
+    "terminal_state": "executed_waiting_for_ledger"
+  },
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-finance-engine-refresh-artifact:proof[0]",
+      "command": "python scripts\\finance_data_coverage.py --validate --write-contract",
+      "started_at_utc": "2026-06-29T21:02:25Z",
+      "completed_at_utc": "2026-06-29T21:02:25Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"status\": \"ok\",\n  \"output\": \"tmp/finance-data-coverage-current.json\",\n  \"contract_output\": \"tmp/finance-intelligence-router-contract-2026-05-26.json\",\n  \"summary\": {\n    \"source_artifact_count\": 12,\n    \"source_artifacts_present\": 12,\n    \"source_artifacts_missing\": 0,\n    \"source_artifacts_stale\": 0,\n    \"source_artifacts_unusable_placeholder\": 1,\n    \"ticker_count_indexed\": 300,\n    \"data_family_count\": 24,\n    \"analyst_layer_status\": \"future_expected_missing\",\n    \"universe_registry_status\": \"present\",\n    \"universe_ticker_count\": 300\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-finance-engine-refresh-artifact:proof[1]",
+      "command": "python scripts\\runtime_performance_scorecard.py --write --write-md --validate",
+      "started_at_utc": "2026-06-29T21:02:25Z",
+      "completed_at_utc": "2026-06-29T21:03:31Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "runtime_performance_scorecard status=ok checks=59/59 blocked=0 artifact_only=False quick=False timed_quick=False smoke=False mode=full_timed total_ms=65523.226 validation=ok path=tmp/runtime-performance-scorecard.json",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-finance-engine-refresh-artifact:proof[2]",
+      "command": "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
+      "started_at_utc": "2026-06-29T21:03:31Z",
+      "completed_at_utc": "2026-06-29T21:03:33Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\"db\": \"tmp/canonical-finance-data-plane.sqlite\", \"packet\": \"tmp/canonical-finance-data-plane.json\", \"sqlite\": {\"authority_view\": {\"decision_forbidden_count\": 0, \"routing_forbidden_count\": 0}, \"db_path\": \"tmp/canonical-finance-data-plane.sqlite\", \"foreign_key_errors\": [], \"integrity_check\": \"ok\", \"schema\": \"veritas.canonical_finance_data_plane.sqlite.v1\", \"status\": \"ok\", \"table_counts\": {\"analyst_snapshot\": 300, \"decision_queue_state\": 300, \"earnings_catalyst\": 300, \"entry_stop_reference\": 300, \"evidence_family_status\": 6300, \"full_answer_section_context\": 5100, \"fundamental_snapshot\": 300, \"official_evidence\": 1200, \"price_technical_current\": 300, \"routing_state_current\": 300, \"schema_run\": 1, \"security_master\": 300, \"source_artifact\": 11, \"universe_membership\": 300, \"validation_result\": 27}, \"view_counts\": {\"v_current_decision_overview\": 300, \"v_decision_grade_os_layer\": 300, \"v_full_answer_source_drillback\": 5100, \"v_full_ticker_answer_context\": 5100, \"v_owner_action_queue\": 24, \"v_pm_decision_queue_overlay\": 300, \"v_source_lineage_drillback\": 11, \"v_ticker_source_drillback\": 800, \"v_wf84_priority_queue\": 300}}, \"status\": \"ok\", \"summary\": {\"canonical_table_count\": 15, \"decision_queue_state_count\": 300, \"decision_spine_extra_count\": 6, \"evidence_family_status_count\": 6300, \"forbidden_authority_true_count\": 0, \"full_answer_section_context_count\": 5100, \"owner_action_required_count\": 24, \"routing_state_current_count\": 300, \"security_master_count\": 300, \"source_artifact_count\": 11, \"tier_counts\": {\"Tier A\": 1, \"Tier B\": 58, \"Tier C\": 241}}, \"validation\": \"tmp/canonical-finance-data-plane-validation.json\"}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-finance-engine-refresh-artifact:proof[3]",
+      "command": "python scripts\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate",
+      "started_at_utc": "2026-06-29T21:03:33Z",
+      "completed_at_utc": "2026-06-29T21:03:56Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "age_or_account_action_allowed\": false, \"live_brokerage_or_account_action_allowed\": false, \"money_movement_allowed\": false, \"archive_allowed\": false, \"delete_allowed\": false, \"apply_allowed\": false, \"owner_approval_inferred\": false, \"source_open_required_before_material_finance_claims\": true}}, {\"ticker\": \"ATO\", \"name\": \"legacy_packet_required_fields_present\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"missing\": []}}, {\"ticker\": \"ATO\", \"name\": \"legacy_packet_no_forbidden_authority_true\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"forbidden\": []}}, {\"ticker\": \"ATO\", \"name\": \"legacy_packet_from_assembler\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"stale_after_hours\": 36, \"built_from_card_at_utc\": \"2026-06-29T20:55:54Z\", \"built_from_trade_grade_full_answer_assembler\": true, \"assembler_schema\": \"veritas.trade_grade_full_answer_assembler.v1\", \"note\": \"Compatibility snapshot generated from WF85 full-answer assembler.\"}}, {\"ticker\": \"AVB\", \"name\": \"all_required_sections_present\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"missing\": []}}, {\"ticker\": \"AVB\", \"name\": \"human_answer_text_present\", \"passed\": true, \"severity\": \"error\", \"detail\": \"human answer text must be emitted\"}, {\"ticker\": \"AVB\", \"name\": \"machine_state_separated\", \"passed\": true, \"severity\": \"error\", \"detail\": \"machine_state must be structured\"}, {\"ticker\": \"AVB\", \"name\": \"decision_grade_gate_present\", \"passed\": true, \"severity\": \"error\", \"detail\": \"decision_grade_gate must be structured\"}, {\"ticker\": \"AVB\", \"name\": \"repair_states_not_decision_grade\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"decision_state\": \"monitor_only\", \"gate\": {\"decision_grade_claim_allowed\": false, \"decision_grade_status\": \"not_decision_grade_yet\", \"specific_repair_required\": \"not_review_ready\", \"blockers\": [\"decision_state=monitor_only\", \"thin_monitor_not_decision_grade\"], \"may_use_approval_ready_language\": false, \"owner_approval_required_before_action\": true, \"capital_or_execution_authority\": false}}}]}}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-finance-engine-refresh-artifact:proof[4]",
+      "command": "python scripts\\artifact_index.py incremental",
+      "started_at_utc": "2026-06-29T21:03:56Z",
+      "completed_at_utc": "2026-06-29T21:03:57Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "incremental_rebuilt tmp/veritas-artifact-index.sqlite\nsource_files=157 changed_or_new=4 unchanged=153 removed=0",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-finance-engine-refresh-artifact:proof[5]",
+      "command": "python scripts\\artifact_index.py validate",
+      "started_at_utc": "2026-06-29T21:03:57Z",
+      "completed_at_utc": "2026-06-29T21:03:57Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "status=ok checks=32 failed=0\nok | integrity_check | ok\nok | foreign_key_check | rows=0\nok | view_exists:v_cockpit_action_queue | \nok | view_exists:v_cockpit_action_queue_deduped | \nok | view_exists:v_cockpit_ticker_timeline | \nok | view_exists:v_cockpit_trust_boundary | \nok | view_exists:v_cockpit_official_source_fields | \nok | view_exists:v_cockpit_canon_staging | \nok | view_exists:v_cockpit_earnings_lifecycle | \nok | view_exists:v_cockpit_dashboard_findings | \nok | view_exists:v_cockpit_source_freshness | \nok | view_exists:v_cockpit_deployment_readiness | \nok | forbidden_true_authority_flags_zero | count=0\nok | canon_stage_apply_allowed_zero | count=0\nok | canon_stage_activation_or_apply_ready_rows_zero | count=0\nok | official_ir_fields_have_lineage | missing=0\nok | cockpit_action_queue_has_rows | rows=69\nok | cockpit_action_queue_deduped_has_rows | rows=50\nok | cockpit_action_queue_deduped_not_larger_than_raw | raw=69 deduped=50\nok | cockpit_action_queue_deduped_unique_keys | duplicates=0\nok | official_field_proof_amd_adjusted_eps | rows=1\nok | ticker_timeline_etn_has_rows | rows=29\nok | earnings_lifecycle_nvda_review_only | rows=1\nok | deployment_readiness_etn_indexed | rows=1 buckets=['ALMOST DEPLOYABLE']\nok | source_freshness_rows_indexed | rows=20\nok | dashboard_findings_indexed | rows=1\nok | ticker_expression_index_query_plan | (5, 0, 52, 'SEARCH daily_review_objects USING INDEX idx_daily_review_ticker_upper_time (<expr>=?)')\nok | drift_fingerprint_row_counts_match | \nok | freshness_live_files_all_indexed | not_indexed=0\nok | freshness_no_orphaned_rows | orphaned=0\nok | freshness_no_stale_content | stale=0\nok | freshness_index_has_been_built | last_rebuilt=2026-06-29T01:20:58Z last_incremental=2026-06-29T21:03:56Z",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-finance-engine-refresh-artifact:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-29T21:03:57Z",
+      "completed_at_utc": "2026-06-29T21:03:58Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "      \"otel_daily_vs_weekly_event_rate_ratio\": 1.1049,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"ok\",\n        \"otel_field_depth_packet_status\": \"approved_enabled\",\n        \"recommended_budget\": \"major\",\n        \"recommended_validator_count\": 83,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 1,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 5,\n        \"validator_elapsed_seconds\": 3.346,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 30\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"pm_cockpit_required_sources_stale\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

@@ -18,44 +18,51 @@ OUT = ROOT / "tmp" / "cron-spark-canary-monitor.json"
 SPARK_MODEL = "codex/gpt-5.3-codex-spark"
 SPARK_THINKING = "xhigh"
 
-CANARIES = {
-    "814ad19c-e6a4-4496-bdb5-7f04d1858727": {
-        "name": "Finance - Daily Canon Drift Freshness Gate",
-        "baseline_model": "openai/gpt-5.4",
-        "baseline_duration_ms": 35691,
-        "first_expected_run_after_ms": 1781120390484,
-        "authority": "isolated read-only canon drift/freshness proof; no canon, portfolio, paper/live, account, config, or approval authority",
-    },
-    "c0433649-0e62-437f-9513-40e284a6b1ca": {
-        "name": "Finance - Morning Control Digest Proof Refresh",
-        "baseline_model": "openai/gpt-5.5",
-        "baseline_duration_ms": 29548,
-        "first_expected_run_after_ms": 1780927500000,
-        "authority": "isolated review-only digest proof; no remediation or mutation",
-    },
-    "2de55f44-4db8-4ba9-97a1-50fd37b25f93": {
-        "name": "Finance - Post-Close Control Digest Consolidated Handoff",
-        "baseline_model": "openai/gpt-5.5",
-        "baseline_duration_ms": 29793,
-        "first_expected_run_after_ms": 1780956720000,
-        "authority": "isolated review-only digest proof; no delivery, mutation, or approval inference",
-    },
-}
+CANARIES: dict[str, dict[str, Any]] = {}
 
 RETIRED_CANARIES = {
+    "814ad19c-e6a4-4496-bdb5-7f04d1858727": {
+        "name": "Finance - Daily Canon Drift Freshness Gate",
+        "retired_at": "2026-06-20",
+        "current_model": "command",
+        "current_thinking": None,
+        "reason": (
+            "Randall-approved model-only cron migration from Spark to Mini; "
+            "forced and scheduled Mini runs completed ok. Any current "
+            "MAIN_HANDOFF_REQUIRED signal is canon-drift content state, not "
+            "a Spark canary failure."
+        ),
+        "required_posture": "review-only Mini canon-drift proof; no schedule, prompt, delivery, remediation, or approval inference",
+    },
     "b2e04ef2-843b-4736-9d08-115f7bd9ffc7": {
         "name": "SQL Coverage - Daily Control Plane Guard",
         "retired_at": "2026-06-10",
-        "current_model": "openai/gpt-5.4",
+        "current_model": "command",
         "reason": "Spark command-shape failures in isolated cron runs; SQL proof itself stayed clean.",
-        "required_posture": "deterministic single-command GPT-5.4 guard",
+        "required_posture": "deterministic single-command model-free guard",
     },
     "fb08c152-c5b5-48d2-881b-ecde220f994a": {
         "name": "Finance - Sector Allocation Decision Matrix",
         "retired_at": "2026-06-11",
-        "current_model": "openai/gpt-5.4",
+        "current_model": "command",
         "reason": "Spark canary error in isolated cron run; direct sector allocation proof and tests stayed clean.",
-        "required_posture": "review-only GPT-5.4 sector allocation proof",
+        "required_posture": "review-only model-free sector allocation proof",
+    },
+    "c0433649-0e62-437f-9513-40e284a6b1ca": {
+        "name": "Finance - Morning Control Digest Proof Refresh",
+        "retired_at": "2026-06-18",
+        "replacement_job": "Cron Reduction - Morning Control Digest",
+        "replacement_posture": "consolidated Phase 1 control-digest proof",
+        "reason": "Retired by cron Phase 1 reduction; the consolidated replacement carries the active control-digest proof.",
+        "required_posture": "review-only consolidated digest proof; no remediation, schedule mutation, or approval inference",
+    },
+    "2de55f44-4db8-4ba9-97a1-50fd37b25f93": {
+        "name": "Finance - Post-Close Control Digest Consolidated Handoff",
+        "retired_at": "2026-06-18",
+        "replacement_job": "Cron Reduction - Post-Close Control Digest",
+        "replacement_posture": "consolidated Phase 1 control-digest proof",
+        "reason": "Retired by cron Phase 1 reduction; the consolidated replacement carries the active post-close proof.",
+        "required_posture": "review-only consolidated digest proof; no delivery, schedule mutation, or approval inference",
     },
 }
 
@@ -111,6 +118,7 @@ def build_report() -> dict[str, Any]:
         "required_thinking": SPARK_THINKING,
         "canary_count": len(CANARIES),
         "summary": {
+            "active_canary_count": len(CANARIES),
             "configured_count": 0,
             "xhigh_thinking_count": 0,
             "pending_first_canary_run_count": 0,
@@ -121,6 +129,11 @@ def build_report() -> dict[str, Any]:
         },
         "jobs": [],
         "retired_canaries": RETIRED_CANARIES,
+        "no_active_canaries_note": (
+            "No live Spark cron canaries are currently registered. The monitor "
+            "stays green when the active canary set is intentionally empty and "
+            "keeps retired/migrated canaries visible for audit history."
+        ),
         "validation": {
             "status": "ok",
             "errors": [],
@@ -235,8 +248,9 @@ def main() -> int:
         OUT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     print(
-        "status={status} configured={configured}/{count} xhigh={xhigh}/{count} pending={pending} ok_runs={ok} errors={errors} warnings={warnings}".format(
+        "status={status} active={active} configured={configured}/{count} xhigh={xhigh}/{count} pending={pending} ok_runs={ok} errors={errors} warnings={warnings}".format(
             status=report["status"],
+            active=report["summary"]["active_canary_count"],
             configured=report["summary"]["configured_count"],
             xhigh=report["summary"]["xhigh_thinking_count"],
             count=report["canary_count"],

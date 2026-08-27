@@ -21,7 +21,11 @@ def main() -> int:
     inputs = {
         "capital_validation": {"status": "ok"},
         "wf55_reco_ledger": {
-            "durable_v2_ledger": {"recommendation_tracking_rows": 1},
+            "durable_v2_ledger": {
+                "recommendation_tracking_rows": 1,
+                "later_outcome_graded_rows": 43,
+                "grade_history": {"graded_ledger_event_count": 43},
+            },
             "tracked_rows": [
                 {
                     "ticker": "NVDA",
@@ -75,6 +79,9 @@ def main() -> int:
     expect(summary["process_correctness_ok_rows"] == 1, "summary process ok count", errors)
     expect(summary["outcome_quality_pending_rows"] == 1, "summary outcome pending count", errors)
     expect(summary["durable_v2_recommendation_tracking_rows"] == 1, "summary durable row count", errors)
+    expect(summary["later_outcome_graded_rows_metric_scope"] == "current_capital_recommendation_rows_only", "later outcome metric scope missing", errors)
+    expect(summary["capital_recommendation_later_outcome_graded_rows"] == 0, "current capital row graded count should stay separate", errors)
+    expect(summary["durable_recommendation_later_outcome_graded_rows"] == 43, "durable WF88 grade count not surfaced", errors)
     if errors:
         for error in errors:
             print(f"FAIL: {error}")

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entry Band Status — Universe</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html, body { background: #0c0f14; color: #e8eaed; font-family: 'DM Sans', 'Segoe UI', sans-serif; min-height: 100vh; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top: 0; background: #0c0f14; z-index: 10; }
+    tr:hover { background: #141820; }
+    a:hover { text-decoration: underline !important; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div style="max-width:1200px;margin:0 auto;padding:28px 24px">
+
+    <div style="margin-bottom:20px">
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="font-size:22px;font-weight:700">Entry Band Status</span>
+        <span style="font-size:13px;color:#6b7280">Universe Overview</span>
+        <span style="font-size:12px;color:#6b7280;margin-left:auto">data as of 2026-06-18 · generated 2026-06-18 20:29 UTC</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <span style="padding:6px 14px;border-radius:20px;border:1px solid #10b98140;background:#10b98112;color:#10b981;font-size:12px;font-weight:600">3 IN BAND</span> <span style="padding:6px 14px;border-radius:20px;border:1px solid #f59e0b40;background:#f59e0b12;color:#f59e0b;font-size:12px;font-weight:600">14 NEAR BAND</span> <span style="padding:6px 14px;border-radius:20px;border:1px solid #ef444440;background:#ef444412;color:#ef4444;font-size:12px;font-weight:600">12 BELOW STOP</span> <span style="padding:6px 14px;border-radius:20px;border:1px solid #f59e0b40;background:#f59e0b12;color:#f59e0b;font-size:12px;font-weight:600">4 BELOW BAND</span> <span style="padding:6px 14px;border-radius:20px;border:1px solid #3b82f640;background:#3b82f612;color:#3b82f6;font-size:12px;font-weight:600">5 ABOVE BAND</span> 
+      </div>
+    </div>
+
+    <div style="background:#141820;border:1px solid #1e2530;border-radius:12px;overflow:hidden">
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr style="border-bottom:1px solid #1e2530">
+              <th style="padding:10px 14px;text-align:left;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Ticker</th>
+              <th style="padding:10px 14px;text-align:right;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Close</th>
+              <th style="padding:10px 14px;text-align:center;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Band Status</th>
+              <th style="padding:10px 14px;text-align:right;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Dist to High</th>
+              <th style="padding:10px 14px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Vault Band · Stop</th>
+              <th style="padding:10px 14px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Band Engine</th>
+              <th style="padding:10px 14px;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">MA Posture</th>
+              <th style="padding:10px 14px;text-align:center;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">State</th>
+              <th style="padding:10px 14px;text-align:right;font-size:11px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px">As Of</th>
+            </tr>
+          </thead>
+          <tbody>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/AMZN_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">AMZN</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Tech · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$244.39</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$252.27 – $267.19<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $244.81 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">IN_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 200d, below 20d and 50d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/CME_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">CME</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Financial Infrastructure · portfolio_review_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$246.38</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$287.74 – $298.86<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $276.68 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/CVX_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">CVX</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Energy · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$173.63</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$186.91 – $196.41<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $182.16 · set 2026-05-01</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">BELOW_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 200d, below 20d and 50d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/LMT_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">LMT</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Defense · core_repair_suspended</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$510.95</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$548.51 – $582.27<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $531.63 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">REPAIR</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/LNG_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">LNG</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Energy · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$227.03</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$260.82 – $275.56<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $253.45 · set 2026-05-01</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/META_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">META</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Communication Services · portfolio_review_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$577.22</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$672.60 – $693.91<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $655.55 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/NFLX_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">NFLX</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Communication Services · sector_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$77.38</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$102.56 – $105.46<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $100.24 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/PLTR_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">PLTR</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Tech · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$128.47</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$137.37 – $149.53<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $131.29 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/TMUS_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">TMUS</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Communication Services / Telecom · sector_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$181.67</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$213.01 – $220.38<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $207.11 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/XLC_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">XLC</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Communication Services · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$109.45</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$114.31 – $116.55<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $112.71 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/XLE_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">XLE</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Energy · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$53.76</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$56.35 – $58.04<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $54.83 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">BELOW_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 200d, below 20d and 50d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/XOM_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">XOM</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Energy · core</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$137.81</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#ef444420;color:#ef4444;letter-spacing:.5px">BELOW STOP</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$150.24 – $158.44<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $146.14 · set 2026-05-01</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">BELOW_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 200d, below 20d and 50d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">REPAIR</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/GOOG_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">GOOG</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Tech · core</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$367.46</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">IN BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$354.25 – $369.69<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $341.07 · set 2026-06-18</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">IN_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 50d and 200d, below 20d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">ALMOST</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/NVDA_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">NVDA</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Tech · tactical</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$210.69</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">IN BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$202.81 – $212.23<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $192.95 · set 2026-06-18</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">IN_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 50d and 200d, below 20d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">ALMOST</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/RTX_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">RTX</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Defense · defense_watch_repair</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$185.60</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">IN BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">—</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$183.01 – $193.23<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $177.91 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">NEAR_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/BKNG_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">BKNG</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Consumer Discretionary · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$171.78</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+0.5%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$164.05 – $170.91<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $155.97 · set 2026-05-10</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 20d and 50d, below 200d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">REPAIR</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/ETN_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">ETN</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Industrials · tactical</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$421.77</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.4%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$387.67 – $404.02<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $367.60 · set 2026-06-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">ABOVE_BAND_WAIT · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">DEPLOYED</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/GS_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">GS</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Financials · tactical</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$1,096.56</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.6%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$971.55 – $1,048.14<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $929.00 · set 2026-06-18</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">ALMOST</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/JPM_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">JPM</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Financials · core</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$325.22</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+2.9%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$304.96 – $315.95<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $296.21 · set 2026-06-18</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">ALMOST</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/LIN_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">LIN</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Materials · formal_materials_sleeve_starter_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$512.15</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+1.2%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$497.11 – $506.11<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $487.17 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">IN_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/PAVE_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">PAVE</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Infrastructure · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$58.56</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.1%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$53.94 – $56.28<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $52.64 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/PH_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">PH</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Industrials · portfolio_review_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$953.27</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.9%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$851.36 – $908.98<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $819.35 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">ABOVE_BAND_WAIT · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/VAW_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">VAW</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Materials · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$234.24</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+0.2%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$225.44 – $233.70<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $220.85 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/VMC_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">VMC</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Materials / Infrastructure · sector_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$302.84</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+0.6%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$291.87 – $300.98<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $284.58 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">ABOVE_BAND_WAIT · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/VRT_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">VRT</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Industrials · formal_ai_power_tactical_challenger_starter_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$333.05</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.4%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$300.02 – $319.13<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $276.97 · set 2026-06-18</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/VXUS_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">VXUS</a><div style="font-size:11px;color:#6b7280;margin-top:2px">International Equity · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$86.77</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.1%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$80.88 – $83.36<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $78.15 · set 2026-05-18</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/XLB_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">XLB</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Materials · formal_materials_etf_starter_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$51.81</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+0.3%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$49.84 – $51.68<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $48.81 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/XLF_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">XLF</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Financials · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$53.57</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+0.9%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$52.26 – $53.07<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $51.61 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">NEAR_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/XLI_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">XLI</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Industrials · etf_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$180.91</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">NEAR BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#f59e0b">+4.3%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$166.78 – $173.40<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $163.10 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/BRK.B_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">BRK.B</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Diversified Quality · core</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$489.46</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">BELOW BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#10b981">-1.8%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$489.78 – $498.19<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $483.05 · set 2026-05-13</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">RECLAIM_ONLY · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 20d and 50d, below 200d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">REPAIR</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/ECL_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">ECL</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Materials / Services · sector_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$269.12</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">BELOW BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#10b981">-3.5%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$271.22 – $278.98<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $265.01 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">NEAR_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/MSFT_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">MSFT</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Tech · core</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$379.40</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">BELOW BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#10b981">-8.0%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$389.64 – $412.56<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $378.18 · set 2026-04-28</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">DUAL_MA_RECLAIM<div style="color:#6b7280;margin-top:2px">BELOW_STOP · VAULT_RECLAIM</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Below all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#10b98120;color:#10b981;letter-spacing:.5px">ALMOST</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/WMB_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">WMB</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Energy Infrastructure · sector_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$73.12</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">BELOW BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#10b981">-3.2%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$73.25 – $75.50<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $70.32 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_PRIMARY<div style="color:#6b7280;margin-top:2px">NEAR_BAND · WATCH</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all MAs</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/AMD_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">AMD</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Tech · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$537.37</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">ABOVE BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">+56.9%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$295.33 – $342.53<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $271.73 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">ABOVE_BAND_WAIT · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/CAT_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">CAT</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Industrials · tactical</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$985.82</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">ABOVE BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">+13.8%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$811.65 – $866.48<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $784.25 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">ABOVE_BAND_WAIT · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/GE_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">GE</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Aerospace · sector_monitor</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$357.64</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">ABOVE BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">+14.7%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$299.03 – $311.84<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $288.78 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">ABOVE_BAND_WAIT · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/ITA_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">ITA</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Aerospace & Defense · portfolio_review_candidate</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$238.99</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">ABOVE BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">+7.0%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$212.15 – $223.44<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $205.88 · set 2026-05-15</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">NEAR_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">Above all · bullish stack</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;letter-spacing:.5px">PROMOTION REVIEW</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+  <tr style="border-bottom:1px solid #1e2530">
+    <td style="padding:12px 14px;white-space:nowrap"><a href="entry-band-reports/LLY_entry_band.html" target="_blank" style="color:#e8eaed;text-decoration:none;font-weight:700;font-size:15px;font-family:'JetBrains Mono',monospace">LLY</a><div style="font-size:11px;color:#6b7280;margin-top:2px">Healthcare · watch_only</div></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:14px">$1,098.57</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">ABOVE BAND</span></td>
+    <td style="padding:12px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:#6b7280">+13.3%</td>
+    <td style="padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px">$907.64 – $969.88<div style="color:#6b7280;font-size:11px;margin-top:2px">stop $876.52 · set 2026-05-06</div></td>
+    <td style="padding:12px 14px;font-size:11px;color:#9ca3af;max-width:190px">KELTNER_MA_CONSTRAINED<div style="color:#6b7280;margin-top:2px">IN_BAND · PULLBACK</div></td>
+    <td style="padding:12px 14px;font-size:12px;color:#9ca3af;max-width:220px">above 50d and 200d, below 20d</td>
+    <td style="padding:12px 14px;text-align:center"><span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#3b82f620;color:#3b82f6;letter-spacing:.5px">WATCH</span></td>
+    <td style="padding:12px 14px;text-align:right;font-size:11px;color:#6b7280">2026-06-18</td>
+  </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;font-size:11px;color:#4b5563;line-height:1.6">
+      <strong style="color:#6b7280">Band Status</strong> — IN BAND: close between band low and high.
+      NEAR BAND: close within 5% above band high.
+      BELOW BAND: close below band low but above stop.
+      BELOW STOP: close below stop level.
+      Dist to High: % distance of close from band high (negative = inside or below band).
+      Band Engine: latest review-only proposal from `band_refresh.py`; it is not canonical until human-gated publication.
+      Ticker links open the full per-ticker entry band analysis report.
+      <strong style="color:#f59e0b"> Decision support, not financial advice.</strong>
+    </div>
+
+  </div>
+</body>
+</html>

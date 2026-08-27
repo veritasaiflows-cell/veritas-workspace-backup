@@ -12,6 +12,19 @@ Core design rule:
 
 2026-06-12/13 small/mid-cap rate-stabilization pass: Randall asked for a small-cap pass for the next ticker batch with the thesis that rate stabilization can benefit small and medium caps. Added `scripts/wf78_small_mid_cap_scaleout_candidate_pass.py`, which writes `tmp/wf78-small-mid-cap-scaleout-candidate-pass.json/.md` as a review-only candidate packet. Current proof reviewed 32 liquid small/mid operating-company seeds outside the active 200-name universe and produced 25 migration candidates with thin-monitor stubs for a future owner-gated WF78 import path. The packet is migration-ready planning only: no ticker import/apply, Tier B/A promotion, production answer-path change, SQL/canon expansion, portfolio mutation, capital approval, paper/live/account action, money movement, or owner approval inference.
 
+## 2026-06-19 SQL/JSON internal decision-canon cutover
+
+Randall approved a non-destructive internal finance decision-canon cutover. WF78 now feeds internal review-only routing through guarded `state/finance/finance-canon.sqlite` plus validated JSON proof packets, while source-open, Python/JSON fallback, and rollback surfaces remain retained.
+
+Current proof:
+- `scripts/wf78_daily_freshness_loop.py` now scopes stale fundamental-metrics validation to the `fundamentals` phase. Tier-routing and evidence-repair phases no longer fail because an unrelated fundamentals artifact is stale; they surface that condition as a warning outside the selected phase.
+- `python scripts\wf78_daily_freshness_loop.py --phase tier_routing --skip-provider-refresh --full-answer-mode never --write --validate` passed.
+- `python scripts\wf78_daily_freshness_loop.py --phase evidence_repair --skip-provider-refresh --full-answer-mode never --write --validate` passed.
+- `python scripts\wf78_intelligence_routing_v2.py --layer daily_core_v2 --fail-on-budget-exceeded --write --validate` passed with layers `6/6`, failed layers `0`, budget-exceeded layers `0`, movement ledger rows `200`, and repair queue `48`.
+- Current tier-weighted true-freshness is `195/200` against the trade-grade threshold `160`; trade-grade data readiness is green. This does not create deployment authority: WF85 still has `0` review-ready rows and `0` approval drafts, so decision readiness remains fail-closed.
+
+Boundary: WF78 remains automated non-capital tier/routing/repair state only. SQL/JSON routing proof does not approve customer output, capital deployment, paper/live execution, brokerage/account action, canon/portfolio mutation, source-feeder retirement, Python fallback retirement, archive/delete, cron schedule mutation, or owner approval inference.
+
 ## 2026-06-05 automated quick-routing roadmap lock
 
 Randall confirmed the new WF78 posture: Veritas should automate non-capital ticker tier/routing state. Randall approval is reserved for capital deployment, trade/order execution, brokerage/account action, money movement, portfolio cash/sizing/execution mutation, destructive cleanup, config/auth/runtime mutation, or external/public action.
@@ -1274,3 +1287,107 @@ Current proof:
 Boundary:
 - Autonomous tier movement remains non-capital derived routing only.
 - No universe/ticker import, canon/portfolio/cash/sizing/risk mutation, capital approval, paper/live execution, brokerage/account action, money movement, customer/public output, kill-switch lifecycle action, or owner approval inference.
+
+## 2026-06-19 UTC - capital-deployment band integrity repair
+
+Randall escalated the P1 capital-deployment band integrity blocker after `capital_deployment_band_integrity_validator.py` reported `core_entry_band_mismatch` for GOOG, NVDA, and VRT.
+
+Root cause:
+- WF78 refreshed current written bands, but downstream owner-card and WF67 request artifacts could remain active-looking after a ticker stopped being card-preparable or after request generation became blocked.
+- WF67 request generation allowed an embedded promotion-gate band to drift from the card risk band.
+- Capital recommendation validation trusted `band_source=wf78_capital_review_queue` without rechecking the packet's band values against the live WF78 queue.
+
+Implemented:
+- `parallel_repeatable_work_orchestrator.py` now supersedes stale owner-card and WF67 request artifacts when current WF78 gate state no longer supports their use, while preserving them as audit-only history.
+- `wf67_order_card_request_generator.py` now rejects required promotion gates whose entry band/stop do not match the current card risk band.
+- `capital_deployment_recommendation_validator.py` now fails packets that claim the WF78 queue as band source while carrying stale band values.
+- `capital_deployment_band_integrity_validator.py` now keeps superseded records visible but excludes them from live drift status.
+
+Current proof:
+- `tmp/wf78-capital-review-queue.json`: rebuilt clean, 3 candidates, 2 review-ready rows.
+- `tmp/wf78-owner-card-prep-loop.json`: GOOG/NVDA cards refreshed, VRT old card superseded, stale GOOG/VRT WF67 request artifacts superseded.
+- `tmp/capital-deployment-band-integrity-validator.json`: `status=ok`, `critical_count=0`, `warning_count=0`, `mismatch_tickers=[]`.
+
+Boundary:
+- Repair/proof only.
+- No capital deployment approval, paper/live execution, brokerage/account action, money movement, portfolio/canon/cash/sizing/risk mutation, or owner approval inference.
+
+## 2026-07-02 23:55 MST - route-readiness label split
+
+Randall approved the P1 cleanup after the ANET/C-to-B routing repair. Implemented the cleaner route-readiness surface so ticker status no longer compresses routing, timing, decision, trade readiness, and authority into one ambiguous label.
+
+Implemented:
+- `scripts/finance_cache_frontdoor.py` now emits per-ticker `route_readiness` plus top-level `routing_tier`, `routing_state`, `timing_state`, `decision_state`, `trade_readiness_state`, and `authority_state`.
+- `scripts/trade_grade_full_answer_assembler.py` now renders portfolio-fit route text as separate route/timing/decision/trade-readiness/authority fields and keeps stale prior-card labels as audit fields only.
+- `scripts/wf78_route_ticker.py` now writes the same `route_readiness` object in quick ticker packets such as `tmp/wf78-route-anet.json`.
+- Added regression coverage in `scripts/test_finance_cache_frontdoor.py`, `scripts/test_full_intelligence_answer_parity.py`, and `scripts/test_wf78_route_ticker.py`.
+
+Current ANET proof:
+- Route: `Tier A / A-WATCH`.
+- Timing: `in_band_review_only_quote`, with band status `IN_BAND`.
+- Decision: `monitor_only`.
+- Trade readiness: `not_trade_ready_in_band_monitor_only`.
+- Authority: `review_only_no_capital_or_execution_authority`.
+
+Procedure:
+- For quick user-facing route/status answers, show the six fields separately.
+- `IN_BAND` is timing/price context only.
+- `Tier A` or `A-WATCH` is non-capital routing context only.
+- Approval-card, paper, live, capital, account, cash/sizing/risk, and owner-approval states require their own gates and remain false unless exact proof and Randall approval exist.
+
+Boundary:
+- Review-only route/readiness presentation and proof only.
+- No canon/portfolio/cash/sizing/risk mutation, SQL-canon data mutation, capital approval, paper/live execution, brokerage/account action, money movement, customer/public output, config/runtime mutation, or owner approval inference.
+
+## 2026-07-03 MST - P2 route-readiness helper and monitor-grade band cleanup
+
+Randall approved the P2 cleanup after P1 split the overloaded route labels. Implemented the shared route-readiness helper and wired the remaining lightweight renderers/status surfaces so the same state machine is used across the frontdoor, WF85 full-answer assembler, single-ticker route packets, artifact lookup, finance intelligence ticker packets, WF88 control packet summaries, and trade-grade OS freshness cron summaries.
+
+Implemented:
+- Added `scripts/route_readiness.py` as the shared review-only classifier for `routing_tier`, `routing_state`, `timing_state`, `decision_state`, `trade_readiness_state`, and `authority_state`.
+- Updated `scripts/finance_cache_frontdoor.py`, `scripts/trade_grade_full_answer_assembler.py`, and `scripts/wf78_route_ticker.py` to import the shared helper instead of carrying duplicate classification logic.
+- Wired route-readiness fields into `scripts/artifact_index.py`, `scripts/finance_intelligence_state.py`, `scripts/wf88_os2_control_packet.py`, and `scripts/trade_grade_os_freshness_cron_runner.py`.
+- Refreshed `tmp/tier-c-band-status.json` and `tmp/wf78-missing-band-context-repair.json`; the former supplies monitor-grade context for Tier C timing triage, while the latter proves no rows are ready for decision-grade missing-band repair.
+- Added `scripts/test_route_readiness.py` and extended `scripts/test_finance_cache_frontdoor.py`.
+
+Current proof:
+- Frontdoor rebuilt `300` rows; all `300` retain `review_only_no_capital_or_execution_authority`.
+- Tier C monitor-grade band overlay count is `100`; these rows are triage context only, not decision-grade bands.
+- Full-answer assembler rebuilt `300` answers with `0` validation errors and `0` validation warnings.
+- ANET remains `Tier A / A-WATCH`, timing `in_band_review_only_quote`, decision `monitor_only`, trade readiness `not_trade_ready_in_band_monitor_only`, authority `review_only_no_capital_or_execution_authority`.
+- Focused tests, py_compile, scoped changed-file router, scoped validator bundle plan, scoped `git diff --check`, blocking release contract, and control closeout bundle passed. Go implementation profile is warning-grade only due stale legacy compatibility cache and a generated `tmp/wf78-missing-band-context-repair.json` source-lineage hash drift; neither is capital/trade authority or a release blocker.
+
+Procedure:
+- Use `route_readiness.py` for any new finance route/status renderer.
+- Treat `*_monitor_grade*` timing states as triage/watch context only.
+- Promote a ticker toward approval-card work only through fresh market-window proof, decision-ready state, owner-gated approval-card path, and explicit Randall approval before any paper/live/capital action.
+
+Boundary:
+- Review-only route/readiness presentation, generated artifacts, docs, and tests only.
+- No canon/portfolio/cash/sizing/risk mutation, SQL-canon data mutation, Tier B/A promotion, capital approval, paper/live execution, brokerage/account action, money movement, customer/public output, config/runtime mutation, or owner approval inference.
+
+## 2026-07-03 MST - P2B source-lineage cleanup and P3 market ranking
+
+Randall approved the additional P2B/P3 recommendations after the P2 route-readiness helper landed. P2B cleared the generated-artifact source-lineage hash drift from the prior monitor-grade band refresh, and P3 added the next queue layer that ranks route-readiness rows by market-window readiness without creating any approval or execution authority.
+
+Implemented:
+- Applied the SQL-canon source-lineage/source_artifacts metadata-only repair for generated route-readiness artifacts after dry-run proof and backup creation. The repair updated source-lineage hashes/generated-at metadata and source_artifacts registry rows only.
+- Added `scripts/wf78_route_readiness_p3_market_ranking.py` and `scripts/test_wf78_route_readiness_p3_market_ranking.py`.
+- Wired P3 output into `scripts/trade_grade_os_freshness_cron_runner.py` and `scripts/wf88_os2_control_packet.py` so the queue is visible from the trade-grade freshness runner and WF88 control packet.
+- Documented the P3 producer in `scripts/README.md`.
+
+Current proof:
+- SQL source-lineage repair applied from backup `backups/finance-sql-source-lineage/20260703T080111Z/finance-canon.sqlite`; post-apply Go implementation proof reports `hash_drift=0` and `registry_gaps=0`.
+- `wf78_route_readiness_p3_market_ranking.py --write --validate`: `300` tickers, validation `ok`, market window `market_closed`, market holiday `true`, and `300` rows requiring market-window refresh.
+- P3 category counts: `2` owner-gated approval-card candidates, `23` in-band review monitors, `26` reclaim watch, `52` monitor-grade triage, `93` no-chase, and `104` avoid-until-reclaim/invalidation repair.
+- Current top review queue starts with `NVDA`, `VRT`, `ADP`, `ANET`, `CDNS`, `ETN`, `GOOG`, `GS`, and `MSFT`. These are review/ranking rows only, not trade-ready rows.
+
+Procedure:
+- Use P3 as the market-aware review queue above `finance_cache_frontdoor.py`.
+- During closed-market/holiday/weekend windows, treat every P3 row as requiring a fresh market-window refresh before any decision-card or approval-card work.
+- Owner-gated approval-card candidates still require fresh market-window proof, decision-card/card-gate proof, WF67/paper guard proof where applicable, and exact Randall approval before any paper/capital/execution step.
+
+Boundary:
+- P2B was metadata-only SQL source-lineage/source_artifacts repair with backup/rollback proof.
+- P3 is review-only ranking/queue evidence.
+- No source artifact content rewrite, SQL schema change, canon/portfolio/cash/sizing/risk mutation, Tier B/A promotion, capital approval, paper/live execution, brokerage/account action, money movement, customer/public output, config/runtime mutation, cron schedule mutation, destructive cleanup, or owner approval inference.

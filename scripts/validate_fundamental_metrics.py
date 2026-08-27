@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from datetime import datetime, timezone, timedelta
@@ -18,6 +19,27 @@ VALIDATION_PATH = TMP / "fundamental-metrics-validation.json"
 HISTORY_PATH = DATA_DIR / "fundamentals-quarterly-v1.jsonl"
 UNIVERSE_PATH = WORKSPACE / "data" / "finance" / "universe-v1.json"
 SCHEMA_VERSION = 1
+
+REPAIRABLE_TICKER_FINDING_POLICIES = {
+    "bank_official_capital_period_mismatch": {
+        "classification": "bank_capital_period_metadata_reconciliation_required",
+        "next_action": (
+            "Source-open the official bank capital disclosure, reconcile the local period/source "
+            "mapping, and rerun this ticker's fundamental validation before decision use."
+        ),
+    },
+}
+REPAIR_AUTHORITY_BOUNDARY = {
+    "review_only": True,
+    "auto_repair_or_apply_allowed": False,
+    "canonical_note_mutation_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "capital_deployment_approved": False,
+    "trade_or_execution_approved": False,
+    "paper_or_live_execution_allowed": False,
+    "brokerage_or_account_action_allowed": False,
+    "owner_approval_inferred": False,
+}
 
 FORBIDDEN_TRUE_AUTHORITY_FIELDS = {
     "canonical_note_mutation_allowed",
@@ -177,11 +199,69 @@ def effective_bank_capital_period_end(row: dict[str, Any]) -> str | None:
     return parsed.isoformat()
 
 
-def add(findings: list[dict[str, Any]], severity: str, code: str, message: str, *, ticker: str | None = None) -> None:
+def add(
+    findings: list[dict[str, Any]],
+    severity: str,
+    code: str,
+    message: str,
+    *,
+    ticker: str | None = None,
+    evidence: dict[str, Any] | None = None,
+) -> None:
     item: dict[str, Any] = {"severity": severity, "code": code, "message": message}
     if ticker:
         item["ticker"] = ticker
+    if evidence:
+        item["evidence"] = evidence
     findings.append(item)
+
+
+def build_repair_queue(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Deduplicate review-only ticker repair handoffs without changing validation severity."""
+    repairs: dict[str, dict[str, Any]] = {}
+    for finding in findings:
+        code = str(finding.get("code") or "")
+        policy = REPAIRABLE_TICKER_FINDING_POLICIES.get(code)
+        ticker = str(finding.get("ticker") or "").upper()
+        if not policy or not ticker:
+            continue
+        raw_evidence = finding.get("evidence")
+        evidence = raw_evidence if isinstance(raw_evidence, dict) else {}
+        local_period_end = str(evidence.get("local_period_end") or "").strip()
+        official_period = str(evidence.get("official_period") or "").strip()
+        fingerprint_input = "|".join((code, ticker, local_period_end, official_period))
+        fingerprint = f"fundamental-repair-{hashlib.sha256(fingerprint_input.encode('utf-8')).hexdigest()[:20]}"
+        repair = repairs.get(fingerprint)
+        if repair is None:
+            repair = {
+                "fingerprint": fingerprint,
+                "status": "repair_required",
+                "ticker": ticker,
+                "code": code,
+                "severity": str(finding.get("severity") or "critical"),
+                "classification": policy["classification"],
+                "next_action": policy["next_action"],
+                "blocks_ticker_only": True,
+                "source_open_required": True,
+                "manual_review_required": True,
+                "deduplicated_finding_count": 0,
+                "evidence": {
+                    "local_period_end": local_period_end or None,
+                    "official_period": official_period or None,
+                    "official_source_url": evidence.get("official_source_url"),
+                    "official_period_fields": [],
+                },
+                "source_artifact": "tmp/fundamental-metrics-validation.json",
+                "authority": dict(REPAIR_AUTHORITY_BOUNDARY),
+            }
+            repairs[fingerprint] = repair
+        repair["deduplicated_finding_count"] += 1
+        field = evidence.get("official_period_field")
+        if field and field not in repair["evidence"]["official_period_fields"]:
+            repair["evidence"]["official_period_fields"].append(field)
+    for repair in repairs.values():
+        repair["evidence"]["official_period_fields"].sort()
+    return sorted(repairs.values(), key=lambda item: (item["ticker"], item["code"], item["fingerprint"]))
 
 
 def load_tracked_tickers(findings: list[dict[str, Any]]) -> set[str]:
@@ -369,7 +449,19 @@ def validate_payload(payload: Any, tracked: set[str], findings: list[dict[str, A
                         if not period_end or not official_period:
                             add(findings, "critical", "bank_official_capital_period_missing", f"Official bank risk-based capital ratio is populated but {field} or row period_end is missing.", ticker=ticker)
                         elif not official_period_matches_period_end(official_period, period_end):
-                            add(findings, "critical", "bank_official_capital_period_mismatch", f"Official bank risk-based capital period {official_period!r} does not match row period_end {period_end!r}; refresh official metadata before decision use.", ticker=ticker)
+                            add(
+                                findings,
+                                "critical",
+                                "bank_official_capital_period_mismatch",
+                                f"Official bank risk-based capital period {official_period!r} does not match row period_end {period_end!r}; refresh official metadata before decision use.",
+                                ticker=ticker,
+                                evidence={
+                                    "local_period_end": period_end,
+                                    "official_period": str(official_period),
+                                    "official_period_field": field,
+                                    "official_source_url": row.get("risk_based_capital_source_url"),
+                                },
+                            )
                 if row.get("tier1_leverage_ratio") is not None:
                     note = str(row.get("tier1_leverage_ratio_note") or "")
                     if not note:
@@ -449,6 +541,7 @@ def main() -> int:
 
     critical = sum(1 for item in findings if item.get("severity") == "critical")
     warning = sum(1 for item in findings if item.get("severity") == "warning")
+    repair_queue = build_repair_queue(findings)
     output = {
         "generated_at_utc": utc_now_iso(),
         "status": "critical" if critical else ("warning" if warning else "ok"),
@@ -467,8 +560,11 @@ def main() -> int:
             "critical": critical,
             "warning": warning,
             "findings": len(findings),
+            "ticker_repair_count": len(repair_queue),
+            "ticker_repair_tickers": [item["ticker"] for item in repair_queue],
         },
         "findings": findings,
+        "repair_queue": repair_queue,
     }
     if args.write:
         atomic_write_json(VALIDATION_PATH, output)

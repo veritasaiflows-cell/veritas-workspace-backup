@@ -21,6 +21,7 @@ It exists so the right control surface can be found without scanning the whole p
 | recover after OpenClaw reinstall/update/restart | `06. Playbooks/Operating Procedures/OpenClaw Reinstall Recovery Checklist.md` | `skills/openclaw-troubleshooter/SKILL.md`, `TOOLS.md` |
 | inspect human-gated readiness/deployment review posture | `06. Playbooks/Deployment Readiness Morning Operating Cadence.md` | `06. Playbooks/Deployment Readiness Helper Packet Contract.md`, `06. Playbooks/Deployment Readiness Surface Integration Contract.md` |
 | understand parallel-lane / IC posture | `06. Playbooks/Independent Contractor Workflow.md` | `06. Playbooks/OpenClaw Parallel Work Plan.md`, `06. Playbooks/OpenClaw Model Deployment Plan.md`, `06. Playbooks/IC Model Routing Policy.md` |
+| govern reusable prompts and internal challenge-solving loops | `06. Playbooks/Veritas Prompt Book.md` | `06. Playbooks/Model Prompt Operations.md`, `tmp/prompt-book-registry.json`, `tmp/prompt-book-eval-gap-packet.json` |
 | launch a bounded OpenClaw subagent | `06. Playbooks/Subagent Spawn Handoff Template.md` | `06. Playbooks/Spawn and Closeout Governance Matrix.md`, `06. Playbooks/OpenClaw Parallel Work Plan.md` |
 | inspect workbook / PDF packaging rules | `06. Playbooks/Workbook Export Contracts.md` | `06. Playbooks/Excel Operating Workbook Structure.md`, `06. Playbooks/PDF Brief Standards.md`, `06. Playbooks/Minimum-Viable Workbook Schema.md` |
 | audit skills / workflow-driving standards | `06. Playbooks/Skills Governance Index.md` | `06. Playbooks/Skill Quality Standard.md` |
@@ -72,6 +73,7 @@ It exists so the right control surface can be found without scanning the whole p
 - `06. Playbooks/Subagent Spawn Handoff Template.md`
 - `06. Playbooks/Claude CLI Guardrails.md`
 - `06. Playbooks/Gemini CLI Guardrails.md`
+- `06. Playbooks/Veritas Prompt Book.md`
 - `06. Playbooks/Model Prompt Operations.md`
 
 ## Workbook / packaging / deliverables

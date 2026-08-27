@@ -216,7 +216,7 @@ def parity_checks(conn: sqlite3.Connection) -> tuple[dict[str, Any], list[dict[s
     add_check(checks, "authority_forbidden_counts_zero", not any(int(value or 0) for value in authority.values()), authority)
     add_check(checks, "overlay_field_scope_matches_populated_columns_only", True, {"scoped_fields": ["ticker", "tier", "state", "price", "band", "entry_stop", "queue", "actionability", "authority"], "lossy_fields_keep_fallback": ["full analyst targets", "full earnings detail", "full fundamentals narrative"]})
     add_check(checks, "numeric_parity_scope_explicit", True, {"validated_now": ["router ticker set", "router tier counts", "router core fields", "post-close price overlay"], "not_yet_validated": ["full answer-packet narrative fields", "full analyst target value parity", "full earnings-detail value parity"], "future_field_parity_must_use_numeric_tolerance": True})
-    add_check(checks, "overlay_coverage_equals_200_router_tickers", len(canonical_tickers) == 200, {"canonical_count": len(canonical_tickers)})
+    add_check(checks, "overlay_coverage_matches_router_tickers", len(canonical_tickers) == len(router_tickers) and len(canonical_tickers) > 0, {"canonical_count": len(canonical_tickers), "router_count": len(router_tickers)})
     full_answer_section_count = sqlite_count(conn, "SELECT COUNT(*) FROM full_answer_section_context")
     full_answer_sections_per_ticker = rows(conn, "SELECT ticker, COUNT(*) AS section_count FROM full_answer_section_context GROUP BY ticker HAVING COUNT(*) != 17 LIMIT 20")
     full_answer_source_open_gaps = sqlite_count(conn, "SELECT COUNT(*) FROM full_answer_section_context WHERE source_open_required = 0")

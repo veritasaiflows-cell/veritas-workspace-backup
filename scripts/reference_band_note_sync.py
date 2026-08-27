@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, atomic_write_text
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -165,6 +166,22 @@ def missing_execution_sections(missing: list[str], changes: list[dict[str, Any]]
     ]
 
 
+def sql_first_thin_board_sync_decision(thin_contract: dict[str, Any]) -> dict[str, Any]:
+    detected = thin_contract.get("sql_first_thin_board_detected") is True
+    allowed = thin_contract.get("sql_first_thin_board_allowed") is True
+    return {
+        "short_circuit_note_mutation": detected,
+        "status": "ok" if detected and allowed else "blocked" if detected else "legacy_markdown_sections",
+        "reason": (
+            "SQL-first thin board uses SQL/JSON proof for reference-band visibility; Markdown ticker sections are intentionally absent."
+            if detected and allowed
+            else "SQL-first thin board detected but its proof contract is blocked."
+            if detected
+            else "Legacy Markdown ticker sections remain the reference-band visibility surface."
+        ),
+    }
+
+
 def write_markdown_log(audit: dict[str, Any]) -> None:
     lines = [
         f"# Reference Band Note Sync — {audit['refreshed_at']}",
@@ -237,7 +254,27 @@ def main() -> int:
         "skipped": skipped,
         "missing_note_sections": [],
         "missing_note_section_blockers": [],
+        "technical_sheet_mode": "legacy_markdown_sections",
+        "sql_first_thin_board_contract": {},
+        "board_mutation_performed": False,
     }
+
+    thin_contract = evaluate_sql_first_thin_board_contract(technical_sheet)
+    thin_decision = sql_first_thin_board_sync_decision(thin_contract)
+    audit["sql_first_thin_board_contract"] = thin_contract
+    audit["technical_sheet_mode"] = "sql_first_thin_board" if thin_decision["short_circuit_note_mutation"] else "legacy_markdown_sections"
+    audit["visibility_source"] = {
+        "primary": "state/finance/finance-canon.sqlite:reference_levels",
+        "json_proof": str(proposals_path.relative_to(WORKSPACE) if proposals_path.is_relative_to(WORKSPACE) else proposals_path),
+        "note_sync_decision": thin_decision,
+    }
+    if thin_decision["short_circuit_note_mutation"]:
+        audit["status"] = thin_decision["status"]
+        atomic_write_json(AUDIT_PATH, audit, indent=2, ensure_ascii=False)
+        write_markdown_log(audit)
+        print(f"reference_band_note_sync_status={audit['status']} mode={audit['mode']} synced={len(changes)} skipped={len(skipped)}")
+        print(f"audit={AUDIT_PATH.relative_to(WORKSPACE)}")
+        return 0 if audit["status"] == "ok" else 1
 
     if args.apply and changes:
         if not technical_sheet.exists():
@@ -253,6 +290,7 @@ def main() -> int:
             write_markdown_log(audit)
             raise SystemExit(f"ERROR: Execution Board missing execution-lane ticker section(s): {', '.join(missing_blockers)}")
         atomic_write_text(technical_sheet, new_text, encoding="utf-8")
+        audit["board_mutation_performed"] = True
 
     atomic_write_json(AUDIT_PATH, audit, indent=2, ensure_ascii=False)
     write_markdown_log(audit)

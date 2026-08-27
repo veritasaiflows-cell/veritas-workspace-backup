@@ -13,6 +13,7 @@ from dashboard_core import (
     get_path,
     status_worse,
 )
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 import universe
 
 BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
@@ -114,6 +115,39 @@ def _parse_watchlist_rows() -> dict[str, dict[str, str]]:
     return out
 
 
+def _coverage_watchlist_thin_contract() -> dict[str, Any]:
+    return evaluate_sql_first_thin_board_contract(
+        COVERAGE_WATCHLIST_PATH,
+        route_tokens=[
+            "finance_sql_canon_access.py",
+            "finance_intelligence_state.py",
+            "full_intelligence_answer_parity.py",
+            "canonical_finance_data_plane.py",
+        ],
+        proof_files=[
+            "tmp/full-answer-parity/full-answer-parity-rollup.json",
+            "tmp/trade-grade-full-answer/",
+            "tmp/ticker-intelligence-cards/",
+            "state/finance/finance-canon.sqlite",
+        ],
+        authority_phrases=[
+            "no execution state",
+            "owner approval",
+            "portfolio mutation",
+            "archive/delete/apply authority",
+            "inferred approval",
+        ],
+    )
+
+
+def _coverage_watchlist_row_warning_required(lane: str, watch_row: dict[str, str] | None, thin_contract: dict[str, Any]) -> bool:
+    if lane != "execution" or watch_row:
+        return False
+    if thin_contract.get("sql_first_thin_board_detected") and thin_contract.get("sql_first_thin_board_allowed"):
+        return False
+    return True
+
+
 def build_validation(
     sources: dict[str, dict | None],
     source_status: dict[str, dict[str, Any]],
@@ -191,6 +225,7 @@ def build_validation(
     portfolio = (pf_raw or {}).get("portfolio", {})
     posture_labels = (pf_raw or {}).get("posture_labels", {})
     watchlist_rows = _parse_watchlist_rows()
+    coverage_thin_contract = _coverage_watchlist_thin_contract()
 
     # Priority 2.5: Move posture expectations to config
     posture_expectations = (pf_raw or {}).get("posture_expectations")
@@ -422,7 +457,7 @@ def build_validation(
     if abs(accounted_total - 100.0) <= 0.25 and suspended:
         add_warning(
             "portfolio_suspended_weight_gap",
-            "warning",
+            "info",
             "portfolio",
             f"Active portfolio weights plus cash sum to {active_total}%; {suspended}% is explicitly suspended legacy model weight and not active exposure.",
             details={"invested": invested, "cash": cash, "suspended_legacy_weight": suspended, "accounted_total": accounted_total},
@@ -722,12 +757,12 @@ def build_validation(
         entry_policy = meta.get("entry_policy")
 
         watch_row = watchlist_rows.get(ticker)
-        if lane == "execution" and not watch_row:
+        if _coverage_watchlist_row_warning_required(lane, watch_row, coverage_thin_contract):
             add_warning(
                 "coverage_watchlist_execution_missing",
                 "warning",
                 "notes",
-                f"{ticker} is execution-lane in config but missing from the Coverage and Watchlist universe table.",
+                f"{ticker} is execution-lane in config but missing from the Coverage and Watchlist universe table, and the SQL-first thin-board contract is not accepted.",
                 ticker,
             )
 

@@ -1,0 +1,376 @@
+{
+  "schema": "veritas.wf75_training_desk_current.v1",
+  "generated_at_utc": "2026-06-20T20:22:24Z",
+  "status": "active_training_lane",
+  "department_name": "WF75 Academy / Training Desk",
+  "purpose": "Train Randall to understand, sell, review, and manually deliver SMB workflow automation packets before fake-scenario practice and later real-client pilots.",
+  "current_training_posture": {
+    "academy_live": true,
+    "mode": "daily_micro_learning_plus_fake_scenario_practice",
+    "recommended_daily_time": "20-30 minutes",
+    "weekly_review_time": "45-60 minutes",
+    "first_skill_goal": "Randall can explain the service, diagnose one workflow, understand basic Zapier/Make patterns, and QA a packet without crossing stop lines."
+  },
+  "tool_curriculum": [
+    {
+      "tool": "Zapier",
+      "learn_for": "simple app-to-app automations",
+      "starter_pattern": "form submission -> owner alert -> tracking row",
+      "do_not_do_yet": "connect real client accounts or send external messages"
+    },
+    {
+      "tool": "Make",
+      "learn_for": "branching workflows and data routing",
+      "starter_pattern": "inquiry -> classify -> route -> log",
+      "do_not_do_yet": "build production scenarios for clients"
+    },
+    {
+      "tool": "n8n",
+      "learn_for": "more technical/self-hosted automation concepts",
+      "starter_pattern": "webhook -> validate -> transform -> queue",
+      "do_not_do_yet": "self-host or maintain client infrastructure"
+    },
+    {
+      "tool": "Google Sheets / Airtable",
+      "learn_for": "simple operating tables and status boards",
+      "starter_pattern": "lead/job row -> status -> owner -> next touch",
+      "do_not_do_yet": "store sensitive real data casually"
+    },
+    {
+      "tool": "OpenPhone / Twilio",
+      "learn_for": "phone/SMS workflow concepts",
+      "starter_pattern": "missed call -> internal alert -> manual callback queue",
+      "do_not_do_yet": "send real customer messages or handle phone-number migration"
+    }
+  ],
+  "daily_micro_learning_plan": [
+    {
+      "day": 1,
+      "title": "SMB Service-Led Offer Basics",
+      "duration_minutes": 20,
+      "learn": [
+        "what the Lead Rescue / Workflow Clarity Sprint is",
+        "what it is not",
+        "why manual packets come before full SaaS"
+      ],
+      "practice": "Explain the offer in 90 seconds without saying implementation, guaranteed revenue, or AI magic.",
+      "fake_scenario": "Desert Peak HVAC lead follow-up packet",
+      "acceptance": "Randall can state scope, exclusions, and next step clearly."
+    },
+    {
+      "day": 2,
+      "title": "Workflow Diagnosis: Trigger To Outcome",
+      "duration_minutes": 25,
+      "learn": [
+        "trigger, handoff, wait state, owner, outcome",
+        "where manual workflows break",
+        "how to avoid recommending tools too early"
+      ],
+      "practice": "Map one fake contractor admin workflow from first customer request to invoice.",
+      "fake_scenario": "small contractor job-control packet",
+      "acceptance": "Randall can identify trigger, bottleneck, owner, and next action."
+    },
+    {
+      "day": 3,
+      "title": "Zapier Fundamentals",
+      "duration_minutes": 25,
+      "learn": [
+        "trigger -> action -> filter -> path -> log",
+        "when Zapier is enough",
+        "why task volume and permissions matter"
+      ],
+      "practice": "Design a fake Zap: website form -> owner alert -> Google Sheet row.",
+      "fake_scenario": "cleaning company website lead intake",
+      "acceptance": "Randall can explain a Zap without touching real accounts."
+    },
+    {
+      "day": 4,
+      "title": "Make Fundamentals",
+      "duration_minutes": 25,
+      "learn": [
+        "scenario, module, route, filter, bundle",
+        "when Make is better than Zapier",
+        "duplication and route-testing risks"
+      ],
+      "practice": "Design a fake Make scenario that routes med-spa inquiries by treatment interest.",
+      "fake_scenario": "med spa inquiry routing",
+      "acceptance": "Randall can explain one Make scenario and its failure mode."
+    },
+    {
+      "day": 5,
+      "title": "Simple CRM / Sheet Control Plane",
+      "duration_minutes": 20,
+      "learn": [
+        "why Google Sheets/Airtable can be enough at first",
+        "status labels and owner fields",
+        "what belongs in a lead/job tracking table"
+      ],
+      "practice": "Create fake columns for lead status, next touch, priority, source, owner, and due date.",
+      "fake_scenario": "auto repair quote follow-up list",
+      "acceptance": "Randall can explain a simple tracking table before recommending CRM."
+    },
+    {
+      "day": 6,
+      "title": "Phone/SMS Workflow Tools",
+      "duration_minutes": 25,
+      "learn": [
+        "OpenPhone vs Twilio mental model",
+        "missed-call text-back concepts",
+        "SMS consent and opt-out sensitivity"
+      ],
+      "practice": "Write a safe internal recommendation for missed-call callback priority without sending texts.",
+      "fake_scenario": "plumbing missed-call queue",
+      "acceptance": "Randall can separate tool recommendation from message sending."
+    },
+    {
+      "day": 7,
+      "title": "Customer Packet QA",
+      "duration_minutes": 25,
+      "learn": [
+        "private-data leakage checks",
+        "credential and implementation stop lines",
+        "ROI/legal/compliance claim blocks"
+      ],
+      "practice": "Review one fake customer preview and mark unsafe lines.",
+      "fake_scenario": "Lead Rescue customer preview",
+      "acceptance": "Randall catches unsafe claims before delivery."
+    }
+  ],
+  "week_by_week_rollout_training_plan": [
+    {
+      "week": 1,
+      "title": "Internal demo and approval preparation",
+      "goal": "Choose the first vertical, pick the demo path, rehearse the offer, and draft the approval card.",
+      "practice": [
+        "explain the Lead Rescue offer in 90 seconds",
+        "choose the HVAC / plumbing / electrical demo path",
+        "write the no-outreach approval card",
+        "state every stop line out loud"
+      ],
+      "mock_scenarios": [
+        "smb-missed-call-capture-v1",
+        "smb-owner-attention-dashboard-v1"
+      ],
+      "acceptance": "Randall can explain the offer and approval gate without implying public launch, outreach, ROI, credentials, or implementation."
+    },
+    {
+      "week": 2,
+      "title": "Warm-list and conversation rehearsal",
+      "goal": "Practice discovery, objection handling, and sanitized intake boundaries before any real contact.",
+      "practice": [
+        "run a discovery roleplay",
+        "ask for sanitized workflow description only",
+        "answer common objections without hype",
+        "mark bad-fit conversations cleanly"
+      ],
+      "mock_scenarios": [
+        "smb-lead-intake-routing-v1",
+        "smb-follow-up-sequences-v1"
+      ],
+      "acceptance": "Randall can complete a fake discovery call and keep all data, messaging, credential, and ROI boundaries intact."
+    },
+    {
+      "week": 3,
+      "title": "Paid pilot delivery rehearsal",
+      "goal": "Run the manual delivery flow against fake inputs before a real paid pilot is approved.",
+      "practice": [
+        "build a lead-flow map",
+        "build an owner attention queue",
+        "draft follow-up examples for human review",
+        "write the automation blueprint handoff"
+      ],
+      "mock_scenarios": [
+        "smb-lead-status-tracking-v1",
+        "smb-script-message-pack-v1"
+      ],
+      "acceptance": "Randall can produce a mock pilot packet and explain what remains blocked until exact owner approval."
+    },
+    {
+      "week": 4,
+      "title": "Closeout, proof, and retainer offer rehearsal",
+      "goal": "Practice pilot recap, no-hype proof framing, retainer-fit judgment, and next-step recommendation.",
+      "practice": [
+        "write a pilot closeout summary",
+        "separate observations from ROI claims",
+        "choose continue, retainer, or no-fit",
+        "name the next safe experiment"
+      ],
+      "mock_scenarios": [
+        "smb-sales-pipeline-cleanup-v1",
+        "smb-tool-stack-recommendation-v1"
+      ],
+      "acceptance": "Randall can close the loop without overclaiming results or turning a pilot into unapproved implementation."
+    }
+  ],
+  "lesson_modules": [
+    {
+      "day": 1,
+      "title": "SMB Service-Led Offer Basics",
+      "teaching_objective": "Randall can explain the SMB Workflow Clarity service in plain English, including scope, exclusions, and the next step.",
+      "plain_english_lesson": [
+        "Small businesses often do not need a new SaaS platform first. They need someone to show them where the current workflow is leaking attention, leads, follow-up, appointments, quotes, or cash.",
+        "Our first service is a manual Workflow Clarity packet. We inspect a sanitized or fake scenario, map what is happening, identify where work stalls, and produce a practical owner-facing packet.",
+        "The packet can include a daily attention list, lead status cleanup, callback priority, suggested scripts, simple tracking fields, and a tool-stack recommendation.",
+        "We do not promise revenue. We do not touch real customer systems yet. We do not ask for credentials. We do not send messages for them. We start with diagnosis and a manual packet because that is faster, safer, and easier to sell than a full SaaS build."
+      ],
+      "key_terms": [
+        {
+          "term": "Service-led SaaS",
+          "definition": "A manual service that proves the workflow and customer value before software automation is fully built."
+        },
+        {
+          "term": "Lead Rescue",
+          "definition": "Finding and prioritizing missed or stalled inquiries so the owner knows who needs attention first."
+        },
+        {
+          "term": "Workflow Clarity packet",
+          "definition": "A structured deliverable showing the workflow, bottlenecks, next actions, scripts, and tool recommendations."
+        },
+        {
+          "term": "Stop line",
+          "definition": "A boundary we do not cross without explicit approval, such as real customer data, credentials, outreach, or implementation."
+        }
+      ],
+      "worked_example": {
+        "scenario": "Desert Peak HVAC misses 12 calls in a week. Some callers leave voicemails, some submit forms, and quotes are not followed up consistently.",
+        "bad_pitch": "We use AI to automate your whole business and recover lost revenue fast.",
+        "why_bad": "It overpromises revenue, implies implementation, and sounds like hype.",
+        "good_pitch": "We help you see where calls, forms, quotes, and follow-ups are slipping through the cracks. First we create a clear manual packet showing who needs attention, what status each lead is in, what message or callback should happen next, and which simple tools could support the workflow. We do not need your credentials or customer-system access for the first review."
+      },
+      "practice_steps": [
+        "State the customer pain in one sentence.",
+        "State what we produce in one sentence.",
+        "State what we do not do yet.",
+        "State the next step: a sanitized intake or fake-scenario review."
+      ],
+      "self_check": [
+        "Did I avoid promising revenue?",
+        "Did I avoid saying we will implement everything?",
+        "Did I avoid asking for credentials?",
+        "Did I explain the manual packet clearly?",
+        "Did I give a concrete next step?"
+      ],
+      "answer_key": "A strong answer says we diagnose workflow leakage and produce a manual owner packet first. It names missed calls/forms/quotes/follow-ups, gives a practical deliverable, preserves boundaries, and asks for a sanitized intake or fake-scenario review as the next step."
+    },
+    {
+      "day": 2,
+      "title": "Workflow Diagnosis: Trigger To Outcome",
+      "teaching_objective": "Randall can map a workflow using trigger, handoff, wait state, owner, and outcome.",
+      "plain_english_lesson": [
+        "A workflow is not just a task list. It is the path from something happening to a result being achieved.",
+        "Most SMB workflow problems happen at handoffs and wait states: nobody owns the next touch, the status is unclear, or the same work is tracked in too many places.",
+        "Before recommending software, map what triggers the work, who owns each step, where it waits, and what outcome the business actually wants."
+      ],
+      "key_terms": [
+        {
+          "term": "Trigger",
+          "definition": "The event that starts the workflow."
+        },
+        {
+          "term": "Handoff",
+          "definition": "The moment responsibility moves from one person, system, or step to another."
+        },
+        {
+          "term": "Wait state",
+          "definition": "Where the workflow pauses until someone acts or information arrives."
+        },
+        {
+          "term": "Outcome",
+          "definition": "The business result the workflow exists to produce."
+        }
+      ],
+      "worked_example": {
+        "scenario": "A contractor receives a job request, visits the site, sends a quote, waits for approval, schedules materials, completes work, and sends an invoice.",
+        "bad_pitch": "You need a CRM.",
+        "why_bad": "It jumps to a tool before identifying the real bottleneck.",
+        "good_pitch": "The issue appears to be quote follow-up and invoice timing. We should map owner, due date, and next touch before recommending a tool."
+      },
+      "practice_steps": [
+        "Name the trigger.",
+        "List each handoff.",
+        "Mark each wait state.",
+        "Assign an owner to the next touch.",
+        "Define the outcome."
+      ],
+      "self_check": [
+        "Did I identify the trigger?",
+        "Did I find at least one wait state?",
+        "Did I assign ownership?",
+        "Did I avoid tool-first thinking?"
+      ],
+      "answer_key": "A strong workflow diagnosis names the start event, handoffs, wait states, owner, and desired outcome before proposing automation."
+    }
+  ],
+  "fake_scenario_training_bench": [
+    "HVAC lead rescue",
+    "med spa inquiry routing",
+    "contractor job-control and invoice follow-up",
+    "auto repair quote follow-up",
+    "cleaning company booking workflow",
+    "small law firm intake triage",
+    "dental recall and appointment confirmation"
+  ],
+  "repeatable_session_format": [
+    "5 minutes: concept in plain English",
+    "10 minutes: inspect one fake scenario",
+    "10 minutes: design the workflow or automation shape",
+    "5 minutes: QA stop-line review",
+    "optional 5 minutes: Randall explains it back"
+  ],
+  "randall_readiness_levels": [
+    {
+      "level": 1,
+      "name": "Understand",
+      "description": "Can explain what the service does and does not do."
+    },
+    {
+      "level": 2,
+      "name": "Diagnose",
+      "description": "Can map a fake workflow and identify bottlenecks."
+    },
+    {
+      "level": 3,
+      "name": "Recommend",
+      "description": "Can name a simple tool pattern without overbuilding."
+    },
+    {
+      "level": 4,
+      "name": "QA",
+      "description": "Can catch unsafe claims, data leakage, credential requests, and implementation drift."
+    },
+    {
+      "level": 5,
+      "name": "Pilot Ready",
+      "description": "Can review a manual service packet and discuss it with a real prospect after explicit approval gates are cleared."
+    }
+  ],
+  "stop_lines": [
+    "real_customer_data_allowed",
+    "customer_outreach_allowed",
+    "external_delivery_allowed",
+    "credential_access_allowed",
+    "customer_system_implementation_allowed",
+    "public_launch_allowed",
+    "spend_or_subscription_allowed",
+    "guaranteed_revenue_or_roi_claim_allowed",
+    "legal_compliance_security_readiness_claim_allowed",
+    "owner_approval_inferred"
+  ],
+  "authority_boundary": {
+    "real_customer_data_allowed": false,
+    "customer_outreach_allowed": false,
+    "external_delivery_allowed": false,
+    "credential_access_allowed": false,
+    "customer_system_implementation_allowed": false,
+    "public_launch_allowed": false,
+    "spend_or_subscription_allowed": false,
+    "guaranteed_revenue_or_roi_claim_allowed": false,
+    "legal_compliance_security_readiness_claim_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

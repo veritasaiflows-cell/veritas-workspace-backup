@@ -69,7 +69,7 @@ var defaultContracts = []DBContract{
 		Path:      "state/finance/finance-canon.sqlite",
 		Tables:    []string{"securities", "universe_membership", "evidence_status", "validator_runs", "audit_events"},
 		Views:     []string{"current_active_universe", "current_answer_path", "review_monitor_universe"},
-		ExactRows: map[string]int{"current_answer_path": 42},
+		ExactRows: map[string]int{"current_answer_path": 0},
 		SupportedRows: map[string][]int{
 			"current_active_universe": {100, 200, 300, 400, 500},
 			"review_monitor_universe": {58, 158, 258, 358, 458},

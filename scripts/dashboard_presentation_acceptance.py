@@ -21,6 +21,7 @@ COMPACT_SHELL = TMP / "veritas-command-center-compact.html"
 COMPACT_SHELL_VALIDATION = TMP / "dashboard-compact-shell-validation.json"
 COMPAT_PAYLOAD_VALIDATION = TMP / "dashboard-compatibility-payload-validation.json"
 LEGACY_HTML = TMP / "veritas-command-center.html"
+ACTIONABILITY_SNAPSHOT = TMP / "finance-daily-actionability-snapshot.json"
 OUT = TMP / "dashboard-presentation-acceptance.json"
 
 
@@ -45,7 +46,7 @@ def as_list(value: Any) -> list[Any]:
 
 def build_report() -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
-    for path in (VIEW_MODEL, ADAPTER, RENDERER_VALIDATION, HTML, LEGACY_HTML):
+    for path in (VIEW_MODEL, ADAPTER, RENDERER_VALIDATION, HTML, LEGACY_HTML, ACTIONABILITY_SNAPSHOT):
         if not path.exists():
             findings.append({"severity": "critical", "issue": "missing_required_artifact", "path": relpath(path)})
 
@@ -57,6 +58,7 @@ def build_report() -> dict[str, Any]:
     v2_reader = read_json(V2_READER) if V2_READER.exists() else {}
     compact_shell_validation = read_json(COMPACT_SHELL_VALIDATION) if COMPACT_SHELL_VALIDATION.exists() else {}
     compat_payload_validation = read_json(COMPAT_PAYLOAD_VALIDATION) if COMPAT_PAYLOAD_VALIDATION.exists() else {}
+    actionability = read_json(ACTIONABILITY_SNAPSHOT) if ACTIONABILITY_SNAPSHOT.exists() else {}
 
     if view_model.get("source_payload_embedded") is not False:
         findings.append({"severity": "critical", "issue": "view_model_embeds_source_payload"})
@@ -78,8 +80,10 @@ def build_report() -> dict[str, Any]:
             findings.append({"severity": "critical", "issue": "v2_reader_migration_not_ok", "validation": v2_reader.get("validation")})
         if v2_reader.get("source_payload_embedded") is not False:
             findings.append({"severity": "critical", "issue": "v2_reader_embeds_source_payload"})
-        if as_dict(v2_reader.get("summary")).get("all_compact_panels_migrated") is not True:
-            findings.append({"severity": "critical", "issue": "v2_reader_not_all_panels"})
+        if as_dict(v2_reader.get("summary")).get("all_finance_panels_migrated") is not True:
+            findings.append({"severity": "critical", "issue": "v2_reader_not_all_finance_panels"})
+        if as_dict(v2_reader.get("summary")).get("workflow_pm_migrated_to_pm_cockpit") is not True:
+            findings.append({"severity": "critical", "issue": "workflow_pm_not_migrated_to_pm_cockpit"})
     if COMPACT_SHELL.exists() or COMPACT_SHELL_VALIDATION.exists():
         if compact_shell_validation.get("status") != "ok":
             findings.append({"severity": "critical", "issue": "compact_shell_validation_not_ok", "validation": compact_shell_validation})
@@ -91,8 +95,20 @@ def build_report() -> dict[str, Any]:
     route_counts = as_dict(as_dict(adapter.get("summary")).get("route_counts"))
     if route_counts.get("legacy_passthrough_required", 0) != 0:
         findings.append({"severity": "critical", "issue": "legacy_only_routes_remain", "route_counts": route_counts})
-    if len(as_list(view_model.get("panels"))) < 8:
-        findings.append({"severity": "critical", "issue": "view_model_panel_count_low", "panel_count": len(as_list(view_model.get("panels")))})
+    panels = as_list(view_model.get("panels"))
+    if len(panels) != 7:
+        findings.append({"severity": "critical", "issue": "view_model_finance_panel_count_wrong", "panel_count": len(panels)})
+    if any(as_dict(panel).get("id") == "workflow_pm" for panel in panels):
+        findings.append({"severity": "critical", "issue": "workflow_pm_present_in_finance_route"})
+    if not as_dict(view_model.get("daily_actionability")).get("actionability_status"):
+        findings.append({"severity": "critical", "issue": "daily_actionability_missing_from_view_model"})
+    if actionability.get("actionability_status") not in {
+        "refresh_required_before_actionability",
+        "blocked_by_evidence",
+        "review_only_actionability",
+        "monitor_only",
+    }:
+        findings.append({"severity": "critical", "issue": "actionability_snapshot_bad_status", "status": actionability.get("actionability_status")})
 
     authority = as_dict(view_model.get("authority"))
     for key, value in authority.items():
@@ -121,12 +137,15 @@ def build_report() -> dict[str, Any]:
             "compact_shell_validation": relpath(COMPACT_SHELL_VALIDATION),
             "compatibility_payload_validation": relpath(COMPAT_PAYLOAD_VALIDATION),
             "legacy_command_center": relpath(LEGACY_HTML),
+            "finance_daily_actionability_snapshot": relpath(ACTIONABILITY_SNAPSHOT),
         },
         "summary": {
-            "panel_count": len(as_list(view_model.get("panels"))),
+            "panel_count": len(panels),
             "route_counts": route_counts,
             "renderer_status": renderer.get("status"),
             "legacy_command_center_preserved": LEGACY_HTML.exists(),
+            "finance_actionability_status": actionability.get("actionability_status"),
+            "workflow_pm_migrated_to_pm_cockpit": as_dict(view_model.get("summary")).get("workflow_pm_migrated_to_pm_cockpit") is True,
             "thin_preview_available": THIN_PREVIEW.exists(),
             "v2_reader_migration_available": V2_READER.exists(),
             "compact_shell_available": COMPACT_SHELL.exists(),

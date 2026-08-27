@@ -1,47 +1,43 @@
 {
-  "schema": "veritas.cron_contract.v1",
-  "job_id": "c93504f5-4772-4e1d-bc95-9dbbc34ddfbe",
-  "name": "Finance - WF78 Open-Ready Owner Review Proof",
-  "required": true,
-  "owner_workflow": "WF78/WF85",
-  "contract_reason": "Pre-open owner-review bridge for WF78/WF85 readiness proof. Drift can create false open-ready or deployment-readiness signals.",
-  "description": "Weekday pre-open owner-review bridge for WF78/WF85. Runs a narrow review-only cron runner after daily-core freshness and before open-ready paper/radar alerts. Produces position-sizing, deployment-readiness, source-artifact capture, integration proposal, and Tier A owner-readiness artifacts. No deployment surface mutation, no portfolio/canon mutation, no capital approval, no paper/live/account action, no owner approval inference.",
-  "enabled": true,
-  "schedule": {
-    "kind": "cron",
-    "expr": "20 6 * * 1-5",
-    "tz": "America/Phoenix"
-  },
-  "sessionTarget": "isolated",
-  "wakeMode": "now",
-  "delivery": {
-    "mode": "none",
-    "bestEffort": true
-  },
-  "payload": {
-    "kind": "agentTurn",
-    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\nObjective: run the WF78/WF85 pre-open owner-review proof bridge after daily-core freshness and before open-ready deployment/radar alerts. This is review-only packaging/proposal proof.\n\nExecute exactly this single command:\npython scripts\\wf78_open_ready_owner_review_cron_runner.py --write --validate\n\nDo not run additional commands. Do not inspect files manually. The runner writes/refreshed proof surfaces including:\n- tmp\\wf78-open-ready-owner-review-cron-runner.json\n- tmp\\wf78-position-sizing-surface-review.json\n- tmp\\wf78-deployment-readiness-review.json\n- tmp\\wf78-source-artifact-capture-review.json\n- tmp\\wf78-position-sizing-integration-proposal.json\n- tmp\\wf78-tier-a-owner-readiness-proposals.json\n\nResponse contract: reply exactly NO_REPLY when the command exits 0 and validation is ok. If blocked, report only runner status, failing artifact, and next repair owner.\n\nBoundaries: review-only owner-readiness/deployment-readiness proof. No deployment surface mutation, no ticker-card/canon/portfolio/SQL-canon mutation, no cash/sizing/sleeve/risk-rule apply, no capital deployment approval, no paper/live order, no brokerage/account action, no money movement, no customer/public output, no config/auth/channel/runtime mutation, and no owner approval inference.",
-    "model": "openai/gpt-5.4-mini",
-    "thinking": "xhigh",
-    "timeoutSeconds": 600
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF78/WF85 open-ready owner review proof",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "review_only": true,
+    "schedule_mutation_allowed": false
   },
   "compare_fields": [
     "enabled",
-    "deleteAfterRun",
+    "description",
     "schedule",
     "sessionTarget",
     "wakeMode",
     "delivery.mode",
-    "delivery.channel",
     "delivery.bestEffort",
-    "failureAlert",
     "payload.kind",
-    "payload.message",
-    "payload.model",
-    "payload.thinking",
-    "payload.timeoutSeconds",
-    "payload.lightContext"
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
   ],
+  "contract_reason": "Pre-open owner-review bridge for WF78/WF85 readiness proof. Drift can create false open-ready or deployment-readiness signals.",
+  "contract_update_reason": "Move open-ready owner-review proof before market open after upstream pre_market_repair_v2.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "bestEffort": true,
+    "mode": "none"
+  },
+  "description": "Command-backed WF78 open-ready owner-review proof after pre_market_repair_v2. Review-only; no deployment mutation, approval, execution, canon/portfolio, cash/sizing/risk, account, or capital authority.",
+  "enabled": true,
   "expected_artifacts": [
     "tmp/wf78-open-ready-owner-review-cron-runner.json",
     "tmp/wf78-position-sizing-surface-review.json",
@@ -51,16 +47,28 @@
     "tmp/wf78-tier-a-owner-readiness-proposals.json",
     "tmp/cron-control-packet.json"
   ],
-  "authority_boundary": {
-    "review_only": true,
-    "cron_contract_only": true,
-    "cron_state_mutation_allowed": false,
-    "cron_schedule_mutation_allowed": false,
-    "runtime_config_mutation_allowed": false,
-    "canon_or_portfolio_mutation_allowed": false,
-    "capital_deployment_allowed": false,
-    "paper_or_live_execution_allowed": false,
-    "brokerage_or_account_action_allowed": false,
-    "owner_approval_inferred": false
-  }
+  "job_id": "c93504f5-4772-4e1d-bc95-9dbbc34ddfbe",
+  "name": "Finance - WF78 Open-Ready Owner Review Proof",
+  "owner_workflow": "WF78/WF85 open-ready owner review proof",
+  "payload": {
+    "argv": [
+      "python",
+      "scripts\\wf78_open_ready_owner_review_cron_runner.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "kind": "command",
+    "timeoutSeconds": 900
+  },
+  "required": true,
+  "schedule": {
+    "expr": "12 6 * * 1-5",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-06-30T03:42:00Z",
+  "wakeMode": "now"
 }

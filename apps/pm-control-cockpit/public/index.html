@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Veritas PM Cockpit</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1 id="page-title">Veritas PM Cockpit</h1>
+        <p id="subtitle">Local operator console for workflows, sources, lanes, handoffs, and proof health. Finance actionability lives in the Command Center snapshot.</p>
+      </div>
+      <div class="top-actions">
+        <span id="generated" class="muted"></span>
+        <a class="button-link" href="/command-center/" title="Open finance Command Center snapshot">Finance Snapshot</a>
+        <button id="refresh" type="button" title="Refresh cockpit data">Refresh</button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Cockpit sections">
+      <button class="tab active" data-tab="randall" type="button">Randall</button>
+      <button class="tab" data-tab="deliverables" type="button">Deliverables</button>
+      <button class="tab" data-tab="overview" type="button">Veritas PM</button>
+      <button class="tab" data-tab="lanes" type="button">Lanes</button>
+      <button class="tab" data-tab="handoff" type="button">Handoff</button>
+      <button class="tab" data-tab="talk-lite" type="button">Talk Lite</button>
+      <button class="tab" data-tab="smb" type="button">SMB</button>
+      <button class="tab" data-tab="retail" type="button">Retail</button>
+      <button class="tab" data-tab="workflows" type="button">Workflows</button>
+      <button class="tab" data-tab="academy" type="button">Academy</button>
+      <button class="tab" data-tab="sql" type="button">SQL</button>
+      <button class="tab" data-tab="closeout" type="button">Closeout</button>
+      <button class="tab" data-tab="sources" type="button">Sources</button>
+      <button class="tab" data-tab="authority" type="button">Authority</button>
+    </nav>
+
+    <main>
+      <section id="status-strip" class="status-strip" aria-live="polite"></section>
+
+      <section id="randall" class="panel active"></section>
+      <section id="deliverables" class="panel"></section>
+      <section id="overview" class="panel"></section>
+      <section id="lanes" class="panel"></section>
+      <section id="handoff" class="panel"></section>
+      <section id="talk-lite" class="panel"></section>
+      <section id="smb" class="panel"></section>
+      <section id="retail" class="panel"></section>
+      <section id="workflows" class="panel"></section>
+      <section id="academy" class="panel"></section>
+      <section id="sql" class="panel"></section>
+      <section id="closeout" class="panel"></section>
+      <section id="sources" class="panel"></section>
+      <section id="authority" class="panel"></section>
+    </main>
+
+    <template id="empty-state">
+      <div class="empty">No rows.</div>
+    </template>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

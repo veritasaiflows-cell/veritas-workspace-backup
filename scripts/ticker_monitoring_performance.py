@@ -19,6 +19,7 @@ DEPLOYMENT_CHECK_PATH = TMP / "deployment-check.json"
 PRICE_SIGNALS_PATH = TMP / "daily-price-trend-signals.json"
 SECTOR_BOARD_PATH = TMP / "sector-expansion-board.json"
 SECTOR_CORRELATION_PATH = TMP / "sector-correlation-check.json"
+BAND_PROPOSALS_PATH = TMP / "band-proposals.json"
 
 SCHEMA_VERSION = 1
 HISTORY_ROWS_MIN_FOR_OUTCOME_ANALYTICS = 5
@@ -142,6 +143,89 @@ def index_price_signals(price_signals: dict[str, Any]) -> dict[str, dict[str, An
     return out
 
 
+def fnum(value: Any) -> float | None:
+    try:
+        if value is None or value == "":
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def index_band_proposals(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for item in payload.get("proposals") or []:
+        if not isinstance(item, dict):
+            continue
+        ticker = str(item.get("ticker") or "").upper().strip()
+        if ticker:
+            row = dict(item)
+            row["_source_generated_at_utc"] = payload.get("generated_at_utc")
+            out[ticker] = row
+    return out
+
+
+def price_band_status(close: float | None, low: float | None, high: float | None, stop: float | None) -> str:
+    if close is not None and stop is not None and close < stop:
+        return "BELOW_STOP"
+    if close is not None and low is not None and high is not None:
+        if low <= close <= high:
+            return "IN_BAND"
+        if close > high:
+            return "ABOVE_BAND_WAIT"
+        if close < low:
+            return "BELOW_BAND_WAIT"
+    return "UNKNOWN"
+
+
+def sql_first_band_overlay(
+    ticker: str,
+    record: dict[str, Any],
+    signal: dict[str, Any],
+    proposal: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if not isinstance(proposal, dict) or proposal.get("canonical_apply_eligible") is not True:
+        return None
+    current_state = signal.get("current_state") if isinstance(signal.get("current_state"), dict) else {}
+    close = fnum(proposal.get("close") or record.get("close") or signal.get("close") or current_state.get("close"))
+    low = fnum(proposal.get("suggested_band_low"))
+    high = fnum(proposal.get("suggested_band_high"))
+    stop = fnum(proposal.get("suggested_stop"))
+    if close is None or low is None or high is None:
+        return None
+    midpoint = (low + high) / 2
+    distance_to_band_pct = 0.0
+    if close < low:
+        distance_to_band_pct = round(((close - low) / low) * 100, 2)
+    elif close > high:
+        distance_to_band_pct = round(((close - high) / high) * 100, 2)
+    return {
+        "ticker": ticker,
+        "source": "sql_first_band_proposal",
+        "source_artifact": rel(BAND_PROPOSALS_PATH),
+        "source_generated_at_utc": proposal.get("_source_generated_at_utc") or proposal.get("generated_at_utc"),
+        "canonical_apply_eligible": True,
+        "needs_review": bool(proposal.get("needs_review")),
+        "close": close,
+        "low": low,
+        "high": high,
+        "stop": stop,
+        "band_status": price_band_status(close, low, high, stop),
+        "in_entry_band": bool(low <= close <= high),
+        "below_stop": bool(stop is not None and close < stop),
+        "distance_to_band_pct": distance_to_band_pct,
+        "price_vs_band_midpoint_pct": round(((close - midpoint) / midpoint) * 100, 2) if midpoint else None,
+        "supersedes_legacy_band": True,
+        "legacy_current_band": {
+            "low": proposal.get("current_band_low"),
+            "high": proposal.get("current_band_high"),
+            "stop": proposal.get("current_stop"),
+        },
+        "superseded_legacy_band_review_debt": bool(proposal.get("needs_review")),
+        "reasons": proposal.get("reasons") or [],
+    }
+
+
 def sector_context_by_ticker(sector_board: dict[str, Any], correlation: dict[str, Any], *, sector_context_fresh: bool, correlation_context_fresh: bool) -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {}
     promotion_candidates = set(str(t).upper() for t in ((sector_board.get("summary") or {}).get("promotion_review_candidates") or []))
@@ -210,12 +294,20 @@ def readiness_direction(record: dict[str, Any], signal: dict[str, Any], blocked_
     return "monitor_only"
 
 
-def monitoring_flags(record: dict[str, Any], signal: dict[str, Any], band_status: str) -> list[str]:
+def monitoring_flags(
+    record: dict[str, Any],
+    signal: dict[str, Any],
+    band_status: str,
+    overlay: dict[str, Any] | None = None,
+) -> list[str]:
     flags: list[str] = []
-    if record.get("below_stop") is True or band_status in BLOCKING_BAND_STATES:
+    overlay_supersedes = bool(overlay and overlay.get("supersedes_legacy_band"))
+    if band_status in BLOCKING_BAND_STATES:
         flags.append("below_stop_or_repair_fail_closed")
+    elif record.get("below_stop") is True:
+        flags.append("superseded_legacy_below_stop" if overlay_supersedes else "below_stop_or_repair_fail_closed")
     if record.get("band_stale") is True:
-        flags.append("band_review_debt")
+        flags.append("superseded_legacy_band_review_debt" if overlay_supersedes else "band_review_debt")
     if record.get("earnings_blocked") is True:
         flags.append("earnings_blocked")
     current_state = signal.get("current_state") if isinstance(signal.get("current_state"), dict) else {}
@@ -226,18 +318,28 @@ def monitoring_flags(record: dict[str, Any], signal: dict[str, Any], band_status
         flags.append("macro_context_degraded")
     blockers = signal.get("blockers") if isinstance(signal.get("blockers"), list) else []
     if "band_review_required" in blockers:
-        flags.append("band_review_required")
+        flags.append("superseded_legacy_band_review_required" if overlay_supersedes else "band_review_required")
     return sorted(set(flags))
 
 
-def build_ticker(record: dict[str, Any], signal: dict[str, Any], sector_context: dict[str, Any]) -> dict[str, Any]:
+def build_ticker(
+    record: dict[str, Any],
+    signal: dict[str, Any],
+    sector_context: dict[str, Any],
+    band_proposal: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     ticker = str(record.get("ticker") or signal.get("ticker") or "").upper().strip()
-    band_status = normalize_band_status(record, signal)
+    current_state = signal.get("current_state") if isinstance(signal.get("current_state"), dict) else {}
+    overlay = sql_first_band_overlay(ticker, record, signal, band_proposal)
+    band_status = str((overlay or {}).get("band_status") or normalize_band_status(record, signal)).upper().strip()
     workflow_state = str(record.get("workflow_state") or (signal.get("current_state") or {}).get("workflow_state") or "UNKNOWN")
     deployment_status = str(record.get("action_state") or (signal.get("current_state") or {}).get("action_state") or "UNKNOWN")
-    flags = monitoring_flags(record, signal, band_status)
+    flags = monitoring_flags(record, signal, band_status, overlay)
     blocked_reasons: list[str] = []
-    if band_status in BLOCKING_BAND_STATES or record.get("below_stop") is True:
+    effective_below_stop = band_status in BLOCKING_BAND_STATES or (
+        record.get("below_stop") is True and not (overlay and overlay.get("supersedes_legacy_band"))
+    )
+    if effective_below_stop:
         blocked_reasons.append("below_stop_or_stop_breach")
     if workflow_state.upper() in REPAIR_WORKFLOW_STATES or deployment_status.upper() in REPAIR_WORKFLOW_STATES:
         blocked_reasons.append("repair_or_bench_state")
@@ -248,17 +350,16 @@ def build_ticker(record: dict[str, Any], signal: dict[str, Any], sector_context:
     for item in sector_context.get("correlation_blockers") or []:
         blocked_reasons.append(str(item))
 
-    current_state = signal.get("current_state") if isinstance(signal.get("current_state"), dict) else {}
     return {
         "ticker": ticker,
         "known_at_time": {
             "data_date": record.get("data_date") or signal.get("data_date"),
-            "close": record.get("close") or signal.get("close"),
+            "close": (overlay or {}).get("close") or record.get("close") or signal.get("close"),
             "ma_posture": record.get("ma_posture") or current_state.get("ma_posture"),
-            "in_entry_band": record.get("in_entry_band") if "in_entry_band" in record else current_state.get("in_entry_band"),
-            "below_stop": record.get("below_stop") if "below_stop" in record else current_state.get("below_stop"),
-            "distance_to_band_pct": current_state.get("distance_to_band_pct"),
-            "price_vs_band_midpoint_pct": current_state.get("price_vs_band_midpoint_pct"),
+            "in_entry_band": (overlay or {}).get("in_entry_band") if overlay else (record.get("in_entry_band") if "in_entry_band" in record else current_state.get("in_entry_band")),
+            "below_stop": (overlay or {}).get("below_stop") if overlay else (record.get("below_stop") if "below_stop" in record else current_state.get("below_stop")),
+            "distance_to_band_pct": (overlay or {}).get("distance_to_band_pct") if overlay else current_state.get("distance_to_band_pct"),
+            "price_vs_band_midpoint_pct": (overlay or {}).get("price_vs_band_midpoint_pct") if overlay else current_state.get("price_vs_band_midpoint_pct"),
         },
         "future_realized_outcomes": {
             "retained": False,
@@ -268,7 +369,8 @@ def build_ticker(record: dict[str, Any], signal: dict[str, Any], sector_context:
         "workflow_state": workflow_state,
         "deployment_status": deployment_status,
         "band_status": band_status,
-        "below_stop_or_repair": bool(record.get("below_stop") is True or band_status in BLOCKING_BAND_STATES or workflow_state.upper() in REPAIR_WORKFLOW_STATES),
+        "sql_first_band_overlay": overlay or {"available": False},
+        "below_stop_or_repair": bool(effective_below_stop or workflow_state.upper() in REPAIR_WORKFLOW_STATES),
         "catalyst_flags": {
             "earnings_blocked": bool(record.get("earnings_blocked") is True),
             "near_catalyst_window": "near_catalyst_window" in flags,
@@ -287,12 +389,14 @@ def build_payload(window: str = "post-close") -> dict[str, Any]:
     price_signals = load_json(PRICE_SIGNALS_PATH)
     sector_board = load_json(SECTOR_BOARD_PATH)
     sector_correlation = load_json(SECTOR_CORRELATION_PATH)
+    band_proposals = load_json(BAND_PROPOSALS_PATH)
 
     sources = {
         "deployment_check": source_artifact(DEPLOYMENT_CHECK_PATH, deployment_check, required=True, now=now_dt),
         "daily_price_trend_signals": source_artifact(PRICE_SIGNALS_PATH, price_signals, required=False, now=now_dt),
         "sector_expansion_board": source_artifact(SECTOR_BOARD_PATH, sector_board, required=False, now=now_dt),
         "sector_correlation_check": source_artifact(SECTOR_CORRELATION_PATH, sector_correlation, required=False, now=now_dt),
+        "band_proposals": source_artifact(BAND_PROPOSALS_PATH, band_proposals, required=False, now=now_dt),
         "state_history": {
             "path": rel(STATE_HISTORY_PATH),
             "required": False,
@@ -301,6 +405,7 @@ def build_payload(window: str = "post-close") -> dict[str, Any]:
         },
     }
     signal_by_ticker = index_price_signals(price_signals)
+    band_proposal_by_ticker = index_band_proposals(band_proposals)
     sector_by_ticker = sector_context_by_ticker(
         sector_board,
         sector_correlation,
@@ -309,7 +414,15 @@ def build_payload(window: str = "post-close") -> dict[str, Any]:
     )
 
     records = [row for row in deployment_check.get("records") or [] if isinstance(row, dict)]
-    tickers = [build_ticker(row, signal_by_ticker.get(str(row.get("ticker") or "").upper(), {}), sector_by_ticker.get(str(row.get("ticker") or "").upper(), {})) for row in records]
+    tickers = [
+        build_ticker(
+            row,
+            signal_by_ticker.get(str(row.get("ticker") or "").upper(), {}),
+            sector_by_ticker.get(str(row.get("ticker") or "").upper(), {}),
+            band_proposal_by_ticker.get(str(row.get("ticker") or "").upper()),
+        )
+        for row in records
+    ]
 
     workflow_counts = Counter(item["workflow_state"] for item in tickers)
     deployment_counts = Counter(item["deployment_status"] for item in tickers)

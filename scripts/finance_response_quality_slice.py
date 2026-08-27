@@ -23,6 +23,9 @@ STATE = ROOT / "state"
 OUT_JSON = TMP / "finance-response-quality-slice.json"
 OUT_MD = OUT_JSON.with_suffix(".md")
 SCHEMA = "veritas.finance_response_quality_slice.v1"
+STRUCTURAL_HOLD_AUTO_STATE = "C-CANDIDATE-HOLD"
+STRUCTURAL_HOLD_FAMILY_ID = "tier_weighted_freshness"
+STRUCTURAL_HOLD_RESOLUTION_STATE = "blocked_structural_or_candidate_hold"
 
 FULL_ANSWER_ASSEMBLER = TMP / "trade-grade-full-answer-assembler.json"
 DECISION_CARDS = TMP / "trade-grade-decision-cards.json"
@@ -30,6 +33,7 @@ WF84_PHASE_6_10 = TMP / "canonical-finance-data-plane-phase6-10.json"
 FULL_ANSWER_PARITY = TMP / "full-answer-parity" / "full-answer-parity-rollup.json"
 SOURCE_FRESHNESS_GATE = TMP / "trade-grade-source-freshness-gate.json"
 CACHE_DEPENDENCY_MANIFEST = TMP / "cache-dependency-manifest.json"
+TRADE_GRADE_REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
 MACRO_SIGNAL_SPINE = TMP / "macro-signal-spine.json"
 SECTOR_DECISION_MATRIX = TMP / "sector-allocation-decision-matrix.json"
 SECTOR_EXPANSION_BOARD = TMP / "sector-expansion-board.json"
@@ -122,6 +126,7 @@ def load_inputs() -> dict[str, Any]:
         "full_answer_parity": as_dict(load_json_artifact(FULL_ANSWER_PARITY)),
         "source_freshness_gate": as_dict(load_json_artifact(SOURCE_FRESHNESS_GATE)),
         "cache_dependency_manifest": as_dict(load_json_artifact(CACHE_DEPENDENCY_MANIFEST)),
+        "repair_conveyor": as_dict(load_json_artifact(TRADE_GRADE_REPAIR_CONVEYOR)),
         "macro_signal_spine": as_dict(load_json_artifact(MACRO_SIGNAL_SPINE)),
         "sector_decision_matrix": as_dict(load_json_artifact(SECTOR_DECISION_MATRIX)),
         "sector_expansion_board": as_dict(load_json_artifact(SECTOR_EXPANSION_BOARD)),
@@ -180,6 +185,95 @@ def score(checks: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _is_exact_non_collection_structural_hold(
+    source_row: dict[str, Any],
+    matching_cards: list[dict[str, Any]],
+) -> bool:
+    """Return true only for the exact downstream Tier C structural-hold contract."""
+    if source_row.get("freshness_status") != "blocked":
+        return False
+    if source_row.get("source_open_status") != "verified":
+        return False
+    if len(matching_cards) != 1:
+        return False
+
+    card = matching_cards[0]
+    if card.get("auto_state") != STRUCTURAL_HOLD_AUTO_STATE:
+        return False
+    if as_dict(card.get("wf84_scope")).get("production_answer_path_member") is not False:
+        return False
+    decision_state = card.get("decision_state")
+    if not isinstance(decision_state, str) or not decision_state or decision_state == "review_ready":
+        return False
+
+    stale_families = as_list(source_row.get("missing_or_stale_families"))
+    if not stale_families:
+        return False
+    for family in stale_families:
+        if not isinstance(family, dict):
+            return False
+        if family.get("family_id") != STRUCTURAL_HOLD_FAMILY_ID:
+            return False
+        if family.get("status") != STRUCTURAL_HOLD_RESOLUTION_STATE:
+            return False
+        if family.get("resolution_state") != STRUCTURAL_HOLD_RESOLUTION_STATE:
+            return False
+
+    matching_evidence_rows = [
+        family
+        for family in as_list(card.get("evidence_family_status"))
+        if isinstance(family, dict) and family.get("family_id") == STRUCTURAL_HOLD_FAMILY_ID
+    ]
+    return (
+        len(matching_evidence_rows) == 1
+        and matching_evidence_rows[0].get("tier_weighted_resolved") is True
+    )
+
+
+def classify_source_freshness_debt(
+    source_gate_rows: Any,
+    decision_cards: Any,
+) -> dict[str, Any]:
+    """Split raw blocked rows into exact structural holds and collection debt.
+
+    This is intentionally downstream-only: source-gate rows keep their raw
+    ``freshness_status=blocked`` value. Missing, duplicate, malformed, or future
+    card/family states fail closed as collection-blocking freshness debt.
+    """
+    cards_by_ticker: dict[str, list[dict[str, Any]]] = {}
+    for card in as_list(decision_cards):
+        if not isinstance(card, dict):
+            continue
+        ticker = card.get("ticker")
+        if not isinstance(ticker, str) or not ticker:
+            continue
+        cards_by_ticker.setdefault(ticker, []).append(card)
+
+    raw_blocked_tickers: list[str] = []
+    structural_hold_tickers: list[str] = []
+    collection_blocked_tickers: list[str] = []
+    for row in as_list(source_gate_rows):
+        if not isinstance(row, dict) or row.get("freshness_status") != "blocked":
+            continue
+        ticker = row.get("ticker")
+        ticker_text = ticker if isinstance(ticker, str) else ""
+        raw_blocked_tickers.append(ticker_text)
+        matching_cards = cards_by_ticker.get(ticker_text, []) if ticker_text else []
+        if _is_exact_non_collection_structural_hold(row, matching_cards):
+            structural_hold_tickers.append(ticker_text)
+        else:
+            collection_blocked_tickers.append(ticker_text)
+
+    return {
+        "source_freshness_raw_blocked_count": len(raw_blocked_tickers),
+        "source_freshness_structural_hold_non_collection_count": len(structural_hold_tickers),
+        "source_freshness_collection_blocked_count": len(collection_blocked_tickers),
+        "source_freshness_raw_blocked_tickers": raw_blocked_tickers,
+        "source_freshness_structural_hold_non_collection_tickers": structural_hold_tickers,
+        "source_freshness_collection_blocked_tickers": collection_blocked_tickers,
+    }
+
+
 def source_state(inputs: dict[str, Any]) -> dict[str, Any]:
     full_answer = inputs["full_answer_assembler"]
     cards = inputs["decision_cards"]
@@ -187,6 +281,7 @@ def source_state(inputs: dict[str, Any]) -> dict[str, Any]:
     parity = inputs["full_answer_parity"]
     source_freshness = inputs["source_freshness_gate"]
     cache_manifest = inputs["cache_dependency_manifest"]
+    repair_conveyor = inputs["repair_conveyor"]
     macro = inputs["macro_signal_spine"]
     sector_matrix = inputs["sector_decision_matrix"]
     sector_board = inputs["sector_expansion_board"]
@@ -195,6 +290,46 @@ def source_state(inputs: dict[str, Any]) -> dict[str, Any]:
     sector_sources = {"matrix": sector_matrix, "board": sector_board}
     freshness_counts = as_dict(as_dict(source_freshness.get("summary")).get("freshness_status_counts"))
     source_open_counts = as_dict(as_dict(source_freshness.get("summary")).get("source_open_status_counts"))
+    freshness_debt = classify_source_freshness_debt(
+        source_freshness.get("rows"),
+        cards.get("cards"),
+    )
+    repair_rows = [row for row in as_list(repair_conveyor.get("rows")) if isinstance(row, dict)]
+    thin_monitor_rows = [
+        row for row in repair_rows
+        if str(row.get("repair_lane") or "") == "tier_c_thin_monitor_deferred"
+    ]
+    primary_state_blocked_rows = [
+        row for row in repair_rows
+        if str(row.get("repair_lane") or "") == "primary_state_blocker_repair"
+    ]
+    below_stop_rows = [
+        row for row in repair_rows
+        if str(row.get("decision_state") or "") == "below_stop_or_invalidation"
+        or str(row.get("repair_lane") or "") == "invalidation_or_below_stop_review_only"
+    ]
+    freshness_reported_blocked = max(0, int(as_num(freshness_counts.get("blocked"))))
+    freshness_rows_blocked = int(as_num(freshness_debt.get("source_freshness_raw_blocked_count")))
+    freshness_raw_blocked = max(freshness_reported_blocked, freshness_rows_blocked)
+    freshness_structural_hold = int(
+        as_num(freshness_debt.get("source_freshness_structural_hold_non_collection_count"))
+    )
+    freshness_collection_blocked = freshness_raw_blocked - freshness_structural_hold
+    source_open_blocked = int(as_num(source_open_counts.get("blocked")))
+    scoped_thin_monitor_not_required = int(as_num(freshness_counts.get("scoped_thin_monitor_not_required")))
+    primary_state_blocked = len(primary_state_blocked_rows)
+    below_stop_blocked = len(below_stop_rows)
+    blocker_category_counts = {
+        "source_freshness_blocked": freshness_raw_blocked,
+        "source_freshness_raw_blocked": freshness_raw_blocked,
+        "source_freshness_structural_hold_non_collection": freshness_structural_hold,
+        "source_freshness_collection_blocked": freshness_collection_blocked,
+        "source_open_blocked": source_open_blocked,
+        "primary_state_blocked": primary_state_blocked,
+        "below_stop_blocked": below_stop_blocked,
+        "tier_c_thin_monitor_non_blocking": len(thin_monitor_rows),
+        "scoped_thin_monitor_not_required_non_blocking": scoped_thin_monitor_not_required,
+    }
     return {
         "wf84_wf85_answer_path_ok": (
             full_answer.get("status") == "ok"
@@ -210,8 +345,44 @@ def source_state(inputs: dict[str, Any]) -> dict[str, Any]:
         "technical_posture_missing_both_count": as_dict(parity.get("summary")).get("technical_posture_missing_both_count"),
         "source_freshness_status": source_freshness.get("status"),
         "source_freshness_validation": as_dict(source_freshness.get("validation")).get("status"),
-        "source_freshness_blocked_count": int(as_num(freshness_counts.get("blocked"))),
-        "source_open_blocked_count": int(as_num(source_open_counts.get("blocked"))),
+        # Backward compatibility: this remains the raw WF85 gate count.
+        "source_freshness_blocked_count": freshness_raw_blocked,
+        "source_freshness_raw_blocked_count": freshness_raw_blocked,
+        "source_freshness_structural_hold_non_collection_count": freshness_structural_hold,
+        "source_freshness_collection_blocked_count": freshness_collection_blocked,
+        "source_freshness_structural_hold_non_collection_tickers": freshness_debt.get(
+            "source_freshness_structural_hold_non_collection_tickers", []
+        ),
+        "source_freshness_collection_blocked_tickers": freshness_debt.get(
+            "source_freshness_collection_blocked_tickers", []
+        ),
+        "source_open_blocked_count": source_open_blocked,
+        "primary_state_blocked_count": primary_state_blocked,
+        "below_stop_blocked_count": below_stop_blocked,
+        "tier_c_thin_monitor_non_blocking_count": len(thin_monitor_rows),
+        "scoped_thin_monitor_not_required_non_blocking_count": scoped_thin_monitor_not_required,
+        "blocker_category_counts": blocker_category_counts,
+        "scorecard_blocker_semantics": {
+            "blocking_categories": ["source_freshness_collection_blocked", "source_open_blocked"],
+            "raw_diagnostic_categories": ["source_freshness_blocked", "source_freshness_raw_blocked"],
+            "decision_readiness_categories": [
+                "source_freshness_structural_hold_non_collection",
+                "primary_state_blocked",
+                "below_stop_blocked",
+            ],
+            "non_blocking_categories": [
+                "source_freshness_structural_hold_non_collection",
+                "tier_c_thin_monitor_non_blocking",
+                "scoped_thin_monitor_not_required_non_blocking",
+            ],
+            "meaning": (
+                "WF85 source-gate rows and the backward source_freshness_blocked count remain raw and blocked. Only an exact "
+                "source-open-verified C-CANDIDATE-HOLD outside the production answer path, with exclusively resolved "
+                "tier_weighted_freshness structural families and no review-ready card, is downstream non-collection decision debt. "
+                "All missing, malformed, unresolved, duplicate, or unknown states remain collection-blocking. Primary-state, "
+                "below-stop, Tier C thin-monitor, and scoped-not-required rows remain visible review debt and do not imply promotion."
+            ),
+        },
         "cache_dependency_status": cache_manifest.get("status"),
         "cache_dependency_status_counts": as_dict(as_dict(cache_manifest.get("summary")).get("status_counts")),
         "macro_status": macro.get("status"),
@@ -228,6 +399,14 @@ def source_state(inputs: dict[str, Any]) -> dict[str, Any]:
         "wf72_effective_status": wf72.get("effective_status"),
         "wf72_pm_action": as_dict(wf72.get("pm_action")).get("description"),
     }
+
+
+def wf72_support_only_status(value: Any) -> bool:
+    text = str(value or "")
+    # WF72 is support-only for finance answers; current canonical posture is
+    # "route_only" (support-only routing/cache/index/fast-path QA), while older
+    # capsules used "support_only" or "support_only_*". Accept both.
+    return text in {"support_only", "route_only"} or text.startswith("support_only_")
 
 
 def archetype(
@@ -363,11 +542,11 @@ def build_archetypes(state: dict[str, Any], inputs: dict[str, Any]) -> list[dict
             "routing_boundary_answer",
             "Routing answers should keep WF72 as support-only and direct finance answers to WF84/WF85.",
             [
-                check("wf72_support_only", "WF72 capsule is support-only", state["wf72_effective_status"] == "support_only", detail=state["wf72_effective_status"]),
+                check("wf72_support_only", "WF72 capsule is support-only", wf72_support_only_status(state["wf72_effective_status"]), detail=state["wf72_effective_status"]),
                 check(
                     "wf72_route_boundary_matches",
                     "WF72 remains support-only while WF84/WF85 owns finance answers",
-                    state["wf72_effective_status"] == "support_only" and state["wf84_wf85_answer_path_ok"],
+                    wf72_support_only_status(state["wf72_effective_status"]) and state["wf84_wf85_answer_path_ok"],
                     detail={"wf72_effective_status": state["wf72_effective_status"], "wf84_wf85_answer_path_ok": state["wf84_wf85_answer_path_ok"], "wf72_pm_action": state["wf72_pm_action"]},
                 ),
                 check("wf75_internal_only", "WF75 service-state pattern remains internal and non-customer", state["wf75_status"] == "ok" and state["wf75_validation"] == "ok" and state["wf75_real_customer_data_allowed"] is False and state["wf75_external_delivery_allowed"] is False, detail={"wf75_status": state["wf75_status"], "wf75_validation": state["wf75_validation"]}),
@@ -508,7 +687,13 @@ def negative_canaries(state: dict[str, Any] | None = None) -> list[dict[str, Any
 
 def remediation_tracks(state: dict[str, Any]) -> list[dict[str, Any]]:
     technical_gap = int(as_num(state.get("technical_posture_missing_both_count")))
-    freshness_blocked = int(as_num(state.get("source_freshness_blocked_count")))
+    freshness_raw_blocked = int(as_num(state.get("source_freshness_raw_blocked_count")))
+    freshness_structural_hold = int(
+        as_num(state.get("source_freshness_structural_hold_non_collection_count"))
+    )
+    freshness_collection_blocked = int(
+        as_num(state.get("source_freshness_collection_blocked_count"))
+    )
     source_open_blocked = int(as_num(state.get("source_open_blocked_count")))
     return [
         {
@@ -527,17 +712,37 @@ def remediation_tracks(state: dict[str, Any]) -> list[dict[str, Any]]:
         {
             "track_id": "source_freshness_repair",
             "owner_workflow": "WF85 source/freshness gate and WF78 source-open repair",
-            "status": "needs_repair" if freshness_blocked or source_open_blocked else "ok",
-            "current_gap_count": freshness_blocked + source_open_blocked,
-            "freshness_blocked_count": freshness_blocked,
+            "status": "needs_repair" if freshness_collection_blocked or source_open_blocked else "ok",
+            "current_gap_count": freshness_collection_blocked + source_open_blocked,
+            # This remediation-local legacy field follows effective collection debt.
+            "freshness_blocked_count": freshness_collection_blocked,
+            "source_freshness_raw_blocked_count": freshness_raw_blocked,
+            "source_freshness_structural_hold_non_collection_count": freshness_structural_hold,
+            "source_freshness_collection_blocked_count": freshness_collection_blocked,
             "source_open_blocked_count": source_open_blocked,
-            "target_next_checkpoint_count": min(20, freshness_blocked + source_open_blocked) if (freshness_blocked + source_open_blocked) else 0,
-            "why_it_matters": "Capital and ticker answers must refuse stale precision instead of presenting blocked evidence as current.",
+            "target_next_checkpoint_count": min(20, freshness_collection_blocked + source_open_blocked) if (freshness_collection_blocked + source_open_blocked) else 0,
+            "why_it_matters": (
+                "Collection repair targets effective freshness/source-open debt. Exact structural holds remain blocked on the raw "
+                "WF85 surface and visible as non-collection decision debt, without creating review or promotion readiness."
+            ),
             "next_commands": [
                 "python scripts\\trade_grade_repair_conveyor.py --write --validate",
                 "python scripts\\wf78_source_open_repair_executor.py --tier all --write --validate",
+                "python scripts\\wf78_source_open_patch_orchestrator.py --write --validate",
             ],
             "authority_boundary": "Repair targeting only; no external source capture, canon mutation, or capital/execution authority.",
+        },
+        {
+            "track_id": "tier_c_thin_monitor_visibility",
+            "owner_workflow": "WF78 Tier C attention and promotion spine",
+            "status": "monitor_only",
+            "current_gap_count": int(as_num(state.get("tier_c_thin_monitor_non_blocking_count"))),
+            "why_it_matters": "Thin-monitor names should stay visible for cadence review without turning into false source-open blockers.",
+            "next_commands": [
+                "python scripts\\wf78_tier_c_attention_trigger.py --write --write-db --validate",
+                "python scripts\\wf78_tier_c_to_b_auto_promotion_pipeline.py --from-attention --max-candidates 25 --write --validate",
+            ],
+            "authority_boundary": "Monitor/routing visibility only; no Tier B/A promotion unless evidence gates clear.",
         },
     ]
 
@@ -561,7 +766,7 @@ def build_payload(inputs: dict[str, Any]) -> dict[str, Any]:
             "blocked_archetype_count": len(blocked),
             "average_quality_score": average,
             "wf84_wf85_answer_path_ok": state["wf84_wf85_answer_path_ok"],
-            "wf72_support_only_confirmed": state["wf72_effective_status"] == "support_only",
+            "wf72_support_only_confirmed": wf72_support_only_status(state["wf72_effective_status"]),
             "wf75_internal_service_slice_only": state["wf75_real_customer_data_allowed"] is False and state["wf75_external_delivery_allowed"] is False,
             "sector_timing_warning_available": state["sector_timing_fields_present"] or state["sector_timing_warning_present"],
             "macro_signal_status": state["macro_status"],
@@ -571,7 +776,16 @@ def build_payload(inputs: dict[str, Any]) -> dict[str, Any]:
             "section_coverage_status": state["parity_section_coverage_status"],
             "technical_posture_missing_both_count": state["technical_posture_missing_both_count"],
             "source_freshness_blocked_count": state["source_freshness_blocked_count"],
+            "source_freshness_raw_blocked_count": state["source_freshness_raw_blocked_count"],
+            "source_freshness_structural_hold_non_collection_count": state["source_freshness_structural_hold_non_collection_count"],
+            "source_freshness_collection_blocked_count": state["source_freshness_collection_blocked_count"],
             "source_open_blocked_count": state["source_open_blocked_count"],
+            "primary_state_blocked_count": state["primary_state_blocked_count"],
+            "below_stop_blocked_count": state["below_stop_blocked_count"],
+            "tier_c_thin_monitor_non_blocking_count": state["tier_c_thin_monitor_non_blocking_count"],
+            "scoped_thin_monitor_not_required_non_blocking_count": state["scoped_thin_monitor_not_required_non_blocking_count"],
+            "blocker_category_counts": state["blocker_category_counts"],
+            "scorecard_blocker_semantics": state["scorecard_blocker_semantics"],
         },
         "archetypes": archetypes,
         "answer_contract": {
@@ -599,6 +813,7 @@ def build_payload(inputs: dict[str, Any]) -> dict[str, Any]:
             "full_answer_parity": rel(FULL_ANSWER_PARITY),
             "source_freshness_gate": rel(SOURCE_FRESHNESS_GATE),
             "cache_dependency_manifest": rel(CACHE_DEPENDENCY_MANIFEST),
+            "repair_conveyor": rel(TRADE_GRADE_REPAIR_CONVEYOR),
             "macro_signal_spine": rel(MACRO_SIGNAL_SPINE),
             "sector_decision_matrix": rel(SECTOR_DECISION_MATRIX),
             "sector_expansion_board": rel(SECTOR_EXPANSION_BOARD),

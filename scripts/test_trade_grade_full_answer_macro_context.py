@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts" / "trade_grade_full_answer_assembler.py"
-ANSWER = ROOT / "tmp" / "trade-grade-full-answer" / "GOOG.json"
-ROLLUP = ROOT / "tmp" / "trade-grade-full-answer-macro-context-test.json"
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+import trade_grade_full_answer_assembler as assembler  # noqa: E402
+
+MACRO_METRICS = ROOT / "tmp" / "macro-metrics-current.json"
 
 
 def expect(condition: bool, message: str, errors: list[str]) -> None:
@@ -16,18 +19,57 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
+def classifier_regressions(errors: list[str]) -> None:
+    hot_headline = {
+        "all_items": {"latest_mom_pct": 0.5},
+        "core": {"latest_mom_pct": 0.2},
+        "energy": {"latest_mom_pct": 3.9},
+        "gasoline": {"latest_mom_pct": 7.0},
+        "shelter": {"latest_mom_pct": 0.3},
+    }
+    expect(
+        assembler.classify_inflation_posture(hot_headline) == "headline_hot_core_contained",
+        "hot-headline fixture should distinguish contained core",
+        errors,
+    )
+    expect(
+        assembler.classify_cpi_driver(hot_headline) == "energy_gasoline_headline_pressure",
+        "positive-gasoline fixture should identify headline pressure",
+        errors,
+    )
+
+    negative_contained = {
+        "all_items": {"latest_mom_pct": -0.4},
+        "core": {"latest_mom_pct": 0.0},
+        "energy": {"latest_mom_pct": -5.7},
+        "gasoline": {"latest_mom_pct": -9.7},
+        "shelter": {"latest_mom_pct": 0.1},
+    }
+    expect(
+        assembler.classify_inflation_posture(negative_contained) == "contained",
+        "negative-headline fixture should classify as contained",
+        errors,
+    )
+    expect(
+        assembler.classify_cpi_driver(negative_contained) == "mixed_or_contained",
+        "negative energy/gasoline fixture must not claim headline pressure",
+        errors,
+    )
+
+
 def main() -> int:
     errors: list[str] = []
-    result = subprocess.run(
-        [sys.executable, str(SCRIPT), "--ticker", "GOOG", "--write", "--validate", "--out", str(ROLLUP)],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-    )
-    expect(result.returncode == 0, f"full-answer assembler failed: {result.stdout} {result.stderr}", errors)
-    expect(ANSWER.exists(), "GOOG full answer was not written", errors)
-    if ANSWER.exists():
-        packet = json.loads(ANSWER.read_text(encoding="utf-8"))
+    classifier_regressions(errors)
+    packet, build_issues = assembler.build_full_answer("GOOG")
+    expect(packet is not None, f"GOOG full answer could not be built: {build_issues}", errors)
+    if packet is not None:
+        expect(not build_issues, f"GOOG full answer build reported issues: {build_issues}", errors)
+        failed_validation = [
+            row
+            for row in assembler.validate_full_answer(packet)
+            if row.get("passed") is not True and row.get("severity") == "error"
+        ]
+        expect(not failed_validation, f"full answer validation checks failed: {failed_validation}", errors)
         expect(packet.get("validation", {}).get("status") == "ok", "full answer validation should be ok", errors)
         artifacts = packet.get("source_artifacts", {})
         expect(artifacts.get("macro_metrics") == "tmp/macro-metrics-current.json", "macro metrics artifact missing from source_artifacts", errors)
@@ -41,12 +83,43 @@ def main() -> int:
         expect(macro.get("status") == "available", "macro risk context should be available", errors)
         expect(risk_macro.get("status") == "available", "risk section should carry macro context", errors)
         cpi = macro.get("cpi_release_detail", {})
-        expect(cpi.get("gasoline", {}).get("latest_mom_pct") == 7.0, "gasoline CPI detail missing", errors)
-        expect(cpi.get("shelter", {}).get("latest_mom_pct") == 0.3, "shelter CPI detail missing", errors)
-        expect(cpi.get("rent", {}).get("latest_mom_pct") == 0.4, "rent CPI detail missing", errors)
-        expect(cpi.get("owners_equivalent_rent", {}).get("latest_mom_pct") == 0.3, "OER CPI detail missing", errors)
-        expect(macro.get("inflation_posture") == "headline_hot_core_contained", "inflation posture should distinguish hot headline from contained core", errors)
-        expect(macro.get("cpi_driver") == "energy_gasoline_headline_pressure", "CPI driver should identify energy/gasoline pressure", errors)
+        expect(MACRO_METRICS.exists(), "current macro metrics source artifact is missing", errors)
+        source_cpi: dict = {}
+        if MACRO_METRICS.exists():
+            source_payload = json.loads(MACRO_METRICS.read_text(encoding="utf-8"))
+            source_cpi = source_payload.get("summary", {}).get("cpi_release_detail", {})
+        expect(bool(source_cpi), "current macro metrics CPI release detail is missing", errors)
+        for key in ("status", "source", "source_url", "source_mode", "release_period", "release_date_text"):
+            expect(cpi.get(key) == source_cpi.get(key), f"CPI metadata propagation drift: {key}", errors)
+        for component in (
+            "all_items",
+            "core",
+            "energy",
+            "gasoline",
+            "shelter",
+            "rent",
+            "owners_equivalent_rent",
+        ):
+            actual_row = cpi.get(component, {})
+            expected_row = source_cpi.get(component, {})
+            expect(isinstance(actual_row, dict), f"CPI component missing from full answer: {component}", errors)
+            for field in ("latest_mom_pct", "previous_mom_pct", "yoy_pct"):
+                expected_value = assembler.pct_value(expected_row.get(field))
+                expect(
+                    actual_row.get(field) == expected_value,
+                    f"CPI component propagation drift: {component}.{field}",
+                    errors,
+                )
+        expect(
+            macro.get("inflation_posture") == assembler.classify_inflation_posture(source_cpi),
+            "inflation posture must derive from the current CPI source artifact",
+            errors,
+        )
+        expect(
+            macro.get("cpi_driver") == assembler.classify_cpi_driver(source_cpi),
+            "CPI driver must derive from the current CPI source artifact",
+            errors,
+        )
         tape = macro.get("market_tape_context", {})
         expect(tape.get("can_answer_full_market_close_recap_without_web") is True, "market tape context should carry full-recap readiness", errors)
         expect(tape.get("missing_for_web_free_full_recap") == [], "market tape context should have no missing full-recap fields", errors)

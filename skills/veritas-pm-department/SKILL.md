@@ -1,13 +1,13 @@
 ---
 name: "veritas-pm-department"
-description: "Operate PM status, roadmap, queue, readiness, and cross-workflow coordination."
+description: "Add prompt-book PM job intake for eval and prompt debt."
 ---
 
 # Veritas PM Department
 
 This skill owns the **project-management layer** for active Veritas product and workflow delivery.
 
-Its job is to turn live workflow truth into weekly project updates, upcoming enhancement roadmaps, WF75 readiness timelines, and presentation/PDF handoff briefs.
+Its job is to turn live workflow truth into weekly project updates, upcoming enhancement roadmaps, WF75 readiness timelines, 55-65% internal/service-led SaaS readiness tracking, implementation-job routing, and Presentation/PDF Handoff Brief outputs.
 It does not create launch authority, customer authority, legal authority, source-licensing authority, portfolio authority, or execution authority.
 
 ## When to use this skill
@@ -106,7 +106,7 @@ Include:
 ### WF75 Readiness Timeline
 
 Include:
-- target readiness band, usually 55-65% internal/service-led readiness
+- target readiness band, usually 55-65% internal/service-led SaaS readiness
 - week-by-week milestone path
 - acceptance criteria by phase
 - infrastructure gaps and proof gates
@@ -233,3 +233,26 @@ Current WF75 posture:
 - public launch, real customer data, customer identity, customer portfolio data, suitability/risk-profile intake, external delivery, legal/compliance claims, source-licensing claims, brokerage/account connection, personalized regulated advice, and paper/live execution remain blocked
 
 WF75 PM updates are internal and review-only unless a separate exact approval artifact says otherwise.
+
+## Prompt Book PM Job Intake
+
+Use this route when PM needs to package prompt-book, self-prompt, helper-lane packet, or internal challenge-solving work.
+
+First-hop proof:
+
+```powershell
+python scripts\prompt_book_registry.py --write --write-md --validate
+python scripts\prompt_book_eval_fixtures.py --write --write-md --validate
+python scripts\prompt_book_eval_gap_packet.py --write --write-md --validate
+python scripts\prompt_book_pm_job_packet.py --write --write-md --validate
+python scripts\prompt_book_morning_p0_contract.py --write --write-md --validate
+```
+
+Interpretation:
+
+- `tmp/prompt-book-pm-job-packet.json` contains PM job candidates, not live PM commitments unless an owner PM packet consumes them.
+- High-priority eval gaps are implementation candidates for deterministic fixtures and validators.
+- Zero eval gaps means current prompt-book entries have fixture coverage; PM should shift to maintenance and future-entry coverage.
+- Skill Workshop proposals stay pending by default unless Randall explicitly approves apply.
+
+Stop lines: PM packaging does not imply skill apply, cron schedule mutation, customer/external delivery, finance/canon/portfolio mutation, paper/live/account action, capital deployment, or owner approval inference.

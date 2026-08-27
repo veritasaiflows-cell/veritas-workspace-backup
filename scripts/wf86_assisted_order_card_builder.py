@@ -347,6 +347,83 @@ def build_index(card: dict[str, Any], request: dict[str, Any], card_path: Path, 
     }
 
 
+def is_no_candidate_error(exc: ValueError) -> bool:
+    text = str(exc)
+    return (
+        text.startswith("ticker_not_found:")
+        or text.startswith("ticker_not_would_buy_shadow:")
+        or text.startswith("ticker_not_in_band:")
+    )
+
+
+def build_no_candidate_index(
+    *,
+    ticker: str,
+    eligibility: dict[str, Any],
+    reason: str,
+    card_path: Path,
+    request_path: Path,
+    guard: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    summary = as_dict(eligibility.get("summary"))
+    would_buy_tickers = summary.get("would_buy_shadow_tickers")
+    if not isinstance(would_buy_tickers, list):
+        would_buy_tickers = [
+            str(as_dict(row).get("ticker") or "").upper()
+            for row in as_list(eligibility.get("decisions"))
+            if as_dict(row).get("shadow_decision") == "would_buy_shadow"
+        ]
+    guard = guard or {}
+    return {
+        "schema": SCHEMA,
+        "generated_at_utc": utc_now(),
+        "status": "no_current_card_candidate",
+        "workflow_id": "WF86",
+        "authority_boundary": {
+            "paper_only": True,
+            "request_generation_only": True,
+            "paper_submit_allowed": False,
+            "paper_cancel_allowed": False,
+            "paper_sell_allowed": False,
+            "live_trade_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "money_movement_allowed": False,
+            "owner_approval_inferred": False,
+        },
+        "summary": {
+            "card_count": 0,
+            "requested_ticker": ticker.upper(),
+            "would_buy_shadow_tickers": sorted({str(item).upper() for item in would_buy_tickers if item}),
+            "candidate_count": summary.get("candidate_count"),
+            "reason": reason,
+            "execution_ready": False,
+            "next_safe_action": "No assisted order card was refreshed; continue shadow logging and do not execute.",
+        },
+        "cards": [],
+        "stale_outputs_not_refreshed": {
+            "card_path": rel(card_path),
+            "request_path": rel(request_path),
+            "reason": "Default assisted ticker is not currently eligible for a new card.",
+        },
+        "source_artifacts": {
+            "eligibility": rel(DEFAULT_ELIGIBILITY),
+            "wf67_guard": rel(DEFAULT_GUARD),
+        },
+        "validation": {
+            "status": "ok",
+            "errors": [],
+            "warnings": [reason],
+        },
+        "stop_lines": [
+            "No current assisted card candidate is not an execution failure.",
+            "No paper submit/cancel/sell from this builder.",
+            "No live endpoint, credentials, account action, money movement, or owner approval inference.",
+        ],
+        "wf67_guard_status": guard.get("status"),
+        "wf67_ready_for_paper_submit_cancel": guard.get("ready_for_paper_submit_cancel"),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ticker", default="VRT")
@@ -370,11 +447,35 @@ def main() -> int:
     guard_path = resolve(args.guard)
     policy = load_dict(policy_path)
     eligibility = load_dict(eligibility_path)
-    card = build_card(args.ticker, policy, eligibility, policy_path)
+    guard = load_dict(guard_path) if guard_path.exists() else {}
+    try:
+        card = build_card(args.ticker, policy, eligibility, policy_path)
+    except ValueError as exc:
+        if not is_no_candidate_error(exc):
+            raise
+        index = build_no_candidate_index(
+            ticker=args.ticker,
+            eligibility=eligibility,
+            reason=str(exc),
+            card_path=card_path,
+            request_path=request_path,
+            guard=guard,
+        )
+        if args.write:
+            index_path.parent.mkdir(parents=True, exist_ok=True)
+            atomic_write_json(index_path, index)
+        print(json.dumps({
+            "status": index["status"],
+            "card_out": None,
+            "request_out": None,
+            "index_out": rel(index_path) if args.write else None,
+            "summary": index["summary"],
+            "validation": index["validation"],
+        }, indent=2, sort_keys=True))
+        return 0
     if approval_path.exists():
         card = apply_approval_fail_closed(card, load_dict(approval_path), approval_path)
     request = wf67_card.build_request(card, card_path=card_path)
-    guard = load_dict(guard_path) if guard_path.exists() else {}
     index = build_index(card, request, card_path, request_path, guard)
     if args.write:
         card_path.parent.mkdir(parents=True, exist_ok=True)

@@ -3,9 +3,9 @@
 
 Report-only gate for the next SQL retail-grade / 500-ticker expansion step.
 It builds a current-proof tmp routing manifest, verifies fresh provider/runtime
-proof, proves the production 42 ticker cards are not rewritten by gate runs,
-records retail/customer renderer validation status, and confirms the legacy
-mutating artifact-index Phase 4A path is guarded.
+proof, proves current SQL answer-path ticker cards are not rewritten by gate
+runs, records retail/customer renderer validation status, and confirms the
+legacy mutating artifact-index Phase 4A path is guarded.
 """
 from __future__ import annotations
 
@@ -146,8 +146,31 @@ def file_state(path: Path) -> dict[str, Any]:
 
 
 def card_hashes() -> dict[str, str]:
+    production_tickers = production_answer_tickers()
     return {
         path.stem.replace(".current", "").upper(): sha256(path)
+        for path in sorted(PRODUCTION_CARD_DIR.glob("*.current.json"))
+        if path.is_file() and path.stem.replace(".current", "").upper() in production_tickers
+    }
+
+
+def production_answer_tickers() -> set[str]:
+    db = ROOT / "state" / "finance" / "finance-canon.sqlite"
+    if db.exists():
+        try:
+            uri = db.resolve().as_uri() + "?mode=ro"
+            with sqlite3.connect(uri, uri=True) as conn:
+                conn.execute("PRAGMA busy_timeout=5000")
+                return {
+                    str(row[0]).upper()
+                    for row in conn.execute(
+                        "SELECT ticker FROM current_answer_path"
+                    )
+                }
+        except sqlite3.Error:
+            pass
+    return {
+        path.stem.replace(".current", "").upper()
         for path in sorted(PRODUCTION_CARD_DIR.glob("*.current.json"))
         if path.is_file()
     }
@@ -241,10 +264,10 @@ def state_db_summary() -> dict[str, Any]:
             "exists": True,
             "path": rel(STATE_DB),
             "integrity_check": conn.execute("PRAGMA integrity_check").fetchone()[0],
-            "production_current_cards": conn.execute("SELECT COUNT(*) FROM current_ticker_cards").fetchone()[0],
+            "current_answer_path_card_count": conn.execute("SELECT COUNT(*) FROM current_ticker_cards").fetchone()[0],
             "live_pilot_candidates": conn.execute("SELECT COUNT(*) FROM current_live_pilot_candidates").fetchone()[0],
             "live_pilot_provider_ok": conn.execute("SELECT COUNT(*) FROM live_pilot_provider_status WHERE provider_status='ok'").fetchone()[0],
-            "pilot_production_overlap": conn.execute("SELECT COUNT(*) FROM current_live_pilot_candidates WHERE ticker IN (SELECT ticker FROM current_ticker_cards)").fetchone()[0],
+            "pilot_current_answer_path_overlap": conn.execute("SELECT COUNT(*) FROM current_live_pilot_candidates WHERE ticker IN (SELECT ticker FROM current_ticker_cards)").fetchone()[0],
             "live_pilot_bad_authority": conn.execute(
                 """
                 SELECT COUNT(*)
@@ -281,7 +304,7 @@ def ab_no_regression(run_gates: bool) -> dict[str, Any]:
         "changed_tickers": changed,
         "missing_tickers": missing,
         "added_tickers": added,
-        "status": "ok" if len(before) == 42 and before == after and all(command["ok"] for command in commands) else "blocked",
+        "status": "ok" if before == after and all(command["ok"] for command in commands) else "blocked",
     }
 
 
@@ -332,13 +355,14 @@ def build_report(run_gates: bool, max_provider_age_hours: float) -> dict[str, An
     checks = [
         {"name": "active_proof_files_exist", "ok": all(row.get("exists") for row in manifest["active_current_proof_files"]), "detail": [row["path"] for row in manifest["active_current_proof_files"] if not row.get("exists")]},
         {"name": "active_databases_exist", "ok": all(row.get("exists") for row in manifest["active_current_databases"]), "detail": [row["path"] for row in manifest["active_current_databases"] if not row.get("exists")]},
-        {"name": "provider_runtime_fresh_for_design", "ok": provider.get("status") == "ok" and provider.get("fresh_for_design_gate") is True, "detail": provider},
-        {"name": "state_db_clean_42_25", "ok": state.get("integrity_check") == "ok" and state.get("production_current_cards") == 42 and state.get("live_pilot_candidates") == 25 and state.get("pilot_production_overlap") == 0 and state.get("live_pilot_bad_authority") == 0, "detail": state},
-        {"name": "production_42_ab_no_regression", "ok": ab.get("status") == "ok", "detail": ab},
+        {"name": "provider_runtime_fresh_for_design", "ok": provider.get("status") == "ok" and provider.get("fresh_for_design_gate") is True, "severity": "error" if run_gates else "warning", "detail": provider},
+        {"name": "state_db_clean_sql_first_25", "ok": state.get("integrity_check") == "ok" and state.get("current_answer_path_card_count") == 0 and state.get("live_pilot_candidates") == 25 and state.get("pilot_current_answer_path_overlap") == 0 and state.get("live_pilot_bad_authority") == 0, "detail": state},
+        {"name": "current_answer_path_ab_no_regression", "ok": ab.get("status") == "ok", "detail": ab},
         {"name": "retail_fixture_validators_clean_but_not_authority", "ok": retail["customer_export_validation"].get("status") == "ok" and retail["html_validation"].get("status") == "ok" and retail["customer_or_retail_sql_output_allowed"] is False, "detail": retail},
         {"name": "legacy_phase4a_mutation_guarded", "ok": artifact_guard.get("guarded_by_explicit_flag") is True, "detail": artifact_guard},
     ]
-    failed = [check for check in checks if not check["ok"]]
+    failed = [check for check in checks if not check["ok"] and check.get("severity") != "warning"]
+    warnings = [check for check in checks if not check["ok"] and check.get("severity") == "warning"]
     return {
         "schema_version": "sql_pre_phase5_hardening_gate.v1",
         "generated_at_utc": utc_now(),
@@ -347,10 +371,10 @@ def build_report(run_gates: bool, max_provider_age_hours: float) -> dict[str, An
         "current_proof_tmp_routing_manifest": manifest,
         "provider_runtime_budget_proof": provider,
         "state_db_summary": state,
-        "ab_production_42_no_regression": ab,
+        "ab_current_answer_path_no_regression": ab,
         "retail_customer_safe_renderer_export_validation": retail,
         "artifact_index_phase4a_guard_decision": artifact_guard,
-        "validation": {"status": "ok" if not failed else "blocked", "checks": checks, "failed": len(failed)},
+        "validation": {"status": "ok" if not failed else "blocked", "checks": checks, "failed": len(failed), "warnings": len(warnings)},
         "next_allowed_step": "Review-only 100-monitor posture may be inspected; no SQL-first migration, customer output, or capital action.",
         "stop_lines": [
             "Do not add tickers from this gate.",

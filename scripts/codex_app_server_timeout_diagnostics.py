@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Diagnose Codex app-server turn/completed idle timeouts.
 
-This report is read-only. It scans recent OpenClaw session trajectories for the
-known Codex app-server timeout signature and checks whether the Codex plugin
+This report is read-only. It scans recent OpenClaw session trajectories for
+typed Codex app-server timeout events and checks whether the Codex plugin
 appServer idle timeout settings are explicitly configured.
 """
 from __future__ import annotations
@@ -33,12 +33,12 @@ APP_SERVER_KEYS = (
 RECOMMENDED_VALUES = {
     "appServer.requestTimeoutMs": 240_000,
     "appServer.turnCompletionIdleTimeoutMs": 180_000,
-    "appServer.postToolRawAssistantCompletionIdleTimeoutMs": 120_000,
+    "appServer.postToolRawAssistantCompletionIdleTimeoutMs": 240_000,
 }
 RECOMMENDED_NESTED_APP_SERVER = {
     "requestTimeoutMs": 240_000,
     "turnCompletionIdleTimeoutMs": 180_000,
-    "postToolRawAssistantCompletionIdleTimeoutMs": 120_000,
+    "postToolRawAssistantCompletionIdleTimeoutMs": 240_000,
 }
 
 
@@ -80,6 +80,9 @@ def scan_trajectory_files(limit_files: int) -> dict[str, Any]:
     by_thread: Counter[str] = Counter()
     by_session: Counter[str] = Counter()
     by_run_prefix: Counter[str] = Counter()
+    by_timeout_ms: Counter[str] = Counter()
+    by_last_activity_reason: Counter[str] = Counter()
+    signature_text_matches = 0
 
     for path in files:
         try:
@@ -87,11 +90,13 @@ def scan_trajectory_files(limit_files: int) -> dict[str, Any]:
         except Exception:
             continue
         for line in lines:
-            if TIMEOUT_SIGNATURE not in line:
-                continue
+            if TIMEOUT_SIGNATURE in line:
+                signature_text_matches += 1
             try:
                 event = json.loads(line)
             except json.JSONDecodeError:
+                continue
+            if event.get("type") != "turn.completion_idle_timeout":
                 continue
             data = event.get("data") if isinstance(event.get("data"), dict) else {}
             run_id = str(event.get("runId") or "")
@@ -109,12 +114,23 @@ def scan_trajectory_files(limit_files: int) -> dict[str, Any]:
                 "turn_id": data.get("turnId"),
                 "yield_detected": data.get("yieldDetected"),
                 "timed_out": data.get("timedOut"),
+                "idle_ms": data.get("idleMs"),
+                "timeout_ms": data.get("timeoutMs"),
+                "last_activity_reason": data.get("lastActivityReason"),
+                "last_notification_method": data.get("lastNotificationMethod"),
+                "active_app_server_turn_requests": data.get("activeAppServerTurnRequests"),
+                "active_turn_item_count": data.get("activeTurnItemCount"),
+                "terminal_turn_notification_queued": data.get("terminalTurnNotificationQueued"),
             }
             events.append(item)
             by_model[str(item["model_id"])] += 1
             by_thread[str(item["thread_id"])] += 1
             by_session[str(item["session_key"])] += 1
             by_run_prefix[run_prefix] += 1
+            if item["timeout_ms"] is not None:
+                by_timeout_ms[str(item["timeout_ms"])] += 1
+            if item["last_activity_reason"] is not None:
+                by_last_activity_reason[str(item["last_activity_reason"])] += 1
 
     events.sort(key=lambda item: str(item.get("ts") or ""))
     return {
@@ -122,10 +138,14 @@ def scan_trajectory_files(limit_files: int) -> dict[str, Any]:
         "events": events,
         "counts": {
             "timeout_events": len(events),
+            "signature_text_matches": signature_text_matches,
+            "signature_text_non_event_matches": max(0, signature_text_matches - len(events)),
             "by_model": dict(by_model),
             "by_thread": dict(by_thread),
             "by_session_key": dict(by_session),
             "by_run_class": dict(by_run_prefix),
+            "by_timeout_ms": dict(by_timeout_ms),
+            "by_last_activity_reason": dict(by_last_activity_reason),
             "yield_detected_false": sum(1 for event in events if event.get("yield_detected") is False),
         },
     }
@@ -171,15 +191,25 @@ def build_report(limit_files: int) -> dict[str, Any]:
     events = scan["events"]
     missing_timeout_overrides = bool(config["missing_app_server_values"])
     repeated_timeouts = len(events) >= 3
-    status = "action_recommended" if repeated_timeouts and missing_timeout_overrides else "watch"
-    root_cause = (
-        "Repeated Codex app-server turns ended with turn_completion_idle_timeout and yieldDetected=false. "
-        "The Codex plugin exposes appServer idle timeout controls, but the active config does not set them."
-        if status == "action_recommended"
-        else "No repeated unmitigated timeout pattern detected in scanned trajectory files."
-    )
+    status = "action_recommended" if repeated_timeouts or missing_timeout_overrides else "watch"
+    if repeated_timeouts:
+        root_cause = (
+            "Repeated genuine turn_completion_idle_timeout events were found. "
+            "These events mean a raw assistant response or progress notification was observed without a terminal "
+            "turn/completed event before the configured guard elapsed; written config presence alone does not clear the pattern."
+        )
+    elif missing_timeout_overrides:
+        root_cause = (
+            "No repeated genuine timeout pattern was found, but one or more Codex appServer idle timeout controls are not explicitly configured."
+        )
+    elif events:
+        root_cause = (
+            "One or more genuine turn_completion_idle_timeout events were found, below the repeated-event escalation threshold."
+        )
+    else:
+        root_cause = "No genuine turn_completion_idle_timeout events were found in scanned trajectory files."
     return {
-        "schema_version": "codex_app_server_timeout_diagnostics.v1",
+        "schema_version": "codex_app_server_timeout_diagnostics.v2",
         "generated_at_utc": utc_now(),
         "status": status,
         "report_only": True,

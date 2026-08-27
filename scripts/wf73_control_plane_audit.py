@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import access as finance_sql_canon_access
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -138,6 +139,43 @@ def first_json(text: str) -> Any | None:
 def artifact(path: str) -> dict[str, Any]:
     payload = load_json_artifact(ROOT / path)
     return payload if isinstance(payload, dict) else {}
+
+
+def sql_canon_health() -> dict[str, Any]:
+    try:
+        client = finance_sql_canon_access()
+        validation = client.validate()
+        sample: dict[str, Any] = {}
+        if validation.get("status") == "ok":
+            sample = {
+                "production_answer_count": len(client.production_answer_tickers()),
+                "migration_registry_summary": client.migration_registry_summary(),
+            }
+    except Exception as exc:  # pragma: no cover - defensive audit surface
+        validation = {
+            "status": "blocked",
+            "errors": [{"name": "exception", "detail": str(exc)}],
+            "counts": {},
+        }
+        sample = {}
+    return {
+        "status": validation.get("status"),
+        "source": "scripts/finance_sql_canon_access.py",
+        "db_path": validation.get("db_path"),
+        "counts": validation.get("counts"),
+        "errors": validation.get("errors", []),
+        **sample,
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "sql_canon_cutover_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "brokerage_or_account_action_allowed": False,
+            "customer_or_external_delivery_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
 
 
 def summarize_memory_status(step: dict[str, Any]) -> dict[str, Any]:
@@ -305,6 +343,21 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     critical_failed = [step["name"] for step in steps if step.get("severity") == "critical" and not step.get("ok")]
     warning_failed = [step["name"] for step in steps if step.get("severity") == "warning" and not step.get("ok")]
     summaries = artifact_summaries(memory_step)
+    sql_health = sql_canon_health()
+    if sql_health.get("status") != "ok":
+        critical_failed.append("sql_canon_guard_blocked")
+    sql_boundary = as_dict(sql_health.get("authority_boundary"))
+    for key in (
+        "db_mutation_allowed",
+        "sql_canon_cutover_allowed",
+        "capital_deployment_allowed",
+        "paper_or_live_execution_allowed",
+        "brokerage_or_account_action_allowed",
+        "customer_or_external_delivery_allowed",
+        "owner_approval_inferred",
+    ):
+        if sql_boundary.get(key) is not False:
+            critical_failed.append(f"sql_canon_authority_{key}_not_false")
     warning_surfaces = []
     if as_dict(summaries["boot_size"].get("counts")).get("warnings", 0):
         warning_surfaces.append("boot_surface_size_guard")
@@ -347,6 +400,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "cron_status": summaries["cron_attention"].get("status"),
             "pm_stale_lane_count": summaries["pm_stale_lane_digest"].get("stale_lane_count"),
             "memory_index_healthy": summaries["memory_index_health"].get("healthy"),
+            "sql_canon_status": sql_health.get("status"),
+            "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
             "next_safe_action": (
                 "Repair the first critical failed step before using WF73 closeout."
                 if critical_failed
@@ -354,6 +409,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             ),
         },
         "artifact_summaries": summaries,
+        "sql_canon_health": sql_health,
         "steps": steps,
         "validation": {
             "status": "ok" if not critical_failed else "blocked",

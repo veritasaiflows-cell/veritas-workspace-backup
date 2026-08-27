@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Build a unified runtime performance scorecard for local validators.
 
-This is a report-only control-plane helper. It times representative SQL,
-Go, Python, and TypeScript/Node validation paths, writes proof artifacts, and
-keeps a compact append-only history for regression review. It does not mutate
-finance canon, portfolio state, customer state, runtime config, or execution
-authority.
+This is a review-only control-plane helper. Live timing modes run representative
+SQL, Go, Python, and TypeScript/Node validation paths, write proof artifacts,
+refresh derived PM/index SQLite surfaces, and keep a compact append-only history
+for regression review. Artifact-only mode reads existing proof. No mode mutates
+finance canon, portfolio state, customer state, runtime config, accounts, or
+execution authority.
 """
 from __future__ import annotations
 
@@ -29,6 +30,8 @@ GO_SCRIPT_BIN = ROOT / "scripts" / "go" / "bin"
 HISTORY = ROOT / "data" / "state-history" / "runtime-performance-scorecard.jsonl"
 DEFAULT_JSON = TMP / "runtime-performance-scorecard.json"
 DEFAULT_MD = DEFAULT_JSON.with_suffix(".md")
+SMOKE_JSON = TMP / "runtime-performance-scorecard-smoke.json"
+SMOKE_MD = SMOKE_JSON.with_suffix(".md")
 SCHEMA = "runtime.performance_scorecard.v1"
 
 
@@ -108,7 +111,11 @@ def run_command(name: str, command: list[str], *, cwd: Path = ROOT, timeout: int
 
 
 def classify_runtime(command: list[str]) -> str:
-    head = Path(command[0]).name.lower()
+    executable = Path(command[0])
+    head = executable.name.lower()
+    command_path = str(executable).replace("\\", "/").lower()
+    if command_path.endswith(".exe") and ("/scripts/go/bin/" in command_path or "/tmp/go-binaries/" in command_path):
+        return "go_binary"
     if head.startswith("python") or head == Path(sys.executable).name.lower():
         return "python"
     if head == "go":
@@ -126,7 +133,33 @@ def go_script_bin_command(name: str, *args: str) -> list[str]:
     return [str(GO_SCRIPT_BIN / f"{name}.exe"), *args]
 
 
+def smoke_command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, int]]:
+    sql_iterations = str(max(1, min(3, int(args.sql_iterations))))
+    plan = [
+        ("python_compile_runtime_scorecard", [sys.executable, "-m", "py_compile", "scripts\\runtime_performance_scorecard.py"], ROOT, 60),
+        ("go_binary_freshness_guard", [sys.executable, "scripts\\go_binary_freshness_guard.py", "--validate"], ROOT, 60),
+        ("sql_latency_benchmark_smoke", [sys.executable, "scripts\\sql_latency_benchmark.py", "--iterations", sql_iterations, "--json-out", "tmp\\sql-latency-benchmark-current.json", "--validate"], ROOT, 60),
+        ("go_sql_inventory_helper_smoke", go_script_bin_command("go-sql-inventory-helper", "--root", str(ROOT), "--driver", "inprocess", "--out", str(TMP / "go-sql-inventory-helper.json")), ROOT, 60),
+        ("go_sql_latency_probe_smoke", go_script_bin_command("go-sql-latency-probe", "--root", str(ROOT), "--iterations", "3", "--driver", "inprocess", "--out", str(TMP / "go-sql-latency-probe.json")), ROOT, 60),
+        ("go_finance_data_coverage_probe_smoke", go_script_bin_command("go-finance-data-coverage-probe", "--root", str(ROOT), "--out", str(TMP / "go-finance-data-coverage-probe.json")), ROOT, 60),
+        ("python_go_sql_parity_check", [sys.executable, "scripts\\python_go_sql_parity_check.py", "--write", "--validate"], ROOT, 60),
+        ("python_go_sql_consumer_authority_guard_parity", [sys.executable, "scripts\\python_go_sql_consumer_authority_guard_parity.py", "--write", "--validate"], ROOT, 60),
+        ("python_go_sql_helper_contract_gate", [sys.executable, "scripts\\python_go_sql_helper_contract_gate.py", "--write", "--validate", "--allow-runtime-self-cycle"], ROOT, 60),
+        ("python_capital_deployment_band_integrity_validator", [sys.executable, "scripts\\capital_deployment_band_integrity_validator.py", "--write", "--write-md", "--validate"], ROOT, 60),
+    ]
+    if args.include_human_note_migration_checks:
+        plan.extend(
+            [
+                ("go_finance_human_notes_sql_check_smoke", go_script_bin_command("go-finance-human-notes-sql-check", "--root", str(ROOT), "--driver", "inprocess", "--out", str(TMP / "go-finance-human-notes-sql-check.json")), ROOT, 60),
+                ("go_source_truth_parity_validator_smoke", go_script_bin_command("go-source-truth-parity-validator", "--root", str(ROOT), "--driver", "inprocess", "--out", str(TMP / "go-source-truth-parity-validation.json")), ROOT, 60),
+            ]
+        )
+    return plan
+
+
 def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, int]]:
+    if args.smoke:
+        return smoke_command_plan(args)
     sql_iterations = str(max(1, int(args.sql_iterations)))
     selected_builds = [
         (f"build_{helper['key']}_binary", build_command(helper), ROOT / "scripts" / "go", 300)
@@ -138,36 +171,32 @@ def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, i
     ]
     plan: list[tuple[str, list[str], Path, int]] = [
         ("python_compile_runtime_scorecard", [sys.executable, "-m", "py_compile", "scripts\\runtime_performance_scorecard.py"], ROOT, 60),
+        ("go_binary_freshness_guard", [sys.executable, "scripts\\go_binary_freshness_guard.py", "--validate"], ROOT, 60),
         ("sql_latency_benchmark", [sys.executable, "scripts\\sql_latency_benchmark.py", "--iterations", sql_iterations, "--json-out", "tmp\\sql-latency-benchmark-current.json", "--validate"], ROOT, 240),
         ("go_test_all", ["go", "test", ".\\..."], ROOT / "scripts" / "go", 240),
         *selected_builds,
         *selected_binary_routes,
         ("python_go_sql_parity_check", [sys.executable, "scripts\\python_go_sql_parity_check.py", "--write", "--validate"], ROOT, 240),
-        ("go_wf75_smb_boundary_lint", ["go", "run", ".\\cmd\\wf75-smb-boundary-lint", "--root", "..\\..", "--out", "..\\..\\tmp\\wf75-smb-boundary-lint.json"], ROOT / "scripts" / "go", 240),
-        ("go_finance_sql_boundary_lint", ["go", "run", ".\\cmd\\finance-sql-boundary-lint", "--root", "..\\..", "--out", "..\\..\\tmp\\finance-sql-boundary-lint.json"], ROOT / "scripts" / "go", 240),
-        ("go_python_sql_contract_lint", ["go", "run", ".\\cmd\\python-sql-contract-lint", "--root", "..\\..", "--out", "..\\..\\tmp\\python-sql-contract-lint.json"], ROOT / "scripts" / "go", 240),
+        ("go_wf75_smb_boundary_lint", go_script_bin_command("wf75-smb-boundary-lint", "--root", str(ROOT), "--out", str(TMP / "wf75-smb-boundary-lint.json")), ROOT, 240),
+        ("go_finance_sql_boundary_lint", go_script_bin_command("finance-sql-boundary-lint", "--root", str(ROOT), "--out", str(TMP / "finance-sql-boundary-lint.json")), ROOT, 240),
+        ("go_python_sql_contract_lint", go_script_bin_command("python-sql-contract-lint", "--root", str(ROOT), "--out", str(TMP / "python-sql-contract-lint.json")), ROOT, 240),
         ("python_go_sql_migration_candidates", [sys.executable, "scripts\\python_go_sql_migration_candidates.py", "--write", "--validate"], ROOT, 240),
         ("python_sql_source_truth_manifest", [sys.executable, "scripts\\sql_source_truth_authority_manifest.py", "--write", "--validate"], ROOT, 240),
         (
             "go_sql_source_truth_manifest",
-            [
-                "go",
-                "run",
-                ".\\cmd\\go-sql-source-truth-manifest",
+            go_script_bin_command(
+                "go-sql-source-truth-manifest",
                 "--root",
-                "..\\..",
+                str(ROOT),
                 "--driver",
                 "inprocess",
                 "--out",
-                "..\\..\\tmp\\go-sql-source-truth-authority-manifest.json",
-            ],
-            ROOT / "scripts" / "go",
+                str(TMP / "go-sql-source-truth-authority-manifest.json"),
+            ),
+            ROOT,
             240,
         ),
         ("python_go_source_truth_manifest_parity", [sys.executable, "scripts\\python_go_source_truth_manifest_parity.py", "--write", "--validate"], ROOT, 240),
-        ("python_sql_source_truth_parity_validator", [sys.executable, "scripts\\sql_source_truth_parity_validator.py", "--write", "--validate"], ROOT, 240),
-        ("go_source_truth_parity_validator", ["go", "run", ".\\cmd\\go-source-truth-parity-validator", "--root", "..\\..", "--out", "..\\..\\tmp\\go-source-truth-parity-validation.json"], ROOT / "scripts" / "go", 240),
-        ("python_go_source_truth_parity_validator_parity", [sys.executable, "scripts\\python_go_source_truth_parity_validator_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_sql_500_expansion_gate", [sys.executable, "scripts\\sql_500_ticker_expansion_design_gate.py", "--write", "--validate"], ROOT, 240),
         (
             "go_sql_500_expansion_gate",
@@ -185,10 +214,8 @@ def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, i
         ),
         ("python_go_sql_500_expansion_gate_parity", [sys.executable, "scripts\\python_go_sql_500_expansion_gate_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_finance_data_coverage", [sys.executable, "scripts\\finance_data_coverage.py", "--write-contract", "--validate"], ROOT, 240),
-        ("go_finance_data_coverage_probe", ["go", "run", ".\\cmd\\go-finance-data-coverage-probe", "--root", "..\\..", "--out", "..\\..\\tmp\\go-finance-data-coverage-probe.json"], ROOT / "scripts" / "go", 240),
+        ("go_finance_data_coverage_probe", go_script_bin_command("go-finance-data-coverage-probe", "--root", str(ROOT), "--out", str(TMP / "go-finance-data-coverage-probe.json")), ROOT, 240),
         ("python_go_finance_data_coverage_probe_parity", [sys.executable, "scripts\\python_go_finance_data_coverage_probe_parity.py", "--write", "--validate"], ROOT, 240),
-        ("python_finance_human_notes_thinning_candidates", [sys.executable, "scripts\\finance_human_notes_thinning_candidates.py", "--write", "--validate"], ROOT, 240),
-        ("python_go_finance_human_notes_sql_check_parity", [sys.executable, "scripts\\python_go_finance_human_notes_sql_check_parity.py", "--write", "--validate"], ROOT, 240),
         (
             "go_sql_inprocess_driver_pilot_gate_artifact_validate",
             [
@@ -205,13 +232,13 @@ def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, i
             60,
         ),
         ("python_finance_universe_validator", [sys.executable, "scripts\\finance_universe_validator.py", "--validate"], ROOT, 240),
-        ("go_finance_universe_validation_probe", ["go", "run", ".\\cmd\\go-finance-universe-validation-probe", "--root", "..\\..", "--out", "..\\..\\tmp\\go-finance-universe-validation-probe.json"], ROOT / "scripts" / "go", 240),
+        ("go_finance_universe_validation_probe", go_script_bin_command("go-finance-universe-validation-probe", "--root", str(ROOT), "--out", str(TMP / "go-finance-universe-validation-probe.json")), ROOT, 240),
         ("python_go_finance_universe_validation_parity", [sys.executable, "scripts\\python_go_finance_universe_validation_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_wf78_sql_phase2_readiness", [sys.executable, "scripts\\wf78_sql_phase2_readiness.py"], ROOT, 240),
-        ("go_wf78_sql_phase2_readiness_probe", ["go", "run", ".\\cmd\\go-wf78-sql-phase2-readiness-probe", "--root", "..\\..", "--out", "..\\..\\tmp\\go-wf78-sql-phase2-readiness-probe.json"], ROOT / "scripts" / "go", 240),
+        ("go_wf78_sql_phase2_readiness_probe", go_script_bin_command("go-wf78-sql-phase2-readiness-probe", "--root", str(ROOT), "--out", str(TMP / "go-wf78-sql-phase2-readiness-probe.json")), ROOT, 240),
         ("python_go_wf78_sql_phase2_readiness_parity", [sys.executable, "scripts\\python_go_wf78_sql_phase2_readiness_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_go_durable_output_parity_repeated_gate", [sys.executable, "scripts\\python_go_durable_output_parity_repeated_gate.py", "--write", "--validate", "--cycles", "3"], ROOT, 240),
-        ("go_sql_consumer_authority_guard", ["go", "run", ".\\cmd\\go-sql-consumer-authority-guard", "--root", "..\\..", "--out", "..\\..\\tmp\\go-sql-consumer-authority-guard.json"], ROOT / "scripts" / "go", 240),
+        ("go_sql_consumer_authority_guard", go_script_bin_command("go-sql-consumer-authority-guard", "--root", str(ROOT), "--driver", "inprocess", "--out", str(TMP / "go-sql-consumer-authority-guard.json")), ROOT, 240),
         ("python_go_sql_consumer_authority_guard_parity", [sys.executable, "scripts\\python_go_sql_consumer_authority_guard_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_go_sql_consumer_authority_guard_fixture_parity", [sys.executable, "scripts\\python_go_sql_consumer_authority_guard_fixture_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_go_sql_consumer_authority_dashboard_ab", [sys.executable, "scripts\\python_go_sql_consumer_authority_dashboard_ab.py", "--write", "--validate", "--cycles", "3"], ROOT, 240),
@@ -226,14 +253,23 @@ def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, i
         ("python_go_sql_helper_default_route_history_gate", [sys.executable, "scripts\\python_go_sql_helper_default_route_history_gate.py", "--write", "--write-history", "--validate", "--cycles", "5"], ROOT, 240),
         ("python_go_sql_helper_fallback_removal_readiness_gate", [sys.executable, "scripts\\python_go_sql_helper_fallback_removal_readiness_gate.py", "--write", "--validate", "--parent-runtime-scorecard"], ROOT, 240),
         ("python_go_sql_helper_retirement_gate", [sys.executable, "scripts\\python_go_sql_helper_retirement_gate.py", "--write", "--validate", "--parent-runtime-scorecard"], ROOT, 240),
-        ("go_sql_schema_drift_lint", ["go", "run", ".\\cmd\\sql-schema-drift-lint", "--root", "..\\..", "--out", "..\\..\\tmp\\sql-schema-drift-lint.json"], ROOT / "scripts" / "go", 240),
-        ("go_sql_proof_probe", ["go", "run", ".\\cmd\\sql-proof-probe", "--root", "..\\..", "--out", "..\\..\\tmp\\sql-proof-probe.json"], ROOT / "scripts" / "go", 240),
+        ("go_sql_schema_drift_lint", go_script_bin_command("sql-schema-drift-lint", "--root", str(ROOT), "--out", str(TMP / "sql-schema-drift-lint.json")), ROOT, 240),
+        ("go_sql_proof_probe", go_script_bin_command("sql-proof-probe", "--root", str(ROOT), "--out", str(TMP / "sql-proof-probe.json")), ROOT, 240),
         ("python_pm_program_state", [sys.executable, "scripts\\pm_program_state.py", "--write", "--write-db", "--validate"], ROOT, 240),
         ("python_artifact_index_incremental", [sys.executable, "scripts\\artifact_index.py", "incremental"], ROOT, 240),
         ("python_artifact_index_validate", [sys.executable, "scripts\\artifact_index.py", "validate"], ROOT, 240),
         ("python_sql_coverage_guard", [sys.executable, "scripts\\sql_coverage_guard.py", "--write", "--validate"], ROOT, 240),
         ("python_capital_deployment_band_integrity_validator", [sys.executable, "scripts\\capital_deployment_band_integrity_validator.py", "--write", "--write-md", "--validate"], ROOT, 120),
     ]
+    if args.include_human_note_migration_checks:
+        migration_group = [
+            ("python_sql_source_truth_parity_validator", [sys.executable, "scripts\\sql_source_truth_parity_validator.py", "--write", "--validate"], ROOT, 240),
+            ("go_source_truth_parity_validator", go_script_bin_command("go-source-truth-parity-validator", "--root", str(ROOT), "--driver", "inprocess", "--out", str(TMP / "go-source-truth-parity-validation.json")), ROOT, 240),
+            ("python_go_source_truth_parity_validator_parity", [sys.executable, "scripts\\python_go_source_truth_parity_validator_parity.py", "--write", "--validate"], ROOT, 240),
+            ("python_finance_human_notes_thinning_candidates", [sys.executable, "scripts\\finance_human_notes_thinning_candidates.py", "--write", "--validate"], ROOT, 240),
+            ("python_go_finance_human_notes_sql_check_parity", [sys.executable, "scripts\\python_go_finance_human_notes_sql_check_parity.py", "--write", "--validate"], ROOT, 240),
+        ]
+        plan.extend(migration_group)
     if not args.quick:
         plan.append(("node_pm_cockpit_validate", ["npm", "run", "validate"], ROOT / "apps" / "pm-control-cockpit", 240))
     return plan
@@ -253,17 +289,21 @@ def runtime_summary(commands: list[dict[str, Any]]) -> dict[str, Any]:
     return buckets
 
 
-def latest_history(path: Path) -> dict[str, Any]:
+def latest_history(path: Path, benchmark_mode: str | None = None) -> dict[str, Any]:
     try:
         lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     except FileNotFoundError:
         return {}
-    if not lines:
-        return {}
-    try:
-        return json.loads(lines[-1])
-    except json.JSONDecodeError:
-        return {}
+    for line in reversed(lines):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if benchmark_mode is None:
+            return row
+        if as_dict(row.get("summary")).get("benchmark_mode") == benchmark_mode:
+            return row
+    return {}
 
 
 def regression_check(current: dict[str, Any], previous: dict[str, Any]) -> dict[str, Any]:
@@ -279,6 +319,141 @@ def regression_check(current: dict[str, Any], previous: dict[str, Any]) -> dict[
     if prev_sql > 0 and cur_sql > 5 and cur_sql > prev_sql * 2:
         warnings.append(f"sql_p95_regression previous_ms={prev_sql:.3f} current_ms={cur_sql:.3f}")
     return {"has_previous": True, "warnings": warnings}
+
+
+def finding_count(value: Any) -> int:
+    if value in (None, False, "", 0):
+        return 0
+    if isinstance(value, (list, tuple, set, dict)):
+        return len(value)
+    if isinstance(value, int):
+        return max(0, value)
+    return 1
+
+
+def artifact_health(payload: dict[str, Any], *, fallback_status: Any = None) -> dict[str, Any]:
+    """Classify one proof from its own status and validation surface.
+
+    Several older Go proofs use success states such as ``ready_*`` instead of
+    the literal ``ok``. A clean validation status may therefore establish an
+    ``ok`` health result, but an explicit source failure always wins.
+    """
+
+    raw_status = payload.get("status", fallback_status)
+    status = str(raw_status or "").strip().lower()
+    validation = as_dict(payload.get("validation"))
+    raw_validation_status = validation.get("status")
+    validation_status = str(raw_validation_status or "").strip().lower()
+    error_count = finding_count(validation.get("errors"))
+    warning_count = finding_count(validation.get("warnings"))
+
+    hard_statuses = {
+        "blocked",
+        "error",
+        "failed",
+        "failure",
+        "invalid",
+        "missing",
+        "not_ready",
+        "stale",
+        "validation_error",
+    }
+    warning_statuses = {"warning", "warn", "degraded", "partial", "partial_unverified"}
+    clean_validation_statuses = {"ok", "pass", "passed", "valid"}
+
+    if not status or status in hard_statuses or validation_status in hard_statuses or error_count:
+        health = "blocked"
+    elif status in warning_statuses or validation_status in warning_statuses or warning_count:
+        health = "warning"
+    elif validation_status in clean_validation_statuses:
+        health = "ok"
+    elif status in {"ok", "pass", "passed", "valid", "ready", "complete", "completed", "healthy", "green"}:
+        health = "ok"
+    elif status.startswith("ready_") or status.endswith("_ok"):
+        health = "ok"
+    else:
+        # Unknown states are not promoted to green without a validation proof.
+        health = "warning"
+
+    return {
+        "artifact_health": health,
+        "artifact_ok": health == "ok",
+        "source_status": raw_status,
+        "validation_status": raw_validation_status,
+        "validation_error_count": error_count,
+        "validation_warning_count": warning_count,
+    }
+
+
+def decorate_artifact_snapshot(
+    artifacts: dict[str, Any],
+    *,
+    payload_overrides: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    overrides = payload_overrides or {}
+    decorated: dict[str, Any] = {}
+    for key, raw_row in artifacts.items():
+        row = dict(as_dict(raw_row))
+        payload = overrides.get(key)
+        if payload is None:
+            source_path = str(row.get("path") or "").split("#", 1)[0]
+            loaded = load_json_artifact(ROOT / source_path) if source_path else None
+            payload = as_dict(loaded)
+        row.update(artifact_health(as_dict(payload), fallback_status=row.get("status")))
+        decorated[key] = row
+    return decorated
+
+
+def artifact_health_summary(artifacts: dict[str, Any]) -> dict[str, Any]:
+    counts = {"ok": 0, "warning": 0, "blocked": 0}
+    warning_artifacts: list[str] = []
+    blocked_artifacts: list[str] = []
+    for key, raw_row in artifacts.items():
+        row = as_dict(raw_row)
+        health = str(row.get("artifact_health") or artifact_health(row).get("artifact_health"))
+        if health not in counts:
+            health = "blocked"
+        counts[health] += 1
+        if health == "warning":
+            warning_artifacts.append(key)
+        elif health == "blocked":
+            blocked_artifacts.append(key)
+    return {
+        "checks_total": len(artifacts),
+        "ok_count": counts["ok"],
+        "warning_count": counts["warning"],
+        "blocked_count": counts["blocked"],
+        "warning_artifacts": warning_artifacts,
+        "blocked_artifacts": blocked_artifacts,
+    }
+
+
+def scorecard_authority_boundary(
+    *,
+    proof_orchestration: bool,
+    proof_artifact_writes: bool,
+    derived_db_mutation: bool,
+) -> dict[str, Any]:
+    return {
+        "report_only": not proof_orchestration,
+        "proof_orchestration": proof_orchestration,
+        "output_grants_authority": False,
+        "proof_artifact_writes": proof_artifact_writes,
+        "db_mutation": derived_db_mutation,
+        "derived_control_db_or_index_mutation": derived_db_mutation,
+        "derived_db_mutation_scope": (
+            ["tmp/pm-program-state.sqlite", "tmp/veritas-artifact-index.sqlite"]
+            if derived_db_mutation
+            else []
+        ),
+        "finance_canon_db_mutation": False,
+        "canon_or_portfolio_mutation": False,
+        "brokerage_or_account_mutation": False,
+        "customer_or_external_delivery": False,
+        "paper_or_live_execution_authority": False,
+        "owner_approval_inferred": False,
+        "config_auth_runtime_mutation": False,
+    }
 
 
 def artifact_snapshot() -> dict[str, Any]:
@@ -325,7 +500,7 @@ def artifact_snapshot() -> dict[str, Any]:
     smb_lint = as_dict(load_json_artifact(TMP / "wf75-smb-boundary-lint.json"))
     capital_band_integrity = as_dict(load_json_artifact(TMP / "capital-deployment-band-integrity-validator.json"))
     pm_state = pm_program_state()
-    return {
+    artifacts = {
         "sql_latency": {
             "path": "tmp/sql-latency-benchmark-current.json",
             "status": sql_latency.get("status"),
@@ -707,41 +882,50 @@ def artifact_snapshot() -> dict[str, Any]:
             "lanes": len(as_list(pm_state.get("lanes"))),
         },
     }
+    return decorate_artifact_snapshot(artifacts, payload_overrides={"pm_program_state": pm_state})
 
 
 def build_scorecard(args: argparse.Namespace) -> dict[str, Any]:
     if args.artifact_only:
         artifacts = artifact_snapshot()
+        health_summary = artifact_health_summary(artifacts)
         summary = {
-            "checks_total": len(artifacts),
-            "ok_count": len(artifacts),
-            "blocked_count": 0,
+            **health_summary,
             "total_duration_ms": 0,
             "max_command_duration_ms": 0,
             "quick_mode": bool(args.quick),
+            "timed_quick_mode": False,
+            "smoke_mode": False,
+            "benchmark_mode": "artifact_only_quick" if args.quick else "artifact_only",
             "artifact_only": True,
+            "scorecard_write_requested": bool(args.write or args.write_md),
         }
+        artifact_only_status = "blocked" if health_summary["blocked_count"] else "warning" if health_summary["warning_count"] else "ok"
         scorecard = {
             "schema": SCHEMA,
             "generated_at_utc": utc_now(),
-            "status": "ok",
+            "status": artifact_only_status,
             "workspace_root": str(ROOT),
             "summary": summary,
             "runtime_summary": {},
             "commands": [],
             "artifacts": artifacts,
-            "authority_boundary": {
-                "report_only": True,
-                "db_mutation": False,
-                "canon_or_portfolio_mutation": False,
-                "customer_or_external_delivery": False,
-                "paper_or_live_execution_authority": False,
-                "owner_approval_inferred": False,
-                "config_auth_runtime_mutation": False,
-            },
+            "authority_boundary": scorecard_authority_boundary(
+                proof_orchestration=False,
+                proof_artifact_writes=bool(args.write or args.write_md),
+                derived_db_mutation=False,
+            ),
             "notes": "Artifact-only refresh. Uses already regenerated validator artifacts as source-trust proof; it is not a fresh runtime timing benchmark.",
+            "human_note_migration_checks": {
+                "executed": False,
+                "mode": "artifact_only_existing_proof",
+                "reason": "Artifact-only mode never reruns human-note migration parity checks.",
+            },
         }
-        scorecard["regression_check"] = {"has_previous": bool(latest_history(args.history_out)), "warnings": ["artifact_only_no_runtime_timing"]}
+        scorecard["regression_check"] = {
+            "has_previous": bool(latest_history(args.history_out, summary["benchmark_mode"])),
+            "warnings": ["artifact_only_no_runtime_timing"],
+        }
         scorecard["validation"] = validate(scorecard)
         if scorecard["validation"]["status"] != "ok":
             scorecard["status"] = "blocked"
@@ -750,13 +934,25 @@ def build_scorecard(args: argparse.Namespace) -> dict[str, Any]:
     started = time.perf_counter()
     commands = [run_command(name, command, cwd=cwd, timeout=timeout) for name, command, cwd, timeout in command_plan(args)]
     blocked = [row for row in commands if row.get("status") != "ok"]
+    command_names = {str(row.get("name") or "") for row in commands}
+    derived_db_mutation = bool(
+        command_names.intersection({"python_pm_program_state", "python_artifact_index_incremental"})
+    )
     summary = {
         "checks_total": len(commands),
         "ok_count": len(commands) - len(blocked),
+        "warning_count": 0,
         "blocked_count": len(blocked),
         "total_duration_ms": round((time.perf_counter() - started) * 1000, 3),
         "max_command_duration_ms": max((float(row.get("duration_ms") or 0) for row in commands), default=0.0),
-        "quick_mode": bool(args.quick),
+        "quick_mode": bool(args.quick and not args.timed_quick),
+        "timed_quick_mode": bool(args.timed_quick),
+        "smoke_mode": bool(args.smoke),
+        "human_note_migration_checks_executed": bool(args.include_human_note_migration_checks),
+        "human_note_migration_checks_default": False,
+        "benchmark_mode": "smoke_live" if args.smoke else "timed_quick_no_node" if args.timed_quick else "full_timed",
+        "artifact_only": False,
+        "scorecard_write_requested": bool(args.write or args.write_md),
     }
     scorecard = {
         "schema": SCHEMA,
@@ -767,17 +963,21 @@ def build_scorecard(args: argparse.Namespace) -> dict[str, Any]:
         "runtime_summary": runtime_summary(commands),
         "commands": commands,
         "artifacts": artifact_snapshot(),
-        "authority_boundary": {
-            "report_only": True,
-            "db_mutation": False,
-            "canon_or_portfolio_mutation": False,
-            "customer_or_external_delivery": False,
-            "paper_or_live_execution_authority": False,
-            "owner_approval_inferred": False,
-            "config_auth_runtime_mutation": False,
+        "human_note_migration_checks": {
+            "executed": bool(args.include_human_note_migration_checks),
+            "mode": "targeted_migration" if args.include_human_note_migration_checks else "skipped_default",
+            "reason": (
+                "Human-note SQL/Go migration checks are opt-in after human-canon thinning; "
+                "default runtime scorecard reads existing artifacts but does not rerun them."
+            ),
         },
+        "authority_boundary": scorecard_authority_boundary(
+            proof_orchestration=True,
+            proof_artifact_writes=True,
+            derived_db_mutation=derived_db_mutation,
+        ),
     }
-    regression = regression_check(scorecard, latest_history(args.history_out))
+    regression = regression_check(scorecard, latest_history(args.history_out, summary["benchmark_mode"]))
     scorecard["regression_check"] = regression
     if scorecard["status"] == "ok" and regression.get("warnings"):
         scorecard["status"] = "warning"
@@ -792,11 +992,25 @@ def validate(scorecard: dict[str, Any]) -> dict[str, Any]:
     warnings: list[str] = []
     if scorecard.get("schema") != SCHEMA:
         errors.append("schema mismatch")
+    summary = as_dict(scorecard.get("summary"))
+    commands = as_list(scorecard.get("commands"))
+    artifact_only = summary.get("artifact_only") is True
+    command_names = {str(as_dict(row).get("name") or "") for row in commands}
+    expected_derived_db_mutation = bool(
+        command_names.intersection({"python_pm_program_state", "python_artifact_index_incremental"})
+    )
+    expected_proof_writes = bool(commands) or summary.get("scorecard_write_requested") is True
     boundary = as_dict(scorecard.get("authority_boundary"))
     for key, expected in {
-        "report_only": True,
-        "db_mutation": False,
+        "report_only": artifact_only,
+        "proof_orchestration": not artifact_only,
+        "output_grants_authority": False,
+        "proof_artifact_writes": expected_proof_writes,
+        "db_mutation": expected_derived_db_mutation,
+        "derived_control_db_or_index_mutation": expected_derived_db_mutation,
+        "finance_canon_db_mutation": False,
         "canon_or_portfolio_mutation": False,
+        "brokerage_or_account_mutation": False,
         "customer_or_external_delivery": False,
         "paper_or_live_execution_authority": False,
         "owner_approval_inferred": False,
@@ -804,14 +1018,29 @@ def validate(scorecard: dict[str, Any]) -> dict[str, Any]:
     }.items():
         if boundary.get(key) is not expected:
             errors.append(f"authority boundary mismatch: {key}")
-    if int(as_dict(scorecard.get("summary")).get("blocked_count") or 0) > 0:
+    expected_db_scope = ["tmp/pm-program-state.sqlite", "tmp/veritas-artifact-index.sqlite"] if expected_derived_db_mutation else []
+    if boundary.get("derived_db_mutation_scope") != expected_db_scope:
+        errors.append("authority boundary mismatch: derived_db_mutation_scope")
+    if int(summary.get("blocked_count") or 0) > 0:
         warnings.append("one_or_more_runtime_checks_blocked")
+    if int(summary.get("warning_count") or 0) > 0:
+        warnings.append("one_or_more_artifact_checks_warning")
     artifacts = as_dict(scorecard.get("artifacts"))
-    for key in (
+    if artifact_only:
+        observed_health = artifact_health_summary(artifacts)
+        for key in ("checks_total", "ok_count", "warning_count", "blocked_count"):
+            if summary.get(key) != observed_health.get(key):
+                errors.append(f"artifact-only summary mismatch: {key}")
+        for key in ("warning_artifacts", "blocked_artifacts"):
+            if summary.get(key) != observed_health.get(key):
+                errors.append(f"artifact-only summary mismatch: {key}")
+    required_inprocess_artifacts = [
         "go_sql_latency_probe",
         "go_sql_inventory_helper",
-        "go_finance_human_notes_sql_check",
-    ):
+    ]
+    if as_dict(scorecard.get("human_note_migration_checks")).get("executed") is True:
+        required_inprocess_artifacts.append("go_finance_human_notes_sql_check")
+    for key in required_inprocess_artifacts:
         driver = as_dict(artifacts.get(key)).get("sqlite_driver")
         if driver != "inprocess":
             errors.append(f"{key} default artifact must use inprocess sqlite driver, observed={driver!r}")
@@ -834,7 +1063,8 @@ def render_markdown(scorecard: dict[str, Any]) -> str:
         "",
         f"- Generated: `{scorecard.get('generated_at_utc')}`",
         f"- Status: `{scorecard.get('status')}`",
-        f"- Checks: `{summary.get('ok_count')}` ok / `{summary.get('blocked_count')}` blocked",
+        f"- Checks: `{summary.get('ok_count')}` ok / `{summary.get('warning_count', 0)}` warning / `{summary.get('blocked_count')}` blocked",
+        f"- Mode: `{summary.get('benchmark_mode')}`",
         f"- Total runtime: `{summary.get('total_duration_ms')}` ms",
         f"- Max command runtime: `{summary.get('max_command_duration_ms')}` ms",
         "",
@@ -852,12 +1082,24 @@ def render_markdown(scorecard: dict[str, Any]) -> str:
     if warnings:
         lines.extend(["", "## Regression Warnings", ""])
         lines.extend(f"- {warning}" for warning in warnings)
+    boundary = as_dict(scorecard.get("authority_boundary"))
+    if boundary.get("derived_control_db_or_index_mutation") is True:
+        boundary_text = (
+            "Review-only proof orchestration. This run wrote proof artifacts and refreshed the derived PM/index SQLite surfaces "
+            "listed in `derived_db_mutation_scope`; it did not mutate finance canon, portfolio/account state, customer delivery, "
+            "paper/live execution, runtime configuration, or owner approval."
+        )
+    else:
+        boundary_text = (
+            "Report-only proof surface with no derived SQLite/index refresh. It grants no canon/portfolio/account mutation, "
+            "customer/external delivery, paper/live action, config/auth/runtime mutation, or owner approval."
+        )
     lines.extend(
         [
             "",
             "## Boundary",
             "",
-            "Report-only local proof. No canon/portfolio mutation, customer/external delivery, paper/live action, config/auth/runtime mutation, or owner approval inference.",
+            boundary_text,
             "",
         ]
     )
@@ -871,12 +1113,17 @@ def render_summary(scorecard: dict[str, Any]) -> str:
         "runtime_performance_scorecard "
         f"status={scorecard.get('status')} "
         f"checks={summary.get('ok_count')}/{summary.get('checks_total')} "
+        f"warnings={summary.get('warning_count', 0)} "
         f"blocked={summary.get('blocked_count')} "
         f"artifact_only={summary.get('artifact_only', False)} "
         f"quick={summary.get('quick_mode')} "
+        f"timed_quick={summary.get('timed_quick_mode', False)} "
+        f"smoke={summary.get('smoke_mode', False)} "
+        f"mode={summary.get('benchmark_mode')} "
+        f"derived_db_mutation={as_dict(scorecard.get('authority_boundary')).get('derived_control_db_or_index_mutation')} "
         f"total_ms={summary.get('total_duration_ms')} "
         f"validation={validation.get('status')} "
-        f"path={rel(DEFAULT_JSON)}"
+        f"path={scorecard.get('output_path') or rel(DEFAULT_JSON)}"
     )
 
 
@@ -904,23 +1151,27 @@ def write_bootstrap_placeholder(path: Path) -> None:
         "summary": {
             "checks_total": 0,
             "ok_count": 0,
+            "warning_count": 0,
             "blocked_count": 0,
+            "warning_artifacts": [],
+            "blocked_artifacts": [],
             "total_duration_ms": 0,
             "max_command_duration_ms": 0,
             "quick_mode": None,
+            "timed_quick_mode": None,
+            "smoke_mode": None,
+            "benchmark_mode": "bootstrap",
+            "artifact_only": True,
+            "scorecard_write_requested": True,
         },
         "runtime_summary": {},
         "commands": [],
         "artifacts": {},
-        "authority_boundary": {
-            "report_only": True,
-            "db_mutation": False,
-            "canon_or_portfolio_mutation": False,
-            "customer_or_external_delivery": False,
-            "paper_or_live_execution_authority": False,
-            "owner_approval_inferred": False,
-            "config_auth_runtime_mutation": False,
-        },
+        "authority_boundary": scorecard_authority_boundary(
+            proof_orchestration=False,
+            proof_artifact_writes=True,
+            derived_db_mutation=False,
+        ),
         "notes": "Bootstrap placeholder written so source-readiness validators can see the required scorecard path during the first full run.",
     }
     atomic_write_json(path, placeholder)
@@ -933,7 +1184,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--validate", action="store_true", help="Exit nonzero if hard runtime checks are blocked.")
     parser.add_argument("--quick", action="store_true", help="Fast artifact-only refresh; does not rerun long command timings.")
     parser.add_argument("--artifact-only", action="store_true", help="Refresh the scorecard from current proof artifacts without rerunning long command timings.")
+    parser.add_argument("--smoke", action="store_true", help="Run a fast live smoke pass using cheap Python checks and fresh prebuilt Go binaries.")
     parser.add_argument("--timed-quick", action="store_true", help="Run timed command checks while skipping slower Node/TypeScript cockpit validation.")
+    parser.add_argument(
+        "--include-human-note-migration-checks",
+        action="store_true",
+        help="Opt in to human-note SQL/Go migration parity checks; skipped by default after human-canon thinning.",
+    )
     parser.add_argument("--sql-iterations", type=int, default=20, help="Warm iterations for SQL latency benchmark.")
     parser.add_argument("--json-out", type=Path, default=DEFAULT_JSON)
     parser.add_argument("--md-out", type=Path, default=DEFAULT_MD)
@@ -945,17 +1202,28 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    default_json_requested = args.json_out == DEFAULT_JSON
+    default_md_requested = args.md_out == DEFAULT_MD
+    if args.smoke:
+        args.quick = False
+        args.artifact_only = False
+        args.timed_quick = False
+        if default_json_requested:
+            args.json_out = SMOKE_JSON
+        if default_md_requested:
+            args.md_out = SMOKE_MD
     args.json_out = args.json_out if args.json_out.is_absolute() else ROOT / args.json_out
     args.md_out = args.md_out if args.md_out.is_absolute() else ROOT / args.md_out
     args.history_out = args.history_out if args.history_out.is_absolute() else ROOT / args.history_out
-    if args.quick:
+    if args.quick and not args.smoke:
         args.artifact_only = True
-    if args.timed_quick:
+    if args.timed_quick and not args.smoke:
         args.quick = True
         args.artifact_only = False
     if args.write:
         write_bootstrap_placeholder(args.json_out)
     scorecard = build_scorecard(args)
+    scorecard["output_path"] = rel(args.json_out)
     if args.write:
         atomic_write_json(args.json_out, scorecard)
         append_history(args.history_out, scorecard)

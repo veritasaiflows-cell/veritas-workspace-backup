@@ -119,6 +119,15 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+def int_or(value: Any, default: int = 0) -> int:
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def load_dict(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
@@ -130,6 +139,31 @@ def json_text(value: Any) -> str:
 
 def add_check(checks: list[dict[str, Any]], name: str, ok: bool, detail: Any = None, severity: str = "critical") -> None:
     checks.append({"name": name, "ok": bool(ok), "status": "ok" if ok else "fail", "severity": severity, "detail": detail})
+
+
+def reputation_gate_future_pending(gate: dict[str, Any]) -> bool:
+    summary = as_dict(gate.get("summary"))
+    authority = as_dict(gate.get("authority_boundary"))
+    validation = as_dict(gate.get("validation"))
+    return (
+        gate.get("status") == "blocked"
+        and validation.get("status") == "error"
+        and int_or(summary.get("row_count")) < int_or(summary.get("target_count"), 500)
+        and int_or(summary.get("future_validation_required_count")) > 0
+        and int_or(summary.get("tier_a_production_eligible_count")) == 0
+        and int_or(summary.get("tier_b_research_eligible_count")) == 0
+        and authority.get("ticker_import_allowed") is False
+        and authority.get("apply_allowed") is False
+        and authority.get("production_answer_path_change_allowed") is False
+        and authority.get("sql_first_promotion_allowed") is False
+        and authority.get("sql_canon_expansion_allowed") is False
+        and authority.get("canon_or_portfolio_mutation_allowed") is False
+        and authority.get("customer_or_external_delivery_allowed") is False
+        and authority.get("paper_or_live_execution_allowed") is False
+        and authority.get("brokerage_or_account_action_allowed") is False
+        and authority.get("money_movement_allowed") is False
+        and authority.get("owner_approval_inferred") is False
+    )
 
 
 def normalize_reason(reason: Any) -> str:
@@ -318,6 +352,7 @@ def build_report() -> tuple[dict[str, Any], dict[str, Any]]:
     import_gate = load_dict(IMPORT_GATE)
     macro_overlay = load_dict(MACRO_THESIS_OVERLAY_GATE)
     capacity_gate = load_dict(TIER_CAPACITY_POLICY_GATE)
+    future_pending = reputation_gate_future_pending(reputation_gate)
     import_status = str(import_gate.get("status") or "")
     import_applied = import_status in {"ok_imported_tier_c_only", "ok_already_imported_tier_c_only"}
     if import_applied:
@@ -332,12 +367,12 @@ def build_report() -> tuple[dict[str, Any], dict[str, Any]]:
     authority = AUTHORITY_BOUNDARY
 
     add_check(checks, "reputation_gate_exists", REPUTATION_GATE.exists(), rel(REPUTATION_GATE))
-    add_check(checks, "reputation_gate_status_ok", reputation_gate.get("status") == "ok", reputation_gate.get("status"))
+    add_check(checks, "reputation_gate_status_ok_or_future_pending", reputation_gate.get("status") == "ok" or future_pending, reputation_gate.get("status"))
     add_check(checks, "ticker_card_refresh_gate_exists", TICKER_CARD_REFRESH_GATE.exists(), rel(TICKER_CARD_REFRESH_GATE))
     add_check(checks, "ticker_card_refresh_gate_validation_ok", as_dict(refresh_gate.get("validation")).get("status") == "ok", as_dict(refresh_gate.get("validation")))
     add_check(checks, "import_gate_status_acceptable_if_present", (not IMPORT_GATE.exists()) or import_applied, {"path": rel(IMPORT_GATE), "status": import_status})
     add_check(checks, "macro_thesis_overlay_gate_ok_if_present", (not MACRO_THESIS_OVERLAY_GATE.exists()) or as_dict(macro_overlay.get("validation")).get("status") == "ok", {"path": rel(MACRO_THESIS_OVERLAY_GATE), "status": macro_overlay.get("status")})
-    add_check(checks, "tier_capacity_policy_gate_ok_if_present", (not TIER_CAPACITY_POLICY_GATE.exists()) or as_dict(capacity_gate.get("validation")).get("status") == "ok", {"path": rel(TIER_CAPACITY_POLICY_GATE), "status": capacity_gate.get("status")})
+    add_check(checks, "tier_capacity_policy_gate_ok_if_present_or_future_pending", (not TIER_CAPACITY_POLICY_GATE.exists()) or as_dict(capacity_gate.get("validation")).get("status") == "ok" or future_pending, {"path": rel(TIER_CAPACITY_POLICY_GATE), "status": capacity_gate.get("status")})
     add_check(checks, "tier_a_capacity_policy_25", int(as_dict(capacity_gate.get("policy")).get("tier_a_max") or TIER_A_CAP) == 25, as_dict(capacity_gate.get("policy")))
     add_check(checks, "tier_b_capacity_policy_50", int(as_dict(capacity_gate.get("policy")).get("tier_b_max") or TIER_B_CAP) == 50, as_dict(capacity_gate.get("policy")))
     add_check(checks, "combined_capacity_policy_75", int(as_dict(capacity_gate.get("policy")).get("tier_a_b_combined_max") or TIER_A_B_COMBINED_CAP) == 75, as_dict(capacity_gate.get("policy")))

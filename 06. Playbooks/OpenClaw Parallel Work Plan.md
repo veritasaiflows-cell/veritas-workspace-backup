@@ -1,5 +1,7 @@
 # OpenClaw Parallel Work Plan
 
+> **Historical planning evidence only — not current startup or routing doctrine.** Do not load this file on cold start. Current execution routing is `scripts/project_implementation_router.py` (`veritas.execution_efficiency_policy.v1`), with operator rules in `06. Playbooks/Spawn and Closeout Governance Matrix.md` and `06. Playbooks/Subagent Spawn Handoff Template.md`. Any runtime/model/default statement below is retained for lineage and is superseded when it conflicts with those owners.
+
 ## Purpose
 
 Turn the newly available local resources into controlled parallel execution instead of ad hoc model enthusiasm.

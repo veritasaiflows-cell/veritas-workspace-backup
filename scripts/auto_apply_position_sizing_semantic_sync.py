@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, atomic_write_text
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -47,6 +48,7 @@ TMP = ROOT / "tmp"
 DEFAULT_BUNDLE = TMP / "portfolio-mutation-proposals" / "current-capital-deployment-recommendations.json"
 OUT_JSON = TMP / "auto-position-sizing-semantic-sync.json"
 OUT_MD = TMP / "auto-position-sizing-semantic-sync.md"
+PORTFOLIO_SNAPSHOT = ROOT / "03. Portfolio" / "Portfolio Snapshot.md"
 CATEGORY = "sizing"
 APPROVED_BY = "Randall-standing-approval-2026-05-16-position-sizing-sync"
 
@@ -88,6 +90,45 @@ def proposal_packets(bundle_path: Path) -> list[dict[str, Any]]:
     bundle = load_json(bundle_path, "proposal bundle")
     packets = apply_helper.proposal_packets(bundle)
     return [packet for packet in packets if isinstance(packet, dict) and packet.get("proposal_id")]
+
+
+def portfolio_snapshot_thin_contract() -> dict[str, Any]:
+    return evaluate_sql_first_thin_board_contract(
+        PORTFOLIO_SNAPSHOT,
+        route_tokens=[
+            "finance_sql_canon_access.py",
+            "finance_intelligence_state.py",
+            "trade_grade_os_freshness_cron_runner.py",
+            "full_intelligence_answer_parity.py",
+        ],
+        proof_files=[
+            "tmp/trade-grade-os-freshness-cron-runner.json",
+            "tmp/full-answer-parity/full-answer-parity-rollup.json",
+            "tmp/canonical-finance-data-plane-retirement-readiness.json",
+        ],
+        authority_phrases=[
+            "no execution",
+            "account action",
+            "archive/delete/apply authority",
+            "inferred approval",
+        ],
+    )
+
+
+def sql_first_thin_snapshot_sync_decision(thin_contract: dict[str, Any]) -> dict[str, Any]:
+    detected = thin_contract.get("sql_first_thin_board_detected") is True
+    allowed = thin_contract.get("sql_first_thin_board_allowed") is True
+    return {
+        "short_circuit_snapshot_mutation": detected,
+        "status": "ok_no_changes" if detected and allowed else "blocked" if detected else "legacy_portfolio_snapshot_note",
+        "reason": (
+            "SQL-first thin Portfolio Snapshot uses SQL/JSON proof for current sizing semantics; the old freshness anchor is intentionally absent."
+            if detected and allowed
+            else "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+            if detected
+            else "Legacy Portfolio Snapshot exact-diff note sync remains active."
+        ),
+    }
 
 
 def ticker_from_packet(packet: dict[str, Any]) -> str:
@@ -197,6 +238,63 @@ def process_proposal(packet: dict[str, Any], bundle_path: Path, window: str, app
 
 def build_audit(bundle_path: Path, window: str, apply_mode: bool, expires_hours: int) -> dict[str, Any]:
     packets = proposal_packets(bundle_path)
+    thin_contract = portfolio_snapshot_thin_contract()
+    thin_decision = sql_first_thin_snapshot_sync_decision(thin_contract)
+    if thin_decision["short_circuit_snapshot_mutation"]:
+        records = [
+            {
+                "proposal_id": str(packet.get("proposal_id") or ""),
+                "ticker": ticker_from_packet(packet),
+                "status": "sql_first_thin_snapshot_noop" if thin_decision["status"] == "ok_no_changes" else "blocked",
+                "category": CATEGORY,
+                "writes_performed": False,
+                "critical": 0 if thin_decision["status"] == "ok_no_changes" else 1,
+                "reason": thin_decision["reason"],
+            }
+            for packet in packets
+        ]
+        blocked_count = sum(1 for record in records if record.get("status") == "blocked")
+        status = "blocked" if blocked_count else "ok_no_changes"
+        return {
+            "generated_at_utc": utc_now(),
+            "mode": "apply" if apply_mode else "dry_run",
+            "window": window,
+            "status": status,
+            "category": CATEGORY,
+            "technical_sheet_mode": "sql_first_thin_portfolio_snapshot",
+            "sql_first_thin_portfolio_snapshot_contract": thin_contract,
+            "sync_decision": thin_decision,
+            "authority": {
+                "exact_diff_workspace_note_sync_only": False,
+                "reads_current_portfolio_config_only": True,
+                "writes_portfolio_snapshot_only": False,
+                "portfolio_config_weight_mutation_allowed": False,
+                "cash_risk_rule_sleeve_execution_mutation_allowed": False,
+                "trade_or_account_action_allowed": False,
+                "owner_approval_inferred": False,
+            },
+            "inputs": {
+                "proposal_bundle": rel(bundle_path),
+                "portfolio_snapshot": "03. Portfolio/Portfolio Snapshot.md",
+                "portfolio_config": "tmp/portfolio-config.json",
+            },
+            "summary": {
+                "proposal_count": len(packets),
+                "ready_to_apply_count": 0,
+                "applied_count": 0,
+                "already_current_count": 0,
+                "sql_first_thin_snapshot_noop_count": sum(1 for record in records if record.get("status") == "sql_first_thin_snapshot_noop"),
+                "blocked_count": blocked_count,
+                "writes_performed": 0,
+            },
+            "records": records,
+            "post_apply_validation": None,
+            "stop_lines": [
+                "Portfolio Snapshot is thin; current sizing semantics live in SQL/JSON proof surfaces.",
+                "No Portfolio Snapshot write, portfolio-config weight mutation, cash, risk-rule, sleeve, execution, trade, account, or money-movement action was performed.",
+                "Any blocked proposal record requires source-open inspection or note-surface repair before unattended reuse.",
+            ],
+        }
     records: list[dict[str, Any]] = []
     last_applied_approval: str | None = None
     for packet in packets:

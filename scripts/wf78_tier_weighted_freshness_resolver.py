@@ -299,8 +299,11 @@ def classify_tier_ab(
 
 def build() -> dict[str, Any]:
     ledger = load_dict(LEDGER)
+    ledger_summary = as_dict(ledger.get("summary"))
+    router_payload = load_dict(AUTO_ROUTER)
+    router_summary = as_dict(router_payload.get("summary"))
     ledger_rows = {ticker(row.get("ticker")): as_dict(row) for row in as_list(ledger.get("rows")) if ticker(as_dict(row).get("ticker"))}
-    routes = rows_by_ticker(AUTO_ROUTER)
+    routes = {ticker(row.get("ticker")): as_dict(row) for row in as_list(router_payload.get("rows")) if ticker(as_dict(row).get("ticker"))}
     repair_rows = rows_by_ticker(REPAIR_EXECUTION)
     position_rows = rows_by_ticker(POSITION_PROPOSAL)
     deployment_rows = rows_by_ticker(DEPLOYMENT_REVIEW)
@@ -360,6 +363,8 @@ def build() -> dict[str, Any]:
             "resolution_rationale": rationale,
             "card_generated_at_utc": ledger_row.get("card_generated_at_utc") or card(symbol).get("generated_at_utc"),
             "card_missing_or_stale_count": summary_row.get("missing_or_stale_count"),
+            "card_blocking_gap_count": summary_row.get("blocking_gap_count"),
+            "card_blocking_gap_families": summary_row.get("blocking_gap_families") or [],
             "stale_families": ledger_row.get("stale_families") or [],
             "deferred_until_promotion_or_owner_decision": sorted(set(str(item) for item in deferred)),
             "repair_disposition": repair_rows.get(symbol, {}).get("repair_disposition") or ledger_row.get("repair_disposition"),
@@ -389,8 +394,23 @@ def build() -> dict[str, Any]:
     for key in sorted(FALSE_AUTHORITY):
         if AUTHORITY_BOUNDARY.get(key) is not False:
             errors.append(f"authority flag not false: {key}")
-    if len(rows) != 200:
-        errors.append(f"expected 200 resolution rows, got {len(rows)}")
+    expected_active_scope = int(
+        router_summary.get("active_ticker_count")
+        or ledger_summary.get("ticker_count")
+        or len(set(ledger_rows) | set(routes))
+    )
+    if expected_active_scope <= 0:
+        errors.append("expected active scope count is empty")
+    if len(rows) != expected_active_scope:
+        errors.append(f"expected {expected_active_scope} resolution rows, got {len(rows)}")
+    if ledger_rows and routes and set(ledger_rows) != set(routes):
+        missing_from_ledger = sorted(set(routes) - set(ledger_rows))
+        missing_from_router = sorted(set(ledger_rows) - set(routes))
+        errors.append(
+            "ledger/router ticker scope mismatch: "
+            f"missing_from_ledger={len(missing_from_ledger)} "
+            f"missing_from_router={len(missing_from_router)}"
+        )
     if any(row["resolution_state"] == "blocked_unknown_tier" for row in rows):
         errors.append("one or more rows have unknown tier")
     if any(
@@ -428,7 +448,7 @@ def build() -> dict[str, Any]:
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
         "status": "blocked" if errors else "ok",
-        "purpose": "Tier-weighted WF78 freshness debt resolution for all 200 tickers.",
+        "purpose": "Tier-weighted WF78 freshness debt resolution for the active WF78 ticker scope.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": [
             rel(LEDGER),
@@ -446,6 +466,9 @@ def build() -> dict[str, Any]:
         ],
         "summary": {
             "ticker_count": len(rows),
+            "expected_active_scope_count": expected_active_scope,
+            "ledger_ticker_count": len(ledger_rows),
+            "router_ticker_count": len(routes),
             "tier_counts": dict(tier_counts.most_common()),
             "required_depth_counts": dict(depth_counts.most_common()),
             "resolution_state_counts": dict(state_counts.most_common()),

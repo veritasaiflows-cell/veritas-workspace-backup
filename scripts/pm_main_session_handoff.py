@@ -132,8 +132,37 @@ def action_is_safe(action: dict[str, Any]) -> tuple[bool, list[str]]:
     return not errors, errors
 
 
-def select_action(actions_payload: dict[str, Any]) -> dict[str, Any]:
+def select_action(actions_payload: dict[str, Any], implementation_queue: dict[str, Any] | None = None) -> dict[str, Any]:
     actions = [item for item in as_list(actions_payload.get("next_actions")) if isinstance(item, dict)]
+    queue = implementation_queue if isinstance(implementation_queue, dict) else {}
+    jobs = [job for job in as_list(queue.get("jobs")) if isinstance(job, dict)]
+    if jobs:
+        ready_source_ids = {
+            str(job.get("source_action_id"))
+            for job in jobs
+            if job.get("status") in {"ready_for_main_or_helper", "ready_for_review"}
+            and job.get("source_action_id")
+        }
+        for action in sorted(actions, key=lambda item: int(item.get("rank") or 9999)):
+            if str(action.get("action_id") or "") not in ready_source_ids:
+                continue
+            safe, _ = action_is_safe(action)
+            if safe:
+                return action
+        jobs_by_source: dict[str, list[dict[str, Any]]] = {}
+        for job in jobs:
+            source_action_id = str(job.get("source_action_id") or "")
+            if source_action_id:
+                jobs_by_source.setdefault(source_action_id, []).append(job)
+        for action in sorted(actions, key=lambda item: int(item.get("rank") or 9999)):
+            safe, _ = action_is_safe(action)
+            if not safe:
+                continue
+            matching_jobs = jobs_by_source.get(str(action.get("action_id") or ""), [])
+            if matching_jobs and all(job.get("status") == "completed_by_ledger" for job in matching_jobs):
+                continue
+            return action
+        return {}
     for action in sorted(actions, key=lambda item: int(item.get("rank") or 9999)):
         safe, _ = action_is_safe(action)
         if safe:
@@ -215,7 +244,7 @@ def command_contract(action: dict[str, Any]) -> list[str]:
         ]
     if lane == "smb_workflow_clarity":
         return [
-            "SMB Workflow Clarity / Marketing Ops Automation is resumed as a P1 monetization lane; verify `workflow_router.py WF79-SMB --answer all` before opening helper work.",
+            "SMB Workflow Clarity / Marketing Ops Automation is resumed as a P1 monetization lane; verify `scripts/workflow_router.py WF79-SMB --answer all` before opening helper work.",
             "Advance only internal proof: offer/ICP, sanitized demo packets, automation blueprints, cockpit panels, training/sales practice, and validator lint.",
             "Refresh `generic_intelligence_saas_pivot.py`, then run WF75 closeout so PM state, heartbeat handoff, operator packets, and harness routes stay aligned.",
             "Do not use real customer data, outreach, posting, ads, ad-account/customer-system access, credentials, external delivery, spend, or guaranteed ROI/revenue claims without a separate explicit approval gate.",
@@ -231,7 +260,7 @@ def selected_implementation_job(queue: dict[str, Any], action: dict[str, Any]) -
     jobs = [job for job in as_list(queue.get("jobs")) if isinstance(job, dict)]
     action_id = action.get("action_id")
     for job in jobs:
-        if job.get("source_action_id") == action_id:
+        if job.get("source_action_id") == action_id and job.get("status") != "completed_by_ledger":
             return job
     for job in jobs:
         if job.get("status") in {"ready_for_main_or_helper", "ready_for_review"}:
@@ -403,7 +432,7 @@ def build_handoff(
     heartbeat = load_json(heartbeat_path)
     implementation_queue = load_json(implementation_queue_path)
     ledger = read_ledger(ledger_path)
-    selected = select_action(actions_payload)
+    selected = select_action(actions_payload, implementation_queue)
     selected_job = selected_implementation_job(implementation_queue, selected)
     safe, errors = action_is_safe(selected)
     recent_dispatch = recent_ready_dispatch(
@@ -416,6 +445,7 @@ def build_handoff(
     status = "ready_for_main_session" if safe else "blocked"
     if not selected:
         status = "no_action"
+        errors = []
     elif safe and recent_dispatch.get("recent"):
         status = "recently_dispatched"
     signal = signal_classification(status, selected, errors)
@@ -499,7 +529,7 @@ def build_handoff_from_payloads(
     now = datetime.now(timezone.utc)
     generated_at = now.replace(microsecond=0).isoformat().replace("+00:00", "Z")
     ledger = read_ledger(ledger_path)
-    selected = select_action(actions_payload)
+    selected = select_action(actions_payload, implementation_queue)
     selected_job = selected_implementation_job(implementation_queue, selected)
     safe, errors = action_is_safe(selected)
     recent_dispatch = recent_ready_dispatch(
@@ -512,6 +542,7 @@ def build_handoff_from_payloads(
     status = "ready_for_main_session" if safe else "blocked"
     if not selected:
         status = "no_action"
+        errors = []
     elif safe and recent_dispatch.get("recent"):
         status = "recently_dispatched"
     signal = signal_classification(status, selected, errors)

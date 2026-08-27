@@ -17,6 +17,7 @@ import json
 import re
 import time
 from datetime import datetime, timezone
+from html import unescape
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -38,7 +39,9 @@ BAKER_HUGHES_URLS = [
     "https://rigcount.bakerhughes.com/",
     "https://bakerhughesrigcount.gcs-web.com/rig-count-overview",
 ]
+AOGR_US_RIG_COUNT_URL = "https://www.aogr.com/web-exclusives/us-rig-count"
 BAKER_HUGHES_PER_URL_TIMEOUT_CAP = 4
+USABLE_RIG_STATUSES = {"ok", "cached_fallback", "public_republisher_fallback"}
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -176,7 +179,7 @@ def strip_tags(text: str) -> str:
     text = re.sub(r"<script\b.*?</script>", " ", text, flags=re.IGNORECASE | re.DOTALL)
     text = re.sub(r"<style\b.*?</style>", " ", text, flags=re.IGNORECASE | re.DOTALL)
     text = re.sub(r"<[^>]+>", " ", text)
-    return re.sub(r"\s+", " ", text)
+    return unescape(re.sub(r"\s+", " ", text))
 
 
 def parse_baker_hughes_from_text(text: str, url: str, diag: dict[str, Any]) -> dict[str, Any] | None:
@@ -205,6 +208,40 @@ def parse_baker_hughes_from_text(text: str, url: str, diag: dict[str, Any]) -> d
     return None
 
 
+def parse_aogr_rig_count_from_text(text: str, diag: dict[str, Any]) -> dict[str, Any] | None:
+    clean = strip_tags(text)
+    pattern = (
+        r"(\d{2}/\d{2}/\d{4}) Total Rigs 2026 \(Wk\./Wk\.\)\s*([+\-]?\d+)\s+(\d{2,4}) "
+        r"Oil \(Wk\./Wk\.\)\s*([+\-]?\d+)\s*\((\d{2,4})\) "
+        r"Gas \(Wk\./Wk\.\)\s*([+\-]?\d+)\s*\((\d{2,4})\) "
+        r"Misc\. \(Wk\./Wk\.\)\s*([+\-]?\d+)\s*\((\d{1,4})\)"
+    )
+    match = re.search(pattern, clean)
+    if not match:
+        return None
+    date_text, total_delta, total, oil_delta, oil, gas_delta, gas, misc_delta, misc = match.groups()
+    total_rigs = int(total)
+    if not 100 <= total_rigs <= 1500:
+        return None
+    return {
+        "status": "public_republisher_fallback",
+        "source_url": AOGR_US_RIG_COUNT_URL,
+        "source": "AOGR U.S. Rig Count page",
+        "source_mode": "public_republisher_fallback_after_official_timeout",
+        "fetch": diag,
+        "latest_date": date_text,
+        "us_rig_count": total_rigs,
+        "oil_rig_count": int(oil),
+        "gas_rig_count": int(gas),
+        "misc_rig_count": int(misc),
+        "week_change": int(total_delta),
+        "oil_week_change": int(oil_delta),
+        "gas_week_change": int(gas_delta),
+        "misc_week_change": int(misc_delta),
+        "note": "AOGR labels this data as made available by Baker Hughes. Use as review-only fallback when Baker Hughes official pages time out.",
+    }
+
+
 def fetch_baker_hughes(timeout: int, previous: dict[str, Any] | None) -> dict[str, Any]:
     attempts: list[dict[str, Any]] = []
     rig_timeout = max(1, min(timeout, BAKER_HUGHES_PER_URL_TIMEOUT_CAP))
@@ -216,17 +253,26 @@ def fetch_baker_hughes(timeout: int, previous: dict[str, Any] | None) -> dict[st
             if parsed:
                 parsed["attempts"] = attempts
                 return parsed
+    fallback_text, fallback_diag = fetch_text(AOGR_US_RIG_COUNT_URL, timeout)
+    if fallback_text:
+        parsed = parse_aogr_rig_count_from_text(fallback_text, fallback_diag)
+        if parsed:
+            parsed["official_attempts"] = attempts
+            parsed["fallback_attempt"] = fallback_diag
+            return parsed
     previous_rig = (((previous or {}).get("baker_hughes") or {}))
-    if previous_rig.get("status") == "ok":
+    if previous_rig.get("status") in USABLE_RIG_STATUSES:
         cached = dict(previous_rig)
         cached["status"] = "cached_fallback"
         cached["source_mode"] = "cached_fallback_after_fetch_failure"
         cached["attempts"] = attempts
+        cached["fallback_attempt"] = fallback_diag
         return cached
     return {
         "status": "unavailable",
         "source_url": BAKER_HUGHES_URLS[0],
         "attempts": attempts,
+        "fallback_attempt": fallback_diag,
         "latest_date": None,
         "us_rig_count": None,
         "note": "Baker Hughes official rig-count fetch failed or page shape was not parseable.",
@@ -245,7 +291,9 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     if ((payload.get("eia_weekly_petroleum") or {}).get("status")) != "ok":
         warnings.append("EIA weekly petroleum table unavailable")
     rig_status = ((payload.get("baker_hughes") or {}).get("status"))
-    if rig_status not in {"ok", "cached_fallback"}:
+    if rig_status == "public_republisher_fallback":
+        warnings.append("Baker Hughes official unavailable; using AOGR public republisher fallback")
+    elif rig_status not in USABLE_RIG_STATUSES:
         warnings.append("Baker Hughes rig count unavailable")
     return {"status": "ok" if not errors else "error", "errors": errors, "warnings": warnings}
 
@@ -270,7 +318,8 @@ def build_payload(timeout: int) -> dict[str, Any]:
             "eia_inventory_signal": (eia.get("summary") or {}).get("inventory_signal"),
             "baker_hughes_status": baker.get("status"),
             "us_rig_count": baker.get("us_rig_count"),
-            "manual_review_required": baker.get("status") not in {"ok", "cached_fallback"},
+            "manual_review_required": baker.get("status") not in USABLE_RIG_STATUSES,
+            "source_caveat_required": baker.get("status") == "public_republisher_fallback",
         },
     }
     payload["validation"] = validate(payload)

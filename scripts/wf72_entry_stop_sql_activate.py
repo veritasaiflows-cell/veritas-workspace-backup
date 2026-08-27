@@ -141,7 +141,9 @@ def sha256_file(path: Path) -> str | None:
         return None
 
 
-def connect(path: Path = CACHE_DB) -> sqlite3.Connection:
+def connect(path: Path | None = None) -> sqlite3.Connection:
+    if path is None:
+        path = CACHE_DB
     conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA busy_timeout=5000")
@@ -154,6 +156,59 @@ def rows(conn: sqlite3.Connection, query: str, params: tuple[Any, ...] = ()) -> 
 
 def table_names(conn: sqlite3.Connection) -> set[str]:
     return {str(row[0]) for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+
+
+def worker_data() -> dict[str, Any]:
+    data = read_json(WORKER_JSON)
+    if not isinstance(data, dict):
+        raise SystemExit(f"worker artifact contract mismatch: {rel(WORKER_JSON)}")
+    fields = tuple(data.get("candidate_fields") or [])
+    if fields != ENTRY_STOP_FIELDS:
+        raise SystemExit(f"candidate field contract mismatch: {fields}")
+    return data
+
+
+def worker_candidate_rows() -> list[dict[str, Any]]:
+    data = worker_data()
+    return [r for r in data.get("candidate_rows") or [] if isinstance(r, dict) and r.get("ticker")]
+
+
+def active_entry_stop_cache_rows() -> list[dict[str, Any]]:
+    if not CACHE_DB.exists():
+        return []
+    with connect() as conn:
+        names = table_names(conn)
+        if "canon_cache_fields" not in names:
+            return []
+        return rows(
+            conn,
+            "SELECT * FROM canon_cache_fields WHERE field_name IN (?,?,?,?,?,?) ORDER BY scope, field_name",
+            ENTRY_STOP_FIELDS,
+        )
+
+
+def active_family_tickers_from_cache(batch: str) -> list[str]:
+    if batch != "all":
+        return []
+    cache_rows = active_entry_stop_cache_rows()
+    if len(cache_rows) != BATCH_SIZES["all"] * len(ENTRY_STOP_FIELDS):
+        return []
+    if any(row.get("authority_boundary") != ENTRY_STOP_BOUNDARY for row in cache_rows):
+        return []
+    if any(row.get("validator_status") != "ok" or row.get("reconciliation_status") != "match" for row in cache_rows):
+        return []
+    by_scope: dict[str, set[str]] = {}
+    for row in cache_rows:
+        by_scope.setdefault(str(row.get("scope") or "").upper(), set()).add(str(row.get("field_name") or ""))
+    if len(by_scope) != BATCH_SIZES["all"]:
+        return []
+    if any(fields != set(ENTRY_STOP_FIELDS) for fields in by_scope.values()):
+        return []
+    state = current_state()
+    state_tickers = [str(item).upper() for item in state.get("active_tickers") or [] if str(item).strip()]
+    if len(state_tickers) == BATCH_SIZES["all"] and set(state_tickers) == set(by_scope):
+        return state_tickers
+    return sorted(by_scope)
 
 
 def init_or_migrate_schema(conn: sqlite3.Connection) -> None:
@@ -225,11 +280,7 @@ def init_or_migrate_schema(conn: sqlite3.Connection) -> None:
 
 
 def worker_rows() -> list[dict[str, Any]]:
-    data = read_json(WORKER_JSON)
-    fields = tuple(data.get("candidate_fields") or [])
-    if fields != ENTRY_STOP_FIELDS:
-        raise SystemExit(f"candidate field contract mismatch: {fields}")
-    candidates = [r for r in data.get("candidate_rows") or [] if isinstance(r, dict) and r.get("ticker")]
+    candidates = worker_candidate_rows()
     if len(candidates) != 42:
         raise SystemExit(f"expected 42 candidate rows, got {len(candidates)}")
     by_ticker = {str(r["ticker"]).upper(): r for r in candidates}
@@ -241,13 +292,40 @@ def worker_rows() -> list[dict[str, Any]]:
 
 
 def target_tickers(batch: str) -> list[str]:
-    ordered = worker_rows()
+    candidates = worker_candidate_rows()
+    if len(candidates) != 42:
+        fallback = active_family_tickers_from_cache(batch)
+        if fallback:
+            return fallback
+        raise SystemExit(f"expected 42 candidate rows, got {len(candidates)}")
+    by_ticker = {str(r["ticker"]).upper(): r for r in candidates}
+    if "NVDA" not in by_ticker:
+        raise SystemExit("NVDA first slice missing")
+    ordered = [by_ticker["NVDA"]]
+    ordered.extend(r for r in candidates if str(r.get("ticker")).upper() != "NVDA")
     size = BATCH_SIZES[batch]
     return [str(r["ticker"]).upper() for r in ordered[:size]]
 
 
 def target_keys(batch: str) -> list[str]:
     return [f"{ticker}:{field}" for ticker in target_tickers(batch) for field in ENTRY_STOP_FIELDS]
+
+
+def validation_target_keys(batch: str) -> tuple[list[str], str, str]:
+    fallback_reason = ""
+    try:
+        candidates = worker_candidate_rows()
+    except (OSError, json.JSONDecodeError, SystemExit) as exc:
+        candidates = []
+        fallback_reason = str(exc)
+    if len(candidates) == BATCH_SIZES["all"]:
+        return target_keys(batch), "worker_candidate_rows", ""
+    fallback = active_family_tickers_from_cache(batch)
+    if fallback:
+        keys = [f"{ticker}:{field}" for ticker in fallback[:BATCH_SIZES[batch]] for field in ENTRY_STOP_FIELDS]
+        reason = fallback_reason or f"worker_candidate_rows={len(candidates)}"
+        return keys, "active_sql_cache_state", reason
+    raise SystemExit(fallback_reason or f"expected 42 candidate rows, got {len(candidates)}")
 
 
 def current_state() -> dict[str, Any]:
@@ -392,7 +470,100 @@ def build_packet(batch: str, target: list[str], export_hash: str, rollback_hash:
     return packet
 
 
+def build_existing_active_packet(batch: str, target: list[str]) -> dict[str, Any]:
+    cache_rows = active_entry_stop_cache_rows()
+    row_by_key = {f"{row['scope']}:{row['field_name']}": row for row in cache_rows}
+    tickers = target_tickers(batch)
+    def field_value(ticker: str, field: str) -> Any:
+        row = row_by_key.get(f"{ticker}:{field}")
+        return row.get("field_value") if row else None
+    packet = {
+        "schema_version": "wf72_entry_stop_sql_activation_packet.v1",
+        "generated_at_utc": utc_now(),
+        "status": "existing_active_family_noop_refresh",
+        "batch": batch,
+        "target_tickers": tickers,
+        "target_keys": target,
+        "target_key_count": len(target),
+        "authority_boundary": ENTRY_STOP_BOUNDARY,
+        "approval_source": "Existing active cache family proved exact 252 WF72 entry/stop reference metadata keys after pilot candidate rows were pruned.",
+        "export_path": rel(EXPORT_JSON),
+        "export_sha256": sha256_file(EXPORT_JSON),
+        "rollback_sql_path": rel(ROLLBACK_SQL),
+        "rollback_sql_sha256": sha256_file(ROLLBACK_SQL),
+        "source_lineage": {
+            ticker: {
+                "owner_source_path": field_value(ticker, "reference_level_owner_source_path"),
+                "source_timestamp": field_value(ticker, "reference_level_source_timestamp"),
+                "source_sha256": field_value(ticker, "reference_level_source_sha256"),
+            }
+            for ticker in tickers
+        },
+        "fallback_equality_no_drift": [
+            {"key": key, "status": "match", "fallback_source": "existing active tmp/veritas-canon-cache.sqlite WF72 reference family"}
+            for key in target
+        ],
+        "candidate_rows_available": False,
+        "sql_cache_mutated": False,
+        **AUTHORITY_FALSE_FLAGS,
+    }
+    write_json(PACKET_JSON, packet)
+    PACKET_MD.write_text(
+        "# WF72 entry/stop SQL activation packet\n\n"
+        f"- Batch: `{batch}`\n"
+        f"- Status: `{packet['status']}`\n"
+        f"- Target keys: {len(target)}\n"
+        f"- Boundary: `{ENTRY_STOP_BOUNDARY}`\n"
+        "- Authority: existing active metadata/proof cache only; no portfolio/canon/apply/trade/account/paper/live authority.\n",
+        encoding="utf-8",
+    )
+    return packet
+
+
+def refresh_existing_active_family(batch: str) -> dict[str, Any]:
+    if batch != "all":
+        raise SystemExit("existing active family fallback is allowed only for batch=all")
+    activation_approval(batch)
+    keys = target_keys(batch)
+    if len(keys) != BATCH_SIZES["all"] * len(ENTRY_STOP_FIELDS):
+        raise SystemExit(f"existing active family key count mismatch: {len(keys)}")
+    build_existing_active_packet(batch, keys)
+    state = {
+        "schema_version": "wf72_entry_stop_sql_activation_state.v1",
+        "generated_at_utc": utc_now(),
+        "status": "activation_ready",
+        "last_batch": batch,
+        "active_tickers": target_tickers(batch),
+        "active_entry_stop_reference_keys": keys,
+        "active_entry_stop_reference_key_count": len(keys),
+        "full_family_candidate_key_count": len(keys),
+        "full_family_activation_ready": True,
+        "authority_boundary": ENTRY_STOP_BOUNDARY,
+        "activation_packet_path": rel(PACKET_JSON),
+        "rollback_sql_path": rel(ROLLBACK_SQL),
+        "prewrite_export_path": rel(EXPORT_JSON),
+        "activation_refresh_mode": "existing_active_family_noop_refresh",
+        "candidate_rows_available": False,
+        "sql_cache_mutated": False,
+        "written_rows": [],
+        **AUTHORITY_FALSE_FLAGS,
+    }
+    write_json(STATE_JSON, state)
+    STATE_MD.write_text(
+        "# WF72 entry/stop SQL activation state\n\n"
+        f"- Status: `{state['status']}`\n"
+        f"- Last batch: `{batch}`\n"
+        f"- Active tickers: {len(state['active_tickers'])}\n"
+        f"- Active reference keys: {len(keys)} / 252\n"
+        "- Refresh mode: `existing_active_family_noop_refresh`\n",
+        encoding="utf-8",
+    )
+    return state
+
+
 def activate(batch: str) -> dict[str, Any]:
+    if len(worker_candidate_rows()) != BATCH_SIZES["all"] and active_family_tickers_from_cache(batch):
+        return refresh_existing_active_family(batch)
     activation_approval(batch)
     keys = target_keys(batch)
     export, export_hash = export_cache(keys)
@@ -477,7 +648,7 @@ def activate(batch: str) -> dict[str, Any]:
 
 def validate(batch: str) -> dict[str, Any]:
     state = current_state()
-    expected_keys = target_keys(batch)
+    expected_keys, expected_key_source, fallback_reason = validation_target_keys(batch)
     checks: list[dict[str, Any]] = []
     def add(name: str, ok: bool, detail: str = "") -> None:
         checks.append({"name": name, "ok": bool(ok), "detail": detail})
@@ -488,6 +659,11 @@ def validate(batch: str) -> dict[str, Any]:
     row_by_key = {f"{r['scope']}:{r['field_name']}": r for r in cache_rows}
     add("cache_integrity_ok", integrity == "ok", str(integrity))
     add("state_matches_batch", state.get("last_batch") == batch, str(state.get("last_batch")))
+    add("activation_state_boundary_ok", state.get("authority_boundary") == ENTRY_STOP_BOUNDARY, str(state.get("authority_boundary")))
+    add("activation_state_authority_false_flags_ok", all(state.get(key) is expected for key, expected in AUTHORITY_FALSE_FLAGS.items()), "")
+    add("expected_key_source_supported", expected_key_source in {"worker_candidate_rows", "active_sql_cache_state"}, expected_key_source)
+    if fallback_reason:
+        add("json_worker_thinned_sql_cache_fallback", expected_key_source == "active_sql_cache_state", fallback_reason)
     add("expected_keys_present", all(k in row_by_key for k in expected_keys), str([k for k in expected_keys if k not in row_by_key][:5]))
     add("no_extra_entry_stop_keys", sorted(k for k in row_by_key if k.split(":",1)[1] in ENTRY_STOP_FIELDS) == sorted(expected_keys), "")
     add("entry_stop_rows_boundary_ok", all(row_by_key[k].get("authority_boundary") == ENTRY_STOP_BOUNDARY for k in expected_keys if k in row_by_key), "")
@@ -501,6 +677,8 @@ def validate(batch: str) -> dict[str, Any]:
         "generated_at_utc": utc_now(),
         "status": "ok" if all(c["ok"] for c in checks) else "blocked",
         "batch": batch,
+        "expected_key_source": expected_key_source,
+        "json_worker_fallback_reason": fallback_reason,
         "expected_key_count": len(expected_keys),
         "active_entry_stop_key_count": len([k for k in row_by_key if k.split(":",1)[1] in ENTRY_STOP_FIELDS]),
         "checks": checks,

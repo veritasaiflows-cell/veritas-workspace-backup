@@ -1,37 +1,55 @@
 {
-  "status": "warning",
-  "generated_at_utc": "2026-05-10T05:25:59Z",
+  "status": "critical",
+  "generated_at_utc": "2026-08-27T00:14:27Z",
   "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
   "canonical_truth_note": "This validator detects governance drift only. Source notes and approved config remain authoritative.",
   "counts": {
-    "findings": 3,
-    "critical": 0,
-    "warnings": 3,
-    "info": 0
+    "findings": 4,
+    "critical": 2,
+    "warnings": 1,
+    "info": 1
   },
   "findings": [
     {
-      "check_id": "telegram_channel_setup_pending",
-      "severity": "warning",
-      "issue": "Telegram channel is enabled under Randall's setup-pending exception, but delivery is not yet proven",
-      "recommendation": "Verify bot/token/allowlist/owner-route behavior before relying on Telegram for automation delivery.",
+      "check_id": "wf40_residual_proof_exception_active",
+      "severity": "info",
+      "issue": "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
+      "recommendation": "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
       "evidence": {
-        "channel": "telegram"
+        "active_workflow_found": "64",
+        "wf40_registry_row_found": true
       }
     },
     {
-      "check_id": "telegram_plugin_setup_pending",
-      "severity": "warning",
-      "issue": "Telegram plugin is enabled under Randall's setup-pending exception, but delivery is not yet proven",
-      "recommendation": "Verify Telegram delivery before relying on it for scheduled automation reports."
+      "check_id": "db_lifecycle_manifest_validation_error",
+      "severity": "critical",
+      "issue": "DB lifecycle manifest reports validation errors",
+      "recommendation": "Fix manifest classification/integrity errors before archive or cleanup decisions.",
+      "evidence": {
+        "validation_errors": [
+          "tmp/test-vector-memory.sqlite is unclassified"
+        ],
+        "truncated": false
+      }
     },
     {
-      "check_id": "owner_allow_config_unavailable",
-      "severity": "warning",
-      "issue": "Could not read OpenClaw commands.ownerAllowFrom config snippet",
-      "recommendation": "Verify owner authority remains local Control UI only or the explicitly approved Telegram setup path.",
+      "check_id": "db_lifecycle_manifest_bad_counts",
+      "severity": "critical",
+      "issue": "DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases",
+      "recommendation": "Stop cleanup automation and inspect the manifest before making archive/delete decisions.",
       "evidence": {
-        "error": "openclaw config get commands.ownerAllowFrom returned rc=1"
+        "unknown_count": 1,
+        "integrity_error_count": 0,
+        "delete_ready_count": 0
+      }
+    },
+    {
+      "check_id": "db_lifecycle_archive_ready_owner_decision",
+      "severity": "warning",
+      "issue": "DB lifecycle manifest has archive-ready candidates awaiting owner decision",
+      "recommendation": "Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.",
+      "evidence": {
+        "archive_ready_count": 3
       }
     }
   ]

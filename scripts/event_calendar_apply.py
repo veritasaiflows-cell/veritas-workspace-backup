@@ -252,6 +252,22 @@ def build_updated_text(text: str, rollforward: dict[str, Any], source_confidence
     if rollforward.get("status") not in {"ok", "partial"}:
         raise RuntimeError("roll-forward packet is not usable")
     if rollforward.get("warnings"):
+        warnings = [str(warning) for warning in rollforward.get("warnings", [])]
+        proposals = rollforward.get("proposals", [])
+        provider_unavailable_noop = (
+            not proposals
+            and set(warnings).issubset({"earnings-calendar artifact is not usable"})
+        )
+        if provider_unavailable_noop:
+            return text, {
+                "block_action": "no_op_provider_unavailable",
+                "applied_rollforward_count": 0,
+                "nvda_primary_confirmed": False,
+                "tickers": [],
+                "provider_unavailable_noop": True,
+                "rollforward_warnings": warnings,
+                "note": "Provider calendar evidence was unusable and no roll-forward proposals were staged; Event Calendar mutation skipped safely.",
+            }
         raise RuntimeError("roll-forward packet has warnings; refusing canonical calendar update")
     block, rows = build_auto_block(rollforward, source_confidence)
     updated, block_action = replace_auto_block(text, block)

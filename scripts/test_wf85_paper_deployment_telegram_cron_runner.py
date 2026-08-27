@@ -32,6 +32,21 @@ def test_blocked_digest_sent_to_telegram_is_validation_ok() -> None:
     assert confirmation["blocker_surfaced_by_telegram"] is True
 
 
+def test_blocked_morning_builder_sent_to_telegram_is_validation_ok() -> None:
+    status, operator_action, errors, warnings, confirmation = runner.classify_validation(
+        [step("morning_paper_deployment_recommendation_builder", False)],
+        blocked_digest(),
+        {"status": "SENT", "sent_count": 1, "blockers": []},
+        send=True,
+    )
+
+    assert status == "blocked"
+    assert operator_action == "TELEGRAM_BLOCKER_SENT"
+    assert errors == []
+    assert "digest_blocked_surfaced_by_telegram" in warnings
+    assert confirmation["blocker_surfaced_by_telegram"] is True
+
+
 def test_blocked_digest_without_send_fails_closed() -> None:
     status, operator_action, errors, _warnings, confirmation = runner.classify_validation(
         [step("wf85_paper_deployment_notification_digest", False)],
@@ -63,10 +78,33 @@ def test_send_failure_fails_closed() -> None:
     assert confirmation["notifier_status"] == "SEND_FAILED"
 
 
+def test_default_morning_builder_command_is_ledger_only() -> None:
+    command = runner.morning_builder_command()
+    assert "--ledger-only" in command
+    assert "--write" in command
+    assert "--validate" in command
+
+
+def test_full_morning_builder_command_is_opt_in() -> None:
+    command = runner.morning_builder_command(full_refresh=True)
+    assert "--ledger-only" not in command
+    assert "--write" in command
+    assert "--validate" in command
+
+
+def test_quote_proof_refresh_precedes_digest() -> None:
+    command = runner.pre_digest_quote_refresh_command()
+    assert command[-1] == "scripts\\intraday_quote_snapshot_proof.py"
+
+
 def main() -> int:
     test_blocked_digest_sent_to_telegram_is_validation_ok()
+    test_blocked_morning_builder_sent_to_telegram_is_validation_ok()
     test_blocked_digest_without_send_fails_closed()
     test_send_failure_fails_closed()
+    test_default_morning_builder_command_is_ledger_only()
+    test_full_morning_builder_command_is_opt_in()
+    test_quote_proof_refresh_precedes_digest()
     print("wf85_paper_deployment_telegram_cron_runner targeted tests passed")
     return 0
 

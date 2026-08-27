@@ -1,43 +1,93 @@
 {
-  "generated_at_utc": "2026-05-10T03:38:13.610407+00:00",
-  "status": "manual",
+  "generated_at_utc": "2026-08-27T13:14:15.274377+00:00",
+  "status": "ok",
+  "policy_status": "current",
+  "freshness_status": "fresh",
+  "remediation": {
+    "owner": "policy_expectations_refresh.py",
+    "command": "python scripts\\policy_expectations_refresh.py",
+    "follow_on_commands": [
+      "python scripts\\market_state_refresh.py",
+      "python scripts\\macro_regime_refresh.py",
+      "python scripts\\generate_dashboard.py",
+      "python scripts\\validate_dashboard_state.py --write"
+    ],
+    "action": "No action required; policy artifact is current enough for dashboard and macro-regime use."
+  },
+  "safety": {
+    "safe_for_macro_regime": true,
+    "safe_for_dashboard_summary": true,
+    "hard_fail_closed": false
+  },
+  "freshness_contract": {
+    "schema_version": 1,
+    "policy_status": "current",
+    "freshness_status": "fresh",
+    "categories": [],
+    "safe_for_macro_regime": true,
+    "safe_for_dashboard_summary": true,
+    "hard_fail_closed": false,
+    "remediation": {
+      "owner": "policy_expectations_refresh.py",
+      "command": "python scripts\\policy_expectations_refresh.py",
+      "follow_on_commands": [
+        "python scripts\\market_state_refresh.py",
+        "python scripts\\macro_regime_refresh.py",
+        "python scripts\\generate_dashboard.py",
+        "python scripts\\validate_dashboard_state.py --write"
+      ],
+      "action": "No action required; policy artifact is current enough for dashboard and macro-regime use."
+    },
+    "source": {
+      "target_range_as_of": "2026-08-27",
+      "target_range_source": "FRED DFEDTARL/DFEDTARU",
+      "next_fomc_date": "2026-09-16",
+      "next_fomc_zq_ticker": "ZQU26",
+      "implied_rate_source_mode": "primary"
+    },
+    "authority": {
+      "review_only": true,
+      "portfolio_mutation_allowed": false,
+      "canonical_note_mutation_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
   "stale_after_hours": 24,
   "expected_update_window": "Refresh daily during active market sessions and before macro-sensitive weekly outputs. Refresh again on scheduled FOMC decision days after the announcement.",
-  "last_trading_day": "2026-05-10",
+  "last_trading_day": "2026-08-27",
   "source_last_trading_day": {
-    "policy_expectations": "2026-05-10",
-    "current_target_range": "2026-04-29"
+    "policy_expectations": "2026-08-27",
+    "current_target_range": "2026-08-27"
   },
   "freshness_notes": [
-    "manual_target_range",
+    "fred_target_range",
     "official_next_fomc_date",
     "auto_derived_next_fomc_contract"
   ],
-  "warnings": [
-    "Automatic FRED target-range fetch failed; falling back to manual constants. DFEDTARL: FRED_API_KEY not set; DFEDTARU: FRED_API_KEY not set"
-  ],
+  "warnings": [],
   "data": {
-    "source_label": "30-day Fed Funds futures via Yahoo Finance (ZQM26.CBT)",
-    "source_mode": "mixed",
+    "source_label": "30-day Fed Funds futures via Yahoo Finance (ZQU26.CBT)",
+    "source_mode": "primary",
     "implied_rate_source_mode": "primary",
     "current_target_range": {
       "low": 3.5,
       "high": 3.75,
-      "as_of": "2026-04-29",
+      "as_of": "2026-08-27",
       "confirmed": true,
-      "source": "manual constants in scripts/policy_expectations_refresh.py",
+      "source": "FRED DFEDTARL/DFEDTARU",
       "invalid_reason": null
     },
     "next_fomc": {
-      "meeting_date": "2026-06-17",
-      "days_until": 38,
-      "zq_ticker": "ZQM26",
+      "meeting_date": "2026-09-16",
+      "days_until": 20,
+      "zq_ticker": "ZQU26",
       "contract_source": "derived from resolved next FOMC date",
       "date_source": "official Fed calendar",
       "distribution": [
         {
           "outcome": "hold",
-          "probability": 100.0
+          "probability": 82.0
         },
         {
           "outcome": "cut_25bp",
@@ -45,33 +95,27 @@
         },
         {
           "outcome": "hike_25bp",
-          "probability": 0.0
+          "probability": 18.0
         }
       ],
       "most_likely_outcome": "hold",
-      "implied_rate": 3.625,
-      "delta_bps_vs_target_mid": 0.0,
+      "implied_rate": 3.67,
+      "delta_bps_vs_target_mid": -4.5,
       "method_note": "Single-step 25bp approximation from one 30-day Fed Funds futures contract; not a full multi-outcome meeting-distribution model.",
       "implied_rate_source_mode": "primary",
       "fetch_note": null
     },
     "next_two_meetings": [
       {
-        "meeting_date": "2026-06-17",
+        "meeting_date": "2026-09-16",
         "date_source": "official Fed calendar",
         "most_likely_outcome": "hold",
         "cut_probability": 0.0,
-        "hold_probability": 100.0,
-        "hike_probability": 0.0
+        "hold_probability": 82.0,
+        "hike_probability": 18.0
       }
     ],
-    "manual_dependencies": [
-      {
-        "field": "current_target_range",
-        "label": "Current Fed target range",
-        "detail": "Still manually maintained in policy_expectations_refresh.py and must be updated after each FOMC decision."
-      }
-    ],
+    "manual_dependencies": [],
     "notes": [
       "This artifact is the first dedicated policy layer and is intentionally explicit about manual dependencies.",
       "Probability distribution is a single-step 25bp approximation from one 30-day Fed Funds futures contract, not a full FedWatch meeting tree.",

@@ -1,30 +1,38 @@
 from __future__ import annotations
 
 import argparse
-import json
-import shutil
-import subprocess
-import sys
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
 
-from chain_manifest import expected_outputs_by_script, manifest_steps, window_description, window_names
-from market_data_utils import atomic_write_json
+from chain_executor import (
+    command_text,
+    data_quality_repair_classification,
+    data_quality_repair_steps,
+    planned_run_args,
+    run_parallel_batches,
+    run_serial,
+    selected_indices,
+    step_is_fresh,
+)
+from chain_manifest import manifest_steps, window_description, window_names
+from chain_state import (
+    append_chain_log,
+    chain_log_path,
+    chain_state_path,
+    initial_chain_state,
+    prior_state_records,
+    safe_name,
+    utc_now_iso,
+    write_chain_state,
+)
+from chain_validator import print_analysis, print_manifest_summary, print_stage_list
 
-WORKSPACE = Path(__file__).resolve().parents[1]
-SCRIPTS_DIR = WORKSPACE / "scripts"
-TMP_DIR = WORKSPACE / "tmp"
-RECOVERY_FINALIZER_SCRIPTS = {"run_summary_refresh.py", "dashboard_run_summary_consumer.py"}
-DASHBOARD_BACKUP_FAILURE_SCRIPTS = {"test_dashboard_acceptance.py", "generate_dashboard.py"}
+DEFAULT_WINDOW = "post-close"
+DEFAULT_STEP_TIMEOUT_SECONDS = 300
 
+WINDOW_DESCRIPTIONS = {window: window_description(window) for window in window_names()}
 WINDOW_CHAINS: dict[str, list[list[str]]] = {
     window: [[step["script"], *list(step.get("args") or [])] for step in manifest_steps(window)]
     for window in window_names()
 }
-DEFAULT_WINDOW = "post-close"
-
-WINDOW_DESCRIPTIONS = {window: window_description(window) for window in window_names()}
 
 
 def parse_args() -> argparse.Namespace:
@@ -63,122 +71,101 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Opt in to the gated Sunday tmp cleanup utility after the normal chain completes. This is off by default and only applies to the sunday window.",
     )
+    parser.add_argument(
+        "--step-timeout",
+        type=int,
+        default=DEFAULT_STEP_TIMEOUT_SECONDS,
+        help="Per-step timeout in seconds. Default: 300.",
+    )
+    parser.add_argument(
+        "--analyze",
+        action="store_true",
+        help="Analyze manifest graph, batches, stages, and validation findings.",
+    )
+    parser.add_argument(
+        "--list-stages",
+        action="store_true",
+        help="List stage names and step counts for the selected window.",
+    )
+    parser.add_argument(
+        "--stage",
+        help="Run only one named stage. Writes tmp/run-chain-{window}-{stage}.json.",
+    )
+    parser.add_argument(
+        "--from-stage",
+        help="Resume from the first occurrence of a named stage; earlier steps are marked skipped_by_user.",
+    )
+    parser.add_argument(
+        "--incremental",
+        action="store_true",
+        help="Skip steps whose expected outputs are fresh against dependency outputs and prior clean state.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Bypass incremental freshness skipping for the selected scope while retaining state/log output.",
+    )
+    parser.add_argument(
+        "--parallel",
+        type=int,
+        default=1,
+        help="Opt-in bounded parallelism. Default 1 preserves serial manifest order.",
+    )
     return parser.parse_args()
 
 
-def utc_now_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+def resolved_manifest_steps(window: str, build_workbook: bool, cleanup: bool) -> list[dict]:
+    steps = manifest_steps(window)
+    if build_workbook:
+        resolved: list[dict] = []
+        inserted = False
+        for step in steps:
+            resolved.append(step)
+            if step.get("script") == "workbook_export.py":
+                resolved.append({
+                    "script": "workbook_template.py",
+                    "args": [],
+                    "category": "summary",
+                    "stage": "manual_workbook_packaging",
+                    "expected_outputs": [],
+                    "depends_on": ["workbook_export.py"],
+                    "recovery_posture": "fail_chain",
+                    "incremental_skip": False,
+                })
+                inserted = True
+        if not inserted:
+            resolved.append({
+                "script": "workbook_template.py",
+                "args": [],
+                "category": "summary",
+                "stage": "manual_workbook_packaging",
+                "expected_outputs": [],
+                "depends_on": [],
+                "recovery_posture": "fail_chain",
+                "incremental_skip": False,
+            })
+        steps = resolved
+
+    if cleanup and window == "sunday":
+        steps = [
+            *steps,
+            {
+                "script": "tmp_cleanup.py",
+                "args": ["--apply"],
+                "category": "cleanup",
+                "stage": "manual_cleanup",
+                "expected_outputs": ["tmp/tmp-cleanup-report.json"],
+                "depends_on": [],
+                "recovery_posture": "fail_chain",
+                "incremental_skip": False,
+                "parallel_safe": False,
+            },
+        ]
+    return steps
 
 
-def chain_state_path(window: str) -> Path:
-    return TMP_DIR / f"run-chain-{window}.json"
-
-
-def planned_run_args(step: list[str], strict: bool) -> list[str]:
-    script = step[0]
-    run_args = list(step[1:])
-    if script == "validate_dashboard_state.py" and strict and "--strict" not in run_args:
-        run_args.append("--strict")
-    return run_args
-
-
-def build_step_record(index: int, step: list[str], strict: bool) -> dict[str, Any]:
-    script = step[0]
-    run_args = planned_run_args(step, strict)
-    return {
-        "index": index,
-        "script": script,
-        "args": run_args,
-        "command": " ".join([script, *run_args]).strip(),
-        "status": "pending",
-        "started_at_utc": "",
-        "completed_at_utc": "",
-        "exit_code": None,
-    }
-
-
-def initial_chain_state(window: str, steps: list[list[str]], strict: bool) -> dict[str, Any]:
-    return {
-        "window": window,
-        "owner": "scripts/run_finance_refresh_chain.py",
-        "started_at_utc": utc_now_iso(),
-        "completed_at_utc": "",
-        "status": "running",
-        "exit_code": None,
-        "strict": strict,
-        "recovery": {
-            "triggered": False,
-            "active": False,
-            "reason": "",
-            "failed_step": None,
-        },
-        "steps": [build_step_record(index, step, strict) for index, step in enumerate(steps, start=1)],
-    }
-
-
-def write_chain_state(window: str, state: dict[str, Any]) -> None:
-    path = chain_state_path(window)
-    try:
-        atomic_write_json(path, state)
-    except PermissionError:
-        with path.open("w", encoding="utf-8", newline="\n") as fh:
-            json.dump(state, fh, indent=2)
-
-
-def maybe_backup_dashboard(script: str) -> None:
-    if script not in DASHBOARD_BACKUP_FAILURE_SCRIPTS:
-        return
-    dash_path = TMP_DIR / "veritas-command-center.html"
-    backup_path = TMP_DIR / "veritas-command-center.last-good.html"
-    if not dash_path.exists():
-        return
-    print(f"  [!] Backing up current dashboard to {backup_path.name}")
-    try:
-        shutil.copy2(dash_path, backup_path)
-    except Exception as exc:
-        print(f"  [!] Backup failed: {exc}")
-
-
-def write_recovery_canon_drift_report() -> None:
-    """Best-effort drift proof after any chain failure.
-
-    This is read-only reporting. It ensures a failed window leaves a current
-    canon-drift artifact even when the normal late-chain validators are skipped.
-    """
-    path = SCRIPTS_DIR / "canon_drift_freshness_gate.py"
-    if not path.exists():
-        print("  [!] Recovery canon drift report skipped: script missing")
-        return
-    print("  [!] Writing recovery canon drift report")
-    try:
-        subprocess.run([sys.executable, str(path), "--write"], cwd=str(WORKSPACE), check=False)
-    except Exception as exc:
-        print(f"  [!] Recovery canon drift report failed: {exc}")
-
-
-def write_recovery_sql_indexes(window: str) -> None:
-    """Best-effort refresh of derived SQL/index surfaces after a failed chain.
-
-    A fail-chain stop line must still stop presentation/trust, but it should not
-    leave SQL cockpit routing stranded on an older window. This keeps the
-    rebuildable artifact index current/degraded without granting it canon,
-    approval, portfolio, or trade authority.
-    """
-    commands = [
-        ["current_window_artifact_index.py", "--window", window, "--write"],
-        ["artifact_index.py", "incremental"],
-        ["artifact_index.py", "validate"],
-    ]
-    for script, *args in commands:
-        path = SCRIPTS_DIR / script
-        if not path.exists():
-            print(f"  [!] Recovery SQL/index refresh skipped: {script} missing")
-            continue
-        print(f"  [!] Recovery SQL/index refresh: {script} {' '.join(args)}")
-        try:
-            subprocess.run([sys.executable, str(path), *args], cwd=str(WORKSPACE), check=False)
-        except Exception as exc:
-            print(f"  [!] Recovery SQL/index refresh failed for {script}: {exc}")
+def resolved_steps(window: str, build_workbook: bool, cleanup: bool) -> list[list[str]]:
+    return [[step["script"], *list(step.get("args") or [])] for step in resolved_manifest_steps(window, build_workbook, cleanup)]
 
 
 def print_window_list() -> None:
@@ -190,164 +177,165 @@ def print_window_list() -> None:
         print("")
 
 
-def _manifest_summary(window: str, steps: list[list[str]]) -> list[dict[str, Any]]:
-    manifest = manifest_steps(window)
-    expected_by_script = expected_outputs_by_script(window)
-    prior_scripts: list[str] = []
-    summary: list[dict[str, Any]] = []
-    step_index_by_script = {step[0]: idx for idx, step in enumerate(steps)}
-    for step in manifest:
-        script = step["script"]
-        if script not in step_index_by_script:
-            continue
-        expected_outputs = list(step.get("expected_outputs") or [])
-        declared_dependencies = list(step.get("depends_on") or [])
-        missing_declared_dependencies = [dep for dep in declared_dependencies if dep not in prior_scripts]
-        missing_dependency_outputs = []
-        for dep in declared_dependencies:
-            for output in expected_by_script.get(dep, []):
-                if not (WORKSPACE / output).exists():
-                    missing_dependency_outputs.append(output)
-        summary.append({
-            "script": script,
-            "args": list(step.get("args") or []),
-            "category": step.get("category"),
-            "expected_outputs": expected_outputs,
-            "depends_on": declared_dependencies,
-            "missing_declared_dependencies": missing_declared_dependencies,
-            "missing_dependency_outputs": missing_dependency_outputs,
-            "recovery_posture": step.get("recovery_posture"),
-        })
-        prior_scripts.append(script)
-    return summary
-
-
-def resolved_steps(window: str, build_workbook: bool, cleanup: bool) -> list[list[str]]:
-    steps = [list(step) for step in WINDOW_CHAINS[window]]
-    if not build_workbook:
-        resolved = steps
-    else:
-        resolved = []
-        inserted = False
-        for step in steps:
-            resolved.append(step)
-            if step and step[0] == "workbook_export.py":
-                resolved.append(["workbook_template.py"])
-                inserted = True
-        if build_workbook and not inserted:
-            resolved.append(["workbook_template.py"])
-
-    if cleanup and window == "sunday":
-        resolved.append(["tmp_cleanup.py", "--apply"])
-    return resolved
-
-
-def run_chain(window: str, dry_run: bool = False, strict: bool = False, build_workbook: bool = False, cleanup: bool = False) -> int:
+def run_chain(
+    window: str,
+    dry_run: bool = False,
+    strict: bool = False,
+    build_workbook: bool = False,
+    cleanup: bool = False,
+    step_timeout: int = DEFAULT_STEP_TIMEOUT_SECONDS,
+    analyze: bool = False,
+    list_stages: bool = False,
+    stage: str | None = None,
+    from_stage: str | None = None,
+    incremental: bool = False,
+    parallel: int = 1,
+    force: bool = False,
+) -> int:
     if window not in WINDOW_CHAINS:
         print(f"ERROR: unknown window '{window}'")
         return 1
+    if step_timeout < 1:
+        print("ERROR: --step-timeout must be >= 1")
+        return 1
+    if parallel < 1:
+        print("ERROR: --parallel must be >= 1")
+        return 1
 
-    steps = resolved_steps(window, build_workbook, cleanup)
+    steps = resolved_manifest_steps(window, build_workbook, cleanup)
+    try:
+        selected, skipped_by_user, stage_scope = selected_indices(steps, stage, from_stage)
+    except ValueError as exc:
+        print(f"ERROR: {exc}")
+        return 1
+
     print(f"\nFinance refresh window: {window}")
     print(WINDOW_DESCRIPTIONS[window])
+    if stage:
+        print(f"Stage scope: only {stage}")
+    if from_stage:
+        print(f"Stage resume: from {from_stage}")
     if build_workbook:
         print("Workbook packaging tail: enabled (manual opt-in)")
     if cleanup and window == "sunday":
         print("Tmp cleanup tail: enabled (manual opt-in)")
+    if incremental:
+        print("Incremental skip: enabled")
+    if force:
+        print("Force refresh: enabled")
+    if parallel > 1:
+        print(f"Parallel execution: enabled with {parallel} workers")
+    print(f"Per-step timeout: {step_timeout} seconds")
     for index, step in enumerate(steps, start=1):
-        print(f"  {index}. {' '.join(step)}")
+        marker = "" if index - 1 in selected else " [skipped_by_user]"
+        print(f"  {index}. {command_text(step, strict)}{marker}")
 
-    manifest_summary = _manifest_summary(window, steps)
-    print("\nManifest summary:")
-    for index, item in enumerate(manifest_summary, start=1):
-        print(f"  {index}. {item['script']} [{item['category']}] recovery={item['recovery_posture']}")
-        if item["depends_on"]:
-            print(f"     depends_on: {', '.join(item['depends_on'])}")
-        if item["expected_outputs"]:
-            print(f"     expected_outputs: {', '.join(item['expected_outputs'])}")
-        if item["missing_declared_dependencies"]:
-            print(f"     MISSING PRIOR DEPENDENCIES: {', '.join(item['missing_declared_dependencies'])}")
-        if item["missing_dependency_outputs"]:
-            print(f"     missing_dependency_outputs_on_disk: {', '.join(item['missing_dependency_outputs'])}")
+    print_manifest_summary(window, steps)
+    if list_stages:
+        print_stage_list(window, steps)
+    analysis_status = print_analysis(window, steps) if analyze else 0
 
-    if dry_run:
-        print("\nDry run only, nothing executed.")
-        return 0
+    if dry_run or list_stages or analyze:
+        reason = "Dry run" if dry_run else "Inspection request"
+        print(f"\n{reason} only, nothing executed.")
+        return analysis_status
+    if analysis_status != 0:
+        print("\nManifest analysis failed; refusing execution.")
+        return analysis_status
 
-    state = initial_chain_state(window, steps, strict)
-    write_chain_state(window, state)
+    previous_records = prior_state_records(window, stage_scope)
+    state = initial_chain_state(
+        window,
+        steps,
+        strict,
+        selected,
+        skipped_by_user,
+        stage_scope,
+        parallel,
+        incremental,
+        step_timeout,
+        planned_run_args,
+        force=force,
+    )
+    write_chain_state(window, state, stage_scope)
+    append_chain_log(
+        window,
+        stage_scope,
+        {
+            "event": "chain_started",
+            "window": window,
+            "stage_scope": stage_scope or "",
+            "parallel": parallel,
+            "incremental": incremental,
+            "force": force,
+        },
+    )
 
-    failure_code: int | None = None
-    for step_record, step in zip(state["steps"], steps):
-        script = step[0]
-        run_args = list(step_record["args"])
-
-        if state["recovery"]["active"] and script not in RECOVERY_FINALIZER_SCRIPTS:
-            step_record["status"] = "skipped_after_failure"
-            step_record["completed_at_utc"] = utc_now_iso()
-            step_record["skip_reason"] = "Skipped after earlier step failure so final trust snapshot could still be emitted."
-            write_chain_state(window, state)
-            continue
-
-        path = SCRIPTS_DIR / script
-        print(f"\n=== RUN {script} {' '.join(run_args)} ===")
-        step_record["status"] = "running"
-        step_record["started_at_utc"] = utc_now_iso()
-        write_chain_state(window, state)
-
-        result = subprocess.run([sys.executable, str(path), *run_args], cwd=str(WORKSPACE))
-
-        step_record["completed_at_utc"] = utc_now_iso()
-        step_record["exit_code"] = int(result.returncode)
-        if result.returncode == 0:
-            step_record["status"] = "ok"
-            write_chain_state(window, state)
-            continue
-
-        step_record["status"] = "failed"
-        print(f"\nFAILED: {script} {' '.join(run_args)} exited with code {result.returncode}")
-        maybe_backup_dashboard(script)
-        write_recovery_canon_drift_report()
-        write_recovery_sql_indexes(window)
-
-        state["recovery"]["failed_step"] = {
-            "index": step_record["index"],
-            "script": script,
-            "args": run_args,
-            "command": step_record["command"],
-            "exit_code": int(result.returncode),
-        }
-        write_chain_state(window, state)
-
-        if script in RECOVERY_FINALIZER_SCRIPTS:
-            state["status"] = "failed"
-            state["completed_at_utc"] = utc_now_iso()
-            state["exit_code"] = int(result.returncode)
-            state["recovery"]["reason"] = "Recovery finalizer failed" if state["recovery"]["active"] else "Finalizer failed"
-            state["recovery"]["active"] = False
-            write_chain_state(window, state)
-            return int(result.returncode)
-
-        failure_code = int(result.returncode)
-        state["status"] = "recovering"
-        state["exit_code"] = failure_code
-        state["recovery"]["triggered"] = True
-        state["recovery"]["active"] = True
-        state["recovery"]["reason"] = f"{script} exited with code {result.returncode}"
-        write_chain_state(window, state)
+    if parallel <= 1:
+        failure_code = run_serial(window, steps, selected, state, strict, incremental, step_timeout, previous_records, stage_scope, force=force)
+    else:
+        failure_code = run_parallel_batches(
+            window,
+            steps,
+            selected,
+            state,
+            strict,
+            incremental,
+            step_timeout,
+            previous_records,
+            stage_scope,
+            parallel,
+            force=force,
+        )
 
     state["completed_at_utc"] = utc_now_iso()
     state["recovery"]["active"] = False
+    if state["status"] == "failed":
+        write_chain_state(window, state, stage_scope)
+        append_chain_log(window, stage_scope, {"event": "chain_failed", "window": window, "exit_code": state["exit_code"]})
+        return int(state["exit_code"] or 1)
     if failure_code is None:
-        state["status"] = "ok"
+        data_quality_classification = data_quality_repair_classification(state)
+        data_quality_repairs = data_quality_repair_steps(state)
+        if data_quality_classification == "ticker_scoped_repair":
+            state["status"] = "completed_with_ticker_repairs"
+        elif data_quality_classification == "systemic_data_quality":
+            state["status"] = "completed_with_systemic_data_quality"
+        else:
+            state["status"] = "ok"
         state["exit_code"] = 0
-        write_chain_state(window, state)
-        print(f"\nFinance refresh window '{window}' completed successfully.")
+        write_chain_state(window, state, stage_scope)
+        if data_quality_classification:
+            repair_tickers = sorted({
+                ticker
+                for step in data_quality_repairs
+                for ticker in (step.get("data_quality_repair") or {}).get("tickers", [])
+                if ticker
+            })
+            append_chain_log(
+                window,
+                stage_scope,
+                {
+                    "event": "chain_completed_with_data_quality_repairs",
+                    "window": window,
+                    "status": state["status"],
+                    "classification": data_quality_classification,
+                    "tickers": repair_tickers,
+                },
+            )
+            print(
+                f"\nFinance refresh window '{window}' completed with {data_quality_classification}; "
+                f"affected tickers={','.join(repair_tickers) or 'unknown'}, independent branches completed."
+            )
+        else:
+            append_chain_log(window, stage_scope, {"event": "chain_completed", "window": window, "status": "ok"})
+            print(f"\nFinance refresh window '{window}' completed successfully.")
         return 0
 
     state["status"] = "completed_with_recovery"
     state["exit_code"] = failure_code
-    write_chain_state(window, state)
+    write_chain_state(window, state, stage_scope)
+    append_chain_log(window, stage_scope, {"event": "chain_completed_with_recovery", "window": window, "exit_code": failure_code})
     print(
         f"\nFinance refresh window '{window}' ended degraded after {state['recovery']['reason']}; "
         "run summary finalizers still executed."
@@ -360,7 +348,21 @@ def main() -> int:
     if args.list:
         print_window_list()
         return 0
-    return run_chain(args.window, dry_run=args.dry_run, strict=args.strict, build_workbook=args.build_workbook, cleanup=args.cleanup)
+    return run_chain(
+        args.window,
+        dry_run=args.dry_run,
+        strict=args.strict,
+        build_workbook=args.build_workbook,
+        cleanup=args.cleanup,
+        step_timeout=args.step_timeout,
+        analyze=args.analyze,
+        list_stages=args.list_stages,
+        stage=args.stage,
+        from_stage=args.from_stage,
+        incremental=args.incremental,
+        parallel=args.parallel,
+        force=args.force,
+    )
 
 
 if __name__ == "__main__":

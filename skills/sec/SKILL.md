@@ -1,59 +1,71 @@
 ---
-name: sec
-description: AI-Powered SEC Filing Integration skill. 17+ SEC filing tools for 10-K, 10-Q, 8-K, 13D/13G, insider transactions, proxy statements, company facts, and more. Works directly against the SEC EDGAR database.
+name: "sec"
+description: "Windows-first SEC docs, balanced fences, review-only boundaries."
 ---
 
 # SEC Skill
 
-17+ SEC filing tools. 10-K, 10-Q, 8-K, beneficial ownership (13D/13G), insider trading, proxy statements, company facts, and more.
+17+ SEC filing tools for SEC EDGAR evidence work: 10-K, 10-Q, 8-K, beneficial ownership (13D/13G), insider transactions, proxy statements, company facts, filing search, and more.
 
 ## Github Open-Source
+
 Please star Github if you like the skill.
 
 https://github.com/lkcair/sec-finance-ai
 
 Also available on OpenWebUI.
 
-## Also try Stocks and Crypto Finance Data Pull
+## Also Try Stocks And Crypto Finance Data Pull
+
 https://github.com/lkcair/yfinance-ai
 
-Available on OpenClaw as "openclaw skills install stocks"
-
-Also open-source.
+Available on OpenClaw as `openclaw skills install stocks`.
 
 ---
 
-## Setup (Run once)
+## Setup
 
-From the skill directory:
+The local Veritas workspace currently keeps an active dependency environment at `skills\sec\.venv`. Do not delete, move, rebuild, or update that environment unless Randall explicitly approves a separate dependency/footprint lane with backup, rollback, and smoke proof.
+
+If a fresh setup or approved rebuild is ever needed from the SEC skill directory on Windows:
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Linux/macOS fallback:
+
 ```bash
 python3 -m venv .venv
 .venv/bin/python3 -m pip install -r requirements.txt
 ```
 
-> **Windows:** use `.venv\Scripts\python.exe` instead of `.venv/bin/python3`.
+## One-Shot Invocation Pattern
 
-## One-Shot Invocation Pattern (Works every time)
+Use the Windows-first pattern from the workspace SEC skill directory:
 
-```bash
-cd /home/openclaw/.openclaw/workspace/skills/sec && \
-/home/openclaw/.openclaw/workspace/skills/sec/.venv/bin/python3 - << 'PY'
-import asyncio, sys
-sys.path.insert(0, 'scripts')
+```powershell
+Set-Location C:\Users\Veritas\.openclaw\workspace\skills\sec
+@'
+import asyncio
+import sys
+sys.path.insert(0, "scripts")
 from sec_finance_ai import Tools
+
 t = Tools()
+
 async def main():
     result = await t.METHOD(ARGS)
     print(result)
+
 asyncio.run(main())
-PY
+'@ | .\.venv\Scripts\python.exe -
 ```
 
-**Replace** `METHOD(ARGS)` with any function below. Always use the **full venv path** above.
+Replace `METHOD(ARGS)` with any function below. Use the full local venv interpreter path when calling from outside the skill directory: `C:\Users\Veritas\.openclaw\workspace\skills\sec\.venv\Scripts\python.exe`.
 
----
-
-## Common Calls (GME examples)
+## Common Calls
 
 | Need | Method |
 |---|---|
@@ -79,67 +91,76 @@ PY
 - `get_insider_transactions(ticker)`
 - `get_proxy_statements(ticker)`
 - `get_company_filings(ticker, form_type=None, limit=10)`
-  (form_type can be: '10-K', '10-Q', '8-K', '13D', '13G', 'DEF 14A', etc. — accepts list or string)
+  - `form_type` can be `'10-K'`, `'10-Q'`, `'8-K'`, `'13D'`, `'13G'`, `'DEF 14A'`, etc.; list and string values are accepted.
 - `get_company_facts(ticker)`
 - `get_company_concept(ticker, concept)`
-- `get_filing_content(url)` — retrieve full text of any filing URL
+- `get_filing_content(url)` - retrieve full text of any filing URL
 - `analyze_8k_filing(ticker, limit=3)`
 - `get_recent_ipos(limit=10)`
 - `search_filings(ticker, form_type=None, start_date=None, end_date=None, limit=10)`
-- `get_sec_api_status()` — check SEC endpoint health
-- `get_available_functions()` — list all tools programmatically
-- `run_self_test()` — validate environment + SEC connectivity
+- `get_sec_api_status()` - check SEC endpoint health
+- `get_available_functions()` - list all tools programmatically
+- `run_self_test()` - validate environment and SEC connectivity
 
 ---
 
-## Routing Guide (Agent Decision Tree)
+## Routing Guide
 
-- Latest annual report → `get_latest_10k`
-- Latest quarterly report → `get_latest_10q`
-- Recent material events → `get_recent_8k_filings` or `analyze_8k_filing`
-- Major shareholders / activist investors → `get_beneficial_ownership`
-- Executive buying/selling → `get_insider_transactions`
-- Director elections & compensation → `get_proxy_statements`
-- Full filing history → `get_company_filings`
-- Structured XBRL data → `get_company_facts`
-- New IPO filings → `get_recent_ipos`
+- Latest annual report -> `get_latest_10k`
+- Latest quarterly report -> `get_latest_10q`
+- Recent material events -> `get_recent_8k_filings` or `analyze_8k_filing`
+- Major shareholders / activist investors -> `get_beneficial_ownership`
+- Executive buying/selling -> `get_insider_transactions`
+- Director elections and compensation -> `get_proxy_statements`
+- Full filing history -> `get_company_filings`
+- Structured XBRL data -> `get_company_facts`
+- New IPO filings -> `get_recent_ipos`
 
 ---
 
-## Veritas local safety gate
+## Veritas Local Safety Gate
 
-Before any live SEC network retrieval, update `SEC_HEADERS` in `scripts/sec_finance_ai.py` with a real SEC-compliant User-Agent that identifies the requester and contact email. Do not use the packaged placeholder `SEC-AI-Research-Agent (admin@example.com)` for live retrieval. Outputs are evidence inputs only and do not authorize portfolio/canon mutation, sizing, owner approval, brokerage/account action, or trades.
+Before any live SEC network retrieval, confirm `SEC_HEADERS` in `scripts/sec_finance_ai.py` uses a real SEC-compliant User-Agent that identifies the requester and contact email. Do not use the packaged placeholder `SEC-AI-Research-Agent (admin@example.com)` for live retrieval.
+
+Current expected local value: `Veritas OpenClaw Research veritasaiflows@gmail.com`.
+
+Outputs are official-source evidence inputs only. They do not authorize portfolio/canon mutation, sizing/allocation, owner approval, brokerage/account action, capital deployment, paper/live execution, money movement, external delivery, or trades.
 
 ## Notes
 
-- All functions are async — wrap with `asyncio.run(main())`
-- Data comes directly from SEC EDGAR (public, no API key required)
-- Rate limiting is handled internally (compliant with SEC guidelines)
-- CIK lookup is automatic — supports ticker or direct CIK
-- Works on Linux, macOS, and Windows (adjust venv path for Windows)
-- **Important**: SEC requires a valid User-Agent. The skill auto-handles this, but if you get 403 errors, check/edit `SEC_HEADERS` inside `scripts/sec_finance_ai.py`.
+- All SEC tool functions are async; wrap them with `asyncio.run(main())`.
+- Data comes directly from SEC EDGAR and does not require an API key.
+- Rate limiting is handled internally for SEC guideline compliance.
+- CIK lookup is automatic and supports ticker or direct CIK inputs.
+- The local Veritas runtime is Windows/PowerShell. Linux/macOS examples are fallback only.
+- SEC requires a valid User-Agent. If you get 403 errors, check `SEC_HEADERS` inside `scripts/sec_finance_ai.py` before retrying.
 
 ---
 
 ## Troubleshooting
 
-- `ModuleNotFoundError` → You are not using the venv interpreter. Use the full path: `/home/openclaw/.openclaw/workspace/skills/sec/.venv/bin/python3`
-- 403 Forbidden → Update the `User-Agent` inside `scripts/sec_finance_ai.py` (`SEC_HEADERS`)
-- Empty results → Very recent filings may take 24–48h to appear in EDGAR. Try an older ticker.
+- `ModuleNotFoundError`: you are not using the venv interpreter. Use `C:\Users\Veritas\.openclaw\workspace\skills\sec\.venv\Scripts\python.exe`.
+- `403 Forbidden`: verify `SEC_HEADERS["User-Agent"]` inside `scripts/sec_finance_ai.py` is real and not the packaged placeholder.
+- Empty results: very recent filings may take 24-48 hours to appear in EDGAR. Try an older ticker or a narrower form type.
 
 ---
 
 ## Quick Validation
 
-Run this anytime to confirm everything works:
-```bash
-cd /home/openclaw/.openclaw/workspace/skills/sec && \
-/home/openclaw/.openclaw/workspace/skills/sec/.venv/bin/python3 - << 'PY'
-import asyncio, sys
-sys.path.insert(0, 'scripts')
+Run this local import check anytime to confirm the venv and tool surface load without changing finance/canon/portfolio/account state:
+
+```powershell
+Set-Location C:\Users\Veritas\.openclaw\workspace\skills\sec
+@'
+import sys
+sys.path.insert(0, "scripts")
 from sec_finance_ai import Tools
+
 t = Tools()
-async def main():
-    print(await t.run_self_test())
-asyncio.run(main())
-PY
+methods = [name for name in dir(t) if not name.startswith("_") and callable(getattr(t, name))]
+print(len(methods))
+print("\n".join(sorted(methods)))
+'@ | .\.venv\Scripts\python.exe -
+```
+
+Networked SEC smoke tests are allowed only after the User-Agent is confirmed and the target is review-only evidence. They do not grant portfolio/canon/trade/account authority.

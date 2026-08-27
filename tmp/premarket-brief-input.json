@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "workflow": "WF37",
-  "generated_at_utc": "2026-05-08T13:01:06Z",
+  "generated_at_utc": "2026-08-14T13:15:48Z",
   "window": "morning",
   "review_window": "pre-market",
-  "review_output_path": "01. Dashboards/Review-Only Briefs/Pre-Market/2026-05-08.md",
-  "target_note": "01. Dashboards/Pre-Market Brief/2026-05-08.md",
+  "review_output_path": "01. Dashboards/Review-Only Briefs/Pre-Market/2026-08-14.md",
+  "target_note": "01. Dashboards/Pre-Market Brief/2026-08-14.md",
   "target_posture": "commercial_review_brief",
   "consumer_posture": "review_only",
   "canonical_mutation_allowed": false,
-  "market_data_as_of": "2026-05-08",
-  "note_date": "2026-05-08",
+  "market_data_as_of": "2026-08-13",
+  "note_date": "2026-08-14",
   "owner_layers": [
     "03. Portfolio/Portfolio Snapshot.md",
-    "03. Portfolio/Deployment Trigger Sheet.md",
+    "03. Portfolio/Execution Board.md",
     "05. Intelligence/Weekly Positioning Review.md",
     "05. Intelligence/Event Calendar.md"
   ],
@@ -23,35 +23,35 @@
         "path": "tmp/premarket-snapshot.json",
         "required": true,
         "exists": true,
-        "generated_at_utc": "2026-05-08T13:01:05.915803+00:00",
+        "generated_at_utc": "2026-08-14T13:15:48.544190+00:00",
         "status": "ok"
       },
       "dashboard_validation": {
         "path": "tmp/dashboard-validation.json",
         "required": true,
         "exists": true,
-        "generated_at_utc": "2026-05-08T13:01:05.736661+00:00",
+        "generated_at_utc": "2026-08-14T13:15:48.253408+00:00",
         "status": "ok"
       },
       "market_state": {
         "path": "tmp/market-state.json",
         "required": true,
         "exists": true,
-        "generated_at_utc": "2026-05-08T13:00:50.962576+00:00",
+        "generated_at_utc": "2026-08-14T13:13:50.858900+00:00",
         "status": "ok"
       },
       "trigger_sheet": {
         "path": "tmp/trigger-sheet.json",
         "required": true,
         "exists": true,
-        "generated_at_utc": "2026-05-08T13:01:04.600185+00:00",
+        "generated_at_utc": "2026-08-14T13:15:19.270841+00:00",
         "status": "ok"
       },
       "earnings_calendar": {
         "path": "tmp/earnings-calendar.json",
         "required": true,
         "exists": true,
-        "generated_at_utc": "2026-05-08T13:00:27.454213+00:00",
+        "generated_at_utc": "2026-08-14T13:13:25.583898+00:00",
         "status": "ok"
       }
     },
@@ -60,37 +60,58 @@
         "path": "tmp/dashboard-delta.json",
         "required": false,
         "exists": true,
-        "generated_at_utc": "2026-05-08 13:01 UTC",
+        "generated_at_utc": "2026-08-14 13:15 UTC",
         "status": "ok"
       },
       "deployment_check": {
         "path": "tmp/deployment-check.json",
         "required": false,
         "exists": true,
-        "generated_at_utc": "2026-05-08T13:01:04.552294+00:00",
+        "generated_at_utc": "2026-08-14T13:15:19.195114+00:00",
+        "status": "ok"
+      },
+      "fundamental_metrics": {
+        "path": "tmp/fundamental-metrics-current.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-08-14T13:05:04Z",
+        "status": "ok"
+      },
+      "fundamental_metrics_validation": {
+        "path": "tmp/fundamental-metrics-validation.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-08-14T13:13:03Z",
+        "status": "ok"
+      },
+      "fundamental_ir_packets": {
+        "path": "tmp/fundamental-ir-reconciliation-packets.json",
+        "required": false,
+        "exists": true,
+        "generated_at_utc": "2026-08-14T13:13:19Z",
         "status": "ok"
       }
     }
   },
   "trust": {
     "consumer_posture": "review_only",
-    "trust_level": "review_required",
+    "trust_level": "bounded_clean",
     "trust_gate_blocked": false,
     "validation": {
-      "overall": "warning",
+      "overall": "clean",
       "critical": 0,
-      "warning": 2,
-      "info": 0,
+      "warning": 0,
+      "info": 1,
       "warning_messages": [
-        "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
-        "Policy expectations still rely on manual target-range constants and require explicit review."
+        "Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure."
       ]
     },
-    "trust_reason": "dashboard validation has 2 warning(s)"
+    "trust_reason": "dashboard validation clean"
   },
   "state_summary": {
     "deployable_now": [],
     "almost_deployable": [
+      "ETN",
       "GOOG",
       "JPM",
       "MSFT",
@@ -98,11 +119,103 @@
     ],
     "blocked": []
   },
+  "fundamental_context": {
+    "status": "available_review_only",
+    "generated_at_utc": "2026-08-14T13:05:04Z",
+    "summary": {
+      "covered_tickers": 300,
+      "equity_tickers": 289,
+      "clean_equity_tickers": 251,
+      "quality_counts": {
+        "partial": 38,
+        "clean": 251,
+        "not_applicable": 11
+      },
+      "sec_reconciliation_counts": {
+        "matched": 204,
+        "sec_lag_wait": 45,
+        "matched_via_period_alias": 24,
+        "not_applicable": 11,
+        "foreign_issuer_ir_required": 3,
+        "conflict": 8,
+        "manual_review_required": 4,
+        "no_cik_mapping": 1
+      },
+      "company_ir_reconciliation_counts": {
+        "configured_manual_review_required": 31,
+        "manual_required": 266,
+        "conflict_local_repair_required": 3
+      },
+      "capital_allocation_quality_counts": {
+        "caution": 196,
+        "bank_manual_review": 2,
+        "tracked": 91,
+        "not_applicable": 11
+      },
+      "capital_allocation_anomaly_counts": {
+        "capital_return_exceeds_fcf": 83,
+        "debt_funded_capital_return_risk": 71,
+        "leverage_elevated": 81,
+        "bank_fcf_not_applicable": 2,
+        "net_share_issuance": 32,
+        "capital_returns_with_negative_fcf": 45,
+        "eps_fcf_per_share_divergence": 34,
+        "sbc_offsets_buybacks": 35,
+        "share_count_dilution": 25,
+        "buybacks_with_net_dilution": 29,
+        "low_roic_proxy": 52
+      },
+      "valuation_context_counts": {
+        "available": 289,
+        "not_applicable": 11
+      },
+      "authority": "review_only_no_apply"
+    },
+    "capital_allocation_caution_tickers": [
+      "ETN",
+      "GOOG",
+      "MSFT",
+      "BKNG",
+      "CVX",
+      "KTOS",
+      "AMD",
+      "LNG",
+      "SMCI",
+      "LIN"
+    ],
+    "bank_manual_review_tickers": [
+      "JPM",
+      "GS"
+    ],
+    "sec_conflict_tickers": [
+      "CRWD",
+      "ALB",
+      "FANG",
+      "AMP",
+      "DD",
+      "DLR",
+      "EXR",
+      "FSLR"
+    ],
+    "fcf_per_share_deterioration_tickers": [
+      "GOOG",
+      "MSFT",
+      "SMCI",
+      "VMC",
+      "META",
+      "NFLX",
+      "WMB",
+      "ASML",
+      "CEG",
+      "QCOM"
+    ],
+    "review_only": true,
+    "capital_action_allowed": false,
+    "forbidden_claim": "Fundamental strength, buyback yield, or per-share quality does not imply deployability, owner approval, sizing, sleeve, cash, account, or trade authority."
+  },
   "unresolved_truths": [
-    "Macro payload still depends on manual Fed target maintenance or other policy-layer caution flags.",
-    "Policy expectations still rely on manual target-range constants and require explicit review.",
-    "Do not publish deployable-now state from the packet alone; owner notes remain authoritative.",
-    "dashboard validation has 2 warning(s)"
+    "Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.",
+    "Do not publish deployable-now state from the packet alone; owner notes remain authoritative."
   ],
   "focus_questions": [
     "What actually matters before the open, and what only looks urgent?",
@@ -120,11 +233,12 @@
     "deployable-now publication from the brief alone",
     "owner-blocker clearance without owner-note confirmation",
     "silent conflict smoothing between owner notes",
-    "portfolio-authority language or direct trade instruction"
+    "portfolio-authority language or direct trade instruction",
+    "fundamental strength, buybacks, FCF/share, or ROIC language implying deployment authority or owner approval"
   ],
   "required_citations": [
     "03. Portfolio/Portfolio Snapshot.md",
-    "03. Portfolio/Deployment Trigger Sheet.md",
+    "03. Portfolio/Execution Board.md",
     "05. Intelligence/Weekly Positioning Review.md",
     "05. Intelligence/Event Calendar.md"
   ],

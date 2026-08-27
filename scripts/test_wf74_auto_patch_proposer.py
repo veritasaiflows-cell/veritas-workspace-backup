@@ -24,7 +24,7 @@ def queue_packet() -> dict:
         "schema": "veritas.wf74_improvement_opportunity_queue.v1",
         "status": "ok",
         "generated_at_utc": stamp(),
-        "summary": {"opportunity_count": 3, "high_priority_count": 2},
+        "summary": {"opportunity_count": 4, "high_priority_count": 2},
         "opportunities": [
             {
                 "opportunity_id": "opp-code",
@@ -52,6 +52,15 @@ def queue_packet() -> dict:
                 "signal": "otel_operational_drift_review",
                 "evidence": {"daily_vs_weekly_event_rate_ratio": 2.8},
                 "validation_command": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
+            },
+            {
+                "opportunity_id": "opp-workflow",
+                "category": "workflow_maturity",
+                "title": "Close remaining workflow-maturity follow-ups",
+                "priority": 74,
+                "signal": "workflow_maturity_residue_after_completed_routing",
+                "evidence": {"blocked_count": 3, "implementation_blocker_count": 1},
+                "validation_command": "python scripts\\workflow_advancement_scorecard.py --write --validate",
             },
         ],
         "validation": {"status": "ok", "errors": [], "warnings": []},
@@ -108,6 +117,19 @@ def proposal_packet() -> dict:
                 "evidence": {"daily_vs_weekly_event_rate_ratio": 2.8},
                 "validation_command": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
             },
+            {
+                "proposal_id": "proposal-workflow",
+                "source_opportunity_id": "opp-workflow",
+                "category": "workflow_maturity",
+                "proposal_type": "implementation_patch_proposal",
+                "proposal_status": "main_review_required",
+                "priority": 74,
+                "title": "Close remaining workflow-maturity follow-ups",
+                "problem": "workflow_maturity_residue_after_completed_routing",
+                "expected_benefit": "Residual maturity signals are visible without reopening completed implementation work.",
+                "evidence": {"blocked_count": 3},
+                "validation_command": "python scripts\\workflow_advancement_scorecard.py --write --validate",
+            },
         ],
         "validation": {"status": "ok", "errors": [], "warnings": []},
     }
@@ -136,8 +158,8 @@ def main() -> int:
         assert rc == 0
         payload = json.loads(out.read_text(encoding="utf-8"))
         assert payload["status"] == "ok", payload
-        assert payload["summary"]["plan_count"] == 3
-        assert payload["summary"]["patch_plan_count"] == 1
+        assert payload["summary"]["plan_count"] == 4
+        assert payload["summary"]["patch_plan_count"] == 2
         assert payload["summary"]["skill_workshop_request_count"] == 1
         assert payload["summary"]["auto_apply_count"] == 0
         assert payload["summary"]["owner_gated_plan_count"] >= 1
@@ -148,6 +170,10 @@ def main() -> int:
         assert patch["auto_apply_eligible"] is False
         assert "scripts/concurrent_lane_manager.py" in patch["target_files"]
         assert "python scripts\\wf74_rsi.py --validate-only" in patch["validation_commands"]
+
+        workflow_patch = next(plan for plan in payload["patch_plans"] if plan["risk_class"] == "workflow_maturity_routing_patch")
+        assert "scripts/workflow_advancement_scorecard.py" in workflow_patch["target_files"]
+        assert "python scripts\\workflow_advancement_scorecard.py --write --validate" in workflow_patch["validation_commands"]
 
         skill = payload["skill_workshop_requests"][0]
         assert skill["skill_application_allowed"] is False

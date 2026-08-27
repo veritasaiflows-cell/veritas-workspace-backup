@@ -1,0 +1,146 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-18T02:58:20Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-04-operator-console-refresh-artifact"
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-04-operator-console-refresh-artifact"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 0,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-04-operator-console-refresh-artifact",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-04-operator-console-refresh-artifact",
+      "rank": 4,
+      "priority": "P2",
+      "title": "Improve local operator visibility without adding authority",
+      "implementation_class": "local_ui_control_surface",
+      "owner_surface": "Local operator console / PM cockpit",
+      "collision_group": "pm_cockpit_ui",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 1,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "apps/pm-control-cockpit",
+        "state/pm-cockpit-source-registry.json",
+        "tmp/wf75-operator-console.json"
+      ],
+      "proof_commands": [
+        "cd apps\\pm-control-cockpit; npm run validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-04-operator-console-refresh-artifact:proof[0]",
+      "command": "cd apps\\pm-control-cockpit; npm run validate",
+      "started_at_utc": "2026-06-18T02:58:17Z",
+      "completed_at_utc": "2026-06-18T02:58:19Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "> veritas-pm-control-cockpit@0.1.0 validate\n> node --experimental-strip-types src/server.ts --validate\n\n{\n  \"status\": \"ok\",\n  \"registry\": \"state/pm-cockpit-source-registry.json\",\n  \"source_count\": 128,\n  \"missing_required_count\": 0,\n  \"stale_required_count\": 11,\n  \"closeout_ok\": true,\n  \"dispatcher_present\": false,\n  \"academy_ready\": true,\n  \"sql_cache_present\": true,\n  \"sql_adapter_status\": \"ok\",\n  \"errors\": [],\n  \"warnings\": [\n    \"stale_required_source:wf75_closeout_refresh\",\n    \"stale_required_source:wf75_operator_console\",\n    \"stale_required_source:wf78_source_capture_requirements_queue\",\n    \"stale_required_source:wf78_official_source_discovery\",\n    \"stale_required_source:wf78_official_registry_proposal\",\n    \"stale_required_source:wf78_promotion_owner_lineage_queue\",\n    \"stale_required_source:wf78_owner_lineage_proposal\",\n    \"stale_required_source:wf78_ph_owner_review_candidate_packet\",\n    \"stale_required_source:wf78_tier_a_invalidation_review_queue\",\n    \"stale_required_source:wf78_official_source_capture_packet\",\n    \"stale_required_source:wf78_next_owner_review_and_source_capture_integration\"\n  ]\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-04-operator-console-refresh-artifact:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-18T02:58:19Z",
+      "completed_at_utc": "2026-06-18T02:58:20Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "tel_daily_vs_weekly_event_rate_ratio\": 7.0,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"review\",\n        \"otel_field_depth_packet_status\": \"owner_decision_required\",\n        \"recommended_budget\": \"major\",\n        \"recommended_validator_count\": 62,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 3,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 8,\n        \"validator_elapsed_seconds\": 2.379,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 25\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"pm_cockpit_required_sources_stale\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
 
 
@@ -20,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 DEFAULT_OUT = TMP / "market-today-answer-packet.json"
 DEFAULT_MD = TMP / "market-today-answer-packet.md"
+SQL_CANON_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 SCHEMA = "veritas.market_today_answer_packet.v1"
 
 AUTHORITY_BOUNDARY = {
@@ -30,6 +32,8 @@ AUTHORITY_BOUNDARY = {
     "forecast_or_probability_claim_allowed": False,
     "canon_or_portfolio_mutation_allowed": False,
     "ticker_card_mutation_allowed": False,
+    "durable_sql_canon_current_state_allowed": True,
+    "sql_canon_mutation_allowed": False,
     "sql_write_or_import_allowed": False,
     "capital_deployment_allowed": False,
     "capital_deployment_approved": False,
@@ -106,6 +110,44 @@ def source_record(name: str, path: Path, payload: dict[str, Any]) -> dict[str, A
         "generated_at_utc": generated,
         "warning_count": len(warnings),
     }
+
+
+def sql_canon_context() -> dict[str, Any]:
+    context: dict[str, Any] = {
+        "schema": "veritas.market_today_answer_packet.sql_canon_context.v1",
+        "status": "blocked",
+        "sql_canon_db": rel(SQL_CANON_DB),
+        "typed_access_layer": "scripts/finance_sql_canon_access.py",
+        "access_validation_status": None,
+        "production_answer_count": None,
+        "legacy_production_answer_count": None,
+        "production_answer_definition": "SQL-canon production scope; zero is a valid fail-closed wait state",
+        "registry_summary": {},
+        "validation": {"status": "blocked", "errors": [], "warnings": []},
+        "authority_boundary": {
+            "read_only_access_layer": True,
+            "db_mutation_allowed": False,
+            "capital_deployment_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
+        },
+    }
+    guard = finance_sql_canon_guard_context(consumer=rel(Path(__file__)), db_path=SQL_CANON_DB)
+    guard_validation = as_dict(guard.get("validation"))
+    errors = as_list(guard_validation.get("errors"))
+    warnings = as_list(guard_validation.get("warnings"))
+    production_count = guard.get("production_answer_count")
+    context["access_validation_status"] = guard.get("access_validation_status")
+    context["production_answer_count"] = production_count
+    context["legacy_production_answer_count"] = guard.get("legacy_production_answer_count")
+    context["registry_summary"] = guard.get("migration_registry_summary") or {}
+    context["validation"]["errors"] = errors
+    context["validation"]["warnings"] = warnings
+    if guard.get("status") == "ok" and production_count == 0:
+        context["validation"]["warnings"].append("production_answer_set_empty_fail_closed")
+    context["validation"]["status"] = "blocked" if errors else "ok"
+    context["status"] = "blocked" if errors else "ok"
+    return context
 
 
 def number(value: Any, digits: int = 2) -> float | None:
@@ -356,6 +398,40 @@ def cpi_event(macro_metrics: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def classify_cpi_driver(macro: dict[str, Any]) -> dict[str, str] | None:
+    """Classify current monthly CPI evidence without inferring pressure from presence alone."""
+    headline = number(macro.get("all_items_mom_pct"))
+    core = number(macro.get("core_mom_pct"))
+    energy = number(macro.get("energy_mom_pct"))
+    gasoline = number(macro.get("gasoline_mom_pct"))
+    if headline is None or core is None:
+        return None
+    if core >= 0.3:
+        return {
+            "driver_id": "cpi_broad_core_pressure",
+            "summary": "Latest monthly CPI evidence shows broad core pressure rather than an energy/gasoline-only impulse.",
+        }
+    if headline >= 0.35 and gasoline is not None and gasoline >= 1.0:
+        return {
+            "driver_id": "cpi_energy_gasoline_headline_pressure",
+            "summary": "CPI monthly evidence shows an energy/gasoline headline-pressure impulse.",
+        }
+    if headline >= 0.35 and energy is not None and energy >= 1.0:
+        return {
+            "driver_id": "cpi_energy_headline_pressure",
+            "summary": "CPI monthly headline pressure is energy-led; gasoline did not independently clear the pressure threshold.",
+        }
+    if headline < 0.25 and core < 0.25:
+        return {
+            "driver_id": "cpi_monthly_contained",
+            "summary": "Latest monthly headline and core CPI are contained; energy/gasoline are not adding monthly headline pressure.",
+        }
+    return {
+        "driver_id": "cpi_mixed",
+        "summary": "Latest monthly CPI evidence is mixed and does not support a single energy/gasoline pressure claim.",
+    }
+
+
 def source_backed_market_driver_digest(
     *,
     broad_table: list[dict[str, Any]],
@@ -364,14 +440,13 @@ def source_backed_market_driver_digest(
     rates: dict[str, Any],
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    if macro.get("all_items_mom_pct") is not None and macro.get("energy_mom_pct") is not None:
+    cpi_driver = classify_cpi_driver(macro)
+    if cpi_driver is not None:
         rows.append(
             {
-                "driver_id": "cpi_energy_gasoline_headline_pressure",
+                "driver_id": cpi_driver["driver_id"],
                 "driver_type": "macro_release",
-                "summary": (
-                    "CPI headline pressure is energy/gasoline-led while core remains contained."
-                ),
+                "summary": cpi_driver["summary"],
                 "evidence": {
                     "headline_mom_pct": macro.get("all_items_mom_pct"),
                     "headline_yoy_pct": macro.get("all_items_yoy_pct"),
@@ -560,6 +635,7 @@ def local_summary(
 def build_packet() -> dict[str, Any]:
     loaded = {name: load(path) for name, path in SOURCES.items()}
     source_records = [source_record(name, path, loaded[name]) for name, path in SOURCES.items()]
+    sql_context = sql_canon_context()
     market_state = loaded["market_state"]
     macro_signal = loaded["macro_signal_spine"]
     macro_metrics = loaded["macro_metrics"]
@@ -599,6 +675,7 @@ def build_packet() -> dict[str, Any]:
         "operator_action": "BLOCKED" if required_sources_missing else "MAIN_SESSION_REVIEW" if not full_ready else "NO_REPLY",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "inputs": source_records,
+        "sql_canon_context": sql_context,
         "as_of": {
             "market_state_last_trading_day": market_state.get("last_trading_day"),
             "macro_signal_as_of_date": macro_signal.get("as_of_date"),
@@ -642,6 +719,8 @@ def validate_packet(packet: dict[str, Any]) -> dict[str, Any]:
         errors.append("schema_mismatch")
     if not packet.get("inputs"):
         errors.append("inputs_missing")
+    if as_dict(packet.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
     if as_dict(packet.get("market_levels")).get("spx_cash", {}).get("available") is not True:
         errors.append("spx_cash_missing")
     broad_table = as_list(packet.get("normalized_broad_index_daily_change_table"))

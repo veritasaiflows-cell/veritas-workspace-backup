@@ -1,0 +1,276 @@
+{
+  "schema": "veritas.interactive_training_module.v1",
+  "module_id": "wf75-hvac-prospect-outreach-practice",
+  "title": "WF75 HVAC Prospect Outreach Practice Lab",
+  "audience": "Randall internal operator training",
+  "summary": "Practice module converted from the HVAC prospect outreach training stack. It trains offer clarity, claim discipline, data boundaries, channel boundaries, and exact owner-approval separation.",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "customer_outreach_approved": false,
+    "payment_collection_approved": false,
+    "crm_import_approved": false,
+    "phone_sms_approved": false,
+    "bulk_automation_approved": false
+  },
+  "learning_objectives": [
+    "Explain the AI Workflow Clarity Sprint without hype or revenue promises.",
+    "Repair unsafe HVAC outreach copy before it becomes external action.",
+    "Handle data, channel, and objection scenarios without widening authority.",
+    "Build a minimum approval card while preserving the not-approved list."
+  ],
+  "lessons": [
+    {
+      "id": "offer-scope",
+      "title": "Offer Scope",
+      "body": "A fixed-scope 5-day review of one intake or callback workflow. It returns a practical map and improvement checklist without system access, customer data, production changes, or outcome guarantees.",
+      "key_points": [
+        "Included: current-state workflow map, handoff and follow-up gap list, safe acknowledgement and escalation sketch.",
+        "Not included: guaranteed revenue or booked jobs, live automation build, CRM migration, text automation.",
+        "Keep this diagnostic and fixed-scope; do not imply implementation or revenue lift."
+      ]
+    },
+    {
+      "id": "first-batch-boundary",
+      "title": "First Batch Boundary",
+      "body": "The current HVAC packet prepares an internal first-batch approval card. It does not approve sending, calling, texting, CRM import, payment collection, customer data, credentials, production access, or bulk automation.",
+      "key_points": [
+        "First batch practice names: Olive Air & Heating, Instant Heating and Air, Frozen Cactus Air, Cold Stinger Heating & Air Conditioning, Norris Air.",
+        "Real outreach still requires Randall's exact approval of batch, channel, and copy.",
+        "Phone/SMS and automation remain separately blocked."
+      ]
+    },
+    {
+      "id": "safe-copy",
+      "title": "Safe Copy Discipline",
+      "body": "I was looking at {business_name}'s public HVAC service pages and noticed you already emphasize fast service, scheduling, and customer response. I am testing a small private pilot for local HVAC operators: a 5-day AI Workflow Clarity Sprint focused on missed-call recovery, callback handoffs, and intake friction.",
+      "key_points": [
+        "Frame fit from public website signals only.",
+        "Avoid accusations such as lost leads or broken workflows.",
+        "Never ask for recordings, CRM access, customer data, or payment in first-scope training."
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "boundary-confirmation",
+      "type": "boundary_ack",
+      "title": "Boundary Confirmation",
+      "prompt": "Confirm this module is internal readiness training only and does not approve outreach, customer data, CRM import, phone/SMS, payment, credentials, production access, or public delivery.",
+      "expected": "I confirm this is internal readiness training only.",
+      "xapi_object": "activity/boundary-confirmation"
+    },
+    {
+      "id": "unsafe-pattern-check",
+      "type": "multiple_choice",
+      "title": "Unsafe Pattern Check",
+      "prompt": "Which phrase must be blocked before outreach?",
+      "choices": [
+        {
+          "id": "safe-fit",
+          "text": "Possible fit for a workflow review because the public site emphasizes response speed.",
+          "correct": false,
+          "feedback": "This is cautious and source-bound."
+        },
+        {
+          "id": "unsafe-revenue",
+          "text": "Your HVAC company is probably losing calls and revenue.",
+          "correct": true,
+          "feedback": "Correct. That is an accusation and revenue claim."
+        },
+        {
+          "id": "safe-scope",
+          "text": "The first Sprint is a diagnostic review, not a software install.",
+          "correct": false,
+          "feedback": "This is a safe scope boundary."
+        }
+      ],
+      "xapi_object": "activity/unsafe-pattern-check"
+    },
+    {
+      "id": "approval-fields",
+      "type": "checklist",
+      "title": "Approval Card Fields",
+      "prompt": "Check every field required before first-batch outreach can be treated as approved.",
+      "checklist_items": [
+        "Named prospect batch",
+        "Approved channel",
+        "Approved copy",
+        "Explicit not-approved list",
+        "Current exact owner approval"
+      ],
+      "xapi_object": "activity/approval-fields"
+    },
+    {
+      "id": "truth-surface",
+      "type": "scenario",
+      "title": "Locate The Truth Surface",
+      "prompt": "Randall asks where the current outreach packet is and what it authorizes.\n\nTask: Answer in 60 seconds. Name the packet location and authority boundary.",
+      "expected": "The packet is in 10. Deliverables/AI Drop-Service OS as the HVAC Private Pilot Outreach Packet. It prepares outreach but does not authorize sending. Real contact requires Randall's exact approval of batch, channel, and copy.",
+      "rubric": [
+        "Difficulty: foundation",
+        "Category: source",
+        "Avoid fail triggers: QA cleared it for sending; cannot name file family; omits owner-gated boundary"
+      ],
+      "xapi_object": "activity/truth-surface"
+    },
+    {
+      "id": "offer-plain-english",
+      "type": "scenario",
+      "title": "Explain The Offer Without Hype",
+      "prompt": "A friend asks what Randall is selling.\n\nTask: Explain the AI Workflow Clarity Sprint in plain English.",
+      "expected": "It is a 5-day review of one workflow, starting with HVAC missed-call recovery or callback handoffs. The output is a practical map and improvement checklist. It is not a software install, revenue guarantee, credential request, or customer-data project.",
+      "rubric": [
+        "Difficulty: foundation",
+        "Category: offer",
+        "Avoid fail triggers: AI will automate everything; promises more bookings; implementation included"
+      ],
+      "xapi_object": "activity/offer-plain-english"
+    },
+    {
+      "id": "safe-angle",
+      "type": "scenario",
+      "title": "Pick The Safe Outreach Angle",
+      "prompt": "A prospect's public site emphasizes online booking, fast response, and emergency service.\n\nTask: Write one safe outreach angle.",
+      "expected": "Possible fit for a workflow review because the public site emphasizes response speed and scheduling, which may make intake clarity and callback handoffs worth reviewing.",
+      "rubric": [
+        "Difficulty: foundation",
+        "Category: copy",
+        "Avoid fail triggers: they are losing leads; their workflow is broken; they need AI"
+      ],
+      "xapi_object": "activity/safe-angle"
+    },
+    {
+      "id": "unsafe-copy-repair",
+      "type": "scenario",
+      "title": "Repair Unsafe Copy",
+      "prompt": "Unsafe draft: Your HVAC company is probably losing calls and revenue. Our AI can recover those missed opportunities.\n\nTask: Rewrite it safely.",
+      "expected": "I noticed your public site emphasizes fast HVAC service and scheduling. I am testing a small 5-day workflow review around missed-call recovery, callback handoffs, and intake friction. It is a diagnostic review, not a promise of more bookings or revenue.",
+      "rubric": [
+        "Difficulty: core",
+        "Category: copy",
+        "Avoid fail triggers: keeps revenue claim; keeps accusation; keeps AI can recover"
+      ],
+      "xapi_object": "activity/unsafe-copy-repair"
+    },
+    {
+      "id": "channel-boundary",
+      "type": "scenario",
+      "title": "Channel Boundary",
+      "prompt": "Randall says: Let's call all 20 tomorrow.\n\nTask: Respond with the correct boundary.",
+      "expected": "Do not call all 20. The current safe gate is approval of the first 5-prospect batch for manual official-site contact form or official email only. Phone outreach needs separate approval and official-site phone-path validation.",
+      "rubric": [
+        "Difficulty: core",
+        "Category: channel",
+        "Avoid fail triggers: phone approved; 20 is fine; bulk automation"
+      ],
+      "xapi_object": "activity/channel-boundary"
+    },
+    {
+      "id": "send-details",
+      "type": "scenario",
+      "title": "Prospect Replies: Send Details",
+      "prompt": "After approved outreach, a prospect replies: Sure, send details.\n\nTask: Draft a safe reply.",
+      "expected": "Thanks. I can send the one-page scope. The review is narrow: one intake or callback workflow, no production access, no credentials, and no customer data. The goal is a practical workflow map and improvement checklist. If that sounds aligned, a 15-minute call can confirm fit.",
+      "rubric": [
+        "Difficulty: core",
+        "Category: reply",
+        "Avoid fail triggers: sends payment link; requests CRM access; offers implementation"
+      ],
+      "xapi_object": "activity/send-details"
+    },
+    {
+      "id": "recordings-stop",
+      "type": "scenario",
+      "title": "Prospect Offers Call Recordings",
+      "prompt": "Prospect says they can send call recordings and customer texts.\n\nTask: Respond safely.",
+      "expected": "Not for this first review. Please do not send call recordings, customer texts, phone numbers, addresses, or private customer details. We can start with a general workflow description and synthetic or redacted examples unless a separate privacy boundary is approved.",
+      "rubric": [
+        "Difficulty: core",
+        "Category: data",
+        "Avoid fail triggers: accepts recordings; asks for transcripts; uploads customer data"
+      ],
+      "xapi_object": "activity/recordings-stop"
+    },
+    {
+      "id": "discovery-open",
+      "type": "scenario",
+      "title": "Discovery Call Opening",
+      "prompt": "You are opening a 15-minute discovery call with an HVAC owner.\n\nTask: Give the first 30 seconds.",
+      "expected": "Thanks for taking the time. The narrow thing I am testing is a 5-day review of one intake or callback workflow. I am not asking for credentials, customer data, recordings, or production access. Today is just to see whether a workflow map and follow-up checklist would be useful.",
+      "rubric": [
+        "Difficulty: core",
+        "Category: call",
+        "Avoid fail triggers: starts selling tools; asks for login; opens with ROI"
+      ],
+      "xapi_object": "activity/discovery-open"
+    },
+    {
+      "id": "servicetitan",
+      "type": "scenario",
+      "title": "Objection: We Already Use ServiceTitan",
+      "prompt": "Prospect says they already use ServiceTitan.\n\nTask: Respond without criticizing their stack.",
+      "expected": "That may be fine. This Sprint is not a replacement for ServiceTitan. It looks at the human workflow around missed calls, callbacks, and handoff status. If that is already clean, the Sprint is probably not needed.",
+      "rubric": [
+        "Difficulty: advanced",
+        "Category: objection",
+        "Avoid fail triggers: attacks ServiceTitan; claims AI improves it; pushes implementation"
+      ],
+      "xapi_object": "activity/servicetitan"
+    },
+    {
+      "id": "revenue-question",
+      "type": "scenario",
+      "title": "Objection: How Much Revenue Will This Add?",
+      "prompt": "Prospect asks how much revenue this will add.\n\nTask: Answer safely.",
+      "expected": "I cannot promise revenue or booked-job lift. The first Sprint is a diagnostic. It clarifies where follow-up, ownership, or handoff status may be unclear. Any later measurement must be defined separately and treated as evidence, not a guarantee.",
+      "rubric": [
+        "Difficulty: advanced",
+        "Category: objection",
+        "Avoid fail triggers: gives a percentage; says it pays for itself; guaranteed ROI"
+      ],
+      "xapi_object": "activity/revenue-question"
+    },
+    {
+      "id": "scope-classifier",
+      "type": "scenario",
+      "title": "Qualification Decision",
+      "prompt": "A prospect wants text automation, missed-call auto-replies, and after-hours emergency triage.\n\nTask: Classify the prospect.",
+      "expected": "Interested but out of first-scope. Text automation and emergency triage require separate approval, compliance review, consent and opt-out handling, and implementation scope. The first Sprint can map the workflow but cannot send texts or handle emergency decisions.",
+      "rubric": [
+        "Difficulty: advanced",
+        "Category: qualification",
+        "Avoid fail triggers: accepts text automation; includes emergency triage; skips compliance boundary"
+      ],
+      "xapi_object": "activity/scope-classifier"
+    },
+    {
+      "id": "approval-card",
+      "type": "scenario",
+      "title": "Build The Approval Card",
+      "prompt": "Randall wants to proceed with the first batch.\n\nTask: Fill the minimum approval fields.",
+      "expected": "Decision: approve manual first-batch outreach. Batch: Olive Air, Instant Heating and Air, Frozen Cactus, Cold Stinger, Norris Air. Channel: official-site contact form or official website email only. Copy: approved initial email and one follow-up. Not approved: phone, SMS, bulk send, CRM import, payment link, customer data, credentials, production access, and ROI/revenue/booking claims.",
+      "rubric": [
+        "Difficulty: advanced",
+        "Category: approval",
+        "Avoid fail triggers: approval already granted; omits channel; omits stop lines"
+      ],
+      "xapi_object": "activity/approval-card"
+    }
+  ],
+  "xapi": {
+    "activity_id": "https://veritas.local/training/wf75-hvac-prospect-outreach-practice",
+    "verbs": [
+      "answered",
+      "completed",
+      "failed",
+      "passed",
+      "reviewed_boundary",
+      "started"
+    ]
+  },
+  "source_stack": "training/wf75-academy/hvac-prospect-outreach-training-stack-2026-07-03.json"
+}

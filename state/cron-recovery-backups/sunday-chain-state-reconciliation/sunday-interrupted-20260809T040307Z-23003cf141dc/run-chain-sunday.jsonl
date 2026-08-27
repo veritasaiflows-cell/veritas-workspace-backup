@@ -1,0 +1,1166 @@
+{"event": "chain_started", "incremental": false, "logged_at_utc": "2026-06-21T15:00:23Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-06-21T15:00:23Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-06-21T15:00:29Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-06-21T15:00:29Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-06-21T15:00:30Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-06-21T15:00:31Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-06-21T15:00:31Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "chain_started", "incremental": false, "logged_at_utc": "2026-06-21T15:02:33Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-06-21T15:02:33Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-06-21T15:02:39Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-06-21T15:02:40Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-06-21T15:02:40Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 124, "index": 7, "logged_at_utc": "2026-06-21T15:05:31Z", "script": "fundamental_metrics_refresh.py", "status": "timeout"}
+{"event": "step_skipped_after_failure", "index": 8, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_skipped_after_failure", "index": 9, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 10, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 11, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 12, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 13, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 14, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 15, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 16, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_skipped_after_failure", "index": 17, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_skipped_after_failure", "index": 18, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_skipped_after_failure", "index": 19, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_skipped_after_failure", "index": 20, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_skipped_after_failure", "index": 21, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "official_earnings_bridge.py"}
+{"event": "step_skipped_after_failure", "index": 22, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_skipped_after_failure", "index": 23, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 24, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "credit_spread_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 25, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "breadth_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 26, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "market_state_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 27, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_event_calendar.py"}
+{"event": "step_skipped_after_failure", "index": 28, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_skipped_after_failure", "index": 29, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_signal_spine.py"}
+{"event": "step_skipped_after_failure", "index": 30, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_skipped_after_failure", "index": 31, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_skipped_after_failure", "index": 32, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_regime_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 33, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_skipped_after_failure", "index": 34, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "historical_regime_event_library.py"}
+{"event": "step_skipped_after_failure", "index": 35, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_skipped_after_failure", "index": 36, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "macro_judgment_draft.py"}
+{"event": "step_skipped_after_failure", "index": 37, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_skipped_after_failure", "index": 38, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "technical_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 39, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "band_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 40, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_skipped_after_failure", "index": 41, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "reference_band_note_sync.py"}
+{"event": "step_skipped_after_failure", "index": 42, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "entry_band_fetch.py"}
+{"event": "step_skipped_after_failure", "index": 43, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "generate_entry_band_status.py"}
+{"event": "step_skipped_after_failure", "index": 44, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "deployment_check.py"}
+{"event": "step_skipped_after_failure", "index": 45, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 46, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_skipped_after_failure", "index": 47, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_skipped_after_failure", "index": 48, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 49, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 50, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "post_earnings_prep.py"}
+{"event": "step_skipped_after_failure", "index": 51, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_skipped_after_failure", "index": 52, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "call_log_sync.py"}
+{"event": "step_skipped_after_failure", "index": 53, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "universe_consistency_check.py"}
+{"event": "step_skipped_after_failure", "index": 54, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_skipped_after_failure", "index": 55, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "generate_dashboard.py"}
+{"event": "step_skipped_after_failure", "index": 56, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "validate_dashboard_state.py"}
+{"event": "step_skipped_after_failure", "index": 57, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "workbook_export.py"}
+{"event": "step_skipped_after_failure", "index": 58, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_skipped_after_failure", "index": 59, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 60, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_skipped_after_failure", "index": 61, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "weekly_printable_brief.py"}
+{"event": "step_skipped_after_failure", "index": 62, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "postmarket_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 63, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "snapshot_contract_check.py"}
+{"event": "step_skipped_after_failure", "index": 64, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "daily_executive_brief.py"}
+{"event": "step_skipped_after_failure", "index": 65, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_started", "index": 66, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 66, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 67, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 67, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_skipped_after_failure", "index": 68, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_skipped_after_failure", "index": 69, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_skipped_after_failure", "index": 70, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_skipped_after_failure", "index": 71, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "sector_correlation_check.py"}
+{"event": "step_skipped_after_failure", "index": 72, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "sector_expansion_board.py"}
+{"event": "step_skipped_after_failure", "index": 73, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "daily_review_objects.py"}
+{"event": "step_skipped_after_failure", "index": 74, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_skipped_after_failure", "index": 75, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_skipped_after_failure", "index": 76, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_skipped_after_failure", "index": 77, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_skipped_after_failure", "index": 78, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "probability_readiness_report.py"}
+{"event": "step_skipped_after_failure", "index": 79, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "probability_readiness_validator.py"}
+{"event": "step_skipped_after_failure", "index": 80, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "board_canon_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 81, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 82, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 83, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "full_portfolio_view.py"}
+{"event": "step_skipped_after_failure", "index": 84, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_skipped_after_failure", "index": 85, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 86, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_skipped_after_failure", "index": 87, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "archive_suggester.py"}
+{"event": "step_skipped_after_failure", "index": 88, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "current_window_artifact_index.py"}
+{"event": "step_skipped_after_failure", "index": 89, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "artifact_index.py"}
+{"event": "step_started", "index": 90, "logged_at_utc": "2026-06-21T15:05:34Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 90, "logged_at_utc": "2026-06-21T15:05:35Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed_with_recovery", "exit_code": 124, "logged_at_utc": "2026-06-21T15:05:35Z", "window": "sunday"}
+{"event": "step_completed", "exit_code": 124, "index": 7, "logged_at_utc": "2026-06-21T15:07:40Z", "script": "fundamental_metrics_refresh.py", "status": "timeout"}
+{"event": "step_skipped_after_failure", "index": 8, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_skipped_after_failure", "index": 9, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 10, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 11, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 12, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 13, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 14, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 15, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 16, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_skipped_after_failure", "index": 17, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_skipped_after_failure", "index": 18, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_skipped_after_failure", "index": 19, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_skipped_after_failure", "index": 20, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_skipped_after_failure", "index": 21, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "official_earnings_bridge.py"}
+{"event": "step_skipped_after_failure", "index": 22, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_skipped_after_failure", "index": 23, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 24, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "credit_spread_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 25, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "breadth_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 26, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "market_state_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 27, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_event_calendar.py"}
+{"event": "step_skipped_after_failure", "index": 28, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_skipped_after_failure", "index": 29, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_signal_spine.py"}
+{"event": "step_skipped_after_failure", "index": 30, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_skipped_after_failure", "index": 31, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_skipped_after_failure", "index": 32, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_regime_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 33, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_skipped_after_failure", "index": 34, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "historical_regime_event_library.py"}
+{"event": "step_skipped_after_failure", "index": 35, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_skipped_after_failure", "index": 36, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "macro_judgment_draft.py"}
+{"event": "step_skipped_after_failure", "index": 37, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_skipped_after_failure", "index": 38, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "technical_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 39, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "band_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 40, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_skipped_after_failure", "index": 41, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "reference_band_note_sync.py"}
+{"event": "step_skipped_after_failure", "index": 42, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "entry_band_fetch.py"}
+{"event": "step_skipped_after_failure", "index": 43, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "generate_entry_band_status.py"}
+{"event": "step_skipped_after_failure", "index": 44, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "deployment_check.py"}
+{"event": "step_skipped_after_failure", "index": 45, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 46, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_skipped_after_failure", "index": 47, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_skipped_after_failure", "index": 48, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 49, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 50, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "post_earnings_prep.py"}
+{"event": "step_skipped_after_failure", "index": 51, "logged_at_utc": "2026-06-21T15:07:41Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_skipped_after_failure", "index": 52, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "call_log_sync.py"}
+{"event": "step_skipped_after_failure", "index": 53, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "universe_consistency_check.py"}
+{"event": "step_skipped_after_failure", "index": 54, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_skipped_after_failure", "index": 55, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "generate_dashboard.py"}
+{"event": "step_skipped_after_failure", "index": 56, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "validate_dashboard_state.py"}
+{"event": "step_skipped_after_failure", "index": 57, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "workbook_export.py"}
+{"event": "step_skipped_after_failure", "index": 58, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_skipped_after_failure", "index": 59, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 60, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_skipped_after_failure", "index": 61, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "weekly_printable_brief.py"}
+{"event": "step_skipped_after_failure", "index": 62, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "postmarket_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 63, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "snapshot_contract_check.py"}
+{"event": "step_skipped_after_failure", "index": 64, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "daily_executive_brief.py"}
+{"event": "step_skipped_after_failure", "index": 65, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_started", "index": 66, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 66, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 67, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 67, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_skipped_after_failure", "index": 68, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_skipped_after_failure", "index": 69, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_skipped_after_failure", "index": 70, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_skipped_after_failure", "index": 71, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "sector_correlation_check.py"}
+{"event": "step_skipped_after_failure", "index": 72, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "sector_expansion_board.py"}
+{"event": "step_skipped_after_failure", "index": 73, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "daily_review_objects.py"}
+{"event": "step_skipped_after_failure", "index": 74, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_skipped_after_failure", "index": 75, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_skipped_after_failure", "index": 76, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_skipped_after_failure", "index": 77, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_skipped_after_failure", "index": 78, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "probability_readiness_report.py"}
+{"event": "step_skipped_after_failure", "index": 79, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "probability_readiness_validator.py"}
+{"event": "step_skipped_after_failure", "index": 80, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "board_canon_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 81, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 82, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 83, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "full_portfolio_view.py"}
+{"event": "step_skipped_after_failure", "index": 84, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_skipped_after_failure", "index": 85, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 86, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_skipped_after_failure", "index": 87, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "archive_suggester.py"}
+{"event": "step_skipped_after_failure", "index": 88, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "current_window_artifact_index.py"}
+{"event": "step_skipped_after_failure", "index": 89, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "artifact_index.py"}
+{"event": "step_started", "index": 90, "logged_at_utc": "2026-06-21T15:07:42Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 90, "logged_at_utc": "2026-06-21T15:07:43Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed_with_recovery", "exit_code": 124, "logged_at_utc": "2026-06-21T15:07:43Z", "window": "sunday"}
+{"event": "chain_started", "incremental": true, "logged_at_utc": "2026-06-21T16:25:14Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_skipped_fresh", "index": 1, "logged_at_utc": "2026-06-21T16:25:14Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_skipped_fresh", "index": 6, "logged_at_utc": "2026-06-21T16:25:14Z", "reason": "expected_outputs_newer_than_dependencies", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-06-21T16:25:14Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-06-21T16:31:26Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-06-21T16:31:26Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 0, "index": 8, "logged_at_utc": "2026-06-21T16:31:26Z", "script": "validate_fundamental_metrics.py", "status": "ok"}
+{"event": "step_started", "index": 9, "logged_at_utc": "2026-06-21T16:31:26Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 9, "logged_at_utc": "2026-06-21T16:31:27Z", "script": "goog_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 10, "logged_at_utc": "2026-06-21T16:31:27Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 10, "logged_at_utc": "2026-06-21T16:31:28Z", "script": "etn_vrt_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 11, "logged_at_utc": "2026-06-21T16:31:28Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 11, "logged_at_utc": "2026-06-21T16:31:29Z", "script": "tech_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 12, "logged_at_utc": "2026-06-21T16:31:29Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 12, "logged_at_utc": "2026-06-21T16:31:31Z", "script": "priority_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 13, "logged_at_utc": "2026-06-21T16:31:31Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 13, "logged_at_utc": "2026-06-21T16:31:32Z", "script": "batch2_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 14, "logged_at_utc": "2026-06-21T16:31:32Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 14, "logged_at_utc": "2026-06-21T16:31:34Z", "script": "batch2b_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 15, "logged_at_utc": "2026-06-21T16:31:34Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 15, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "longtail_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 16, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 16, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "official_ir_capture_validator.py", "status": "ok"}
+{"event": "step_started", "index": 17, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 17, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "fundamental_ir_reconciliation_packets.py", "status": "ok"}
+{"event": "step_started", "index": 18, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 18, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 19, "logged_at_utc": "2026-06-21T16:31:37Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 19, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 20, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_completed", "exit_code": 0, "index": 20, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "validate_fundamental_ir_reconciliation.py", "status": "ok"}
+{"event": "step_started", "index": 21, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 21, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 22, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 22, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "validate_official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 23, "logged_at_utc": "2026-06-21T16:31:38Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 23, "logged_at_utc": "2026-06-21T16:31:42Z", "script": "policy_expectations_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 24, "logged_at_utc": "2026-06-21T16:31:42Z", "script": "credit_spread_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 24, "logged_at_utc": "2026-06-21T16:31:43Z", "script": "credit_spread_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 25, "logged_at_utc": "2026-06-21T16:31:43Z", "script": "breadth_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 25, "logged_at_utc": "2026-06-21T16:31:46Z", "script": "breadth_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 26, "logged_at_utc": "2026-06-21T16:31:46Z", "script": "market_state_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 26, "logged_at_utc": "2026-06-21T16:32:11Z", "script": "market_state_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 27, "logged_at_utc": "2026-06-21T16:32:11Z", "script": "macro_event_calendar.py"}
+{"event": "step_completed", "exit_code": 0, "index": 27, "logged_at_utc": "2026-06-21T16:32:11Z", "script": "macro_event_calendar.py", "status": "ok"}
+{"event": "step_started", "index": 28, "logged_at_utc": "2026-06-21T16:32:11Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 28, "logged_at_utc": "2026-06-21T16:32:13Z", "script": "macro_metrics_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 29, "logged_at_utc": "2026-06-21T16:32:13Z", "script": "macro_signal_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 29, "logged_at_utc": "2026-06-21T16:32:29Z", "script": "macro_signal_spine.py", "status": "ok"}
+{"event": "step_started", "index": 30, "logged_at_utc": "2026-06-21T16:32:29Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 30, "logged_at_utc": "2026-06-21T16:32:44Z", "script": "macro_energy_supply_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 31, "logged_at_utc": "2026-06-21T16:32:44Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 31, "logged_at_utc": "2026-06-21T16:32:54Z", "script": "macro_geopolitical_sweep.py", "status": "ok"}
+{"event": "step_started", "index": 32, "logged_at_utc": "2026-06-21T16:32:54Z", "script": "macro_regime_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 32, "logged_at_utc": "2026-06-21T16:32:54Z", "script": "macro_regime_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 33, "logged_at_utc": "2026-06-21T16:32:54Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_completed", "exit_code": 0, "index": 33, "logged_at_utc": "2026-06-21T16:32:57Z", "script": "small_mid_cap_regime_feed.py", "status": "ok"}
+{"event": "step_started", "index": 34, "logged_at_utc": "2026-06-21T16:32:57Z", "script": "historical_regime_event_library.py"}
+{"event": "step_completed", "exit_code": 0, "index": 34, "logged_at_utc": "2026-06-21T16:33:01Z", "script": "historical_regime_event_library.py", "status": "ok"}
+{"event": "step_started", "index": 35, "logged_at_utc": "2026-06-21T16:33:01Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_completed", "exit_code": 0, "index": 35, "logged_at_utc": "2026-06-21T16:33:01Z", "script": "current_regime_analog_matcher.py", "status": "ok"}
+{"event": "step_started", "index": 36, "logged_at_utc": "2026-06-21T16:33:01Z", "script": "macro_judgment_draft.py"}
+{"event": "step_completed", "exit_code": 0, "index": 36, "logged_at_utc": "2026-06-21T16:33:01Z", "script": "macro_judgment_draft.py", "status": "ok"}
+{"event": "step_started", "index": 37, "logged_at_utc": "2026-06-21T16:33:01Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 37, "logged_at_utc": "2026-06-21T16:33:02Z", "script": "json_sql_promotion_index.py", "status": "ok"}
+{"event": "step_started", "index": 38, "logged_at_utc": "2026-06-21T16:33:02Z", "script": "technical_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 38, "logged_at_utc": "2026-06-21T16:33:09Z", "script": "technical_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 39, "logged_at_utc": "2026-06-21T16:33:09Z", "script": "band_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 39, "logged_at_utc": "2026-06-21T16:33:17Z", "script": "band_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 40, "logged_at_utc": "2026-06-21T16:33:17Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_completed", "exit_code": 0, "index": 40, "logged_at_utc": "2026-06-21T16:33:24Z", "script": "auto_apply_entry_band_maintenance.py", "status": "ok"}
+{"event": "step_started", "index": 41, "logged_at_utc": "2026-06-21T16:33:24Z", "script": "reference_band_note_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 41, "logged_at_utc": "2026-06-21T16:33:24Z", "script": "reference_band_note_sync.py", "status": "ok"}
+{"event": "step_started", "index": 42, "logged_at_utc": "2026-06-21T16:33:24Z", "script": "entry_band_fetch.py"}
+{"event": "step_completed", "exit_code": 0, "index": 42, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "entry_band_fetch.py", "status": "ok"}
+{"event": "step_started", "index": 43, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "generate_entry_band_status.py"}
+{"event": "step_completed", "exit_code": 0, "index": 43, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "generate_entry_band_status.py", "status": "ok"}
+{"event": "step_started", "index": 44, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "deployment_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 44, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "deployment_check.py", "status": "ok"}
+{"event": "step_started", "index": 45, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 45, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "trigger_sheet_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 46, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 46, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "canon_volatile_execution_board_sync.py", "status": "ok"}
+{"event": "step_started", "index": 47, "logged_at_utc": "2026-06-21T16:33:44Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 47, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "canon_drift_freshness_gate.py", "status": "ok"}
+{"event": "step_started", "index": 48, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 48, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "regime_scoring_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 49, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 49, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "positioning_ranking_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 50, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "post_earnings_prep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 50, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "post_earnings_prep.py", "status": "ok"}
+{"event": "step_started", "index": 51, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 51, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "post_earnings_note_targets.py", "status": "ok"}
+{"event": "step_started", "index": 52, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "call_log_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 52, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "call_log_sync.py", "status": "ok"}
+{"event": "step_started", "index": 53, "logged_at_utc": "2026-06-21T16:33:45Z", "script": "universe_consistency_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 53, "logged_at_utc": "2026-06-21T16:33:46Z", "script": "universe_consistency_check.py", "status": "ok"}
+{"event": "step_started", "index": 54, "logged_at_utc": "2026-06-21T16:33:46Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_completed", "exit_code": 0, "index": 54, "logged_at_utc": "2026-06-21T16:33:56Z", "script": "test_dashboard_acceptance.py", "status": "ok"}
+{"event": "step_started", "index": 55, "logged_at_utc": "2026-06-21T16:33:56Z", "script": "generate_dashboard.py"}
+{"event": "step_completed", "exit_code": 0, "index": 55, "logged_at_utc": "2026-06-21T16:33:57Z", "script": "generate_dashboard.py", "status": "ok"}
+{"event": "step_started", "index": 56, "logged_at_utc": "2026-06-21T16:33:57Z", "script": "validate_dashboard_state.py"}
+{"event": "step_completed", "exit_code": 0, "index": 56, "logged_at_utc": "2026-06-21T16:33:57Z", "script": "validate_dashboard_state.py", "status": "ok"}
+{"event": "step_started", "index": 57, "logged_at_utc": "2026-06-21T16:33:57Z", "script": "workbook_export.py"}
+{"event": "step_completed", "exit_code": 0, "index": 57, "logged_at_utc": "2026-06-21T16:33:58Z", "script": "workbook_export.py", "status": "ok"}
+{"event": "step_started", "index": 58, "logged_at_utc": "2026-06-21T16:33:58Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_completed", "exit_code": 0, "index": 58, "logged_at_utc": "2026-06-21T16:33:58Z", "script": "weekly_review_skeleton.py", "status": "ok"}
+{"event": "step_started", "index": 59, "logged_at_utc": "2026-06-21T16:33:58Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_completed", "exit_code": 0, "index": 59, "logged_at_utc": "2026-06-21T16:33:58Z", "script": "weekly_macro_snapshot.py", "status": "ok"}
+{"event": "step_started", "index": 60, "logged_at_utc": "2026-06-21T16:33:59Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 60, "logged_at_utc": "2026-06-21T16:34:00Z", "script": "weekly_intelligence_brief.py", "status": "ok"}
+{"event": "step_started", "index": 61, "logged_at_utc": "2026-06-21T16:34:00Z", "script": "weekly_printable_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 61, "logged_at_utc": "2026-06-21T16:34:00Z", "script": "weekly_printable_brief.py", "status": "ok"}
+{"event": "step_started", "index": 62, "logged_at_utc": "2026-06-21T16:34:00Z", "script": "postmarket_snapshot.py"}
+{"event": "step_completed", "exit_code": 0, "index": 62, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "postmarket_snapshot.py", "status": "ok"}
+{"event": "step_started", "index": 63, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "snapshot_contract_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 63, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "snapshot_contract_check.py", "status": "ok"}
+{"event": "step_started", "index": 64, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "daily_executive_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 64, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "daily_executive_brief.py", "status": "ok"}
+{"event": "step_started", "index": 65, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 65, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "pipeline_state_consistency_check.py", "status": "ok"}
+{"event": "step_started", "index": 66, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 66, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 67, "logged_at_utc": "2026-06-21T16:34:01Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 67, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_started", "index": 68, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_completed", "exit_code": 0, "index": 68, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "deployment_readiness_surface.py", "status": "ok"}
+{"event": "step_started", "index": 69, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_completed", "exit_code": 0, "index": 69, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "daily_price_trend_signals.py", "status": "ok"}
+{"event": "step_started", "index": 70, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_completed", "exit_code": 0, "index": 70, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "market_intelligence_event_router.py", "status": "ok"}
+{"event": "step_started", "index": 71, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "sector_correlation_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 71, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "sector_correlation_check.py", "status": "ok"}
+{"event": "step_started", "index": 72, "logged_at_utc": "2026-06-21T16:34:02Z", "script": "sector_expansion_board.py"}
+{"event": "step_completed", "exit_code": 0, "index": 72, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "sector_expansion_board.py", "status": "ok"}
+{"event": "step_started", "index": 73, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "daily_review_objects.py"}
+{"event": "step_completed", "exit_code": 0, "index": 73, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "daily_review_objects.py", "status": "ok"}
+{"event": "step_started", "index": 74, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 74, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "portfolio_mutation_proposal_generator.py", "status": "ok"}
+{"event": "step_started", "index": 75, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_completed", "exit_code": 0, "index": 75, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "capital_deployment_recommendation_report.py", "status": "ok"}
+{"event": "step_started", "index": 76, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 76, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "capital_deployment_recommendation_validator.py", "status": "ok"}
+{"event": "step_started", "index": 77, "logged_at_utc": "2026-06-21T16:34:05Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 77, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "auto_apply_position_sizing_semantic_sync.py", "status": "ok"}
+{"event": "step_started", "index": 78, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "probability_readiness_report.py"}
+{"event": "step_completed", "exit_code": 0, "index": 78, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "probability_readiness_report.py", "status": "ok"}
+{"event": "step_started", "index": 79, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "probability_readiness_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 79, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "probability_readiness_validator.py", "status": "ok"}
+{"event": "step_started", "index": 80, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "board_canon_guardrail.py"}
+{"event": "step_completed", "exit_code": 0, "index": 80, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "board_canon_guardrail.py", "status": "ok"}
+{"event": "step_started", "index": 81, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_completed", "exit_code": 0, "index": 81, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "stale_intelligence_guardrail.py", "status": "ok"}
+{"event": "step_started", "index": 82, "logged_at_utc": "2026-06-21T16:34:06Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_completed", "exit_code": 0, "index": 82, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "canonical_note_patch_proposal.py", "status": "ok"}
+{"event": "step_started", "index": 83, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "full_portfolio_view.py"}
+{"event": "step_completed", "exit_code": 0, "index": 83, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "full_portfolio_view.py", "status": "ok"}
+{"event": "step_started", "index": 84, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 84, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "full_portfolio_view_validate.py", "status": "ok"}
+{"event": "step_started", "index": 85, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_completed", "exit_code": 0, "index": 85, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "portfolio_snapshot_patch_proposal.py", "status": "ok"}
+{"event": "step_started", "index": 86, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_completed", "exit_code": 0, "index": 86, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "finance_discrepancy_resolver.py", "status": "ok"}
+{"event": "step_started", "index": 87, "logged_at_utc": "2026-06-21T16:34:07Z", "script": "archive_suggester.py"}
+{"event": "step_completed", "exit_code": 0, "index": 87, "logged_at_utc": "2026-06-21T16:35:04Z", "script": "archive_suggester.py", "status": "ok"}
+{"event": "step_started", "index": 88, "logged_at_utc": "2026-06-21T16:35:04Z", "script": "current_window_artifact_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 88, "logged_at_utc": "2026-06-21T16:35:04Z", "script": "current_window_artifact_index.py", "status": "ok"}
+{"event": "step_started", "index": 89, "logged_at_utc": "2026-06-21T16:35:04Z", "script": "artifact_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 89, "logged_at_utc": "2026-06-21T16:35:06Z", "script": "artifact_index.py", "status": "ok"}
+{"event": "step_started", "index": 90, "logged_at_utc": "2026-06-21T16:35:06Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 90, "logged_at_utc": "2026-06-21T16:35:06Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed", "logged_at_utc": "2026-06-21T16:35:06Z", "status": "ok", "window": "sunday"}
+{"event": "chain_started", "force": false, "incremental": false, "logged_at_utc": "2026-06-28T15:00:24Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-06-28T15:00:24Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-06-28T15:00:29Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-06-28T15:00:31Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-06-28T15:00:31Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "chain_started", "force": false, "incremental": false, "logged_at_utc": "2026-06-28T15:02:34Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-06-28T15:02:34Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-06-28T15:02:38Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-06-28T15:02:39Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-06-28T15:02:39Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-06-28T15:02:40Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-06-28T15:02:40Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-06-28T15:08:08Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-06-28T15:08:08Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 0, "index": 8, "logged_at_utc": "2026-06-28T15:08:08Z", "script": "validate_fundamental_metrics.py", "status": "ok"}
+{"event": "step_started", "index": 9, "logged_at_utc": "2026-06-28T15:08:08Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 9, "logged_at_utc": "2026-06-28T15:08:09Z", "script": "goog_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 10, "logged_at_utc": "2026-06-28T15:08:09Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 10, "logged_at_utc": "2026-06-28T15:08:09Z", "script": "etn_vrt_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 11, "logged_at_utc": "2026-06-28T15:08:09Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 11, "logged_at_utc": "2026-06-28T15:08:10Z", "script": "tech_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 12, "logged_at_utc": "2026-06-28T15:08:10Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-06-28T15:10:09Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-06-28T15:10:09Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 0, "index": 8, "logged_at_utc": "2026-06-28T15:10:09Z", "script": "validate_fundamental_metrics.py", "status": "ok"}
+{"event": "step_started", "index": 9, "logged_at_utc": "2026-06-28T15:10:09Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 9, "logged_at_utc": "2026-06-28T15:10:10Z", "script": "goog_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 10, "logged_at_utc": "2026-06-28T15:10:10Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 10, "logged_at_utc": "2026-06-28T15:10:11Z", "script": "etn_vrt_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 11, "logged_at_utc": "2026-06-28T15:10:11Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 11, "logged_at_utc": "2026-06-28T15:10:12Z", "script": "tech_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 12, "logged_at_utc": "2026-06-28T15:10:12Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 12, "logged_at_utc": "2026-06-28T15:10:14Z", "script": "priority_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 13, "logged_at_utc": "2026-06-28T15:10:14Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 13, "logged_at_utc": "2026-06-28T15:10:15Z", "script": "batch2_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 14, "logged_at_utc": "2026-06-28T15:10:15Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 14, "logged_at_utc": "2026-06-28T15:10:17Z", "script": "batch2b_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 15, "logged_at_utc": "2026-06-28T15:10:17Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 15, "logged_at_utc": "2026-06-28T15:10:20Z", "script": "longtail_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 16, "logged_at_utc": "2026-06-28T15:10:20Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 16, "logged_at_utc": "2026-06-28T15:10:20Z", "script": "official_ir_capture_validator.py", "status": "ok"}
+{"event": "step_started", "index": 17, "logged_at_utc": "2026-06-28T15:10:20Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 17, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "fundamental_ir_reconciliation_packets.py", "status": "ok"}
+{"event": "step_started", "index": 18, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 18, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 19, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 19, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 20, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_completed", "exit_code": 0, "index": 20, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "validate_fundamental_ir_reconciliation.py", "status": "ok"}
+{"event": "step_started", "index": 21, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 21, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 22, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 22, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "validate_official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 23, "logged_at_utc": "2026-06-28T15:10:21Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 23, "logged_at_utc": "2026-06-28T15:10:23Z", "script": "policy_expectations_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 24, "logged_at_utc": "2026-06-28T15:10:23Z", "script": "credit_spread_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 24, "logged_at_utc": "2026-06-28T15:10:24Z", "script": "credit_spread_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 25, "logged_at_utc": "2026-06-28T15:10:24Z", "script": "breadth_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 25, "logged_at_utc": "2026-06-28T15:10:26Z", "script": "breadth_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 26, "logged_at_utc": "2026-06-28T15:10:26Z", "script": "market_state_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 26, "logged_at_utc": "2026-06-28T15:10:47Z", "script": "market_state_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 27, "logged_at_utc": "2026-06-28T15:10:47Z", "script": "macro_event_calendar.py"}
+{"event": "step_completed", "exit_code": 0, "index": 27, "logged_at_utc": "2026-06-28T15:10:47Z", "script": "macro_event_calendar.py", "status": "ok"}
+{"event": "step_started", "index": 28, "logged_at_utc": "2026-06-28T15:10:47Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 28, "logged_at_utc": "2026-06-28T15:10:48Z", "script": "macro_metrics_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 29, "logged_at_utc": "2026-06-28T15:10:48Z", "script": "macro_signal_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 29, "logged_at_utc": "2026-06-28T15:11:06Z", "script": "macro_signal_spine.py", "status": "ok"}
+{"event": "step_started", "index": 30, "logged_at_utc": "2026-06-28T15:11:06Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 30, "logged_at_utc": "2026-06-28T15:11:23Z", "script": "macro_energy_supply_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 31, "logged_at_utc": "2026-06-28T15:11:23Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 31, "logged_at_utc": "2026-06-28T15:11:33Z", "script": "macro_geopolitical_sweep.py", "status": "ok"}
+{"event": "step_started", "index": 32, "logged_at_utc": "2026-06-28T15:11:33Z", "script": "macro_regime_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 32, "logged_at_utc": "2026-06-28T15:11:33Z", "script": "macro_regime_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 33, "logged_at_utc": "2026-06-28T15:11:33Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_completed", "exit_code": 0, "index": 33, "logged_at_utc": "2026-06-28T15:11:36Z", "script": "small_mid_cap_regime_feed.py", "status": "ok"}
+{"event": "step_started", "index": 34, "logged_at_utc": "2026-06-28T15:11:36Z", "script": "historical_regime_event_library.py"}
+{"event": "step_completed", "exit_code": 0, "index": 34, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "historical_regime_event_library.py", "status": "ok"}
+{"event": "step_started", "index": 35, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_completed", "exit_code": 0, "index": 35, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "current_regime_analog_matcher.py", "status": "ok"}
+{"event": "step_started", "index": 36, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "macro_judgment_draft.py"}
+{"event": "step_completed", "exit_code": 0, "index": 36, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "macro_judgment_draft.py", "status": "ok"}
+{"event": "step_started", "index": 37, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 37, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "json_sql_promotion_index.py", "status": "ok"}
+{"event": "step_started", "index": 38, "logged_at_utc": "2026-06-28T15:11:40Z", "script": "technical_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 38, "logged_at_utc": "2026-06-28T15:11:46Z", "script": "technical_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 39, "logged_at_utc": "2026-06-28T15:11:46Z", "script": "band_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 39, "logged_at_utc": "2026-06-28T15:11:52Z", "script": "band_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 40, "logged_at_utc": "2026-06-28T15:11:52Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_completed", "exit_code": 0, "index": 40, "logged_at_utc": "2026-06-28T15:12:01Z", "script": "auto_apply_entry_band_maintenance.py", "status": "ok"}
+{"event": "step_started", "index": 41, "logged_at_utc": "2026-06-28T15:12:01Z", "script": "reference_band_note_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 41, "logged_at_utc": "2026-06-28T15:12:01Z", "script": "reference_band_note_sync.py", "status": "ok"}
+{"event": "step_started", "index": 42, "logged_at_utc": "2026-06-28T15:12:01Z", "script": "entry_band_fetch.py"}
+{"event": "step_completed", "exit_code": 0, "index": 42, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "entry_band_fetch.py", "status": "ok"}
+{"event": "step_started", "index": 43, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "generate_entry_band_status.py"}
+{"event": "step_completed", "exit_code": 0, "index": 43, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "generate_entry_band_status.py", "status": "ok"}
+{"event": "step_started", "index": 44, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "deployment_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 44, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "deployment_check.py", "status": "ok"}
+{"event": "step_started", "index": 45, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 45, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "trigger_sheet_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 46, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 46, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "canon_volatile_execution_board_sync.py", "status": "ok"}
+{"event": "step_started", "index": 47, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "sql_canon_field_family_preflight.py"}
+{"event": "step_completed", "exit_code": 0, "index": 47, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "sql_canon_field_family_preflight.py", "status": "ok"}
+{"event": "step_started", "index": 48, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "wf72_entry_stop_sql_activate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 48, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "wf72_entry_stop_sql_activate.py", "status": "ok"}
+{"event": "step_started", "index": 49, "logged_at_utc": "2026-06-28T15:12:17Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 49, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "canon_drift_freshness_gate.py", "status": "ok"}
+{"event": "step_started", "index": 50, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 50, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "regime_scoring_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 51, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 51, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "positioning_ranking_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 52, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "post_earnings_prep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 52, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "post_earnings_prep.py", "status": "ok"}
+{"event": "step_started", "index": 53, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 53, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "post_earnings_note_targets.py", "status": "ok"}
+{"event": "step_started", "index": 54, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "call_log_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 54, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "call_log_sync.py", "status": "ok"}
+{"event": "step_started", "index": 55, "logged_at_utc": "2026-06-28T15:12:18Z", "script": "universe_consistency_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 55, "logged_at_utc": "2026-06-28T15:12:19Z", "script": "universe_consistency_check.py", "status": "ok"}
+{"event": "step_started", "index": 56, "logged_at_utc": "2026-06-28T15:12:19Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_completed", "exit_code": 0, "index": 56, "logged_at_utc": "2026-06-28T15:12:37Z", "script": "test_dashboard_acceptance.py", "status": "ok"}
+{"event": "step_started", "index": 57, "logged_at_utc": "2026-06-28T15:12:37Z", "script": "generate_dashboard.py"}
+{"event": "step_completed", "exit_code": 0, "index": 57, "logged_at_utc": "2026-06-28T15:12:38Z", "script": "generate_dashboard.py", "status": "ok"}
+{"event": "step_started", "index": 58, "logged_at_utc": "2026-06-28T15:12:38Z", "script": "validate_dashboard_state.py"}
+{"event": "step_completed", "exit_code": 0, "index": 58, "logged_at_utc": "2026-06-28T15:12:39Z", "script": "validate_dashboard_state.py", "status": "ok"}
+{"event": "step_started", "index": 59, "logged_at_utc": "2026-06-28T15:12:39Z", "script": "workbook_export.py"}
+{"event": "step_completed", "exit_code": 0, "index": 59, "logged_at_utc": "2026-06-28T15:12:39Z", "script": "workbook_export.py", "status": "ok"}
+{"event": "step_started", "index": 60, "logged_at_utc": "2026-06-28T15:12:39Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_completed", "exit_code": 0, "index": 60, "logged_at_utc": "2026-06-28T15:12:39Z", "script": "weekly_review_skeleton.py", "status": "ok"}
+{"event": "step_started", "index": 61, "logged_at_utc": "2026-06-28T15:12:39Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_completed", "exit_code": 0, "index": 61, "logged_at_utc": "2026-06-28T15:12:40Z", "script": "weekly_macro_snapshot.py", "status": "ok"}
+{"event": "step_started", "index": 62, "logged_at_utc": "2026-06-28T15:12:40Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 62, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "weekly_intelligence_brief.py", "status": "ok"}
+{"event": "step_started", "index": 63, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "weekly_printable_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 63, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "weekly_printable_brief.py", "status": "ok"}
+{"event": "step_started", "index": 64, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "postmarket_snapshot.py"}
+{"event": "step_completed", "exit_code": 0, "index": 64, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "postmarket_snapshot.py", "status": "ok"}
+{"event": "step_started", "index": 65, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "snapshot_contract_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 65, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "snapshot_contract_check.py", "status": "ok"}
+{"event": "step_started", "index": 66, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "daily_executive_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 66, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "daily_executive_brief.py", "status": "ok"}
+{"event": "step_started", "index": 67, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 67, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "pipeline_state_consistency_check.py", "status": "ok"}
+{"event": "step_started", "index": 68, "logged_at_utc": "2026-06-28T15:12:42Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 68, "logged_at_utc": "2026-06-28T15:12:43Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 69, "logged_at_utc": "2026-06-28T15:12:43Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 69, "logged_at_utc": "2026-06-28T15:12:43Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_started", "index": 70, "logged_at_utc": "2026-06-28T15:12:43Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_completed", "exit_code": 0, "index": 70, "logged_at_utc": "2026-06-28T15:12:43Z", "script": "deployment_readiness_surface.py", "status": "ok"}
+{"event": "step_started", "index": 71, "logged_at_utc": "2026-06-28T15:12:43Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_completed", "exit_code": 0, "index": 71, "logged_at_utc": "2026-06-28T15:12:44Z", "script": "daily_price_trend_signals.py", "status": "ok"}
+{"event": "step_started", "index": 72, "logged_at_utc": "2026-06-28T15:12:44Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_completed", "exit_code": 0, "index": 72, "logged_at_utc": "2026-06-28T15:12:44Z", "script": "market_intelligence_event_router.py", "status": "ok"}
+{"event": "step_started", "index": 73, "logged_at_utc": "2026-06-28T15:12:44Z", "script": "sector_correlation_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 73, "logged_at_utc": "2026-06-28T15:12:44Z", "script": "sector_correlation_check.py", "status": "ok"}
+{"event": "step_started", "index": 74, "logged_at_utc": "2026-06-28T15:12:44Z", "script": "sector_expansion_board.py"}
+{"event": "step_completed", "exit_code": 0, "index": 74, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "sector_expansion_board.py", "status": "ok"}
+{"event": "step_started", "index": 75, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "daily_review_objects.py"}
+{"event": "step_completed", "exit_code": 0, "index": 75, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "daily_review_objects.py", "status": "ok"}
+{"event": "step_started", "index": 76, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 76, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "portfolio_mutation_proposal_generator.py", "status": "ok"}
+{"event": "step_started", "index": 77, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_completed", "exit_code": 0, "index": 77, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "capital_deployment_recommendation_report.py", "status": "ok"}
+{"event": "step_started", "index": 78, "logged_at_utc": "2026-06-28T15:12:46Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 78, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "capital_deployment_recommendation_validator.py", "status": "ok"}
+{"event": "step_started", "index": 79, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 79, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "auto_apply_position_sizing_semantic_sync.py", "status": "ok"}
+{"event": "step_started", "index": 80, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "probability_readiness_report.py"}
+{"event": "step_completed", "exit_code": 0, "index": 80, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "probability_readiness_report.py", "status": "ok"}
+{"event": "step_started", "index": 81, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "probability_readiness_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 81, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "probability_readiness_validator.py", "status": "ok"}
+{"event": "step_started", "index": 82, "logged_at_utc": "2026-06-28T15:12:47Z", "script": "board_canon_guardrail.py"}
+{"event": "step_completed", "exit_code": 0, "index": 82, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "board_canon_guardrail.py", "status": "ok"}
+{"event": "step_started", "index": 83, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_completed", "exit_code": 0, "index": 83, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "stale_intelligence_guardrail.py", "status": "ok"}
+{"event": "step_started", "index": 84, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_completed", "exit_code": 0, "index": 84, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "canonical_note_patch_proposal.py", "status": "ok"}
+{"event": "step_started", "index": 85, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "full_portfolio_view.py"}
+{"event": "step_completed", "exit_code": 0, "index": 85, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "full_portfolio_view.py", "status": "ok"}
+{"event": "step_started", "index": 86, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 86, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "full_portfolio_view_validate.py", "status": "ok"}
+{"event": "step_started", "index": 87, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_completed", "exit_code": 0, "index": 87, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "portfolio_snapshot_patch_proposal.py", "status": "ok"}
+{"event": "step_started", "index": 88, "logged_at_utc": "2026-06-28T15:12:48Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_completed", "exit_code": 0, "index": 88, "logged_at_utc": "2026-06-28T15:12:49Z", "script": "finance_discrepancy_resolver.py", "status": "ok"}
+{"event": "step_started", "index": 89, "logged_at_utc": "2026-06-28T15:12:49Z", "script": "archive_suggester.py"}
+{"event": "step_completed", "exit_code": 0, "index": 89, "logged_at_utc": "2026-06-28T15:14:04Z", "script": "archive_suggester.py", "status": "ok"}
+{"event": "step_started", "index": 90, "logged_at_utc": "2026-06-28T15:14:04Z", "script": "current_window_artifact_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 90, "logged_at_utc": "2026-06-28T15:14:04Z", "script": "current_window_artifact_index.py", "status": "ok"}
+{"event": "step_started", "index": 91, "logged_at_utc": "2026-06-28T15:14:04Z", "script": "artifact_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 91, "logged_at_utc": "2026-06-28T15:14:06Z", "script": "artifact_index.py", "status": "ok"}
+{"event": "step_started", "index": 92, "logged_at_utc": "2026-06-28T15:14:06Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 92, "logged_at_utc": "2026-06-28T15:14:06Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed", "logged_at_utc": "2026-06-28T15:14:06Z", "status": "ok", "window": "sunday"}
+{"event": "chain_started", "force": false, "incremental": false, "logged_at_utc": "2026-07-05T15:00:21Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-07-05T15:00:21Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-07-05T15:00:25Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-07-05T15:00:25Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-07-05T15:00:26Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-07-05T15:00:26Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-07-05T15:00:27Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-07-05T15:00:27Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-07-05T15:00:27Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-07-05T15:00:27Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-07-05T15:00:28Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-07-05T15:00:28Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-07-05T15:00:30Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-07-05T15:00:30Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "chain_started", "force": false, "incremental": true, "logged_at_utc": "2026-07-05T19:47:59Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_skipped_fresh", "index": 1, "logged_at_utc": "2026-07-05T19:47:59Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_skipped_fresh", "index": 2, "logged_at_utc": "2026-07-05T19:47:59Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_date_source_confidence.py"}
+{"event": "step_skipped_fresh", "index": 3, "logged_at_utc": "2026-07-05T19:47:59Z", "reason": "expected_outputs_newer_than_dependencies", "script": "event_calendar_rollforward.py"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-07-05T19:47:59Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-07-05T19:48:00Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-07-05T19:48:00Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-07-05T19:48:00Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_skipped_fresh", "index": 6, "logged_at_utc": "2026-07-05T19:48:00Z", "reason": "expected_outputs_newer_than_dependencies", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-07-05T19:48:00Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-07-05T19:55:20Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-07-05T19:55:20Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 1, "index": 8, "logged_at_utc": "2026-07-05T19:55:20Z", "script": "validate_fundamental_metrics.py", "status": "failed"}
+{"event": "step_skipped_after_failure", "index": 9, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 10, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 11, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 12, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 13, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 14, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 15, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_skipped_after_failure", "index": 16, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_skipped_after_failure", "index": 17, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_skipped_after_failure", "index": 18, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_skipped_after_failure", "index": 19, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_skipped_after_failure", "index": 20, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_skipped_after_failure", "index": 21, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "official_earnings_bridge.py"}
+{"event": "step_skipped_after_failure", "index": 22, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_skipped_after_failure", "index": 23, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 24, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "credit_spread_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 25, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "breadth_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 26, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "market_state_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 27, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_event_calendar.py"}
+{"event": "step_skipped_after_failure", "index": 28, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_skipped_after_failure", "index": 29, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_signal_spine.py"}
+{"event": "step_skipped_after_failure", "index": 30, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_skipped_after_failure", "index": 31, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_skipped_after_failure", "index": 32, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_regime_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 33, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_skipped_after_failure", "index": 34, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "historical_regime_event_library.py"}
+{"event": "step_skipped_after_failure", "index": 35, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_skipped_after_failure", "index": 36, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "macro_judgment_draft.py"}
+{"event": "step_skipped_after_failure", "index": 37, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_skipped_after_failure", "index": 38, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "technical_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 39, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "band_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 40, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_skipped_after_failure", "index": 41, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "reference_band_note_sync.py"}
+{"event": "step_skipped_after_failure", "index": 42, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "entry_band_fetch.py"}
+{"event": "step_skipped_after_failure", "index": 43, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "generate_entry_band_status.py"}
+{"event": "step_skipped_after_failure", "index": 44, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "deployment_check.py"}
+{"event": "step_skipped_after_failure", "index": 45, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 46, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_skipped_after_failure", "index": 47, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "sql_canon_field_family_preflight.py"}
+{"event": "step_skipped_after_failure", "index": 48, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "wf72_entry_stop_sql_activate.py"}
+{"event": "step_skipped_after_failure", "index": 49, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_skipped_after_failure", "index": 50, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 51, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 52, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "post_earnings_prep.py"}
+{"event": "step_skipped_after_failure", "index": 53, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_skipped_after_failure", "index": 54, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "call_log_sync.py"}
+{"event": "step_skipped_after_failure", "index": 55, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "universe_consistency_check.py"}
+{"event": "step_skipped_after_failure", "index": 56, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_skipped_after_failure", "index": 57, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "generate_dashboard.py"}
+{"event": "step_skipped_after_failure", "index": 58, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "validate_dashboard_state.py"}
+{"event": "step_skipped_after_failure", "index": 59, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "workbook_export.py"}
+{"event": "step_skipped_after_failure", "index": 60, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_skipped_after_failure", "index": 61, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 62, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_skipped_after_failure", "index": 63, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "weekly_printable_brief.py"}
+{"event": "step_skipped_after_failure", "index": 64, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "postmarket_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 65, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "snapshot_contract_check.py"}
+{"event": "step_skipped_after_failure", "index": 66, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "daily_executive_brief.py"}
+{"event": "step_skipped_after_failure", "index": 67, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_started", "index": 68, "logged_at_utc": "2026-07-05T19:55:24Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 68, "logged_at_utc": "2026-07-05T19:55:25Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 69, "logged_at_utc": "2026-07-05T19:55:25Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 69, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_skipped_after_failure", "index": 70, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_skipped_after_failure", "index": 71, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_skipped_after_failure", "index": 72, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_skipped_after_failure", "index": 73, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "sector_correlation_check.py"}
+{"event": "step_skipped_after_failure", "index": 74, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "sector_expansion_board.py"}
+{"event": "step_skipped_after_failure", "index": 75, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "daily_review_objects.py"}
+{"event": "step_skipped_after_failure", "index": 76, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_skipped_after_failure", "index": 77, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_skipped_after_failure", "index": 78, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_skipped_after_failure", "index": 79, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_skipped_after_failure", "index": 80, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "probability_readiness_report.py"}
+{"event": "step_skipped_after_failure", "index": 81, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "probability_readiness_validator.py"}
+{"event": "step_skipped_after_failure", "index": 82, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "board_canon_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 83, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 84, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 85, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "full_portfolio_view.py"}
+{"event": "step_skipped_after_failure", "index": 86, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_skipped_after_failure", "index": 87, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 88, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_skipped_after_failure", "index": 89, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "archive_suggester.py"}
+{"event": "step_skipped_after_failure", "index": 90, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "current_window_artifact_index.py"}
+{"event": "step_skipped_after_failure", "index": 91, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "artifact_index.py"}
+{"event": "step_started", "index": 92, "logged_at_utc": "2026-07-05T19:55:26Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 92, "logged_at_utc": "2026-07-05T19:55:27Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed_with_recovery", "exit_code": 1, "logged_at_utc": "2026-07-05T19:55:27Z", "window": "sunday"}
+{"event": "chain_started", "force": false, "incremental": true, "logged_at_utc": "2026-07-05T20:00:55Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_skipped_fresh", "index": 1, "logged_at_utc": "2026-07-05T20:00:55Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_skipped_fresh", "index": 2, "logged_at_utc": "2026-07-05T20:00:55Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_date_source_confidence.py"}
+{"event": "step_skipped_fresh", "index": 3, "logged_at_utc": "2026-07-05T20:00:55Z", "reason": "expected_outputs_newer_than_dependencies", "script": "event_calendar_rollforward.py"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-07-05T20:00:55Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-07-05T20:00:56Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-07-05T20:00:56Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-07-05T20:00:57Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-07-05T20:00:57Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-07-05T20:00:59Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-07-05T20:00:59Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-07-05T20:08:48Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-07-05T20:08:48Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 0, "index": 8, "logged_at_utc": "2026-07-05T20:08:48Z", "script": "validate_fundamental_metrics.py", "status": "ok"}
+{"event": "step_started", "index": 9, "logged_at_utc": "2026-07-05T20:08:48Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 9, "logged_at_utc": "2026-07-05T20:08:49Z", "script": "goog_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 10, "logged_at_utc": "2026-07-05T20:08:49Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 10, "logged_at_utc": "2026-07-05T20:08:51Z", "script": "etn_vrt_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 11, "logged_at_utc": "2026-07-05T20:08:51Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 11, "logged_at_utc": "2026-07-05T20:08:53Z", "script": "tech_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 12, "logged_at_utc": "2026-07-05T20:08:53Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 12, "logged_at_utc": "2026-07-05T20:08:55Z", "script": "priority_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 13, "logged_at_utc": "2026-07-05T20:08:55Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 13, "logged_at_utc": "2026-07-05T20:08:57Z", "script": "batch2_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 14, "logged_at_utc": "2026-07-05T20:08:57Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 14, "logged_at_utc": "2026-07-05T20:08:59Z", "script": "batch2b_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 15, "logged_at_utc": "2026-07-05T20:08:59Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 15, "logged_at_utc": "2026-07-05T20:09:04Z", "script": "longtail_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 16, "logged_at_utc": "2026-07-05T20:09:04Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 16, "logged_at_utc": "2026-07-05T20:09:05Z", "script": "official_ir_capture_validator.py", "status": "ok"}
+{"event": "step_started", "index": 17, "logged_at_utc": "2026-07-05T20:09:05Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 17, "logged_at_utc": "2026-07-05T20:09:06Z", "script": "fundamental_ir_reconciliation_packets.py", "status": "ok"}
+{"event": "step_started", "index": 18, "logged_at_utc": "2026-07-05T20:09:06Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 18, "logged_at_utc": "2026-07-05T20:09:07Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 19, "logged_at_utc": "2026-07-05T20:09:07Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 19, "logged_at_utc": "2026-07-05T20:09:07Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 20, "logged_at_utc": "2026-07-05T20:09:07Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_completed", "exit_code": 0, "index": 20, "logged_at_utc": "2026-07-05T20:09:08Z", "script": "validate_fundamental_ir_reconciliation.py", "status": "ok"}
+{"event": "step_started", "index": 21, "logged_at_utc": "2026-07-05T20:09:08Z", "script": "official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 21, "logged_at_utc": "2026-07-05T20:09:09Z", "script": "official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 22, "logged_at_utc": "2026-07-05T20:09:09Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 22, "logged_at_utc": "2026-07-05T20:09:09Z", "script": "validate_official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 23, "logged_at_utc": "2026-07-05T20:09:09Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 23, "logged_at_utc": "2026-07-05T20:09:11Z", "script": "policy_expectations_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 24, "logged_at_utc": "2026-07-05T20:09:11Z", "script": "credit_spread_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 24, "logged_at_utc": "2026-07-05T20:09:13Z", "script": "credit_spread_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 25, "logged_at_utc": "2026-07-05T20:09:13Z", "script": "breadth_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 25, "logged_at_utc": "2026-07-05T20:09:16Z", "script": "breadth_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 26, "logged_at_utc": "2026-07-05T20:09:16Z", "script": "market_state_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 26, "logged_at_utc": "2026-07-05T20:09:38Z", "script": "market_state_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 27, "logged_at_utc": "2026-07-05T20:09:38Z", "script": "macro_event_calendar.py"}
+{"event": "step_completed", "exit_code": 0, "index": 27, "logged_at_utc": "2026-07-05T20:09:39Z", "script": "macro_event_calendar.py", "status": "ok"}
+{"event": "step_started", "index": 28, "logged_at_utc": "2026-07-05T20:09:39Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 28, "logged_at_utc": "2026-07-05T20:09:42Z", "script": "macro_metrics_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 29, "logged_at_utc": "2026-07-05T20:09:42Z", "script": "macro_signal_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 29, "logged_at_utc": "2026-07-05T20:10:01Z", "script": "macro_signal_spine.py", "status": "ok"}
+{"event": "step_started", "index": 30, "logged_at_utc": "2026-07-05T20:10:01Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 30, "logged_at_utc": "2026-07-05T20:10:16Z", "script": "macro_energy_supply_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 31, "logged_at_utc": "2026-07-05T20:10:16Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 31, "logged_at_utc": "2026-07-05T20:10:27Z", "script": "macro_geopolitical_sweep.py", "status": "ok"}
+{"event": "step_started", "index": 32, "logged_at_utc": "2026-07-05T20:10:27Z", "script": "macro_regime_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 32, "logged_at_utc": "2026-07-05T20:10:28Z", "script": "macro_regime_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 33, "logged_at_utc": "2026-07-05T20:10:28Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_completed", "exit_code": 0, "index": 33, "logged_at_utc": "2026-07-05T20:10:31Z", "script": "small_mid_cap_regime_feed.py", "status": "ok"}
+{"event": "step_started", "index": 34, "logged_at_utc": "2026-07-05T20:10:31Z", "script": "historical_regime_event_library.py"}
+{"event": "step_completed", "exit_code": 0, "index": 34, "logged_at_utc": "2026-07-05T20:10:35Z", "script": "historical_regime_event_library.py", "status": "ok"}
+{"event": "step_started", "index": 35, "logged_at_utc": "2026-07-05T20:10:35Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_completed", "exit_code": 0, "index": 35, "logged_at_utc": "2026-07-05T20:10:35Z", "script": "current_regime_analog_matcher.py", "status": "ok"}
+{"event": "step_started", "index": 36, "logged_at_utc": "2026-07-05T20:10:35Z", "script": "macro_judgment_draft.py"}
+{"event": "step_completed", "exit_code": 0, "index": 36, "logged_at_utc": "2026-07-05T20:10:36Z", "script": "macro_judgment_draft.py", "status": "ok"}
+{"event": "step_started", "index": 37, "logged_at_utc": "2026-07-05T20:10:36Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 37, "logged_at_utc": "2026-07-05T20:10:37Z", "script": "json_sql_promotion_index.py", "status": "ok"}
+{"event": "step_started", "index": 38, "logged_at_utc": "2026-07-05T20:10:37Z", "script": "technical_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 38, "logged_at_utc": "2026-07-05T20:10:43Z", "script": "technical_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 39, "logged_at_utc": "2026-07-05T20:10:43Z", "script": "band_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 39, "logged_at_utc": "2026-07-05T20:10:49Z", "script": "band_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 40, "logged_at_utc": "2026-07-05T20:10:49Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_completed", "exit_code": 1, "index": 40, "logged_at_utc": "2026-07-05T20:10:50Z", "script": "auto_apply_entry_band_maintenance.py", "status": "failed"}
+{"event": "step_skipped_after_failure", "index": 41, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "reference_band_note_sync.py"}
+{"event": "step_skipped_after_failure", "index": 42, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "entry_band_fetch.py"}
+{"event": "step_skipped_after_failure", "index": 43, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "generate_entry_band_status.py"}
+{"event": "step_skipped_after_failure", "index": 44, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "deployment_check.py"}
+{"event": "step_skipped_after_failure", "index": 45, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 46, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_skipped_after_failure", "index": 47, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "sql_canon_field_family_preflight.py"}
+{"event": "step_skipped_after_failure", "index": 48, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "wf72_entry_stop_sql_activate.py"}
+{"event": "step_skipped_after_failure", "index": 49, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_skipped_after_failure", "index": 50, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 51, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 52, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "post_earnings_prep.py"}
+{"event": "step_skipped_after_failure", "index": 53, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_skipped_after_failure", "index": 54, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "call_log_sync.py"}
+{"event": "step_skipped_after_failure", "index": 55, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "universe_consistency_check.py"}
+{"event": "step_skipped_after_failure", "index": 56, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_skipped_after_failure", "index": 57, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "generate_dashboard.py"}
+{"event": "step_skipped_after_failure", "index": 58, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "validate_dashboard_state.py"}
+{"event": "step_skipped_after_failure", "index": 59, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "workbook_export.py"}
+{"event": "step_skipped_after_failure", "index": 60, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_skipped_after_failure", "index": 61, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 62, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_skipped_after_failure", "index": 63, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "weekly_printable_brief.py"}
+{"event": "step_skipped_after_failure", "index": 64, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "postmarket_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 65, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "snapshot_contract_check.py"}
+{"event": "step_skipped_after_failure", "index": 66, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "daily_executive_brief.py"}
+{"event": "step_skipped_after_failure", "index": 67, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_started", "index": 68, "logged_at_utc": "2026-07-05T20:10:54Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 68, "logged_at_utc": "2026-07-05T20:10:55Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 69, "logged_at_utc": "2026-07-05T20:10:55Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 69, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_skipped_after_failure", "index": 70, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_skipped_after_failure", "index": 71, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_skipped_after_failure", "index": 72, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_skipped_after_failure", "index": 73, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "sector_correlation_check.py"}
+{"event": "step_skipped_after_failure", "index": 74, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "sector_expansion_board.py"}
+{"event": "step_skipped_after_failure", "index": 75, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "daily_review_objects.py"}
+{"event": "step_skipped_after_failure", "index": 76, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_skipped_after_failure", "index": 77, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_skipped_after_failure", "index": 78, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_skipped_after_failure", "index": 79, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_skipped_after_failure", "index": 80, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "probability_readiness_report.py"}
+{"event": "step_skipped_after_failure", "index": 81, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "probability_readiness_validator.py"}
+{"event": "step_skipped_after_failure", "index": 82, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "board_canon_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 83, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 84, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 85, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "full_portfolio_view.py"}
+{"event": "step_skipped_after_failure", "index": 86, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_skipped_after_failure", "index": 87, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 88, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_skipped_after_failure", "index": 89, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "archive_suggester.py"}
+{"event": "step_skipped_after_failure", "index": 90, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "current_window_artifact_index.py"}
+{"event": "step_skipped_after_failure", "index": 91, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "artifact_index.py"}
+{"event": "step_started", "index": 92, "logged_at_utc": "2026-07-05T20:10:56Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 92, "logged_at_utc": "2026-07-05T20:10:59Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed_with_recovery", "exit_code": 1, "logged_at_utc": "2026-07-05T20:10:59Z", "window": "sunday"}
+{"event": "chain_started", "force": false, "incremental": true, "logged_at_utc": "2026-07-05T20:20:25Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_skipped_fresh", "index": 1, "logged_at_utc": "2026-07-05T20:20:25Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_skipped_fresh", "index": 2, "logged_at_utc": "2026-07-05T20:20:25Z", "reason": "expected_outputs_newer_than_dependencies", "script": "earnings_date_source_confidence.py"}
+{"event": "step_skipped_fresh", "index": 3, "logged_at_utc": "2026-07-05T20:20:25Z", "reason": "expected_outputs_newer_than_dependencies", "script": "event_calendar_rollforward.py"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-07-05T20:20:25Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-07-05T20:20:27Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-07-05T20:20:27Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-07-05T20:20:28Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-07-05T20:20:28Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-07-05T20:20:30Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-07-05T20:20:30Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-07-05T20:28:06Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-07-05T20:28:06Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 0, "index": 8, "logged_at_utc": "2026-07-05T20:28:06Z", "script": "validate_fundamental_metrics.py", "status": "ok"}
+{"event": "step_started", "index": 9, "logged_at_utc": "2026-07-05T20:28:06Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 9, "logged_at_utc": "2026-07-05T20:28:07Z", "script": "goog_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 10, "logged_at_utc": "2026-07-05T20:28:07Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 10, "logged_at_utc": "2026-07-05T20:28:09Z", "script": "etn_vrt_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 11, "logged_at_utc": "2026-07-05T20:28:09Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 11, "logged_at_utc": "2026-07-05T20:28:10Z", "script": "tech_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 12, "logged_at_utc": "2026-07-05T20:28:10Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 12, "logged_at_utc": "2026-07-05T20:28:13Z", "script": "priority_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 13, "logged_at_utc": "2026-07-05T20:28:13Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 13, "logged_at_utc": "2026-07-05T20:28:15Z", "script": "batch2_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 14, "logged_at_utc": "2026-07-05T20:28:15Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 14, "logged_at_utc": "2026-07-05T20:28:16Z", "script": "batch2b_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 15, "logged_at_utc": "2026-07-05T20:28:16Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 15, "logged_at_utc": "2026-07-05T20:28:20Z", "script": "longtail_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 16, "logged_at_utc": "2026-07-05T20:28:20Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 16, "logged_at_utc": "2026-07-05T20:28:21Z", "script": "official_ir_capture_validator.py", "status": "ok"}
+{"event": "step_started", "index": 17, "logged_at_utc": "2026-07-05T20:28:21Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 17, "logged_at_utc": "2026-07-05T20:28:22Z", "script": "fundamental_ir_reconciliation_packets.py", "status": "ok"}
+{"event": "step_started", "index": 18, "logged_at_utc": "2026-07-05T20:28:22Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 18, "logged_at_utc": "2026-07-05T20:28:23Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_skipped_fresh", "index": 19, "logged_at_utc": "2026-07-05T20:28:23Z", "reason": "expected_outputs_newer_than_dependencies", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_started", "index": 20, "logged_at_utc": "2026-07-05T20:28:23Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_completed", "exit_code": 0, "index": 20, "logged_at_utc": "2026-07-05T20:28:24Z", "script": "validate_fundamental_ir_reconciliation.py", "status": "ok"}
+{"event": "step_started", "index": 21, "logged_at_utc": "2026-07-05T20:28:24Z", "script": "official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 21, "logged_at_utc": "2026-07-05T20:28:25Z", "script": "official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 22, "logged_at_utc": "2026-07-05T20:28:25Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 22, "logged_at_utc": "2026-07-05T20:28:26Z", "script": "validate_official_earnings_bridge.py", "status": "ok"}
+{"event": "step_skipped_fresh", "index": 23, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "policy_expectations_refresh.py"}
+{"event": "step_skipped_fresh", "index": 24, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "credit_spread_refresh.py"}
+{"event": "step_skipped_fresh", "index": 25, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "breadth_refresh.py"}
+{"event": "step_skipped_fresh", "index": 26, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "market_state_refresh.py"}
+{"event": "step_skipped_fresh", "index": 27, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_event_calendar.py"}
+{"event": "step_skipped_fresh", "index": 28, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_metrics_ingest.py"}
+{"event": "step_skipped_fresh", "index": 29, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_signal_spine.py"}
+{"event": "step_skipped_fresh", "index": 30, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_skipped_fresh", "index": 31, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_skipped_fresh", "index": 32, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_regime_refresh.py"}
+{"event": "step_skipped_fresh", "index": 33, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_skipped_fresh", "index": 34, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "historical_regime_event_library.py"}
+{"event": "step_skipped_fresh", "index": 35, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "current_regime_analog_matcher.py"}
+{"event": "step_skipped_fresh", "index": 36, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "macro_judgment_draft.py"}
+{"event": "step_skipped_fresh", "index": 37, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "json_sql_promotion_index.py"}
+{"event": "step_skipped_fresh", "index": 38, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "technical_refresh.py"}
+{"event": "step_skipped_fresh", "index": 39, "logged_at_utc": "2026-07-05T20:28:26Z", "reason": "expected_outputs_newer_than_dependencies", "script": "band_refresh.py"}
+{"event": "step_started", "index": 40, "logged_at_utc": "2026-07-05T20:28:26Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_completed", "exit_code": 0, "index": 40, "logged_at_utc": "2026-07-05T20:28:41Z", "script": "auto_apply_entry_band_maintenance.py", "status": "ok"}
+{"event": "step_started", "index": 41, "logged_at_utc": "2026-07-05T20:28:41Z", "script": "reference_band_note_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 41, "logged_at_utc": "2026-07-05T20:28:43Z", "script": "reference_band_note_sync.py", "status": "ok"}
+{"event": "step_started", "index": 42, "logged_at_utc": "2026-07-05T20:28:43Z", "script": "entry_band_fetch.py"}
+{"event": "step_completed", "exit_code": 0, "index": 42, "logged_at_utc": "2026-07-05T20:28:59Z", "script": "entry_band_fetch.py", "status": "ok"}
+{"event": "step_started", "index": 43, "logged_at_utc": "2026-07-05T20:28:59Z", "script": "generate_entry_band_status.py"}
+{"event": "step_completed", "exit_code": 0, "index": 43, "logged_at_utc": "2026-07-05T20:28:59Z", "script": "generate_entry_band_status.py", "status": "ok"}
+{"event": "step_started", "index": 44, "logged_at_utc": "2026-07-05T20:28:59Z", "script": "deployment_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 44, "logged_at_utc": "2026-07-05T20:29:00Z", "script": "deployment_check.py", "status": "ok"}
+{"event": "step_started", "index": 45, "logged_at_utc": "2026-07-05T20:29:00Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 45, "logged_at_utc": "2026-07-05T20:29:01Z", "script": "trigger_sheet_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 46, "logged_at_utc": "2026-07-05T20:29:01Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 46, "logged_at_utc": "2026-07-05T20:29:02Z", "script": "canon_volatile_execution_board_sync.py", "status": "ok"}
+{"event": "step_started", "index": 47, "logged_at_utc": "2026-07-05T20:29:02Z", "script": "sql_canon_field_family_preflight.py"}
+{"event": "step_completed", "exit_code": 0, "index": 47, "logged_at_utc": "2026-07-05T20:29:03Z", "script": "sql_canon_field_family_preflight.py", "status": "ok"}
+{"event": "step_started", "index": 48, "logged_at_utc": "2026-07-05T20:29:03Z", "script": "wf72_entry_stop_sql_activate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 48, "logged_at_utc": "2026-07-05T20:29:03Z", "script": "wf72_entry_stop_sql_activate.py", "status": "ok"}
+{"event": "step_started", "index": 49, "logged_at_utc": "2026-07-05T20:29:03Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 49, "logged_at_utc": "2026-07-05T20:29:04Z", "script": "canon_drift_freshness_gate.py", "status": "ok"}
+{"event": "step_started", "index": 50, "logged_at_utc": "2026-07-05T20:29:04Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 50, "logged_at_utc": "2026-07-05T20:29:05Z", "script": "regime_scoring_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 51, "logged_at_utc": "2026-07-05T20:29:05Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 51, "logged_at_utc": "2026-07-05T20:29:06Z", "script": "positioning_ranking_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 52, "logged_at_utc": "2026-07-05T20:29:06Z", "script": "post_earnings_prep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 52, "logged_at_utc": "2026-07-05T20:29:07Z", "script": "post_earnings_prep.py", "status": "ok"}
+{"event": "step_started", "index": 53, "logged_at_utc": "2026-07-05T20:29:07Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 53, "logged_at_utc": "2026-07-05T20:29:08Z", "script": "post_earnings_note_targets.py", "status": "ok"}
+{"event": "step_started", "index": 54, "logged_at_utc": "2026-07-05T20:29:08Z", "script": "call_log_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 54, "logged_at_utc": "2026-07-05T20:29:08Z", "script": "call_log_sync.py", "status": "ok"}
+{"event": "step_started", "index": 55, "logged_at_utc": "2026-07-05T20:29:08Z", "script": "universe_consistency_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 55, "logged_at_utc": "2026-07-05T20:29:09Z", "script": "universe_consistency_check.py", "status": "ok"}
+{"event": "step_started", "index": 56, "logged_at_utc": "2026-07-05T20:29:09Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_completed", "exit_code": 0, "index": 56, "logged_at_utc": "2026-07-05T20:29:32Z", "script": "test_dashboard_acceptance.py", "status": "ok"}
+{"event": "step_started", "index": 57, "logged_at_utc": "2026-07-05T20:29:32Z", "script": "generate_dashboard.py"}
+{"event": "step_completed", "exit_code": 0, "index": 57, "logged_at_utc": "2026-07-05T20:29:34Z", "script": "generate_dashboard.py", "status": "ok"}
+{"event": "step_started", "index": 58, "logged_at_utc": "2026-07-05T20:29:34Z", "script": "validate_dashboard_state.py"}
+{"event": "step_completed", "exit_code": 0, "index": 58, "logged_at_utc": "2026-07-05T20:29:35Z", "script": "validate_dashboard_state.py", "status": "ok"}
+{"event": "step_started", "index": 59, "logged_at_utc": "2026-07-05T20:29:35Z", "script": "workbook_export.py"}
+{"event": "step_completed", "exit_code": 0, "index": 59, "logged_at_utc": "2026-07-05T20:29:36Z", "script": "workbook_export.py", "status": "ok"}
+{"event": "step_started", "index": 60, "logged_at_utc": "2026-07-05T20:29:36Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_completed", "exit_code": 0, "index": 60, "logged_at_utc": "2026-07-05T20:29:37Z", "script": "weekly_review_skeleton.py", "status": "ok"}
+{"event": "step_started", "index": 61, "logged_at_utc": "2026-07-05T20:29:37Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_completed", "exit_code": 0, "index": 61, "logged_at_utc": "2026-07-05T20:29:39Z", "script": "weekly_macro_snapshot.py", "status": "ok"}
+{"event": "step_started", "index": 62, "logged_at_utc": "2026-07-05T20:29:39Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 62, "logged_at_utc": "2026-07-05T20:29:42Z", "script": "weekly_intelligence_brief.py", "status": "ok"}
+{"event": "step_started", "index": 63, "logged_at_utc": "2026-07-05T20:29:42Z", "script": "weekly_printable_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 63, "logged_at_utc": "2026-07-05T20:29:43Z", "script": "weekly_printable_brief.py", "status": "ok"}
+{"event": "step_started", "index": 64, "logged_at_utc": "2026-07-05T20:29:43Z", "script": "postmarket_snapshot.py"}
+{"event": "step_completed", "exit_code": 0, "index": 64, "logged_at_utc": "2026-07-05T20:29:43Z", "script": "postmarket_snapshot.py", "status": "ok"}
+{"event": "step_started", "index": 65, "logged_at_utc": "2026-07-05T20:29:43Z", "script": "snapshot_contract_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 65, "logged_at_utc": "2026-07-05T20:29:44Z", "script": "snapshot_contract_check.py", "status": "ok"}
+{"event": "step_started", "index": 66, "logged_at_utc": "2026-07-05T20:29:44Z", "script": "daily_executive_brief.py"}
+{"event": "step_completed", "exit_code": 0, "index": 66, "logged_at_utc": "2026-07-05T20:29:45Z", "script": "daily_executive_brief.py", "status": "ok"}
+{"event": "step_started", "index": 67, "logged_at_utc": "2026-07-05T20:29:45Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 67, "logged_at_utc": "2026-07-05T20:29:45Z", "script": "pipeline_state_consistency_check.py", "status": "ok"}
+{"event": "step_started", "index": 68, "logged_at_utc": "2026-07-05T20:29:45Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 68, "logged_at_utc": "2026-07-05T20:29:47Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 69, "logged_at_utc": "2026-07-05T20:29:47Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 69, "logged_at_utc": "2026-07-05T20:29:47Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_started", "index": 70, "logged_at_utc": "2026-07-05T20:29:47Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_completed", "exit_code": 0, "index": 70, "logged_at_utc": "2026-07-05T20:29:48Z", "script": "deployment_readiness_surface.py", "status": "ok"}
+{"event": "step_started", "index": 71, "logged_at_utc": "2026-07-05T20:29:48Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_completed", "exit_code": 0, "index": 71, "logged_at_utc": "2026-07-05T20:29:49Z", "script": "daily_price_trend_signals.py", "status": "ok"}
+{"event": "step_started", "index": 72, "logged_at_utc": "2026-07-05T20:29:49Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_completed", "exit_code": 0, "index": 72, "logged_at_utc": "2026-07-05T20:29:50Z", "script": "market_intelligence_event_router.py", "status": "ok"}
+{"event": "step_started", "index": 73, "logged_at_utc": "2026-07-05T20:29:50Z", "script": "sector_correlation_check.py"}
+{"event": "step_completed", "exit_code": 0, "index": 73, "logged_at_utc": "2026-07-05T20:29:50Z", "script": "sector_correlation_check.py", "status": "ok"}
+{"event": "step_started", "index": 74, "logged_at_utc": "2026-07-05T20:29:50Z", "script": "sector_expansion_board.py"}
+{"event": "step_completed", "exit_code": 0, "index": 74, "logged_at_utc": "2026-07-05T20:29:54Z", "script": "sector_expansion_board.py", "status": "ok"}
+{"event": "step_started", "index": 75, "logged_at_utc": "2026-07-05T20:29:54Z", "script": "daily_review_objects.py"}
+{"event": "step_completed", "exit_code": 0, "index": 75, "logged_at_utc": "2026-07-05T20:29:55Z", "script": "daily_review_objects.py", "status": "ok"}
+{"event": "step_started", "index": 76, "logged_at_utc": "2026-07-05T20:29:55Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 76, "logged_at_utc": "2026-07-05T20:29:56Z", "script": "portfolio_mutation_proposal_generator.py", "status": "ok"}
+{"event": "step_started", "index": 77, "logged_at_utc": "2026-07-05T20:29:56Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_completed", "exit_code": 0, "index": 77, "logged_at_utc": "2026-07-05T20:29:57Z", "script": "capital_deployment_recommendation_report.py", "status": "ok"}
+{"event": "step_started", "index": 78, "logged_at_utc": "2026-07-05T20:29:57Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 78, "logged_at_utc": "2026-07-05T20:29:58Z", "script": "capital_deployment_recommendation_validator.py", "status": "ok"}
+{"event": "step_started", "index": 79, "logged_at_utc": "2026-07-05T20:29:58Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_completed", "exit_code": 0, "index": 79, "logged_at_utc": "2026-07-05T20:29:59Z", "script": "auto_apply_position_sizing_semantic_sync.py", "status": "ok"}
+{"event": "step_started", "index": 80, "logged_at_utc": "2026-07-05T20:29:59Z", "script": "probability_readiness_report.py"}
+{"event": "step_completed", "exit_code": 0, "index": 80, "logged_at_utc": "2026-07-05T20:29:59Z", "script": "probability_readiness_report.py", "status": "ok"}
+{"event": "step_started", "index": 81, "logged_at_utc": "2026-07-05T20:29:59Z", "script": "probability_readiness_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 81, "logged_at_utc": "2026-07-05T20:30:01Z", "script": "probability_readiness_validator.py", "status": "ok"}
+{"event": "step_started", "index": 82, "logged_at_utc": "2026-07-05T20:30:01Z", "script": "board_canon_guardrail.py"}
+{"event": "step_completed", "exit_code": 0, "index": 82, "logged_at_utc": "2026-07-05T20:30:02Z", "script": "board_canon_guardrail.py", "status": "ok"}
+{"event": "step_started", "index": 83, "logged_at_utc": "2026-07-05T20:30:02Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_completed", "exit_code": 0, "index": 83, "logged_at_utc": "2026-07-05T20:30:03Z", "script": "stale_intelligence_guardrail.py", "status": "ok"}
+{"event": "step_started", "index": 84, "logged_at_utc": "2026-07-05T20:30:03Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_completed", "exit_code": 0, "index": 84, "logged_at_utc": "2026-07-05T20:30:03Z", "script": "canonical_note_patch_proposal.py", "status": "ok"}
+{"event": "step_started", "index": 85, "logged_at_utc": "2026-07-05T20:30:03Z", "script": "full_portfolio_view.py"}
+{"event": "step_completed", "exit_code": 0, "index": 85, "logged_at_utc": "2026-07-05T20:30:04Z", "script": "full_portfolio_view.py", "status": "ok"}
+{"event": "step_started", "index": 86, "logged_at_utc": "2026-07-05T20:30:04Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_completed", "exit_code": 0, "index": 86, "logged_at_utc": "2026-07-05T20:30:05Z", "script": "full_portfolio_view_validate.py", "status": "ok"}
+{"event": "step_started", "index": 87, "logged_at_utc": "2026-07-05T20:30:05Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_completed", "exit_code": 0, "index": 87, "logged_at_utc": "2026-07-05T20:30:06Z", "script": "portfolio_snapshot_patch_proposal.py", "status": "ok"}
+{"event": "step_started", "index": 88, "logged_at_utc": "2026-07-05T20:30:06Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_completed", "exit_code": 0, "index": 88, "logged_at_utc": "2026-07-05T20:30:07Z", "script": "finance_discrepancy_resolver.py", "status": "ok"}
+{"event": "step_started", "index": 89, "logged_at_utc": "2026-07-05T20:30:07Z", "script": "archive_suggester.py"}
+{"event": "step_completed", "exit_code": 0, "index": 89, "logged_at_utc": "2026-07-05T20:31:55Z", "script": "archive_suggester.py", "status": "ok"}
+{"event": "step_started", "index": 90, "logged_at_utc": "2026-07-05T20:31:55Z", "script": "current_window_artifact_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 90, "logged_at_utc": "2026-07-05T20:31:56Z", "script": "current_window_artifact_index.py", "status": "ok"}
+{"event": "step_started", "index": 91, "logged_at_utc": "2026-07-05T20:31:56Z", "script": "artifact_index.py"}
+{"event": "step_completed", "exit_code": 0, "index": 91, "logged_at_utc": "2026-07-05T20:31:57Z", "script": "artifact_index.py", "status": "ok"}
+{"event": "step_started", "index": 92, "logged_at_utc": "2026-07-05T20:31:57Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 92, "logged_at_utc": "2026-07-05T20:31:59Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed", "logged_at_utc": "2026-07-05T20:31:59Z", "status": "ok", "window": "sunday"}
+{"event": "chain_started", "force": false, "incremental": false, "logged_at_utc": "2026-08-08T00:22:20Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-08-08T00:22:20Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-08-08T00:22:25Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-08-08T00:22:25Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-08-08T00:22:25Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-08-08T00:22:25Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-08-08T00:22:26Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-08-08T00:22:26Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-08-08T00:22:26Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-08-08T00:22:26Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-08-08T00:22:26Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-08-08T00:22:26Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-08-08T00:22:27Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-08-08T00:22:27Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 7, "logged_at_utc": "2026-08-08T00:26:33Z", "script": "fundamental_metrics_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 8, "logged_at_utc": "2026-08-08T00:26:33Z", "script": "validate_fundamental_metrics.py"}
+{"event": "step_completed", "exit_code": 0, "index": 8, "logged_at_utc": "2026-08-08T00:26:33Z", "script": "validate_fundamental_metrics.py", "status": "ok"}
+{"event": "step_started", "index": 9, "logged_at_utc": "2026-08-08T00:26:33Z", "script": "goog_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 9, "logged_at_utc": "2026-08-08T00:26:34Z", "script": "goog_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 10, "logged_at_utc": "2026-08-08T00:26:34Z", "script": "etn_vrt_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 10, "logged_at_utc": "2026-08-08T00:26:35Z", "script": "etn_vrt_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 11, "logged_at_utc": "2026-08-08T00:26:35Z", "script": "tech_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 11, "logged_at_utc": "2026-08-08T00:26:37Z", "script": "tech_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 12, "logged_at_utc": "2026-08-08T00:26:37Z", "script": "priority_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 12, "logged_at_utc": "2026-08-08T00:26:40Z", "script": "priority_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 13, "logged_at_utc": "2026-08-08T00:26:40Z", "script": "batch2_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 13, "logged_at_utc": "2026-08-08T00:26:42Z", "script": "batch2_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 14, "logged_at_utc": "2026-08-08T00:26:42Z", "script": "batch2b_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 14, "logged_at_utc": "2026-08-08T00:26:44Z", "script": "batch2b_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 15, "logged_at_utc": "2026-08-08T00:26:44Z", "script": "longtail_official_ir_capture.py"}
+{"event": "step_completed", "exit_code": 0, "index": 15, "logged_at_utc": "2026-08-08T00:26:51Z", "script": "longtail_official_ir_capture.py", "status": "ok"}
+{"event": "step_started", "index": 16, "logged_at_utc": "2026-08-08T00:26:51Z", "script": "official_ir_capture_validator.py"}
+{"event": "step_completed", "exit_code": 0, "index": 16, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "official_ir_capture_validator.py", "status": "ok"}
+{"event": "step_started", "index": 17, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "fundamental_ir_reconciliation_packets.py"}
+{"event": "step_completed", "exit_code": 0, "index": 17, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "fundamental_ir_reconciliation_packets.py", "status": "ok"}
+{"event": "step_started", "index": 18, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 18, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 19, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "wf70_wf66_official_evidence_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 19, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "wf70_wf66_official_evidence_spine.py", "status": "ok"}
+{"event": "step_started", "index": 20, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "validate_fundamental_ir_reconciliation.py"}
+{"event": "step_completed", "exit_code": 0, "index": 20, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "validate_fundamental_ir_reconciliation.py", "status": "ok"}
+{"event": "step_started", "index": 21, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 21, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 22, "logged_at_utc": "2026-08-08T00:26:52Z", "script": "validate_official_earnings_bridge.py"}
+{"event": "step_completed", "exit_code": 0, "index": 22, "logged_at_utc": "2026-08-08T00:26:53Z", "script": "validate_official_earnings_bridge.py", "status": "ok"}
+{"event": "step_started", "index": 23, "logged_at_utc": "2026-08-08T00:26:53Z", "script": "policy_expectations_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 23, "logged_at_utc": "2026-08-08T00:26:56Z", "script": "policy_expectations_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 24, "logged_at_utc": "2026-08-08T00:26:56Z", "script": "credit_spread_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 24, "logged_at_utc": "2026-08-08T00:26:58Z", "script": "credit_spread_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 25, "logged_at_utc": "2026-08-08T00:26:58Z", "script": "breadth_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 25, "logged_at_utc": "2026-08-08T00:26:59Z", "script": "breadth_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 26, "logged_at_utc": "2026-08-08T00:26:59Z", "script": "market_state_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 26, "logged_at_utc": "2026-08-08T00:27:02Z", "script": "market_state_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 27, "logged_at_utc": "2026-08-08T00:27:02Z", "script": "macro_event_calendar.py"}
+{"event": "step_completed", "exit_code": 0, "index": 27, "logged_at_utc": "2026-08-08T00:27:02Z", "script": "macro_event_calendar.py", "status": "ok"}
+{"event": "step_started", "index": 28, "logged_at_utc": "2026-08-08T00:27:02Z", "script": "macro_metrics_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 28, "logged_at_utc": "2026-08-08T00:27:04Z", "script": "macro_metrics_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 29, "logged_at_utc": "2026-08-08T00:27:04Z", "script": "macro_signal_spine.py"}
+{"event": "step_completed", "exit_code": 0, "index": 29, "logged_at_utc": "2026-08-08T00:27:20Z", "script": "macro_signal_spine.py", "status": "ok"}
+{"event": "step_started", "index": 30, "logged_at_utc": "2026-08-08T00:27:20Z", "script": "macro_energy_supply_ingest.py"}
+{"event": "step_completed", "exit_code": 0, "index": 30, "logged_at_utc": "2026-08-08T00:27:34Z", "script": "macro_energy_supply_ingest.py", "status": "ok"}
+{"event": "step_started", "index": 31, "logged_at_utc": "2026-08-08T00:27:34Z", "script": "macro_geopolitical_sweep.py"}
+{"event": "step_completed", "exit_code": 0, "index": 31, "logged_at_utc": "2026-08-08T00:27:46Z", "script": "macro_geopolitical_sweep.py", "status": "ok"}
+{"event": "step_started", "index": 32, "logged_at_utc": "2026-08-08T00:27:46Z", "script": "macro_regime_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 32, "logged_at_utc": "2026-08-08T00:27:46Z", "script": "macro_regime_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 33, "logged_at_utc": "2026-08-08T00:27:46Z", "script": "small_mid_cap_regime_feed.py"}
+{"event": "step_completed", "exit_code": 2, "index": 33, "logged_at_utc": "2026-08-08T00:27:48Z", "script": "small_mid_cap_regime_feed.py", "status": "failed"}
+{"event": "step_skipped_after_failure", "index": 34, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "historical_regime_event_library.py"}
+{"event": "step_skipped_after_failure", "index": 35, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "current_regime_analog_matcher.py"}
+{"event": "step_skipped_after_failure", "index": 36, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "macro_judgment_draft.py"}
+{"event": "step_skipped_after_failure", "index": 37, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "json_sql_promotion_index.py"}
+{"event": "step_skipped_after_failure", "index": 38, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "technical_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 39, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "band_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 40, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "auto_apply_entry_band_maintenance.py"}
+{"event": "step_skipped_after_failure", "index": 41, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "reference_band_note_sync.py"}
+{"event": "step_skipped_after_failure", "index": 42, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "entry_band_fetch.py"}
+{"event": "step_skipped_after_failure", "index": 43, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "generate_entry_band_status.py"}
+{"event": "step_skipped_after_failure", "index": 44, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "deployment_check.py"}
+{"event": "step_skipped_after_failure", "index": 45, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "trigger_sheet_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 46, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "canon_volatile_execution_board_sync.py"}
+{"event": "step_skipped_after_failure", "index": 47, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "sql_canon_field_family_preflight.py"}
+{"event": "step_skipped_after_failure", "index": 48, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "wf72_entry_stop_sql_activate.py"}
+{"event": "step_skipped_after_failure", "index": 49, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "canon_drift_freshness_gate.py"}
+{"event": "step_skipped_after_failure", "index": 50, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "regime_scoring_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 51, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "positioning_ranking_refresh.py"}
+{"event": "step_skipped_after_failure", "index": 52, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "post_earnings_prep.py"}
+{"event": "step_skipped_after_failure", "index": 53, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "post_earnings_note_targets.py"}
+{"event": "step_skipped_after_failure", "index": 54, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "call_log_sync.py"}
+{"event": "step_skipped_after_failure", "index": 55, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "universe_consistency_check.py"}
+{"event": "step_skipped_after_failure", "index": 56, "logged_at_utc": "2026-08-08T00:27:50Z", "script": "test_dashboard_acceptance.py"}
+{"event": "step_skipped_after_failure", "index": 57, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "generate_dashboard.py"}
+{"event": "step_skipped_after_failure", "index": 58, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "validate_dashboard_state.py"}
+{"event": "step_skipped_after_failure", "index": 59, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "workbook_export.py"}
+{"event": "step_skipped_after_failure", "index": 60, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "weekly_review_skeleton.py"}
+{"event": "step_skipped_after_failure", "index": 61, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "weekly_macro_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 62, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "weekly_intelligence_brief.py"}
+{"event": "step_skipped_after_failure", "index": 63, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "weekly_printable_brief.py"}
+{"event": "step_skipped_after_failure", "index": 64, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "postmarket_snapshot.py"}
+{"event": "step_skipped_after_failure", "index": 65, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "snapshot_contract_check.py"}
+{"event": "step_skipped_after_failure", "index": 66, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "daily_executive_brief.py"}
+{"event": "step_skipped_after_failure", "index": 67, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "pipeline_state_consistency_check.py"}
+{"event": "step_started", "index": 68, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 68, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "step_started", "index": 69, "logged_at_utc": "2026-08-08T00:27:51Z", "script": "dashboard_run_summary_consumer.py"}
+{"event": "step_completed", "exit_code": 0, "index": 69, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "dashboard_run_summary_consumer.py", "status": "ok"}
+{"event": "step_skipped_after_failure", "index": 70, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "deployment_readiness_surface.py"}
+{"event": "step_skipped_after_failure", "index": 71, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "daily_price_trend_signals.py"}
+{"event": "step_skipped_after_failure", "index": 72, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "market_intelligence_event_router.py"}
+{"event": "step_skipped_after_failure", "index": 73, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "sector_correlation_check.py"}
+{"event": "step_skipped_after_failure", "index": 74, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "sector_expansion_board.py"}
+{"event": "step_skipped_after_failure", "index": 75, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "daily_review_objects.py"}
+{"event": "step_skipped_after_failure", "index": 76, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "portfolio_mutation_proposal_generator.py"}
+{"event": "step_skipped_after_failure", "index": 77, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "capital_deployment_recommendation_report.py"}
+{"event": "step_skipped_after_failure", "index": 78, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "capital_deployment_recommendation_validator.py"}
+{"event": "step_skipped_after_failure", "index": 79, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "auto_apply_position_sizing_semantic_sync.py"}
+{"event": "step_skipped_after_failure", "index": 80, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "probability_readiness_report.py"}
+{"event": "step_skipped_after_failure", "index": 81, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "probability_readiness_validator.py"}
+{"event": "step_skipped_after_failure", "index": 82, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "board_canon_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 83, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "stale_intelligence_guardrail.py"}
+{"event": "step_skipped_after_failure", "index": 84, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "canonical_note_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 85, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "full_portfolio_view.py"}
+{"event": "step_skipped_after_failure", "index": 86, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "full_portfolio_view_validate.py"}
+{"event": "step_skipped_after_failure", "index": 87, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "portfolio_snapshot_patch_proposal.py"}
+{"event": "step_skipped_after_failure", "index": 88, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "finance_discrepancy_resolver.py"}
+{"event": "step_skipped_after_failure", "index": 89, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "archive_suggester.py"}
+{"event": "step_skipped_after_failure", "index": 90, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "current_window_artifact_index.py"}
+{"event": "step_skipped_after_failure", "index": 91, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "artifact_index.py"}
+{"event": "step_started", "index": 92, "logged_at_utc": "2026-08-08T00:27:52Z", "script": "run_summary_refresh.py"}
+{"event": "step_completed", "exit_code": 0, "index": 92, "logged_at_utc": "2026-08-08T00:27:53Z", "script": "run_summary_refresh.py", "status": "ok"}
+{"event": "chain_completed_with_recovery", "exit_code": 2, "logged_at_utc": "2026-08-08T00:27:53Z", "window": "sunday"}
+{"event": "chain_started", "force": false, "incremental": false, "logged_at_utc": "2026-08-09T03:21:11Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-08-09T03:21:11Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-08-09T03:21:15Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-08-09T03:21:15Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-08-09T03:21:16Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-08-09T03:21:19Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-08-09T03:21:19Z", "script": "fundamental_metrics_refresh.py"}
+{"event": "chain_started", "force": false, "incremental": false, "logged_at_utc": "2026-08-09T03:21:57Z", "parallel": 1, "stage_scope": "", "window": "sunday"}
+{"event": "step_started", "index": 1, "logged_at_utc": "2026-08-09T03:21:57Z", "script": "earnings_calendar_enrichment.py"}
+{"event": "step_completed", "exit_code": 0, "index": 1, "logged_at_utc": "2026-08-09T03:22:02Z", "script": "earnings_calendar_enrichment.py", "status": "ok"}
+{"event": "step_started", "index": 2, "logged_at_utc": "2026-08-09T03:22:02Z", "script": "earnings_date_source_confidence.py"}
+{"event": "step_completed", "exit_code": 0, "index": 2, "logged_at_utc": "2026-08-09T03:22:02Z", "script": "earnings_date_source_confidence.py", "status": "ok"}
+{"event": "step_started", "index": 3, "logged_at_utc": "2026-08-09T03:22:02Z", "script": "event_calendar_rollforward.py"}
+{"event": "step_completed", "exit_code": 0, "index": 3, "logged_at_utc": "2026-08-09T03:22:02Z", "script": "event_calendar_rollforward.py", "status": "ok"}
+{"event": "step_started", "index": 4, "logged_at_utc": "2026-08-09T03:22:02Z", "script": "event_calendar_apply.py"}
+{"event": "step_completed", "exit_code": 0, "index": 4, "logged_at_utc": "2026-08-09T03:22:03Z", "script": "event_calendar_apply.py", "status": "ok"}
+{"event": "step_started", "index": 5, "logged_at_utc": "2026-08-09T03:22:03Z", "script": "validate_portfolio_config.py"}
+{"event": "step_completed", "exit_code": 0, "index": 5, "logged_at_utc": "2026-08-09T03:22:03Z", "script": "validate_portfolio_config.py", "status": "ok"}
+{"event": "step_started", "index": 6, "logged_at_utc": "2026-08-09T03:22:03Z", "script": "bank_native_sec_concept_probe.py"}
+{"event": "step_completed", "exit_code": 0, "index": 6, "logged_at_utc": "2026-08-09T03:22:04Z", "script": "bank_native_sec_concept_probe.py", "status": "ok"}
+{"event": "step_started", "index": 7, "logged_at_utc": "2026-08-09T03:22:04Z", "script": "fundamental_metrics_refresh.py"}

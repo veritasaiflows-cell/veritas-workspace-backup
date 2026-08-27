@@ -1,81 +1,98 @@
 ---
 name: "workspace-qa-pass"
-description: "Run high-signal QA on Veritas workspace changes, audit claims, and control-plane consistency."
+description: "Risk-budgeted independent QA with frozen scope, adversarial route/privacy checks, and bounded repair loops."
 ---
 
-# Proposed Update: workspace-qa-pass
+# Workspace QA Pass
 
-## Summary
+## Purpose
 
-Tighten `workspace-qa-pass` so it can independently review not just implementation patches, but audit claims and control-plane consistency. Keep it bounded and evidence-first.
+Provide independent findings-first review of material workspace changes without turning QA into automatic ritual, hidden reimplementation, or acceptance authority.
 
-## Proposed Description
+QA verifies claims against live files, frozen handoffs, exact owner surfaces, validators, and adversarial probes. Main alone accepts and integrates work.
 
-`Run high-signal QA on Veritas workspace changes, audit claims, and control-plane consistency. Use when checking residual integrity risk, orchestration drift, live-artifact mismatches, schema/contract propagation, skill hygiene, or whether an audit or hardening pass actually closed the intended gaps.`
+## When Independent QA Is Required
 
-## Add Section: Layered QA Stack
+Require fresh independent QA for:
 
-When reviewing a completed audit, hardening pass, workflow repair, or generated proof claim, use this layered check:
+- shared or major contracts;
+- broad multi-surface changes;
+- finance, runtime, authority, privacy, or execution-sensitive semantics;
+- judgment-heavy behavior that deterministic tests cannot fully prove;
+- a repaired material QA finding before Main acceptance.
 
-1. **Existence**: Does the claimed file/artifact/proof exist where stated?
-2. **Authenticity**: Was it produced by the expected script, workflow, or owner surface?
-3. **Freshness**: Is the timestamp current enough for the claim?
-4. **Accuracy**: Does the artifact content match the live owner/source surface?
-5. **Authority**: Does the artifact stay inside review/proof authority and avoid implying approval/execution/mutation?
-6. **Closure**: Do queue, lane, memory, and audit surfaces agree on what remains open?
+For `micro` or `narrow` low-risk changes, focused deterministic proof plus Main verification may be sufficient. Do not require a full Builder-to-QA cycle for every patch.
 
-If any layer fails, report the weakest layer instead of claiming global failure or success.
+## Frozen Review Scope
 
-## Add Section: Live State Versus Generated Artifact Reconciliation
+Before review, require:
 
-When QA reviews PM, cron, runtime, routes, or dashboards, compare generated control packets against live control surfaces when available.
+- exact base path;
+- at most 6 files, 120,000 bytes, and 30,000 estimated context tokens;
+- sorted paths, exact sizes, SHA-256 hashes, contract hash, and frozen snapshot ID;
+- task claim, acceptance criteria, authority class, changed behavior, tests, stop lines, and known limits;
+- expected backend/model/thinking and attempt/retry identity.
 
-Examples:
-- cron control packet green but scheduler `lastRunStatus` has errors
-- PM packet says no blockers while lane register still has active or stale lanes
-- runtime scorecard green while harness artifact is stale or warning
-- route registry green while binary freshness is stale
+Verify hashes before and after QA. If the source changes, reject the snapshot and review a newly frozen package. Review changed hunks and exact consumer contracts first; avoid broad reads unrelated to the claim.
 
-Report conflicts explicitly with:
-- generated artifact status
-- live/source status
-- likely owner
-- next proof needed
+## Findings Contract
 
-Do not collapse conflicting statuses into a single green summary.
+Lead with defects ordered by severity:
 
-## Add Section: Audit Claim QA
+`Severity — file:line — issue — impact — required repair or proof`
 
-When reviewing a workspace audit, check whether:
-- every P1/P2 finding has evidence, impact, recommendation, and acceptance proof
-- top findings are current, not copied from stale memory
-- unresolved blockers name owner surfaces and stop lines
-- recommendations route to skills, procedures, validators, or queue items when they are recurring
-- finance/account/paper/live/config boundaries remain explicit
-- intentionally deferred checks are named
+Separate verified bugs, risks, assumptions, and residual limitations. If no material blocker exists, say PASS plainly and name remaining proof gaps.
 
-## Add Section: External Pattern Intake QA
+QA is read-only unless a separately leased repair lane is explicitly assigned. Do not edit while reviewing and then certify the same snapshot.
 
-When a pass borrows from ClawHub or web sources:
-- verify the source pattern is summarized, not blindly installed
-- check for security warnings or generic instructions that conflict with Veritas doctrine
-- confirm adopted behavior is routed into a Veritas-owned skill/procedure/validator
-- ensure third-party examples do not introduce Bash assumptions, config mutation, credential exposure, public/customer action, or finance authority drift
+## Review Checklist
 
-## Add Section: Worker Cannot Review Itself
+1. Confirm scope, lease/read-only posture, frozen snapshot, and authority.
+2. Inspect changed hunks and exact producer/consumer contracts.
+3. Check expected versus actual backend/model/thinking and native/persistent provenance.
+4. Verify path containment, file/context budgets, manifest/hash integrity, and completion re-hash.
+5. Run the smallest focused tests that cover changed behavior.
+6. Add adversarial probes for bypasses tests may miss: stale proof, boundary values, conflicting identity, override tampering, incomplete metadata, incident inflation, and privacy leakage.
+7. Verify retry/attempt truth, 90-second incident SLA, idempotence, and monotonic changed-event timestamps.
+8. Verify privacy: no raw prompts, responses, tools, credentials, account data, or raw session/correlation identifiers.
+9. Check authority flags and confirm no config/auth/channel/runtime/cron/finance/execution/external/destructive expansion.
+10. Compare user-facing completion claims with proof and downgrade unsupported claims.
 
-If the same lane implemented a substantial change and then claims closure, QA should treat that as implementation evidence, not independent proof.
+## Efficiency QA
 
-For higher-risk changes, recommend one of:
-- main-session independent inspection
-- a bounded helper QA lane
-- a deterministic validator
-- a targeted acceptance command
+Confirm that:
 
-Do not require a separate reviewer for tiny local edits when direct proof is enough.
+- deterministic/model-free work was considered first;
+- Codex-native was explicit and eligible;
+- persistent Terra had fresh strict transport proof;
+- Main/Sol was an explicit exception rather than fallback;
+- no caller override rewrote the selected backend/model/thinking;
+- usage semantics distinguish cached, uncached, output, reasoning, and total;
+- `provider_usage_unavailable` remains unavailable rather than zero;
+- incidents and invalid telemetry receive no completion, first-pass, QA-pass, Main-accepted, or cohort credit;
+- like-for-like cohort eligibility uses at least 10 comparable Main-accepted jobs;
+- automatic route ranking and promotion remain disabled.
 
-## Acceptance Proof
+API-equivalent estimates are not invoices. Token totals do not prove OAuth impact or billed cost.
 
-After applying this proposal:
-- `openclaw skills check` passes.
-- A future QA pass can catch live scheduler/artifact mismatch and audit-claim overreach without inventing new criteria in chat.
+## Validation Depth And Retry Limit
+
+- `micro`: inspect deterministic proof and Main verification path.
+- `narrow`: focused tests plus one or two targeted adversarial probes.
+- `shared` or `major`: focused suite plus independent adversarial matrix.
+
+One substantive rejection may return to Main for one bounded repair lane and one fresh QA attempt. If a second substantive rejection remains, recommend rescoping or splitting the contract. Do not create unbounded QA/repair loops.
+
+## Long-Work Closeout
+
+Require proof of route selection, exact writes, parent/phase/attempt/retry, validation commands/results, consumer compatibility, usage availability, incidents/rework, Main acceptance evidence, continuity update decision, and residual blockers.
+
+Missing closeout metadata can make closure partial even when the implementation behavior is valid. Never convert missing evidence into a clean first-pass result.
+
+## Finance And Authority Boundary
+
+QA may challenge finance evidence and guardrail proof. It cannot approve finance recommendations, portfolio/canon mutations, paper/live orders, account actions, capital deployment, money movement, runtime/config changes, cron schedules, external delivery, or destructive cleanup.
+
+## Closeout
+
+Return verdict, findings, validation proof, snapshot/hash proof, route-conformance result, privacy/authority result, residual risks, and exact next action. A QA pass is advisory evidence for Main, not owner approval or execution authority.

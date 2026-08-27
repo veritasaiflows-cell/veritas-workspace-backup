@@ -8,12 +8,15 @@ approvals, sizing, sleeves, cash, risk rules, or trade/account surfaces.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -26,6 +29,7 @@ TRIGGER = TMP / "trigger-sheet.json"
 CURRENT_ARTIFACTS = TMP / "current-window-artifacts.json"
 OUT_JSON = TMP / "canon-drift-freshness-gate.json"
 OUT_MD = TMP / "canon-drift-freshness-gate.md"
+PREFILTER_MAX_AGE_HOURS = 36.0
 
 DATE_RE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
 RANGE_RE = re.compile(r"(?<!\d)(\d{2,4}\.\d{1,2})\s*(?:to|[-–—])\s*(\d{2,4}\.\d{1,2})(?!\d)")
@@ -66,6 +70,94 @@ def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def sha256_file(path: Path) -> str | None:
+    if not path.exists() or not path.is_file():
+        return None
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def source_file_state(label: str, path: Path) -> dict[str, Any]:
+    return {
+        "label": label,
+        "path": rel(path),
+        "exists": path.exists(),
+        "sha256": sha256_file(path),
+    }
+
+
+def build_input_signature() -> dict[str, Any]:
+    sources = [
+        source_file_state("execution_board", EXECUTION_BOARD),
+        source_file_state("portfolio_snapshot", SNAPSHOT),
+        source_file_state("portfolio_config", CONFIG),
+        source_file_state("technical_refresh", TECHNICAL),
+        source_file_state("deployment_check", DEPLOYMENT),
+        source_file_state("trigger_sheet", TRIGGER),
+        source_file_state("current_window_artifacts", CURRENT_ARTIFACTS),
+        source_file_state("producer:canon_drift_freshness_gate", Path(__file__).resolve()),
+    ]
+    body = json.dumps(sources, sort_keys=True, separators=(",", ":"))
+    return {
+        "algorithm": "sha256",
+        "hash": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+        "source_count": len(sources),
+        "sources": sources,
+    }
+
+
+def generated_age_hours(value: Any, now: datetime | None = None) -> float | None:
+    if not value:
+        return None
+    now = now or datetime.now(timezone.utc)
+    try:
+        generated = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return (now - generated).total_seconds() / 3600
+
+
+def prefilter_decision(out: Path, current_signature: dict[str, Any], now: datetime | None = None) -> dict[str, Any]:
+    now = now or datetime.now(timezone.utc)
+    previous = load_json(out)
+    previous_signature = previous.get("input_signature") if isinstance(previous.get("input_signature"), dict) else {}
+    previous_age = generated_age_hours(previous.get("generated_at_utc"), now)
+    source_unchanged = bool(
+        previous_signature.get("hash")
+        and previous_signature.get("hash") == current_signature.get("hash")
+    )
+    previous_fresh = previous_age is not None and previous_age <= PREFILTER_MAX_AGE_HOURS
+    can_reuse = bool(previous and source_unchanged and previous_fresh)
+    if not previous:
+        reason = "missing_previous_packet"
+    elif not previous_signature.get("hash"):
+        reason = "missing_previous_input_signature"
+    elif not source_unchanged:
+        reason = "source_signature_changed"
+    elif not previous_fresh:
+        reason = "previous_packet_not_fresh"
+    else:
+        reason = "unchanged_inputs_and_fresh_packet"
+    return {
+        "status": "reuse_existing_packet" if can_reuse else "refresh_required",
+        "can_reuse_existing_packet": can_reuse,
+        "reason": reason,
+        "source_unchanged": source_unchanged,
+        "previous_packet_exists": bool(previous),
+        "previous_generated_at_utc": previous.get("generated_at_utc"),
+        "previous_age_hours": round(previous_age, 3) if previous_age is not None else None,
+        "max_age_hours": PREFILTER_MAX_AGE_HOURS,
+        "previous_status": previous.get("status"),
+        "previous_critical_count": (previous.get("summary") or {}).get("critical") if isinstance(previous.get("summary"), dict) else None,
+        "previous_input_hash": previous_signature.get("hash"),
+        "current_input_hash": current_signature.get("hash"),
+        "meaning": "Reuse preserves the previous canon-drift verdict when watched source inputs are unchanged and the packet is still fresh.",
+    }
 
 
 def parse_date(value: Any) -> date | None:
@@ -200,10 +292,22 @@ def add(findings: list[Finding], severity: str, code: str, surface: str, message
     findings.append(Finding(severity, code, surface, message, ticker, evidence[:500] if evidence else None))
 
 
-def check_execution_board(findings: list[Finding], config: dict[str, Any]) -> None:
+def check_execution_board(findings: list[Finding], config: dict[str, Any], thin_contract: dict[str, Any]) -> None:
     text = read_text(EXECUTION_BOARD)
     if not text:
         add(findings, "critical", "missing_execution_board", rel(EXECUTION_BOARD), "Execution Board is missing")
+        return
+    if thin_contract.get("sql_first_thin_board_detected"):
+        if thin_contract.get("sql_first_thin_board_allowed"):
+            return
+        add(
+            findings,
+            "critical",
+            "sql_first_thin_board_contract_blocked",
+            rel(EXECUTION_BOARD),
+            "Execution Board is thin, but the SQL-first / JSON proof contract is not clean",
+            evidence=json.dumps(thin_contract.get("errors") or [])[:500],
+        )
         return
     rows = table_map(text)
     latest = latest_ticker_artifact_dates()
@@ -298,10 +402,22 @@ def check_execution_board(findings: list[Finding], config: dict[str, Any]) -> No
                         )
 
 
-def check_snapshot(findings: list[Finding]) -> None:
+def check_snapshot(findings: list[Finding], thin_contract: dict[str, Any]) -> None:
     text = read_text(SNAPSHOT)
     if not text:
         add(findings, "critical", "missing_portfolio_snapshot", rel(SNAPSHOT), "Portfolio Snapshot is missing")
+        return
+    if thin_contract.get("sql_first_thin_board_detected"):
+        if thin_contract.get("sql_first_thin_board_allowed"):
+            return
+        add(
+            findings,
+            "critical",
+            "sql_first_thin_portfolio_snapshot_contract_blocked",
+            rel(SNAPSHOT),
+            "Portfolio Snapshot is thin, but the SQL-first / JSON proof contract is not clean",
+            evidence=json.dumps(thin_contract.get("errors") or [])[:500],
+        )
         return
     snapshot_date = None
     data_as_of = None
@@ -390,12 +506,33 @@ def check_config_prose(findings: list[Finding], config: dict[str, Any]) -> None:
 def evaluate() -> dict[str, Any]:
     findings: list[Finding] = []
     config = load_json(CONFIG)
+    thin_contract = evaluate_sql_first_thin_board_contract(EXECUTION_BOARD)
+    snapshot_thin_contract = evaluate_sql_first_thin_board_contract(
+        SNAPSHOT,
+        route_tokens=[
+            "finance_sql_canon_access.py",
+            "finance_intelligence_state.py",
+            "trade_grade_os_freshness_cron_runner.py",
+            "full_intelligence_answer_parity.py",
+        ],
+        proof_files=[
+            "tmp/trade-grade-os-freshness-cron-runner.json",
+            "tmp/full-answer-parity/full-answer-parity-rollup.json",
+            "tmp/canonical-finance-data-plane-retirement-readiness.json",
+        ],
+        authority_phrases=[
+            "no execution",
+            "account action",
+            "archive/delete/apply authority",
+            "inferred approval",
+        ],
+    )
     if not config:
         add(findings, "critical", "missing_portfolio_config", rel(CONFIG), "Portfolio config artifact is missing")
     else:
-        check_execution_board(findings, config)
+        check_execution_board(findings, config, thin_contract)
         check_config_prose(findings, config)
-    check_snapshot(findings)
+    check_snapshot(findings, snapshot_thin_contract)
 
     critical = sum(1 for f in findings if f.severity == "critical")
     warning = sum(1 for f in findings if f.severity == "warning")
@@ -408,9 +545,10 @@ def evaluate() -> dict[str, Any]:
         "authority": {
             "posture": "read_only_canon_drift_freshness_gate",
             "standing_authority_scope": "main_session_bounded_workspace_canon_portfolio_maintenance",
-            "canonical_note_mutation_allowed": True,
-            "portfolio_mutation_allowed": True,
-            "owner_approval_granted": True,
+            "standing_authority_acknowledged": True,
+            "canonical_note_mutation_allowed": False,
+            "portfolio_mutation_allowed": False,
+            "owner_approval_granted": False,
             "artifact_mutation_allowed_by_this_gate": False,
             "trade_or_account_action_allowed": False,
             "paper_trade_submit_cancel_allowed_by_this_gate": False,
@@ -424,6 +562,8 @@ def evaluate() -> dict[str, Any]:
             "trigger_sheet": rel(TRIGGER),
             "current_window_artifacts": rel(CURRENT_ARTIFACTS),
         },
+        "sql_first_thin_board_contract": thin_contract,
+        "sql_first_thin_portfolio_snapshot_contract": snapshot_thin_contract,
         "findings": [asdict(f) for f in findings],
         "verdict": "Canon drift/freshness gate clean." if status == "ok" else "Canon drift/freshness review required before relying on stale-sensitive deployment decisions.",
     }
@@ -456,9 +596,29 @@ def write_markdown(report: dict[str, Any]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write", action="store_true")
+    parser.add_argument("--prefilter-only", action="store_true", help="Check whether the existing canon drift packet can be reused.")
+    parser.add_argument("--skip-if-unchanged", action="store_true", help="Do not rewrite the packet when watched inputs are unchanged and the existing packet is fresh.")
     parser.add_argument("--strict-exit", action="store_true", help="exit nonzero on critical findings")
     args = parser.parse_args()
+
+    input_signature = build_input_signature()
+    prefilter = prefilter_decision(OUT_JSON, input_signature)
+    if args.prefilter_only:
+        print(
+            f"status={prefilter['status']} can_reuse={prefilter['can_reuse_existing_packet']} "
+            f"reason={prefilter['reason']} input_hash={prefilter['current_input_hash']}"
+        )
+        return 0
+    if args.skip_if_unchanged and prefilter.get("can_reuse_existing_packet"):
+        print(
+            f"status=unchanged_skip validation=ok previous_status={prefilter['previous_status']} "
+            f"reason={prefilter['reason']} input_hash={prefilter['current_input_hash']}"
+        )
+        return 2 if args.strict_exit and prefilter.get("previous_critical_count") else 0
+
     report = evaluate()
+    report["input_signature"] = input_signature
+    report["prefilter"] = prefilter
     if args.write:
         OUT_JSON.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         write_markdown(report)

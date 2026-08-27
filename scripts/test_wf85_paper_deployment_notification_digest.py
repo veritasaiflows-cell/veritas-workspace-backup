@@ -44,17 +44,36 @@ def base_manager(target: str | None = None) -> dict:
     }
 
 
+def fresh_quotes() -> dict[str, dict]:
+    return {
+        "XLB": {
+            "symbol": "XLB",
+            "price": 51.68,
+            "freshness_status": "fresh",
+            "age_seconds": 30,
+        }
+    }
+
+
 def test_manager_rows_fresh_vs_stale() -> None:
-    ready, near = digest.build_manager_rows(base_manager(), 36)
+    ready, near, legacy = digest.build_manager_rows(base_manager(), 36, fresh_quotes())
     assert [row["ticker"] for row in ready] == ["XLB"]
     assert not near
+    assert not legacy
     assert ready[0]["paper_execution_ready"] is False
 
     stale = base_manager("2026-06-01")
-    ready, near = digest.build_manager_rows(stale, 36)
+    ready, near, legacy = digest.build_manager_rows(stale, 36, fresh_quotes())
     assert not ready
-    assert [row["ticker"] for row in near] == ["XLB"]
-    assert any("target_session_not_today" in item for item in near[0]["blockers"])
+    assert not near
+    assert [row["ticker"] for row in legacy] == ["XLB"]
+    assert legacy[0]["readiness_kind"] == "wf67_manager_legacy_audit_only"
+    assert legacy[0]["legacy_audit_only"] is True
+    assert legacy[0]["current_surface_eligible"] is False
+    assert any("target_session_not_today" in item for item in legacy[0]["blockers"])
+    assert legacy[0]["card_path"] is None
+    assert legacy[0]["request_path"] is None
+    assert legacy[0]["wf67_manager_card_reference_suppressed"] is True
 
 
 def test_digest_blocks_authority_drift() -> None:
@@ -62,6 +81,14 @@ def test_digest_blocks_authority_drift() -> None:
     authority["paper_order_submit_allowed"] = True
     violations = digest.authority_violations(authority)
     assert "paper_order_submit_allowed" in violations
+
+
+def test_source_stale_reason_flags_missing_and_old_source() -> None:
+    assert digest.source_stale_reason("morning_paper_cards", {}, 1) == "morning_paper_cards_generated_at_missing"
+    old = {"age_hours": 2.5}
+    assert digest.source_stale_reason("morning_paper_cards", old, 1) == "morning_paper_cards_stale:2.5h_gt_1h"
+    fresh = {"age_hours": 0.25}
+    assert digest.source_stale_reason("morning_paper_cards", fresh, 1) is None
 
 
 def test_message_preview_never_activates_approve() -> None:
@@ -91,10 +118,78 @@ def test_message_preview_never_activates_approve() -> None:
     assert "near_deployment" not in msg
 
 
+def test_watch_only_digest_is_telegram_visible_but_not_preparable() -> None:
+    packet = {
+        "status": "ok",
+        "operator_action": "TELEGRAM_NOTIFY",
+        "summary": {
+            "deployment_ready_count": 0,
+            "execution_ready_count": 0,
+            "near_deployment_count": 0,
+            "watch_count": 1,
+            "blocked_or_repair_count": 0,
+        },
+        "categories": {
+            "deployment_ready": [],
+            "near_deployment": [],
+            "legacy_wf67_manager_audit": [{"ticker": "VRT", "readiness_kind": "wf67_manager_legacy_audit_only"}],
+            "watch": [{"ticker": "GOOG", "decision_state": "monitor_only", "band_status": "IN_BAND"}],
+            "blocked_or_repair": [],
+        },
+    }
+    msg = digest.build_message_preview(packet, 5)
+    assert "Near Deployment" not in msg
+    assert "Watch" in msg
+    assert "PREPARE is disabled until a name reaches near-deployment" in msg
+    assert "APPROVE is not active" in msg
+
+
+def test_stale_quote_suppresses_price_band_and_stop_in_message() -> None:
+    stale_row = digest.apply_quote_display_dependency(
+        {
+            "ticker": "GOOG",
+            "decision_state": "monitor_only",
+            "latest_known_price": 313.33,
+            "band_status": "IN_BAND",
+            "entry_band_low": 286.37,
+            "entry_band_high": 300.76,
+            "stop_or_invalidation": 277.63,
+        },
+        {"symbol": "GOOG", "price": 313.33, "freshness_status": "stale", "age_seconds": 7200},
+    )
+    packet = {
+        "summary": {
+            "deployment_ready_count": 0,
+            "execution_ready_count": 0,
+            "near_deployment_count": 0,
+            "watch_count": 1,
+            "blocked_or_repair_count": 0,
+        },
+        "categories": {"deployment_ready": [], "near_deployment": [], "watch": [stale_row], "blocked_or_repair": []},
+        "validation": {},
+    }
+
+    message = digest.build_message_preview(packet, 5)
+
+    assert "fresh quote required; price/band/stop display suppressed" in message
+    assert "$313.33" not in message
+    assert "$286.37" not in message
+    assert "$277.63" not in message
+
+
+def test_current_quote_allows_numeric_display_dependency() -> None:
+    context = digest.quote_display_context({"price": 100.0, "freshness_status": "fresh", "age_seconds": 900})
+    assert context["price_display_allowed"] is True
+
+
 def main() -> int:
     test_manager_rows_fresh_vs_stale()
     test_digest_blocks_authority_drift()
+    test_source_stale_reason_flags_missing_and_old_source()
     test_message_preview_never_activates_approve()
+    test_watch_only_digest_is_telegram_visible_but_not_preparable()
+    test_stale_quote_suppresses_price_band_and_stop_in_message()
+    test_current_quote_allows_numeric_display_dependency()
     print("wf85_paper_deployment_notification_digest targeted tests passed")
     return 0
 

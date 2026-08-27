@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.veritas/openclaw/agent-capabilities.schema.json",
+  "title": "OpenClaw Agent Capabilities",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at_utc",
+    "agent_id",
+    "department",
+    "owner_workflow",
+    "authority_class",
+    "runtime",
+    "model_route",
+    "role",
+    "tools_allowed",
+    "tools_denied",
+    "write_scope",
+    "forbidden_surfaces",
+    "source_surfaces_first",
+    "stop_lines",
+    "authority_disclaimer"
+  ],
+  "properties": {
+    "schema": {
+      "const": "openclaw.agent_capabilities.v1"
+    },
+    "generated_at_utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identity": {
+      "type": "string"
+    },
+    "department": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner_workflow": {
+      "type": "string",
+      "minLength": 1
+    },
+    "concept": {
+      "type": "string"
+    },
+    "authority_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["workspace", "agent_dir", "model"],
+      "properties": {
+        "workspace": { "type": "string" },
+        "agent_dir": { "type": "string" },
+        "model": { "type": ["string", "null"] },
+        "bindings_count": { "type": ["integer", "string", "null"] },
+        "is_default": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "model_route": {
+      "type": "object",
+      "required": ["default_model", "upgrade_model", "cost_rule"],
+      "additionalProperties": true
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tools_allowed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "tools_denied": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "write_scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "forbidden_surfaces": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "source_surfaces_first": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "agent_knowledge_base": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "authority_limit": { "type": "string" },
+        "recommended_pages": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "self_improvement_feed": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "stop_lines": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "deliverable_shape": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "prompt_examples": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "validation_commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "closeout_required": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "authority_disclaimer": {
+      "type": "string",
+      "pattern": "not approval"
+    }
+  },
+  "additionalProperties": true
+}
+

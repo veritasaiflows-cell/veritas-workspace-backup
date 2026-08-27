@@ -17,6 +17,18 @@ Current state: Phases 0-10 implemented through read-only consumer expansion, par
 
 The primary writer is `scripts/canonical_finance_data_plane.py`. It builds a validated JSON packet first and loads the derived SQLite companion from that packet only.
 
+## 2026-06-19 SQL/JSON internal decision-canon cutover
+
+Randall approved using guarded `state/finance/finance-canon.sqlite` plus JSON proof packets as the primary internal review-only decision/routing source for finance consumers. WF84 remains the normalized data-plane interface above that guarded current-state layer; it does not replace source-open proof, owner notes, or retained fallback surfaces.
+
+Current proof:
+- `python scripts\finance_sql_canon_access.py --write --validate` passed.
+- `python scripts\canonical_finance_data_plane.py --write --write-db --validate` passed with `200` active rows, Tier A/B/C `18/30/152`, SQLite integrity `ok`, and forbidden authority counts `0`.
+- `python scripts\canonical_finance_data_plane_phase6_10.py --write --validate` passed with `consumer_default_switch_allowed=true`, `default_switched_consumer_count=4`, `fallback_surfaces_retained_for_resilience=true`, and `archive_delete_apply_allowed=false`.
+- Retirement/lifecycle proof remains conservative: archive-ready `0`, delete-ready `0`, apply-allowed `0`, source-feeder retirement-ready `0`, duplicate-surface retirement-ready `0`.
+
+Operational rule: internal consumers may prefer the typed SQL-canon guard plus JSON proof packets only when validation is clean. Material finance claims still require source-open drillback, and trade-grade decision readiness must check WF78/WF85 freshness gates before any recommendation language is treated as current.
+
 ## Purpose
 
 Build a formal internal canonical finance data model for a trade-grade personal OS:
@@ -229,7 +241,7 @@ Current WF84 schema additions:
 Current proof:
 - WF84 packet/SQLite validates with 15 canonical tables, 3,400 full-answer section rows, and 0 forbidden authority flags.
 - Phase 6-10 proof validates with 54 checks, 0 critical, 0 warning, `consumer_default_switch_allowed=true`, and `archive_delete_apply_allowed=false`.
-- Full-answer parity full-population run covers 200 WF84 tickers and 3,400 section checks. The rollup is still `blocked`: only 18 tickers pass, 182 have critical blockers, and the largest blocker class is missing old-stack answer packets for non-production/current answer-path names. Section parity is 3,250/3,400 (`0.9559`) but the ratio is informational only; any critical keeps retirement blocked.
+- Historical/superseded parity note: the initial full-answer parity full-population run covered 200 WF84 tickers and 3,400 section checks but was blocked with only 18 ticker passes and 182 critical blockers. This was superseded by the later full-population parity repair; current parity proof is status `ok` with 200/200 ticker passes and 0 critical tickers.
 - Pilot-level drift remains useful repair signal: VRT has old-stack band/stop drift vs WF84's decision-spine band, BRK.B has old/new below-band vocabulary drift, and TLT technical posture is explicitly missing in both routes.
 - Retirement readiness v2 includes ticker answer packets and ticker intelligence cards as duplicate/evidence surface classes. Archive/delete/apply remain 0; duplicate-surface retirement-ready count remains 0 until full-answer value parity is clean and DB lifecycle gates clear.
 - Opus challenger artifact: `tmp/parallel-lanes/wf84-wf85-full-answer-parity-opus-challenger-20260609.json`.

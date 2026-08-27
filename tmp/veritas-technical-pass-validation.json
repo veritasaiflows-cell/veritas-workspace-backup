@@ -1,19 +1,19 @@
 {
   "status": "ok",
-  "validated_at_utc": "2026-05-05T06:13:45Z",
+  "validated_at_utc": "2026-06-27T05:42:01Z",
   "skill": "veritas-technical-pass",
   "validation_tier": "Tier 2 functional local proof (pilot)",
   "skill_path": "skills/veritas-technical-pass/SKILL.md",
   "summary": {
-    "required_reference_count": 6,
-    "present_reference_count": 6,
+    "required_reference_count": 5,
+    "present_reference_count": 5,
     "missing_reference_count": 0,
     "missing_state_label_count": 0,
     "missing_data_requirement_count": 0
   },
   "required_file_contract": [
     {
-      "path": "02. Markets/Watchlist.md",
+      "path": "04. Research/Coverage and Watchlist.md",
       "exists": true,
       "kind": "file",
       "detail": "ok"
@@ -25,13 +25,7 @@
       "detail": "ok"
     },
     {
-      "path": "03. Portfolio/Technical Entry and Invalidation Sheet.md",
-      "exists": true,
-      "kind": "file",
-      "detail": "ok"
-    },
-    {
-      "path": "03. Portfolio/Deployment Trigger Sheet.md",
+      "path": "03. Portfolio/Execution Board.md",
       "exists": true,
       "kind": "file",
       "detail": "ok"
@@ -70,5 +64,15 @@
     "missing": []
   },
   "issues": [],
+  "route_contract": {
+    "default_route_role": "skill_contract_sidecar_validator",
+    "run_when": "veritas-technical-pass skill edits or explicit technical-pass validation",
+    "finance_data_readiness_owner": false,
+    "routine_wf85_wf88_runtime_owner": false,
+    "delete_allowed": false,
+    "archive_allowed": false,
+    "apply_allowed": false,
+    "owner_approval_inferred": false
+  },
   "validator_note": "Bounded sidecar validator pilot: proves the skill's required local file contract and core technical-output contract still exist. This does not validate live market data or end-to-end workflow quality."
 }

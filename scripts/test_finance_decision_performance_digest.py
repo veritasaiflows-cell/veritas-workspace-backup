@@ -48,10 +48,24 @@ def journal_row(ticker: str = "VRT") -> dict:
 
 def test_summarize_wf55_counts_due_unobserved_checkpoint() -> None:
     now = datetime(2026, 6, 14, tzinfo=timezone.utc)
-    summary = digest.summarize_wf55([outcome_row()], now)
+    summary = digest.summarize_wf55([outcome_row()], now, [])
     assert summary["recommendation_tracking_rows"] == 1
     assert summary["due_unobserved_checkpoint_count"] == 1
     assert summary["tracked_tickers"] == ["VRT"]
+    assert summary["outcome_grade_assigned_count"] == 0
+
+
+def test_summarize_wf55_counts_grade_history() -> None:
+    now = datetime(2026, 6, 14, tzinfo=timezone.utc)
+    grade_rows = [{
+        "grade_event_id": "grade-1",
+        "ledger_event_id": "ledger-1",
+        "grade_status": "assigned",
+        "assigned_grade": "band_reclaim_held",
+    }]
+    summary = digest.summarize_wf55([outcome_row()], now, grade_rows)
+    assert summary["outcome_grade_assigned_count"] == 1
+    assert summary["grade_history"]["assigned_grade_event_count"] == 1
 
 
 def test_build_payload_preserves_no_performance_claim_when_pending() -> None:
@@ -59,6 +73,7 @@ def test_build_payload_preserves_no_performance_claim_when_pending() -> None:
         base = Path(tmp)
         paths = {
             "wf55_ledger": write_jsonl(base / "wf55.jsonl", [outcome_row()]),
+            "wf55_grade_history": write_jsonl(base / "grades.jsonl", []),
             "wf87_journal": write_jsonl(base / "journal.jsonl", [journal_row()]),
             "wf87_shadow_scorecard": write_json(
                 base / "shadow.json",
@@ -102,6 +117,7 @@ def test_journal_summary_counts_terminal_outcomes() -> None:
 
 if __name__ == "__main__":
     test_summarize_wf55_counts_due_unobserved_checkpoint()
+    test_summarize_wf55_counts_grade_history()
     test_build_payload_preserves_no_performance_claim_when_pending()
     test_journal_summary_counts_terminal_outcomes()
     print("finance_decision_performance_digest_tests_passed")

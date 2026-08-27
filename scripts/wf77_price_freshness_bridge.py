@@ -22,7 +22,7 @@ if str(SCRIPTS) not in sys.path:
 
 from market_data_utils import atomic_write_json, load_json_artifact
 import universe
-from wf78_legacy_42_tier_state import production_entries as legacy_42_tier_entries
+from finance_production_scope import production_entries as production_scope_entries
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -33,11 +33,13 @@ CONFIG_PATH = TMP / "portfolio-config.json"
 TECHNICAL_REFRESH_PATH = TMP / "technical-refresh.json"
 SUPPLEMENTAL_PRICE_EVIDENCE_PATH = TMP / "wf77-supplemental-price-evidence.json"
 CARD_DIR = TMP / "ticker-intelligence-cards"
+TRADE_GRADE_DECISION_CARDS = TMP / "trade-grade-decision-cards.json"
 DEFAULT_OUT = TMP / "wf77-price-freshness-bridge.json"
 SNAPSHOT_DIR = DATA / "market" / "price-snapshots"
 CURRENT_SNAPSHOT = SNAPSHOT_DIR / "wf77-price-state-current.json"
 
 SCHEMA_VERSION = "wf77_price_freshness_bridge.v1"
+TARGET_DECISION_CARD_TIERS = {"Tier A", "Tier B"}
 
 AUTHORITY_BOUNDARY = {
     "posture": "review_only_price_freshness_bridge_not_canon_not_approval_not_execution",
@@ -109,25 +111,103 @@ def parse_date(value: Any) -> date | None:
         return None
 
 
-def production_universe(universe: dict[str, Any]) -> list[dict[str, Any]]:
-    migrated = legacy_42_tier_entries()
+def card_ticker(card: dict[str, Any]) -> str:
+    return str(card.get("ticker") or "").upper().strip()
+
+
+def card_tier(card: dict[str, Any]) -> str:
+    return str(card.get("auto_tier") or card.get("tier") or "").strip()
+
+
+def card_market_date(card: dict[str, Any]) -> str | None:
+    price = card.get("current_price")
+    if not isinstance(price, dict):
+        return None
+    value = price.get("market_date")
+    return str(value) if value else None
+
+
+def tier_ab_stale_price_bridge_rows(decision_cards: dict[str, Any]) -> list[dict[str, Any]]:
+    cards = [
+        card for card in decision_cards.get("cards", [])
+        if isinstance(card, dict) and card_ticker(card) and card_tier(card) in TARGET_DECISION_CARD_TIERS
+    ]
+    expected_date = max([card_market_date(card) for card in cards if card_market_date(card)] or [None])
+    if not expected_date:
+        return []
+
+    rows: list[dict[str, Any]] = []
+    for card in cards:
+        observed_date = card_market_date(card)
+        if observed_date == expected_date:
+            continue
+        rows.append({
+            "ticker": card_ticker(card),
+            "name": card.get("name"),
+            "tier": card_tier(card),
+            "monitoring_role": card.get("decision_state") or card.get("queue_state"),
+            "coverage_reason": {
+                "coverage_lane": "wf77_trade_grade_tier_ab_stale_price_bridge",
+                "source_artifact": rel(TRADE_GRADE_DECISION_CARDS),
+                "expected_market_date": expected_date,
+                "observed_market_date": observed_date,
+                "review_only": True,
+                "capital_deployment_claim": False,
+                "trade_or_execution_claim": False,
+            },
+            "wf77_bridge_scope": "tier_a_b_stale_or_missing_current_price_context",
+        })
+    return rows
+
+
+def production_universe(universe: dict[str, Any], decision_cards: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    migrated = production_scope_entries()
     if migrated:
-        return migrated
+        rows_by_ticker = {str(row.get("ticker") or "").upper(): row for row in migrated if row.get("ticker")}
+        if decision_cards:
+            for row in tier_ab_stale_price_bridge_rows(decision_cards):
+                rows_by_ticker.setdefault(str(row.get("ticker") or "").upper(), row)
+        return sorted(rows_by_ticker.values(), key=lambda item: str(item.get("ticker", "")))
     rows = universe.get("entries")
     if not isinstance(rows, list):
         return []
-    out: list[dict[str, Any]] = []
+    out_by_ticker: dict[str, dict[str, Any]] = {}
     for row in rows:
         if not isinstance(row, dict):
             continue
         if row.get("active") is not True:
             continue
-        if row.get("universe_scope", "production_current_42") != "production_current_42":
+        if row.get("production_scope") is not True:
             continue
         ticker = str(row.get("ticker") or "").upper().strip()
         if ticker:
-            out.append(row)
-    return sorted(out, key=lambda item: str(item.get("ticker", "")))
+            out_by_ticker[ticker] = row
+    if decision_cards:
+        for row in tier_ab_stale_price_bridge_rows(decision_cards):
+            out_by_ticker.setdefault(str(row.get("ticker") or "").upper(), row)
+    return sorted(out_by_ticker.values(), key=lambda item: str(item.get("ticker", "")))
+
+
+def supplemental_universe_rows(supplemental_index: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for symbol, record in supplemental_index.items():
+        if not symbol or record.get("status") != "ok":
+            continue
+        rows.append({
+            "ticker": symbol,
+            "name": record.get("name"),
+            "tier": record.get("tier"),
+            "monitoring_role": "supplemental_price_evidence",
+            "coverage_reason": {
+                "coverage_lane": "wf77_supplemental_public_price_evidence",
+                "source_artifact": rel(SUPPLEMENTAL_PRICE_EVIDENCE_PATH),
+                "review_only": True,
+                "capital_deployment_claim": False,
+                "trade_or_execution_claim": False,
+            },
+            "wf77_bridge_scope": "supplemental_public_price_evidence",
+        })
+    return rows
 
 
 def technical_records(technical: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -237,6 +317,19 @@ def supplemental_source_status(payload: dict[str, Any], path: Path) -> dict[str,
 
 
 def pick_price_source(ticker: str, technical: dict[str, Any], supplemental: dict[str, Any]) -> tuple[dict[str, Any], str, str]:
+    if supplemental and supplemental.get("status") == "ok":
+        technical_date = parse_date(technical.get("data_date"))
+        supplemental_date = parse_date(supplemental.get("data_date"))
+        technical_close = as_float(technical.get("close"))
+        supplemental_close = as_float(supplemental.get("close"))
+        if not technical:
+            return supplemental, "supplemental_public_price_evidence", "wf77_supplemental_price_evidence"
+        if supplemental_close is not None and (
+            technical_close is None
+            or technical_date is None
+            or (supplemental_date is not None and supplemental_date > technical_date)
+        ):
+            return supplemental, "supplemental_public_price_evidence", "wf77_supplemental_price_evidence"
     if technical:
         return technical, "technical_refresh", "technical_refresh"
     if supplemental and supplemental.get("status") == "ok":
@@ -332,11 +425,14 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         if authority.get(key) is not False:
             errors.append(f"authority_{key}_not_false")
     rows = payload.get("rows")
-    if not isinstance(rows, list) or not rows:
-        errors.append("missing_price_rows")
     summary = payload.get("summary", {})
-    if summary.get("production_ticker_count") not in {42, 53}:
-        warnings.append(f"unexpected_production_ticker_count={summary.get('production_ticker_count')}")
+    production_ticker_count = summary.get("production_ticker_count")
+    if not isinstance(rows, list):
+        errors.append("missing_price_rows")
+    elif not rows and production_ticker_count != 0:
+        errors.append("missing_price_rows")
+    if not isinstance(production_ticker_count, int) or production_ticker_count < 0:
+        warnings.append(f"unexpected_production_ticker_count={production_ticker_count}")
     if summary.get("missing_price_rows"):
         warnings.append(f"missing_price_rows={summary.get('missing_price_rows')}")
     if summary.get("excluded_price_rows"):
@@ -361,9 +457,18 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     portfolio_config = load_dict(args.portfolio_config)
     technical = load_dict(args.technical)
     supplemental = load_dict(args.supplemental)
+    decision_cards = load_dict(args.decision_cards)
     technical_index = technical_records(technical)
     supplemental_index = supplemental_records(supplemental)
-    universe_rows = production_universe(universe)
+    stale_bridge_rows = tier_ab_stale_price_bridge_rows(decision_cards)
+    universe_rows_by_ticker = {
+        str(row.get("ticker") or "").upper(): row
+        for row in production_universe(universe, decision_cards)
+        if str(row.get("ticker") or "").strip()
+    }
+    for row in supplemental_universe_rows(supplemental_index):
+        universe_rows_by_ticker.setdefault(str(row.get("ticker") or "").upper(), row)
+    universe_rows = sorted(universe_rows_by_ticker.values(), key=lambda item: str(item.get("ticker", "")))
     generated_at = parse_dt(technical.get("generated_at_utc"))
     age_hours = source_age_hours(args.technical, generated_at, now)
     data_dates = [parse_date(row.get("data_date")) for row in technical_index.values() if isinstance(row, dict)]
@@ -437,6 +542,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "does_not_mutate_ticker_cards": True,
             "does_not_mutate_canon_or_portfolio": True,
             "does_not_expand_technical_refresh_lane": True,
+            "tier_ab_bridge_scope": "adds only stale/missing Tier A/B decision-card price context rows for review-only freshness repair",
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
         "inputs": {
@@ -445,6 +551,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "technical_refresh": rel(args.technical),
             "supplemental_price_evidence": rel(args.supplemental),
             "ticker_cards": rel(args.card_dir),
+            "trade_grade_decision_cards": rel(args.decision_cards),
         },
         "outputs": {
             "bridge": rel(args.out),
@@ -461,6 +568,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         },
         "summary": {
             "production_ticker_count": len(universe_rows),
+            "tier_ab_stale_price_bridge_row_count": len(stale_bridge_rows),
+            "tier_ab_stale_price_bridge_tickers": [str(row.get("ticker")) for row in stale_bridge_rows],
             "row_count": len(rows),
             "valid_price_row_count": len(valid_price_rows),
             "invalid_price_row_count": len(rows) - len(valid_price_rows),
@@ -535,6 +644,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--technical", type=Path, default=TECHNICAL_REFRESH_PATH)
     parser.add_argument("--supplemental", type=Path, default=SUPPLEMENTAL_PRICE_EVIDENCE_PATH)
     parser.add_argument("--card-dir", type=Path, default=CARD_DIR)
+    parser.add_argument("--decision-cards", type=Path, default=TRADE_GRADE_DECISION_CARDS)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--max-source-age-hours", type=float, default=36.0)
     parser.add_argument("--max-market-data-age-days", type=int, default=3)
@@ -543,7 +653,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    for attr in ("universe", "portfolio_config", "technical", "supplemental", "card_dir", "out"):
+    for attr in ("universe", "portfolio_config", "technical", "supplemental", "card_dir", "decision_cards", "out"):
         path = getattr(args, attr)
         if not path.is_absolute():
             setattr(args, attr, ROOT / path)
@@ -557,3 +667,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

@@ -225,7 +225,7 @@ func validateFinanceUniverse(validation, universe map[string]any, validationErr,
 	add("schema_version_1", intValue(validation["schema_version"]) == 1, validation["schema_version"])
 	add("validation_failed_zero", intValue(summary["failed"]) == 0, summary)
 	add("active_ticker_count_supported_scaleout", supportedActiveCounts[intValue(summary["active_ticker_count"])], summary["active_ticker_count"])
-	add("production_count_42", intValue(summary["production_active_ticker_count"]) == 42, summary["production_active_ticker_count"])
+	add("production_scope_empty_sql_first_wait_state", intValue(summary["production_active_ticker_count"]) == 0, map[string]any{"actual": summary["production_active_ticker_count"], "expected": 0, "empty_production_scope_is_valid_wait_state": true})
 	add("review_monitor_count_supported_scaleout", supportedReviewMonitorCounts[intValue(summary["review_100_monitor_count"])], summary["review_100_monitor_count"])
 	add("pilot_count_zero", intValue(summary["pilot_fixture_count"]) == 0, summary["pilot_fixture_count"])
 	add("universe_semantic_counts_match_validation",
@@ -284,8 +284,9 @@ func validateWF78Readiness(readiness map[string]any, readinessErr error) Validat
 	}
 	add("all_surfaces_ok", allOK, surfaceStatus)
 	add("canon_cache_rows_265", nestedInt(rowCounts, "canon_cache", "canon_cache_fields") == 265, rowCounts["canon_cache"])
-	add("current_ticker_cards_42", nestedInt(rowCounts, "finance_intelligence_state", "current_ticker_cards") == 42, rowCounts["finance_intelligence_state"])
-	add("latest_valid_entry_stop_refs_42", nestedInt(rowCounts, "finance_intelligence_state", "latest_valid_entry_stop_refs") == 42, rowCounts["finance_intelligence_state"])
+	financeState := asMap(rowCounts["finance_intelligence_state"])
+	add("current_ticker_cards_empty_sql_first_wait_state", nestedInt(rowCounts, "finance_intelligence_state", "current_ticker_cards") == 0 && nestedInt(rowCounts, "finance_intelligence_state", "production_answer_path_rows") == 0, financeState)
+	add("latest_valid_entry_stop_refs_not_ahead_of_active", nestedInt(rowCounts, "finance_intelligence_state", "latest_valid_entry_stop_refs") <= nestedInt(rowCounts, "finance_intelligence_state", "all_ticker_sql_rows"), financeState)
 	add("no_forbidden_authority_true_values", len(asList(summary["forbidden_authority_true_values"])) == 0, summary["forbidden_authority_true_values"])
 	return validationFromChecks(checks)
 }

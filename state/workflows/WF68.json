@@ -3,11 +3,26 @@
   "workflow_id": "WF68",
   "display_name": "Intraday Alert Engine and Advisor Surface",
   "tier": "P1",
-  "effective_status": "route_only",
-  "next_action": "Keep producer/digest proof clean; manual REVIEW / PREPARE only after artifact + WF67 guard inspection.",
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Reduced-load internal alert/advisor proof; Telegram shadow paused; authority flags false.",
+  "next_action": "Keep producer/digest proof clean; manual `REVIEW`/`PREPARE` only after artifact and WF67 guard inspection.",
+  "authoritative_next_action": "Keep producer/digest proof clean; manual `REVIEW`/`PREPARE` only after artifact and WF67 guard inspection.",
   "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "review-only; manual REVIEW/PREPARE gated",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 68 - Intraday Alert Engine and Advisor Surface.md",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [
     "Telegram shadow delivery paused",
     "authority flags false"
@@ -27,6 +42,10 @@
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

@@ -1,12 +1,49 @@
 {
-  "generated_at_utc": "2026-05-03T15:31:29.683468+00:00",
-  "iso_week": "2026-W18",
-  "week_start": "2026-04-27",
-  "week_end": "2026-05-01",
-  "market_data_as_of": "2026-05-01",
-  "canonical_mutation_allowed": true,
-  "trust_reason": "dashboard validation clean",
+  "generated_at_utc": "2026-07-05T20:29:38.930821+00:00",
+  "iso_week": "2026-W27",
+  "week_start": "2026-06-29",
+  "week_end": "2026-07-03",
+  "market_data_as_of": "2026-07-03",
+  "canonical_mutation_allowed": false,
+  "generated_macro_note_write_allowed": true,
+  "portfolio_mutation_allowed": false,
+  "trade_execution_allowed": false,
+  "owner_approval_granted": false,
+  "trust_reason": "macro snapshot complete and presentation gate clear",
   "trust_gate_blocked": false,
+  "final_status": "complete",
+  "placeholder_count": 0,
+  "placeholder_check_passed": true,
+  "report_complete": true,
+  "macro_canonical_write_allowed": true,
+  "macro_canonical_write_reason": "macro snapshot complete and presentation gate clear",
+  "completion_blockers": [],
+  "completion_warnings": [
+    "deployment surface presentation_allowed=false; treat deployment posture as degraded/review-only, not macro-note blocking when stop_line=false"
+  ],
+  "source_gate": {
+    "dashboard_critical": 0,
+    "dashboard_warning": 0,
+    "dashboard_presentation_allowed": true,
+    "dashboard_stop_line": false,
+    "deployment_surface_presentation_allowed": false,
+    "deployment_surface_stop_line": false,
+    "macro_metrics_status": "ok",
+    "macro_judgment_status": "ok"
+  },
+  "authority": {
+    "review_only_statement_present": true,
+    "capital_action_allowed": false,
+    "trade_execution_authorized": false,
+    "canonical_mutation_allowed": false,
+    "generated_macro_note_write_allowed": true,
+    "portfolio_mutation_allowed": false,
+    "trade_execution_allowed": false,
+    "owner_approval_granted": false
+  },
   "deferred_to_machine": false,
-  "wrote_to": "02. Markets\\Weekly Macro Snapshot\\2026-W18.md"
+  "validated_markdown_path": "02. Markets\\Weekly Macro Snapshot\\2026-W27.md",
+  "wrote_to": "02. Markets\\Weekly Macro Snapshot\\2026-W27.md",
+  "judgment_fill_prompt": "tmp\\weekly-macro-snapshot-judgment-fill.md",
+  "preserved_existing_machine_sidecar": false
 }

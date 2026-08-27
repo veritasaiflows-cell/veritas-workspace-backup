@@ -19,7 +19,7 @@ Procedures belong in skills.
 - Primary model for the main agent / new top-level sessions: `openai-codex/gpt-5.5`
 - Primary model for spawned sub-sessions: `openai-codex/gpt-5.4`
 - Use OpenAI Codex OAuth-backed routing by default
-- Do not assume direct `openai/gpt-5.5` or `openai/gpt-5.4` works unless `OPENAI_API_KEY` was intentionally configured
+- Keep routed usage inside the approved `openai-codex/*` model set unless runtime policy is explicitly changed
 
 ## Skill posture
 

@@ -56,7 +56,13 @@ def upsert_run_summary_alert(payload: dict[str, Any], run_summary: dict[str, Any
     execution = run_summary.get("execution") or {}
     artifact_index = artifact_index_trust_state(run_summary)
     sql_unhealthy = artifact_index.get("operator_action_required") or artifact_index.get("status") not in {"ok"}
-    terminal_chain_statuses = {"ok", "failed", "completed_with_recovery"}
+    terminal_chain_statuses = {
+        "ok",
+        "failed",
+        "completed_with_recovery",
+        "completed_with_ticker_repairs",
+        "completed_with_systemic_data_quality",
+    }
     chain_status = str(execution.get("chain_status") or "unknown")
     execution_ambiguous = chain_status not in terminal_chain_statuses or not bool(execution.get("chain_status_normalized"))
     tone = "bad" if status in {"blocked", "error"} else ("warn" if status == "warning" or execution_ambiguous or sql_unhealthy else "ok")

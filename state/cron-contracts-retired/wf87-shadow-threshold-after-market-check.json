@@ -1,0 +1,84 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "306b35e0-fee9-4e7b-93ff-50e73bfa54c4",
+  "name": "WF87 shadow threshold after-market check",
+  "required": false,
+  "owner_workflow": "WF87",
+  "contract_reason": "One-shot owner-requested after-market WF87 threshold reminder/check. The job is enabled until its scheduled run and must remain governed even though it is review-only and delete-after-run.",
+  "description": "One-shot after-market reminder/check to refresh WF87 shadow outcome and readiness proofs and report threshold status. Review-only; no paper/live/account action.",
+  "enabled": false,
+  "retired": true,
+  "retired_at_utc": "2026-06-24T00:06:00Z",
+  "retired_from_active_contract_scan": true,
+  "retirement_reason": "Completed delete-after-run WF87 one-shot reminder; live scheduler job self-deleted after the Tue 2026-06-23 20:15 UTC run, so the contract is retained only as retired audit history.",
+  "deleteAfterRun": true,
+  "schedule": {
+    "kind": "at",
+    "at": "2026-06-23T20:15:00.000Z"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "8650152206",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "After-market WF87 shadow program check for Randall. Run from C:\\Users\\Veritas\\.openclaw\\workspace: `python scripts\\wf87_shadow_outcome_scorecard.py --write --validate`, `python scripts\\wf87_v2_readiness_rollup.py --write --validate`, and `python scripts\\workflow_advancement_scorecard.py --write --validate`. Report whether the shadow threshold is met, clean shadow decisions vs required, unique sessions vs required, pending regular-session follow-ups, remaining WF87 blockers, and next safe action. Boundary: review-only; no paper/live/brokerage/account action, no capital deployment, no portfolio/canon/cash/sizing/risk mutation, no owner approval inference.",
+    "timeoutSeconds": 600
+  },
+  "compare_fields": [
+    "enabled",
+    "deleteAfterRun",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.to",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.message",
+    "payload.timeoutSeconds"
+  ],
+  "freshness_hours": 72,
+  "expected_artifacts": [
+    {
+      "path": "tmp/wf87-shadow-outcome-scorecard.json",
+      "role": "wf87_shadow_outcome_scorecard",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/wf87-v2-readiness-rollup.json",
+      "role": "wf87_v2_readiness_rollup",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/workflow-advancement-scorecard.json",
+      "role": "workflow_advancement_scorecard",
+      "required": true,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "one_shot_reminder_contract": true,
+    "owner_direct_delivery": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-06-23T04:21:00Z",
+  "contract_update_reason": "Learning Loop V2 implementation: govern the owner-requested WF87 after-market one-shot reminder so enabled scheduler jobs never sit outside the freshness spine."
+}

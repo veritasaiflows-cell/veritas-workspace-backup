@@ -32,6 +32,7 @@ SOURCE_REGISTRY = DATA / "finance" / "wf78-101-200-candidate-source-v1.json"
 MANIFEST = TMP / "wf78-100-to-200-candidate-manifest.json"
 PROVIDER_VALIDATION = TMP / "wf78-101-200-provider-source-validation.json"
 RUNNER = TMP / "wf78-phase-runner-current.json"
+IMPORT_GATE = TMP / "wf78-101-200-tier-c-import-gate.json"
 
 DEFAULT_OUT_JSON = TMP / "wf78-101-200-import-decision-packet.json"
 DEFAULT_OUT_DB = TMP / "wf78-101-200-import-decision-packet.sqlite"
@@ -206,11 +207,21 @@ def build_report(_: argparse.Namespace) -> dict[str, Any]:
     manifest = load_dict(MANIFEST)
     provider_validation = load_dict(PROVIDER_VALIDATION)
     runner = load_dict(RUNNER)
+    import_gate = load_dict(IMPORT_GATE)
+    import_gate_summary = as_dict(import_gate.get("summary"))
+    import_gate_validation = as_dict(import_gate.get("validation"))
+    import_already_applied = (
+        import_gate.get("status") == "ok_already_imported_tier_c_only"
+        and import_gate_validation.get("status") == "ok"
+        and import_gate_summary.get("already_imported_packet_tickers") == EXPECTED_SELECTED
+        and import_gate_summary.get("new_tier_c_rows_added") == 0
+    )
 
     artifacts = [
         artifact_meta(SOURCE_REGISTRY, "wf78_101_200_candidate_source_registry", True),
         artifact_meta(MANIFEST, "wf78_100_to_200_candidate_manifest", True),
         artifact_meta(PROVIDER_VALIDATION, "wf78_101_200_provider_source_validation", True),
+        artifact_meta(IMPORT_GATE, "wf78_101_200_tier_c_import_gate", True),
         artifact_meta(RUNNER, "wf78_phase_runner_current", False),
     ]
     for item in artifacts:
@@ -236,8 +247,23 @@ def build_report(_: argparse.Namespace) -> dict[str, Any]:
         "provider_only": sorted(row_tickers - source_tickers),
     })
     add_check(checks, "provider_validation_status_ok", provider_validation.get("status") == "ok", provider_validation.get("status"))
-    add_check(checks, "provider_validation_pre_import_source_validated", provider_validation.get("candidate_validation_status") == "pre_import_source_validated", provider_validation.get("candidate_validation_status"))
-    add_check(checks, "all_candidates_source_ready", len(source_ready) == EXPECTED_SELECTED, {"ready": len(source_ready), "not_ready": len(not_ready)})
+    add_check(checks, "import_gate_already_applied_if_present", import_already_applied, {
+        "status": import_gate.get("status"),
+        "validation_status": import_gate_validation.get("status"),
+        "already_imported_packet_tickers": import_gate_summary.get("already_imported_packet_tickers"),
+        "new_tier_c_rows_added": import_gate_summary.get("new_tier_c_rows_added"),
+    })
+    pre_import_ok = provider_validation.get("candidate_validation_status") == "pre_import_source_validated"
+    all_source_ready = len(source_ready) == EXPECTED_SELECTED
+    add_check(checks, "provider_validation_pre_import_source_validated", pre_import_ok or import_already_applied, {
+        "candidate_validation_status": provider_validation.get("candidate_validation_status"),
+        "historical_import_already_applied": import_already_applied,
+    }, "warning" if import_already_applied else "critical")
+    add_check(checks, "all_candidates_source_ready", all_source_ready or import_already_applied, {
+        "ready": len(source_ready),
+        "not_ready": len(not_ready),
+        "historical_import_already_applied": import_already_applied,
+    }, "warning" if import_already_applied else "critical")
     add_check(checks, "runner_all_safe_ok_if_present", not runner or (runner.get("status") == "ok" and as_dict(runner.get("summary")).get("failed_steps") == 0), as_dict(runner.get("summary")), "warning")
     add_check(checks, "runner_no_apply_or_import_if_present", not runner or as_dict(runner.get("summary")).get("apply_or_import_executed") is False, as_dict(runner.get("summary")))
     for flag in REQUIRED_TRUE_FLAGS:
@@ -246,7 +272,7 @@ def build_report(_: argparse.Namespace) -> dict[str, Any]:
         add_check(checks, f"authority_{flag}_false", AUTHORITY_BOUNDARY.get(flag) is False, AUTHORITY_BOUNDARY.get(flag))
 
     critical = [row for row in checks if row["severity"] == "critical" and not row["ok"]]
-    status = "decision_required" if not critical else "blocked"
+    status = "historical_import_already_applied" if import_already_applied and not critical else ("decision_required" if not critical else "blocked")
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -258,11 +284,14 @@ def build_report(_: argparse.Namespace) -> dict[str, Any]:
             "selected_candidate_count": len(rows),
             "pre_import_source_validated_count": len(source_ready),
             "blocked_or_repair_count": len(not_ready),
+            "historical_import_already_applied": import_already_applied,
+            "import_gate_status": import_gate.get("status"),
+            "already_imported_packet_tickers": import_gate_summary.get("already_imported_packet_tickers"),
             "thin_monitor_import_review_eligible_count": len([row for row in rows if row.get("thin_monitor_import_review_eligible") is True]),
             "decision_grade_eligible_count": 0,
             "sector_counts": dict(sorted(sector_counts.items())),
-            "recommended_decision": "Choose whether to approve a scoped 101-200 review-only Tier C thin-monitor import packet, or require deeper per-ticker card/fundamental/analyst validation first.",
-            "recommended_default": "deeper_card_fundamental_analyst_validation_before_import_apply",
+            "recommended_decision": "Treat 101-200 as an already-imported Tier C review-monitor historical batch; do not re-open import approval from this packet.",
+            "recommended_default": "continue current WF78 dynamic Tier A/B/C routing and preserve import/apply blocks",
         },
         "decision_required": {
             "owner_question": "Approve preparation of an exact 101-200 review-only thin-monitor import apply gate, or require deeper per-ticker card/fundamental/analyst validation first?",
@@ -506,7 +535,7 @@ def main() -> int:
             sort_keys=True,
         )
     )
-    return 0 if status in {"decision_required", "ok"} and not output_errors else 1
+    return 0 if status in {"decision_required", "historical_import_already_applied", "ok"} and not output_errors else 1
 
 
 if __name__ == "__main__":

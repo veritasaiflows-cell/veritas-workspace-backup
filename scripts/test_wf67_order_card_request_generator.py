@@ -178,7 +178,7 @@ def test_required_promotion_gate_is_carried_into_request_source() -> None:
                 "chief_intelligence_verdict": "promote_for_owner_review",
                 "band_status": "IN_BAND",
                 "vetoes": [],
-                "entry_band": {"low": 382.9, "high": 401.36, "stop": 362.67},
+                "entry_band": {"low": 356.99, "high": 400.66, "stop": 337.14},
                 "authority": {
                     "paper_order_execution_allowed": False,
                     "owner_approval_inferred": False,
@@ -191,6 +191,36 @@ def test_required_promotion_gate_is_carried_into_request_source() -> None:
         assert gate["chief_intelligence_verdict"] == "promote_for_owner_review"
 
 
+def test_required_promotion_gate_band_must_match_card() -> None:
+    card = base_card()
+    with tempfile.TemporaryDirectory() as tmp:
+        gate_path = Path(tmp) / "gate.json"
+        gate_path.write_text(json.dumps({
+            "status": "ok",
+            "schema_version": "test",
+            "generated_at_utc": "2026-05-31T00:00:00Z",
+            "candidates": [{
+                "ticker": "ETN",
+                "rank": 3,
+                "chief_intelligence_score": 83.4,
+                "chief_intelligence_verdict": "promote_for_owner_review",
+                "band_status": "IN_BAND",
+                "vetoes": [],
+                "entry_band": {"low": 382.9, "high": 401.36, "stop": 362.67},
+                "authority": {
+                    "paper_order_execution_allowed": False,
+                    "owner_approval_inferred": False,
+                },
+            }],
+        }), encoding="utf-8")
+        try:
+            gen.build_request(card, card_path=Path("tmp/card.json"), promotion_gate_path=gate_path)
+        except gen.CardError as exc:
+            assert "promotion_gate_band_mismatch:ETN" in str(exc), str(exc)
+        else:
+            raise AssertionError("stale promotion-gate bands must not be embedded in a WF67 request")
+
+
 if __name__ == "__main__":
     test_pending_card_builds_request_but_cannot_execute()
     test_approved_card_carries_execute_approval_metadata()
@@ -199,4 +229,5 @@ if __name__ == "__main__":
     test_market_order_requires_explicit_exact_approval()
     test_required_promotion_gate_blocks_non_promoted_buy()
     test_required_promotion_gate_is_carried_into_request_source()
+    test_required_promotion_gate_band_must_match_card()
     print("wf67_order_card_request_generator_tests_passed")

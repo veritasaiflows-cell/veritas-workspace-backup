@@ -30,7 +30,10 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
 def ensure_fixture_files() -> None:
     target = ROOT / "03. Portfolio" / "Execution Board.md"
     row = next(line for line in target.read_text(encoding="utf-8").splitlines() if line.startswith("| ETN |"))
-    new_row = row.replace("Manual-only; no chase above approved band;", "Manual-only; no chase above approved band; phase4 fixture visibility only;")
+    new_row = row.replace(
+        "Volatile canon freshness sync only;",
+        "Volatile canon freshness sync only; phase4 fixture visibility only;",
+    )
     packet = {
         "proposal_id": PROPOSAL_ID,
         "owner_approval_granted": False,

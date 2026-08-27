@@ -294,7 +294,7 @@ func checkSQLiteDB(rel, path, sqlitePath string, add func(string, string, string
 	switch filepath.ToSlash(rel) {
 	case "state/finance/finance-canon.sqlite":
 		expectCountInSet(sqlitePath, path, rel, "finance_active_rows_supported_scaleout_count", "SELECT COUNT(*) FROM current_active_universe;", []int{100, 200, 300, 400, 500}, add)
-		expectCount(sqlitePath, path, rel, "finance_production_answer_rows_42", "SELECT COUNT(*) FROM current_answer_path;", 42, add)
+		expectCount(sqlitePath, path, rel, "finance_production_answer_rows_fail_closed", "SELECT COUNT(*) FROM current_answer_path;", 0, add)
 		expectCountInSet(sqlitePath, path, rel, "finance_review_monitor_rows_supported_scaleout_count", "SELECT COUNT(*) FROM review_monitor_universe;", []int{58, 158, 258, 358, 458}, add)
 		expectCount(sqlitePath, path, rel, "finance_execution_flags_zero", "SELECT COUNT(*) FROM evidence_status WHERE paper_or_live_execution_allowed != 0 OR customer_output_allowed != 0;", 0, add)
 	case "tmp/veritas-canon-cache.sqlite":

@@ -19,6 +19,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
+from finance_sql_canon_access import guard_context as finance_sql_canon_guard_context
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -189,6 +190,8 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"sector_matrix_{key}_true")
     if int(matrix_validation.get("warning") or 0):
         warnings.append("sector_matrix_warning_accepted")
+    if as_dict(payload.get("sql_canon_context")).get("status") != "ok":
+        errors.append("sql_canon_guard_blocked")
     return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
 
 
@@ -199,6 +202,7 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
         "status": "draft",
         "operator_action": "NO_REPLY",
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "sql_canon_context": finance_sql_canon_guard_context(consumer="scripts/sector_allocation_decision_matrix_cron_runner.py"),
         "summary": build_summary(),
         "steps": steps,
         "artifacts": [

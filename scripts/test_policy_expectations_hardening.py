@@ -123,6 +123,30 @@ def test_cached_target_range_fails_after_new_fomc(errors: list[str]) -> None:
     expect(manual is True, "expired fallback must remain manual/blocked", errors)
 
 
+def test_manual_mode_does_not_reuse_prior_target(errors: list[str]) -> None:
+    with patched_attrs(
+        policy,
+        CURRENT_TARGET_AUTO_SOURCE=False,
+        CURRENT_TARGET_LOW=3.5,
+        CURRENT_TARGET_HIGH=3.75,
+        CURRENT_TARGET_DATE="2026-04-29",
+        CURRENT_TARGET_CONFIRMED=True,
+        fetch_fred_latest=lambda series_id: (3.5, "2026-06-17", None),
+        fetch_fed_statement_target_range=lambda previous_fomc_date: (3.5, 3.75, "https://fed.example/statement", None),
+    ):
+        target, warnings, invalid_reason, manual = policy.resolve_current_target_range(
+            today_str="2026-06-18",
+            previous_fomc_date="2026-06-17",
+            next_fomc_date="2026-07-29",
+            prior=prior_policy(target_as_of="2026-06-17"),
+        )
+    expect(target["confirmed"] is False, f"manual mode should fail closed on stale constants, got {target}", errors)
+    expect(target["low"] is None and target["high"] is None, f"manual mode should null stale target bounds, got {target}", errors)
+    expect(invalid_reason is not None and "expired" in invalid_reason, f"expected expired invalid reason, got {invalid_reason}", errors)
+    expect(manual is True, "manual mode must report manual target dependency", errors)
+    expect(any("expired" in warning for warning in warnings), f"manual stale target warning missing: {warnings}", errors)
+
+
 def main() -> int:
     errors: list[str] = []
     test_official_fomc_date_rolls_forward(errors)
@@ -130,6 +154,7 @@ def main() -> int:
     test_official_statement_target_range_when_fred_times_out(errors)
     test_cached_target_range_when_fred_and_statement_timeout_but_prior_is_valid(errors)
     test_cached_target_range_fails_after_new_fomc(errors)
+    test_manual_mode_does_not_reuse_prior_target(errors)
     if errors:
         print("policy_expectations_hardening_tests_failed")
         for error in errors:

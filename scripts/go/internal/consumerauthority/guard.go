@@ -276,21 +276,13 @@ func inspectArtifactIndex(root, driver, sqlitePath string) (DBRead, []map[string
 	for _, flag := range forbiddenAuthorityFlags {
 		quoted = append(quoted, "'"+strings.ReplaceAll(flag, "'", "''")+"'")
 	}
-	rows, err := sqlutil.JSONRowsWithDriver(driver, sqlitePath, dbPath, `
-SELECT artifact_run_id, flag_name, flag_value, surface, raw_value, source_file
-FROM authority_flags
-WHERE flag_value != 0 AND flag_name IN (`+strings.Join(quoted, ",")+`)
-ORDER BY source_file, flag_name`)
+	forbiddenQuery := "SELECT artifact_run_id, flag_name, flag_value, surface, raw_value, source_file FROM authority_flags WHERE flag_value != 0 AND flag_name IN (" + strings.Join(quoted, ",") + ") ORDER BY source_file, flag_name"
+	rows, err := sqlutil.JSONRowsWithDriver(driver, sqlitePath, dbPath, forbiddenQuery)
 	if err != nil {
 		read.Error = err.Error()
 	}
 	applyAllowed := scalarInt(driver, sqlitePath, dbPath, "SELECT COUNT(*) FROM canon_proposal_staging WHERE proposal_apply_allowed != 0")
-	incompleteRows := scalarInt(driver, sqlitePath, dbPath, `
-SELECT COUNT(*)
-FROM canon_proposal_staging
-WHERE proposal_apply_allowed = 0
-  AND applied = 0
-  AND (requires_owner_approval != 1 OR source_lineage_status = 'unverified' OR evidence_status = 'unstaged')`)
+	incompleteRows := scalarInt(driver, sqlitePath, dbPath, "SELECT COUNT(*) FROM canon_proposal_staging WHERE proposal_apply_allowed = 0 AND applied = 0 AND (requires_owner_approval != 1 OR source_lineage_status = 'unverified' OR evidence_status = 'unstaged')")
 	return read, rows, applyAllowed, incompleteRows
 }
 
@@ -485,8 +477,16 @@ func scalarInt(driver, sqlitePath, dbPath, query string) *int64 {
 	if err != nil {
 		return nil
 	}
+	return parseScalarInt(value)
+}
+
+func parseScalarInt(value string) *int64 {
+	trimmed := strings.TrimSpace(value)
+	if trimmed == "" {
+		return nil
+	}
 	var out int64
-	for _, ch := range strings.TrimSpace(value) {
+	for _, ch := range trimmed {
 		if ch < '0' || ch > '9' {
 			return nil
 		}

@@ -19,12 +19,17 @@ ROOT_ALLOWED_FILES = {
     "AGENTS.md",
     "CLAUDE.md",
     "Continuity Protocol.md",
+    "DREAMS.md",
     "GEMINI.md",
     "HEARTBEAT.md",
     "Home.md",
     "IDENTITY.md",
     "MEMORY.md",
     "migration-review.md",
+    "openclaw-workspace-state.json",
+    "package-lock.json",
+    "package.json",
+    "requirements-dev.txt",
     "SOUL.md",
     "TOOLS.md",
     "USER.md",
@@ -45,19 +50,24 @@ ROOT_ALLOWED_DIRS = {
     "07. Risk",
     "08. Audits",
     "09. Archive",
+    "10. Deliverables",  # durable human deliverables route referenced by Home and Executive Brief
     "apps",  # local app surfaces such as the PM TypeScript/Node control cockpit
     "attachments",
     "backups",
     "data",
     "memory",
     "migration-backups",
+    "node_modules",  # rebuildable local QA dependency cache paired with root package.json
+    "schemas",  # durable local schemas such as interactive training module contracts
     "scripts",
     "skills",
     "skills-backup",  # documented non-runtime skill backup/provenance exception; active skills remain under skills/
     "state",
+    "tests",  # root-level tests for cross-script/workspace contracts
     "tools",  # documented local tool-runtime exception such as tools/otelcol
     "training",  # durable Randall-facing internal training assets; source/proof remains in scripts/tmp
     "tmp",
+    "wiki",  # durable WF88 second-brain synthesis/retrieval surface; review-only
 }
 
 PY_EXCEPTIONS_IN_TMP = {
@@ -83,9 +93,19 @@ def classify_data_surface() -> list[dict]:
     data_dir = ROOT / "data"
     if not data_dir.exists():
         return findings
-    approved = {"state-history", "fundamentals", "finance", "market"}
+    approved = {
+        "state-history",
+        "fundamentals",
+        "finance",
+        "market",
+        "wf74-learning-loop-evals",
+        "workflow-checkpoints",
+    }
+    approved_files = {"vector-memory-sources.json"}
     for child in sorted(data_dir.iterdir(), key=lambda p: p.name.lower()):
         if child.is_file() and child.name == "README.md":
+            continue
+        if child.is_file() and child.name in approved_files:
             continue
         if child.name not in approved:
             findings.append({

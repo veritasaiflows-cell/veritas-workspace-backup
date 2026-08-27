@@ -9,6 +9,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "otel_tool_workflow_metadata.py"
 TMP = ROOT / "tmp" / "test-otel-tool-workflow-metadata"
 
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+import otel_tool_workflow_metadata as metadata
+
 
 def expect(condition: bool, message: str, errors: list[str]) -> None:
     if not condition:
@@ -32,12 +37,12 @@ def main() -> int:
         {
             "lanes": [
                 {
-                    "lane_id": "WF74::sample",
+                    "lane_id": "WF74::prompt-integrity-sample",
                     "workflow_id": "WF74",
-                    "workstream_id": "sample",
+                    "workstream_id": "prompt-integrity-review",
                     "owner": "main",
                     "status": "complete",
-                    "acceptance_commands": ["python scripts\\sample_validator.py --validate"],
+                    "acceptance_commands": ["python scripts\\prompt_integrity_validator.py --validate"],
                     "proof_artifacts": ["tmp/sample.json"],
                     "allowed_writes": ["tmp/sample.json"],
                     "runtime": {
@@ -134,6 +139,8 @@ def main() -> int:
         expect(row.get("payload_capture") is False, "payload_capture must stay false", errors)
         expect("stdout_tail" not in row and "stderr_tail" not in row, "raw output tails must not be stored", errors)
         expect("command" not in row, "raw command list must not be stored", errors)
+    blocked_scan = metadata.privacy_scan({"rows": [{"raw_prompt": "do not store this"}]})
+    expect(blocked_scan.get("status") == "blocked", "raw prompt field must be blocked", errors)
     if errors:
         for error in errors:
             print(f"FAIL: {error}")

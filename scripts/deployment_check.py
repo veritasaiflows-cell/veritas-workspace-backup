@@ -38,11 +38,12 @@ PRIORITY: dict[str, int] = {
     "DEPLOYABLE NOW": 1,
     "PROMOTION REVIEW": 2,
     "ALMOST DEPLOYABLE": 2,
-    "BLOCKED": 3,
-    "BELOW STOP": 4,
-    "BENCH": 5,
-    "WATCH / RESEARCH NEEDED": 6,
-    "ERROR": 7,
+    "ENTRY POLICY REVIEW": 3,
+    "BLOCKED": 4,
+    "BELOW STOP": 5,
+    "BENCH": 6,
+    "WATCH / RESEARCH NEEDED": 7,
+    "ERROR": 8,
 }
 
 
@@ -124,10 +125,10 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
             return "WATCH / RESEARCH NEEDED", "setup is not yet decision-grade -- requires explicit entry and stop definition"
         if coverage_lane and coverage_lane != "execution":
             if in_band:
-                return "WATCH / RESEARCH NEEDED", f"in band, but {coverage_lane}-lane only -- no execution-board entitlement"
+                return "ENTRY POLICY REVIEW", f"in band, but {coverage_lane}-lane only -- main-session entry-policy review required; no execution-board entitlement"
             return "WATCH / RESEARCH NEEDED", f"{coverage_lane}-lane only -- not in execution-board scope yet"
         if in_band:
-            return "WATCH / RESEARCH NEEDED", "in band, but this execution setup remains watch-only until it is intentionally promoted"
+            return "ENTRY POLICY REVIEW", "in band, but this setup remains watch-only until main-session entry-policy review"
         return "WATCH / RESEARCH NEEDED", "levels are defined, but this execution setup remains watch-only until it is intentionally promoted"
 
     if workflow_state == "PROMOTION REVIEW":
@@ -147,6 +148,8 @@ def classify(rec: dict[str, Any], blocked: bool, meta: dict[str, Any]) -> tuple[
         return "ALMOST DEPLOYABLE", "workflow state is ALMOST -- constructive but not yet promoted"
 
     if entry_policy == "underdefined":
+        if in_band:
+            return "ENTRY POLICY REVIEW", "in band with underdefined entry policy -- main-session review required before recommendation"
         return "WATCH / RESEARCH NEEDED", "setup is not yet decision-grade -- requires explicit entry and stop definition"
 
     above_ma20 = rec.get("above_ma20")
@@ -357,6 +360,7 @@ def main() -> None:
     buckets = {
         "deployable": [r["ticker"] for r in rows if r["action_state"] == "DEPLOYABLE NOW"],
         "promotion_review": [r["ticker"] for r in rows if r["action_state"] == "PROMOTION REVIEW"],
+        "entry_policy_review": [r["ticker"] for r in rows if r["action_state"] == "ENTRY POLICY REVIEW"],
         "almost": [r["ticker"] for r in rows if r["action_state"] == "ALMOST DEPLOYABLE"],
         "blocked": [r["ticker"] for r in rows if r["action_state"] == "BLOCKED"],
         "below_stop": [r["ticker"] for r in rows if r["action_state"] == "BELOW STOP"],
@@ -369,6 +373,7 @@ def main() -> None:
     print("  " + "-" * 50)
     print("  " + "{:<24} {}".format("Act now (in band):", build_summary(buckets["deployable"])))
     print("  " + "{:<24} {}".format("Promotion review:", build_summary(buckets["promotion_review"])))
+    print("  " + "{:<24} {}".format("Entry-policy review:", build_summary(buckets["entry_policy_review"])))
     print("  " + "{:<24} {}".format("Almost (pullback only):", build_summary(buckets["almost"])))
     print("  " + "{:<24} {}".format("Earnings blocked:", build_summary(buckets["blocked"])))
     print("  " + "{:<24} {}".format("Below stop:", build_summary(buckets["below_stop"])))

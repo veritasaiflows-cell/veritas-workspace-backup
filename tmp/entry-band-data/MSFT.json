@@ -1,38 +1,14 @@
 {
   "ticker": "MSFT",
   "name": "Microsoft Corporation",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 52.44,
-      "h": 52.95,
-      "l": 48.04,
-      "c": 51.17,
-      "v": 823.63
-    },
-    {
-      "d": "2016-07",
-      "o": 51.13,
-      "h": 57.29,
-      "l": 50.39,
-      "c": 56.68,
-      "v": 647.59
-    },
-    {
-      "d": "2016-08",
-      "o": 56.6,
-      "h": 58.7,
-      "l": 56.14,
-      "c": 57.46,
-      "v": 467.08
-    },
     {
       "d": "2016-09",
       "o": 57.01,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 412.8,
-      "h": 427.98,
-      "l": 405.11,
-      "c": 415.12,
-      "v": 216.67
+      "h": 450.33,
+      "l": 400.88,
+      "c": 450.24,
+      "v": 698.95
+    },
+    {
+      "d": "2026-06",
+      "o": 464.84,
+      "h": 466.32,
+      "l": 349.2,
+      "c": 373.02,
+      "v": 1017.81
+    },
+    {
+      "d": "2026-07",
+      "o": 380.83,
+      "h": 466.84,
+      "l": 373.35,
+      "c": 464.72,
+      "v": 815.12
+    },
+    {
+      "d": "2026-08",
+      "o": 476.13,
+      "h": 513.73,
+      "l": 475.0,
+      "c": 483.24,
+      "v": 451.91
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 412.56,
     "stop": 378.18,
     "set": "2026-04-28",
-    "label": "389.64–412.56"
+    "label": "389.64-412.56"
   },
   "current_quote": {
-    "close": 415.12,
-    "ma20": 416.14,
-    "ma50": 398.15,
-    "ma200": 464.37,
-    "data_date": "2026-05-08"
+    "close": 483.24,
+    "ma20": 472.29,
+    "ma50": 419.09,
+    "ma200": 429.43,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "DUAL_MA_RECLAIM",
-    "type": "VAULT_RECLAIM",
-    "status": "BELOW_STOP",
-    "trend_stack": "BELOW_200",
-    "suggested_low": 464.37,
-    "suggested_high": 479.3,
-    "suggested_stop": 452.43,
-    "sma_envelope_low": 387.97,
-    "sma_envelope_high": 428.81,
+    "method": "KELTNER_MA_CONSTRAINED",
+    "type": "PULLBACK",
+    "status": "NEAR_BAND",
+    "trend_stack": "BULLISH_20_50_200",
+    "suggested_low": 439.68,
+    "suggested_high": 472.96,
+    "suggested_stop": 417.51,
+    "sma_envelope_low": 417.71,
+    "sma_envelope_high": 461.69,
     "earnings_state": "CLEAR",
-    "band_confidence": 2,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 4,
     "needs_review": true,
-    "canonical_apply_eligible": false
+    "canonical_apply_eligible": true
   },
-  "generated_at": "2026-05-10T03:38:34+00:00"
+  "generated_at": "2026-08-21T20:32:18+00:00"
 }

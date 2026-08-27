@@ -331,7 +331,7 @@ def build_rollup(paths: dict[str, Path], now_utc: str | datetime | None = None) 
         gate("paper_reconciliation_freshness", paths["paper_reconciliation"], paper_reconciliation),
         gate("order_history_reconciliation", paths["order_history"], order_history),
         journal_gate(paths["journal"]),
-        gate("position_sizing_runtime", paths["position_sizing"], position),
+        gate("position_sizing_runtime", paths["position_sizing"], position, allowed_statuses={"ok", "idle_no_candidates"}),
         gate("portfolio_circuit_breakers", paths["circuit_breakers"], circuit),
         gate("approval_freshness_ttl", paths["ttl"], ttl),
         gate("intraday_monitor", paths["intraday"], intraday, allowed_statuses={"ok", "outside_market_hours", "blocked"}),
@@ -358,7 +358,7 @@ def build_rollup(paths: dict[str, Path], now_utc: str | datetime | None = None) 
     shadow_threshold_met = shadow_summary.get("shadow_threshold_met") is True
     current_reconciliation_clean = (
         paper_reconciliation.get("status") == "ok"
-        and as_dict(paper_reconciliation.get("freshness")).get("status") in {None, "ok"}
+        and as_dict(paper_reconciliation.get("freshness")).get("status") in {None, "ok", "fresh"}
     )
     order_history_mature = (
         order_history.get("status") == "ok"

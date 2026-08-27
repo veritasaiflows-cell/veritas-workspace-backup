@@ -45,17 +45,17 @@ Script-backed prep path:
 ---
 
 ### JPM
-- Close: **314.90** *(WF38 canonical-note sync; 2026-05-06 close)*
-- 20 / 50 / 200-day: **311.21 / 299.26 / 302.61**
-- MA posture: **above all three MAs**. Constructive trend, now inside the refreshed entry zone.
-- Support: **311** (20-day), then **303** (200-day)
-- Resistance: **318** (top of refreshed band), then **325**
+- Close: **302.10** *(technical refresh; 2026-05-08 close)*
+- 20 / 50 / 200-day: **310.61 / 299.30 / 302.76**
+- MA posture: **above the 50-day, but below the 20-day and slightly below the 200-day**. The owner-approved setup is still alive, but the latest close no longer satisfies the formal band.
+- Support: **301.17–302.76** (explicit stop / 200-day cluster), then **299.30** (50-day)
+- Resistance: **306.82** (bottom of refreshed band), then **318.12** (top of refreshed band)
 - Preferred entry band: **306.82 to 318.12** (refreshed band)
 - Explicit stop: **301.17**
 - Invalidation logic: loses 301.17 and the 200-day / higher-low structure together.
-- Stance: **Deployable now**. In band, explicit owner approval landed on 2026-05-07, and the setup is now promoted in the owner layer. Keep normal size discipline and do not treat this as automatic execution.
-- Entry-distance context: **inside the preferred band**.
-- **Recent history:** the refreshed band moved JPM from pullback-only into live in-band status, and explicit owner approval on 2026-05-07 converted that approved setup from promotion review to deployable-now in the owner layer.
+- Stance: **Almost deployable / owner-approved setup not live**. Explicit owner approval landed on 2026-05-07, but the 2026-05-08 close is below the formal band and close enough to invalidation that the live trigger must fail closed until price reclaims the band or the band is explicitly reviewed.
+- Entry-distance context: **1.5% below the preferred band low and only modestly above invalidation**.
+- **Recent history:** the refreshed band moved JPM from pullback-only into a live owner-approved setup, but the latest close fell back below the formal band. Approval remains recorded; current trigger quality does not justify a green deployable-now label.
 - Earnings: **July 14 (Q2 2026)** — no near-term earnings risk.
 
 ---
@@ -324,16 +324,16 @@ Script-backed prep path:
 
 ## Freshness and refresh policy
 
-- Last updated: **2026-05-09** — ETN was promoted to deployable-now / conditional add after fresh entry-band proof; NVDA was refreshed to wait / no-chase after moving above band.
-- Data as of: **2026-05-08 close for ETN and NVDA entry-band reruns; 2026-05-06 close for the prior artifact-confirmed updates in JPM, GOOG, MSFT, VRT, GS, and LMT**; other sections remain as labeled and should not be assumed refreshed unless their section says so.
+- Last updated: **2026-05-10** — ETN remains deployable-now / conditional add after fresh entry-band proof; JPM was corrected to owner-approved but trigger-not-live after the latest close fell below the formal band; NVDA remains wait / no-chase after moving above band.
+- Data as of: **2026-05-08 close for ETN, JPM, and NVDA; 2026-05-06 close for the prior artifact-confirmed updates in GOOG, MSFT, VRT, GS, and LMT**; other sections remain as labeled and should not be assumed refreshed unless their section says otherwise.
 - Refresh cadence: each weekday for tracked names, plus extra refreshes before key earnings, after material breaks of support or resistance, or after moves large enough to change entry quality
-- Next refresh due: after LNG / NFP follow-up, after ETN / AMD / SMCI follow-through materially changes the setup, or earlier if another band/state transition changes the live board materially
+- Next refresh due: after LNG / NFP follow-up, after ETN / AMD / SMCI follow-through materially changes the setup, after JPM either reclaims the formal band or receives explicit band review, or earlier if another band/state transition changes the live board materially
 - Refresh policy: refresh tracked-name close, moving averages, posture, and entry-distance context each weekday. Only rewrite support, resistance, stance, or invalidation language when evidence materially changed, so the sheet stays current without turning noisy.
 
 ## Current ranking after precision pass
 
-1. **JPM** — in band and deployable now in the owner layer; high-quality, no near-term earnings block, but size discipline still applies
-2. **ETN** — in band and owner-promoted as a Tier 2 conditional add; no chase above 420.31 and stop awareness at 383.23
+1. **ETN** — in band and owner-promoted as a Tier 2 conditional add; no chase above 420.31 and stop awareness at 383.23
+2. **JPM** — owner approval is recorded, but latest close is below the formal band and close to invalidation; trigger is not live until reclaim or explicit band review
 3. **NVDA** — above band and wait / no-chase; crowded, Tier 2 only, and timing-sensitive into May 20
 4. **GOOG** — almost deployable on pullback only after the strong post-print gap
 5. **MSFT** — almost deployable, but still slightly above band and below the 200-day
@@ -357,14 +357,15 @@ Watch-lane technical carryovers with maintained bands:
 - Bands updated 2026-04-28 are MA20-anchored mechanical proposals. They confirm the existing structural framing rather than chase price — the largest single-band shift was 4 dollars.
 - **Confidence remains usable-with-caution, not clean-deployable.** Dashboard validation is warning-grade: LNG is the only blocking band-review item, while 16 other band reviews are monitor-only. Remaining caution also centers on the unresolved NVDA timing path, directional-only macro interpretation, crowding, and normal size discipline.
 - **Market-state context is fresh, but it still carries approximation and mixed-date caveats:** policy probabilities are simplified rather than full FedWatch, pre-market tape is weak, and some rates series are not perfectly aligned to the same trading day.
-- **In-band is not deployable-now by default.** JPM is the current exception because explicit owner approval promoted it to deployable-now on 2026-05-07. NVDA remains in PROMOTION REVIEW, and GS remains almost deployable and above its written band.
+- **In-band is not deployable-now by default.** ETN is the current owner-approved in-band exception. JPM's approval remains recorded, but the current close is below the formal band, so the live trigger is not green. NVDA remains wait / no-chase, and GS remains almost deployable and above its written band.
 - **BRK.B** has symbol-format caveats on some public sites. Cross-site screenshots may still show symbol formatting inconsistently.
 
 ## Bottom line
 
-- **Live board leaders now:** JPM (**deployable now**) and NVDA (**promotion review**); ETN remains the closest owner-layer almost-deployable follow-up case pending post-earnings confirmation.
-- **Almost deployable but not in band:** ETN, GOOG, GS, and MSFT
+- **Live board leader now:** ETN (**deployable now / owner-promoted conditional add**), still manual-only and no-chase above the written band.
+- **Owner-approved but trigger not live:** JPM, because the latest close is below the formal band and near invalidation.
+- **Almost deployable but not in band:** GOOG, GS, and MSFT
 - **Watch-lane with maintained levels:** VRT, AMZN, CAT, LLY, and other watch-lane names
 - **Repair / do not touch:** BRK.B, LMT, XOM, and RTX
 - **Confidence:** usable with caution — 1 active dashboard warning (LNG blocking band review) plus 16 monitor-only band-review items
-- **Operating directive:** No new entries in the open without a pre-set limit at a defined band level. JPM is the lone deployable-now name; NVDA remains live promotion-review only; warning-grade validation, crowding, catalyst timing, and normal size discipline still require respect.
+- **Operating directive:** No new entries in the open without a pre-set limit at a defined band level. ETN is the only owner-layer deployable-now name; JPM must reclaim the formal band or receive explicit band review before the trigger is treated as live again; warning-grade validation, crowding, catalyst timing, and normal size discipline still require respect.

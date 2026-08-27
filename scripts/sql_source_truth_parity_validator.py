@@ -28,6 +28,7 @@ CANON_DB = TMP / "veritas-canon-cache.sqlite"
 DEFAULT_OUT = TMP / "sql-source-truth-parity-validation.json"
 SCHEMA_VERSION = "sql_source_truth_parity_validation.v1"
 TOLERANCE = 0.005
+SQL_FIRST_THIN_BOARD_STATUS = "phase2_sql_first_thin_board_contract_ok"
 
 FALSE_FLAGS = {
     "source_of_truth_promotion_allowed_by_this_artifact": False,
@@ -275,6 +276,12 @@ def build_payload() -> dict[str, Any]:
     rows = parse_execution_board()
     comparison = compare_rows(rows)
     summary = comparison["summary"]
+    thin_board_contract: dict[str, Any] = {}
+    if not rows:
+        from sql_first_thin_board_contract import evaluate_sql_first_thin_board_contract
+
+        thin_board_contract = evaluate_sql_first_thin_board_contract(EXECUTION_BOARD)
+    sql_first_thin_board_ok = thin_board_contract.get("status") == "ok"
     structurally_ready = (
         summary["markdown_rows"] > 0
         and summary["markdown_rows"] == summary["finance_sql_rows"] == summary["canon_cache_tickers"]
@@ -282,10 +289,13 @@ def build_payload() -> dict[str, Any]:
         and summary["missing_finance_rows"] == 0
         and summary["missing_canon_rows"] == 0
     )
+    status = "phase2_parity_green_for_entry_stop_reference_metadata" if structurally_ready else "phase2_parity_not_ready"
+    if sql_first_thin_board_ok:
+        status = SQL_FIRST_THIN_BOARD_STATUS
     return {
         "schema_version": SCHEMA_VERSION,
         "generated_at_utc": utc_now(),
-        "status": "phase2_parity_green_for_entry_stop_reference_metadata" if structurally_ready else "phase2_parity_not_ready",
+        "status": status,
         "authority_boundary": (
             "report_only_markdown_to_sql_parity_no_sql_writes_no_markdown_mutation_"
             "no_consumer_migration_no_recommendation_deployment_execution_or_customer_authority"
@@ -308,6 +318,13 @@ def build_payload() -> dict[str, Any]:
                 "cash",
                 "order_terms",
             ],
+        },
+        "sql_first_thin_board_contract": {
+            "status": thin_board_contract.get("status"),
+            "sql_first_thin_board_detected": thin_board_contract.get("sql_first_thin_board_detected", False),
+            "sql_first_thin_board_allowed": thin_board_contract.get("sql_first_thin_board_allowed", False),
+            "board_table_required": thin_board_contract.get("board_table_required", True),
+            "error_count": len(thin_board_contract.get("errors", [])) if isinstance(thin_board_contract.get("errors"), list) else 0,
         },
         "source_note": {
             "path": rel(EXECUTION_BOARD),
@@ -346,9 +363,9 @@ def main() -> int:
         missing_false = [key for key, expected in FALSE_FLAGS.items() if payload.get(key) is not expected]
         if missing_false:
             raise SystemExit(f"authority false flag drift: {missing_false}")
-        if payload["summary"]["markdown_rows"] == 0:
+        if payload["summary"]["markdown_rows"] == 0 and payload["status"] != SQL_FIRST_THIN_BOARD_STATUS:
             raise SystemExit("no execution board rows parsed")
-        if payload["status"] != "phase2_parity_green_for_entry_stop_reference_metadata":
+        if payload["status"] not in {"phase2_parity_green_for_entry_stop_reference_metadata", SQL_FIRST_THIN_BOARD_STATUS}:
             raise SystemExit(f"parity not ready: {payload['summary']}")
     return 0
 

@@ -283,6 +283,49 @@ def load_queue() -> tuple[dict[str, Any], str]:
     return {}, rel(CONTROL_PACKET)
 
 
+def worker_state(
+    selected: list[dict[str, Any]],
+    proof_results: list[dict[str, Any]],
+    closeout_results: list[dict[str, Any]],
+    *,
+    executed: bool,
+    completion_ledger_result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    proof_ok = bool(proof_results) and all(row.get("ok") for row in proof_results)
+    closeout_ok = bool(closeout_results) and all(row.get("ok") for row in closeout_results)
+    ledgered = as_dict(completion_ledger_result).get("ok") is True
+    frontdoors_refreshed = any(
+        "pm_control_packet.py" in " ".join(str(part) for part in as_list(row.get("command")))
+        or "pm_control_packet.py" in str(row.get("command") or "")
+        for row in closeout_results
+        if row.get("ok")
+    )
+    resolved = bool(executed and selected and proof_ok and closeout_ok and ledgered)
+    return {
+        "candidate_selected": bool(selected),
+        "selected_job_ids": [job.get("job_id") for job in selected],
+        "lane_prepared": False,
+        "proof_executed": bool(executed and proof_results),
+        "proof_ok": proof_ok,
+        "closeout_executed": bool(executed and closeout_results),
+        "closeout_ok": closeout_ok,
+        "closeout_ledgered": ledgered,
+        "frontdoors_refreshed": frontdoors_refreshed,
+        "job_resolved_or_completed": resolved,
+        "terminal_state": (
+            "resolved"
+            if resolved
+            else "blocked"
+            if any(not row.get("ok") for row in proof_results + closeout_results) or (completion_ledger_result and not ledgered)
+            else "executed_waiting_for_ledger"
+            if executed and selected
+            else "dry_run_selected"
+            if selected
+            else "no_candidate_selected"
+        ),
+    }
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     queue, queue_source = load_queue()
     errors: list[str] = []
@@ -348,6 +391,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         errors.extend(failed)
     status = "ok" if not errors else "blocked"
 
+    state = worker_state(selected, proof_results, closeout_results, executed=executed)
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -373,6 +417,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "proof_reused_count": len([r for r in proof_results if r.get("reused")]),
             "closeout_reused_count": len([r for r in closeout_results if r.get("reused")]),
             "proof_cache_enabled": bool(args.reuse_proof_cache),
+            "worker_state": state,
             "recommended_execution_rule": queue.get("recommended_execution_rule"),
             "selected_validation_budgets": [
                 {
@@ -390,6 +435,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             ),
         },
         "selected": [job_view(j) for j in selected],
+        "worker_state": state,
         "skipped": skipped,
         "proof_results": proof_results,
         "closeout_results": closeout_results,
@@ -436,12 +482,20 @@ def main() -> int:
                 ],
                 120,
             )
+            report["completion_ledger_result"] = ledger_result
+            report["worker_state"] = worker_state(
+                as_list(report.get("selected")),
+                as_list(report.get("proof_results")),
+                as_list(report.get("closeout_results")),
+                executed=True,
+                completion_ledger_result=ledger_result,
+            )
+            report["summary"]["worker_state"] = report["worker_state"]
             if not ledger_result["ok"]:
                 report["status"] = "blocked"
-                report["completion_ledger_result"] = ledger_result
                 report["validation"]["status"] = "blocked"
                 report["validation"]["errors"] = [*report["validation"]["errors"], "implementation_completion_ledger"]
-                atomic_write_json(args.out, report)
+            atomic_write_json(args.out, report)
         s = report["summary"]
         print(
             f"wrote {rel(args.out)} status={report['status']} mode={report['mode']} "

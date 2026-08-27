@@ -41,6 +41,15 @@ TOP_LEVEL_AUTHORITY = {
     "main_session_final_action_required": True,
     "blocked_scope": "live trade/account actions, brokerage orders, money movement, and unscoped execution entitlement remain blocked; paper submit/cancel is separate WF63/WF67 guarded authority",
 }
+REQUIRED_UNRESOLVED_OFFICIAL_FIELDS = {
+    "adjusted_eps",
+    "guidance",
+    "growth_bridge",
+    "segment_margins",
+    "orders_backlog",
+    "management_explanation",
+    "acquisition_debt_notes",
+}
 FORBIDDEN_VALUE_PATTERNS = [
     re.compile(r"\bbuy\b", re.IGNORECASE),
     re.compile(r"\bsell\b", re.IGNORECASE),
@@ -165,7 +174,49 @@ def live_distance_to_current_band_pct(band_proposal: dict[str, Any], deployment_
     return round(((close_f - low_f) / low_f) * 100, 2) if low_f else None
 
 
+def live_band_status(band_proposal: dict[str, Any], deployment_record: dict[str, Any], fallback: Any) -> str | None:
+    close = deployment_record.get("close") or band_proposal.get("close")
+    low = band_proposal.get("current_band_low")
+    high = band_proposal.get("current_band_high")
+    try:
+        close_f = float(close)
+        low_f = float(low)
+        high_f = float(high)
+    except (TypeError, ValueError):
+        return str(fallback) if fallback else None
+    if close_f > high_f:
+        return "ABOVE_BAND_WAIT"
+    if close_f < low_f:
+        return "BELOW_BAND_WAIT"
+    return "IN_BAND"
+
+
+def band_proposal_reference_overlay(band_proposal: dict[str, Any]) -> dict[str, Any]:
+    overlay = dict(band_proposal)
+    use_suggested = band_proposal.get("canonical_apply_eligible") is True
+    if not use_suggested:
+        return overlay
+    overlay["current_band_low"] = band_proposal.get("suggested_band_low")
+    overlay["current_band_high"] = band_proposal.get("suggested_band_high")
+    overlay["stop_or_invalidation"] = band_proposal.get("suggested_stop")
+    overlay["band_source"] = "sql_first_band_proposal"
+    overlay["distance_to_band_pct"] = None
+    overlay["raw_band_proposal"] = {
+        "current_band_low": band_proposal.get("current_band_low"),
+        "current_band_high": band_proposal.get("current_band_high"),
+        "current_stop": band_proposal.get("current_stop"),
+        "suggested_band_low": band_proposal.get("suggested_band_low"),
+        "suggested_band_high": band_proposal.get("suggested_band_high"),
+        "suggested_stop": band_proposal.get("suggested_stop"),
+        "band_status": band_proposal.get("band_status"),
+        "distance_to_band_pct": band_proposal.get("distance_to_band_pct"),
+        "source_priority": "sql_first_band_proposal",
+    }
+    return overlay
+
+
 def capital_review_band_overlay(band_proposal: dict[str, Any], capital_queue_row: dict[str, Any]) -> dict[str, Any]:
+    band_proposal = band_proposal_reference_overlay(band_proposal)
     written = capital_queue_row.get("written_band") if isinstance(capital_queue_row.get("written_band"), dict) else {}
     if not written:
         return band_proposal
@@ -184,9 +235,17 @@ def capital_review_band_overlay(band_proposal: dict[str, Any], capital_queue_row
     return overlay
 
 
+def band_stop_or_invalidation(band: dict[str, Any]) -> Any:
+    for key in ("stop_or_invalidation", "current_stop", "stop", "suggested_stop"):
+        value = band.get(key)
+        if value is not None:
+            return value
+    return None
+
+
 def technical_gate(rec: dict[str, Any], band_proposal: dict[str, Any], deployment_record: dict[str, Any], capital_queue_row: dict[str, Any] | None = None) -> dict[str, Any]:
     effective_band = capital_review_band_overlay(band_proposal, capital_queue_row or {})
-    entry_status = rec.get("entry_band_status") or band_proposal.get("band_status")
+    entry_status = live_band_status(effective_band, deployment_record, rec.get("entry_band_status") or band_proposal.get("band_status"))
     raw_status = effective_band.get("band_status")
     return {
         "status": "review_required" if rec.get("recommended_action") != "deploy_candidate" else "candidate_review",
@@ -199,7 +258,7 @@ def technical_gate(rec: dict[str, Any], band_proposal: dict[str, Any], deploymen
         "close": deployment_record.get("close"),
         "current_band_low": effective_band.get("current_band_low"),
         "current_band_high": effective_band.get("current_band_high"),
-        "stop_or_invalidation": effective_band.get("stop_or_invalidation"),
+        "stop_or_invalidation": band_stop_or_invalidation(effective_band),
         "band_source": effective_band.get("band_source") or "band_proposals",
         "raw_band_proposal": effective_band.get("raw_band_proposal"),
         "in_entry_band": deployment_record.get("in_entry_band"),
@@ -241,12 +300,15 @@ def compact_official_earnings_bridge(rec: dict[str, Any]) -> dict[str, Any]:
     source_freshness = bridge.get("source_freshness") if isinstance(bridge.get("source_freshness"), dict) else {}
     evidence_claims = bridge.get("evidence_claims") if isinstance(bridge.get("evidence_claims"), list) else []
     unresolved = bridge.get("unresolved_official_fields") if isinstance(bridge.get("unresolved_official_fields"), list) else []
+    official_status = bridge.get("official_evidence_status") or "manual_required"
+    if official_status == "manual_required" and not unresolved:
+        unresolved = sorted(REQUIRED_UNRESOLVED_OFFICIAL_FIELDS)
     return {
         "status": bridge.get("status") or "missing_manual_review_required",
         "source_artifact": bridge.get("source_artifact") or "tmp/fundamental-ir-reconciliation-packets.json",
         "period_end": bridge.get("period_end"),
         "source_urls": source_urls,
-        "official_evidence_status": bridge.get("official_evidence_status") or "manual_required",
+        "official_evidence_status": official_status,
         "official_evidence_posture": bridge.get("official_evidence_posture") or "review_only",
         "source_authority_level": bridge.get("source_authority_level") or "official_company_ir_metadata_only",
         "source_freshness": source_freshness,
@@ -293,9 +355,15 @@ def proposal_for(
     ticker = str(rec.get("ticker") or "").upper()
     current_tuple = lane_tuple(rec, config_meta, deployment_record)
     proposed_tuple = dict(current_tuple)
-    proposed_tuple["recommendation_posture"] = rec.get("recommended_action") or "review_required"
     proposed_tuple["review_state"] = "review_packet_only_no_state_change"
+    bridge = compact_official_earnings_bridge(rec)
+    technical = technical_gate(rec, band_proposal, deployment_record, capital_queue_row or {})
     action = str(rec.get("recommended_action") or "review_required")
+    if bridge.get("official_evidence_status") == "manual_required" and technical.get("entry_band_status") == "IN_BAND":
+        action = "manual_evidence_review_required"
+    elif action == "wait_for_band" and technical.get("entry_band_status") == "IN_BAND":
+        action = "owner_gated_band_review"
+    proposed_tuple["recommendation_posture"] = action
     incoming_why = rec.get("why_stack") or rec.get("decision_rationale") or {}
     if not isinstance(incoming_why, dict):
         incoming_why = {}
@@ -319,7 +387,6 @@ def proposal_for(
         clean_text(f"Deployment state: {legacy_state(deployment_record, "action_state") or rec.get('current_state') or 'unknown'}"),
         clean_text(f"Band proposal status: {band_proposal.get('band_status') or 'unknown'}"),
     ]
-    bridge = compact_official_earnings_bridge(rec)
     evidence.append(clean_text(
         f"Official earnings bridge: {bridge.get('status')}; SEC reconciliation: {bridge.get('sec_reconciliation_status') or 'unknown'}; adjusted EPS/guidance remain manual where unresolved.",
     ))
@@ -364,7 +431,9 @@ def proposal_for(
         "bear_case": clean_text(f"Bear case: defer or reject {ticker} if price violates stop/invalidation, catalyst risk worsens, macro fit deteriorates, or evidence remains incomplete."),
         "risk_rule_check": risk_rule_check(),
         "concentration_check": concentration_check(rec),
-        "technical_gate": technical_gate(rec, band_proposal, deployment_record, capital_queue_row or {}),
+        "technical_gate": technical,
+        "disciplined_extension_gate": rec.get("disciplined_extension_gate"),
+        "disciplined_staleness_alert": rec.get("disciplined_staleness_alert"),
         "catalyst_gate": catalyst_gate(rec, band_proposal),
         "official_earnings_gate": official_earnings_gate(rec),
         "official_earnings_bridge": bridge,

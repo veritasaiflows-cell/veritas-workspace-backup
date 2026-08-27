@@ -35,7 +35,7 @@ from finance_universe_validator import (  # noqa: E402
     monitoring_cadence_for,
 )
 from market_data_utils import atomic_write_json, load_json_artifact  # noqa: E402
-from wf78_legacy_42_tier_state import production_tickers as legacy_42_tier_tickers  # noqa: E402
+from finance_production_scope import production_tickers as production_scope_tickers  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -50,7 +50,7 @@ OUT_JSON = TMP / "wf78-100-ticker-import-gate.json"
 OUT_MD = TMP / "wf78-100-ticker-import-gate.md"
 PROVIDER_PROOF_OUT = TMP / "wf78-100-ticker-provider-runtime-proof.json"
 
-PRODUCTION_SCOPE = "production_current_42"
+PRODUCTION_SCOPE = "strategic_production_grade"
 EXPECTED_PRODUCTION_COUNT = 42
 EXPECTED_REVIEW_100_COUNT = 58
 EXPECTED_TOTAL_COUNT = 100
@@ -187,7 +187,7 @@ def universe_entries(universe: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def production_tickers(entries: list[dict[str, Any]]) -> set[str]:
-    migrated = set(legacy_42_tier_tickers())
+    migrated = set(production_scope_tickers())
     if migrated:
         return migrated
     return {
@@ -297,7 +297,7 @@ def provider_probe(candidates: list[dict[str, Any]], args: argparse.Namespace) -
         "workflow": "WF78 - 500 Ticker Finance Intelligence Scaleout",
         "status": "ok" if success_rate >= args.min_success_rate and total_runtime <= args.runtime_budget_seconds else "blocked",
         "review_only": True,
-        "authority_boundary": AUTHORITY_BOUNDARY,
+        "authority_boundary": report_only_preview_boundary() if getattr(args, "provider_proof_only", False) else AUTHORITY_BOUNDARY,
         "summary": {
             "candidate_count": len(candidates),
             "ok_count": len(ok_rows),
@@ -569,6 +569,7 @@ def build_gate(args: argparse.Namespace) -> dict[str, Any]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true", help="Required to write the review-only 100-monitor universe rows.")
+    parser.add_argument("--provider-proof-only", action="store_true", help="Refresh provider-runtime proof without importing or mutating universe rows.")
     parser.add_argument("--owner-approval-reference", default="", help="Exact owner approval reference for this local review-only universe monitor import.")
     parser.add_argument("--runtime-budget-seconds", type=float, default=240.0)
     parser.add_argument("--min-success-rate", type=float, default=0.92)
@@ -577,11 +578,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--timeout-seconds", type=float, default=12.0)
     parser.add_argument("--circuit-breaker-errors", type=int, default=6)
     parser.add_argument("--pretty", action="store_true")
+    parser.add_argument("--validate", action="store_true", help="Compatibility validation flag; gate validation is built into provider/apply paths.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if args.provider_proof_only:
+        proof = provider_probe(candidate_rows(), args)
+        print(json.dumps({
+            "status": proof.get("status"),
+            "provider_runtime_proof": rel(PROVIDER_PROOF_OUT),
+            "summary": proof.get("summary"),
+            "authority_boundary": proof.get("authority_boundary"),
+            "validation_requested": bool(args.validate),
+        }, indent=2 if args.pretty else None, sort_keys=True))
+        return 0 if proof.get("status") == "ok" else 1
     if not args.apply:
         print(json.dumps({
             "status": "blocked_requires_apply",
@@ -598,3 +610,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

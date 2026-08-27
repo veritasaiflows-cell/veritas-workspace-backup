@@ -10,6 +10,13 @@
 - Architecture helper lane timed out before producing usable proof, so the initial plan uses the completed audit plus existing WF71/WF73/self-improvement machinery.
 - Phase plan artifacts created: `tmp/wf74-rsi-phase-plan.json` and `tmp/wf74-rsi-phase-plan.md`.
 
+## Startup Blocker Visibility Hardening - 2026-06-20
+- Randall flagged two high-priority WF74 rows that must not stay silent across new sessions: `Route blocked cron signals into a migration-ready repair plan` and `Convert workflow advancement blockers into implementation follow-ups`.
+- Startup/status/future-session surfaces now carry explicit WF74 pickup fields sourced from `tmp/wf74-improvement-opportunity-queue.json`, `tmp/wf74-auto-patch-proposer.json`, and `tmp/workflow-blocker-followups.json`.
+- `future_session_enhancement_packet.py`, `status_card_packet.py`, and `startup_brief_packet.py` validate that blocked/escalated cron signals have a visible WF74 cron migration repair route and that visible workflow-blocker opportunities have followup rows.
+- `main_session_greenkeeper_controller.py` now emits `wf74_cron_migration_repair_plan` and `wf74_workflow_maturity_auto_followup` actions when those opportunities exist, and validation fails if either high-priority route disappears from greenkeeper output.
+- Material pickup command: `python scripts\main_session_greenkeeper_controller.py --refresh-frontdoors --execute-safe --write --validate --append-ledger`. It refreshes review-only proof and keeps cron schedule/state mutation blocked.
+
 ## Bounded RSI Definition
 - Allowed: file-backed reflection, correction trend reports, lesson routing, skill/playbook updates, validator/script proposals, answer-quality regression fixtures, and periodic review packets.
 - Not allowed: base-model self-modification, self-preservation/replication/resource acquisition, authority expansion, config/auth/channel/service mutation without approval, second memory tree, owner-approval inference, or portfolio/trade/account/paper/live authority.
@@ -411,3 +418,98 @@ Proof:
 
 Boundary unchanged:
 - Review-only scheduler/proof/RSI metadata. No cron schedule expansion beyond the inspect-only correction, no model ranking, no WF55 outcome grading, no portfolio/canon mutation, no capital approval, no paper/live/account action, no config/auth/runtime expansion, and no owner approval inference.
+
+## 2026-06-20 blocked WF74 collection-step repair
+
+- Repaired priority-96 WF74 blocker `Repair blocked WF74 collection step`.
+- Root cause: `scripts\cron_spark_canary_monitor.py` still treated `Finance - Daily Canon Drift Freshness Gate` as an active Spark canary even after Randall-approved model-only migration on 2026-06-20 from `codex/gpt-5.3-codex-spark` to `openai/gpt-5.4-mini` with `xhigh`.
+- Fix: moved that job into retired/migrated canary evidence, made the active Spark canary set intentionally empty, and updated `scripts\README.md` so the monitor contract no longer reopens retired Spark jobs as active failures.
+- No cron schedule, prompt, delivery, runtime config, finance/canon/portfolio, paper/live/account, or owner-approval surface was mutated in this repair.
+- Proof:
+  - `python -m py_compile scripts\cron_spark_canary_monitor.py` -> ok.
+  - `python scripts\cron_spark_canary_monitor.py --write --validate` -> `status=ok active=0 configured=0/0 xhigh=0/0 errors=0 warnings=0`.
+  - `python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate` -> `status=ok validation=warning steps_ok=30 steps_blocked=0`.
+  - `python scripts\wf74_improvement_opportunity_queue.py --write --write-md --validate` -> `status=ok`, top opportunity moved to cron-signal repair; the blocked collection-step item fell out of top priority.
+  - `python scripts\wf74_reflection_to_proposal_autopilot.py --write --write-md --validate` -> `status=ok proposals=8 owner_gated=1`.
+  - `python scripts\wf74_auto_patch_proposer.py --write --write-md --validate` -> `status=ok plans=8 patch_plans=5 skill_requests=1 auto_apply=0`.
+  - `python scripts\test_wf74_model_quality_collection_cron_runner.py`, `python scripts\test_model_quality_scorecard.py`, and `python scripts\test_model_run_ledger.py` passed.
+  - `python scripts\pm_control_packet.py --write --validate` -> status ok.
+  - `python scripts\cron_freshness_spine.py --write --validate` -> validation ok with separate cron blockers still present.
+  - `python scripts\cron_control_packet.py --write --validate` -> `status=ok escalation=2`.
+  - `python scripts\wf74_rsi.py --validate-only` -> `status=ok checks=29 failed=0`.
+  - `python scripts\changed_file_validator_router.py --write --validate` -> `status=ok budget=major paths=521`.
+- Residue: WF74 runner validation remains warning-only because of overdue high-priority improvement ledger rows, workflow advancement warning residue, OTEL recommendation closeout owner-gated/hygiene residue, and no auto-cron executable PM jobs. Cron freshness still reports two separate enabled-job blockers; those are not the repaired WF74 collection-step failure.
+
+## 2026-06-21 WF74 Telegram / canon-drift follow-through repair
+
+- Lane: `RUNTIME::WF74-WF67-CANON-REPAIR-2026-06-21::default`.
+- Fixed the completed PM lane closeout defect that was keeping `concurrent_lane_manager.py --status --validate` red: `PM::STALE-PROOF-REFRESH-2026-06-20::default` now stores 8 individual proof artifacts instead of one comma-separated string. Proof: `tmp/lane-proof-register-repair-20260621.json`.
+- Fixed the SQL-first thin-board/canon-drift false critical without loosening execution gates. `scripts\sql_first_thin_board_contract.py` now treats only the exact no-drafts WF67 warning as clean for review-only SQL contract purposes. Any approval draft or unrelated trade-grade warning still blocks. Regression: `scripts\test_sql_first_thin_board_contract.py`.
+- Canon-drift is clean again: `tmp\canon-drift-freshness-gate.json` -> `status=ok`, `critical=0`, `findings=0`.
+- WF67 remains blocked for execution: `tmp\alpaca-paper-readiness\paper-execution-guard-validation.json` -> `status=blocked`, `ready_for_paper_submit_cancel=false`, blocker `kill_switch_missing_or_expired`.
+- Rebuilt stale `tmp\finance-response-quality-slice.json`; it is now `status=ok`, 8/8 archetypes ok, average quality score `1.0`. This cleared the WF74 model-quality collection hard blocker.
+- WF74 collection runner is no longer blocked: `tmp\wf74-model-quality-collection-cron-runner.json` -> `status=ok`, `steps_blocked=0`, validation warning-only.
+- WF74 Telegram cron wrapper now completes in dry-run proof mode: `tmp\wf74-learning-loop-telegram-cron-runner.json` -> `status=ok`, `failed_step_count=0`, `digest_sent_count=0`.
+- Residue: WF74 still has warning-level non-blocking residue: overdue high-priority improvement ledger carry-forward rows, workflow advancement scorecard source residue, OTEL recommendation closeout owner-gated/hygiene residue, and PM implementation queue no-auto-cron-executable-job warning.
+- Stop lines: review-only measurement and routing. No self-modification, authority expansion, Telegram send, cron schedule mutation, portfolio/canon/cash/sizing/risk mutation, paper/live/account action, capital deployment, owner-approval inference, hard delete, or SQL source promotion.
+
+## 2026-07-07 Prompt Book Registry V0
+
+- Added the prompt-book registry route for repeated internal challenges and reusable prompt/self-prompt/helper-lane patterns.
+- First-hop commands:
+  - `python scripts\prompt_book_registry.py --write --write-md --validate`
+  - `python scripts\prompt_book_linter.py --write --validate`
+  - `python scripts\prompt_book_eval_gap_packet.py --write --write-md --validate`
+  - `python scripts\prompt_book_pm_job_packet.py --write --write-md --validate`
+- WF74 interpretation:
+  - repeated prompt friction, weak self-prompt pattern, missing eval fixture, helper-lane packet drift, or recurring internal challenge can become a prompt-book candidate
+  - eval gaps route to PM/WF74 as review-only implementation candidates
+  - durable skill changes must route through pending Skill Workshop proposals by default
+- Stop lines: no raw prompt/response/tool payload capture, no skill/doctrine auto-apply, no finance/canon/portfolio/cash/sizing/risk mutation, no paper/live/account action, no cron/runtime/config/channel mutation, no external delivery, and no owner approval inference.
+
+## 2026-07-07 Prompt Book Morning P0 Pickup Contract
+
+- Added the P0 pickup route for the warning-grade Prompt Book V0 state:
+  - `python scripts\prompt_book_morning_p0_contract.py --write --write-md --validate`
+- WF74 interpretation:
+  - the morning contract is the first pickup surface after status/memory when the prompt book has eval gaps
+  - P0 includes Skill Workshop proposal review and recommended changes, but not apply authority
+  - the immediate implementation target is deterministic fixtures for the five high-priority gaps: `task-intake-contract-v1`, `agi-harness-mode-v1`, `finance-response-contract-v1`, `helper-lane-contract-v1`, and `wf88-wiki-synthesis-contract-v1`
+  - the two pending `agi-harness-readiness-operator` updates must be merged or superseded before either is applied
+- Stop lines: no Skill Workshop apply/reject/quarantine without exact Randall approval, no raw prompt/response/tool payload capture, no cron/runtime/config/channel mutation, no finance/canon/portfolio/cash/sizing/risk mutation, no paper/live/account action, no external delivery, no AGI/ASI capability claim, no autonomy promotion, and no owner approval inference.
+
+## 2026-07-07 Prompt Book P0 Eval Fixtures
+
+- Added deterministic metadata-only eval fixture coverage for the five P0 prompt-book targets:
+  - `task-intake-contract-v1`
+  - `agi-harness-mode-v1`
+  - `finance-response-contract-v1`
+  - `helper-lane-contract-v1`
+  - `wf88-wiki-synthesis-contract-v1`
+- New first-hop fixture command:
+  - `python scripts\prompt_book_eval_fixtures.py --write --write-md --validate`
+- WF74 interpretation:
+  - the immediate high-priority eval-fixture blocker is closed when the fixture packet is validation-clean
+  - remaining eval gaps are lower-priority PM/product gaps and should route through PM job candidates, not Skill Workshop apply
+  - pending Skill Workshop proposals remain pending until exact Randall approval
+- Stop lines unchanged: no raw prompt/response/tool payload capture, no skill/doctrine auto-apply, no finance/canon/portfolio/cash/sizing/risk mutation, no paper/live/account action, no cron/runtime/config/channel mutation, no external delivery, and no owner approval inference.
+
+## 2026-07-07 Prompt Book Full Fixture And Skill Apply
+
+- Completed the remaining non-P0 fixture coverage for `pm-control-intake-v1`, `retail-truth-routing-stop-lines-v1`, and `smb-service-packet-v1`.
+- Prompt Book registry now has 12 entries, 12 covered, and eval gaps `0`.
+- Randall approved applying the prompt-book Skill Workshop changes. Applied `veritas-prompt-book-operator`, `veritas-self-improvement`, `veritas-pm-department`, `cron-automation-manager`, and the merged `agi-harness-readiness-operator` update; rejected the duplicate AGI harness proposal as superseded.
+- WF74 interpretation:
+  - repeated prompt friction now routes through the live `veritas-prompt-book-operator` skill and full fixture/eval-gap proof
+  - future prompt-book gaps are PM maintenance candidates, not automatic skill/doctrine changes
+  - existing-skill updates should stay full-body merged proposals before apply
+- Stop lines unchanged: no raw prompt/response/tool payload capture, no future skill/doctrine apply without exact approval, no finance/canon/portfolio/cash/sizing/risk mutation, no paper/live/account action, no cron/runtime/config/channel mutation, no external delivery, no AGI/ASI capability claim, no autonomy promotion, and no owner approval inference.
+
+## 2026-08-08 Live Retrieval Discrimination Pilot
+
+- Corrected the retrieval measurement boundary: `retrieval_quality_scorecard.py` is an authority/freshness/precedence/source-selection contract suite, not a live vector-retrieval or provider-ranking test. Regenerated proof is 42/42 with validation clean under that narrower label.
+- Added the separate review-only `retrieval_live_eval.py` route with a frozen 10-source corpus, 19 draft fixtures, isolated hash+FTS and semantic+FTS indexes, an FTS-only ablation, recall@1/3/5, MRR, named-distractor errors, strict provider/fallback/freshness checks, append-only compatible-run history, and three mutation sensitivity controls.
+- First two compatible runs validate clean and the regression comparison is stable. The evaluator can fail, but the gold set is not yet a trusted baseline.
+- Current measured finding: semantic and hash are identical on all six paraphrase fixtures. Semantic improves overall R@1/MRR and distractor errors versus hash, but equals FTS-only on those gains. This does not support semantic-provider promotion.
+- Next action: source-open review the 19 gold labels, rewrite/remove ambiguous sole-relevance cases, then build a separate sealed abstention-calibration set before defining any threshold or promotion rule.
+- Stop lines: no protected-default-index mutation, provider promotion, base-model modification, finance/canon/portfolio/capital mutation, paper/live/account action, config/runtime mutation, external delivery, or owner approval inference.

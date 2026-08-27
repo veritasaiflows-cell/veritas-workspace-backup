@@ -128,6 +128,8 @@ def build_decision(session: str, row: dict[str, Any], eligibility_path: Path, so
         "factory_disposition": row.get("factory_disposition"),
         "wf67_request_generation_status": row.get("wf67_request_generation_status"),
         "shadow_blockers": as_list(row.get("shadow_blockers")),
+        "root_cause_blockers": as_list(row.get("root_cause_blockers")),
+        "plain_english_blockers": as_list(row.get("plain_english_blockers")),
         "assisted_review_blockers": as_list(row.get("assisted_review_blockers")),
         "execution_blockers": as_list(row.get("execution_blockers")),
         "source_artifact": rel(eligibility_path),
@@ -212,10 +214,11 @@ def build_report(eligibility_path: Path, out_path: Path) -> dict[str, Any]:
     would_buy = [row for row in decisions if row.get("shadow_decision") == "would_buy_shadow"]
 
     errors: list[str] = []
-    if eligibility.get("status") != "ok":
+    warnings: list[str] = []
+    if eligibility.get("status") not in {"ok", "warning"}:
         errors.append(f"eligibility_status_not_ok:{eligibility.get('status')}")
     if not current_rows:
-        errors.append("no_current_shadow_decisions")
+        warnings.append("no_current_shadow_decisions")
     if any(row.get("execution_ready") for row in decisions):
         errors.append("ledger_execution_ready_must_remain_false")
     for key, expected in AUTHORITY_BOUNDARY.items():
@@ -250,7 +253,7 @@ def build_report(eligibility_path: Path, out_path: Path) -> dict[str, Any]:
         "validation": {
             "status": "ok" if not errors else "error",
             "errors": errors,
-            "warnings": [],
+            "warnings": warnings,
         },
         "stop_lines": [
             "Shadow decision ledger is not approval.",

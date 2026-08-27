@@ -48,6 +48,30 @@ def test_workflow_badges(errors: list[str]) -> None:
     expect("#6b7280" in muted_badge, "invalid badge color should fail to muted gray", errors)
 
 
+def test_post_earnings_lifecycle_pending_date_is_band_clear(errors: list[str]) -> None:
+    record = {
+        "ticker": "NVDA",
+        "next_earnings_date": None,
+        "date_source_class": "post_earnings_lifecycle_closeout",
+        "lifecycle": {
+            "status": "post_event_review_confirmed_next_date_pending",
+            "evidence": {
+                "last_earnings_date": "2026-05-20",
+                "post_earnings_review_confirmed": True,
+                "post_earnings_review_date": "2026-05-20",
+            },
+        },
+    }
+    meta = {
+        "last_earnings_date": "2026-05-20",
+        "post_earnings_review_confirmed": True,
+        "post_earnings_review_date": "2026-05-20",
+    }
+    state, days = band_refresh.earnings_state("NVDA", {"NVDA": record}, "2026-06-15", meta)
+    expect(state == "CLEAR", f"post-earnings lifecycle closeout should clear band maintenance, got {state}", errors)
+    expect(days is None, "next-date-pending lifecycle should not fabricate days_to_earnings", errors)
+
+
 def test_live_artifact_apply_boundaries(errors: list[str]) -> None:
     proposals_path = SCRIPTS_DIR.parent / "tmp" / "band-proposals.json"
     if not proposals_path.exists():
@@ -62,11 +86,13 @@ def test_live_artifact_apply_boundaries(errors: list[str]) -> None:
                 errors,
             )
     if "VRT" in proposals:
-        expect(
-            proposals["VRT"].get("canonical_apply_eligible") is False,
-            "VRT execution-lane WATCH proposal should remain review-only / non-applyable",
-            errors,
-        )
+        proposal = proposals["VRT"]
+        if proposal.get("band_status") not in {"IN_BAND", "NEAR_BAND"} or proposal.get("earnings_state") != "CLEAR":
+            expect(
+                proposal.get("canonical_apply_eligible") is False,
+                "VRT unsafe band status or catalyst window should remain review-only / non-applyable",
+                errors,
+            )
     if "BKNG" in proposals:
         expect(
             proposals["BKNG"].get("canonical_apply_eligible") is False,
@@ -225,6 +251,7 @@ def main() -> int:
     errors: list[str] = []
     test_band_age(errors)
     test_workflow_badges(errors)
+    test_post_earnings_lifecycle_pending_date_is_band_clear(errors)
     test_repair_mode_blockers_do_not_become_dashboard_stale_debt(errors)
     test_non_applyable_wait_states_do_not_become_dashboard_stale_debt(errors)
     test_non_applyable_earnings_split(errors)

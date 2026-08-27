@@ -1,91 +1,496 @@
 {
   "window": "sunday",
-  "run_id": "20260503T153727Z_sunday",
-  "generated_at_utc": "2026-05-03T15:37:27Z",
-  "status": "ok",
-  "stop_line": false,
+  "run_id": "20260823T151419Z_sunday",
+  "generated_at_utc": "2026-08-23T15:14:19Z",
+  "status": "blocked",
+  "stop_line": true,
   "owner": {
     "entrypoint": "python scripts/run_finance_refresh_chain.py sunday",
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-05-03T15:30:58Z",
-    "completed_at_utc": "2026-05-03T15:31:30Z",
-    "duration_seconds": 32
+    "started_at_utc": "2026-08-23T15:04:21Z",
+    "completed_at_utc": "2026-08-23T15:14:18Z",
+    "duration_seconds": 597
   },
   "execution": {
-    "chain_status": "ok",
-    "chain_status_raw": "ok",
-    "chain_status_normalized": false,
-    "chain_status_reason": "runtime status already terminal",
-    "chain_exit_code": 0,
-    "recovery_triggered": false,
-    "recovery_reason": "",
-    "failed_step": null,
-    "skipped_steps": [],
-    "finalized_after_failure": false
+    "chain_status": "completed_with_recovery",
+    "chain_status_raw": "recovering",
+    "chain_status_normalized": true,
+    "chain_status_reason": "normalized from finalizer self-observation during run_summary_refresh.py before post-summary tail steps",
+    "chain_exit_code": 1,
+    "recovery_triggered": true,
+    "recovery_reason": "auto_apply_entry_band_maintenance.py exited with code 1",
+    "failed_step": {
+      "index": 41,
+      "script": "auto_apply_entry_band_maintenance.py",
+      "args": [
+        "--apply"
+      ],
+      "command": "auto_apply_entry_band_maintenance.py --apply",
+      "exit_code": 1
+    },
+    "raw_failed_step": {
+      "index": 41,
+      "script": "auto_apply_entry_band_maintenance.py",
+      "args": [
+        "--apply"
+      ],
+      "command": "auto_apply_entry_band_maintenance.py --apply",
+      "exit_code": 1
+    },
+    "repaired_failed_steps": [],
+    "skipped_steps": [
+      "reference_band_note_sync.py",
+      "entry_band_fetch.py",
+      "generate_entry_band_status.py",
+      "deployment_check.py",
+      "trigger_sheet_refresh.py",
+      "canon_volatile_execution_board_sync.py",
+      "sql_canon_field_family_preflight.py",
+      "wf72_entry_stop_sql_activate.py",
+      "canon_drift_freshness_gate.py",
+      "regime_scoring_refresh.py",
+      "positioning_ranking_refresh.py",
+      "post_earnings_prep.py",
+      "post_earnings_note_targets.py",
+      "call_log_sync.py",
+      "universe_consistency_check.py",
+      "test_dashboard_acceptance.py",
+      "generate_dashboard.py",
+      "validate_dashboard_state.py",
+      "workbook_export.py",
+      "weekly_review_skeleton.py",
+      "weekly_macro_snapshot.py",
+      "weekly_intelligence_brief.py",
+      "weekly_printable_brief.py",
+      "postmarket_snapshot.py",
+      "snapshot_contract_check.py",
+      "daily_executive_brief.py",
+      "pipeline_state_consistency_check.py",
+      "deployment_readiness_surface.py",
+      "daily_price_trend_signals.py",
+      "market_intelligence_event_router.py",
+      "sector_correlation_check.py",
+      "sector_expansion_board.py",
+      "daily_review_objects.py",
+      "portfolio_mutation_proposal_generator.py",
+      "capital_deployment_recommendation_report.py",
+      "capital_deployment_recommendation_validator.py",
+      "auto_apply_position_sizing_semantic_sync.py",
+      "probability_readiness_report.py",
+      "probability_readiness_validator.py",
+      "board_canon_guardrail.py",
+      "stale_intelligence_guardrail.py",
+      "canonical_note_patch_proposal.py",
+      "full_portfolio_view.py",
+      "full_portfolio_view_validate.py",
+      "portfolio_snapshot_patch_proposal.py",
+      "finance_discrepancy_resolver.py",
+      "archive_suggester.py",
+      "current_window_artifact_index.py",
+      "artifact_index.py"
+    ],
+    "finalized_after_failure": true,
+    "data_quality_repair": {
+      "classification": null,
+      "repair_count": 0,
+      "ticker_count": 0,
+      "tickers": [],
+      "steps": []
+    },
+    "data_quality_only": false,
+    "unrelated_branches_continuation": "not_applicable"
   },
   "validation": {
-    "acceptance_passed": true,
-    "dashboard_validation_status": "clean",
-    "critical": 0,
+    "acceptance_passed": false,
+    "dashboard_validation_status": "critical",
+    "critical": 15,
     "warning": 0,
-    "info": 0,
-    "exec_freshness": "usable_with_caution"
+    "info": 1,
+    "exec_freshness": "stale"
+  },
+  "artifact_index": {
+    "enabled": true,
+    "db_path": "tmp/veritas-artifact-index.sqlite",
+    "authority_boundary": "derived_review_only_index_not_canon_not_apply",
+    "operator_action_required": true,
+    "operator_next_action": "Run python scripts/artifact_index.py incremental, then python scripts/artifact_index.py validate, before relying on the SQL cockpit as the primary proof lookup route.",
+    "status": "blocked",
+    "schema_version": 7,
+    "generated_at_utc": "2026-08-23T15:14:19Z",
+    "db_mtime_utc": "2026-08-23T15:14:16Z",
+    "last_rebuilt_at_utc": "2026-08-08T15:38:45Z",
+    "last_incremental_rebuilt_at_utc": "2026-08-23T15:14:15Z",
+    "source_file_count": 188,
+    "checks": {
+      "checks": 33,
+      "failed": 1
+    },
+    "safety_counts": {
+      "forbidden_true_authority_flags": 0,
+      "canon_stage_apply_allowed": 0,
+      "canon_stage_historical_applied_rows": 8,
+      "canon_stage_pending_review_only_rows": 10,
+      "canon_stage_incomplete_review_only_rows": 10,
+      "canon_stage_activation_or_apply_ready_rows": 0,
+      "official_ir_fields_without_lineage": 0
+    },
+    "key_counts": {
+      "artifact_runs": 186,
+      "artifact_file_state": 188,
+      "market_events": 993,
+      "daily_review_objects": 104,
+      "official_ir_capture_runs": 60,
+      "source_field_lineage": 449,
+      "canon_proposal_staging": 18
+    },
+    "drift_fingerprint_tables": 19,
+    "failed_checks": [
+      "freshness_no_stale_content"
+    ]
   },
   "outputs": {
     "command_center": {
       "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-05-03T15:31:30Z"
+      "generated_at_utc": "2026-08-23T15:14:18Z"
     },
     "dashboard_validation": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-05-03T15:31:29Z"
+      "generated_at_utc": "2026-08-21T13:29:50.237328+00:00"
     },
     "dashboard_acceptance": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/dashboard-acceptance-report.json",
-      "generated_at_utc": "2026-05-03T15:31:29Z"
+      "generated_at_utc": "2026-08-21T20:33:00Z"
     },
     "workbook_exports": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/workbook-export-manifest.json",
-      "generated_at_utc": "2026-05-03T15:31:29.599832+00:00"
+      "generated_at_utc": "2026-08-14T13:15:48.411515+00:00"
     },
     "weekly_macro_snapshot": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/weekly-macro-snapshot.json",
-      "generated_at_utc": "2026-05-03T15:31:29.683468+00:00"
+      "generated_at_utc": "2026-07-05T20:29:38.930821+00:00"
     },
     "weekly_intelligence_brief": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/weekly-intelligence-brief.json",
-      "generated_at_utc": "2026-05-03T15:31:29.765363+00:00"
+      "generated_at_utc": "2026-07-05T20:29:41.230044+00:00"
+    },
+    "weekly_printable_brief": {
+      "status": "stale",
+      "path": "tmp/reports/weekly-intelligence-brief-printable-latest.json",
+      "generated_at_utc": "2026-07-05T20:29:42Z"
     },
     "postmarket_snapshot": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/postmarket-snapshot.json",
-      "generated_at_utc": "2026-05-03T15:31:29.847509+00:00"
+      "generated_at_utc": "2026-08-13T23:33:40.366759+00:00"
     },
     "daily_executive_brief": {
-      "status": "ok",
+      "status": "stale",
       "path": "tmp/daily-executive-brief.json",
-      "generated_at_utc": "2026-05-03T15:31:29.932245+00:00"
+      "generated_at_utc": "2026-08-13T23:33:40.754741+00:00"
+    },
+    "fundamental_metrics_current": {
+      "status": "ok",
+      "path": "tmp/fundamental-metrics-current.json",
+      "generated_at_utc": "2026-08-23T15:04:28Z"
+    },
+    "fundamental_metrics_validation": {
+      "status": "partial",
+      "path": "tmp/fundamental-metrics-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:16Z"
+    },
+    "fundamental_ir_reconciliation_packets": {
+      "status": "ok",
+      "path": "tmp/fundamental-ir-reconciliation-packets.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "fundamental_ir_reconciliation_validation": {
+      "status": "ok",
+      "path": "tmp/fundamental-ir-reconciliation-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "amd_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amd-q2-2026.json",
+      "generated_at_utc": "2026-08-13T02:29:23Z",
+      "rollforward_guard_current_reused": true
+    },
+    "amd_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amd-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "amzn_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amzn-q2-2026.json",
+      "generated_at_utc": "2026-08-14T14:00:08Z",
+      "rollforward_guard_current_reused": true
+    },
+    "amzn_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/amzn-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "brk_b_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/brk.b-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:00Z",
+      "rollforward_guard_current_reused": true
+    },
+    "brk_b_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/brk.b-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "cat_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cat-q2-2026.json",
+      "generated_at_utc": "2026-08-13T17:30:45Z",
+      "rollforward_guard_current_reused": true
+    },
+    "cat_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cat-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "cvx_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cvx-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:02Z",
+      "rollforward_guard_current_reused": true
+    },
+    "cvx_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/cvx-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "etn_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/etn-q2-2026.json",
+      "generated_at_utc": "2026-08-13T00:25:08Z",
+      "rollforward_guard_current_reused": true
+    },
+    "etn_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/etn-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "ge_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ge-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:05Z",
+      "rollforward_guard_current_reused": true
+    },
+    "ge_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ge-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "goog_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/goog-q2-2026.json",
+      "generated_at_utc": "2026-08-13T02:29:23Z",
+      "rollforward_guard_current_reused": true
+    },
+    "goog_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/goog-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "gs_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/gs-q2-2026.json",
+      "generated_at_utc": "2026-08-13T17:31:00Z",
+      "rollforward_guard_current_reused": true
+    },
+    "gs_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/gs-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "jpm_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/jpm-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:13Z",
+      "rollforward_guard_current_reused": true
+    },
+    "jpm_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/jpm-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "lly_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lly-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:18Z",
+      "rollforward_guard_current_reused": true
+    },
+    "lly_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lly-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "lmt_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lmt-q2-2026.json",
+      "generated_at_utc": "2026-08-13T02:29:23Z",
+      "rollforward_guard_current_reused": true
+    },
+    "lmt_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/lmt-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "meta_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/meta-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:22Z",
+      "rollforward_guard_current_reused": true
+    },
+    "meta_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/meta-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "msft_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/msft-q2-2026.json",
+      "generated_at_utc": "2026-08-13T02:29:24Z",
+      "rollforward_guard_current_reused": true
+    },
+    "msft_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/msft-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "nvda_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/nvda-q1-2026.json",
+      "generated_at_utc": "2026-08-23T15:12:33Z"
+    },
+    "nvda_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/nvda-q1-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "ph_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ph-q2-2026.json",
+      "generated_at_utc": "2026-08-21T13:45:14Z",
+      "rollforward_guard_current_reused": true
+    },
+    "ph_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/ph-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "pltr_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/pltr-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:26Z",
+      "rollforward_guard_current_reused": true
+    },
+    "pltr_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/pltr-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "rtx_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/rtx-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:27Z",
+      "rollforward_guard_current_reused": true
+    },
+    "rtx_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/rtx-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "vrt_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/vrt-q2-2026.json",
+      "generated_at_utc": "2026-08-16T15:10:32Z",
+      "rollforward_guard_current_reused": true
+    },
+    "vrt_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/vrt-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
+    },
+    "xom_official_ir_capture": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/xom-q2-2026.json",
+      "generated_at_utc": "2026-08-13T02:29:24Z",
+      "rollforward_guard_current_reused": true
+    },
+    "xom_official_ir_capture_validation": {
+      "status": "ok",
+      "path": "tmp/official-ir-captures/xom-q2-2026-validation.json",
+      "generated_at_utc": "2026-08-23T15:12:42Z"
     }
   },
-  "warnings": [],
-  "blockers": [],
+  "warnings": [
+    "AMD inBand flag disagrees with configured band math",
+    "CME belowStop flag disagrees with configured stop",
+    "ETN inBand flag disagrees with configured band math",
+    "GE inBand flag disagrees with configured band math",
+    "GOOG belowStop flag disagrees with configured stop",
+    "GOOG inBand flag disagrees with configured band math",
+    "JPM inBand flag disagrees with configured band math",
+    "LIN belowStop flag disagrees with configured stop",
+    "LIN inBand flag disagrees with configured band math",
+    "NVDA inBand flag disagrees with configured band math",
+    "PH inBand flag disagrees with configured band math",
+    "RTX inBand flag disagrees with configured band math",
+    "VRT belowStop flag disagrees with configured stop",
+    "VRT inBand flag disagrees with configured band math",
+    "WMB inBand flag disagrees with configured band math",
+    "Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.",
+    "Derived SQLite artifact-index health is not ok; status=blocked."
+  ],
+  "blockers": [
+    "Finance refresh chain failed at auto_apply_entry_band_maintenance.py (exit code 1)",
+    "Missing, stale, or failed required outputs: dashboard_validation, dashboard_acceptance, workbook_exports, weekly_macro_snapshot, weekly_intelligence_brief, weekly_printable_brief, postmarket_snapshot, daily_executive_brief",
+    "Dashboard acceptance did not fully pass",
+    "Dashboard validation surfaced 15 critical issue(s)"
+  ],
+  "operator_action_required": [
+    "Run python scripts/artifact_index.py incremental, then python scripts/artifact_index.py validate, before relying on the SQL cockpit as the primary proof lookup route.",
+    "Repair or rerun auto_apply_entry_band_maintenance.py (exit code 1) before trusting the sunday window.",
+    "Refresh the required outputs still marked stale, missing, or failed: dashboard_validation, dashboard_acceptance, workbook_exports, weekly_macro_snapshot, weekly_intelligence_brief, weekly_printable_brief, postmarket_snapshot, daily_executive_brief, fundamental_metrics_validation.",
+    "Inspect tmp/dashboard-acceptance-report.json and clear the failing dashboard acceptance assertions before the next scheduled window."
+  ],
+  "next_action": "Inspect auto_apply_entry_band_maintenance.py and rerun the sunday window once that blocker is fixed.",
   "fallback_state": {
     "used": false,
     "reason": ""
   },
+  "review_only_brief": {
+    "enabled": false
+  },
+  "generated_reports": {
+    "enabled": true,
+    "outputs": {
+      "weekly_printable_brief": {
+        "status": "stale",
+        "path": "tmp/reports/weekly-intelligence-brief-printable-latest.json",
+        "generated_at_utc": "2026-07-05T20:29:42Z"
+      }
+    },
+    "pdf_generation": "print-ready HTML/Markdown only unless a PDF renderer is separately approved and proven"
+  },
   "downstream": {
-    "command_center_badge": "ok",
-    "workbook_trust_grade": "clean",
+    "command_center_badge": "bad",
+    "workbook_trust_grade": "blocked",
     "presentation_allowed": false,
     "canonical_note_mutation_allowed": false,
-    "canonical_note_mutation_reason": "scheduled windows remain fail-closed for canonical note mutation in v1"
+    "canonical_note_mutation_reason": "run summary status=blocked"
   }
 }

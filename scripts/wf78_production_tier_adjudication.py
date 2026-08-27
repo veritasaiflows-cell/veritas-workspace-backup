@@ -18,7 +18,6 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from wf78_legacy_42_tier_state import production_entries as legacy_42_tier_entries, source_summary as legacy_42_tier_source_summary
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,9 +94,6 @@ def add_check(checks: list[dict[str, Any]], name: str, ok: bool, detail: Any = N
 
 
 def production_entries(universe: dict[str, Any]) -> list[dict[str, Any]]:
-    migrated = legacy_42_tier_entries()
-    if migrated:
-        return migrated
     rows = [
         row
         for row in as_list(universe.get("entries"))
@@ -380,7 +376,6 @@ def build_report() -> dict[str, Any]:
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": {
             "universe": rel(UNIVERSE),
-            "legacy_42_tier_shadow": legacy_42_tier_source_summary(),
             "capacity_gate": rel(CAPACITY_GATE),
             "promotion_review_gate": rel(PROMOTION_REVIEW_GATE),
             "ticker_card_refresh_gate": rel(TICKER_CARD_REFRESH_GATE),

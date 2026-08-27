@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import wf86_shadow_eligibility_validator as validator
 
 
@@ -74,8 +76,65 @@ def test_setup_notional_caps_keep_tactical_smaller_than_absolute_order_ceiling()
     assert validator.setup_notional_cap_usd(caps, "TACTICAL_DIP_RECLAIM", 5000, 0.30) == 1500.0
 
 
+def test_plain_english_blockers_include_factory_root_cause() -> None:
+    factory_row = {
+        "root_cause_blockers": ["entry_band_review", "starter_sizing_review"],
+        "plain_english_blockers": [
+            "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing."
+        ],
+    }
+    technical_setup = {
+        "setup_label": "TACTICAL_DIP_RECLAIM",
+        "reclaim_trigger": "Upgrade after reclaiming the 20D/50D zone near 212.31.",
+    }
+    plain = validator.plain_english_blockers_for(
+        "NVDA",
+        factory_row,
+        [],
+        ["promotion_gate_vetoes_present"],
+        technical_setup,
+    )
+    joined = " ".join(plain)
+    assert "NVDA was in band" in joined
+    assert "promotion-review debt" in joined
+    assert "20D/50D" in joined
+
+
+def test_no_shadow_decisions_is_fail_closed_warning_not_validation_error() -> None:
+    policy = {
+        "mode": "shadow_first_no_execution",
+        "authority_boundary": {"autonomous_paper_execution_allowed_now": False},
+        "initial_caps": {
+            "model_portfolio_ceiling_usd": 100000,
+            "max_notional_per_order_usd": 5000,
+            "setup_notional_caps_usd": {
+                "CLEAN_ADD": 2500,
+                "TACTICAL_DIP_RECLAIM": 1500,
+            },
+        },
+        "phase_1_decisions": {
+            "autonomous_buy_universe_initial": "Tier A only",
+            "shadow_min_market_sessions": 5,
+            "shadow_min_clean_decisions": 20,
+        },
+    }
+
+    def fake_load(path):
+        return policy if path == validator.POLICY else {}
+
+    with patch.object(validator, "load_dict", side_effect=fake_load):
+        report = validator.build_report()
+
+    assert report["status"] == "ok"
+    assert report["validation"]["status"] == "ok"
+    assert "no_shadow_decisions" in report["validation"]["warnings"]
+    assert report["summary"]["execution_ready_count"] == 0
+
+
 if __name__ == "__main__":
     test_technical_setup_labels_clean_tactical_and_broken()
     test_classify_decision_blocks_unclean_technical_setup_without_execution_authority()
     test_setup_notional_caps_keep_tactical_smaller_than_absolute_order_ceiling()
+    test_plain_english_blockers_include_factory_root_cause()
+    test_no_shadow_decisions_is_fail_closed_warning_not_validation_error()
     print("wf86_shadow_eligibility_validator_tests_passed")

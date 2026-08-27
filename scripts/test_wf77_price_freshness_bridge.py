@@ -15,6 +15,7 @@ from wf77_price_freshness_bridge import (
     DEFAULT_OUT,
     SUPPLEMENTAL_PRICE_EVIDENCE_PATH,
     TECHNICAL_REFRESH_PATH,
+    TRADE_GRADE_DECISION_CARDS,
     UNIVERSE_PATH,
     build_payload,
 )
@@ -34,27 +35,36 @@ def default_args() -> argparse.Namespace:
         technical=TECHNICAL_REFRESH_PATH,
         supplemental=SUPPLEMENTAL_PRICE_EVIDENCE_PATH,
         card_dir=CARD_DIR,
+        decision_cards=TRADE_GRADE_DECISION_CARDS,
         out=DEFAULT_OUT,
         max_source_age_hours=36.0,
         max_market_data_age_days=3,
     )
 
 
-def test_live_bridge_counts_and_exclusions(errors: list[str]) -> None:
+def check_live_bridge_counts_and_exclusions(errors: list[str]) -> None:
     payload = build_payload(default_args())
     summary = payload.get("summary") or {}
     rows = payload.get("rows") or []
     valid_rows = [row for row in rows if (row.get("price_state") or {}).get("status") == "ok"]
     excluded = summary.get("excluded_price_rows") or []
     supplemental = summary.get("supplemental_public_price_rows") or []
+    stale_bridge = summary.get("tier_ab_stale_price_bridge_tickers") or []
 
     expect(summary.get("row_count") == summary.get("production_ticker_count"), "row_count should equal production ticker count", errors)
     expect(summary.get("valid_price_row_count") == len(valid_rows), "valid_price_row_count should count only usable price rows", errors)
     expect(summary.get("price_rows") == summary.get("valid_price_row_count"), "price_rows should be the valid-row compatibility count", errors)
     expect(summary.get("invalid_price_row_count") == summary.get("row_count") - summary.get("valid_price_row_count"), "invalid_price_row_count mismatch", errors)
+    if summary.get("production_ticker_count") == 0:
+        expect(not rows, "zero strict production scope should not emit price rows", errors)
+        expect(not summary.get("missing_price_rows"), "zero strict production scope should not be missing-price debt", errors)
+        expect(payload.get("validation", {}).get("status") == "ok", f"zero-scope bridge validation failed: {json.dumps(payload.get('validation'), sort_keys=True)}", errors)
+        return
     expect(not excluded, f"supplemental evidence should clear lane-excluded rows: {excluded}", errors)
     for ticker in ("KTOS", "SLV", "SMCI", "TLT"):
         expect(ticker in supplemental, f"{ticker} should be covered by supplemental public price evidence", errors)
+    for ticker in stale_bridge:
+        expect(ticker in supplemental, f"{ticker} stale Tier A/B bridge row should use supplemental public price evidence", errors)
     expect(not summary.get("missing_price_rows"), "supplemental-covered tickers should not remain in missing_price_rows", errors)
     expect(summary.get("valid_price_row_count") == summary.get("production_ticker_count"), "all production tickers should have valid WF77 price rows", errors)
     expect(payload.get("validation", {}).get("status") == "ok", f"bridge validation failed: {json.dumps(payload.get('validation'), sort_keys=True)}", errors)
@@ -62,7 +72,7 @@ def test_live_bridge_counts_and_exclusions(errors: list[str]) -> None:
 
 def main() -> int:
     errors: list[str] = []
-    test_live_bridge_counts_and_exclusions(errors)
+    check_live_bridge_counts_and_exclusions(errors)
     if errors:
         print("wf77_price_freshness_bridge_tests_failed")
         for error in errors:
@@ -70,6 +80,12 @@ def main() -> int:
         return 1
     print("wf77_price_freshness_bridge_tests_passed")
     return 0
+
+
+def test_live_bridge_counts_and_exclusions() -> None:
+    errors: list[str] = []
+    check_live_bridge_counts_and_exclusions(errors)
+    assert not errors, "\n".join(errors)
 
 
 if __name__ == "__main__":

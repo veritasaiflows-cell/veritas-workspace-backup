@@ -1,0 +1,168 @@
+{
+  "schema": "veritas.pm_execution_loop.v1",
+  "generated_at_utc": "2026-06-18T02:55:50Z",
+  "status": "ok",
+  "mode": "execute",
+  "queue_source": "tmp/pm-control-packet.json",
+  "purpose": "Pick top safe PM job(s), enforce one-writer-per-collision-group, run review-only proof + closeout.",
+  "authority_boundary": {
+    "review_only": true,
+    "runs_review_only_proof_commands": true,
+    "executes_implementation_jobs": false,
+    "spawns_helpers": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "sql_or_ticker_import_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "cleanup_move_delete_archive_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/pm-control-packet.json",
+    "tmp/concurrent-lane-register.json"
+  ],
+  "parameters": {
+    "execute": true,
+    "limit": 1,
+    "job": "pm-10-pm-handoff-pdf-execute-safe-next-step"
+  },
+  "summary": {
+    "queue_job_count": 10,
+    "selected_count": 1,
+    "selected_jobs": [
+      "pm-10-pm-handoff-pdf-execute-safe-next-step"
+    ],
+    "skipped_count": 0,
+    "executed": true,
+    "proof_failed": [],
+    "closeout_failed": [],
+    "proof_reused_count": 0,
+    "closeout_reused_count": 0,
+    "proof_cache_enabled": true,
+    "recommended_execution_rule": "Run only one job per collision group; use each job's validation_budget and closeout_mode instead of a fixed broad closeout ladder.",
+    "selected_validation_budgets": [
+      {
+        "job_id": "pm-10-pm-handoff-pdf-execute-safe-next-step",
+        "budget": "narrow",
+        "closeout_mode": "pm_state",
+        "closeout_command_count": 1
+      }
+    ],
+    "next_safe_action": "Verify proof + closeout output; update daily/continuity if implementation state changed."
+  },
+  "selected": [
+    {
+      "job_id": "pm-10-pm-handoff-pdf-execute-safe-next-step",
+      "rank": 10,
+      "priority": "P3",
+      "title": "Refresh internal PM handoff and readiness packet",
+      "implementation_class": "pm_packet_refresh",
+      "owner_surface": "PM handoff / readiness brief lane",
+      "collision_group": "pm_handoff_packets",
+      "validation_budget": {
+        "budget": "narrow",
+        "description": "One owner plus one adjacent consumer or validator.",
+        "closeout_mode": "pm_state",
+        "proof_command_count": 3,
+        "max_default_proof_commands": 3,
+        "phase_count": 3
+      },
+      "closeout_mode": "pm_state",
+      "target_files": [
+        "scripts/wf75_pm_weekly_update.py",
+        "scripts/wf75_artifact_only_pm_handoff.py",
+        "scripts/wf75_pm_readiness_pdf.py"
+      ],
+      "proof_commands": [
+        "python scripts\\wf75_pm_weekly_update.py --write --validate",
+        "python scripts\\wf75_artifact_only_pm_handoff.py --write --validate",
+        "python scripts\\wf75_pm_readiness_pdf.py --write --validate"
+      ],
+      "acceptance_criteria": [
+        {
+          "criterion": "contract_preserved",
+          "done_means": "job output keeps review-only authority and all stop lines remain explicit"
+        },
+        {
+          "criterion": "proof_commands_pass",
+          "done_means": "all listed proof commands pass or the job returns a blocker with exact failing artifact"
+        },
+        {
+          "criterion": "adjacent_consumer_updated",
+          "done_means": "PM state, handoff, cockpit registry, README, or Active Workflows are updated when their routing text changed"
+        },
+        {
+          "criterion": "closeout_complete",
+          "done_means": "PM state, helper handshake if used, and daily/continuity notes are refreshed when work materially changes implementation state"
+        }
+      ],
+      "closeout_required": [
+        "python scripts\\pm_control_packet.py --write --write-db --validate"
+      ]
+    }
+  ],
+  "skipped": [],
+  "proof_results": [
+    {
+      "name": "pm-10-pm-handoff-pdf-execute-safe-next-step:proof[0]",
+      "command": "python scripts\\wf75_pm_weekly_update.py --write --validate",
+      "started_at_utc": "2026-06-18T02:55:48Z",
+      "completed_at_utc": "2026-06-18T02:55:48Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "},\n    \"pm_department_validation\": \"ok\",\n    \"proof_required_present\": 23,\n    \"proof_required_total\": 23,\n    \"authority_errors\": []\n  },\n  \"presentation_handoff\": {\n    \"audience\": \"Randall / internal operator review\",\n    \"purpose\": \"Weekly WF75 PM readiness update and enhancement roadmap.\",\n    \"slide_outline\": [\n      \"Current verdict and readiness target\",\n      \"6-10 week timeline\",\n      \"Completed this week\",\n      \"Upcoming enhancements\",\n      \"Blockers and owner decisions\",\n      \"Proof and validation status\",\n      \"Next sprint focus\"\n    ],\n    \"source_stack\": [\n      \"06. Playbooks/Active Workflows.md\",\n      \"06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md\",\n      \"tmp/wf75-service-led-saas-readiness-plan.json\",\n      \"tmp/operator-packets/retail-saas-wf75.json\",\n      \"tmp/wf75-service-state-current.json\",\n      \"tmp/wf75-service-state-sqlite.json\",\n      \"tmp/wf75-operator-queue.json\",\n      \"tmp/wf75-operator-console.json\",\n      \"tmp/wf75-automation-movement.json\",\n      \"tmp/wf75-artifact-only-pm-handoff.json\",\n      \"tmp/wf75-pm-readiness-brief.json\",\n      \"tmp/veritas-harness-scorecard.json\",\n      \"tmp/macro-event-calendar.json\",\n      \"tmp/veritas-pm-department-validation.json\"\n    ]\n  },\n  \"next_safe_action\": \"Use this weekly PM surface to drive the next WF75 sprint: keep supplemental WF77 price evidence, macro-event calendar, renderer/export regression, scenario-template library, service-state, SQLite WAL control-plane, operator queue, and artifact-only PM handoff proof fresh, then build the next operator-console/service-state slice.\",\n  \"authority_boundary\": \"Internal review/proof only. No public launch, real customer data, external delivery, source-licensing claim, legal/compliance claim, portfolio/canon mutation, trading, account, paper/live action, or owner approval inference.\",\n  \"validation_errors\": [],\n  \"outputs\": {\n    \"json\": \"tmp/wf75-pm-weekly-update.json\"\n  }\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-10-pm-handoff-pdf-execute-safe-next-step:proof[1]",
+      "command": "python scripts\\wf75_artifact_only_pm_handoff.py --write --validate",
+      "started_at_utc": "2026-06-18T02:55:48Z",
+      "completed_at_utc": "2026-06-18T02:55:48Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "s\": \"error\",\n    \"seeded_bad_markdown_validation_status\": \"error\",\n    \"status\": \"ok\"\n  },\n  \"scenario_template_library\": {\n    \"scenario_count\": 8,\n    \"scenario_ids\": [\n      \"anon-watchlist-ai-infrastructure-v1\",\n      \"anon-materials-diversification-v1\",\n      \"anon-risk-freshness-edge-cases-v1\",\n      \"anon-single-ticker-deep-dive-v1\",\n      \"anon-etf-comparison-v1\",\n      \"anon-earnings-follow-up-v1\",\n      \"anon-below-stop-repair-review-v1\",\n      \"anon-insufficient-evidence-v1\"\n    ],\n    \"status\": \"ok\"\n  },\n  \"schema\": \"veritas.wf75.artifact_only_pm_handoff.v1\",\n  \"sqlite_wal_control_plane\": {\n    \"busy_timeout_ms\": 5000,\n    \"claim_rows\": [\n      {\n        \"claim_status\": \"claimed\",\n        \"worker_id\": \"wf75-worker-alpha\"\n      },\n      {\n        \"claim_status\": \"already_claimed\",\n        \"worker_id\": \"wf75-worker-beta\"\n      }\n    ],\n    \"db_path\": \"tmp/wf75-service-state.sqlite\",\n    \"journal_mode\": \"wal\",\n    \"status\": \"control_plane_ready\",\n    \"table_counts\": {\n      \"artifact_refs\": 55,\n      \"claim_log\": 2,\n      \"events\": 251,\n      \"queue_items\": 1,\n      \"service_requests\": 5\n    }\n  },\n  \"status\": \"ready_for_internal_artifact_only_pm_handoff\",\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  },\n  \"validation_status\": {\n    \"automation_movement\": \"ok\",\n    \"macro_event_calendar\": \"ok\",\n    \"operator_console\": \"ok\",\n    \"operator_queue\": \"ok\",\n    \"pm_weekly_update\": \"ready_for_internal_pm_review\",\n    \"renderer_regression\": \"ok\",\n    \"scenario_library\": \"ok\",\n    \"service_state\": \"ok\",\n    \"sqlite_wal_control_plane\": \"ok\",\n    \"veritas_harness_scorecard\": \"ok\",\n    \"wf77_bridge\": \"ok\"\n  },\n  \"wf77_price_evidence\": {\n    \"excluded_price_rows\": [],\n    \"missing_price_rows\": [],\n    \"row_count\": 42,\n    \"status\": \"ok\",\n    \"supplemental_public_price_row_count\": 4,\n    \"supplemental_public_price_rows\": [\n      \"SMCI\",\n      \"SLV\",\n      \"TLT\",\n      \"KTOS\"\n    ],\n    \"valid_price_row_count\": 42\n  },\n  \"workflow\": \"WF75\"\n}",
+      "stderr_preview": ""
+    },
+    {
+      "name": "pm-10-pm-handoff-pdf-execute-safe-next-step:proof[2]",
+      "command": "python scripts\\wf75_pm_readiness_pdf.py --write --validate",
+      "started_at_utc": "2026-06-18T02:55:48Z",
+      "completed_at_utc": "2026-06-18T02:55:50Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "{\n  \"schema\": \"veritas.wf75.pm_readiness_pdf.v1\",\n  \"generated_at_utc\": \"2026-06-18T02:55:48Z\",\n  \"status\": \"ready\",\n  \"outputs\": {\n    \"html\": \"tmp/wf75-pm-readiness-brief.html\",\n    \"pdf\": \"tmp/wf75-pm-readiness-brief.pdf\",\n    \"manifest\": \"tmp/wf75-pm-readiness-brief.json\"\n  },\n  \"source_checks\": {\n    \"pm_update\": {\n      \"path\": \"tmp/wf75-pm-weekly-update.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"artifact_handoff\": {\n      \"path\": \"tmp/wf75-artifact-only-pm-handoff.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"sqlite_control_plane\": {\n      \"path\": \"tmp/wf75-service-state-sqlite.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"operator_console\": {\n      \"path\": \"tmp/wf75-operator-console.json\",\n      \"exists\": true,\n      \"parseable\": true\n    },\n    \"operator_packet\": {\n      \"path\": \"tmp/operator-packets/retail-saas-wf75.json\",\n      \"exists\": true,\n      \"parseable\": true\n    }\n  },\n  \"html_only\": false,\n  \"authority_boundary\": {\n    \"public_launch_allowed\": false,\n    \"real_customer_data_allowed\": false,\n    \"external_delivery_allowed\": false,\n    \"source_licensing_assumed\": false,\n    \"legal_or_compliance_ready\": false,\n    \"portfolio_or_canon_mutation_allowed\": false,\n    \"paper_live_or_account_action_allowed\": false,\n    \"owner_approval_inferred\": false\n  },\n  \"errors\": [],\n  \"html_size_bytes\": 10101,\n  \"pdf_result\": {\n    \"status\": \"ok\",\n    \"browser\": \"C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\n    \"returncode\": 0,\n    \"stdout_tail\": \"\",\n    \"stderr_tail\": \"104028 bytes written to file C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\\\\tmp\\\\wf75-pm-readiness-brief.pdf\\n\",\n    \"pdf_size_bytes\": 104028\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": []\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "closeout_results": [
+    {
+      "name": "pm-10-pm-handoff-pdf-execute-safe-next-step:closeout[0]",
+      "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
+      "started_at_utc": "2026-06-18T02:55:50Z",
+      "completed_at_utc": "2026-06-18T02:55:50Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_preview": "tel_daily_vs_weekly_event_rate_ratio\": 7.0,\n        \"otel_daily_warning_or_error_count\": 0,\n        \"otel_drift_status\": \"review\",\n        \"otel_field_depth_packet_status\": \"owner_decision_required\",\n        \"recommended_budget\": \"major\",\n        \"recommended_validator_count\": 62,\n        \"reflection_auto_apply_count\": 0,\n        \"reflection_owner_decision_required_count\": 3,\n        \"reflection_proposal_autopilot_status\": \"ok\",\n        \"reflection_proposal_count\": 8,\n        \"validator_elapsed_seconds\": 2.379,\n        \"validator_failed_count\": 0,\n        \"validator_target_seconds\": 10.0,\n        \"wf74_steps_blocked\": 0,\n        \"wf74_steps_ok\": 25\n      },\n      \"sources\": {\n        \"coding_runtime_kpi_probe\": \"tmp/coding-runtime-kpi-probe.json\",\n        \"finance_response_quality_slice\": \"tmp/finance-response-quality-slice.json\",\n        \"model_learning_metadata_ledger\": \"tmp/model-learning-metadata-ledger.json\",\n        \"model_quality_scorecard\": \"tmp/model-quality-scorecard.json\",\n        \"otel_field_depth_packet\": \"tmp/otel-field-depth-limited-owner-packet.json\",\n        \"otel_ops_control\": \"tmp/otel-ops-control.json\",\n        \"wf74_auto_patch_proposer\": \"tmp/wf74-auto-patch-proposer.json\",\n        \"wf74_improvement_opportunity_queue\": \"tmp/wf74-improvement-opportunity-queue.json\",\n        \"wf74_reflection_to_proposal_autopilot\": \"tmp/wf74-reflection-to-proposal-autopilot.json\",\n        \"wf74_runner\": \"tmp/wf74-model-quality-collection-cron-runner.json\"\n      },\n      \"status\": \"ok\",\n      \"warnings\": []\n    }\n  },\n  \"validation\": {\n    \"component_validation\": {\n      \"heartbeat_continuation_candidates\": \"ok\",\n      \"pm_control_packet_sqlite\": \"ok\",\n      \"pm_implementation_job_queue\": \"ok\",\n      \"pm_implementation_job_queue_sqlite\": null,\n      \"pm_main_session_handoff\": \"ok\",\n      \"pm_program_state\": \"ok\",\n      \"pm_program_state_sqlite\": null\n    },\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"pm_cockpit_required_sources_stale\"\n    ]\n  }\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Dry-run by default; --execute runs only review-only proof plus each job's budgeted closeout commands.",
+    "One writer per collision group; jobs leased/running in the lane register are skipped.",
+    "Jobs with mutation/execution/import/config proof commands are flagged needs_main_review and never auto-run.",
+    "No capital deployment, trade/paper/live/account action, money movement, canon/portfolio/SQL mutation, or owner approval inference."
+  ]
+}

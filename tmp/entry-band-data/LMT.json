@@ -1,38 +1,14 @@
 {
   "ticker": "LMT",
   "name": "Lockheed Martin Corporation",
-  "asof": "2026-05-09",
+  "asof": "2026-08-21",
   "currency": "USD",
   "interval": "1mo",
   "period": {
-    "start": "2016-06",
-    "end": "2026-05"
+    "start": "2016-09",
+    "end": "2026-08"
   },
   "data": [
-    {
-      "d": "2016-06",
-      "o": 236.23,
-      "h": 248.72,
-      "l": 234.75,
-      "c": 248.17,
-      "v": 28.27
-    },
-    {
-      "d": "2016-07",
-      "o": 248.17,
-      "h": 263.37,
-      "l": 247.88,
-      "c": 252.73,
-      "v": 54.45
-    },
-    {
-      "d": "2016-08",
-      "o": 252.63,
-      "h": 266.93,
-      "l": 238.6,
-      "c": 242.97,
-      "v": 146.23
-    },
     {
       "d": "2016-09",
       "o": 243.13,
@@ -964,10 +940,34 @@
     {
       "d": "2026-05",
       "o": 517.95,
-      "h": 524.5,
+      "h": 541.21,
       "l": 500.31,
-      "c": 506.51,
-      "v": 10.11
+      "c": 530.45,
+      "v": 26.56
+    },
+    {
+      "d": "2026-06",
+      "o": 523.98,
+      "h": 550.99,
+      "l": 490.05,
+      "c": 509.46,
+      "v": 28.65
+    },
+    {
+      "d": "2026-07",
+      "o": 517.0,
+      "h": 593.77,
+      "l": 487.15,
+      "c": 582.74,
+      "v": 26.67
+    },
+    {
+      "d": "2026-08",
+      "o": 583.5,
+      "h": 612.75,
+      "l": 563.07,
+      "c": 563.57,
+      "v": 14.92
     }
   ],
   "macro_regimes": {
@@ -1029,30 +1029,32 @@
     "high": 582.27,
     "stop": 531.63,
     "set": "2026-05-06",
-    "label": "548.51–582.27"
+    "label": "548.51-582.27"
   },
   "current_quote": {
-    "close": 506.51,
-    "ma20": 546.02,
-    "ma50": 600.64,
-    "ma200": 521.91,
-    "data_date": "2026-05-08"
+    "close": 563.57,
+    "ma20": 587.54,
+    "ma50": 548.55,
+    "ma200": 548.55,
+    "data_date": "2026-08-21"
   },
   "band_engine_proposal": {
     "engine_version": "keltner-ma-v1",
-    "method": "DUAL_MA_RECLAIM",
-    "type": "VAULT_RECLAIM",
-    "status": "BELOW_STOP",
-    "trend_stack": "BELOW_ALL_MAS",
-    "suggested_low": 573.49,
-    "suggested_high": 591.99,
-    "suggested_stop": 558.69,
-    "sma_envelope_low": 544.82,
-    "sma_envelope_high": 602.16,
+    "method": "KELTNER_PRIMARY",
+    "type": "WATCH",
+    "status": "IN_BAND",
+    "trend_stack": "ABOVE_200_BELOW_20_50",
+    "suggested_low": 550.09,
+    "suggested_high": 583.84,
+    "suggested_stop": 531.34,
+    "sma_envelope_low": 533.66,
+    "sma_envelope_high": 589.84,
     "earnings_state": "CLEAR",
-    "band_confidence": 2,
-    "needs_review": true,
+    "earnings_date_source_class": "provider_estimate",
+    "earnings_primary_confirmed": false,
+    "band_confidence": 3,
+    "needs_review": false,
     "canonical_apply_eligible": false
   },
-  "generated_at": "2026-05-10T03:38:34+00:00"
+  "generated_at": "2026-08-21T20:32:19+00:00"
 }

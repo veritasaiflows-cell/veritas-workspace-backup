@@ -24,7 +24,7 @@
 | Advisor Alert Desk | Intraday alerts, advisory packets, no-fire downgrade, main-session handoff | WF68, WF55 outcome bridge | Review-only alerting; no automatic paper/live orders |
 | Analytics / Probability Desk | State history, readiness, descriptive analytics, validation | WF55/WF69, SQLite/data artifacts | No probability/win-rate/model-readiness claims while WF55 NOT_READY |
 | OS Operator / Automation Desk | Cron, workflow registry, skills, process hardening, audits | `openclaw-operator`, `cron-automation-manager`, `workspace-governor` | No auth/config/channel/network/destructive mutation without approval |
-| Independent QA Desk | Read-only audit, validator proof, closeout challenge | `code-review-auditor`, `workspace-qa-pass`, `safe-refactor-planner` | Read-only unless explicitly scoped; no final queue movement |
+| Independent QA Desk | Read-only audit, validator proof, closeout challenge | `workspace-qa-pass`, `disciplined-implementation` for scoped refactor parity, deprecated `code-review-auditor` router only for legacy references | Read-only unless explicitly scoped; no final queue movement |
 
 ## Phased Approach
 

@@ -99,6 +99,15 @@ def test_determinism_hashes_same_inputs_same_decision_counts() -> None:
     assert loop.stable_hash(decision_snapshot) == loop.stable_hash(decision_snapshot.copy())
 
 
+def test_semantic_input_snapshot_includes_blockers_for_determinism() -> None:
+    base = loop.semantic_input_snapshot({}, {}, {}, {"window": "post_close"}, [])
+    blocked = loop.semantic_input_snapshot({}, {}, {}, {"window": "post_close"}, ["source_validation_not_ok"])
+
+    assert base["blockers"] == []
+    assert blocked["blockers"] == ["source_validation_not_ok"]
+    assert loop.stable_hash(base) != loop.stable_hash(blocked)
+
+
 def test_validate_rejects_authority_widening() -> None:
     payload = {
         "authority_boundary": dict(loop.AUTHORITY_BOUNDARY),
@@ -160,6 +169,7 @@ def main() -> int:
     test_final_state_downgrades_material_signals_outside_fresh_price_window()
     test_reconciliation_downgrades_when_opportunity_ahead_of_decision_layer()
     test_determinism_hashes_same_inputs_same_decision_counts()
+    test_semantic_input_snapshot_includes_blockers_for_determinism()
     test_validate_rejects_authority_widening()
     test_validate_allows_owner_review_without_execution_authority()
     test_validate_rejects_current_decision_state_when_market_not_fresh()

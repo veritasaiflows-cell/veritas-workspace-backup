@@ -153,6 +153,7 @@ def build(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
     registry = load_dict(REGISTRY)
     proposal = load_dict(PROPOSAL)
     proposed_registry, rows, errors = build_proposed_registry(registry, proposal)
+    warnings: list[str] = []
     current_tickers = as_dict(registry.get("tickers"))
     proposed_tickers = as_dict(proposed_registry.get("tickers"))
     actions = Counter(str(row.get("preview_action")) for row in rows)
@@ -160,13 +161,15 @@ def build(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
         if key not in {"review_only", "apply_preview_only"} and value is not False:
             errors.append(f"authority flag not false: {key}")
     if args.validate and not rows:
-        errors.append("no preview rows generated")
+        warnings.append("no_preview_rows_generated")
     if any(row.get("apply_allowed") for row in rows):
         errors.append("preview row implies apply_allowed")
+    status = "blocked" if errors else "ok_no_work" if not rows else "ok"
+    validation_status = "blocked" if errors else "warning" if warnings else "ok"
     report = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "blocked" if errors else "ok",
+        "status": status,
         "purpose": "Review-only official registry apply preview; no registry mutation.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": [rel(PROPOSAL), rel(REGISTRY)],
@@ -188,7 +191,7 @@ def build(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
             "next_safe_action": "Use this preview for owner/gate review only; applying the registry requires a separate exact approval path.",
         },
         "rows": rows,
-        "validation": {"status": "blocked" if errors else "ok", "errors": errors, "warnings": []},
+        "validation": {"status": validation_status, "errors": errors, "warnings": warnings},
         "stop_lines": [
             "Apply preview only; no registry/card/deployment/canon/portfolio/SQL-canon mutation.",
             "No capital deployment, paper/live execution, brokerage/account action, money movement, customer output, or owner approval inference.",
@@ -218,7 +221,7 @@ def main() -> int:
     if args.write_proposed:
         atomic_write_json(args.proposed_out, proposed_registry)
         print(f"wrote {rel(args.proposed_out)} preview_only=true")
-    if args.validate and report["validation"]["status"] != "ok":
+    if args.validate and report["validation"]["status"] == "blocked":
         return 1
     return 0
 

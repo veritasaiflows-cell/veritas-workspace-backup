@@ -3,11 +3,28 @@
   "workflow_id": "WF84",
   "display_name": "Trade-Grade Personal Finance OS Canonical Data Model",
   "tier": "P0",
-  "effective_status": "ready",
-  "next_action": "Use the validated JSON packet, SQLite companion, and phase 6-10 proof for internal read-only consumer expansion; use full-answer parity before duplicate-surface retirement.",
-  "helper_safe": true,
+  "priority": "P0",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "Internal read-only data plane above guarded SQL/JSON current state; fallbacks/feeders remain retained.",
+  "next_action": "Refresh SQL guard, WF84/WF85, and parity before archive proposals or material readiness claims.",
+  "authoritative_next_action": "Refresh SQL guard, WF84/WF85, and parity before archive proposals or material readiness claims.",
+  "helper_safe": false,
   "owner_action_required": true,
   "authority_boundary": "internal review-only canonical data-plane interface; no customer/account/execution authority",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [
+    "WF85"
+  ],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/canonical-finance-data-plane.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
   "blockers": [],
   "stop_lines": [
     "Internal personal finance infrastructure only; no retail/customer launch, customer/account/PII/suitability/brokerage data, canon/portfolio/cash/risk-rule mutation, capital approval, paper/live/account action, SQL/capsule/dashboard row as approval, or owner approval inference."
@@ -58,27 +75,20 @@
       "no capital deployment or execution authority",
       "no SQL row or generated artifact becomes approval"
     ],
-    "lane_status": "ready",
+    "lane_status": "refresh_required",
     "readiness_score": 90,
-    "rank": 7,
-    "pm_packet_only": true
+    "rank": 15,
+    "pm_packet_only": true,
+    "source_lane_status": "ready",
+    "superseded_by_route_contract": true
   },
-  "pm_job": {
-    "job_id": "pm-07-finance-os-data-model-execute-safe-next-step",
-    "status": "ready_for_main_or_helper",
-    "validation_budget": {
-      "budget": "shared",
-      "description": "Shared JSON/state/router/control contract, but no apply/execution authority.",
-      "closeout_mode": "handoff",
-      "proof_command_count": 5,
-      "max_default_proof_commands": 5,
-      "phase_count": 4
-    },
-    "closeout_mode": "handoff",
-    "collision_group": "finance_os_data_model"
-  },
+  "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
     "pm_control_packet": "tmp/pm-control-packet.json"
   }
 }

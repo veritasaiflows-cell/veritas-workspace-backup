@@ -125,7 +125,7 @@ Each cron design should say which of these is expected:
 
 If spawning is allowed, the packet should also specify:
 - recommended model posture
-- required thinking posture; Spark (`codex/gpt-5.3-codex-spark`) cron/helper lanes must use `xhigh` thinking until repeated proof says otherwise
+- required thinking posture; Spark (`codex/gpt-5.3-codex-spark`) is canary/proof-only and uses `xhigh` when deliberately selected
 - exact files to read first
 - exact acceptance target
 - out-of-bounds surfaces
@@ -209,11 +209,11 @@ A job is not real because it was created. It is real after proof.
 - keep audit proof in cron run history plus workspace artifacts, not only chat memory
 
 ## Effort Routing
-- **Low effort** -> handle in the main cron run
-- **Medium effort** -> spawn one bounded detached worker with `openai/gpt-5.4` and a tighter scope; do not assume an unpinned/default helper model
-- **High effort** -> require preflight review first, then spawn one bounded detached worker with `openai/gpt-5.4` and high-thinking posture when the contract is clear enough; use `openai/gpt-5.5` only as a deliberate high-stakes exception
-- **Spark effort rule** -> if a cron job or spawned cron helper uses `codex/gpt-5.3-codex-spark`, set `--thinking xhigh` / payload thinking `xhigh`; Spark is cheap enough that lower effort is not the default until proof says otherwise
-- **Fallback rule** -> if the chosen model is unavailable, keep the same bounded contract and record the fallback rather than silently using a weaker lane
+- **Deterministic low effort** -> keep exact command jobs model-free; use `openai/gpt-5.6-luna` with low reasoning only for proven bounded cron/status/proof work that genuinely needs an agent turn
+- **Medium effort** -> spawn one bounded detached worker with `openai/gpt-5.6-terra` and a tighter scope; do not assume an unpinned/default helper model
+- **High effort** -> require preflight review first, then use `openai/gpt-5.6-terra` with the justified reasoning setting when the contract is clear enough; reserve `openai/gpt-5.6-sol` for main/final integration
+- **Spark effort rule** -> `codex/gpt-5.3-codex-spark` is canary/proof-only and must not displace Luna or Terra as an operational default
+- **Fallback rule** -> if the chosen model is unavailable, keep the same bounded contract, record the fallback, and prefer `openai/gpt-5.5` then `openai/gpt-5.4` for controlled rollback rather than silently weakening the lane
 
 ## Secure Spawn Default
 When spawn is allowed:

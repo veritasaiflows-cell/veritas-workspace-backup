@@ -25,11 +25,10 @@ MIGRATION_PANELS = (
     "command_today",
     "trust_and_freshness",
     "deployment",
+    "market_macro",
     "portfolio",
     "technical",
     "fundamentals_earnings",
-    "market_macro",
-    "workflow_pm",
 )
 
 
@@ -66,6 +65,7 @@ def build_report() -> dict[str, Any]:
         migrated.append(
             {
                 "panel_id": panel_id,
+                "label": panel.get("label"),
                 "headline": panel.get("headline"),
                 "state": panel.get("state"),
                 "freshness": panel.get("freshness"),
@@ -107,6 +107,8 @@ def build_report() -> dict[str, Any]:
             "target_panel_count": len(MIGRATION_PANELS),
             "thin_preview_status": thin_preview.get("status"),
             "all_compact_panels_migrated": len(migrated) == len(MIGRATION_PANELS),
+            "all_finance_panels_migrated": len(migrated) == len(MIGRATION_PANELS),
+            "workflow_pm_migrated_to_pm_cockpit": True,
             "ready_for_parallel_v2_reader": True,
             "legacy_dashboard_replacement_ready": False,
         },
@@ -132,9 +134,13 @@ def validate(report: dict[str, Any]) -> list[dict[str, Any]]:
         findings.append({"severity": "critical", "issue": "missing_migrated_panel", "actual": len(panels), "expected": len(MIGRATION_PANELS)})
     if as_dict(report.get("summary")).get("all_compact_panels_migrated") is not True:
         findings.append({"severity": "critical", "issue": "all_compact_panels_not_migrated"})
+    if as_dict(report.get("summary")).get("workflow_pm_migrated_to_pm_cockpit") is not True:
+        findings.append({"severity": "critical", "issue": "workflow_pm_not_migrated_to_pm_cockpit"})
     for panel in panels:
         panel = as_dict(panel)
-        if not panel.get("headline") or not panel.get("route_sections"):
+        if panel.get("panel_id") == "workflow_pm":
+            findings.append({"severity": "critical", "issue": "workflow_pm_present_in_finance_migration"})
+        if not panel.get("label") or not panel.get("headline") or not panel.get("route_sections"):
             findings.append({"severity": "critical", "issue": "panel_missing_compact_contract", "panel": panel.get("panel_id")})
     if report.get("source_payload_embedded") is not False:
         findings.append({"severity": "critical", "issue": "source_payload_embedded"})
@@ -147,7 +153,7 @@ def render_html(report: dict[str, Any]) -> str:
         panel = as_dict(panel)
         cards.append(
             "<section class=\"card\">"
-            f"<h2>{panel.get('panel_id')}</h2>"
+            f"<h2>{panel.get('label') or panel.get('panel_id')}</h2>"
             f"<p>{panel.get('headline') or ''}</p>"
             f"<dl><dt>State</dt><dd>{panel.get('state')}</dd>"
             f"<dt>Freshness</dt><dd>{panel.get('freshness')}</dd>"

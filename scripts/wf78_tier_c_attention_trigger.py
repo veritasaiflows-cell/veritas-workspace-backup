@@ -99,7 +99,14 @@ def card_path(ticker: str) -> Path:
     return CARD_DIR / f"{ticker}.current.json"
 
 
-def active_tier_c_entries() -> list[dict[str, Any]]:
+def active_tier_c_entries() -> tuple[list[dict[str, Any]], list[str]]:
+    """Select Tier C candidates from the auto-router only.
+
+    The universe registry `tier` field is an owner-tracked deployment-candidate
+    label, not a routing tier, and must never seed tier selection here. A ticker
+    absent from the auto-router has no known tier, so it is excluded and reported
+    as a hard validation error rather than guessed from that label.
+    """
     universe = load_dict(UNIVERSE)
     auto_router = load_dict(AUTO_ROUTER)
     auto_by_ticker = {
@@ -108,19 +115,20 @@ def active_tier_c_entries() -> list[dict[str, Any]]:
         if isinstance(row, dict) and row.get("ticker")
     }
     entries: list[dict[str, Any]] = []
+    missing_from_router: list[str] = []
     for row in as_list(universe.get("entries")):
         entry = as_dict(row)
         ticker = ticker_key(entry.get("ticker"))
         if not ticker or entry.get("active") is False:
             continue
         auto_row = auto_by_ticker.get(ticker)
-        if auto_row:
-            if str(auto_row.get("auto_tier") or "") != "Tier C":
-                continue
-        elif str(entry.get("tier") or "").upper() != "C":
+        if auto_row is None:
+            missing_from_router.append(ticker)
+            continue
+        if str(auto_row.get("auto_tier") or "") != "Tier C":
             continue
         entries.append({**entry, "ticker": ticker, "current_auto_state": as_dict(auto_row).get("auto_state")})
-    return entries
+    return entries, sorted(missing_from_router)
 
 
 def fetch_price_metrics(symbols: list[str]) -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
@@ -382,11 +390,34 @@ def add_check(checks: list[dict[str, Any]], name: str, ok: bool, detail: Any = N
 def validation_checks(report: dict[str, Any]) -> list[dict[str, Any]]:
     checks: list[dict[str, Any]] = []
     rows = as_list(report.get("rows"))
-    attention_rows = [as_dict(row) for row in rows if as_dict(row).get("attention_triggered")]
+    raw_attention_rows = [as_dict(row) for row in rows if as_dict(row).get("attention_triggered")]
+    attention_rows = [as_dict(row) for row in as_list(report.get("attention_rows"))]
     add_check(checks, "universe_present", UNIVERSE.exists(), rel(UNIVERSE))
+    missing_from_router = as_list(report.get("missing_from_auto_router"))
+    add_check(
+        checks,
+        "all_active_universe_tickers_present_in_auto_router",
+        not missing_from_router,
+        {
+            "missing_count": len(missing_from_router),
+            "missing_tickers": [str(ticker) for ticker in missing_from_router][:25],
+            "remediation": (
+                "Regenerate tmp/wf78-auto-tier-routing.json before trusting this trigger. These tickers "
+                "were skipped rather than tiered from the universe registry label, which is an "
+                "owner-tracked deployment-candidate set and not a routing tier."
+            ),
+        },
+    )
     add_check(checks, "tier_c_rows_present", bool(rows), len(rows))
     add_check(checks, "attention_rows_generated", bool(attention_rows), len(attention_rows), "warning")
     add_check(checks, "attention_row_limit_respected", len(attention_rows) <= MAX_ATTENTION_ROWS, len(attention_rows))
+    add_check(
+        checks,
+        "raw_attention_pressure_over_limit",
+        len(raw_attention_rows) <= MAX_ATTENTION_ROWS,
+        {"raw_attention_rows": len(raw_attention_rows), "published_attention_rows": len(attention_rows)},
+        "warning",
+    )
     add_check(checks, "no_tier_b_promotion", all(as_dict(row).get("tier_b_promoted") is False for row in rows), None)
     add_check(checks, "no_tier_a_promotion", all(as_dict(row).get("tier_a_promoted") is False for row in rows), None)
     add_check(checks, "no_capital_deployment_approved", all(as_dict(row).get("capital_deployment_approved") is False for row in rows), None)
@@ -399,7 +430,7 @@ def validation_checks(report: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def build_report() -> dict[str, Any]:
-    entries = active_tier_c_entries()
+    entries, missing_from_router = active_tier_c_entries()
     price_metrics, price_errors = fetch_price_metrics([ticker_key(row.get("ticker")) for row in entries])
     rows = build_rows(entries, price_metrics, price_errors)
     attention_rows = [row for row in rows if row.get("attention_triggered")][:MAX_ATTENTION_ROWS]
@@ -423,8 +454,10 @@ def build_report() -> dict[str, Any]:
             "auto_router_prior": rel(AUTO_ROUTER),
             "ticker_cards": rel(CARD_DIR),
         },
+        "missing_from_auto_router": missing_from_router,
         "summary": {
             "tier_c_candidate_count": len(entries),
+            "missing_from_auto_router_count": len(missing_from_router),
             "priced_count": len(price_metrics),
             "price_error_count": len(price_errors),
             "attention_count": len(attention_rows),

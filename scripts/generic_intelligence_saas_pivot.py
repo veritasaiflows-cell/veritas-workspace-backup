@@ -22,6 +22,7 @@ from market_data_utils import atomic_write_json
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 
+PIVOT_SUMMARY_JSON = TMP / "generic-intelligence-saas-pivot.json"
 CONTRACT_JSON = TMP / "generic-service-run-contract.json"
 SCENARIO_LIBRARY_JSON = TMP / "wf75-smb-workflow-scenario-library.json"
 PM_DECISION_PACKET_JSON = TMP / "wf75-smb-pivot-pm-decision-packet.json"
@@ -72,6 +73,9 @@ CLIENT_ROLLOUT_CHECKLIST_MD = TMP / "wf79-smb-client-rollout-checklist.md"
 CURRICULUM_MAP_JSON = TMP / "wf79-smb-curriculum-map.json"
 CURRICULUM_MAP_MD = TMP / "wf79-smb-curriculum-map.md"
 ROLLOUT_READINESS_VALIDATION_JSON = TMP / "wf79-smb-rollout-readiness-validation.json"
+DELIVERABLE_GATE_JSON = TMP / "wf75-smb-deliverable-gate-sprint.json"
+DELIVERABLE_GATE_MD = TMP / "wf75-smb-deliverable-gate-sprint.md"
+DELIVERABLE_GATE_VALIDATION_JSON = TMP / "wf75-smb-deliverable-gate-validation.json"
 PHASE_CLOSEOUT_JSON = TMP / "wf79-smb-phase-closeout.json"
 DEFAULT_DB = TMP / "generic-service-state.sqlite"
 
@@ -1762,10 +1766,100 @@ def build_rollout_readiness_plan(
                 "completion_state": "blocked_until_exact_owner_approval",
             },
         ],
+        "week_by_week_rollout_plan": [
+            {
+                "week": 1,
+                "name": "Internal demo and approval preparation",
+                "objective": "Pick the first vertical, choose the demo path, rehearse the offer, and prepare the exact approval card.",
+                "training_focus": [
+                    "90-second Lead Rescue offer",
+                    "bad-fit exit language",
+                    "demo selection tree",
+                    "stop-line explain-back",
+                ],
+                "practice_scenarios": [
+                    "smb-missed-call-capture-v1",
+                    "smb-owner-attention-dashboard-v1",
+                ],
+                "outputs": [
+                    "selected vertical",
+                    "selected demo",
+                    "approved-or-blocked first ask draft",
+                    "owner approval card draft",
+                ],
+                "external_posture": "internal_only_no_outreach",
+            },
+            {
+                "week": 2,
+                "name": "Warm-list and conversation rehearsal",
+                "objective": "Practice the discovery call, objection handling, and intake boundary before any real contact.",
+                "training_focus": [
+                    "discovery questions",
+                    "sanitized sample request",
+                    "objection handling",
+                    "no-ROI-claim language",
+                ],
+                "practice_scenarios": [
+                    "smb-lead-intake-routing-v1",
+                    "smb-follow-up-sequences-v1",
+                ],
+                "outputs": [
+                    "roleplay score",
+                    "approved language queue",
+                    "blocked claims list",
+                    "sanitized intake checklist",
+                ],
+                "external_posture": "blocked_until_randall_approves_exact_scope",
+            },
+            {
+                "week": 3,
+                "name": "Paid pilot delivery rehearsal",
+                "objective": "Run the manual delivery flow against fake inputs before taking a paid pilot through the same steps.",
+                "training_focus": [
+                    "lead-flow map",
+                    "owner attention queue",
+                    "follow-up draft examples",
+                    "automation blueprint handoff",
+                ],
+                "practice_scenarios": [
+                    "smb-lead-status-tracking-v1",
+                    "smb-script-message-pack-v1",
+                ],
+                "outputs": [
+                    "mock pilot packet",
+                    "manual delivery timing estimate",
+                    "QA stop-line checklist",
+                    "implementation gate notes",
+                ],
+                "external_posture": "pilot_delivery_only_after_separate_owner_approval",
+            },
+            {
+                "week": 4,
+                "name": "Closeout, proof, and retainer offer rehearsal",
+                "objective": "Practice pilot recap, no-hype proof framing, retainer fit judgment, and next-step recommendation.",
+                "training_focus": [
+                    "pilot recap",
+                    "case-study-safe summary",
+                    "managed follow-up ops offer",
+                    "no-fit decision",
+                ],
+                "practice_scenarios": [
+                    "smb-sales-pipeline-cleanup-v1",
+                    "smb-tool-stack-recommendation-v1",
+                ],
+                "outputs": [
+                    "pilot closeout summary",
+                    "retainer recommendation",
+                    "no-fit or continue decision",
+                    "next experiment backlog",
+                ],
+                "external_posture": "internal_closeout_until_real_pilot_is_approved_and_completed",
+            },
+        ],
         "definition_of_nearly_100_percent": [
             "internal artifacts complete and validator-clean",
             "first vertical and target profile selectable",
-            "training map ready without changing the current lesson",
+            "week-by-week rollout training map ready for fake-scenario rehearsal",
             "approval card can be generated from existing artifacts",
             "all real-world actions remain explicitly owner-gated",
         ],
@@ -1793,6 +1887,20 @@ def render_rollout_readiness_plan_markdown(packet: dict[str, Any]) -> str:
             f"- Completion state: {row['completion_state']}",
             "- Outputs:",
         ])
+        lines.extend(f"  - {item}" for item in row["outputs"])
+        lines.append("")
+    lines.extend(["## 30-Day Week-By-Week Rollout Training Plan"])
+    for row in packet["week_by_week_rollout_plan"]:
+        lines.extend([
+            f"### Week {row['week']}: {row['name']}",
+            f"- Objective: {row['objective']}",
+            f"- External posture: {row['external_posture']}",
+            "- Training focus:",
+        ])
+        lines.extend(f"  - {item}" for item in row["training_focus"])
+        lines.append("- Practice scenarios:")
+        lines.extend(f"  - {item}" for item in row["practice_scenarios"])
+        lines.append("- Outputs:")
         lines.extend(f"  - {item}" for item in row["outputs"])
         lines.append("")
     lines.extend(["## Definition Of Nearly 100 Percent"])
@@ -1907,6 +2015,17 @@ def build_curriculum_map(generated_at: str, sales_drill: dict[str, Any]) -> dict
                 "outcome": "Decide whether a business is a fit for deeper work without forcing the sale.",
                 "practice": ["pilot recap", "success criteria", "implementation gate discussion"],
             },
+            {
+                "module": 7,
+                "title": "30-day rollout rehearsal",
+                "outcome": "Practice the week-by-week path from demo selection to pilot closeout without crossing outreach, data, credential, or ROI-claim stop lines.",
+                "practice": [
+                    "week 1 demo and approval-card drill",
+                    "week 2 discovery roleplay and sanitized intake drill",
+                    "week 3 fake pilot delivery walkthrough",
+                    "week 4 closeout and retainer-fit judgment",
+                ],
+            },
         ],
         "lesson_sequence": [
             "complete tonight's current SMB lesson first",
@@ -1916,6 +2035,7 @@ def build_curriculum_map(generated_at: str, sales_drill: dict[str, Any]) -> dict
             "run demo-selection drill",
             "run manual delivery walkthrough",
             "run pilot closeout review",
+            "run 30-day rollout rehearsal with fake scenarios",
         ],
         "training_not_changed": "This packet prepares the full curriculum and learning map only. It does not replace or modify the current lesson.",
         "authority_boundary": AUTHORITY_FALSE_FLAGS,
@@ -1986,6 +2106,265 @@ def validate_rollout_readiness(
     }
 
 
+def build_deliverable_gate_sprint(
+    generated_at: str,
+    smb_service_state: dict[str, Any],
+    lead_rescue_service_packet: dict[str, Any],
+    automation_blueprints: dict[str, Any],
+    pilot_readiness_packet: dict[str, Any],
+    rollout_plan: dict[str, Any],
+    client_rollout_checklist: dict[str, Any],
+    curriculum: dict[str, Any],
+) -> dict[str, Any]:
+    deliverable_bundle = [
+        {
+            "name": "Lead Rescue manual service packet",
+            "artifact": rel(LEAD_RESCUE_SERVICE_PACKET_JSON),
+            "source_status": lead_rescue_service_packet.get("status"),
+            "review_focus": "Can Randall understand the manual service promise, deliverables, and no-outreach stop lines without extra explanation?",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "Automation blueprint packet",
+            "artifact": rel(AUTOMATION_BLUEPRINTS_JSON),
+            "source_status": automation_blueprints.get("status"),
+            "review_focus": "Confirm each automation idea remains design-only with human review, dedupe, fallback, and no credentials.",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "SMB service state packet",
+            "artifact": rel(SMB_SERVICE_STATE_JSON),
+            "source_status": smb_service_state.get("status"),
+            "review_focus": "Verify the selected slice is operator-review-ready and every manual or automation step blocks external action.",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "Pilot readiness packet",
+            "artifact": rel(PILOT_READINESS_PACKET_JSON),
+            "source_status": pilot_readiness_packet.get("status"),
+            "review_focus": "Check that pilot use is approval-gated and does not imply real customer readiness.",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "Rollout readiness plan",
+            "artifact": rel(ROLLOUT_READINESS_PLAN_JSON),
+            "source_status": rollout_plan.get("status"),
+            "review_focus": "Review the rollout path as internal rehearsal only, including the week-by-week fake-scenario training plan.",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "Client rollout checklist",
+            "artifact": rel(CLIENT_ROLLOUT_CHECKLIST_JSON),
+            "source_status": client_rollout_checklist.get("status"),
+            "review_focus": "Use the checklist as owner approval-card input, not as authorization for a live client.",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "Curriculum map",
+            "artifact": rel(CURRICULUM_MAP_JSON),
+            "source_status": curriculum.get("status"),
+            "review_focus": "Confirm the learning sequence preserves the current lesson and adds only rehearsal structure.",
+            "gate_state": "ready_for_internal_review",
+        },
+        {
+            "name": "Cockpit and phase closeout",
+            "artifact": rel(COCKPIT_PANEL_JSON),
+            "source_status": "ready",
+            "review_focus": "Use the cockpit as the local review index for the deliverable bundle.",
+            "gate_state": "ready_for_internal_review",
+        },
+    ]
+    return {
+        "schema": "veritas.wf75_smb_deliverable_gate_sprint.v1",
+        "generated_at_utc": generated_at,
+        "status": "ready",
+        "workflow_ids": ["WF75", "WF79-SMB"],
+        "gate": "manual_internal_deliverable_review_before_any_external_use",
+        "source_audit": AUDIT_SOURCE,
+        "current_position": "Internal/operator review is ready. Real outreach, real customer data, external delivery, implementation, credentials, spend, and ROI claims remain blocked without exact owner approval.",
+        "deliverable_bundle": deliverable_bundle,
+        "operator_review_sequence": [
+            {
+                "step": 1,
+                "name": "Open the Lead Rescue packet",
+                "action": "Check the service promise, exact manual outputs, and owner-facing stop lines.",
+                "proof_artifacts": [rel(LEAD_RESCUE_SERVICE_PACKET_JSON), rel(LEAD_RESCUE_SERVICE_PACKET_VALIDATION_JSON)],
+                "exit_condition": "Accept as internal review-ready or mark revisions before any approval card.",
+            },
+            {
+                "step": 2,
+                "name": "Review automation and service-state proof",
+                "action": "Confirm the automation blueprints and service-state packet keep all work staged for operator review.",
+                "proof_artifacts": [rel(AUTOMATION_BLUEPRINTS_JSON), rel(SMB_SERVICE_STATE_JSON)],
+                "exit_condition": "No blueprint may use real data, credentials, outbound delivery, or customer-system writeback.",
+            },
+            {
+                "step": 3,
+                "name": "Choose demo and rehearsal path",
+                "action": "Use the demo tree, curriculum map, and rollout plan to choose the next fake-scenario rehearsal.",
+                "proof_artifacts": [rel(DEMO_SELECTION_TREE_JSON), rel(CURRICULUM_MAP_JSON), rel(ROLLOUT_READINESS_PLAN_JSON)],
+                "exit_condition": "Selected path is internal-only and preserves the current lesson sequence.",
+            },
+            {
+                "step": 4,
+                "name": "Decide the next business option",
+                "action": "Choose continue internal rehearsal, revise packet, prepare an exact owner approval card, or no-go/defer.",
+                "proof_artifacts": [rel(CLIENT_ROLLOUT_CHECKLIST_JSON), rel(PILOT_READINESS_PACKET_JSON)],
+                "exit_condition": "Any real outreach or pilot path is converted into an exact approval card before action.",
+            },
+        ],
+        "readiness_options": [
+            {
+                "option": "continue_internal_rehearsal",
+                "when_to_choose": "The bundle is useful but needs more fake-scenario reps before any market contact.",
+                "allowed_next_action": "Run another sanitized service-state slice or sales drill.",
+                "authority": "safe_without_owner_external_approval",
+            },
+            {
+                "option": "revise_deliverable_packet",
+                "when_to_choose": "The promise, demo, proof, or stop-line language is unclear.",
+                "allowed_next_action": "Patch the local packets and rerun validation.",
+                "authority": "safe_without_owner_external_approval",
+            },
+            {
+                "option": "prepare_exact_owner_approval_card",
+                "when_to_choose": "Randall wants to consider a specific real outreach or pilot action.",
+                "allowed_next_action": "Draft a scoped approval card with target, channel, data, offer, proof, stop lines, and rollback.",
+                "authority": "approval_prep_only",
+            },
+            {
+                "option": "no_go_or_defer",
+                "when_to_choose": "The offer is not clear enough, the proof is weak, or the external boundary is uncomfortable.",
+                "allowed_next_action": "Keep WF75/WF79-SMB internal and return to higher-priority workflow work.",
+                "authority": "safe_without_owner_external_approval",
+            },
+        ],
+        "blocked_without_exact_owner_approval": [
+            "no real customer data",
+            "no outreach, contact, calls, texts, emails, posts, review requests, or ads",
+            "no credentials, account access, CRM access, phone access, email access, payment access, POS access, or automation-platform access",
+            "no external delivery, public launch, client pilot, or customer-facing implementation",
+            "no implementation in customer systems",
+            "no ROI guarantee, revenue guarantee, legal readiness claim, compliance readiness claim, security readiness claim, certification claim, or performance claim",
+            "no spend, ads, tools purchase, subscription purchase, contractor spend, or account setup",
+        ],
+        "acceptance_proof": [
+            rel(DELIVERABLE_GATE_JSON),
+            rel(DELIVERABLE_GATE_MD),
+            rel(DELIVERABLE_GATE_VALIDATION_JSON),
+            rel(PHASE_CLOSEOUT_JSON),
+            rel(DEFAULT_DB),
+        ],
+        "next_safe_action": "Review the deliverable-gate sprint bundle manually and choose internal rehearsal, revision, exact approval-card prep, or no-go/defer.",
+        "authority_boundary": AUTHORITY_FALSE_FLAGS,
+        "validation": {"status": "ok", "errors": [], "warnings": []},
+    }
+
+
+def render_deliverable_gate_markdown(packet: dict[str, Any]) -> str:
+    lines = [
+        "# WF75/WF79-SMB Deliverable Gate Sprint",
+        "",
+        f"Status: {packet['status']}",
+        f"Gate: {packet['gate']}",
+        f"Source audit: {packet['source_audit']}",
+        "",
+        f"Current position: {packet['current_position']}",
+        "",
+        "## Deliverable Bundle",
+    ]
+    for item in packet["deliverable_bundle"]:
+        lines.extend([
+            f"### {item['name']}",
+            f"- Artifact: {item['artifact']}",
+            f"- Source status: {item['source_status']}",
+            f"- Review focus: {item['review_focus']}",
+            f"- Gate state: {item['gate_state']}",
+            "",
+        ])
+    lines.extend(["## Operator Review Sequence"])
+    for row in packet["operator_review_sequence"]:
+        lines.extend([
+            f"### Step {row['step']}: {row['name']}",
+            f"- Action: {row['action']}",
+            f"- Exit condition: {row['exit_condition']}",
+            "- Proof artifacts:",
+        ])
+        lines.extend(f"  - {path}" for path in row["proof_artifacts"])
+        lines.append("")
+    lines.extend(["## Readiness Options"])
+    for row in packet["readiness_options"]:
+        lines.extend([
+            f"### {row['option']}",
+            f"- When: {row['when_to_choose']}",
+            f"- Allowed next action: {row['allowed_next_action']}",
+            f"- Authority: {row['authority']}",
+            "",
+        ])
+    lines.extend(["## Blocked Without Exact Owner Approval"])
+    lines.extend(f"- {item}" for item in packet["blocked_without_exact_owner_approval"])
+    lines.extend([
+        "",
+        "Boundary: manual internal deliverable review only; no real customer data, no outreach, no credentials, no external delivery, no implementation, no ROI guarantee, no spend, no public launch, and no owner approval inference.",
+        "",
+        f"Next safe action: {packet['next_safe_action']}",
+    ])
+    return "\n".join(lines) + "\n"
+
+
+def validate_deliverable_gate_sprint(packet: dict[str, Any], rendered_text: str) -> dict[str, Any]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    if packet.get("status") != "ready":
+        errors.append("deliverable_gate_status_not_ready")
+    if packet.get("authority_boundary") != AUTHORITY_FALSE_FLAGS:
+        errors.append("deliverable_gate_authority_boundary_changed")
+    if len(packet.get("deliverable_bundle", [])) < 7:
+        errors.append("deliverable_bundle_below_7")
+    if not packet.get("operator_review_sequence"):
+        errors.append("operator_review_sequence_missing")
+    if not packet.get("readiness_options"):
+        errors.append("readiness_options_missing")
+    combined = (json.dumps(packet, sort_keys=True) + "\n" + rendered_text).lower()
+    for phrase in (
+        "manual internal deliverable review",
+        "no real customer data",
+        "no outreach",
+        "no credentials",
+        "external delivery",
+        "no implementation",
+        "no roi",
+        "owner approval",
+    ):
+        if phrase not in combined:
+            errors.append(f"deliverable_gate_stop_line_missing:{phrase}")
+    for claim in (
+        "we will contact",
+        "we will send",
+        "guaranteed revenue",
+        "compliance ready",
+        "security ready",
+        "approval granted",
+        "customer-ready",
+        "public launch ready",
+    ):
+        if claim in combined:
+            errors.append(f"forbidden_deliverable_gate_claim_present:{claim}")
+    return {
+        "schema": "veritas.wf75_smb_deliverable_gate_validation.v1",
+        "generated_at_utc": packet.get("generated_at_utc"),
+        "status": "ok" if not errors else "blocked",
+        "validated_artifacts": [
+            rel(DELIVERABLE_GATE_JSON),
+            rel(DELIVERABLE_GATE_MD),
+        ],
+        "errors": errors,
+        "warnings": warnings,
+        "authority_boundary": AUTHORITY_FALSE_FLAGS,
+        "validation": {"status": "ok" if not errors else "error", "errors": errors, "warnings": warnings},
+    }
+
+
 def build_cockpit_panel(
     generated_at: str,
     offer_packet: dict[str, Any],
@@ -1997,6 +2376,7 @@ def build_cockpit_panel(
     outreach_validation: dict[str, Any],
     pilot_readiness_validation: dict[str, Any],
     rollout_readiness_validation: dict[str, Any],
+    deliverable_gate_validation: dict[str, Any],
 ) -> dict[str, Any]:
     phases = [
         ("phase_0_offer_icp", "Offer / ICP", rel(OFFER_ICP_JSON), offer_packet.get("status")),
@@ -2008,7 +2388,8 @@ def build_cockpit_panel(
         ("phase_6_outreach_prep", "Approval-gated outreach prep", rel(OUTREACH_PREP_VALIDATION_JSON), outreach_validation.get("status")),
         ("phase_7_pilot_readiness", "Pilot readiness packaging", rel(PILOT_READINESS_VALIDATION_JSON), pilot_readiness_validation.get("status")),
         ("phase_8_rollout_readiness", "Rollout readiness and curriculum map", rel(ROLLOUT_READINESS_VALIDATION_JSON), rollout_readiness_validation.get("status")),
-        ("phase_9_real_outreach_gate", "Real outreach / pilot gate", rel(PILOT_READINESS_PACKET_JSON), "approval_required"),
+        ("phase_9_deliverable_gate", "Manual deliverable review gate", rel(DELIVERABLE_GATE_VALIDATION_JSON), deliverable_gate_validation.get("status")),
+        ("phase_10_real_outreach_gate", "Real outreach / pilot gate", rel(PILOT_READINESS_PACKET_JSON), "approval_required"),
     ]
     return {
         "schema": "veritas.wf79_smb_cockpit_panel.v1",
@@ -2028,8 +2409,9 @@ def build_cockpit_panel(
             "outreach_prep_validation_errors": len(outreach_validation.get("errors", [])),
             "pilot_readiness_validation_errors": len(pilot_readiness_validation.get("errors", [])),
             "rollout_readiness_validation_errors": len(rollout_readiness_validation.get("errors", [])),
+            "deliverable_gate_validation_errors": len(deliverable_gate_validation.get("errors", [])),
         },
-        "next_safe_action": "Review generated rollout-readiness and curriculum packets; real outreach or pilot use still requires Randall exact approval.",
+        "next_safe_action": "Review the deliverable-gate sprint packet; real outreach or pilot use still requires Randall exact approval.",
         "authority_boundary": AUTHORITY_FALSE_FLAGS,
         "validation": {"status": "ok", "errors": [], "warnings": []},
     }
@@ -2087,6 +2469,7 @@ def build_phase_closeout(
     outreach_validation: dict[str, Any],
     pilot_readiness_validation: dict[str, Any],
     rollout_readiness_validation: dict[str, Any],
+    deliverable_gate_validation: dict[str, Any],
 ) -> dict[str, Any]:
     phases = [
         {"phase": 0, "name": "Offer / ICP", "status": offer_packet.get("status"), "artifact": rel(OFFER_ICP_JSON)},
@@ -2094,11 +2477,12 @@ def build_phase_closeout(
         {"phase": 2, "name": "Marketing ops blueprints", "status": marketing_blueprints_validation.get("status"), "artifact": rel(MARKETING_OPS_BLUEPRINTS_VALIDATION_JSON)},
         {"phase": 3, "name": "Local cockpit panel", "status": cockpit_panel.get("status"), "artifact": rel(COCKPIT_PANEL_JSON)},
         {"phase": 4, "name": "Training / sales practice", "status": sales_practice.get("status"), "artifact": rel(SALES_PRACTICE_JSON)},
-        {"phase": 5, "name": "QA / stop-line lint", "status": "ok" if demo_validation.get("status") == "ok" and marketing_blueprints_validation.get("status") == "ok" and outreach_validation.get("status") == "ok" and pilot_readiness_validation.get("status") == "ok" and rollout_readiness_validation.get("status") == "ok" else "blocked", "artifact": rel(PHASE_CLOSEOUT_JSON)},
+        {"phase": 5, "name": "QA / stop-line lint", "status": "ok" if demo_validation.get("status") == "ok" and marketing_blueprints_validation.get("status") == "ok" and outreach_validation.get("status") == "ok" and pilot_readiness_validation.get("status") == "ok" and rollout_readiness_validation.get("status") == "ok" and deliverable_gate_validation.get("status") == "ok" else "blocked", "artifact": rel(PHASE_CLOSEOUT_JSON)},
         {"phase": 6, "name": "Approval-gated outreach prep", "status": outreach_validation.get("status"), "artifact": rel(OUTREACH_PREP_VALIDATION_JSON)},
         {"phase": 7, "name": "Pilot readiness packaging", "status": pilot_readiness_validation.get("status"), "artifact": rel(PILOT_READINESS_VALIDATION_JSON)},
         {"phase": 8, "name": "Rollout readiness and curriculum map", "status": rollout_readiness_validation.get("status"), "artifact": rel(ROLLOUT_READINESS_VALIDATION_JSON)},
-        {"phase": 9, "name": "Real outreach / pilot gate", "status": "approval_required", "artifact": rel(PILOT_READINESS_PACKET_JSON)},
+        {"phase": 9, "name": "Manual deliverable review gate", "status": deliverable_gate_validation.get("status"), "artifact": rel(DELIVERABLE_GATE_VALIDATION_JSON)},
+        {"phase": 10, "name": "Real outreach / pilot gate", "status": "approval_required", "artifact": rel(PILOT_READINESS_PACKET_JSON)},
     ]
     return {
         "schema": "veritas.wf79_smb_phase_closeout.v1",
@@ -2106,7 +2490,7 @@ def build_phase_closeout(
         "status": "ready" if all(row["status"] in {"ready", "ok", "approval_required"} for row in phases) else "blocked",
         "phases": phases,
         "fully_implemented_internal_artifacts": True,
-        "remaining_gate": "Randall exact approval required before real outreach, real customer data, credentials, ads, external delivery, spending, or customer-system implementation. Rollout-readiness, curriculum, pilot-readiness, and outreach materials are draft/internal only.",
+        "remaining_gate": "Manual deliverable-gate review is internal only. Randall exact approval remains required before real outreach, real customer data, credentials, ads, external delivery, spending, customer-system implementation, or any ROI/legal/compliance/security readiness claim.",
         "authority_boundary": AUTHORITY_FALSE_FLAGS,
         "validation": {"status": "ok", "errors": [], "warnings": []},
     }
@@ -2515,6 +2899,8 @@ def rebuild_sqlite(
     client_rollout_checklist: dict[str, Any],
     curriculum_map: dict[str, Any],
     rollout_readiness_validation: dict[str, Any],
+    deliverable_gate_sprint: dict[str, Any],
+    deliverable_gate_validation: dict[str, Any],
     phase_closeout: dict[str, Any],
     db_path: Path,
 ) -> dict[str, Any]:
@@ -2623,6 +3009,12 @@ def rebuild_sqlite(
             "demo_selection_tree": demo_selection_tree,
             "vertical_test_framework": vertical_test_framework,
             "pilot_readiness_validation": pilot_readiness_validation,
+            "rollout_readiness_plan": rollout_readiness_plan,
+            "client_rollout_checklist": client_rollout_checklist,
+            "curriculum_map": curriculum_map,
+            "rollout_readiness_validation": rollout_readiness_validation,
+            "deliverable_gate_sprint": deliverable_gate_sprint,
+            "deliverable_gate_validation": deliverable_gate_validation,
             "phase_closeout": phase_closeout,
         }.items():
             conn.execute(
@@ -2667,6 +3059,8 @@ def rebuild_sqlite(
             ("smb_client_rollout_checklist", CLIENT_ROLLOUT_CHECKLIST_JSON, client_rollout_checklist),
             ("smb_curriculum_map", CURRICULUM_MAP_JSON, curriculum_map),
             ("smb_rollout_readiness_validation", ROLLOUT_READINESS_VALIDATION_JSON, rollout_readiness_validation),
+            ("smb_deliverable_gate_sprint", DELIVERABLE_GATE_JSON, deliverable_gate_sprint),
+            ("smb_deliverable_gate_validation", DELIVERABLE_GATE_VALIDATION_JSON, deliverable_gate_validation),
             ("smb_phase_closeout", PHASE_CLOSEOUT_JSON, phase_closeout),
         ]:
             conn.execute(
@@ -2675,7 +3069,7 @@ def rebuild_sqlite(
             )
         conn.execute(
             "INSERT INTO operator_queue VALUES (?, ?, ?, ?)",
-            (1, "smb_workflow_clarity", "Review completed SMB/Marketing Ops phase packets, then decide whether to prepare approval-gated outreach material.", "review_only"),
+            (1, "smb_workflow_clarity", "Review the deliverable-gate sprint packet, then choose internal rehearsal, revision, exact approval-card prep, or no-go/defer.", "review_only"),
         )
         conn.execute(
             "INSERT INTO qa_events (event_type, status, detail_json) VALUES (?, ?, ?)",
@@ -2718,6 +3112,8 @@ def rebuild_sqlite(
                             client_rollout_checklist,
                             curriculum_map,
                             rollout_readiness_validation,
+                            deliverable_gate_sprint,
+                            deliverable_gate_validation,
                             phase_closeout,
                         ]
                     ),
@@ -2842,6 +3238,28 @@ def main() -> int:
             rendered_curriculum_map,
         ],
     )
+    smb_service_state = build_smb_service_state(
+        generated_at,
+        scenarios,
+        preview,
+        lead_rescue_service_packet,
+        lead_rescue_service_packet_validation,
+        automation_blueprints,
+        automation_blueprints_validation,
+    )
+    smb_service_state_validation = validate_smb_service_state(smb_service_state)
+    deliverable_gate_sprint = build_deliverable_gate_sprint(
+        generated_at,
+        smb_service_state=smb_service_state,
+        lead_rescue_service_packet=lead_rescue_service_packet,
+        automation_blueprints=automation_blueprints,
+        pilot_readiness_packet=pilot_readiness_packet,
+        rollout_plan=rollout_readiness_plan,
+        client_rollout_checklist=client_rollout_checklist,
+        curriculum=curriculum_map,
+    )
+    rendered_deliverable_gate = render_deliverable_gate_markdown(deliverable_gate_sprint)
+    deliverable_gate_validation = validate_deliverable_gate_sprint(deliverable_gate_sprint, rendered_deliverable_gate)
     cockpit_panel = build_cockpit_panel(
         generated_at,
         offer_icp_packet,
@@ -2853,6 +3271,7 @@ def main() -> int:
         outreach_prep_validation,
         pilot_readiness_validation,
         rollout_readiness_validation,
+        deliverable_gate_validation,
     )
     rendered_cockpit_panel = render_cockpit_panel_html(cockpit_panel)
     phase_closeout = build_phase_closeout(
@@ -2865,17 +3284,8 @@ def main() -> int:
         outreach_prep_validation,
         pilot_readiness_validation,
         rollout_readiness_validation,
+        deliverable_gate_validation,
     )
-    smb_service_state = build_smb_service_state(
-        generated_at,
-        scenarios,
-        preview,
-        lead_rescue_service_packet,
-        lead_rescue_service_packet_validation,
-        automation_blueprints,
-        automation_blueprints_validation,
-    )
-    smb_service_state_validation = validate_smb_service_state(smb_service_state)
     validation = validate_payloads(
         [
             contract,
@@ -2911,6 +3321,8 @@ def main() -> int:
             client_rollout_checklist,
             curriculum_map,
             rollout_readiness_validation,
+            deliverable_gate_sprint,
+            deliverable_gate_validation,
             phase_closeout,
         ]
     )
@@ -2940,6 +3352,9 @@ def main() -> int:
         validation["status"] = "blocked"
     if rollout_readiness_validation["status"] != "ok":
         validation["errors"].extend(rollout_readiness_validation["errors"])
+        validation["status"] = "blocked"
+    if deliverable_gate_validation["status"] != "ok":
+        validation["errors"].extend(deliverable_gate_validation["errors"])
         validation["status"] = "blocked"
     if phase_closeout["status"] != "ready":
         validation["errors"].append("phase_closeout_not_ready")
@@ -2994,6 +3409,9 @@ def main() -> int:
         atomic_write_json(CURRICULUM_MAP_JSON, curriculum_map)
         CURRICULUM_MAP_MD.write_text(rendered_curriculum_map, encoding="utf-8")
         atomic_write_json(ROLLOUT_READINESS_VALIDATION_JSON, rollout_readiness_validation)
+        atomic_write_json(DELIVERABLE_GATE_JSON, deliverable_gate_sprint)
+        DELIVERABLE_GATE_MD.write_text(rendered_deliverable_gate, encoding="utf-8")
+        atomic_write_json(DELIVERABLE_GATE_VALIDATION_JSON, deliverable_gate_validation)
         atomic_write_json(COCKPIT_PANEL_JSON, cockpit_panel)
         COCKPIT_PANEL_HTML.write_text(rendered_cockpit_panel, encoding="utf-8")
         atomic_write_json(PHASE_CLOSEOUT_JSON, phase_closeout)
@@ -3035,6 +3453,8 @@ def main() -> int:
             client_rollout_checklist,
             curriculum_map,
             rollout_readiness_validation,
+            deliverable_gate_sprint,
+            deliverable_gate_validation,
             phase_closeout,
             db_path,
         )
@@ -3092,11 +3512,17 @@ def main() -> int:
             "curriculum_map": rel(CURRICULUM_MAP_JSON),
             "curriculum_map_md": rel(CURRICULUM_MAP_MD),
             "rollout_readiness_validation": rel(ROLLOUT_READINESS_VALIDATION_JSON),
+            "deliverable_gate_sprint": rel(DELIVERABLE_GATE_JSON),
+            "deliverable_gate_sprint_md": rel(DELIVERABLE_GATE_MD),
+            "deliverable_gate_validation": rel(DELIVERABLE_GATE_VALIDATION_JSON),
             "phase_closeout": rel(PHASE_CLOSEOUT_JSON),
+            "summary": rel(PIVOT_SUMMARY_JSON),
             "sqlite": db_result,
         },
         "validation": validation,
     }
+    if args.write:
+        atomic_write_json(PIVOT_SUMMARY_JSON, result)
     print(json.dumps(result, indent=2))
     if args.validate and (validation["status"] != "ok" or (db_result and db_result["status"] != "ok")):
         return 2

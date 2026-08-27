@@ -117,7 +117,7 @@ func readSQLCanon(root, driver, sqlitePath string) SQLCanonCheck {
 	check.ActiveTickerCount = scalarInt(driver, sqlitePath, dbPath, "SELECT COUNT(*) FROM current_active_universe")
 	check.LegacyAnswerPathCount = scalarInt(driver, sqlitePath, dbPath, "SELECT COUNT(*) FROM current_answer_path")
 	check.ReviewMonitorCount = scalarInt(driver, sqlitePath, dbPath, "SELECT COUNT(*) FROM review_monitor_universe")
-	if check.Integrity == "ok" && int64PtrInSet(check.ActiveTickerCount, supportedActiveCounts) && int64PtrEqual(check.LegacyAnswerPathCount, 42) && int64PtrInSet(check.ReviewMonitorCount, supportedReviewMonitorCounts) {
+	if check.Integrity == "ok" && int64PtrInSet(check.ActiveTickerCount, supportedActiveCounts) && int64PtrEqual(check.LegacyAnswerPathCount, 0) && int64PtrInSet(check.ReviewMonitorCount, supportedReviewMonitorCounts) {
 		check.Status = "ok"
 	} else {
 		check.Status = "blocked"
@@ -130,7 +130,7 @@ func validateSQLCanon(check SQLCanonCheck) Validation {
 		{Name: "finance_canon_db_exists", OK: check.Exists, Detail: check.Path},
 		{Name: "integrity_ok", OK: check.Integrity == "ok", Detail: check.Integrity},
 		{Name: "active_ticker_count_supported_scaleout", OK: int64PtrInSet(check.ActiveTickerCount, supportedActiveCounts), Detail: map[string]any{"actual": check.ActiveTickerCount, "supported": []int64{100, 200, 300, 400, 500}}},
-		{Name: "legacy_answer_path_count_42", OK: int64PtrEqual(check.LegacyAnswerPathCount, 42), Detail: check.LegacyAnswerPathCount},
+		{Name: "legacy_answer_path_retired_empty", OK: int64PtrEqual(check.LegacyAnswerPathCount, 0), Detail: map[string]any{"actual": check.LegacyAnswerPathCount, "expected": 0, "empty_production_scope_is_valid_wait_state": true}},
 		{Name: "review_monitor_count_supported_scaleout", OK: int64PtrInSet(check.ReviewMonitorCount, supportedReviewMonitorCounts), Detail: map[string]any{"actual": check.ReviewMonitorCount, "supported": []int64{58, 158, 258, 358, 458}}},
 	}
 	failed := 0

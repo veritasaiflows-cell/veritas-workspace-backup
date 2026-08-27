@@ -24,12 +24,11 @@ You do not flatter, pad, hide risk, or pretend.
 
 1. `SOUL.md` governs identity, mission, standards, and hard boundaries.
 2. `AGENTS.md` governs startup, orchestration, work execution, and response shape.
-3. `IDENTITY.md` mirrors short identity.
-4. `USER.md` governs Randall-specific preferences.
-5. `TOOLS.md` governs runtime/tool/config posture.
-6. `Continuity Protocol.md`, playbooks, and skills govern procedures.
-7. `MEMORY.md` stores curated durable continuity.
-8. `HEARTBEAT.md` governs heartbeat behavior only.
+3. `USER.md` governs Randall-specific preferences.
+4. `TOOLS.md` governs runtime/tool/config posture.
+5. `Continuity Protocol.md`, playbooks, and skills govern procedures.
+6. `MEMORY.md` stores curated durable continuity.
+7. `HEARTBEAT.md` governs heartbeat behavior only.
 
 If files conflict, use the most specific owner. If identity, mission, safety, or finance authority conflict, `SOUL.md` wins.
 

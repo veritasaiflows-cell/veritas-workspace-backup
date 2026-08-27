@@ -6,7 +6,30 @@
 - Preserve canonical truth ownership: owner notes and approved gated apply artifacts are canon; generated artifacts and SQL indexes are proof, routing, cache, or review surfaces only.
 
 ## Current State
-- WF72 remains active as the OS efficiency, archive hygiene, SQL/canon readiness, and infrastructure-hardening lane.
+
+### 2026-08-15 refresh (verified proof)
+- WF72 remains active as the OS efficiency, archive hygiene, SQL/canon readiness, and infrastructure-hardening lane; read authority stays support-only, and WF84/WF85 own the finance answer path.
+- Full `sql_index` validator chain re-run clean on 2026-08-15 (all 12 validators exit 0). Live proof:
+  - `finance_sql_canon_access.py` SQL-canon health `ok`: consumer-migration registry `684`, cutover state `sql_primary_guarded=179` / `source_producer=389` / `not_cut_over=116`; integrity, foreign keys, required tables, routing views, and P0 answer-path lane (`21/21`) all pass; `source_lineage=3521` with 0 nulls; production reference levels complete (0 null production references).
+  - `finance_sql_primary_migration_plan.py` status `warning` (non-blocking): registry `684`, SQL-primary `179`, shadow `0`, source-producer `389` — migration has genuinely advanced since the 2026-06-19 baseline (registry `434`, SQL-primary `35`).
+  - `full_intelligence_answer_parity.py --all` status `ok`; `fast_path_qa.py` status `ok` (15 checks, 0 critical); `finance_sql_markdown_field_ownership.py` `ok` (80 rows); `sql_canon_old_anchor_residue_guard.py` `ok` (0 findings).
+- This refresh clears the stale owner-context freshness downgrade on the WF72 route (continuity note had gone ~58 days without update); it does not grant SQL-first cutover, Python/feeder retirement, canon/portfolio mutation, or finance answer-path ownership. Those remain separately gated.
+- The detailed 2026-06-19 entry below is retained as historical baseline; numbers there are superseded by the verified proof above.
+
+### 2026-06-19 baseline (historical)
+- As of 2026-06-19, WF72 owns the SQL-primary finance migration finish-line plan. Randall explicitly chose to commit to finishing SQL-primary migration with schedule/parity, but current SQL read authority remains support-only until each gate is clean.
+- Latest SQL-primary migration proof:
+  - `tmp/finance-sql-primary-migration-plan.json` status `warning`: registry `434`, SQL-primary guarded `35`, shadow validated `75`, source-producer `324`, SQL-primary completion `8.06%`, reference source families `3`, raw_json duplicate payload about `2.70MB`.
+  - `tmp/finance-sql-markdown-field-ownership.json` status `ok`: `24` reconciliation rows classified; `19` cross-class review-needed rows are no longer fake SQL/Markdown blockers.
+  - `tmp/execution-board-canon-anchor-pilot.json` status `ok`: `42` Execution Board anchors generated as review-only preview, no unsafe authority flags.
+  - `tmp/execution-board-canon-anchor-drift-validator.json` status `blocked`: `42` anchors vs `42` SQL rows, `4` match, `38` drift, `0` missing SQL. This is the real blocker for SQL-primary reference-level trust.
+  - `tmp/reference-levels-derived-refresh-dry-run.json` status `warning`: review-only SQL `reference_levels` repair packet generated; `42` anchors, `42` SQL rows, `42` proposed updates, `0` inserts, `0` no-change rows, `0` missing required anchors, `sql_write_performed=false`, `approval_required=true`.
+  - `tmp/reference-levels-expected-parity-validator.json` status `ok`: proposed post-apply state would be `42/42` anchor parity with `0` expected drift.
+  - `tmp/reference-levels-derived-refresh-apply-packet.json` status `blocked_pending_explicit_approval`: backup/rollback recipe and SQL operation preview exist, but SQL apply remains blocked until explicit approval for the exact packet.
+  - `tmp/finance-sql-consumer-migration-burndown.json` status `warning`: registry remains `434` rows, `35` SQL-primary, `75` shadow, `324` source-producer; consumer cutover remains blocked until reference-level parity and per-consumer A/B proof.
+  - `tmp/veritas-artifact-index.sqlite` now includes `v_cockpit_action_queue_deduped`; latest proof showed raw queue `61`, de-duped queue `38`, duplicate keys `0`.
+- New audit owner note: `08. Audits/SQL Primary Finance Canon Migration Audit and Finish Line Plan - 2026-06-19.md`.
+- Tomorrow pickup starts with the derived-refresh dry-run for SQL `reference_levels`; do not write `state/finance/finance-canon.sqlite` until the dry-run diff, backup/rollback, all-42 parity, and post-write validators are clean and explicitly approved for apply.
 - WF73 now owns boot/control-surface compression. WF72 continues to own broader archive, SQL/canon, artifact hygiene, and service-infrastructure boundaries.
 - 2026-06-06 efficiency sprint added `scripts/fast_path_qa.py` -> `tmp/fast-path-qa.json` as the WF72/WF73 read-only fast-path QA surface. It checks workflow route JSON/SQLite, PM state JSON/SQLite, artifact index SQLite, cron freshness, artifact scorer, WF78 rerouting, and closeout ordering discipline. Current proof is `ok`: 10 checks, 0 critical failures, 0 warnings, route probes under target. Source-open owner notes remain required for material claims after the fast path identifies the correct owner/proof route.
 - 2026-06-03 22:17 MST A2 fallback-fixture wiring completed. `scripts/wf72_a2_fallback_fixture.py --write --validate` persists `tmp/wf72-a2-consumer-authority-fallback-values.json` and `tmp/wf72-a2-consumer-authority-fallback-manifest.json` from the bounded 265-row cache. The Go consumer-authority guard now auto-loads the A2 fallback path and reports `status=ok`, `sql_read_allowed=true`, 265 approved/cache rows, 0 fallback-missing, 0 stale/unsafe, 0 authority failures. The prior 13 stale/source-drift rows are classified as resolved by A1 hygiene plus A2 manifest proof. Harness is green: `tmp/veritas-harness-scorecard.json` 89/89 pass, 0 failures, 0 expected-pending; PM is green at 83.9 with 0 blocked lanes. This does not authorize SQL-first consumer promotion, Python fallback retirement, SQL writes/import, canon/portfolio mutation, customer output, paper/live/account action, or owner approval inference.
@@ -138,6 +161,11 @@
 - WF72 entry/stop SQL activation completed earlier for exactly 252 reference metadata keys, but later retail-grade readiness correctly blocked SQL-first use.
 
 ## Outstanding
+- Decide whether to approve the exact `tmp/reference-levels-derived-refresh-apply-packet.json` SQL data update. The dry-run proves expected `42/42` anchor parity, but the apply is still a separate gate because it writes `state/finance/finance-canon.sqlite`.
+- Decide whether the four underlying-source exceptions are acceptable for this apply packet: `KTOS`, `SLV`, `TLT`, and `SMCI` derive from `tmp/portfolio-config.json` rather than the dominant `tmp/deployment-check.json` family. The proposed SQL source is still collapsed to `tmp/execution-board-canon-anchor-pilot.json` for all 42 rows, with underlying provenance retained in raw_json.
+- If apply is approved, create a timestamped DB backup, run the SQL update in one transaction, then rerun expected parity, anchor drift validator with fail-on-drift, SQL canon access, artifact index, and changed-file validation.
+- Keep SQL-primary migration completion visible as a registry burn-down: `35` SQL-primary, `75` shadow, `324` source-producer as of 2026-06-19.
+- Treat `tmp/execution-board-canon-anchor-drift-validator.json` domain `blocked` as correct until drift is repaired; do not weaken it into green.
 - Keep the typed read-only entry/stop helper and 42-card additive no-drift proof in monitor/QA mode before any broader consumer migration.
 - Remediate or explicitly model stale SQL readiness blockers, especially NVDA/source-freshness stale provenance.
 - Use the automatic validation bundle after any WF72/WF78 SQL/ticker-card/pilot change.
@@ -151,10 +179,20 @@
 - WF68 Intraday Alert Producer is clean in `NO_REPLY` mode; continue monitoring because no live alert packet was present in the latest proof.
 
 ## Next Action
-1. Run the validation bundle: `python scripts\sql_retail_grade_validation_bundle.py --write --validate`.
-2. Run the phase gate: `python scripts\sql_retail_expansion_phase_gate.py --write --validate`; it owns the post-pilot 42-card no-drift review.
-3. Draft Phase 5 100-name thin-monitor proposal/gates only; do not import tickers.
-4. Stop before SQL-first consumer migration unless semantic no-drift fields match, validators pass, and `tmp/sql-canon-retail-grade-readiness.json` no longer blocks the intended use.
+1. Review the exact apply packet:
+   - `tmp/reference-levels-derived-refresh-dry-run.json`
+   - `tmp/reference-levels-derived-refresh-apply-packet.json`
+   - `tmp/reference-levels-expected-parity-validator.json`
+2. If Randall explicitly approves the exact SQL data apply, lease `state/finance/finance-canon.sqlite` separately and run the apply slice with backup/rollback:
+   - backup the DB first
+   - apply only the 42-row `reference_levels` update previewed in the packet
+   - rerun `reference_levels_expected_parity_validator.py --write --write-md --validate`
+   - rerun `execution_board_canon_anchor_drift_validator.py --write --validate --fail-on-drift`
+   - rerun `finance_sql_canon_access.py --write --validate`
+   - rerun `artifact_index.py incremental` and `artifact_index.py validate`
+   - rerun `changed_file_validator_router.py --write --validate`
+3. If apply is not approved yet, keep SQL `reference_levels` domain `blocked` and proceed only with non-mutating consumer burn-down/A-B planning.
+4. Stop before SQL schema mutation, cron schedule mutation, SQL-first consumer migration, Python fallback retirement, archive/delete, canon/portfolio mutation, capital deployment, or paper/live/account action unless a separate exact approval packet is clean.
 
 ## Key Files
 - `06. Playbooks/Active Workflows.md` - live workflow control surface.
@@ -171,6 +209,11 @@
 - `scripts/sql_retail_grade_validation_bundle.py` - automatic WF72/WF78 SQL readiness validation lane.
 - `scripts/sql_retail_expansion_phase_gate.py` - Phases 1-4 SQL retail expansion gate, including 42-card additive no-drift, blocker classification, and existing pilot hardening.
 - `scripts/sql_hardening_flattening_plan.py` - flattened report-only SQL hardening phase packet.
+- `scripts/finance_sql_primary_migration_plan.py` - current SQL-primary migration finish-line plan and registry burn-down packet.
+- `scripts/finance_sql_markdown_field_ownership.py` - field ownership classifier to prevent cross-class fake blockers.
+- `scripts/execution_board_canon_anchor_pilot.py` - review-only 42-ticker Execution Board anchor preview.
+- `scripts/execution_board_canon_anchor_drift_validator.py` - anchor vs SQL `reference_levels` drift validator; domain blocked is expected until reference-level refresh is repaired.
+- `08. Audits/SQL Primary Finance Canon Migration Audit and Finish Line Plan - 2026-06-19.md` - current audit and finish-line process.
 - `scripts/tmp_helper_residue_cleanup.py` - exact tmp helper residue archive/manifest mover.
 - `09. Archive/Archive Logs/` - archive proof logs.
 - `backups/20260529-1248-wf72-continuity-rollup/` - pre-rollup full WF72 note backup.

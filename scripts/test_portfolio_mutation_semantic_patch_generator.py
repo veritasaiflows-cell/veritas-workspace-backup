@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import json
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -21,9 +22,18 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
-def test_category(category: str, errors: list[str]) -> None:
+def current_proposal_ticker() -> str:
+    bundle = json.loads(BUNDLE.read_text(encoding="utf-8"))
+    for packet in bundle.get("proposals") or []:
+        ticker = str(packet.get("ticker_or_scope") or packet.get("ticker") or "").upper()
+        if ticker:
+            return ticker
+    raise AssertionError("current proposal ticker not found")
+
+
+def test_category(ticker: str, category: str, errors: list[str]) -> None:
     try:
-        packet = generator.build_augmented_packet(BUNDLE, None, "ETN", category)
+        packet = generator.build_augmented_packet(BUNDLE, None, ticker, category)
     except ValueError as exc:
         message = str(exc)
         if category in {"entry_band", "sizing"} and "semantic note already current" in message:
@@ -77,8 +87,9 @@ def test_snapshot_append_reuses_single_section(errors: list[str]) -> None:
 
 def main() -> int:
     errors: list[str] = []
+    ticker = current_proposal_ticker()
     for category in CATEGORIES:
-        test_category(category, errors)
+        test_category(ticker, category, errors)
     test_snapshot_append_reuses_single_section(errors)
     if errors:
         print("portfolio_mutation_semantic_patch_generator_tests_failed")

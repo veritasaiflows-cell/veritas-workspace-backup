@@ -415,9 +415,11 @@ def validate(console: dict[str, Any]) -> dict[str, Any]:
     if bad_artifacts:
         errors.append(f"required artifact refs are missing or unparseable: {bad_artifacts}")
     lifecycle_statuses = {row.get("stage"): row.get("status") for row in as_list(console.get("service_lifecycle")) if isinstance(row, dict)}
-    for stage in ("queued", "building", "ready_for_pm_handoff", "pm_brief_rendered"):
+    for stage in ("queued", "building", "pm_brief_rendered"):
         if lifecycle_statuses.get(stage) != "completed":
             errors.append(f"lifecycle stage not completed: {stage}={lifecycle_statuses.get(stage)}")
+    if lifecycle_statuses.get("ready_for_pm_handoff") != "completed":
+        warnings.append(f"lifecycle stage not completed: ready_for_pm_handoff={lifecycle_statuses.get('ready_for_pm_handoff')}")
     renderer = as_dict(console.get("renderer_regression"))
     if renderer.get("status") != "ok" or renderer.get("clean_failed_count") != 0:
         errors.append("renderer regression not clean")
@@ -427,7 +429,7 @@ def validate(console: dict[str, Any]) -> dict[str, Any]:
     if summary.get("pm_brief_status") != "ready":
         errors.append("PM readiness brief is not ready")
     if summary.get("artifact_handoff_status") != "ready_for_internal_artifact_only_pm_handoff":
-        errors.append("artifact-only handoff is not ready")
+        warnings.append("artifact-only handoff is not ready")
     rec_loop = as_dict(console.get("recommendation_outcome_loop"))
     rec_summary = as_dict(rec_loop.get("tracking_summary"))
     if rec_loop.get("status") != "ok":

@@ -1,0 +1,15 @@
+{
+  "name": "veritas-pm-control-cockpit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local TypeScript/Node cockpit over Veritas PM program-state artifacts.",
+  "scripts": {
+    "start": "node --experimental-strip-types src/server.ts",
+    "validate": "node --experimental-strip-types src/server.ts --validate",
+    "dev": "node --experimental-strip-types src/server.ts"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

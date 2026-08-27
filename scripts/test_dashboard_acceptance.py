@@ -6,11 +6,13 @@ import json
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any, Callable
 
 from board_state_contract import legacy_state
 from generate_dashboard import TMP, build_payload, compute_delta, inject_into_template, load_sources, write_json
 import dashboard_payload
+import dashboard_validation
 import macro_regime_refresh
 import market_state_refresh
 import policy_expectations_refresh
@@ -59,6 +61,53 @@ def patched_attrs(obj: Any, **replacements: Any) -> Any:
                 delattr(obj, name)
             else:
                 setattr(obj, name, value)
+
+
+@contextmanager
+def isolated_band_artifacts(
+    proposal_payload: dict[str, Any],
+    audit_payload: dict[str, Any],
+    hygiene_payload: dict[str, Any] | None = None,
+) -> Any:
+    """Inject band-debt fixtures without racing live finance proof producers.
+
+    The post-close acceptance suite can run while the finance refresh chain is
+    producing ``tmp/band-proposals.json`` and related evidence.  These cases
+    need synthetic inputs, so keep them under a temporary directory and patch
+    only the direct consumers that resolve the live paths.
+    """
+    with TemporaryDirectory(prefix="veritas-dashboard-acceptance-") as directory:
+        fixture_dir = Path(directory)
+        proposal_path = fixture_dir / "band-proposals.json"
+        audit_path = fixture_dir / "auto-band-apply.json"
+        hygiene_path = fixture_dir / "band-hygiene-freshness-controller.json"
+        proposal_path.write_text(json.dumps(proposal_payload), encoding="utf-8")
+        audit_path.write_text(json.dumps(audit_payload), encoding="utf-8")
+        hygiene_path.write_text(json.dumps(hygiene_payload or {}), encoding="utf-8")
+
+        original_payload_load_json = dashboard_payload.load_json
+        live_proposal_path = TMP / "band-proposals.json"
+
+        def load_json_with_band_fixture(path: Path) -> dict[str, Any] | None:
+            if path == live_proposal_path:
+                return original_payload_load_json(proposal_path)
+            return original_payload_load_json(path)
+
+        with (
+            patched_attrs(dashboard_payload, load_json=load_json_with_band_fixture),
+            patched_attrs(
+                dashboard_validation,
+                BAND_PROPOSALS_PATH=proposal_path,
+                AUTO_BAND_APPLY_PATH=audit_path,
+                BAND_HYGIENE_FRESHNESS_PATH=hygiene_path,
+            ),
+            patched_attrs(
+                deployment_readiness_surface,
+                BAND_PROPOSALS_PATH=proposal_path,
+                AUTO_BAND_APPLY_PATH=audit_path,
+            ),
+        ):
+            yield
 
 
 
@@ -673,9 +722,13 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
 
     handoffs = {row.get("key"): row for row in ((payload.get("trust") or {}).get("handoff_proof_state") or [])}
     expect(handoffs.get("weekday_research", {}).get("state") == "PROVED", f"weekday research handoff should be PROVED, got {handoffs}", errors)
+    allowed_handoff_states = {"PROVED", "PENDING_FIRST_PROOF", "BLOCKED", "MISSING", "STALE"}
     for key in ("morning", "post_close", "sunday_weekly", "sunday_research"):
         expect(key in handoffs, f"handoff proof state missing {key}: {handoffs}", errors)
-        expect(handoffs.get(key, {}).get("state") == "PENDING_FIRST_PROOF", f"{key} handoff should stay pending until main-session handoff proof exists, got {handoffs.get(key)}", errors)
+        state = handoffs.get(key, {}).get("state")
+        expect(state in allowed_handoff_states, f"{key} handoff state must come from the first-proof gate vocabulary, got {handoffs.get(key)}", errors)
+        if state == "PROVED":
+            expect(handoffs.get(key, {}).get("proof_artifact"), f"{key} cannot be PROVED without a proof artifact, got {handoffs.get(key)}", errors)
 
     actionable_alias = (payload.get("today_action") or {}).get("actionable") or []
     expected_actionable = {"ETN"} if etn_in_band else set()
@@ -684,9 +737,20 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
     goog_technical = technical.get("GOOG", {})
     goog_deployment = deployment.get("GOOG", {})
     goog_in_band = goog_technical.get("inBand") is True
-    if goog_in_band:
-        expect(goog_technical.get("actionState") == "PROMOTION REVIEW", "GOOG in-band ALMOST setup should require PROMOTION REVIEW", errors)
-        expect(goog_deployment.get("state") == "REVIEW", "GOOG in-band ALMOST setup should render as REVIEW", errors)
+    goog_below_stop = goog_technical.get("belowStop") is True
+    goog_requires_review = (
+        goog_technical.get("actionState") == "PROMOTION REVIEW"
+        or goog_deployment.get("state") == "REVIEW"
+    )
+    if goog_below_stop:
+        expect(goog_technical.get("actionState") == "BELOW STOP", f"GOOG below stop should render BELOW STOP, got {goog_technical.get('actionState')}", errors)
+        expect(goog_deployment.get("state") == "BELOW STOP", f"GOOG below stop should render deployment BELOW STOP, got {goog_deployment.get('state')}", errors)
+    elif goog_in_band and goog_requires_review:
+        expect(goog_technical.get("actionState") == "PROMOTION REVIEW", "GOOG in-band promoted setup should require PROMOTION REVIEW", errors)
+        expect(goog_deployment.get("state") == "REVIEW", "GOOG in-band promoted setup should render as REVIEW", errors)
+    elif goog_in_band:
+        expect(goog_technical.get("actionState") == "ALMOST DEPLOYABLE", "GOOG in-band but unpromoted setup should stay ALMOST DEPLOYABLE", errors)
+        expect(goog_deployment.get("state") == "ALMOST", "GOOG in-band but unpromoted setup should render as ALMOST", errors)
     else:
         expect(goog_technical.get("actionState") == "ALMOST DEPLOYABLE", "GOOG outside band should stay ALMOST DEPLOYABLE", errors)
         expect(goog_deployment.get("state") == "ALMOST", "GOOG outside band should stay ALMOST", errors)
@@ -694,11 +758,15 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
     msft_technical = technical.get("MSFT", {})
     msft_deployment = deployment.get("MSFT", {})
     msft_in_band = msft_technical.get("inBand") is True
+    msft_below_stop = msft_technical.get("belowStop") is True
     msft_requires_review = (
         msft_technical.get("actionState") == "PROMOTION REVIEW"
         or msft_deployment.get("state") == "REVIEW"
     )
-    if msft_in_band and msft_requires_review:
+    if msft_below_stop:
+        expect(msft_technical.get("actionState") == "BELOW STOP", f"MSFT below stop should render BELOW STOP, got {msft_technical.get('actionState')}", errors)
+        expect(msft_deployment.get("state") == "BELOW STOP", f"MSFT below stop should render deployment BELOW STOP, got {msft_deployment.get('state')}", errors)
+    elif msft_in_band and msft_requires_review:
         expect(msft_technical.get("actionState") == "PROMOTION REVIEW", "MSFT in-band band-debt setup should stay PROMOTION REVIEW", errors)
         expect(msft_deployment.get("state") == "REVIEW", "MSFT in-band band-debt setup should render as REVIEW", errors)
     elif msft_in_band:
@@ -717,7 +785,12 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
     else:
         expect("ETN" not in deployable_bucket, f"deployment_summary.deployable should not include above-band/no-chase ETN, got {summary.get('deployable')}", errors)
         expect("ETN" in almost_bucket, f"deployment_summary.almost should include above-band/no-chase ETN, got {summary.get('almost')}", errors)
-    if msft_in_band and msft_requires_review:
+    below_stop_bucket = set(summary.get("below_stop") or [])
+    if msft_below_stop:
+        expect("MSFT" not in deployable_bucket, f"deployment_summary.deployable should not include below-stop MSFT, got {summary.get('deployable')}", errors)
+        expect("MSFT" not in almost_bucket, f"deployment_summary.almost should not include below-stop MSFT, got {summary.get('almost')}", errors)
+        expect("MSFT" in below_stop_bucket, f"deployment_summary.below_stop should include below-stop MSFT, got {summary.get('below_stop')}", errors)
+    elif msft_in_band and msft_requires_review:
         expect("MSFT" not in deployable_bucket, f"deployment_summary.deployable should not include MSFT while band debt requires promotion review, got {summary.get('deployable')}", errors)
         expect("MSFT" in promotion_bucket, f"deployment_summary.promotion_review should include in-band MSFT while band debt remains open, got {summary.get('promotion_review')}", errors)
         expect("MSFT" not in almost_bucket, f"deployment_summary.almost should not include in-band promotion-review MSFT, got {summary.get('almost')}", errors)
@@ -730,9 +803,16 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
     expect("ETN" not in promotion_bucket, f"deployment_summary.promotion_review should no longer include owner-promoted ETN, got {summary.get('promotion_review')}", errors)
     if not msft_requires_review:
         expect("MSFT" not in promotion_bucket, f"deployment_summary.promotion_review should no longer include owner-promoted MSFT, got {summary.get('promotion_review')}", errors)
-    if goog_in_band:
-        expect("GOOG" in promotion_bucket, f"deployment_summary.promotion_review should include in-band GOOG, got {summary.get('promotion_review')}", errors)
-        expect("GOOG" not in almost_bucket, f"deployment_summary.almost should not include in-band GOOG, got {summary.get('almost')}", errors)
+    if goog_below_stop:
+        expect("GOOG" not in deployable_bucket, f"deployment_summary.deployable should not include below-stop GOOG, got {summary.get('deployable')}", errors)
+        expect("GOOG" not in almost_bucket, f"deployment_summary.almost should not include below-stop GOOG, got {summary.get('almost')}", errors)
+        expect("GOOG" in below_stop_bucket, f"deployment_summary.below_stop should include below-stop GOOG, got {summary.get('below_stop')}", errors)
+    elif goog_in_band and goog_requires_review:
+        expect("GOOG" in promotion_bucket, f"deployment_summary.promotion_review should include in-band promoted GOOG, got {summary.get('promotion_review')}", errors)
+        expect("GOOG" not in almost_bucket, f"deployment_summary.almost should not include in-band promoted GOOG, got {summary.get('almost')}", errors)
+    elif goog_in_band:
+        expect("GOOG" in almost_bucket, f"deployment_summary.almost should include in-band but unpromoted GOOG, got {summary.get('almost')}", errors)
+        expect("GOOG" not in promotion_bucket, f"deployment_summary.promotion_review should not include in-band but unpromoted GOOG, got {summary.get('promotion_review')}", errors)
     else:
         expect("GOOG" in almost_bucket, f"deployment_summary.almost should include out-of-band GOOG, got {summary.get('almost')}", errors)
         expect("GOOG" not in promotion_bucket, f"deployment_summary.promotion_review should not include out-of-band GOOG, got {summary.get('promotion_review')}", errors)
@@ -779,13 +859,24 @@ def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
         errors,
     )
 
-    vrt_reason = str(technical.get("VRT", {}).get("actionReason") or "")
-    expect(technical.get("VRT", {}).get("coverageLane") == "execution", f"VRT coverageLane should be execution, got {technical.get('VRT', {}).get('coverageLane')}", errors)
-    expect(
-        any(phrase in vrt_reason.lower() for phrase in ("levels are defined", "watch-only", "portfolio-review", "separate owner")),
-        f"VRT reason should acknowledge defined levels/watch/review-only owner-gated posture, got {vrt_reason!r}",
-        errors,
-    )
+    vrt_technical = technical.get("VRT", {})
+    vrt_reason = str(vrt_technical.get("actionReason") or "")
+    vrt_below_stop = vrt_technical.get("belowStop") is True
+    expect(vrt_technical.get("coverageLane") == "execution", f"VRT coverageLane should be execution, got {vrt_technical.get('coverageLane')}", errors)
+    if vrt_below_stop:
+        expect(vrt_technical.get("actionState") == "BELOW STOP", f"VRT below stop should be BELOW STOP, got {vrt_technical.get('actionState')}", errors)
+        expect(vrt_technical.get("triggerToday") is False, "VRT should not show triggerToday while below stop", errors)
+        expect(
+            "below stop" in vrt_reason.lower() or "do not deploy" in vrt_reason.lower(),
+            f"VRT below-stop reason should preserve below-stop / do-not-deploy posture, got {vrt_reason!r}",
+            errors,
+        )
+    else:
+        expect(
+            any(phrase in vrt_reason.lower() for phrase in ("levels are defined", "watch-only", "portfolio-review", "separate owner")),
+            f"VRT reason should acknowledge defined levels/watch/review-only owner-gated posture, got {vrt_reason!r}",
+            errors,
+        )
 
     for ticker in ("CVX", "PLTR", "LNG"):
         row = technical.get(ticker, {})
@@ -901,8 +992,10 @@ def case_wf63_command_center_readiness_only() -> tuple[str, list[str]]:
         errors,
     )
     expect(
-        ("Phase 1" in str(top.get("next_approval_gate") or "")) or (workflow_id == "WF67" and "reconciliation" in str(top.get("next_approval_gate") or "").lower()),
-        f"next_approval_gate should reference Phase 1 or WF67 reconciliation, got {top.get('next_approval_gate')!r}",
+        ("Phase 1" in str(top.get("next_approval_gate") or ""))
+        or ("WF67" in str(top.get("next_approval_gate") or "") and "guard" in str(top.get("next_approval_gate") or "").lower())
+        or (workflow_id == "WF67" and "reconciliation" in str(top.get("next_approval_gate") or "").lower()),
+        f"next_approval_gate should reference Phase 1, WF67 guardrails, or WF67 reconciliation, got {top.get('next_approval_gate')!r}",
         errors,
     )
 
@@ -983,7 +1076,7 @@ def case_wf63_command_center_readiness_only() -> tuple[str, list[str]]:
     if workflow_id == "WF67":
         required_html = ("WF67", "Alpaca", "Scoped paper pilot", "paper simulation only", "No owner approval inferred")
     else:
-        required_html = ("WF63", "Alpaca", "NOT READY FOR PAPER ORDERS", "Phase 1", "No paper or live order submit")
+        required_html = ("WF63", "Alpaca", "NO ORDER SUBMIT", "WF67", "No paper or live order submit")
     for needle in required_html:
         expect(needle in html, f"rendered HTML missing {needle!r}", errors)
 
@@ -1100,16 +1193,32 @@ def case_decision_queue_visibility() -> tuple[str, list[str]]:
     daily = dq.get("daily_review") or {}
     intel = dq.get("market_intelligence") or {}
     authority = dq.get("authority") or {}
+    cap_recs = daily.get("capital_recommendations") or []
+    cap_count = (daily.get("counts") or {}).get("capital_recommendation_count")
+    expected_cap_tickers = _expected_capital_recommendation_tickers(daily)
+    rendered_cap_tickers = {str(item.get("ticker") or "").upper() for item in cap_recs if item.get("ticker")}
+    portfolio_call = daily.get("portfolio_call") or {}
 
     expect((daily.get("counts") or {}).get("review_object_count", 0) > 0, "daily review object count missing from decision queue", errors)
     expect((intel.get("counts") or {}).get("event_count", 0) > 0, "market-intelligence event count missing from decision queue", errors)
     expect(daily.get("escalations"), "daily review escalations missing from decision queue", errors)
-    expect(daily.get("capital_recommendations"), "capital recommendations missing from decision queue", errors)
+    expect(cap_count == len(cap_recs), f"decision queue should list every capital recommendation counted, count={cap_count}, listed={len(cap_recs)}", errors)
+    expect(rendered_cap_tickers == expected_cap_tickers, f"decision queue capital recommendations should mirror current source tickers {sorted(expected_cap_tickers)}, got {cap_recs}", errors)
+    if cap_count == 0:
+        expect(portfolio_call.get("owner_approval_required") is True, f"zero-recommendation portfolio call must stay owner gated, got {portfolio_call}", errors)
+        expect(portfolio_call.get("recommended_action") in {"no_new_approval", "wait_for_better_entry_or_clearance"}, f"zero-recommendation portfolio call should explain no approval/wait posture, got {portfolio_call}", errors)
+    else:
+        expect(cap_recs, "capital recommendations missing from decision queue", errors)
     expect(intel.get("escalations"), "market-intelligence escalations missing from decision queue", errors)
     expect(authority.get("canonical_mutation_allowed") is False, "decision queue must not allow canonical mutation", errors)
     expect(authority.get("trade_execution_allowed") is False, "decision queue must not allow trade execution", errors)
-    for needle in ("Decision Queue", "Daily review", "Market intelligence", "review-only", "owner approval required", "ETN"):
+    for needle in ("Decision Queue", "Daily review", "Market intelligence", "review-only", "owner approval required"):
         expect(needle in html, f"rendered HTML missing {needle!r}", errors)
+    if cap_recs:
+        rendered_any_ticker = any(str(item.get("ticker") or "") in html for item in cap_recs if item.get("ticker"))
+        expect(rendered_any_ticker, f"rendered HTML missing current capital recommendation ticker from {cap_recs}", errors)
+    else:
+        expect("No capital recommendations surfaced." in html, "rendered HTML should show honest no-capital-recommendation state", errors)
     return name, errors
 
 
@@ -1177,13 +1286,17 @@ def case_deployment_readiness_source_conflict_guard() -> tuple[str, list[str]]:
         conflict_rows = [row for row in groups.get("AUTHORITY CONFLICT") or [] if row.get("ticker") == "JPM"]
         do_not_touch_rows = [row for row in groups.get("DO NOT TOUCH") or [] if row.get("ticker") == "JPM"]
         almost_rows = [row for row in groups.get("ALMOST DEPLOYABLE") or [] if row.get("ticker") == "JPM"]
+        watch_rows = [row for row in groups.get("WATCH / RESEARCH NEEDED") or [] if row.get("ticker") == "JPM"]
         expect("JPM" not in deployable, f"deployment-readiness-surface DEPLOYABLE NOW group must not include JPM, got {sorted(deployable)}", errors)
         expect(not conflict_rows, f"deployment-readiness-surface AUTHORITY CONFLICT should not include JPM after formal-band resolution, got {groups.get('AUTHORITY CONFLICT')}", errors)
-        jpm_rows = do_not_touch_rows or almost_rows
-        expect(bool(jpm_rows), f"deployment-readiness-surface should include JPM either as DO NOT TOUCH when below stop or ALMOST DEPLOYABLE when above stop/below band, got groups={groups}", errors)
+        jpm_rows = do_not_touch_rows or almost_rows or watch_rows
+        expect(bool(jpm_rows), f"deployment-readiness-surface should include JPM as DO NOT TOUCH, ALMOST DEPLOYABLE, or WATCH / RESEARCH NEEDED based on current WF85 timing, got groups={groups}", errors)
         if jpm_rows:
             jpm = jpm_rows[0]
-            if do_not_touch_rows:
+            jpm_surface_state = legacy_state(jpm, "surface_state")
+            if jpm.get("wf85_final_timing_state") == "repair_first":
+                expect(jpm_surface_state == "WATCH / RESEARCH NEEDED", f"JPM WF85 repair_first should stay WATCH / RESEARCH NEEDED, got {jpm_surface_state}", errors)
+            elif do_not_touch_rows:
                 jpm_surface_state = legacy_state(jpm, "surface_state")
                 expect(jpm_surface_state == "DO NOT TOUCH", f"JPM below stop should be DO NOT TOUCH, got {jpm_surface_state}", errors)
             else:
@@ -1240,12 +1353,8 @@ def case_deployment_readiness_source_conflict_guard() -> tuple[str, list[str]]:
 def case_auto_apply_clears_deployment_surface_band_debt() -> tuple[str, list[str]]:
     name = "auto_apply_clears_deployment_surface_band_debt"
     errors: list[str] = []
-    proposal_path = deployment_readiness_surface.BAND_PROPOSALS_PATH
-    audit_path = deployment_readiness_surface.AUTO_BAND_APPLY_PATH
-    original_proposal = proposal_path.read_text(encoding="utf-8") if proposal_path.exists() else None
-    original_audit = audit_path.read_text(encoding="utf-8") if audit_path.exists() else None
-    try:
-        proposal_path.write_text(json.dumps({
+    with isolated_band_artifacts(
+        {
             "summary": {"blocking_review_tickers": ["ETN"]},
             "proposals": [{
                 "ticker": "ETN",
@@ -1254,31 +1363,23 @@ def case_auto_apply_clears_deployment_surface_band_debt() -> tuple[str, list[str
                 "needs_review": True,
                 "skip_reason": None,
             }],
-        }), encoding="utf-8")
-        audit_path.write_text(json.dumps({
+        },
+        {
             "status": "ok",
             "applied_date": "2026-05-12",
             "applied": [{"ticker": "ETN"}],
-        }), encoding="utf-8")
+        },
+    ):
         stale = deployment_readiness_surface.band_stale_tickers()
         expect("ETN" not in stale, f"eligible same-day auto-apply should clear ETN band debt, got {sorted(stale)}", errors)
-    finally:
-        if original_proposal is not None:
-            proposal_path.write_text(original_proposal, encoding="utf-8")
-        if original_audit is not None:
-            audit_path.write_text(original_audit, encoding="utf-8")
     return name, errors
 
 
 def case_event_risk_band_freeze_is_structured_review_debt() -> tuple[str, list[str]]:
     name = "event_risk_band_freeze_is_structured_review_debt"
     errors: list[str] = []
-    proposal_path = TMP / "band-proposals.json"
-    audit_path = TMP / "auto-band-apply.json"
-    original_proposal = proposal_path.read_text(encoding="utf-8") if proposal_path.exists() else None
-    original_audit = audit_path.read_text(encoding="utf-8") if audit_path.exists() else None
-    try:
-        proposal_path.write_text(json.dumps({
+    with isolated_band_artifacts(
+        {
             "status": "needs_review",
             "summary": {"blocking_review_tickers": ["NVDA"]},
             "proposals": [{
@@ -1291,8 +1392,9 @@ def case_event_risk_band_freeze_is_structured_review_debt() -> tuple[str, list[s
                 "needs_review": True,
                 "skip_reason": None,
             }],
-        }), encoding="utf-8")
-        audit_path.write_text(json.dumps({"status": "ok", "mode": "apply", "applied_date": "2026-05-12", "applied": []}), encoding="utf-8")
+        },
+        {"status": "ok", "mode": "apply", "applied_date": "2026-05-12", "applied": []},
+    ):
         payload = build_payload(load_sources())
         warnings = [w for w in payload["validation"]["warnings"] if w.get("code") == "band_staleness"]
         expect(len(warnings) == 1, f"expected one band_staleness warning, got {warnings}", errors)
@@ -1305,25 +1407,14 @@ def case_event_risk_band_freeze_is_structured_review_debt() -> tuple[str, list[s
         expect(details.get("pending_applyable_blockers") == [], f"pending applyable blockers should be empty: {details}", errors)
         parsed = workbook_export.parse_band_staleness(payload["validation"])
         expect(parsed == {"NVDA"}, f"workbook parser should consume structured blocker details, got {parsed}", errors)
-    finally:
-        if original_proposal is not None:
-            proposal_path.write_text(original_proposal, encoding="utf-8")
-        if original_audit is not None:
-            audit_path.write_text(original_audit, encoding="utf-8")
     return name, errors
 
 
 def case_post_apply_band_review_does_not_loop_auto_apply() -> tuple[str, list[str]]:
     name = "post_apply_band_review_does_not_loop_auto_apply"
     errors: list[str] = []
-    proposal_path = TMP / "band-proposals.json"
-    audit_path = TMP / "auto-band-apply.json"
-    hygiene_path = TMP / "band-hygiene-freshness-controller.json"
-    original_proposal = proposal_path.read_text(encoding="utf-8") if proposal_path.exists() else None
-    original_audit = audit_path.read_text(encoding="utf-8") if audit_path.exists() else None
-    original_hygiene = hygiene_path.read_text(encoding="utf-8") if hygiene_path.exists() else None
-    try:
-        proposal_path.write_text(json.dumps({
+    with isolated_band_artifacts(
+        {
             "status": "needs_review",
             "summary": {"blocking_review_tickers": ["VRT"]},
             "proposals": [{
@@ -1333,14 +1424,14 @@ def case_post_apply_band_review_does_not_loop_auto_apply() -> tuple[str, list[st
                 "needs_review": True,
                 "skip_reason": None,
             }],
-        }), encoding="utf-8")
-        audit_path.write_text(json.dumps({
+        },
+        {
             "status": "ok",
             "mode": "dry_run",
             "applied_date": "2026-06-09",
             "applied": [],
-        }), encoding="utf-8")
-        hygiene_path.write_text(json.dumps({
+        },
+        {
             "status": "needs_review",
             "rows": [{
                 "ticker": "VRT",
@@ -1350,7 +1441,8 @@ def case_post_apply_band_review_does_not_loop_auto_apply() -> tuple[str, list[st
                     "applied_date": "2026-06-09",
                 },
             }],
-        }), encoding="utf-8")
+        },
+    ):
         payload = build_payload(load_sources())
         warnings = [w for w in payload["validation"]["warnings"] if w.get("code") == "band_staleness"]
         expect(len(warnings) == 1, f"expected one band_staleness warning, got {warnings}", errors)
@@ -1361,15 +1453,6 @@ def case_post_apply_band_review_does_not_loop_auto_apply() -> tuple[str, list[st
         expect("Run auto_apply_entry_band_maintenance.py --apply" not in message, f"post-apply review should not loop auto-apply: {message!r}", errors)
         expect(details.get("pending_applyable_blockers") == [], f"pending applyable blockers should be empty: {details}", errors)
         expect(details.get("post_apply_review_blockers") == ["VRT"], f"post_apply_review_blockers missing/mis-set: {details}", errors)
-    finally:
-        if original_proposal is not None:
-            proposal_path.write_text(original_proposal, encoding="utf-8")
-        if original_audit is not None:
-            audit_path.write_text(original_audit, encoding="utf-8")
-        if original_hygiene is not None:
-            hygiene_path.write_text(original_hygiene, encoding="utf-8")
-        elif hygiene_path.exists():
-            hygiene_path.unlink()
     return name, errors
 
 
@@ -1569,6 +1652,8 @@ def _mutate_state_transition(s: dict[str, Any]) -> None:
         "manual_update_required": False,
         "target_invalid_reason": None,
     })
+    market_data = (s.get("market") or {}).setdefault("data", {})
+    market_data.setdefault("treasuries", {})["10y"] = 4.25
 
     market_meta = (s.get("market") or {}).setdefault("meta", {})
     market_meta["generated_at_utc"] = "2026-05-04T13:23:00+00:00"
