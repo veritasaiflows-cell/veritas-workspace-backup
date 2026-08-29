@@ -1,6 +1,6 @@
 ---
 name: "otel-operations-analyst"
-description: "Interpret local OTEL packets and recommend privacy-safe ops actions."
+description: "Interpret local OTEL operations and route privacy-safe telemetry evidence."
 ---
 
 # OTEL Operations Analyst
@@ -57,6 +57,14 @@ Report collector/runtime health from the packet, not assumption:
 - privacy scan status for tool/workflow metadata
 
 Treat OTEL as operational evidence only. OTEL volume or span count is not proof of model quality, coding quality, finance correctness, trade readiness, deployment readiness, customer readiness, or approval authority.
+
+## Telemetry Ownership Split
+
+- OTEL owns local collector health, event volume and drift, and privacy-safe metadata about tool/workflow failures.
+- Job-level model, token, cache, and API-equivalent cost attribution belongs to the protected dispatch/Gateway usage path: `isolated_agent_usage_metadata.py`, `implementation_token_attribution_bridge.py`, and `token_usage_ledger.py`.
+- Outcome quality and acceptance history belong to their outcome ledgers. `efficiency_cohort_ledger.py` is descriptive/report-only and never changes route order or promotion.
+- OTEL may link to authoritative usage or outcome records by a verified privacy-safe identity, but it must not invent job-level allocation, treat estimates as billing, or award route/efficiency credit from collector events alone.
+- Efficiency review is on demand from available trustworthy evidence; no fixed cohort minimum or automatic route promotion is authorized.
 
 Classify findings:
 

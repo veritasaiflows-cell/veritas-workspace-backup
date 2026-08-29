@@ -4,7 +4,7 @@
 
 - **Owner decisions:** Randall approved **Wave 1** on 2026-08-22 at 08:42 MST and then approved **Wave 2 workspace-local implementation** on 2026-08-22.
 - **Wave 1 objective:** restore workspace-local operating truth for cron contracts, workflow routing, and lane-register metadata integrity.
-- **Wave 2 objective:** first prove one trustworthy `job -> dispatch -> provider run -> usage receipt -> validator -> Main acceptance` record; only then collect at least ten comparable Main-accepted jobs.
+- **Historical Wave 2 objective:** first prove one trustworthy `job -> dispatch -> provider run -> usage receipt -> validator -> Main acceptance` record, then collect comparable jobs. Randall later retired the fixed cohort; the retirement section below owns current truth.
 - **Waves 3-5:** durable queued proposals only. They remain unauthorized.
 - **Wave 2 activation boundary:** source repair, tests, no-install packaging, rollback preparation, and continuity are authorized. Installing the candidate into the active package, restarting the gateway/service, or changing runtime/config/auth still requires a separate exact owner approval after candidate QA.
 - **Hard stop lines:** no schedule, config, auth, credential, channel, finance, portfolio/canon, deletion, archive, external, or skill-application change. Generated proof does not grant any of those authorities.
@@ -48,21 +48,21 @@ No automatic skill application, route/model promotion, runtime migration, or sel
 
 Wave 1 acceptance requires deterministic validators, Main review, zero active Wave 1 leases at closeout, and explicit reporting of any remaining warnings or telemetry limits.
 
-### Wave 2 - Make Efficiency Measurable - Workspace Candidate Authorized
+### Wave 2 - Make Efficiency Measurable - Historical Plan; Cohort Retired
 
 Wave 2 is deliberately recut around a single end-to-end acceptance gate. More scorecards or historical backfill do not count as progress until one newly dispatched implementation job produces a complete trusted record.
 
 1. Activate one protected native one-shot implementation route only after exact owner approval of the verified package and gateway restart.
 2. Prove one real terminal receipt containing job/lane identity, phase, attempt/retry, route/model, provider run identity, token/cache counters when exposed, latency, validator result, and Main acceptance.
 3. If the first real receipt fails, stop and repair the producer; do not build another downstream scorecard.
-4. After the first receipt passes, join OTEL, token, lane, validator, and outcome records and collect at least ten comparable Main-accepted jobs.
-5. No route/model promotion is allowed before the ten-job observation gate. If a route does not expose trustworthy token counters, measure calls, elapsed time, retries, validation, and acceptance, and make no token/dollar savings claim for that route.
+4. Historical plan: after the first receipt, join OTEL, token, lane, validator, and outcome records. The later retirement decision removed the fixed job-count requirement.
+5. Automatic route/model promotion remains disabled. Review efficiency on demand from trustworthy usage, elapsed time, retries, validation, acceptance, and defect evidence; make no token/dollar savings claim when attribution is unavailable.
 
 ### Wave 3 - Bounded Efficiency Pilots - Not Authorized
 
 - Add deterministic changed-input prefilters to OS Audit Companion Packets, Status Card Freshness, and Future Session Packet.
 - Test minimal route-specific tool/skill bundles.
-- Run a frozen 10-20 task non-finance coding cohort across two existing routes.
+- Run only a separately approved, value-defined non-finance pilot across existing routes; no fixed cohort minimum is required.
 - Measure calls, turns, uncached/gross tokens, elapsed time, retry tax, validator results, and escaped defects.
 
 ### Wave 4 - Close WF74/WF88 Learning - Not Authorized
@@ -122,11 +122,11 @@ Status: **historical R3 checkpoint: code and independent QA accepted; exact cand
 - Randall supplied the exact install-only approval. The accepted candidate SHA-256 `c7ae764e27ecd5a54f2286f1b5bf3d85adb49b48d900deaac7484540862fd40a` was installed globally with lifecycle scripts disabled. The installed CLI/root/AI identity is `2026.7.1` / commit `0790d9f`, and the two compiled subagent-registry bundles match the accepted candidate extraction.
 - The approved memory-search overlay SHA-256 `46dbfcb2f063d0b635a2c10f3c965f2bbb9b34d7e5cb5cecaa57611d50c07d66` was restored; both required markers and JavaScript syntax passed. All actual pre-restart version/hash checks passed, so rollback was not invoked. The gateway/app-server process identities remained unchanged and no OpenClaw process was restarted. Install receipt: `tmp/wave2-rebuild-r3-artifacts/deployment-readiness-r1/wave2-r3-install-receipt-r1.json`.
 - npm preserved one locked replacement-directory residue at `C:\Users\Veritas\AppData\Roaming\npm\node_modules\.openclaw-gfkeVokI` because the still-running process holds `vec0.dll`. Main did not attempt cleanup; it is not evidence of install failure and remains outside this install-only scope.
-- Wave 2 is not measurement-complete until a post-restart protected real dispatch produces the first complete receipt and the comparable 10-job cohort is observed. No route-efficiency credit is claimed yet.
+- At this historical R3 checkpoint, Wave 2 measurement was incomplete and no route-efficiency credit was claimed. The later R4/P0 acceptance and cohort-retirement sections supersede this checkpoint.
 
 ## Wave 2 R4 Acceptance - 2026-08-24
 
-Status: **R4 engineering and post-restart P0 runtime acceptance passed; the comparable 10-job Wave 2 measurement cohort remains pending.**
+Status: **R4 engineering and post-restart P0 runtime acceptance passed; Randall later retired the comparable measurement cohort.**
 
 - The R3 restart passed reachability/configuration/guard checks but exposed a release-blocking gap: R3 omitted the protected dispatch-binding producer and expected the wrong raw protected-ID shape. No protected canary was dispatched and no receipt/cohort credit was claimed.
 - R4 restores the producer and corrected identity contract. Candidate SHA-256 `ce78658b60e8e2fafc078046138e286c8977b62b12a13862075bc3ae01051381` passed 118/118 focused tests, source typecheck, seven architecture gates, build/UI/package/extraction proof, and independent engineering QA with zero findings.
@@ -138,11 +138,11 @@ Status: **R4 engineering and post-restart P0 runtime acceptance passed; the comp
 - Randall's manual restart activated R4. The first post-restart canary transport attempt failed before dispatch because `sandbox=require` rejected a supplied `cwd` override; it produced no child run, binding, receipt, or credit and is terminal/blocked.
 - Randall then authorized exactly one corrected P0 attempt. The corrected canary omitted `cwd`, ran through the conforming `persistent_isolated_agent` / `openai/gpt-5.6-terra` / low route, returned the exact `WAVE2_R4_PROTECTED_CANARY_OK` marker, and made zero tool calls.
 - The protected core ledger contains one reservation, one accepted event, and one `terminal:ok` event. Trusted receipt `79880a8400a983133eece26645a75d098a7901d9c5236536ab7ca8e1e5402d69` reconciles 5,008 input, 0 cached input, 0 cache write, 14 output, and 5,022 total tokens over 202,979 ms. The source cost `$0.01273` is an OpenClaw estimate, not an invoice or OAuth billing claim.
-- P0 proof is `tmp/wave2-rebuild-r3-artifacts/producer-restoration-r4/deployment-readiness-r4/wave2-r4-post-restart-acceptance-r1.json`. P0 and Wave 2 runtime acceptance pass; the comparable cohort remains 0/10, Wave 2 measurement acceptance remains incomplete, and Wave 3 remains unauthorized.
+- P0 proof is `tmp/wave2-rebuild-r3-artifacts/producer-restoration-r4/deployment-readiness-r4/wave2-r4-post-restart-acceptance-r1.json`. P0 and Wave 2 runtime acceptance passed. Randall later retired the comparable measurement cohort; the retirement section below supersedes the former count-based gate. Wave 3 remains unauthorized.
 
 ## Next Decision Gate
 
-Wave 1 is complete and closed. Wave 2 R4 is installed, restart-activated, and P0 runtime-accepted with one complete protected receipt. The next gate is the frozen comparable 10-job Wave 2 measurement cohort; it remains 0/10. Do not claim route/model efficiency promotion or begin Wave 3 until 10/10 comparable jobs have trusted receipts and Main acceptance. Wave 3 remains separately owner-gated even after that evidence gate clears.
+Wave 1 is complete and closed. Wave 2 R4 is installed, restart-activated, and P0 runtime-accepted with one complete protected receipt. The former comparable measurement cohort is retired and must not resume. Any future measurement work requires a separately approved, production-relevant pilot with an explicit user-value outcome. No route/model promotion or Wave 3 action is authorized.
 
 ## Wave 2 Measurement Cohort Retirement - 2026-08-26
 
